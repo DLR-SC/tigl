@@ -181,7 +181,7 @@ void tigl::CTiglSectionElement::SetWidth(double newWidth, TiglCoordinateSystem r
         elementScaling.x = 0;
         elementScaling.y = 0;
         storedElementTransformation.setScaling(elementScaling);
-        InvalidateParent();
+        Invalidate();
         return;
 
     }
@@ -224,7 +224,7 @@ void tigl::CTiglSectionElement::SetHeight(double newHeight, TiglCoordinateSystem
         CTiglPoint elementScaling                         = storedElementTransformation.getScaling();
         elementScaling.z                                  = 0;
         storedElementTransformation.setScaling(elementScaling);
-        InvalidateParent();
+        Invalidate();
         return;
     }
 
@@ -263,7 +263,7 @@ void tigl::CTiglSectionElement::SetArea(double newArea, TiglCoordinateSystem ref
     if (isNear(newArea, 0, 0.0001)) {
         CCPACSTransformation& storedElementTransformation = GetElementCCPACSTransformation();
         storedElementTransformation.setScaling(CTiglPoint(0, 0, 0));
-        InvalidateParent();
+        Invalidate();
         return;
     }
 
@@ -334,10 +334,18 @@ void tigl::CTiglSectionElement::SetPSETransformations(const tigl::CTiglTransform
     CCPACSPositionings& positionings = GetPositionings();
     positionings.SetPositioningTransformation(GetSectionUID(), trans, false );
 
-    InvalidateParent();
+    Invalidate();
 
 }
 
+void tigl::CTiglSectionElement::Invalidate()
+{
+    // we need to explicitly invalidate the transformations
+    // this propagates invalidation the section and element,
+    // and transitively to the fuselage/wing
+    GetElementCCPACSTransformation().Invalidate();
+    GetSectionCCPACSTransformation().Invalidate();
+}
 
 
 void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
@@ -376,7 +384,7 @@ void tigl::CTiglSectionElement::SetPSETransformationsUseSimpleDecomposition(
     CCPACSPositionings& positionings = GetPositionings();
     positionings.SetPositioningTransformation(GetSectionUID(), CTiglPoint(trans[0], trans[1], trans[2]), false );
 
-    InvalidateParent();
+    Invalidate();
 
 }
 
@@ -410,7 +418,7 @@ void tigl::CTiglSectionElement::SetElementAndSectionScalingToNoneZero()
     }
     storedSectionTransformation.setScaling(sectionScaling);
 
-    InvalidateParent();
+    Invalidate();
 }
 
 
