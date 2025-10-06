@@ -41,7 +41,7 @@ TiGL is a CMake project, so in simple terms, TiGL can be configured and built vi
     cmake .. 
     cmake --build .
 
-The minimum requirements to build TiGL are a C++17 compliant compiler and cmake,  TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
+The minimum requirements to build TiGL are a C++17 compliant compiler and CMake, TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
 
 All build dependencies of TiGL are available as conda packages. Most dependencies are supplied in a decicated channel at [https://anaconda.org/dlr-sc/](https://anaconda.org/dlr-sc/). 
 Specifically, this channel contains a recommended variant of opencascade, which includes a patch for G2-continuous Coons patches.
