@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Changes since last release
+--------------------------
+
+- Fixes
+  - Correct the icons in TIGLCreator: Add the correct icon to the "New File" and "Open File" action and add a button to the tool bar ([#1210](https://github.com/DLR-SC/tigl/issues/1210))
+  - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
+
 Version 3.5.0-rc1
 ----------------
 2025/09/22
