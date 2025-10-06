@@ -59,7 +59,7 @@ Enter `pixi info` for a complete list of environments and tasks.
 
 For example,    
 
-    pixi run configure
+    pixi run -e default configure
 
 will install TiGL's dependencies, create a build directory and run cmake with a default configuration using ninja as a generator. Now you can navigate to the build directory and modify the initial cmake configuration if you like.
 
