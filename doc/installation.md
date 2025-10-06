@@ -93,7 +93,7 @@ will configure a Debug build of TiGL that links in OCCT statically.
 
 TiGL uses a code generator to automatically generate C++ classes from the xml schema definition of CPACS in `cpacs_gen_input/cpacs_schema.xsd`. These generated classes are stored in `src/generated` and can be customized by hand-written code. Whenever a new CPACS node is added or the underlying CPACS schema of TIGL changes, the code generator must be triggered for the new schema. 
 
-The code generator is includes as a git submodule to this repository. For convenience, there is a pixi task to generate the code
+The code generator is included as a git submodule to this repository. For convenience, there is a pixi task to generate the code
 
     pixi run generate
 
