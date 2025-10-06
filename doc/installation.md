@@ -49,7 +49,7 @@ The recipes for the conda packages in the dlr-sc channel can be found at [https:
 
 @subsection pixi Using the Pixi package manager
 
-We recommend installing TiGL's dependencies and configuring TiGL using the [pixi](https://pixi.sh/latest/) package manager. In the root directory of our repository is a `pixi.toml` file that defines several environments and tasks. 
+We recommend installing TiGL's dependencies and configuring TiGL using the [pixi](https://pixi.sh/latest/) package manager. In the root directory of our repository, there is a `pixi.toml` file that defines several environments and tasks. 
 
 A pixi *environment* corresponds to a typical build configuration frequently used by us, the TiGL developers or as part of our continuous integration pipeline. Each environment and platform comes with a specific set of dependencies.
 
