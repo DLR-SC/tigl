@@ -35,7 +35,7 @@ Our small Matlab demo at [https://github.com/DLR-SC/tigl/tree/main/examples/matl
 
 @section building Building from source
 
-TiGL is a CMake project, so in simple terms, TiGL can be connfigured and built via
+TiGL is a CMake project, so in simple terms, TiGL can be configured and built via
 
     mkdir build && cd build
     cmake .. 
