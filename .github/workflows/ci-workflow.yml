@@ -1,0 +1,97 @@
+name: CI workflow
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+  push:
+    branches:
+      - 'main'
+    tags:
+      - v*
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
+
+jobs:
+
+  pre:
+    # no nightly cmake flag and no concatenation of generated files for release builds
+    runs-on: "ubuntu-latest"
+    outputs:
+      nightly: ${{ steps.set_flags.outputs.nightly }}
+    steps:
+      - id: set_flags
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}" == "true" ]]; then
+            echo "nightly=OFF" >> $GITHUB_OUTPUT
+          else
+            echo "nightly=ON" >> $GITHUB_OUTPUT
+          fi
+
+  build-test:
+    needs: pre
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: "windows-latest"
+            config: "Release"
+            pixienv: "python-internal"
+            documentation: "OFF"
+            package: "OFF"
+          - os: "windows-2022"
+            config: "Release"
+            pixienv: "occt-static"
+            documentation: "ON"
+            package: "ON"
+          - os: "ubuntu-latest"
+            config: "Debug"
+            pixienv: "default"
+            documentation: "OFF"
+            package: "OFF"
+          - os: "ubuntu-latest"
+            config: "Release"
+            pixienv: "python-internal"
+            documentation: "OFF"
+            package: "OFF"
+          - os: "ubuntu-22.04"
+            config: "Debug"
+            pixienv: "coverage"
+            documentation: "OFF"
+            package: "OFF"
+          - os: "ubuntu-22.04"
+            config: "Release"
+            pixienv: "default"
+            documentation: "OFF"
+            package: "OFF"
+          - os: "macos-13"
+            config: "Release"
+            pixienv: "occt-static"
+            documentation: "OFF"
+            # create macos package (dmg) only on release and scheduled (nightly) builds due to time constraints of macos runners
+            package: ${{ github.event_name == 'schedule' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) && 'ON' || 'OFF' }}
+    uses: ./.github/workflows/build-test.yml
+    secrets: inherit
+    with:
+      # create a release build on new git tag
+      os: ${{ matrix.os }}
+      config: ${{ matrix.config }}
+      nightly: ${{ needs.pre.outputs.nightly }}
+      pixienv: ${{ matrix.pixienv }}
+      documentation: ${{ matrix.documentation }}
+      package: ${{ matrix.package }}
+    
+  draft-release:
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+    needs: build-test
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/release
+        with:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+
+
+
