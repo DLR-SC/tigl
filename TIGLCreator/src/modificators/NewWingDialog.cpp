@@ -19,13 +19,14 @@
 #include "NewWingDialog.h"
 #include "ui_NewWingDialog.h"
 
-NewWingDialog::NewWingDialog(QStringList profilesUID, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewWingDialog)
+NewWingDialog::NewWingDialog(QStringList profilesUID, tigl::CTiglUIDManager const& uid_mgr, QWidget *parent)
+    : make_unique([&](QString const& in){ return QString::fromStdString(uid_mgr.MakeUIDUnique(in.toStdString())); })
+    , QDialog(parent)
+    , ui(new Ui::NewWingDialog)
 {
     ui->setupUi(this);
     ui->airfoilComboBox->addItems(profilesUID);
-    ui->uidLineEdit->setText("generatedWing");
+    ui->uidLineEdit->setText(make_unique("generatedWing"));
 }
 
 NewWingDialog::~NewWingDialog()
@@ -40,7 +41,13 @@ int NewWingDialog::getNbSection() const
 
 QString NewWingDialog::getUID() const
 {
-    return ui->uidLineEdit->text();
+    QString inputUID = ui->uidLineEdit->text();
+    QString uniqueUID = make_unique(inputUID);
+
+    if (uniqueUID != inputUID) {
+        LOG(WARNING) << "The wanted uID " << inputUID.toStdString() << " is already taken. It is changed to the uID " << uniqueUID.toStdString() << "." << std::endl;
+    }
+    return uniqueUID;
 }
 
 QString NewWingDialog::getProfileUID() const

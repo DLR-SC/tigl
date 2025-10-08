@@ -20,7 +20,7 @@
 #define NEWFUSELAGEDIALOG_H
 
 #include <QDialog>
-#include <QString>
+#include "CTiglUIDManager.h"
 
 namespace Ui
 {
@@ -32,7 +32,7 @@ class NewFuselageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewFuselageDialog(QStringList profileUIDs, QWidget* parent = nullptr );
+    explicit NewFuselageDialog(QStringList profileUIDs, tigl::CTiglUIDManager const& uid_mgr, QWidget* parent = nullptr );
     ~NewFuselageDialog();
 
     int getNbSection() const;
@@ -40,6 +40,7 @@ public:
     QString getProfileUID() const;
 
 private:
+    std::function<QString(QString)> make_unique;
     Ui::NewFuselageDialog* ui;
 };
 
