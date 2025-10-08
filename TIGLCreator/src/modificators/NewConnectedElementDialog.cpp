@@ -113,7 +113,13 @@ void NewConnectedElementDialog::setStartUID(QString const& text)
 
 QString NewConnectedElementDialog::getSectionName() const
 {
-    return make_unique(ui->lineEditName->text());
+    QString inputUID = ui->lineEditName->text();
+    QString uniqueUID = make_unique(inputUID);
+
+    if (uniqueUID != inputUID) {
+        LOG(WARNING) << "The wanted uID " << inputUID.toStdString() << " is already taken. It is changed to the uID " << uniqueUID.toStdString() << "." << std::endl;
+    }
+    return uniqueUID;
 }
 
 NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
