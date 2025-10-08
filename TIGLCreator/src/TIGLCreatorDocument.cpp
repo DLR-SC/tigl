@@ -816,6 +816,31 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
                 drawComponentByUID(component->GetDefaultedUID().c_str());
             }
         }
+        for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingIndex);
+            if (wing.IsRotorBlade()) {
+            continue;
+            }
+            if (wing.GetComponentSegments())
+            {
+                for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+                    if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                        continue;
+                    }
+                    Quantity_Color grey(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+                    if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+                        for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                            app->getScene()->displayShape(ted->GetLoft(), true, grey);
+                        }
+                    }
+                    if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
+                        for (auto& led : leds->GetLeadingEdgeDevices()) {
+                            app->getScene()->displayShape(led->GetLoft(), true, grey);
+                        }
+                    }
+                }
+            }
+        }
     }
     catch (tigl::CTiglError& err) {
         displayError(err.what());
@@ -977,6 +1002,26 @@ void TIGLCreatorDocument::drawWing()
     QString wingUid = dlgGetWingSelection();
     if (!wingUid.isEmpty()) {
         drawComponentByUID(wingUid);
+    }
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    if (wing.GetComponentSegments())
+    {
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            Quantity_Color grey(0.5, 0.5, 0.5, Quantity_TOC_RGB);
+            if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+                for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                    app->getScene()->displayShape(ted->GetLoft(), true, grey);
+                }
+            }
+            if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
+                for (auto& led : leds->GetLeadingEdgeDevices()) {
+                    app->getScene()->displayShape(led->GetLoft(), true, grey);
+                }
+            }
+        }
     }
 }
 
