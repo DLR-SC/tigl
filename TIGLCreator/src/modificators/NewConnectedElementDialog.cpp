@@ -22,8 +22,9 @@
 #include "CTiglError.h"
 #include <QString>
 
-NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElements, QWidget* parent)
-    : QDialog(parent)
+NewConnectedElementDialog::NewConnectedElementDialog(QStringList connectedElements, tigl::CTiglUIDManager const& uid_mgr, QWidget* parent)
+    : make_unique([&](QString const& in){ return QString::fromStdString(uid_mgr.MakeUIDUnique(in.toStdString())); })
+    , QDialog(parent)
     , ui(new Ui::NewConnectedElementDialog)
 {
     ui->setupUi(this);
@@ -91,7 +92,7 @@ void NewConnectedElementDialog::updateDefaultName()
         ui->lineEditName->text().endsWith("Before") ||
         ui->lineEditName->text().endsWith("After")) 
     {
-        ui->lineEditName->setText(defaultName);
+        ui->lineEditName->setText(make_unique(defaultName));
     }
 }
 
@@ -112,7 +113,13 @@ void NewConnectedElementDialog::setStartUID(QString const& text)
 
 QString NewConnectedElementDialog::getSectionName() const
 {
-    return ui->lineEditName->text();
+    QString inputUID = ui->lineEditName->text();
+    QString uniqueUID = make_unique(inputUID);
+
+    if (uniqueUID != inputUID) {
+        LOG(WARNING) << "The wanted uID " << inputUID.toStdString() << " is already taken. It is changed to the uID " << uniqueUID.toStdString() << "." << std::endl;
+    }
+    return uniqueUID;
 }
 
 NewConnectedElementDialog::Where NewConnectedElementDialog::getWhere() const
