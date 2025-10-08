@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Create a new wing with the above parameters: </string>
+      <string>Create a new wing with the following parameters: </string>
      </property>
     </widget>
    </item>
@@ -64,7 +64,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Nb. Section</string>
+        <string>Nb. sections</string>
        </property>
       </widget>
      </item>
@@ -100,7 +100,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Airfoil UID</string>
+        <string>AirfoilUID</string>
        </property>
       </widget>
      </item>

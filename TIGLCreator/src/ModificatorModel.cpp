@@ -683,7 +683,11 @@ void ModificatorModel::addProfile(QString const& profileID)
 
 void ModificatorModel::onAddWingRequested()
 {
-    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
+    if (!configurationIsSet()) {
+        return;
+    }
+
+    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (wingDialog.exec() == QDialog::Accepted) {
         int nbSection       = wingDialog.getNbSection();
         QString uid         = wingDialog.getUID();
@@ -843,7 +847,7 @@ void ModificatorModel::onAddFuselageRequested()
 
     auto& fuselages = doc->GetConfiguration().GetFuselages();
 
-    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), modificatorContainerWidget);
+    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (fuselageDialog.exec() == QDialog::Accepted) {
         int nbSection       = fuselageDialog.getNbSection();
         QString uid         = fuselageDialog.getUID();
