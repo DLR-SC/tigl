@@ -5,6 +5,7 @@ Changes since last release
 --------------------------
 
 - Fixes
+  - Add a scrollbar in the CPACS editor widget. Before this change, it might be impossible to edit when the editor is attached to the main window on smaller screens ([#1228](https://github.com/DLR-SC/tigl/issues/1228)).
   - Fix issue with non-unique section names showing up in TiGLCreator ([#1213](https://github.com/DLR-SC/tigl/issues/1213))
   - Add missing `::generated::CPACSFuselages` to internal python bindings. Without this base class, getters and setters for fuselages are not accessbile in `::CCPACSFuselage` from Python ([#1207](https://github.com/DLR-SC/tigl/issues/1207))
   - Correct the icons in TIGLCreator: Add the correct icon to the "New File" and "Open File" action and add a button to the tool bar ([#1210](https://github.com/DLR-SC/tigl/issues/1210))
