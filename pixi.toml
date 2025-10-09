@@ -20,8 +20,13 @@ opencascade = "7.6.2.*"
 freeimageplus = "*"
 
 [feature.python-internal.dependencies]
-swig = ">=3.0.11"
+swig = ">=3.0.11,<4.1"
 pythonocc-core = "7.6.2.*"
+setuptools = "*"
+# these are optional, but needed for some of the python examples:
+numpy = "*"
+matplotlib = "*"
+pyqt = ">=5.15.11,<6"
 
 [feature.opencascade-static.dependencies]
 opencascade-static = "7.6.2.*"
@@ -151,16 +156,19 @@ configure = { cmd = [
     "-G", "Ninja", 
     "-S", ".", 
     "-B", "build", 
-    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "-D", "CMAKE_INSTALL_PREFIX=$CONDA_PREFIX", 
     "-D", "CMAKE_BUILD_TYPE={{ config }}",
     "-D", "TIGL_NIGHTLY={{ nightly }}",
     "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
     "-D", "TIGL_BUILD_TESTS=ON",
     "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=ON",
+    "-D", "Python3_FIND_STRATEGY=LOCATION",
+    "-D", "Python3_FIND_FRAMEWORK=NEVER",
     "-D", "TIGL_BINDINGS_PYTHON=ON",
-    "-D", "TIGL_BINDINGS_MATLAB=ON",
-    "-D", "OCE_STATIC_LIBS=ON",
+    "-D", "TIGL_BINDINGS_MATLAB=OFF",
+    "-D", "OCE_STATIC_LIBS=OFF",
 ], args = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="OFF"},
 ]}
+tiglcreator = { cmd = "tiglcreator" }

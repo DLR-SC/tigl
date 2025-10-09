@@ -17,25 +17,6 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     endif()
 
     include(tiglmacros)
-    
-     # Ensure the correct Python version is picked up by specifying the Python_EXECUTABLE
-    if (DEFINED ENV{CONDA_PREFIX})
-        if (WIN32)
-            set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/Library")
-            # Helps to find PythonOCC automatically
-            set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/Library/src/pythonocc-core")
-        else()
-            set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}")
-            # Helps to find PythonOCC automatically
-            set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "$ENV{CONDA_PREFIX}/src/pythonocc-core")
-        endif()
-    endif()
-
-    find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-    message(STATUS "Python3 interpreter:" ${Python3_EXECUTABLE})
-    message(STATUS "Python include directory: ${Python3_INCLUDE_DIR}")
-    message(STATUS "Python library release: ${Python3_LIBRARY_RELEASE}")
-
 
     find_package(SWIG 3.0.11 REQUIRED)
     find_package(PythonOCC REQUIRED)
@@ -116,17 +97,17 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
         install(TARGETS _${MODULE}
-                DESTINATION share/tigl3/python/tigl3
+                DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
                 COMPONENT interfaces
         )
 
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
-                DESTINATION share/tigl3/python/tigl3
+                DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
                 COMPONENT interfaces
         )
 
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
-                DESTINATION share/tigl3/python
+                DESTINATION ${PYTHON_SITE_PACKAGES}
                 COMPONENT interfaces
         )
 
