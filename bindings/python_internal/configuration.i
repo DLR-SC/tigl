@@ -561,6 +561,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSFuselageProfiles.h"
 %include "generated/CPACSFuselage.h"
 %include "CCPACSFuselage.h"
+%include "generated/CPACSFuselages.h"
 %include "CCPACSFuselages.h"
 %include "TiglFarFieldType.h"
 %include "generated/CPACSCellPositioningSpanwise.h"

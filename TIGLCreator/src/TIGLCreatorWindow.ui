@@ -324,6 +324,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="newAction"/>
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
    <addaction name="closeAction"/>
@@ -397,6 +398,10 @@
    <widget class="CPACSTreeWidget" name="treeWidget"/>
   </widget>
   <action name="newAction">
+   <property name="icon">
+    <iconset resource="TIGLCreator.qrc">
+     <normaloff>:/gfx/document-new.png</normaloff>:/gfx/document-new.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>

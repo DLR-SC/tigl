@@ -558,6 +558,10 @@ void ModificatorModel::addSection(
 
 void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &element)
 {
+    if (!configurationIsSet()) {
+        return;
+    }
+
     // open a new connected element dialog
     std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
     QStringList sectionUIDsQList;
@@ -566,7 +570,7 @@ void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &el
         sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList, doc->GetConfiguration().GetUIDManager());
 
     if (newElementDialog.exec() == QDialog::Accepted) {
 
@@ -583,6 +587,10 @@ void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &el
 
 void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
 {
+    if (!isValid() || !configurationIsSet()) {
+        return;
+    }
+
     if (item == nullptr) {
         return;
     }
@@ -606,7 +614,7 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
         sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList, doc->GetConfiguration().GetUIDManager());
 
     // Set the comboboxes' initial values according to the arguments
     if (item != nullptr) {
