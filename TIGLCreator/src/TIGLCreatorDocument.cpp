@@ -983,9 +983,13 @@ void TIGLCreatorDocument::drawFuselageGuideCurves()
 void TIGLCreatorDocument::drawWing()
 {
     QString wingUid = dlgGetWingSelection();
-    if (!wingUid.isEmpty()) {
+    if (wingUid == "") {
+        return;
+    }
+    else {
         drawComponentByUID(wingUid);
     }
+
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     if (wing.GetComponentSegments())
     {
@@ -1002,7 +1006,6 @@ void TIGLCreatorDocument::drawWing()
         }
     }
 }
-
 
 void TIGLCreatorDocument::drawWingFlaps()
 {
