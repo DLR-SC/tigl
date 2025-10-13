@@ -800,6 +800,26 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
             }
 
         }
+        for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingIndex);
+            if (wing.IsRotorBlade()) {
+            continue;
+            }
+            if (wing.GetComponentSegments())
+            {
+                for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+                    if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                        continue;
+                    }
+                    if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+                        for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                            app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
+                        }
+                    }
+                    //add leds
+                }
+            }
+        }
     }
     catch(tigl::CTiglError& err) {
         displayError(err.what());
@@ -966,7 +986,23 @@ void TIGLCreatorDocument::drawWing()
     if (!wingUid.isEmpty()) {
         drawComponentByUID(wingUid);
     }
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    if (wing.GetComponentSegments())
+    {
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+                for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                    app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
+                }
+            }
+            // add leds
+        }
+    }
 }
+
 
 void TIGLCreatorDocument::drawWingFlaps()
 {
