@@ -741,7 +741,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
     // define some component specific draw commands
     CallbackMap callbacks;
     callbacks[TIGL_COMPONENT_ROTOR] = &TIGLCreatorDocument::drawRotorByUID;
-    callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLCreatorDocument::drawWingFlap;
+    // callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLCreatorDocument::drawWingFlap;
 
     try {
         START_COMMAND()
@@ -755,13 +755,23 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         }
 
         PNamedShape loft = component.GetLoft();
-        if (loft) app->getScene()->displayShape(loft, true, getDefaultShapeColor());
-
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
-        if (geometricComp) {
-            PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-            if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+        if (loft){
+            if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
+                app->getScene()->displayShape(loft, true, getDefaultShapeColor(), 1);
+                if (geometricComp) {
+                    PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                    if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), 1);
+                }
+            }
+            else {
+                app->getScene()->displayShape(loft, true, getDefaultShapeColor());
+                if (geometricComp) {
+                    PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                    if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                }
+            }
         }
     }
     catch(tigl::CTiglError& err) {
@@ -781,6 +791,7 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_NACELLE);
     shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
+    shapesToDraw.push_back(TIGL_COMPONENT_CONTROL_SURFACE_DEVICE);
 
     try {
 
@@ -799,26 +810,6 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
                 drawComponentByUID(component->GetDefaultedUID().c_str());
             }
 
-        }
-        for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingIndex);
-            if (wing.IsRotorBlade()) {
-            continue;
-            }
-            if (wing.GetComponentSegments())
-            {
-                for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
-                    if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
-                        continue;
-                    }
-                    if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
-                        for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                            app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
-                        }
-                    }
-                    //add leds
-                }
-            }
         }
     }
     catch(tigl::CTiglError& err) {
@@ -999,7 +990,8 @@ void TIGLCreatorDocument::drawWing()
             }
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
+                    QString uid = ted->GetUID().c_str();
+                    drawComponentByUID(uid);
                 }
             }
             // add leds
