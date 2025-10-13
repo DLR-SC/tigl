@@ -827,15 +827,14 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
                     if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
                         continue;
                     }
-                    Quantity_Color grey(0.5, 0.5, 0.5, Quantity_TOC_RGB);
                     if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                         for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                            app->getScene()->displayShape(ted->GetLoft(), true, grey);
+                            app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
                         }
                     }
                     if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
                         for (auto& led : leds->GetLeadingEdgeDevices()) {
-                            app->getScene()->displayShape(led->GetLoft(), true, grey);
+                            app->getScene()->displayShape(led->GetLoft(), true, getDefaultShapeColor(), 1);
                         }
                     }
                 }
@@ -1010,15 +1009,14 @@ void TIGLCreatorDocument::drawWing()
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
                 continue;
             }
-            Quantity_Color grey(0.5, 0.5, 0.5, Quantity_TOC_RGB);
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    app->getScene()->displayShape(ted->GetLoft(), true, grey);
+                    app->getScene()->displayShape(ted->GetLoft(), true, getDefaultShapeColor(), 1);
                 }
             }
             if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
                 for (auto& led : leds->GetLeadingEdgeDevices()) {
-                    app->getScene()->displayShape(led->GetLoft(), true, grey);
+                    app->getScene()->displayShape(led->GetLoft(), true, getDefaultShapeColor(), 1);
                 }
             }
         }
