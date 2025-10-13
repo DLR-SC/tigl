@@ -1033,15 +1033,26 @@ void TIGLCreatorWindow::connectSignals()
 
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 
-    QAction* undoAction = undoStack->createUndoAction(this, tr("Undo"));
     undoAction->setShortcuts(QKeySequence::Undo);
     menuEdit->addAction(undoAction);
+    undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
 
-    QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
+    connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
+
     redoAction->setShortcuts(QKeySequence::Redo);
     menuEdit->addAction(redoAction);
+    redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
+
+    connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
 
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
+}
+void TIGLCreatorWindow::undo(){
+    undoStack->undo();
+}
+
+void TIGLCreatorWindow::redo(){
+    undoStack->redo();
 }
 
 void TIGLCreatorWindow::createMenus()
@@ -1223,6 +1234,7 @@ void TIGLCreatorWindow::updateScene() {
     cpacsConfiguration->drawConfiguration();
     cpacsConfiguration->configurationModifiedSinceLastSave();
 }
+
 
 // Color the icon of the save button to show that the file has been edited since the last save
 void TIGLCreatorWindow::changeColorSaveButton() {

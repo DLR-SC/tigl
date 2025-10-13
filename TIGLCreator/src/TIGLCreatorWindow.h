@@ -78,6 +78,8 @@ public slots:
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);
     bool saveFile(QString fileName);
+    void undo();
+    void redo();
     void closeConfiguration();
     void setTiglWindowTitle(const QString& title, bool forceTitle=false);
     void changeColorSaveButton();

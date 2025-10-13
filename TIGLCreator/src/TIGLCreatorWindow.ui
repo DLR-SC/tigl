@@ -27,7 +27,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -63,8 +63,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>783</width>
-     <height>20</height>
+     <width>1458</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -327,6 +327,8 @@
    <addaction name="newAction"/>
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
+   <addaction name="undoAction"/>
+   <addaction name="redoAction"/>
    <addaction name="closeAction"/>
    <addaction name="separator"/>
    <addaction name="settingsAction"/>
@@ -1414,14 +1416,37 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="undoAction_2">
+  <action name="undoAction">
+   <property name="icon">
+    <iconset resource="TIGLCreator.qrc">
+     <normaloff>:/gfx/undo-edit.png</normaloff>:/gfx/undo-edit.png</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
-  <action name="blaAction">
+  <action name="redoAction">
+   <property name="icon">
+    <iconset resource="TIGLCreator.qrc">
+     <normaloff>:/gfx/redo-edit.png</normaloff>:/gfx/redo-edit.png</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
    </property>
   </action>
   <action name="drawWingFlapsAction">
