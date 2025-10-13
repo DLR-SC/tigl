@@ -171,7 +171,7 @@ jobs:
 
       - name: Publish coverage report to codecov.io
         if: ${{ inputs.pixienv == 'coverage' }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
           token: ${{ secrets.CODECOV_TOKEN }}
