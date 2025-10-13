@@ -741,7 +741,6 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
     // define some component specific draw commands
     CallbackMap callbacks;
     callbacks[TIGL_COMPONENT_ROTOR] = &TIGLCreatorDocument::drawRotorByUID;
-    // callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLCreatorDocument::drawWingFlap;
 
     try {
         START_COMMAND()

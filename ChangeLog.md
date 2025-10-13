@@ -3,6 +3,8 @@ Changelog
 
 Changes since last release
 --------------------------
+- General changes
+  - Always display the borders of the control surfaces on the wing
 
 - Fixes
   - Fix issue with non-unique section names showing up in TiGLCreator ([#1213](https://github.com/DLR-SC/tigl/issues/1213))
