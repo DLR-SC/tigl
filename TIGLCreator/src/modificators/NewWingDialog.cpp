@@ -26,7 +26,7 @@ NewWingDialog::NewWingDialog(QStringList profilesUID, tigl::CTiglUIDManager cons
 {
     ui->setupUi(this);
     ui->airfoilComboBox->addItems(profilesUID);
-    ui->uidLineEdit->setText(make_unique("generatedWing"));
+    ui->uidLineEdit->setText(make_unique("wing"));
 }
 
 NewWingDialog::~NewWingDialog()
