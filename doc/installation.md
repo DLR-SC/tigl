@@ -77,17 +77,34 @@ will start the TiGLCreator from the install directory.
 
 To use another environment than `default`, we need to invoke the command like this:
 
-    pixi run -e python-internal configure
+    pixi run -e occt-static configure
     pixi run install
     pixi run unittests
 
- This command configures TiGL for a Release build with internal python bindings, install TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
+ This command configures TiGL for a Release build that statically links against OpenCascade, installs TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
 
 The `configure` task has additional arguments. For instance
 
     pixi run -e occt-static configure Debug
 
 will configure a Debug build of TiGL that links in OCCT statically.
+
+@subsection internalpython Internal Python bindings
+
+To build and install the internal Python bindings, run
+
+    pixi run -e python-internal configure
+    pixi run install
+
+These commands will configure TiGL to be built with internal python bindings enabled and it will install tigl and its python bindings directly into the pixi environment in `.pixi/envs/python-internal/`. You can activate this environment using `pixi shell -e python-internal`
+
+     pixi shell -e python-internal
+     python my_test_script.py
+     exit
+
+or you could run python directly as a task in one command
+
+    pixi r -e python-internal python my_test_script.py
 
 @subsection codegenerator Code Generation
 
