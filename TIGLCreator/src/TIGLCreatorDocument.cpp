@@ -989,11 +989,9 @@ void TIGLCreatorDocument::drawWing()
             }
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    QString uid = ted->GetUID().c_str();
-                    drawComponentByUID(uid);
+                    drawComponentByUID(ted->GetUID().c_str());
                 }
             }
-            // add leds
         }
     }
 }
