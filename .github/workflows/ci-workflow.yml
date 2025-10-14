@@ -70,7 +70,7 @@ jobs:
             pixienv: "occt-static"
             documentation: "OFF"
             # create macos package (dmg) only on release and scheduled (nightly) builds due to time constraints of macos runners
-            package: ${{ github.event_name == 'schedule' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) && 'ON' || 'OFF' }}
+            package: ${{ ( (github.event_name == 'schedule' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))) && 'ON') || 'OFF' }}
     uses: ./.github/workflows/build-test.yml
     secrets: inherit
     with:
