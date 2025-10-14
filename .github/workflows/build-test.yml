@@ -70,7 +70,7 @@ jobs:
         uses: mozilla-actions/sccache-action@v0.0.9
 
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.9.0
+        uses: prefix-dev/setup-pixi@v0.9.1
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -155,13 +155,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download build directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
       - name: Extract build archive
         run: tar -xzf build.tar.gz
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.9.0
+        uses: prefix-dev/setup-pixi@v0.9.1
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -171,7 +171,7 @@ jobs:
 
       - name: Publish coverage report to codecov.io
         if: ${{ inputs.pixienv == 'coverage' }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
           token: ${{ secrets.CODECOV_TOKEN }}
