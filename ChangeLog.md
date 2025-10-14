@@ -5,6 +5,7 @@ Changes since last release
 --------------------------
 
 - Fixes
+  - Fix wrong scaling of the main application, if the screen scale is set to 150% on Windows ([#1238](https://github.com/DLR-SC/tigl/issues/1238))
   - Add a scrollbar in the CPACS editor widget. Before this change, it might be impossible to edit when the editor is attached to the main window on smaller screens ([#1228](https://github.com/DLR-SC/tigl/issues/1228)).
   - Fix issue that the default name of a new fuselage or wing in the user dialog might not be unique and catch a non-unique user entry ([#1206](https://github.com/DLR-SC/tigl/issues/1206)).
   - Remove misleading warning in TiGLCreator about an airfoil that cannot be added to the configuration when it already exists ([#1234](https://github.com/DLR-SC/tigl/issues/1234))
