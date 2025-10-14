@@ -697,8 +697,6 @@ void ModificatorModel::onAddWingRequested()
 
         if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* wings = getWings();
@@ -855,8 +853,6 @@ void ModificatorModel::onAddFuselageRequested()
 
         if (!profilesDB.hasProfileConfigSuffix(profileID)) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* fuselages_node = getFuselages();
