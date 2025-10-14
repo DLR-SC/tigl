@@ -6,11 +6,15 @@ Changes since last release
 
 - Fixes
   - Fix incorrect invalidation logic of elements, sections and fuselages/wings. This caused invalid geometries for some combinations of positionings and transformations when applying CPACS changes in TiGLCreator ([#1209](https://github.com/DLR-SC/tigl/issues/1209))
+  - Fix issue that the default name of a new fuselage or wing in the user dialog might not be unique and catch a non-unique user entry ([#1206](https://github.com/DLR-SC/tigl/issues/1206)).
+  - Remove misleading warning in TiGLCreator about an airfoil that cannot be added to the configuration when it already exists ([#1234](https://github.com/DLR-SC/tigl/issues/1234))
+  - Fix issue with non-unique section names showing up in TiGLCreator ([#1213](https://github.com/DLR-SC/tigl/issues/1213))
+  - Add missing `::generated::CPACSFuselages` to internal python bindings. Without this base class, getters and setters for fuselages are not accessbile in `::CCPACSFuselage` from Python ([#1207](https://github.com/DLR-SC/tigl/issues/1207))
   - Correct the icons in TIGLCreator: Add the correct icon to the "New File" and "Open File" action and add a button to the tool bar ([#1210](https://github.com/DLR-SC/tigl/issues/1210))
   - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
 
 Version 3.5.0-rc1
-----------------
+-----------------
 2025/09/22
 
 We are very excited to announce our first official TiGL release containing the implementation of the CPACS Creator. CPACS Creator was a branch of TiGL that allowed modification of CPACS nodes via the C++ and internal Python API as well as via the graphical user interface based on TiGL Viewer. The first pre-release of CPACS Creator was in September 2019. Within the past year we have shifted our focus towards re-integrating CPACS Creator into TiGL. After a few weeks of extensive coding and bug fixing - especially for the GUI, we have finally made the merge.

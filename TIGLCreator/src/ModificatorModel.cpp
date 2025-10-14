@@ -558,6 +558,10 @@ void ModificatorModel::addSection(
 
 void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &element)
 {
+    if (!configurationIsSet()) {
+        return;
+    }
+
     // open a new connected element dialog
     std::vector<std::string> elementUIDs = element.GetOrderedConnectedElement();
     QStringList sectionUIDsQList;
@@ -566,7 +570,7 @@ void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &el
         sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList, doc->GetConfiguration().GetUIDManager());
 
     if (newElementDialog.exec() == QDialog::Accepted) {
 
@@ -583,6 +587,10 @@ void ModificatorModel::onAddSectionRequested(Ui::ElementModificatorInterface &el
 
 void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::CPACSTreeItem *item)
 {
+    if (!isValid() || !configurationIsSet()) {
+        return;
+    }
+
     if (item == nullptr) {
         return;
     }
@@ -606,7 +614,7 @@ void ModificatorModel::onAddSectionRequested(CPACSTreeView::Where where, cpcr::C
         sectionUIDsQList.push_back(sectionUid);
     }
 
-    NewConnectedElementDialog newElementDialog(sectionUIDsQList);
+    NewConnectedElementDialog newElementDialog(sectionUIDsQList, doc->GetConfiguration().GetUIDManager());
 
     // Set the comboboxes' initial values according to the arguments
     if (item != nullptr) {
@@ -675,7 +683,11 @@ void ModificatorModel::addProfile(QString const& profileID)
 
 void ModificatorModel::onAddWingRequested()
 {
-    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
+    if (!configurationIsSet()) {
+        return;
+    }
+
+    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (wingDialog.exec() == QDialog::Accepted) {
         int nbSection       = wingDialog.getNbSection();
         QString uid         = wingDialog.getUID();
@@ -685,8 +697,6 @@ void ModificatorModel::onAddWingRequested()
 
         if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* wings = getWings();
@@ -835,7 +845,7 @@ void ModificatorModel::onAddFuselageRequested()
 
     auto& fuselages = doc->GetConfiguration().GetFuselages();
 
-    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), modificatorContainerWidget);
+    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (fuselageDialog.exec() == QDialog::Accepted) {
         int nbSection       = fuselageDialog.getNbSection();
         QString uid         = fuselageDialog.getUID();
@@ -843,8 +853,6 @@ void ModificatorModel::onAddFuselageRequested()
 
         if (!profilesDB.hasProfileConfigSuffix(profileID)) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* fuselages_node = getFuselages();
