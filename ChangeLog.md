@@ -12,7 +12,7 @@ Changes since last release
   - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
 
 Version 3.5.0-rc1
-----------------
+-----------------
 2025/09/22
 
 We are very excited to announce our first official TiGL release containing the implementation of the CPACS Creator. CPACS Creator was a branch of TiGL that allowed modification of CPACS nodes via the C++ and internal Python API as well as via the graphical user interface based on TiGL Viewer. The first pre-release of CPACS Creator was in September 2019. Within the past year we have shifted our focus towards re-integrating CPACS Creator into TiGL. After a few weeks of extensive coding and bug fixing - especially for the GUI, we have finally made the merge.
