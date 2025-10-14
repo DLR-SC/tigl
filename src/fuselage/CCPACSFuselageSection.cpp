@@ -42,8 +42,8 @@ void CCPACSFuselageSection::InvalidateImpl(const boost::optional<std::string>& s
     m_elements.Invalidate(GetUID());
 
     // propagate invalidation to the fuselage
-    if (GetNextUIDParent() && GetNextUIDParent()->GetNextUIDParent()) {
-        GetNextUIDParent()->GetNextUIDParent()->Invalidate();
+    if (GetNextUIDParent()) {
+        GetNextUIDParent()->Invalidate();
     }
 }
 

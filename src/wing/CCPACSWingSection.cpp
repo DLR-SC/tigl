@@ -33,8 +33,8 @@ void CCPACSWingSection::InvalidateImpl(const boost::optional<std::string>& sourc
     m_elements.Invalidate(GetUID());
 
     // propagate invalidation to the wing
-    if (GetNextUIDParent() && GetNextUIDParent()->GetNextUIDParent()) {
-        GetNextUIDParent()->GetNextUIDParent()->Invalidate();
+    if (GetNextUIDParent()) {
+        GetNextUIDParent()->Invalidate();
     }
 }
 
