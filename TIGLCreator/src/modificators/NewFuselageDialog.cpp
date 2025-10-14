@@ -26,7 +26,7 @@ NewFuselageDialog::NewFuselageDialog(QStringList profilesUID, tigl::CTiglUIDMana
 {
     ui->setupUi(this);
     ui->comboBoxProfilesUID->addItems(profilesUID);
-    ui->lineEditUID->setText(make_unique("generatedFuselage"));
+    ui->lineEditUID->setText(make_unique("fuselage"));
 }
 
 NewFuselageDialog::~NewFuselageDialog()
