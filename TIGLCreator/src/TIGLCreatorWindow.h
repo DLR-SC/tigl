@@ -81,8 +81,6 @@ public slots:
     void closeConfiguration();
     void setTiglWindowTitle(const QString& title, bool forceTitle=false);
     void changeColorSaveButton();
-    void changeColorUndoButton();
-    void changeColorRedoButton();
     void resetColorSaveButton();
     
     TIGLCreatorWidget*   getViewer();

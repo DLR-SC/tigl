@@ -1009,8 +1009,6 @@ void TIGLCreatorWindow::connectSignals()
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
-//    connect(undoStack, SIGNAL(QUndoStack::canRedoChanged()), this, SLOT(changeColorRedoButton()));
-//    connect(undoStack, SIGNAL(QUndoStack::canUndoChanged()), this, SLOT(changeColorUndoButton()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
     connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
@@ -1240,24 +1238,6 @@ void TIGLCreatorWindow::changeColorSaveButton() {
 // Reset the icon of the save button to show that the file has not been edited since the last save
 void TIGLCreatorWindow::resetColorSaveButton() {
     saveAction->setIcon(QIcon(":/gfx/document-save.png"));
-}
-
-// Color the icon of the undo button if enabled
-void TIGLCreatorWindow::changeColorUndoButton() {
-    if(undoStack->canUndo()){
-      undoAction->setIcon(QIcon(":/gfx/undo-edit-blue.png"));
-    } else {
-     undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
-    }
-}
-
-// Color the icon of the redo button if enabled
-void TIGLCreatorWindow::changeColorRedoButton() {
-    if(undoStack->canRedo()){
-        redoAction->setIcon(QIcon(":/gfx/redo-edit-blue.png"));
-    } else {
-        redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
-    }
 }
 
 /// This function is copied from QtCoreLib (>5.1)
