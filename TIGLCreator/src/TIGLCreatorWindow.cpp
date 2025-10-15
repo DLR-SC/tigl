@@ -106,7 +106,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     redoIcon.addFile(":/gfx/redo-edit.png", QSize(), QIcon::Mode::Disabled);
     redoAction->setIcon(redoIcon);
     redoAction->setShortcuts(QKeySequence::Redo);
-    redoAction->setShortcutVisibleInContextMenu(true);
     menuEdit->addAction(redoAction);
     toolBar->addAction(redoAction);
 
