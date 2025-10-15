@@ -76,7 +76,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     undoStack = new QUndoStack(this);
 
-
     // setup dock widgets
 
     viewDisplayMenu->addSeparator();
@@ -91,6 +90,20 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     QAction* showModificatorAction = editorDockWidget->toggleViewAction();
     showModificatorAction->setShortcut(QKeySequence(tr("Alt+Shift+M")));
     viewDisplayMenu->addAction(showModificatorAction);
+
+    // add undo-redo functionality to toolbar and menu
+
+    QAction* undoAction = undoStack->createUndoAction(this, tr("&Undo"));
+    undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
+    undoAction->setShortcuts(QKeySequence::Undo);
+    menuEdit->addAction(undoAction);
+    toolBar->addAction(undoAction);
+
+    QAction* redoAction = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
+    redoAction->setShortcuts(QKeySequence::Redo);
+    menuEdit->addAction(redoAction);
+    toolBar->addAction(redoAction);
 
     // settings
 
@@ -996,6 +1009,8 @@ void TIGLCreatorWindow::connectSignals()
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
+//    connect(undoStack, SIGNAL(QUndoStack::canRedoChanged()), this, SLOT(changeColorRedoButton()));
+//    connect(undoStack, SIGNAL(QUndoStack::canUndoChanged()), this, SLOT(changeColorUndoButton()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
     connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
@@ -1033,27 +1048,9 @@ void TIGLCreatorWindow::connectSignals()
 
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 
-    undoAction->setShortcuts(QKeySequence::Undo);
-    menuEdit->addAction(undoAction);
-    undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
-
-    connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
-
-    redoAction->setShortcuts(QKeySequence::Redo);
-    menuEdit->addAction(redoAction);
-    redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
-
-    connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
-
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
-void TIGLCreatorWindow::undo(){
-    undoStack->undo();
-}
 
-void TIGLCreatorWindow::redo(){
-    undoStack->redo();
-}
 
 void TIGLCreatorWindow::createMenus()
 {
@@ -1235,7 +1232,6 @@ void TIGLCreatorWindow::updateScene() {
     cpacsConfiguration->configurationModifiedSinceLastSave();
 }
 
-
 // Color the icon of the save button to show that the file has been edited since the last save
 void TIGLCreatorWindow::changeColorSaveButton() {
     saveAction->setIcon(QIcon(":/gfx/document-save-edited.png"));
@@ -1244,6 +1240,24 @@ void TIGLCreatorWindow::changeColorSaveButton() {
 // Reset the icon of the save button to show that the file has not been edited since the last save
 void TIGLCreatorWindow::resetColorSaveButton() {
     saveAction->setIcon(QIcon(":/gfx/document-save.png"));
+}
+
+// Color the icon of the undo button if enabled
+void TIGLCreatorWindow::changeColorUndoButton() {
+    if(undoStack->canUndo()){
+      undoAction->setIcon(QIcon(":/gfx/undo-edit-blue.png"));
+    } else {
+     undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
+    }
+}
+
+// Color the icon of the redo button if enabled
+void TIGLCreatorWindow::changeColorRedoButton() {
+    if(undoStack->canRedo()){
+        redoAction->setIcon(QIcon(":/gfx/redo-edit-blue.png"));
+    } else {
+        redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
+    }
 }
 
 /// This function is copied from QtCoreLib (>5.1)
