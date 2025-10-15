@@ -27,7 +27,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -63,8 +63,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1458</width>
-     <height>25</height>
+     <width>783</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -1496,3 +1496,4 @@
  </resources>
  <connections/>
 </ui>
+
