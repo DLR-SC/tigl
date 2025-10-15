@@ -328,7 +328,6 @@
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
    <addaction name="closeAction"/>
-   <addaction name="separator"/>
    <addaction name="settingsAction"/>
   </widget>
   <widget class="QToolBar" name="toolBarView">

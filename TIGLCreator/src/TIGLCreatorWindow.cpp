@@ -105,12 +105,17 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     redoAction->setIcon(redoIcon);
     redoAction->setShortcuts(QKeySequence::Redo);
 
+    //add actions to menu
     menuEdit->addAction(undoAction);
     menuEdit->addAction(redoAction);
 
+    //add actions in equivalent order to menu
     toolBar->insertAction(settingsAction, redoAction);
     toolBar->insertAction(redoAction,undoAction);
+
+    //add seperators between submenu items
     toolBar->insertSeparator(settingsAction);
+    toolBar->insertSeparator(undoAction);
 
     // settings
 
