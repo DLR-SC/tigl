@@ -1215,7 +1215,8 @@
   <action name="closeAction">
    <property name="icon">
     <iconset resource="TIGLCreator.qrc">
-     <normaloff>:/gfx/document-close.png</normaloff>:/gfx/document-close.png</iconset>
+     <normaloff>:/gfx/document-close.png</normaloff>
+     <disabledoff>:/gfx/document-close-disabled.png</disabledoff>:/gfx/document-close.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Close Configuration</string>

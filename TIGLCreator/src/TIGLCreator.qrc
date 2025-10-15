@@ -8,6 +8,7 @@
         <file>../gfx/document-save.png</file>
         <file>../gfx/document-save-edited.png</file>
         <file>../gfx/document-close.png</file>
+        <file>../gfx/document-close-disabled.png</file>
         <file>../gfx/view-top.png</file>
         <file>../gfx/view-front.png</file>
         <file>../gfx/view-left.png</file>
@@ -35,7 +36,7 @@
         <file>../gfx/error.png</file>
         <file>../gfx/redo-edit.png</file>
 	<file>../gfx/undo-edit.png</file>
-	<file>../gfx/redo-edit-blue.png</file>
-        <file>../gfx/undo-edit-blue.png</file>
+        <file>../gfx/redo-edit-disabled.png</file>
+        <file>../gfx/undo-edit-disabled.png</file>
     </qresource>
 </RCC>
