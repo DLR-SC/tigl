@@ -342,7 +342,6 @@ void tigl::CTiglSectionElement::Invalidate()
 {
     // we need to explicitly invalidate the transformations
     // this propagates invalidation the section and element,
-    // and transitively to the fuselage/wing
     GetElementCCPACSTransformation().Invalidate();
     GetSectionCCPACSTransformation().Invalidate();
 }

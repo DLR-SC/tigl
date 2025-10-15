@@ -31,11 +31,6 @@ void CCPACSWingSection::InvalidateImpl(const boost::optional<std::string>& sourc
 {
     // forward invalidation to section elements, these are the objects which are referenced
     m_elements.Invalidate(GetUID());
-
-    // propagate invalidation to the wing
-    if (GetNextUIDParent()) {
-        GetNextUIDParent()->Invalidate();
-    }
 }
 
 // Get profile count for this section
