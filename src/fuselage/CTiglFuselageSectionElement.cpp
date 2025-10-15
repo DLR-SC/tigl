@@ -193,11 +193,6 @@ tigl::CCPACSTransformation& tigl::CTiglFuselageSectionElement::GetSectionCCPACST
     return section->GetTransformation();
 }
 
-void tigl::CTiglFuselageSectionElement::InvalidateParent()
-{
-    fuselage->Invalidate();
-}
-
 tigl::CTiglPoint tigl::CTiglFuselageSectionElement::GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS)  const
 {
     CTiglPoint normal = GetNormal(referenceCS);

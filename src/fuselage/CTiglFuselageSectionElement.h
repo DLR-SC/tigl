@@ -74,8 +74,6 @@ protected:
 
     CCPACSTransformation& GetSectionCCPACSTransformation() override;
 
-    void InvalidateParent() override;
-
     /**
      * Return the conventional direction for the unit vector z of the profile.
      *
