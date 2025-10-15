@@ -36,6 +36,6 @@
         <file>../gfx/redo-edit.png</file>
 	<file>../gfx/undo-edit.png</file>
 	<file>../gfx/redo-edit-blue.png</file>
-        <file>../gfx/Undo-edit-blue.png</file>
+        <file>../gfx/undo-edit-blue.png</file>
     </qresource>
 </RCC>
