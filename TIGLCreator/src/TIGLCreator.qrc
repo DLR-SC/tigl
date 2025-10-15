@@ -35,7 +35,7 @@
         <file>../shaders/PhongShading-v7.6.vs</file>
         <file>../gfx/error.png</file>
         <file>../gfx/redo-edit.png</file>
-	<file>../gfx/undo-edit.png</file>
+	    <file>../gfx/undo-edit.png</file>
         <file>../gfx/redo-edit-disabled.png</file>
         <file>../gfx/undo-edit-disabled.png</file>
     </qresource>
