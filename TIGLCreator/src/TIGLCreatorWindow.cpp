@@ -94,14 +94,19 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     // add undo-redo functionality to toolbar and menu
 
     QAction* undoAction = undoStack->createUndoAction(this, tr("&Undo"));
-    undoAction->setIcon(QIcon(":/gfx/undo-edit.png"));
+    QIcon undoIcon(":/gfx/undo-edit-blue.png");
+    undoIcon.addFile(":/gfx/undo-edit.png", QSize(), QIcon::Mode::Disabled);
+    undoAction->setIcon(undoIcon);
     undoAction->setShortcuts(QKeySequence::Undo);
     menuEdit->addAction(undoAction);
     toolBar->addAction(undoAction);
 
     QAction* redoAction = undoStack->createRedoAction(this, tr("&Redo"));
-    redoAction->setIcon(QIcon(":/gfx/redo-edit.png"));
+    QIcon redoIcon(":/gfx/redo-edit-blue.png");
+    redoIcon.addFile(":/gfx/redo-edit.png", QSize(), QIcon::Mode::Disabled);
+    redoAction->setIcon(redoIcon);
     redoAction->setShortcuts(QKeySequence::Redo);
+    redoAction->setShortcutVisibleInContextMenu(true);
     menuEdit->addAction(redoAction);
     toolBar->addAction(redoAction);
 
