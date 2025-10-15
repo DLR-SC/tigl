@@ -131,9 +131,6 @@ private:
     bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];
-    QAction *undoAction;
-    QAction *redoAction;
-
 
     // The OpenCASCADE context;
     TIGLCreatorContext*      myScene;
