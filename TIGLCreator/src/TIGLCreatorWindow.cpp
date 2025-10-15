@@ -98,16 +98,19 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     undoIcon.addFile(":/gfx/undo-edit.png", QSize(), QIcon::Mode::Disabled);
     undoAction->setIcon(undoIcon);
     undoAction->setShortcuts(QKeySequence::Undo);
-    menuEdit->addAction(undoAction);
-    toolBar->addAction(undoAction);
 
     QAction* redoAction = undoStack->createRedoAction(this, tr("&Redo"));
     QIcon redoIcon(":/gfx/redo-edit-blue.png");
     redoIcon.addFile(":/gfx/redo-edit.png", QSize(), QIcon::Mode::Disabled);
     redoAction->setIcon(redoIcon);
     redoAction->setShortcuts(QKeySequence::Redo);
+
+    menuEdit->addAction(undoAction);
     menuEdit->addAction(redoAction);
-    toolBar->addAction(redoAction);
+
+    toolBar->insertAction(settingsAction, redoAction);
+    toolBar->insertAction(redoAction,undoAction);
+    toolBar->insertSeparator(settingsAction);
 
     // settings
 
