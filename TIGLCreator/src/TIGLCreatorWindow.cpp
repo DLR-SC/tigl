@@ -76,7 +76,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     undoStack = new QUndoStack(this);
 
-
     // setup dock widgets
 
     viewDisplayMenu->addSeparator();
@@ -91,6 +90,32 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     QAction* showModificatorAction = editorDockWidget->toggleViewAction();
     showModificatorAction->setShortcut(QKeySequence(tr("Alt+Shift+M")));
     viewDisplayMenu->addAction(showModificatorAction);
+
+    // add undo-redo functionality to toolbar and menu
+
+    QAction* undoAction = undoStack->createUndoAction(this, tr("&Undo"));
+    QIcon undoIcon(":/gfx/undo-edit.png");
+    undoIcon.addFile(":/gfx/undo-edit-disabled.png", QSize(), QIcon::Mode::Disabled);
+    undoAction->setIcon(undoIcon);
+    undoAction->setShortcuts(QKeySequence::Undo);
+
+    QAction* redoAction = undoStack->createRedoAction(this, tr("&Redo"));
+    QIcon redoIcon(":/gfx/redo-edit.png");
+    redoIcon.addFile(":/gfx/redo-edit-disabled.png", QSize(), QIcon::Mode::Disabled);
+    redoAction->setIcon(redoIcon);
+    redoAction->setShortcuts(QKeySequence::Redo);
+
+    //add actions to menu
+    menuEdit->addAction(undoAction);
+    menuEdit->addAction(redoAction);
+
+    //add actions in equivalent order to menu
+    toolBar->insertAction(settingsAction, redoAction);
+    toolBar->insertAction(redoAction,undoAction);
+
+    //add seperators between submenu items
+    toolBar->insertSeparator(settingsAction);
+    toolBar->insertSeparator(undoAction);
 
     // settings
 
@@ -1033,16 +1058,9 @@ void TIGLCreatorWindow::connectSignals()
 
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 
-    QAction* undoAction = undoStack->createUndoAction(this, tr("Undo"));
-    undoAction->setShortcuts(QKeySequence::Undo);
-    menuEdit->addAction(undoAction);
-
-    QAction* redoAction = undoStack->createRedoAction(this, tr("Redo"));
-    redoAction->setShortcuts(QKeySequence::Redo);
-    menuEdit->addAction(redoAction);
-
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
+
 
 void TIGLCreatorWindow::createMenus()
 {
