@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CPACSLandingGearSupportBeamPosition.h"
 #include "CPACSXsiIsoLine.h"
@@ -29,6 +30,15 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSXsiIsoLine::CPACSXsiIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_xsi(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderLeadingEdge);
+    }
+
     CPACSXsiIsoLine::CPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_xsi(0)
@@ -57,6 +67,9 @@ namespace generated
     const CTiglUIDObject* CPACSXsiIsoLine::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }
@@ -70,6 +83,9 @@ namespace generated
     CTiglUIDObject* CPACSXsiIsoLine::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }

@@ -2,7 +2,10 @@ Changelog
 =========
 
 Changes since last release
---------------------------
+----------------
+2025/09/26
+-General changes
+  - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
 
 - Fixes
   - Add undo/redo buttons to toolbar ([#1123](https://github.com/DLR-SC/tigl/issues/1123))

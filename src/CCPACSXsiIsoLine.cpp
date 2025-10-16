@@ -18,10 +18,16 @@
 #include "tigletaxsifunctions.h"
 
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 
 namespace tigl
 {
 CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSXsiIsoLine(parent, uidMgr)
+{
+}
+
+CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSXsiIsoLine(parent, uidMgr)
 {
 }
@@ -35,6 +41,11 @@ void CCPACSXsiIsoLine::SetXsi(const double& value)
 {
     generated::CPACSXsiIsoLine::SetXsi(value);
     InvalidateParent();
+}
+
+const double& CCPACSXsiIsoLine::GetXsi() const
+{
+    return generated::CPACSXsiIsoLine::GetXsi();
 }
 
 void CCPACSXsiIsoLine::SetReferenceUID(const std::string& value)
