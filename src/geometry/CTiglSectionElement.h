@@ -215,8 +215,8 @@ protected:
     // Retrieve the stored "CCPACSTransformation" of the section transformation;
     virtual CCPACSTransformation& GetSectionCCPACSTransformation() = 0;
 
-    // Invalidate the fuselage or the wing
-    virtual void InvalidateParent() = 0;
+    // Invalidate internal data of the section and element.
+    virtual void Invalidate();
 
     /**
      * If element or section transformation contains near zero scaling,

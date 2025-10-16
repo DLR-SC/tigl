@@ -328,7 +328,6 @@
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
    <addaction name="closeAction"/>
-   <addaction name="separator"/>
    <addaction name="settingsAction"/>
   </widget>
   <widget class="QToolBar" name="toolBarView">
@@ -1215,7 +1214,8 @@
   <action name="closeAction">
    <property name="icon">
     <iconset resource="TIGLCreator.qrc">
-     <normaloff>:/gfx/document-close.png</normaloff>:/gfx/document-close.png</iconset>
+     <normaloff>:/gfx/document-close.png</normaloff>
+     <disabledoff>:/gfx/document-close-disabled.png</disabledoff>:/gfx/document-close.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Close Configuration</string>
@@ -1414,16 +1414,6 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="undoAction_2">
-   <property name="text">
-    <string>Undo</string>
-   </property>
-  </action>
-  <action name="blaAction">
-   <property name="text">
-    <string>Redo</string>
-   </property>
-  </action>
   <action name="drawWingFlapsAction">
    <property name="text">
     <string>Show Wing Flaps</string>
@@ -1506,3 +1496,4 @@
  </resources>
  <connections/>
 </ui>
+
