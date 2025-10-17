@@ -3,6 +3,8 @@ Changelog
 
 Changes since last release
 --------------------------
+- General changes
+  - Always display the borders of the control surfaces on the wing
 
 - Fixes
   - Add undo/redo buttons to toolbar ([#1123](https://github.com/DLR-SC/tigl/issues/1123))
