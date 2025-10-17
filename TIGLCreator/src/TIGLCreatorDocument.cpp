@@ -758,14 +758,15 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
         if (loft) {
             double opacity = 0.66;
+            bool shaded = true;
             if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
-                opacity = 1;
+                shaded = false;
             }
-            app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity);
+            app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
             if (geometricComp) {
                 PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                 if (mirroredLoft) {
-                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity);
+                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
                 }
             }
         }
