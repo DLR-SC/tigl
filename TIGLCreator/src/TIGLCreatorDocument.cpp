@@ -756,19 +756,16 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         PNamedShape loft = component.GetLoft();
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
-        if (loft){
+        if (loft) {
+            double opacity = 0.66;
             if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
-                app->getScene()->displayShape(loft, true, getDefaultShapeColor(), 1);
-                if (geometricComp) {
-                    PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-                    if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), 1);
-                }
+                opacity = 1;
             }
-            else {
-                app->getScene()->displayShape(loft, true, getDefaultShapeColor());
-                if (geometricComp) {
-                    PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-                    if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+            app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity);
+            if (geometricComp) {
+                PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                if (mirroredLoft) {
+                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity);
                 }
             }
         }
