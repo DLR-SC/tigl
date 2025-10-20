@@ -759,6 +759,8 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         if (loft) {
             double opacity = 0.66;
             bool shaded = true;
+            // By default, we display the wing without cutouts (for performance). 
+            // Therefore, it is visually better to display the flaps using a wireframe rendering by default
             if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
                 shaded = false;
             }
