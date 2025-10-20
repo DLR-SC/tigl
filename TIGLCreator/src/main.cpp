@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+    // Fix issues of too large UI elements for windows scaling factor 150%
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(
+        Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
     TIGLCreatorApp app(argc, argv);
 
 #ifdef __APPLE__
