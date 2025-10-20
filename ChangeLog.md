@@ -3,6 +3,8 @@ Changelog
 
 Changes since last release
 --------------------------
+- General changes
+  - Always display the borders of the control surfaces on the wing
 
 - Fixes
   - Fix wrong scaling of the main application, if the screen scale is set to 150% on Windows ([#1238](https://github.com/DLR-SC/tigl/issues/1238))

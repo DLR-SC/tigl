@@ -106,8 +106,8 @@ public:
     void removeShape( Handle(AIS_InteractiveObject) shape);
 
 public slots:
-    void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.66);
-    void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.66);
+    void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0.66, bool shaded = true);
+    void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0.66, bool shaded = true);
 
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
