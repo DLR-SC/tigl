@@ -55,7 +55,7 @@ public:
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
-
+    Handle(AIS_InteractiveObject)&   getCurrentShape();
     Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
@@ -141,6 +141,7 @@ private:
 
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
+    Handle_AIS_InteractiveObject    currentshape;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;

@@ -30,6 +30,7 @@
 #include <QAbstractItemModel>
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
+#include <AIS_InteractiveObject.hxx>
 
 class TIGLCreatorWindow;
 
@@ -61,6 +62,7 @@ class ModificatorModel : public QAbstractItemModel
 
 signals:
     void configurationEdited();
+    void componentVisibilityChanged(const QString& uid, bool visible);
 
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
@@ -160,12 +162,31 @@ public:
     // count the number of data a index hold
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     // Return true if there is a valid root
     bool isValid() const;
 
+    bool isVisible(const std::string& uid) const;
+
+    void setVisibility(const std::string& uid, bool visible);
+
+    void loadVisibilityFromSettings();
+
+    void saveVisibilityToSettings();
+
+    // Register/unregister interactive AIS objects with a UID so the model can manage
+    // appearing/disappearing without querying external managers.
+    void registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
+    void unregisterInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
+    bool hasInteractiveObjects(const std::string& uid) const;
+    std::vector<Handle(AIS_InteractiveObject)> getInteractiveObjects(const std::string& uid) const;
+
+    bool setData(const QModelIndex& index, const QVariant& value, int role);
+
     QModelIndex getIdxForUID(std::string uid) const;
 
-    std::string getUidForIdx(QModelIndex idx);
+    std::string getUidForIdx(QModelIndex idx) const;
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
@@ -231,6 +252,23 @@ private:
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
+
+    struct VisibilityInfo {
+        bool visible = true;
+        std::vector<Handle(AIS_InteractiveObject)> objects;
+    };
+
+    std::unordered_map<std::string, VisibilityInfo> visibilityMap;
+
+    // helper for hierarchical visibility
+    // NOTE: recursive visibility was removed; visibility changes are applied only to the clicked item
+    // and its immediate children (non-recursively).
+
+    // Register/unregister interactive AIS objects with a UID so the model can manage
+    // appearing/disappearing without querying external managers.
+    // Note: these methods are declared in the public section above. Keep only the
+    // non-duplicated helper declaration here.
+    Qt::CheckState aggregateChildrenState(cpcr::CPACSTreeItem* item) const;
 
 };
 

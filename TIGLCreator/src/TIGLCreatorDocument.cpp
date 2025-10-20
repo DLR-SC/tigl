@@ -755,14 +755,26 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         }
 
         PNamedShape loft = component.GetLoft();
-        if (loft) app->getScene()->displayShape(loft, true, getDefaultShapeColor());
+        if (loft) {
+            app->getScene()->displayShape(loft, true, getDefaultShapeColor());
+            if (!app->getModificatorModel()->hasInteractiveObjects(uid.toStdString())) {
+                Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
+                app->getModificatorModel()->registerInteractiveObject(uid.toStdString(), obj);
+            }
+        }
 
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
         if (geometricComp) {
             PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-            if (mirroredLoft) app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+            if (mirroredLoft) {
+                app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
+                app->getModificatorModel()->registerInteractiveObject(uid.toStdString(), obj);
+            }
         }
+        auto& shapeManager = myScene->GetShapeManager();
+
     }
     catch(tigl::CTiglError& err) {
         displayError("Cannot display \"" + uid + "\": " + err.what());
@@ -1055,8 +1067,6 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
         displayError(ex.what(), "Error");
     }
 }
-
-
 
 void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 {

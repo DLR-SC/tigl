@@ -157,6 +157,11 @@ Handle(AIS_InteractiveContext)& TIGLCreatorContext::getContext()
     return myContext; 
 }
 
+Handle(AIS_InteractiveObject)& TIGLCreatorContext::getCurrentShape()
+{
+    return currentshape;
+}
+
 Handle(V3d_Viewer) TIGLCreatorContext::createViewer( const Standard_ExtString aName,
                                                     const Standard_CString aDomain,
                                                     const Standard_Real ViewSize )
@@ -403,6 +408,7 @@ void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateView
         }
     }
     GetShapeManager().addObject(pshape, shape);
+    currentshape = shape;
 }
 
 // Displays a point on the screen

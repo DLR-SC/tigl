@@ -25,6 +25,7 @@
 #include <QMetaType>
 #include "TIGLCreator.h"
 #include "CCPACSConfiguration.h"
+#include "TIGLCreatorContext.h"
 
 #include <Quantity_Color.hxx>
 
@@ -183,6 +184,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLCreatorWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    TIGLCreatorContext*                      myScene;
 
     // Variable to store information on whether cpacs configuration was modified after last save.
     // Variable is set to true via TIGLCreatorWindow::updateScene implicitely when the SIGNAL undoCommandRequired() is emitted (at the end).

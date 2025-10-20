@@ -973,12 +973,27 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role !=Qt::UserRole) {
+    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole) {
         return QVariant();
     }
 
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
+    // Check state handling (checkboxes live in column 0)
+    if (role == Qt::CheckStateRole && index.column() == 0) {
+        if (!item) return QVariant();
+        // Use explicit visibility if present for items with a UID
+        std::string selfUid = item->getUid();
+        if (!selfUid.empty()) {
+            auto it = visibilityMap.find(selfUid);
+            if (it != visibilityMap.end()) {
+                return it->second.visible ? Qt::Checked : Qt::Unchecked;
+            }
+        }
+
+        // No explicit visibility -> aggregate immediate children state
+        return aggregateChildrenState(item);
+    }
 
     if (role == Qt::UserRole) {
         // we use Qt::UserRole to mark eligable parents for context menus in the tree view
@@ -987,6 +1002,7 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         return data;
     }
 
+    // Display roles
     if (index.column() == 0) { // combine uid and type
         data = QString(item->getUid().c_str());
         if (data == "") {
@@ -999,11 +1015,126 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
     else if (index.column() == 2 ) {
         data = QString(item->getUid().c_str());
     }
-    else {
-        data = QVariant();
-    }
 
     return data;
+}
+
+bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    if (!index.isValid()) {
+        return false;
+    }
+
+    if (role == Qt::CheckStateRole && index.column() == 0) {
+        cpcr::CPACSTreeItem* item = getItem(index);
+        if (!item) return false;
+
+        bool visible = (value.toInt() == Qt::Checked);
+
+        // collect changed indexes and uids to notify after updates
+        std::vector<QModelIndex> changedIdxs;
+        std::vector<std::string> changedUIDs;
+
+        if (item->getChildren().empty()) {
+            // leaf: just change itself (store visibility for any uid)
+            std::string uid = item->getUid();
+            if (uid.empty()) return false;
+            visibilityMap[uid].visible = visible;
+            changedIdxs.push_back(index);
+            changedUIDs.push_back(uid);
+        }
+        else {
+            // non-leaf: apply visibility to the item (if it has a uid) and its immediate children only (non-recursive)
+            std::string uid = item->getUid();
+            if (!uid.empty()) {
+                visibilityMap[uid].visible = visible;
+                changedIdxs.push_back(index);
+                changedUIDs.push_back(uid);
+            }
+
+            // immediate children only
+            for (auto child : item->getChildren()) {
+                if (!child) continue;
+                std::string cuid = child->getUid();
+                if (!cuid.empty()) {
+                    visibilityMap[cuid].visible = visible;
+                    QModelIndex cidx = getIndex(child, 0);
+                    if (cidx.isValid()) changedIdxs.push_back(cidx);
+                    changedUIDs.push_back(cuid);
+                }
+            }
+        }
+
+        // notify views for all changed indexes
+        for (const auto& idx : changedIdxs) {
+            emit dataChanged(idx, idx, { Qt::CheckStateRole });
+        }
+
+        // emit semantic signals for each UID changed
+        for (const auto& u : changedUIDs) {
+            auto it = visibilityMap.find(u);
+            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+            emit componentVisibilityChanged(QString::fromStdString(u), vis);
+        }
+
+        // Also update parent chain states upward
+        QModelIndex parentIdx = parent(index);
+        while (parentIdx.isValid()) {
+            emit dataChanged(parentIdx, parentIdx, { Qt::CheckStateRole });
+            parentIdx = parent(parentIdx);
+        }
+
+        return true;
+    }
+
+    return QAbstractItemModel::setData(index, value, role);
+}
+
+
+
+Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* item) const
+{
+    if (!item) return Qt::Unchecked;
+    // Aggregate over immediate children; if a child has no uid, recurse into it.
+    bool anyChecked = false;
+    bool anyUnchecked = false;
+
+        for (auto child : item->getChildren()) {
+        if (!child) continue;
+        Qt::CheckState st = Qt::Unchecked;
+        std::string uid = child->getUid();
+        if (!uid.empty()) {
+            auto it = visibilityMap.find(uid);
+            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+            st = vis ? Qt::Checked : Qt::Unchecked;
+        }
+        else {
+            st = aggregateChildrenState(child);
+        }
+
+        if (st == Qt::Checked) anyChecked = true;
+        else if (st == Qt::Unchecked) anyUnchecked = true;
+        else if (st == Qt::PartiallyChecked) { anyChecked = anyUnchecked = true; }
+
+        if (anyChecked && anyUnchecked) return Qt::PartiallyChecked;
+    }
+
+    if (anyChecked && !anyUnchecked) return Qt::Checked;
+    if (!anyChecked && anyUnchecked) return Qt::Unchecked;
+    // default (no child uids) -> checked (visible)
+    return Qt::Checked;
+}
+
+Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid()) return Qt::NoItemFlags;
+
+    Qt::ItemFlags f = QAbstractItemModel::flags(index);
+    if (index.column() == 0) {
+        // Make the item checkable in column 0 (previous behaviour: all items had a checkbox)
+        f |= Qt::ItemIsUserCheckable;
+    }
+    return f;
 }
 
 // return the index of the parent
@@ -1067,7 +1198,7 @@ QModelIndex ModificatorModel::getIdxForUID(std::string uid) const
     }
 }
 
-std::string ModificatorModel::getUidForIdx(QModelIndex idx)
+std::string ModificatorModel::getUidForIdx(QModelIndex idx) const
 {
     if (!isValid()) {
         return "";
@@ -1128,4 +1259,43 @@ QModelIndex ModificatorModel::getAircraftModelIndex() const
         auto const& config = doc->GetConfiguration();
         return getIdxForUID(config.GetUID());
     }
+}
+
+// Register an interactive AIS object for a given UID
+void ModificatorModel::registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
+{
+    if (uid.empty() || obj.IsNull()) return;
+    auto &info = visibilityMap[uid];
+    // avoid duplicates
+    auto it = std::find(info.objects.begin(), info.objects.end(), obj);
+    if (it == info.objects.end()) {
+        info.objects.push_back(obj);
+    }
+}
+
+// Unregister an interactive AIS object for a given UID
+void ModificatorModel::unregisterInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
+{
+    if (uid.empty() || obj.IsNull()) return;
+    auto it = visibilityMap.find(uid);
+    if (it == visibilityMap.end()) return;
+    auto &objs = it->second.objects;
+    auto oit = std::find(objs.begin(), objs.end(), obj);
+    if (oit != objs.end()) {
+        objs.erase(oit);
+    }
+}
+
+bool ModificatorModel::hasInteractiveObjects(const std::string& uid) const
+{
+    const auto it = visibilityMap.find(uid);
+    if (it == visibilityMap.end()) return false;
+    return !it->second.objects.empty();
+}
+
+std::vector<Handle(AIS_InteractiveObject)> ModificatorModel::getInteractiveObjects(const std::string& uid) const
+{
+    auto it = visibilityMap.find(uid);
+    if (it == visibilityMap.end()) return {};
+    return it->second.objects;
 }

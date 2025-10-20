@@ -147,6 +147,9 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    // connect model visibility changes to the scene
+    connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
+
     connectSignals();
     createMenus();
     updateMenus();
@@ -157,7 +160,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     setMinimumSize(160, 160);
 
-
+    (void)modificatorModel; // keep unused var warning away if any
 }
 
 
@@ -1042,6 +1045,49 @@ void TIGLCreatorWindow::connectSignals()
     menuEdit->addAction(redoAction);
 
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
+}
+
+void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)
+{
+    if (!cpacsConfiguration) return;
+
+    try {
+        // find interactive objects for the given uid
+        auto& shapeManager = myScene->GetShapeManager();
+        if (visible) {
+            // draw component (this will create AIS objects and register them with the shape manager)
+            if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
+                auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Display(obj, Standard_False);
+                }
+            }
+            else {
+                cpacsConfiguration->drawComponentByUID(uid);
+            }
+            // now query created objects and register them in the model's visibility map
+        }
+        else {
+            // Prefer the model's registered objects (model owns the mapping)
+            if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
+                auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+            else {
+                // fallback: ask shape manager for objects matching this uid
+                auto objs = shapeManager.GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+        }
+        myScene->getViewer()->Update();
+    }
+    catch (...) {
+        // ignore errors here; drawing may fail for non-geometric nodes
+    }
 }
 
 void TIGLCreatorWindow::createMenus()

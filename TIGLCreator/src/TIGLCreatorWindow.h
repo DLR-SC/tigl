@@ -88,6 +88,9 @@ public slots:
     TIGLCreatorSettings*  getViewerSettings() { return tiglCreatorSettings; }
     TIGLCreatorDocument* getDocument() { return cpacsConfiguration; }
 
+    // Accessor to obtain the ModificatorModel instance
+    ModificatorModel* getModificatorModel() { return modificatorModel; }
+
     //update function for modificator
 
     void updateScene(); 
@@ -117,6 +120,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void onComponentVisibilityChanged(const QString& uid, bool visible);
 
 private:
     void connectSignals();
