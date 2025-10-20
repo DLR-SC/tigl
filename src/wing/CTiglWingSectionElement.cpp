@@ -191,11 +191,6 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetChordPoint(double xsi, TiglCo
     return GetTotalTransformation(referenceCS) * airfoilChordPoint;
 }
 
-void tigl::CTiglWingSectionElement::InvalidateParent()
-{
-    wing->Invalidate();
-}
-
 tigl::CCPACSTransformation& tigl::CTiglWingSectionElement::GetElementCCPACSTransformation()
 {
     return element->GetTransformation();
