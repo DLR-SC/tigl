@@ -102,6 +102,30 @@ namespace generated
         return m_nacelleGuideCurves;
     }
 
+    size_t CPACSNacelleGuideCurves::GetNacelleGuideCurveCount() const
+    {
+        return m_nacelleGuideCurves.size();
+    }
+
+    CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(size_t index)
+    {
+        if (index < 1 || index > GetNacelleGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>::GetNacelleGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleGuideCurves[index];
+    }
+
+    const CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::GetNacelleGuideCurve(size_t index) const
+    {
+        if (index < 1 || index > GetNacelleGuideCurveCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSNacelleGuideCurve>>::GetNacelleGuideCurve", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_nacelleGuideCurves[index];
+    }
+
+
     CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
     {
         m_nacelleGuideCurves.push_back(make_unique<CPACSNacelleGuideCurve>(reinterpret_cast<CCPACSNacelleGuideCurves*>(this), m_uidMgr));

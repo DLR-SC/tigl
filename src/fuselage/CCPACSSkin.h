@@ -29,6 +29,7 @@ class CCPACSSkin : public generated::CPACSSkin
 public:
     TIGL_EXPORT CCPACSSkin(CCPACSDuctStructure* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSSkin(CCPACSFuselageStructure* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSSkin(CCPACSVesselSkinLayers* parent, CTiglUIDManager* uidMgr);
 
     // returns the parent as abstract geometric component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;

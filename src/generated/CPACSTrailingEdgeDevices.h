@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& GetTrailingEdgeDevices() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& GetTrailingEdgeDevices();
 
+        TIGL_EXPORT virtual size_t GetTrailingEdgeDeviceCount() const;
+        TIGL_EXPORT virtual size_t GetTrailingEdgeDeviceIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice(size_t index) const;
+        TIGL_EXPORT virtual CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSTrailingEdgeDevice& GetTrailingEdgeDevice(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSTrailingEdgeDevice& AddTrailingEdgeDevice();
         TIGL_EXPORT virtual void RemoveTrailingEdgeDevice(CCPACSTrailingEdgeDevice& ref);
 
@@ -81,5 +90,6 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSTrailingEdgeDevices is customized, use type CCPACSTrailingEdgeDevices directly
+// Aliases in tigl namespace
+using CCPACSTrailingEdgeDevices = generated::CPACSTrailingEdgeDevices;
 } // namespace tigl

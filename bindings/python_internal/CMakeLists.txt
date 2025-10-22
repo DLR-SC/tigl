@@ -18,12 +18,6 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     include(tiglmacros)
 
-    find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
-    message(STATUS "Python3 interpreter:" ${Python3_EXECUTABLE})
-    message(STATUS "Python include directory: ${Python3_INCLUDE_DIR}")
-    message(STATUS "Python library release: ${Python3_LIBRARY_RELEASE}")
-
-
     find_package(SWIG 3.0.11 REQUIRED)
     find_package(PythonOCC REQUIRED)
     find_package(Doxygen 1.8.0)
@@ -44,20 +38,22 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
         # create the xml output with doxygen
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml
+        add_custom_target(generate_doxygen_xml
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
             DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            COMMAND ${DOXYGEN_EXECUTABLE}
-            ARGS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            COMMENT "Generating Doxygen XML output"
         )
 
-        # create the doc.i with doxy2swig
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc.i
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml
-            COMMAND ${PYTHON_EXECUTABLE}
-            ARGS ${PROJECT_SOURCE_DIR}/thirdparty/doxy2swig/doxy2swig.py ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+        # Create a custom target for generating the doc.i file using doxy2swig
+        add_custom_target(generate_doc_i
+            COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/thirdparty/doxy2swig/doxy2swig.py
+                    ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+            DEPENDS generate_doxygen_xml
+            COMMENT "Generating doc.i file using doxy2swig"
         )
+
+        # Ensure doc.i depends on the XML output
+        add_dependencies(generate_doc_i generate_doxygen_xml)
     endif()
 
 
@@ -95,23 +91,23 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
-        set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
+        set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i generate_doc_i)
 
         swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
         swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
         install(TARGETS _${MODULE}
-                DESTINATION share/tigl3/python/tigl3
+                DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
                 COMPONENT interfaces
         )
 
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
-                DESTINATION share/tigl3/python/tigl3
+                DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
                 COMPONENT interfaces
         )
 
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tigl3
-                DESTINATION share/tigl3/python
+                DESTINATION ${PYTHON_SITE_PACKAGES}
                 COMPONENT interfaces
         )
 

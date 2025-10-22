@@ -108,6 +108,59 @@ namespace generated
         return m_sideStruts;
     }
 
+    size_t CPACSSideStruts::GetSideStrutCount() const
+    {
+        return m_sideStruts.size();
+    }
+
+    size_t CPACSSideStruts::GetSideStrutIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSideStrutCount(); i++) {
+            const std::string tmpUID(m_sideStruts[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSSideStruts::GetSideStrutIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSStrutAssembly& CPACSSideStruts::GetSideStrut(size_t index)
+    {
+        if (index < 1 || index > GetSideStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStrutAssembly>>::GetSideStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sideStruts[index];
+    }
+
+    const CPACSStrutAssembly& CPACSSideStruts::GetSideStrut(size_t index) const
+    {
+        if (index < 1 || index > GetSideStrutCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSStrutAssembly>>::GetSideStrut", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sideStruts[index];
+    }
+
+    CPACSStrutAssembly& CPACSSideStruts::GetSideStrut(const std::string& UID)
+    {
+        for (auto& elem : m_sideStruts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSideStruts::GetSideStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSStrutAssembly& CPACSSideStruts::GetSideStrut(const std::string& UID) const
+    {
+        for (auto& elem : m_sideStruts ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSideStruts::GetSideStrut. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSStrutAssembly& CPACSSideStruts::AddSideStrut()
     {
         m_sideStruts.push_back(make_unique<CPACSStrutAssembly>(this, m_uidMgr));

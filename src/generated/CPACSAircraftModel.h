@@ -22,12 +22,13 @@
 #include <CCPACSACSystems.h>
 #include <CCPACSDucts.h>
 #include <CCPACSEnginePositions.h>
-#include <CCPACSEnginePylons.h>
 #include <CCPACSExternalObjects.h>
 #include <CCPACSFuselages.h>
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSEnginePylons.h"
+#include "CPACSFuelTanks.h"
 #include "CPACSLandingGears.h"
 #include "CPACSVehicleConfigurations.h"
 #include "CreateIfNotExists.h"
@@ -96,11 +97,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePositions>& GetEngines() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePositions>& GetEngines();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSEnginePylons>& GetEnginePylons() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSEnginePylons>& GetEnginePylons();
+        TIGL_EXPORT virtual const boost::optional<CPACSEnginePylons>& GetEnginePylons() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEnginePylons>& GetEnginePylons();
 
         TIGL_EXPORT virtual const boost::optional<CPACSLandingGears>& GetLandingGears() const;
         TIGL_EXPORT virtual boost::optional<CPACSLandingGears>& GetLandingGears();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSFuelTanks>& GetFuelTanks() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFuelTanks>& GetFuelTanks();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
@@ -123,11 +127,14 @@ namespace generated
         TIGL_EXPORT virtual CCPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
 
-        TIGL_EXPORT virtual CCPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSEnginePylons& GetEnginePylons(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEnginePylons();
 
         TIGL_EXPORT virtual CPACSLandingGears& GetLandingGears(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveLandingGears();
+
+        TIGL_EXPORT virtual CPACSFuelTanks& GetFuelTanks(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveFuelTanks();
 
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystems();
@@ -159,9 +166,11 @@ namespace generated
 
         boost::optional<CCPACSEnginePositions>      m_engines;
 
-        boost::optional<CCPACSEnginePylons>         m_enginePylons;
+        boost::optional<CPACSEnginePylons>          m_enginePylons;
 
         boost::optional<CPACSLandingGears>          m_landingGears;
+
+        boost::optional<CPACSFuelTanks>             m_fuelTanks;
 
         boost::optional<CCPACSACSystems>            m_systems;
 

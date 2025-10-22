@@ -108,6 +108,59 @@ namespace generated
         return m_sparCells;
     }
 
+    size_t CPACSSparCells::GetSparCellCount() const
+    {
+        return m_sparCells.size();
+    }
+
+    size_t CPACSSparCells::GetSparCellIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetSparCellCount(); i++) {
+            const std::string tmpUID(m_sparCells[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSSparCells::GetSparCellIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSSparCell& CPACSSparCells::GetSparCell(size_t index)
+    {
+        if (index < 1 || index > GetSparCellCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSparCell>>::GetSparCell", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparCells[index];
+    }
+
+    const CPACSSparCell& CPACSSparCells::GetSparCell(size_t index) const
+    {
+        if (index < 1 || index > GetSparCellCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSparCell>>::GetSparCell", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sparCells[index];
+    }
+
+    CPACSSparCell& CPACSSparCells::GetSparCell(const std::string& UID)
+    {
+        for (auto& elem : m_sparCells ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSparCells::GetSparCell. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSSparCell& CPACSSparCells::GetSparCell(const std::string& UID) const
+    {
+        for (auto& elem : m_sparCells ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSSparCells::GetSparCell. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSSparCell& CPACSSparCells::AddSparCell()
     {
         m_sparCells.push_back(make_unique<CPACSSparCell>(this, m_uidMgr));

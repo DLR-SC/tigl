@@ -20,6 +20,7 @@
 */
 
 #include "CTiglPoint.h"
+#include "CTiglLogging.h"
 
 namespace tigl 
 {
@@ -175,6 +176,38 @@ void CTiglPoint::getMinMax(double & min, double & max) const
     if (z > max) {
         max = z;
     }
+}
+
+bool CTiglPoint::operator==(const CTiglPoint& aPoint) const
+{
+    if ( this->isNear(aPoint) ) {
+        return true;
+    }
+    return false;
+}
+
+bool CTiglPoint::isNear(const CTiglPoint& aPoint, double epsilon) const
+{
+    double d2 = distance2(aPoint);
+    double d = sqrt(d2);
+    if( d < epsilon) {
+        return true;
+    }
+    return false;
+
+}
+
+void CTiglPoint::normalize()
+{
+    if (norm2() == 0) {
+        LOG(WARNING)
+            << "CTiglPoint::normalize: The norm is 0, so it's impossible to normalize, 0 length vector is returned.";
+        return;
+    }
+    double s = 1.0 / norm2();
+    x        = s * x;
+    y        = s * y;
+    z        = s * z;
 }
 
 } // end namespace tigl

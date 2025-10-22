@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSEnginePylons.h"
 #include "CPACSEnginePylon.h"
+#include "CPACSEnginePylons.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEnginePylon::CPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
+    CPACSEnginePylon::CPACSEnginePylon(CPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(reinterpret_cast<CCPACSEnginePylon*>(this), m_uidMgr)
     {
@@ -43,12 +43,12 @@ namespace generated
         }
     }
 
-    const CCPACSEnginePylons* CPACSEnginePylon::GetParent() const
+    const CPACSEnginePylons* CPACSEnginePylon::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSEnginePylons* CPACSEnginePylon::GetParent()
+    CPACSEnginePylons* CPACSEnginePylon::GetParent()
     {
         return m_parent;
     }

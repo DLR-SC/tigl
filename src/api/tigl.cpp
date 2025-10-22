@@ -35,6 +35,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
+#include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
@@ -179,6 +180,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         // Note: should return a deprication warning when TiGL is at v3.5
         if (tixiRet != SUCCESS) {
             tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+        }
+
+        if (tixiCheckElement(tixiHandle, "/cpacs/header/cpacsVersion") == SUCCESS) {
+            LOG(WARNING) << "The use of the cpacsVersion node right at /cpacs/header/ is deprecated since CPACS version 3.5.\n" \
+                "This node has to be moved exclusively into the /cpacs/header/versionInfos[]/versionInfo node to be supported by future TiGL versions.\n" \
+                "More information can be found in the CPACS documentation.";
         }
 
         if (tixiRet != SUCCESS) {
@@ -7342,6 +7349,15 @@ TiglReturnCode tiglExportComponent(TiglCPACSConfigurationHandle cpacsHandle, con
 
         tigl::PTiglCADExporter exporter = tigl::createExporter(extension);
         exporter->AddShape(component.GetLoft(), &config, tigl::TriangulatedExportOptions(deflection));
+
+        // Mirror symmetries if requested
+        if (exporter->GlobalExportOptions().Get<bool>("ApplySymmetries")) {
+            auto positionedComp = dynamic_cast<tigl::CTiglRelativelyPositionedComponent*>(&component);
+            if (positionedComp && positionedComp->GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                exporter->AddShape(positionedComp->GetMirroredLoft(), &config, tigl::TriangulatedExportOptions(deflection));
+            }
+        }
+
         if (exporter->Write(fileName) == true) {
             return TIGL_SUCCESS;
         }
@@ -7517,6 +7533,68 @@ TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle 
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglGetFuselageCount!";
+        return TIGL_ERROR;
+    }
+}
+
+TiglReturnCode tiglComponentTransformPointToGlobal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                   const char *componentUID,
+                                                   double localX,
+                                                   double localY,
+                                                   double localZ,
+                                                   double *globalX,
+                                                   double *globalY,
+                                                   double *globalZ)
+{
+    if (!componentUID) {
+        LOG(ERROR) << "Null pointer for argument componentUID in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!globalX) {
+        LOG(ERROR) << "Null pointer for argument globalX in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+
+    if (!globalY) {
+        LOG(ERROR) << "Null pointer for argument globalY in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!globalZ) {
+        LOG(ERROR) << "Null pointer for argument globalZ in tiglComponentTransformPointToGlobal";
+        return TIGL_NULL_POINTER;
+    }
+
+
+    try {
+        // try to resolve the object for the given uid and get the flag
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        tigl::CTiglRelativelyPositionedComponent& component = config.GetUIDManager().GetRelativeComponent(componentUID);
+
+        gp_Pnt pGlobal = component.GetTransformationMatrix().Transform(gp_Pnt(localX, localY, localZ));
+
+        *globalX = pGlobal.X();
+        *globalY = pGlobal.Y();
+        *globalZ = pGlobal.Z();
+
+
+        return TIGL_SUCCESS;
+
+    }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what();
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentTransformPointToGlobal!";
         return TIGL_ERROR;
     }
 }

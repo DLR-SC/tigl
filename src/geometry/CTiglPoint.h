@@ -28,6 +28,7 @@
 #include "gp_Pnt.hxx"
 #include "gp_XYZ.hxx"
 #include <iostream>
+#include "Precision.hxx"
 
 namespace tigl 
 {
@@ -62,6 +63,12 @@ public:
     // Scaling of points
     TIGL_EXPORT CTiglPoint operator*(double) const;
 
+    // Comparison of two points
+    TIGL_EXPORT bool operator==(const CTiglPoint& aPoint) const;
+
+    // Comparison of two points, return true if the distance between the two point is less than epsilon
+    TIGL_EXPORT bool isNear(const CTiglPoint& aPoint, double epsilon = Precision::Confusion()) const;
+
     // returns a'*a
     TIGL_EXPORT double norm2Sqr() const;
 
@@ -94,6 +101,9 @@ public:
 
     // returns minimum and maximum component
     TIGL_EXPORT void getMinMax(double & min, double & max) const;
+
+    // update the vector such that is norm2 is 1
+    TIGL_EXPORT void normalize();
 
     double x;
     double y;

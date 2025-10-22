@@ -375,7 +375,7 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
             bool found = false;
             TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
             for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++) {
-                if (Wires[i].HashCode(200000) == wire.HashCode(200000)) {
+                if (GetHash(Wires[i]) == GetHash(wire)) {
                         found = true;
                 }
             }

@@ -64,6 +64,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& GetTracks() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>>& GetTracks();
 
+        TIGL_EXPORT virtual size_t GetTrackCount() const;
+        TIGL_EXPORT virtual size_t GetTrackIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSControlSurfaceTrackType& GetTrack(size_t index) const;
+        TIGL_EXPORT virtual CPACSControlSurfaceTrackType& GetTrack(size_t index);
+
+        TIGL_EXPORT virtual const CPACSControlSurfaceTrackType& GetTrack(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSControlSurfaceTrackType& GetTrack(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSControlSurfaceTrackType& AddTrack();
         TIGL_EXPORT virtual void RemoveTrack(CPACSControlSurfaceTrackType& ref);
 

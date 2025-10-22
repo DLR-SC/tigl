@@ -20,14 +20,14 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageProfiles.h>
-#include <CCPACSGuideCurveProfiles.h>
 #include <CCPACSRotorProfiles.h>
-#include <CCPACSStructuralProfiles.h>
 #include <CCPACSWingProfiles.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCurveProfiles.h"
+#include "CPACSGuideCurveProfiles.h"
 #include "CPACSNacelleProfiles.h"
+#include "CPACSStructuralProfiles.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -73,14 +73,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSWingProfiles>& GetWingAirfoils() const;
         TIGL_EXPORT virtual boost::optional<CCPACSWingProfiles>& GetWingAirfoils();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSGuideCurveProfiles>& GetGuideCurves();
+        TIGL_EXPORT virtual const boost::optional<CPACSGuideCurveProfiles>& GetGuideCurves() const;
+        TIGL_EXPORT virtual boost::optional<CPACSGuideCurveProfiles>& GetGuideCurves();
 
         TIGL_EXPORT virtual const boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils() const;
         TIGL_EXPORT virtual boost::optional<CCPACSRotorProfiles>& GetRotorAirfoils();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSStructuralProfiles>& GetStructuralProfiles();
+        TIGL_EXPORT virtual const boost::optional<CPACSStructuralProfiles>& GetStructuralProfiles() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStructuralProfiles>& GetStructuralProfiles();
 
         TIGL_EXPORT virtual const boost::optional<CPACSNacelleProfiles>& GetNacelleProfiles() const;
         TIGL_EXPORT virtual boost::optional<CPACSNacelleProfiles>& GetNacelleProfiles();
@@ -94,13 +94,13 @@ namespace generated
         TIGL_EXPORT virtual CCPACSWingProfiles& GetWingAirfoils(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveWingAirfoils();
 
-        TIGL_EXPORT virtual CCPACSGuideCurveProfiles& GetGuideCurves(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSGuideCurveProfiles& GetGuideCurves(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGuideCurves();
 
         TIGL_EXPORT virtual CCPACSRotorProfiles& GetRotorAirfoils(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRotorAirfoils();
 
-        TIGL_EXPORT virtual CCPACSStructuralProfiles& GetStructuralProfiles(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSStructuralProfiles& GetStructuralProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructuralProfiles();
 
         TIGL_EXPORT virtual CPACSNacelleProfiles& GetNacelleProfiles(CreateIfNotExistsTag);
@@ -114,13 +114,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CCPACSFuselageProfiles>   m_fuselageProfiles;
-        boost::optional<CCPACSWingProfiles>       m_wingAirfoils;
-        boost::optional<CCPACSGuideCurveProfiles> m_guideCurves;
-        boost::optional<CCPACSRotorProfiles>      m_rotorAirfoils;
-        boost::optional<CCPACSStructuralProfiles> m_structuralProfiles;
-        boost::optional<CPACSNacelleProfiles>     m_nacelleProfiles;
-        boost::optional<CPACSCurveProfiles>       m_curveProfiles;
+        boost::optional<CCPACSFuselageProfiles>  m_fuselageProfiles;
+        boost::optional<CCPACSWingProfiles>      m_wingAirfoils;
+        boost::optional<CPACSGuideCurveProfiles> m_guideCurves;
+        boost::optional<CCPACSRotorProfiles>     m_rotorAirfoils;
+        boost::optional<CPACSStructuralProfiles> m_structuralProfiles;
+        boost::optional<CPACSNacelleProfiles>    m_nacelleProfiles;
+        boost::optional<CPACSCurveProfiles>      m_curveProfiles;
 
     private:
         CPACSProfiles(const CPACSProfiles&) = delete;
@@ -131,8 +131,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSProfiles is customized, use type CCPACSProfiles directly
-
 // Aliases in tigl namespace
+using CCPACSProfiles = generated::CPACSProfiles;
 using CCPACSVehicles = generated::CPACSVehicles;
 } // namespace tigl

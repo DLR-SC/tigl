@@ -1,0 +1,121 @@
+[
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_2_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_3_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_5_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_7_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_8_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_9_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_10_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_11_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_13_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_16_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_21_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_31_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_4_guides_60_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_2_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_3_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_5_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_7_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_8_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_9_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_10_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_11_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_13_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_16_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_21_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_31_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_8_guides_60_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_2_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_3_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_7_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_8_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_9_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_10_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_11_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_13_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_16_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_21_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_31_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_n_guides_m_profiles/D150_16_guides_60_profiles.xml" },
+  { "cpacs_file": "../unittests/TestData/bellyfairingtest.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/component-segment-bwb.xml" },
+  { "cpacs_file": "../unittests/TestData/compseg-rotated.xml" },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple.xml" },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_CST_simple_bluntTE.xml" },
+  { 
+    "cpacs_file": "../unittests/TestData/CPACS_30_D150.xml",
+    "extra_screenshots" :
+    [
+      {
+        "name": "flaps",
+        "script": "app.scene.deleteAllObjects();\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_innerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_outerFlap', 1.0);\ntigl.controlSurfaceSetControlParameter('D150_VAMP_W1_CompSeg1_aileron', -1.0);\ndrawShape(tigl.getShape('D150_VAMP_W1'));\napp.viewer.setCameraPosition(45, 45);\napp.viewer.fitAll()\n"
+      }
+    ]
+  },
+  { "cpacs_file": "../unittests/TestData/CPACS_30_D250_10.xml" },
+  { "cpacs_file": "../unittests/TestData/CS_SegIntersectionBUG.xml" },
+  { "cpacs_file": "../unittests/TestData/D150_v30.xml" },
+  {
+    "cpacs_file": "../unittests/TestData/fuselage_structure-v3.xml",
+    "extra_screenshots" :
+    [
+      {
+        "name": "structure",
+        "script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"half_bulkhead\"));\napp.viewer.viewAxo();\n"
+      }
+    ]
+  },
+  { "cpacs_file": "../unittests/TestData/simple_rectangle_compseg.xml" },
+  { "cpacs_file": "../unittests/TestData/simple_test_guide_curves.xml" },
+  { "cpacs_file": "../unittests/TestData/simple_test_logging.xml" },
+  { "cpacs_file": "../unittests/TestData/simple_test_rotors.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-flaps.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-fuselagekinks.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-halfmodel.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-nacelle.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-pylon.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-pylon-nacelle.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-simplenacelle.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/simpletest-with-guides.cpacs.xml" },
+  { "cpacs_file": "../unittests/TestData/symmetry_exportBUG.xml" },
+  { "cpacs_file": "../unittests/TestData/test_wing_segment_special.xml" },
+  { "cpacs_file": "../unittests/TestData/transformation-benchmark.xml" },
+  { "cpacs_file": "../unittests/TestData/wing_explicitRibPositioning.xml" },
+  { "cpacs_file": "../unittests/TestData/WingGetPointBug1.xml" },
+
+  { "cpacs_file": "../integrationtests/TestData/cell_rib_spar_test.xml" },
+  { "cpacs_file": "../integrationtests/TestData/cell_rib_spar_test-bugs.xml" },
+  { "cpacs_file": "../integrationtests/TestData/cell_test_spars.xml" },
+  { "cpacs_file": "../integrationtests/TestData/D150WithGuides.xml" },
+  { "cpacs_file": "../integrationtests/TestData/distorted_wing.xml" },
+  { "cpacs_file": "../integrationtests/TestData/IEA-15-240-RWT_CPACS_d.xml" },
+  { "cpacs_file": "../integrationtests/TestData/bugs/829/IEA-10.0-198-RWT_CPACS_contour_coordinates.xml",
+    "before_script": "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_1_1\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_2_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_12_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_28_3\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_2\"));\ndrawShape(tigl.getShape(\"component_segment_upper_shell_cell_39_5\"));\n"
+  },
+  { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems.xml" },
+  { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cone.xml" },
+  { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cube.xml" },
+  { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_cylinder.xml" },
+  { "cpacs_file": "../integrationtests/TestData/singleModel_withGenericSystems_sphere.xml" },
+  {
+    "cpacs_file": "../integrationtests/TestData/test_fuselage_walls_ex1.xml",
+    "before_script" : "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"Wall1\"));\ndrawShape(tigl.getShape(\"Wall2\"));\n"
+  },
+  {
+    "cpacs_file": "../integrationtests/TestData/test_fuselage_walls_ex2.xml",
+    "before_script" : "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"Wall1\"));\ndrawShape(tigl.getShape(\"Wall2\"));\ndrawShape(tigl.getShape(\"Wall3\"));\n"
+  },
+  {
+    "cpacs_file": "../integrationtests/TestData/test_fuselage_walls_ex3_labyrinth.xml",
+    "before_script" : "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"Wall1\"));\ndrawShape(tigl.getShape(\"Wall2\"));\ndrawShape(tigl.getShape(\"Wall3\"));\ndrawShape(tigl.getShape(\"Wall4\"));\n"
+  },
+  {
+    "cpacs_file": "../integrationtests/TestData/test_fuselage_walls_ex4_compartment.xml",
+    "before_script" : "app.scene.selectAll();\napp.scene.setTransparency(90);\ndrawShape(tigl.getShape(\"Wall1\"));\ndrawShape(tigl.getShape(\"Wall2\"));\n"
+  },
+
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/main/cpacs/concorde.cpacs3.xml" },
+  { "cpacs_file": "https://raw.githubusercontent.com/DLR-SC/tigl-examples/main/cpacs/ariane.xml" }
+
+]

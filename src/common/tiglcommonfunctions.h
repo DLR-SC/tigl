@@ -23,7 +23,6 @@
 
 #include "CCPACSImportExport.h"
 #include "Standard.hxx"
-#include "Standard_values.h"
 #include "tigl_internal.h"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
@@ -202,6 +201,9 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
                                    double& minx, double& maxx,
                                    double& miny, double& maxy,
                                    double& minz, double& maxz);
+
+// Returns a unique Hashcode for a shape
+TIGL_EXPORT int GetHash(const TopoDS_Shape& shape);
 
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
@@ -493,5 +495,9 @@ void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, Bin
         }
     }
 }
+
+
+TIGL_EXPORT tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis);
+
 
 #endif // TIGLCOMMONFUNCTIONS_H

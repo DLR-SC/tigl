@@ -22,15 +22,18 @@
 #include <cmath>
 
 #include "CCPACSFuselageSegment.h"
+#include "generated/CPACSFuselageSegments.h"
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
+#include "generated/CPACSVessels.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
 #include "generated/CPACSGuideCurve.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "CTiglLogging.h"
@@ -100,9 +103,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 
@@ -246,6 +251,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     }
 }
 
+TopoDS_Wire CCPACSFuselageSegment::GetWire(const std::string& elementUID, TiglCoordinateSystem referenceCS) const
+{
+    if (startConnection.GetSectionElementUID() == elementUID) {
+        return GetStartWire(referenceCS);
+    }
+    else if (endConnection.GetSectionElementUID() == elementUID) {
+        return GetEndWire(referenceCS);
+    }
+    throw CTiglError("Invalid uid element passed to CCPACSFuselageSegment::GetWire", TIGL_UID_ERROR);
+}
+
 // get short name for loft
 std::string CCPACSFuselageSegment::GetShortShapeName() const
 {
@@ -261,6 +277,19 @@ std::string CCPACSFuselageSegment::GetShortShapeName() const
         for (auto& d: duct->GetParent()->GetDucts()) {
             ++i;
             if (duct->GetUID() == d->GetUID()) {
+                findex = i;
+                break;
+            }
+        }
+    }
+    else if (m_parent->IsParent<CCPACSVessel>()) {
+
+        prefix = "H";
+        auto* vessel = m_parent->GetParent<CCPACSVessel>();
+        unsigned int i = 0;
+        for (auto& h: vessel->GetParent()->GetVessels()) {
+            ++i;
+            if (vessel->GetUID() == h->GetUID()) {
                 findex = i;
                 break;
             }
@@ -400,7 +429,7 @@ void CCPACSFuselageSegment::UpdateSurfaceProperties(SurfacePropertiesCache& cach
 
     GProp_GProps AreaSystem;
 
-    // The first face is the outer hull. We ignore symmetry planes and the front / back caps
+    // The first face is the outer vessel. We ignore symmetry planes and the front / back caps
     BRepGProp::SurfaceProperties(faceExplorer.Current(), AreaSystem);
     cache.mySurfaceArea = AreaSystem.Mass();
 }

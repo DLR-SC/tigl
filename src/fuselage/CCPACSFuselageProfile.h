@@ -60,8 +60,7 @@ public:
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
     TIGL_EXPORT bool GetMirrorSymmetry() const;
 
-    // Returns the fuselage profile wire. The wire is already transformed by the
-    // fuselage profile element transformation.
+    // Returns the fuselage profile wire. The profile is not transformed.
     TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false) const;
 
     // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
@@ -70,7 +69,14 @@ public:
     TIGL_EXPORT gp_Pnt GetPoint(double zeta) const;
 
     // Returns the "diameter" line as a wire
+    // (The diameter is the line between the start point and the most distant point)
     TIGL_EXPORT TopoDS_Wire GetDiameterWire() const;
+
+    // Returns the width of the profile (y distance).
+    TIGL_EXPORT double GetWidth() const;
+
+    // Returns the height of the profile, (z distance).
+    TIGL_EXPORT double GetHeight() const;
 
 private:
     struct WireCache {
@@ -83,11 +89,15 @@ private:
         gp_Pnt end;
     };
 
-    // Transforms a point by the fuselage profile transformation
+    struct SizeCache {
+        double width;
+        double height;
+    };
+
+    // Transforms a point by the fuselage profile transformation //todo is it working ? where is trh transformation
     gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
-    // Builds the fuselage profile wires. The wires are already transformed by the
-    // fuselage profile transformation.
+    // Builds the fuselage profile wires.
     void BuildWires(WireCache& cache) const;
 
     //Builds the fuselage profile wires from point list
@@ -111,6 +121,8 @@ private:
     // Point2: Last point in the profile point list
     void BuildDiameterPoints(DiameterPointsCache& cache) const;
 
+    void BuildSize(SizeCache& cache) const;
+
 private:
     // Invalidates internal wing profile state
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
@@ -119,6 +131,7 @@ private:
     bool mirrorSymmetry; /**< Mirror symmetry with respect to the x-z plane */
     Cache<WireCache, CCPACSFuselageProfile> wireCache; /**< Original and force closed fuselage profile wire */
     Cache<DiameterPointsCache, CCPACSFuselageProfile> diameterPointsCache;
+    Cache<SizeCache, CCPACSFuselageProfile> sizeCache;
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
 };
 

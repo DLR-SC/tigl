@@ -396,6 +396,30 @@ namespace generated
         return m_sheetProperties_choice2;
     }
 
+    size_t CPACSProfileBasedStructuralElement::GetSheetPropertiesCount() const
+    {
+        return m_sheetProperties_choice2.size();
+    }
+
+    CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(size_t index)
+    {
+        if (index < 1 || index > GetSheetPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>::GetSheetProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetProperties_choice2[index];
+    }
+
+    const CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::GetSheetProperties(size_t index) const
+    {
+        if (index < 1 || index > GetSheetPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>::GetSheetProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_sheetProperties_choice2[index];
+    }
+
+
     const boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>& CPACSProfileBasedStructuralElement::GetStandardProfileType_choice2_1() const
     {
         return m_standardProfileType_choice2_1;
@@ -429,6 +453,30 @@ namespace generated
     {
         return m_pointProperties_choice2_2;
     }
+
+    size_t CPACSProfileBasedStructuralElement::GetPointPropertiesCount() const
+    {
+        return m_pointProperties_choice2_2.size();
+    }
+
+    CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(size_t index)
+    {
+        if (index < 1 || index > GetPointPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>::GetPointProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointProperties_choice2_2[index];
+    }
+
+    const CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::GetPointProperties(size_t index) const
+    {
+        if (index < 1 || index > GetPointPropertiesCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>>::GetPointProperties", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_pointProperties_choice2_2[index];
+    }
+
 
     const boost::optional<std::string>& CPACSProfileBasedStructuralElement::GetReferencePointUID_choice2_2() const
     {

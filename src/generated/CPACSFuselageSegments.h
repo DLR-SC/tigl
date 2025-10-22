@@ -32,12 +32,14 @@ class CTiglUIDObject;
 class CCPACSFuselageSegment;
 class CCPACSDuct;
 class CCPACSFuselage;
+class CCPACSVessel;
 
 namespace generated
 {
     // This class is used in:
     // CPACSDuct
     // CPACSFuselage
+    // CPACSVessel
 
     /// @brief fuselageSegmentsType
     /// 
@@ -49,6 +51,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuselageSegments();
 
@@ -61,7 +64,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -71,7 +74,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSVessel>::value, "template argument for P is not a parent class of CPACSFuselageSegments");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -89,6 +92,15 @@ namespace generated
 
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSFuselageSegment>>& GetSegments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSFuselageSegment>>& GetSegments();
+
+        TIGL_EXPORT virtual size_t GetSegmentCount() const;
+        TIGL_EXPORT virtual size_t GetSegmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSFuselageSegment& GetSegment(size_t index) const;
+        TIGL_EXPORT virtual CCPACSFuselageSegment& GetSegment(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSFuselageSegment& GetSegment(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSFuselageSegment& GetSegment(const std::string& UID);
 
         TIGL_EXPORT virtual CCPACSFuselageSegment& AddSegment();
         TIGL_EXPORT virtual void RemoveSegment(CCPACSFuselageSegment& ref);

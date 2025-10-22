@@ -213,13 +213,13 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
 
 }
 
-TEST_F(TiglControlSurfaceDevice, CCPACSTrailingEdgeDevices)
+TEST_F(TiglControlSurfaceDevice, CPACSTrailingEdgeDevices)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
-    tigl::CCPACSTrailingEdgeDevices& devices = *componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
+    tigl::generated::CPACSTrailingEdgeDevices& devices = *componentSegment.GetControlSurfaces()->GetTrailingEdgeDevices();
 
     // trailing edge device count
     ASSERT_EQ(devices.GetTrailingEdgeDeviceCount(), 3);

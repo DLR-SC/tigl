@@ -10,13 +10,11 @@ CPACSRotorHub_type                 TiglRotorHubType
 // classes
 CPACSAircraftModel                 CCPACSAircraftModel
 CPACSRotorcraftModel               CCPACSRotorcraftModel
-CPACSProfiles                      CCPACSProfiles
 CPACSMaterialDefinition            CCPACSMaterialDefinition
 CPACSFarField                      CCPACSFarField
 CPACSGuideCurve                    CCPACSGuideCurve
 CPACSGuideCurves                   CCPACSGuideCurves
 CPACSGuideCurveProfileGeometry     CCPACSGuideCurveProfile
-CPACSGuideCurveProfiles            CCPACSGuideCurveProfiles
 CPACSPositioning                   CCPACSPositioning
 CPACSPositionings                  CCPACSPositionings
 CPACSPoint                         CCPACSPoint
@@ -92,14 +90,11 @@ CPACSRotorHubHinges                CCPACSRotorHinges
 
 // fuselage structure
 CPACSDoorAssemblyPosition                 CCPACSDoorAssemblyPosition
-CPACSDoors                                CCPACSDoors
 CPACSPressureBulkhead                     CCPACSPressureBulkhead
 CPACSPressureBulkheadAssembly             CCPACSPressureBulkheadAssembly
 CPACSPressureBulkheadAssemblyPosition     CCPACSPressureBulkheadAssemblyPosition
-CPACSPressureBulkheads                    CCPACSPressureBulkheads
 CPACSProfileBasedStructuralElement        CCPACSProfileBasedStructuralElement
 CPACSSheetList                            CCPACSSheetList
-CPACSStructuralProfiles                   CCPACSStructuralProfiles
 CPACSCrossBeamAssemblyPosition            CCPACSCrossBeamAssemblyPosition
 CPACSCargoCrossBeamsAssembly              CCPACSCargoCrossBeamsAssembly
 CPACSCrossBeamStrutAssemblyPosition       CCPACSCrossBeamStrutAssemblyPosition
@@ -116,26 +111,23 @@ CPACSPointXY                              CCPACSPointXY
 CPACSStringerFramePosition                CCPACSFuselageStringerFramePosition
 CPACSSkin                                 CCPACSSkin
 CPACSSkinSegment                          CCPACSSkinSegment
-CPACSWallSegment                          CCPACSFuselageWallSegment
+CPACSWallSegment                          CCPACSWallSegment
 CPACSWallPosition                         CCPACSWallPosition
 CPACSWalls                                CCPACSWalls
 
 // control surfaces
 CPACSControlSurfaces                      CCPACSControlSurfaces
 CPACSControlSurfaceBorderTrailingEdge     CCPACSControlSurfaceBorderTrailingEdge
-CPACSTrailingEdgeDevices                  CCPACSTrailingEdgeDevices
 CPACSTrailingEdgeDevice                   CCPACSTrailingEdgeDevice
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon
-CPACSEnginePylons                        CCPACSEnginePylons
 
 // Engines
 CPACSEnginePositions                     CCPACSEnginePositions
 CPACSEnginePosition                      CCPACSEnginePosition
-CPACSEngines                             CCPACSEngines
 CPACSNacelleCowl                         CCPACSNacelleCowl
 CPACSNacelleSections                     CCPACSNacelleSections
 CPACSNacelleSection                      CCPACSNacelleSection
@@ -149,3 +141,8 @@ CPACSDuct                                CCPACSDuct
 CPACSDuctStructure                       CCPACSDuctStructure
 CPACSDuctAssembly                        CCPACSDuctAssembly
 CPACSDucts                               CCPACSDucts
+
+// Tanks
+CPACSVessel                              CCPACSVessel
+CPACSFuelTank                            CCPACSFuelTank
+CPACSVesselStructure                     CCPACSVesselStructure

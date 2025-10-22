@@ -21,8 +21,8 @@
 
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
-
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
 
 namespace tigl
 {
@@ -32,30 +32,29 @@ CCPACSFuselageSections::CCPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDM
 CCPACSFuselageSections::CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSections(parent, uidMgr) {}
 
-int CCPACSFuselageSections::GetSectionCount() const
-{
-    return static_cast<int>(m_sections.size());
-}
+CCPACSFuselageSections::CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSections(parent, uidMgr) {}
 
-CCPACSFuselageSection& CCPACSFuselageSections::GetSection(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSectionCount()) {
-        throw CTiglError("Invalid index in CCPACSFuselageSections::GetSection", TIGL_INDEX_ERROR);
-    }
-    return *m_sections[index];
-}
 
-// Gets a section by uid.
-CCPACSFuselageSection& CCPACSFuselageSections::GetSection(const std::string& sectionUID)
+CCPACSFuselageSection&  CCPACSFuselageSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
 {
-    for (std::size_t i = 0; i < m_sections.size(); i++) {
-        if (m_sections[i]->GetUID() == sectionUID) {
-            return *m_sections[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
-}
+    CTiglUIDManager& uidManager = GetUIDManager();
 
+    CCPACSFuselageSection& newSection = AddSection();
+    std::string newSectionUID = uidManager.MakeUIDUnique( sectionUID );
+    newSection.SetUID(newSectionUID);
+    newSection.SetName(newSectionUID);
+    newSection.GetTransformation().Init(uidManager.MakeUIDUnique(newSectionUID + "Tr"));
+
+    tigl::CCPACSFuselageSectionElement& newElement = newSection.GetElements().AddElement();
+    std::string newElementUID = uidManager.MakeUIDUnique(newSectionUID + "Elem1");
+    newElement.SetUID(newElementUID);
+    newElement.SetName(newElementUID);
+    newElement.GetTransformation().Init(uidManager.MakeUIDUnique(newElementUID + "Tr"));
+    newElement.SetProfileUID(profileUID);
+
+    return newSection;
+
+}
 
 } // end namespace tigl

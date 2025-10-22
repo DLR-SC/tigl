@@ -63,6 +63,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSPressureBulkheadAssemblyPosition>>& GetPressureBulkheads() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSPressureBulkheadAssemblyPosition>>& GetPressureBulkheads();
 
+        TIGL_EXPORT virtual size_t GetPressureBulkheadCount() const;
+        TIGL_EXPORT virtual size_t GetPressureBulkheadIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSPressureBulkheadAssemblyPosition& GetPressureBulkhead(size_t index) const;
+        TIGL_EXPORT virtual CCPACSPressureBulkheadAssemblyPosition& GetPressureBulkhead(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSPressureBulkheadAssemblyPosition& GetPressureBulkhead(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSPressureBulkheadAssemblyPosition& GetPressureBulkhead(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSPressureBulkheadAssemblyPosition& AddPressureBulkhead();
         TIGL_EXPORT virtual void RemovePressureBulkhead(CCPACSPressureBulkheadAssemblyPosition& ref);
 

@@ -367,12 +367,12 @@ ITiglGeometricComponent& CTiglUIDManager::GetGeometricComponent(const std::strin
 CTiglRelativelyPositionedComponent& CTiglUIDManager::GetRelativeComponent(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
     const RelativeComponentContainerType::const_iterator it = relativeComponents.find(uid);
     if (it == relativeComponents.end()) {
-        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetGeometricComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetGeometricComponent", TIGL_UID_ERROR);
     }
 
     return *it->second;
@@ -450,6 +450,17 @@ void CTiglUIDManager::BuildTree()
 const ShapeContainerType& CTiglUIDManager::GetShapeContainer() const
 {
     return allShapes;
+}
+
+std::string CTiglUIDManager::MakeUIDUnique(const std::string& baseUID) const
+{
+    std::string newUID = baseUID;
+    int suffix         = 1;
+    while (IsUIDRegistered(newUID)) {
+        newUID = baseUID + "U" +std::to_string(suffix);
+        suffix = suffix + 1;
+    }
+    return newUID;
 }
 
 } // end namespace tigl

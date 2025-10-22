@@ -89,6 +89,18 @@ CCPACSTransformation::CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglU
 {
 }
 
+CCPACSTransformation::CCPACSTransformation(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
 CCPACSTransformation::CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
@@ -176,12 +188,22 @@ void CCPACSTransformation::setRotation(const CTiglPoint& rotation)
     m_rotation->SetAsPoint(rotation);
 }
 
+void CCPACSTransformation::setRotationType(ECPACSTranslationType rotationType)
+{
+    _rotationType = rotationType;
+}
+
 void CCPACSTransformation::setScaling(const CTiglPoint& scale)
 {
     if (!m_scaling) {
         m_scaling = boost::in_place(this, m_uidMgr);
     }
     m_scaling->SetAsPoint(scale);
+}
+
+void CCPACSTransformation::setScalingType(ECPACSTranslationType scalingType)
+{
+    _scalingType = scalingType;
 }
 
 void CCPACSTransformation::setTransformationMatrix(const CTiglTransformation& matrix)
@@ -263,6 +285,16 @@ ECPACSTranslationType CCPACSTransformation::getTranslationType() const
     }
 }
 
+ECPACSTranslationType CCPACSTransformation::getScalingType() const
+{
+    return _scalingType;
+}
+
+ECPACSTranslationType CCPACSTransformation::getRotationType() const
+{
+    return _rotationType;
+}
+
 CTiglTransformation CCPACSTransformation::getTransformationMatrix() const
 {
     return *_transformationMatrix;
@@ -283,5 +315,19 @@ void CCPACSTransformation::InvalidateImpl(const boost::optional<std::string>& so
     }
 }
 
+
+void CCPACSTransformation::Init(const std::string& baseUID)
+{
+    if (GetUIDManager().IsUIDRegistered(baseUID)) {
+        throw CTiglError(" CCPACSTransformation::Init: Impossible to initialize this transformation with the uid \"" +
+                         baseUID + "\". This uid is already present in the file. Choose another uid.");
+    }
+
+    SetUID(baseUID);
+    setTransformationMatrix(CTiglTransformation());
+    GetTranslation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Transl"));
+    GetRotation(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Rot"));
+    GetScaling(CreateIfNotExists).SetUID(GetUIDManager().MakeUIDUnique(baseUID + "Scal"));
+}
 
 } // namespace tigl

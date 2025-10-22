@@ -20,6 +20,8 @@
 */
 
 #include "CCPACSFuselageSegments.h"
+#include "CTiglUIDManager.h"
+#include "CCPACSFuselageSectionElement.h"
 
 #include <iostream>
 #include <sstream>
@@ -28,6 +30,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
+#include "CCPACSVessel.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -60,6 +63,11 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDM
     , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
 {}
 
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{}
+
 CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
 {
     if (IsParent<CCPACSFuselage>()) {
@@ -67,6 +75,9 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
     }
     else if (IsParent<CCPACSDuct>()) {
         return GetParent<CCPACSDuct>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSVessel>()) {
+        return GetParent<CCPACSVessel>()->GetConfiguration();
     }
     else
     {
@@ -80,41 +91,9 @@ void CCPACSFuselageSegments::Invalidate(const boost::optional<std::string>& sour
     for (int i = 1; i <= GetSegmentCount(); i++) {
         GetSegment(i).Invalidate(source);
     }
+
     guideCurves.clear();
 }
-
-// Gets a segment by index. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
-{
-    return const_cast<CCPACSFuselageSegment&>(static_cast<const CCPACSFuselageSegments&>(*this).GetSegment(index));
-}
-
-const CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-// Gets a segment by uid. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-// Gets total segment count
-int CCPACSFuselageSegments::GetSegmentCount() const
-{
-    return static_cast<int>(m_segments.size());
-}
-
 
 CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentComponent() const
 {
@@ -123,6 +102,9 @@ CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentCompo
     }
     else if (IsParent<CCPACSDuct>()) {
         return GetParent<CCPACSDuct>();
+    }
+    else if (IsParent<CCPACSVessel>()) {
+        return GetParent<CCPACSVessel>();
     }
     else {
         throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
@@ -133,22 +115,7 @@ void tigl::CCPACSFuselageSegments::ReadCPACS(const TixiDocumentHandle &tixiHandl
 {
     tigl::generated::CPACSFuselageSegments::ReadCPACS(tixiHandle, xpath);
 
-    if (GetSegmentCount() <= 0) {
-        return;
-    }
-
-    // check order of segments - each segment must start with the element of the previous segment
-    bool mustReorderSegments = false;
-    std::string prevElementUID = GetSegment(1).GetToElementUID();
-    for (int i = 2; i <= GetSegmentCount(); ++i) {
-        CCPACSFuselageSegment& segment = GetSegment(i);
-        if (prevElementUID != segment.GetFromElementUID()) {
-            mustReorderSegments = true;
-        }
-        prevElementUID = segment.GetToElementUID();
-    }
-
-    if (mustReorderSegments) {
+    if (NeedReordering()) {
         LOG(WARNING) << "Fuselage segments in wrong order! Trying to reorder.";
         ReorderSegments();
     }
@@ -219,6 +186,84 @@ void CCPACSFuselageSegments::BuildGuideCurves(TopoDS_Compound& cache) const
 const TopoDS_Compound &CCPACSFuselageSegments::GetGuideCurveWires() const
 {
     return *guideCurves;
+}
+
+bool CCPACSFuselageSegments::NeedReordering() const
+{
+    if ( GetSegmentCount() <= 1 ) {
+        return false;
+    }
+
+    bool mustReorderSegments = false;
+    std::string prevElementUID = GetSegment(1).GetToElementUID();
+    for (int i = 2; i <= GetSegmentCount(); ++i) {
+        const CCPACSFuselageSegment& segment = GetSegment(i);
+        if (prevElementUID != segment.GetFromElementUID()) {
+            mustReorderSegments = true;
+        }
+        prevElementUID = segment.GetToElementUID();
+    }
+    return mustReorderSegments;
+}
+
+std::vector<std::string> CCPACSFuselageSegments::GetElementUIDsInOrder() const
+{
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (int i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetFromElementUID();
+        tempEndUID   = m_segments[i]->GetToElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
+        }
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
+        }
+    }
+    return elementUIDs;
+}
+
+
+CCPACSFuselageSegment& CCPACSFuselageSegments::SplitSegment(const std::string& segmentUID, const std::string& splitterElementUID)
+{
+    CCPACSFuselageSegment& segment = this->GetSegment(segmentUID);
+    CCPACSFuselageSectionElement& splitterElement = GetUIDManager().ResolveObject<CCPACSFuselageSectionElement>(splitterElementUID);
+
+    // create a additional segment
+    CCPACSFuselageSegment& additionalSegment =  this->AddSegment();
+    std::string additionalSegmentUID = GetUIDManager().MakeUIDUnique(segment.GetUID() + "bis" );
+    additionalSegment.SetUID(additionalSegmentUID);
+    additionalSegment.SetName(additionalSegmentUID);
+
+    // set the segment from splitter element to the old end
+    additionalSegment.SetFromElementUID(splitterElement.GetUID());
+    additionalSegment.SetToElementUID(segment.GetToElementUID());
+
+    // reset the old segment to end at the splitter
+    segment.SetToElementUID(splitterElement.GetUID());
+
+    Invalidate();
+    // Reordering is necessary: After splitting a segment and adding another one, the order is not correct
+    // Without reordering, this results in a wrong shape visible in the TiGLCreator
+    ReorderSegments();
+
+    return additionalSegment;
+}
+
+CCPACSFuselageSegment& CCPACSFuselageSegments::GetSegmentFromTo(const std::string &fromElementUID,
+                                                                const std::string toElementUID)
+{
+
+    for (int i = 0; i < m_segments.size(); i++) {
+        if ( m_segments[i]->GetFromElementUID() == fromElementUID && m_segments[i]->GetToElementUID() == toElementUID ) {
+            return GetSegment(i+1);
+        }
+
+    }
+
+    throw  CTiglError("Segment with the given from and to UID not found", TIGL_UID_ERROR);
+
 }
 
 } // end namespace tigl

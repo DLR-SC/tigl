@@ -1,4 +1,4 @@
-Examples {#tigl_examples}
+API Usage Examples {#lib_shipped_examples}
 =========================
 
 TiGL ships with three examples of how to use the API from different programming languages: C/C++, Python and MATLAB. 
@@ -56,19 +56,34 @@ To run this program, call it with a CPACS file, e.g.
 
     c-demo simpletest.cpacs.xml
 
+    
+Python-Demo {#lib_intrernal_python_demo}
+---------------------
 
+Recently, we extended TiGL's Python bindings to access the entire object structure of TiGL. 
+These classes and methods allow more control compared to the high level functions of tigl3wrapper.
+These allow for example:
 
-Python-Demo
------------
+   - Accessing all geometrical shapes of TiGL
+   - Use, modify or visualize these shapes directly with PythonOCC
+   - Use geometrical algorithms for own projects, such as Gordon's curve network interpolation method
 
-The Python demo is similar to the C demo. In order to make it work, one needs to add 
+The installation of this new Python API differs from the installation for the other languages.
+The easiest way to install TiGL 3 with the internal python api support is to use the
+amazing [conda](http://conda.pydata.org/miniconda.html) package manager. To install, type
 
-    TIGL_INSTALL_DIR/share/tigl3/python
-    TIXI_INSTALL_DIR/share/tixi3/python
+     conda create -n tigl3_env python=3.6 tigl3 -c dlr-sc
+     activate tigl3_env
+    
+This installs TiGL and all its dependencies. 
 
-to the PYTHONPATH environment variable. Afterwards, test it with
+Then, you can run the python examples as usual. For example type:
 
-    python python_demo.py simpletest.cpacs.xml
+     python create_space_ship.py
+
+Make sure the script create_space_ship.py is in your python path or go in the example
+directory. This script should generate a cpacs file out.xml that contains a space ship
+in your current directory.
 
 
 MATLAB-Demo
@@ -95,6 +110,6 @@ To compile the Java Demo (JavaDemo.java), you have to link against the following
   - jna and jna-platform (Sun Java Native Access)
   - tigl (the JAR file can be found in TIGL_INSTALL_DIR/share/tigl3/java)
 	
-Under Windows it is important to chose the right TiGL library matching to the Java Virtual Machine. 
+Under Windows it is important to choose the right TiGL library matching to the Java Virtual Machine. 
 That means if you use a 64 Bit JVM, use the TiGL 64 bit library and vice versa.
-	
+

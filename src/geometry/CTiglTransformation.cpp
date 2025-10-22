@@ -32,6 +32,7 @@
 #include "CNamedShape.h"
 
 #include "tiglmathfunctions.h"
+#include "tiglcommonfunctions.h"
 
 namespace tigl 
 {
@@ -237,7 +238,7 @@ void CTiglTransformation::AddScaling(double sx, double sy, double sz)
 
 void CTiglTransformation::AddRotationX(double degreeX)
 {
-    double radianX = DegreeToRadian(degreeX);
+    double radianX = Radians(degreeX);
     double sinVal  = sin(radianX);
     double cosVal  = cos(radianX);
 
@@ -259,7 +260,7 @@ void CTiglTransformation::AddRotationX(double degreeX)
 
 void CTiglTransformation::AddRotationY(double degreeY)
 {
-    double radianY = DegreeToRadian(degreeY);
+    double radianY = Radians(degreeY);
     double sinVal  = sin(radianY);
     double cosVal  = cos(radianY);
 
@@ -281,7 +282,7 @@ void CTiglTransformation::AddRotationY(double degreeY)
 
 void CTiglTransformation::AddRotationZ(double degreeZ)
 {
-    double radianZ = DegreeToRadian(degreeZ);
+    double radianZ = Radians(degreeZ);
     double sinVal  = sin(radianZ);
     double cosVal  = cos(radianZ);
 
@@ -381,7 +382,7 @@ void CTiglTransformation::AddMirroringAtXZPlane()
     //
     // (      1       0       0        0 )
     // (      0       -1      0        0 )
-    // (      0       0       0        0 )
+    // (      0       0       1        0 )
     // (      0       0       0        1 )
 
     CTiglTransformation trans;
@@ -574,8 +575,10 @@ CTiglTransformation CTiglTransformation::Inverted() const
     return CTiglTransformation(Get_gp_GTrsf().Inverted());
 }
 
-void CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3]) const
+bool CTiglTransformation::Decompose(double scale[3], double rotation[3], double translation[3], bool rounding) const
 {
+    bool success = true;
+
     // compute polar decomposition of upper 3x3 part
     tiglMatrix A(1, 3, 1, 3);
     tiglMatrix P(1, 3, 1, 3);
@@ -596,6 +599,7 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
     double aveAbsOffDiag = (fabs(P(1,2)) + fabs(P(1,3)) + fabs(P(2,3)))/3;
     if (aveAbsOffDiag > Precision::Confusion() ) {
         LOG(WARNING) << "CTiglTransformation::Decompose: The Transformation contains a Shearing, that will be discarded in the decomposition!";
+        success = false;
     }
 
     // calculate intrinsic Euler angles from rotation matrix U
@@ -640,6 +644,119 @@ void CTiglTransformation::Decompose(double scale[3], double rotation[3], double 
     translation[1] = GetValue(1,3);
     translation[2] = GetValue(2,3);
 
+    if (rounding) {
+        //rotation = SnapRotation(tigl::CTiglPoint{rotation[0],rotation[1],rotation[2]});
+        rotation = SnapRotation(rotation);
+        scale = SnapUnitInterval(scale);
+        translation = SnapUnitInterval(translation);
+    }
+
+    return success;
+}
+
+void CTiglTransformation::DecomposeTRSRS(CTiglPoint& scaling1, CTiglPoint& rotation1, CTiglPoint& scaling2,
+                                         CTiglPoint& rotation2, CTiglPoint& translation, bool rounding ) const
+{
+
+    // The theory behind this decomposition can be found at:
+    // http://research.cs.wisc.edu/graphics/Courses/838-s2002/Papers/polar-decomp.pdf
+
+    // Basically we do:
+    // M = T*U*P            where UP is the polar decompostion
+    // M = T*U*V*D*Vt       we decompose P using a Jacobi decomposition
+    // M = T*U*V*N*D*VT*N   we force U*V and VT to be proper rotation  using the fact that an improper rotation U
+    //                      can be factorized in U = QN, where Q is a proper rotation and N =+/-I
+    // M = T*R2*N*D*R1*N
+    // M = T*R2*S2*R1*S1    we store N in the scaling matrices
+
+    tiglMatrix A(1, 3, 1, 3);
+    tiglMatrix P(1, 3, 1, 3);
+    tiglMatrix U(1, 3, 1, 3);
+
+    tiglMatrix D2(1, 3, 1, 3);
+    tiglMatrix V(1, 3, 1, 3);
+
+    tiglMatrix R2(1, 3, 1, 3);
+    tiglMatrix R1(1, 3, 1, 3);
+    tiglMatrix D1(1, 3, 1, 3);
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            A(i + 1, j + 1) = GetValue(i, j);
+        }
+    }
+    PolarDecomposition(A, U, P);
+
+    // check if P is a proper diagonal (P is symmetric so we can check only the upper part)
+    double aveAbsOffDiag = (fabs(P(1, 2)) + fabs(P(1, 3)) + fabs(P(2, 3))) / 3;
+
+    // If S is already a proper scaling, we do not decompose P
+    if (aveAbsOffDiag < Precision::Confusion()) {
+        if (U.Determinant() < 0) {
+            R2 = U * -1;
+            D2 = P * -1;
+        }
+        else {
+            R2 = U;
+            D2 = P;
+        }
+        R1.Init(0);
+        R1(1, 1) = 1.0;
+        R1(2, 2) = 1.0;
+        R1(3, 3) = 1.0;
+        D1.Init(0);
+        D1(1, 1) = 1.0;
+        D1(2, 2) = 1.0;
+        D1(3, 3) = 1.0;
+    }
+    else { // Otherwise we use decompose P using the Jacobi method
+
+        DiagonalizeMatrixByJacobi(P, D2, V);
+        R2 = U * V;
+        if (R2.Determinant() < 0) {
+            R2 = R2 * -1;
+            D2 = D2 * -1;
+        }
+
+        R1 = V.Transposed();
+
+        D1.Init(0.0);
+        D1(1, 1) = 1.0;
+        D1(2, 2) = 1.0;
+        D1(3, 3) = 1.0;
+
+        if (R1.Determinant() < 0) {
+            R1 = R1 * -1;
+            D1 = D1 * -1;
+        }
+    }
+
+    // Set the return values;
+
+    // translation is last column of transformation
+    translation.x = GetValue(0, 3);
+    translation.y = GetValue(1, 3);
+    translation.z = GetValue(2, 3);
+
+    rotation2 = RotMatrixToIntrinsicXYZVector(R2);
+
+    scaling2.x = D2(1, 1);
+    scaling2.y = D2(2, 2);
+    scaling2.z = D2(3, 3);
+
+    rotation1 = RotMatrixToIntrinsicXYZVector(R1);
+
+    scaling1.x = D1(1, 1);
+    scaling1.y = D1(2, 2);
+    scaling1.z = D1(3, 3);
+
+    if (rounding) {
+        rotation1 = tigl::SnapRotation(rotation1);
+        rotation2 = tigl::SnapRotation(rotation2);
+        scaling1 = tigl::SnapUnitInterval(scaling1);
+        scaling2 = tigl::SnapUnitInterval(scaling2);
+        translation = tigl::SnapUnitInterval(translation);
+    }
 }
 
 // Getter for matrix values
@@ -652,6 +769,71 @@ double CTiglTransformation::GetValue(int row, int col) const
     return m_matrix[row][col];
 }
 
+tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationToAlignAToB(tigl::CTiglPoint vectorA,
+                                                                            tigl::CTiglPoint vectorB)
+{
+
+    vectorA.normalize();
+    vectorB.normalize();
+
+    CTiglTransformation Rot;
+
+    if (vectorA.isNear((vectorB))) {
+        return Rot;
+    }
+    if (vectorA.isNear((vectorB * -1))) {
+            CTiglPoint ortho = FindOrthogonalVectorToDirection(vectorA);
+            return CTiglTransformation::GetRotationFromAxisRotation(ortho,180);
+    }
+
+    CTiglPoint cross = CTiglPoint::cross_prod(vectorA, vectorB);
+    double cos       = CTiglPoint::inner_prod(vectorA, vectorB);
+    double s         = 1.0 / (1.0 + cos);
+
+    CTiglTransformation V;
+    V.SetIdentity();
+    V.SetValue(0, 0, 0);
+    V.SetValue(0, 1, -cross.z);
+    V.SetValue(0, 2, cross.y);
+    V.SetValue(1, 0, cross.z);
+    V.SetValue(1, 1, 0);
+    V.SetValue(1, 2, -cross.x);
+    V.SetValue(2, 0, -cross.y);
+    V.SetValue(2, 1, cross.x);
+    V.SetValue(2, 2, 0);
+    V.SetValue(3, 3, 0);
+
+    CTiglTransformation V2 = V * V;
+
+    Rot = ((Rot + V) + (s * V2));
+
+    return Rot;
+}
+
+
+tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationFromAxisRotation( tigl::CTiglPoint a, double angle )
+{
+
+    CTiglTransformation R;
+    a.normalize();
+    double c = cos(Radians(angle));
+    double s = sin(Radians(angle));
+    R.SetValue(0, 0, c + (pow(a.x,2)*(1-c)) );
+    R.SetValue(0, 1, a.x * a.y * (1-c) - (a.z * s) );
+    R.SetValue(0, 2, a.x * a.z * (1-c) + (a.y * s));
+
+    R.SetValue(1, 0, a.y * a.x *(1-c) + (a.z *s ));
+    R.SetValue(1, 1, c + (pow(a.y,2) * (1-c) )) ;
+    R.SetValue(1, 2, a.y * a.z*(1-c) - (a.x *s));
+
+    R.SetValue(2, 0, a.z*a.x*(1-c) - (a.y * s));
+    R.SetValue(2, 1, a.z*a.y*(1-c) + (a.x*s));
+    R.SetValue(2, 2, c + (pow(a.z,2)*(1-c)));
+
+    return R;
+}
+
+
 std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 {
     for (int i = 0; i < 4; ++i) {
@@ -663,11 +845,87 @@ std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
     return os;
 }
 
-CTiglTransformation operator*(const CTiglTransformation & a, const CTiglTransformation & b)
+CTiglTransformation operator*(const CTiglTransformation& a, const CTiglTransformation& b)
 {
     CTiglTransformation result = b;
     result.PreMultiply(a);
     return result;
+}
+
+CTiglPoint operator*(const CTiglTransformation& m, const CTiglPoint& p)
+{
+
+    double augmented_pnt[4] = {p.x, p.y, p.z, 1.0};
+    double res_matrix[4]    = {
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    };
+
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            res_matrix[row] += (m.GetValue(row, col) * augmented_pnt[col]);
+        }
+    }
+
+    CTiglPoint result(res_matrix[0], res_matrix[1], res_matrix[2]);
+    return result;
+}
+
+CTiglTransformation operator+(const CTiglTransformation& a, const CTiglTransformation& b)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, a.GetValue(row, col) + b.GetValue(row, col));
+        }
+    }
+    return result;
+}
+
+CTiglTransformation operator*( double s, const CTiglTransformation& a)
+{
+    CTiglTransformation result;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result.SetValue(row, col, s * a.GetValue(row, col));
+        }
+    }
+    return result;
+}
+
+bool CTiglTransformation::HasZeroScaling() const
+{
+    return (isNear(GetValue(0,0),0)|| isNear(GetValue(1,1),0) || isNear(GetValue(2,2),0));
+}
+
+bool CTiglTransformation::IsNear(const tigl::CTiglTransformation &other, double epsilon) const
+{
+    bool result = true;
+    for (int row = 0; row < 4; row++) {
+        for (int col = 0; col < 4; col++) {
+            result = result && fabs( GetValue(row, col) - other.GetValue(row, col)) <= epsilon;
+        }
+    }
+    return result;
+}
+
+CTiglPoint CTiglTransformation::GetTranslation()
+{
+    // translation is last column of transformation
+    CTiglPoint translation;
+    translation.x = GetValue(0,3);
+    translation.y = GetValue(1,3);
+    translation.z = GetValue(2,3);
+    return translation;
+}
+
+void CTiglTransformation::SetTranslation(const CTiglPoint& translation)
+{
+    SetValue(0,3,translation.x);
+    SetValue(1,3,translation.y);
+    SetValue(2,3,translation.z);
 }
 
 } // end namespace tigl

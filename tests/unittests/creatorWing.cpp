@@ -1,0 +1,1403 @@
+/*
+ * Copyright (C) 2019 CFS Engineering
+ *
+ * Created: 2019 Malo Drougard <malo.drougard@protonmail.com>
+ * Author: Malo Drougard
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "CNamedShape.h"
+#include "test.h"
+#include "tigl.h"
+#include <BRepTools.hxx>
+#include <tixi.h>
+#include <tixicpp.h>
+#include "CPACSWing.h"
+#include "CPACSWings.h"
+#include "CCPACSConfiguration.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSFuselageSectionElement.h"
+#include "CCPACSWingSectionElement.h"
+#include "CCPACSWingSection.h"
+#include "CCPACSWingSegment.h"
+
+class creatorWing : public ::testing::Test
+{
+
+protected:
+    std::string filename = "";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle           = -1;
+
+    tigl::CCPACSConfigurationManager* manager = nullptr;
+    tigl::CCPACSConfiguration* config         = nullptr;
+    tigl::CCPACSWing* wing                    = nullptr;
+
+    void setVariables(std::string inFilename, std::string wingUID)
+    {
+        unsetVariables();
+        filename = inFilename;
+        ASSERT_EQ(SUCCESS, tixiOpenDocument(filename.c_str(), &tixiHandle));
+        ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+        manager = &(tigl::CCPACSConfigurationManager::GetInstance());
+        config  = &(manager->GetConfiguration(tiglHandle));
+        wing    = &(config->GetWing(wingUID));
+    }
+
+    void setWing(std::string wingUID)
+    {
+        wing = &(config->GetWing(wingUID));
+    }
+
+    void unsetVariables()
+    {
+        filename = "";
+
+        if (tiglHandle > -1) {
+            tiglCloseCPACSConfiguration(tiglHandle);
+        }
+        if (tixiHandle > -1) {
+            tixiCloseDocument(tixiHandle);
+        }
+
+        tiglHandle = -1;
+        tiglHandle = -1;
+
+        manager = nullptr;
+        config  = nullptr;
+        wing    = nullptr;
+    }
+
+    // Save the result in a new file (For visual check purpose)
+    void saveInOutputFile()
+    {
+        // write the change in tixi memory
+        config->WriteCPACS(config->GetUID());
+        std::string newConfig = tixi::TixiExportDocumentAsString(tixiHandle);
+
+        // Import-export to flat the xml // todo inform tixi developers about this "bug
+        TixiDocumentHandle tixiHandle2 = tixi::TixiImportFromString(newConfig);
+        newConfig                      = tixi::TixiExportDocumentAsString(tixiHandle2);
+
+        std::ofstream myfile;
+        myfile.open("TestData/Output/creatorWing-out.xml", std::ios::trunc);
+        myfile << newConfig;
+        myfile.close();
+        tixiCloseDocument(tixiHandle2);
+    }
+
+
+    tigl::CTiglSectionElement* GetCElementOf(std::string elementUid)
+    {
+        tigl::CTiglSectionElement* cElement     = nullptr;
+        tigl::CTiglUIDManager::TypedPtr typePtr = config->GetUIDManager().ResolveObject(elementUid);
+        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+            tigl::CCPACSFuselageSectionElement& fuselageElement =
+                    *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+            cElement = fuselageElement.GetCTiglSectionElement();
+        }
+        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+            tigl::CCPACSWingSectionElement& wingElement =
+                    *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+            cElement = wingElement.GetCTiglSectionElement();
+        }
+        return cElement;
+    }
+
+    void TearDown()
+    {
+        unsetVariables();
+    }
+};
+
+TEST_F(creatorWing, MultipleWings_GetWingHalfSpan)
+{
+    // Remark: The span is computed using a bounding box so, the result may no be precisely accurate.
+
+    double tolerance = 0.1;     // 10cm if we use meter metric
+    // symmetry x-z case
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.532088, tolerance);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.532088, tolerance);
+
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1, tolerance);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 1.73205, tolerance);
+
+    // strange symmetry case (symmetry y-x plane)
+    setWing("W7_SymX");
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 0, 2 * tolerance);
+
+    // simple box wing
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetWingHalfSpan(),0.93969, tolerance);
+    
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetWingHalfSpan(),0, tolerance);
+
+}
+
+TEST_F(creatorWing, MultipleWings_GetWingfSpanAndSetSymmetry)
+{
+
+    // Remark: Using setSymmetry does not invalidate the wing,
+    // but, at the moment, all the functions use getSymmetry directly to perform their operation.
+    // So this should not create trouble as long we do not cache some results that use the symmetry
+    // This test makes sure that we remain so.
+
+    double tolerance = 0.1;
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetWingspan(), 4, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_X_Z_PLANE);
+
+    wing->SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+    EXPECT_NEAR(wing->GetWingspan(), 2, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_NO_SYMMETRY);
+
+    wing->SetSymmetryAxis(TiglSymmetryAxis::TIGL_X_Z_PLANE);
+    EXPECT_NEAR(wing->GetWingspan(), 4, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), 2, tolerance);
+    EXPECT_EQ(wing->GetSymmetryAxis(), TiglSymmetryAxis::TIGL_X_Z_PLANE);
+
+}
+
+TEST_F(creatorWing, MultipleWings_GetReferenceArea)
+{
+    // symmetry x-z case
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetReferenceArea(), 1.75, 0.0001);
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetReferenceArea(), 1.75, 0.0001);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.40217333, 0.0001);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.40217333, 0.0001);
+
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.2625, 0.0001);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0.454663, 0.0001);
+
+    // strange symmetry case (symmetry y-x plane)
+    // The area is 0  because we project against the XZ plane since the major axis is Y.
+    setWing("W7_SymX");
+    EXPECT_NEAR(wing->GetReferenceArea(),0, 0.0001);
+
+    // simple box wing
+    // Remark, the area is projected twice on the plane (one for the lower wing, once for the upper wing)
+    // the reference are is doubled // TODO verify that this behavior is not problematic
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetReferenceArea(),2*0.93969, 0.0001);
+    
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetReferenceArea(), 0, 0.0001);
+
+}
+
+TEST_F(creatorWing, MultipleWings_GetSweep)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetSweep(0), 14.0362434, 0.0001);
+    EXPECT_NEAR(wing->GetSweep(1), 0, 0.0001);
+    EXPECT_NEAR(wing->GetSweep(0.5), 7.125016, 0.0001 );
+
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetSweep(0), 14.0362434, 0.0001);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetSweep(0), 5.59175, 0.0001);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetSweep(0), 5.59175, 0.0001);
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetSweep(0), 8.530765, 0.0001);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetSweep(0), 4.94961, 0.0001);
+
+    // simple box wing
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetSweep(0), 0, 0.0001);
+
+    setWing("W9_BWSweep"); // Remark: The sweep and dihedral of positioning can be viewed has extrinsic rotation around Z and X afterwards
+    EXPECT_NEAR(wing->GetSweep(0), 44.7803444, 0.0001);
+
+    // The wing is described in negative Y direction
+    // -> in the case to get the sweep angle, we need to take care of "mirroring the wing" prior to the computation
+    setWing("W10_Reverse");
+    EXPECT_NEAR(wing->GetSweep(0), 14.0362434, 0.0001);
+
+    setWing("W12_NegSwp");
+    EXPECT_NEAR(wing->GetSweep(0), -23, 0.0001);
+
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetSweep(0), 0, 0.0001);
+
+    setWing("W15_ShiAir");
+    EXPECT_NEAR(wing->GetSweep(0.5), 26.57, 0.01);
+
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_GetDihedral)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_NEAR(wing->GetDihedral(0), 0, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(1), 0, 0.0001);
+
+    setWing("W2_RX90");
+    EXPECT_NEAR(wing->GetDihedral(0), 0, 0.0001);
+
+    // symmetry x-z case
+    setWing("W3_RX40");
+    EXPECT_NEAR(wing->GetDihedral(0), 40, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(0.7), 40, 0.0001);
+
+    // no symmetry case
+    setWing("W4_RX40b");
+    EXPECT_NEAR(wing->GetDihedral(0), 40, 0.0001);
+
+    // symmetry x-z
+    // The symmetry prime on the heuristic (So, we get always the correct span)
+    setWing("W5_RX60");
+    EXPECT_NEAR(wing->GetDihedral(0), 60, 0.0001);
+
+    // no symmetry case
+    setWing("W6_RX60b");
+    EXPECT_NEAR(wing->GetDihedral(0), 30, 0.0001);
+
+    // simple box wing
+    setWing("W8_SBW");
+    EXPECT_NEAR(wing->GetDihedral(0), 20, 0.0001);
+
+    setWing("W9_BWSweep"); // Remark: The sweep and dihedral of positioning can be viewed has extrinsic rotation around Z and X afterwards
+    EXPECT_NEAR(wing->GetDihedral(0), 20, 0.0001);
+
+    // The wing is described in negative Y direction
+    // -> in the case to get the sweep angle, we need to take care of "mirroring the wing" prior to the computation
+    setWing("W10_Reverse");
+    EXPECT_NEAR(wing->GetDihedral(0), 0, 0.0001);
+
+    setWing("W11_NegDih");
+    EXPECT_NEAR(wing->GetDihedral(0), -10, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(1), -10, 0.0001);
+
+    setWing("W12_NegSwp");
+    EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
+
+
+    // empty wing
+    setWing("W13_EmptyWing");
+    EXPECT_NEAR(wing->GetDihedral(0.5), 0, 0.0001);
+
+    // wing with a dihedral that changes depending on the input chord value
+    setWing("W14_ChaDih");
+    EXPECT_NEAR(wing->GetDihedral(0), 45, 0.0001);
+    EXPECT_NEAR(wing->GetDihedral(1), 36.87, 0.01);
+
+    setWing("W15_ShiAir");
+    EXPECT_NEAR(wing->GetDihedral(0), 26.57, 0.01);
+
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_GetRootLEPosition)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,0,0));
+
+    setWing("W7_SymX");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,4,0));
+
+    setWing("W3_RX40");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(10,0,0));
+
+    setWing("W10_Reverse");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,-4,0));
+
+    setWing("W13_EmptyWing");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(0,0,0));
+
+    setWing("W14_ChaDih");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(-10,8,0));
+
+    // case of shifted airfoils
+    setWing("W15_ShiAir");
+    EXPECT_EQ(wing->GetRootLEPosition(), tigl::CTiglPoint(-9,-10,0));
+
+}
+
+TEST_F(creatorWing, MultipleWings_SetRootLEPosition)
+{
+    tigl::CTiglPoint newRootPosition;
+
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, 0, 0);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W3_RX40");
+    newRootPosition = tigl::CTiglPoint(3.5, -10, 55);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, -4, 11);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W13_EmptyWing");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition); // just check whether no exception is thrown
+    // In the case of an empty wing, the GetRootLEPosition always returns (0,0,0)
+
+    setWing("W15_ShiAir");
+    newRootPosition = tigl::CTiglPoint(3, 4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+    newRootPosition = tigl::CTiglPoint(-1, 0, 0);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    setWing("W9_BWSweep");
+    newRootPosition = tigl::CTiglPoint(13, 4.4, 5);
+    wing->SetRootLEPosition(newRootPosition);
+    EXPECT_EQ(wing->GetRootLEPosition(), newRootPosition);
+
+    saveInOutputFile();
+}
+
+
+
+
+TEST_F(creatorWing, MultipleWings_SetRotation)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    tigl::CTiglPoint newRot, resRot;
+
+    newRot = tigl::CTiglPoint(0,10,0);
+    wing->SetRotation(newRot);
+    resRot = wing->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    setWing("W9_BWSweep");
+    newRot = tigl::CTiglPoint(-20,10,80);
+    wing->SetRotation(newRot);
+    resRot = wing->GetRotation();
+    EXPECT_TRUE(resRot.isNear(newRot, 0.0001));
+
+    saveInOutputFile();
+}
+
+TEST_F(creatorWing, MultipleWings_SetSweep)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+
+    double newSweep, resSweep, chordPercent;
+    double oldDihedral;  // for checking purpose, dihedral should not move when sweep change
+    tigl::CTiglPoint oldRootLE;  // for checking purpose
+    double tolerance = 0.0001;
+
+    setWing("Wing");
+    newSweep = 30;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+    newSweep = 30;
+    chordPercent = 0.0;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    newSweep = 30;
+    chordPercent = 1;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+    newSweep = -30;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W2_RX90");
+    newSweep = 40;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W10_Reverse");
+    newSweep = 40;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W8_SBW");
+    newSweep = 40;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W5_RX60");
+    newSweep = -20;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W6_RX60b");
+    newSweep = -20;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W14_ChaDih");
+    newSweep = 60;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W15_ShiAir");
+    newSweep = 60;
+    chordPercent = 0.25;
+    oldDihedral = wing->GetDihedral(chordPercent);
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetSweep(newSweep, chordPercent );
+    resSweep = wing->GetSweep(chordPercent);
+    EXPECT_NEAR(resSweep, newSweep, tolerance);
+    EXPECT_NEAR(oldDihedral, wing->GetDihedral(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    // invalid input
+
+    setWing("Wing");
+    newSweep = 100; // bigger than 89
+    chordPercent = 0.25;
+    EXPECT_THROW( wing->SetSweep(newSweep, chordPercent ), tigl::CTiglError );
+
+    setWing("Wing");
+    newSweep = 20;
+    chordPercent = -1 ; // not between 0 and 1
+    EXPECT_THROW( wing->SetSweep(newSweep, chordPercent ), tigl::CTiglError );
+
+    saveInOutputFile();
+
+}
+
+TEST_F(creatorWing, MultipleWings_SetDihedral)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+
+    double newDihedral, resDihedral, chordPercent;
+    double oldSweep; // for checking purpose, sweep should not move when dihedral is changed
+    tigl::CTiglPoint oldRootLE; // for checking purpose
+    double tolerance = 0.0001;
+
+    setWing("Wing");
+    newDihedral  = -30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W2_RX90");
+    newDihedral  = 40;
+    chordPercent = 0;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W10_Reverse");
+    newDihedral  = 20;
+    chordPercent = 1;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W14_ChaDih");
+    newDihedral  = 30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+
+    setWing("W15_ShiAir");
+    newDihedral  = 30;
+    chordPercent = 0.25;
+    oldSweep     = wing->GetSweep(chordPercent);
+    oldRootLE    = wing->GetRootLEPosition();
+    wing->SetDihedral(newDihedral, chordPercent);
+    resDihedral = wing->GetDihedral(chordPercent);
+    EXPECT_NEAR(resDihedral, newDihedral, tolerance);
+    EXPECT_NEAR(oldSweep, wing->GetSweep(chordPercent), tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    saveInOutputFile();
+}
+
+
+
+TEST_F(creatorWing, MultipleWings_Scale)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double scaleF, oldSpan;
+    tigl::CTiglPoint oldRootLE;
+    double tolerance = 0.1;
+
+    scaleF = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W14_ChaDih");
+
+    scaleF = 0.7;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    setWing("W10_Reverse");
+
+    scaleF = 3;
+    oldSpan = wing->GetWingHalfSpan();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->Scale(scaleF);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan*scaleF ,  tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition(), tolerance));
+
+
+    saveInOutputFile();
+
+}
+
+TEST_F(creatorWing, MultipleWings_SetAreaKeepSpan )
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newArea, oldSpan,oldAR;
+    tigl::CTiglPoint oldRootLE;
+    double tolerance = 0.1;
+
+    saveInOutputFile();
+
+    newArea = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+
+    saveInOutputFile();
+
+    setWing("W2_RX90");
+    newArea = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+
+    saveInOutputFile();
+
+    setWing("W15_ShiAir");
+    newArea = 5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldAR = wing->GetAspectRatio();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetAreaKeepSpan(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    // We allow for a little larger tolerance because the profile is in the span direction and we scale it
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.5);
+    EXPECT_FALSE( fabs( oldAR - wing->GetAspectRatio() )  < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    EXPECT_THROW(wing->SetAreaKeepSpan(-3),tigl::CTiglError);
+
+}
+
+TEST_F(creatorWing, MultipleWings_SetAreaKeepAR)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newArea, oldAR;
+    double tolerance = 0.1;
+
+    newArea = 10;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W2_RX90");
+    newArea = 1;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    setWing("W15_ShiAir");
+    newArea = 5;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    setWing("W6_RX60b");
+    newArea = 13;
+    oldAR = wing->GetAspectRatio();
+    wing->SetAreaKeepAR(newArea);
+    EXPECT_NEAR(wing->GetReferenceArea(), newArea, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+
+    // special cases:
+    setWing("Wing");
+    newArea = 0;
+    oldAR = wing->GetAspectRatio();
+    EXPECT_THROW(wing->SetAreaKeepAR(newArea), tigl::CTiglError);
+
+
+
+    saveInOutputFile();
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepAR)
+{
+
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newHalfSpan;
+    double oldAR;
+    double tolerance = 0.1;
+
+
+    newHalfSpan = 1;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W6_RX60b");
+    newHalfSpan = 10;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("W2_RX90");
+    newHalfSpan = 23;
+    oldAR = wing->GetAspectRatio();
+    wing->SetHalfSpanKeepAR(newHalfSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newHalfSpan, tolerance);
+    EXPECT_NEAR(wing->GetAspectRatio(), oldAR, tolerance);
+
+    setWing("Wing");
+    newHalfSpan = -23;
+    EXPECT_THROW( wing->SetHalfSpanKeepAR(newHalfSpan), tigl::CTiglError);
+
+
+    saveInOutputFile();
+
+}
+
+TEST_F(creatorWing, MultipleWings_SetHalfSpanKeepArea)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newSpan, oldArea, oldAR;
+    double tolerance = 0.1;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newSpan = 10;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newSpan = 0.5;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newSpan = 13;
+    oldAR = wing->GetAspectRatio();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetHalfSpanKeepArea(newSpan);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), newSpan, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE( fabs(wing->GetAspectRatio() - oldAR) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
+
+TEST_F(creatorWing, MultipleWings_SetARKeepSpan)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newAR, oldArea, oldSpan;
+    double tolerance = 0.01;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newAR = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newAR = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    // Here the aspect ratio is not exactly set to the value because the profiles are scaled.
+    // So, the span changes a bit
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance + 0.1);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance + 0.1);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newAR = 6;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepSpan(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetWingHalfSpan(), oldSpan, tolerance);
+    EXPECT_FALSE( fabs(wing->GetReferenceArea() - oldArea) < tolerance );
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
+
+
+TEST_F(creatorWing, MultipleWings_SetARKeepArea) {
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    double newAR, oldArea, oldSpan;
+    double tolerance = 0.01;
+    tigl::CTiglPoint oldRootLE;
+
+    saveInOutputFile();
+
+    newAR = 10;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W8_SBW");
+    newAR = 0.5;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance+ 0.1 );
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+    setWing("W16_CurAir");
+    newAR = 13;
+    oldSpan = wing->GetWingHalfSpan();
+    oldArea = wing->GetReferenceArea();
+    oldRootLE = wing->GetRootLEPosition();
+    wing->SetARKeepArea(newAR);
+    EXPECT_NEAR(wing->GetAspectRatio(), newAR, tolerance);
+    EXPECT_NEAR(wing->GetReferenceArea(), oldArea, tolerance);
+    EXPECT_FALSE(fabs(wing->GetWingHalfSpan() - oldSpan) < tolerance);
+    EXPECT_TRUE(oldRootLE.isNear(wing->GetRootLEPosition()));
+
+    saveInOutputFile();
+
+}
+
+
+TEST_F(creatorWing, createSection_WingSegmentGuideCurves)
+{
+
+    setVariables("TestData/simple_test_guide_curves.xml", "Wing");
+
+    EXPECT_THROW(wing->CreateNewConnectedElementBefore("GuideCurveModel_Wing_Sec1_El1", "GuideCurveModel_Wing_Sec1_Before"), tigl::CTiglError);
+    EXPECT_THROW(wing->CreateNewConnectedElementBetween("GuideCurveModel_Wing_Sec1_El1", "GuideCurveModel_Wing_Sec2_El1"), tigl::CTiglError);
+    EXPECT_THROW(wing->CreateNewConnectedElementAfter("GuideCurveModel_Wing_Sec4_El1", "GuideCurveModel_Wing_Sec4_After"), tigl::CTiglError);
+}
+
+
+TEST_F(creatorWing, MultipleWings_CreateSections)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    std::vector<std::string> orderedUIDS;
+    std::vector<std::string> expectedOrderedUIDS;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    tigl::CTiglSectionElement* newElement;
+
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1",
+                                               "Cpacs2Test_Wing_Sec3_El1", 0.5, "Cpacs2Test_Wing_Sec2_After" );
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1"); // new element
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_AfterElem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(0.620235, 1.5, 0.0);
+    newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2_AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
+
+
+    setWing("W9_BWSweep"); // OK. But since the two sections have a 180 degree rotation the result is strange
+    wing->CreateNewConnectedElementAfter("W9_BWSweep_Sec1_El1", 0.5, "W9_BWSweep_Sec1_After");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec1_El1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec1_AfterElem1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec2_El1");
+    expectedOrderedUIDS.push_back("W9_BWSweep_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(-9.1, 0.34, 0.125);
+    newElement     = GetCElementOf("W9_BWSweep_Sec1_AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
+
+    setWing("W5_RX60");
+    wing->CreateNewConnectedElementAfter("W5_RX60_Sec3_El1", "W5_RX60_Sec3_After");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W5_RX60_Sec1_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec2_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec3_El1");
+    expectedOrderedUIDS.push_back("W5_RX60_Sec3_AfterElem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(14.3, 1.5, 2.59);
+    newElement     = GetCElementOf("W5_RX60_Sec3_AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
+
+    setWing("W6_RX60b");
+    wing->CreateNewConnectedElementAfter("W6_RX60b_Sec3_El1", "W6_RX60b_Sec3_After");
+    saveInOutputFile();
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec1_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec2_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec3_El1");
+    expectedOrderedUIDS.push_back("W6_RX60b_Sec3_AfterElem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]);
+    }
+    expectedCenter = tigl::CTiglPoint(16.3, 1.5, 2.59);
+    newElement     = GetCElementOf("W6_RX60b_Sec3_AfterElem1");
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.2));
+
+
+}
+
+TEST_F(creatorWing, section_order)
+{
+    setVariables("TestData/multiple_wings.xml", "Wing");
+    std::vector<std::string> expectedOrderedUIDS;
+
+    // CreateNewConnectedElementBetween
+    wing->CreateNewConnectedElementBetween(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "Cpacs2Test_Wing_Sec3_El1",
+        0.5,
+        "new_section_1" );
+    saveInOutputFile();
+
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, in the middle
+    wing->CreateNewConnectedElementBefore(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "new_section_2"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    wing->CreateNewConnectedElementBefore(
+        "Cpacs2Test_Wing_Sec1_El1",
+        "new_section_3"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, specified eta, in the middle
+    wing->CreateNewConnectedElementBefore(
+        "new_section_2Elem1",
+        0.25,
+        "new_section_4"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementBefore, no eta, at the start
+    wing->CreateNewConnectedElementBefore(
+        "new_section_3Elem1",
+        "new_section_5"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, in the middle
+    wing->CreateNewConnectedElementAfter(
+        "Cpacs2Test_Wing_Sec2_El1",
+        "new_section_6"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, no eta, at the end
+    wing->CreateNewConnectedElementAfter(
+        "Cpacs2Test_Wing_Sec3_El1",
+        "new_section_7"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+
+    // CreateNewConnectedElementAfter, specified eta, in the middle
+    wing->CreateNewConnectedElementAfter(
+        "new_section_4Elem1",
+        0.75,
+        "new_section_8"
+    );
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("new_section_5Elem1");
+    expectedOrderedUIDS.push_back("new_section_3Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("new_section_4Elem1");
+    expectedOrderedUIDS.push_back("new_section_8Elem1");
+    expectedOrderedUIDS.push_back("new_section_2Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("new_section_6Elem1");
+    expectedOrderedUIDS.push_back("new_section_1Elem1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    expectedOrderedUIDS.push_back("new_section_7Elem1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        auto uid = wing->GetSection(i+1).GetElements().GetElement(1).GetUID();
+        EXPECT_EQ(expectedOrderedUIDS[i], uid);
+    }
+}
+
+TEST_F(creatorWing, wingCreateSectionInsideWithParam)
+{
+    tigl::CTiglSectionElement* newElement;
+    tigl::CTiglPoint expectedCenter, currentCenter;
+    double expectedWidth, expectedArea;
+
+    setVariables("TestData/simpletest_modified.cpacs.xml", "Wing");
+
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378, "Cpacs2Test_Wing_Sec2Bis");
+
+    expectedArea = 0.185723;
+    expectedWidth = 0.81102;
+    expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
+    newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
+
+    EXPECT_NEAR(expectedArea, newElement->GetArea(), 0.0001);
+    EXPECT_NEAR(expectedWidth, newElement->GetWidth(), 0.0001);
+    EXPECT_TRUE(expectedCenter.isNear(newElement->GetCenter(), 0.001));
+
+    // Check parameter boundaries
+    // Value outside of open interval (0,1) is not reasonable
+    EXPECT_THROW( wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1", 0.0) , tigl::CTiglError );
+    EXPECT_THROW( wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1", 1.0) , tigl::CTiglError );
+}
+
+TEST_F(creatorWing, wingCreateSectionNonBoundary)
+{
+    setVariables("TestData/simpletest.cpacs.xml", "Wing");
+    std::vector<std::string> orderedUIDS, expectedOrderedUIDS;
+
+    // Add a non-boundary section to a wing and check whether all shapes can be built
+    wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1", 0.5, "Cpacs2Test_Wing_Sec1_After");
+
+    orderedUIDS = wing->GetSegments().GetElementUIDsInOrder();
+    expectedOrderedUIDS.clear();
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec1_AfterElem1"); // new element
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec2_El1");
+    expectedOrderedUIDS.push_back("Cpacs2Test_Wing_Sec3_El1");
+    for (int i = 0; i < expectedOrderedUIDS.size(); i++) {
+        EXPECT_EQ(expectedOrderedUIDS[i], orderedUIDS[i]); // Check sections order
+    }
+
+    for (int i = 1; i <= wing->GetSegments().GetSegmentCount(); i++) {
+        // Check whether all section's segments are valid and can be built
+        EXPECT_NO_THROW(const TopoDS_Shape& shape = wing->GetSegments().GetSegment(i).GetLoft()->Shape());
+    }
+}
+
+TEST_F(creatorWing, D250_DeleteSection )
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedNewUidsOrder;
+    std::vector<std::string> orderedUids;
+    int nbSegements;
+
+    //TODO: check the behavior with the connected component and guide line 
+    
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_innerKink_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_midPlane_Elem1");
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
+    expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_midPlane_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
+    expectedNewUidsOrder.push_back("wing_winglet_tip_Elem1");
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+    nbSegements = wing->GetSegments().GetSegmentCount();
+    wing->DeleteConnectedElement("wing_winglet_tip_Elem1");
+    EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
+    orderedUids = wing->GetOrderedConnectedElement();
+    expectedNewUidsOrder.clear();
+    expectedNewUidsOrder.push_back("wing_root_Elem1");
+    expectedNewUidsOrder.push_back("wing_midKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_outerKink_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_Elem1");
+    expectedNewUidsOrder.push_back("wing_tip_winglet_Elem1");  // double element for this section
+    for (int i = 0; i < expectedNewUidsOrder.size(); i++) {
+        EXPECT_EQ(expectedNewUidsOrder.at(i), orderedUids.at(i) );
+    }
+    saveInOutputFile();
+
+}
+
+TEST_F(creatorWing, D250_GetAllAirfoils)
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedAirfoils;
+    std::vector<std::string> currentAirfoils;
+
+    expectedAirfoils.clear();
+    expectedAirfoils.push_back("NACA64a210_root");
+    expectedAirfoils.push_back("NACA64a210_innerKink");
+    expectedAirfoils.push_back("NACA64a210");
+    currentAirfoils = wing->GetAllUsedAirfoils();
+    ASSERT_EQ(currentAirfoils.size(), expectedAirfoils.size());
+    for(int i = 0; i < currentAirfoils.size(); i ++ ){
+        EXPECT_EQ(currentAirfoils.at(i), expectedAirfoils.at(i));
+    }
+
+}
+
+
+TEST_F(creatorWing, D250_SetAllAirfoils)
+{
+    setVariables("TestData/CPACS_30_D250_10.xml", "D250_wing");
+    std::vector<std::string> expectedAirfoils;
+    std::vector<std::string> currentAirfoils;
+
+    saveInOutputFile();
+
+    wing->SetAllAirfoils("NACA64a210");
+    expectedAirfoils.push_back("NACA64a210");
+    currentAirfoils = wing->GetAllUsedAirfoils();
+    ASSERT_EQ(currentAirfoils.size(), expectedAirfoils.size());
+    for(int i = 0; i < currentAirfoils.size(); i ++ ){
+        EXPECT_EQ(currentAirfoils.at(i), expectedAirfoils.at(i));
+    }
+
+    saveInOutputFile();
+
+}

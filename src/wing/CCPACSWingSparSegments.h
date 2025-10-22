@@ -37,9 +37,6 @@ public:
 
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    TIGL_EXPORT int GetSparSegmentCount() const;
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
 };
 
 } // end namespace tigl
