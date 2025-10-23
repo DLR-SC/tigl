@@ -117,6 +117,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void addSpotlight();
 
 private:
     void connectSignals();
