@@ -745,6 +745,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
     try {
         START_COMMAND()
+        std::cout << "DEBUGGING: " << uid.toStdString() << std::endl;
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
 
         auto found = callbacks.find(component.GetComponentType());

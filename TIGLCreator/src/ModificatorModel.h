@@ -270,6 +270,25 @@ private:
     // non-duplicated helper declaration here.
     Qt::CheckState aggregateChildrenState(cpcr::CPACSTreeItem* item) const;
 
+    // Return whether the given UID corresponds to a drawable geometric component.
+    // Drawable here means the UID maps to an ITiglGeometricComponent that provides a loft
+    // (PNamedShape) which can be displayed in the viewer.
+    bool isDrawableUID(const std::string& uid) const;
+
+    // Return true if the given tree item has any descendant that is drawable
+    // (i.e. any child or deeper descendant maps to a drawable UID). This allows
+    // parents that group drawable items to be checkable even if the parent itself
+    // does not have a UID.
+    bool hasDrawableChildren(cpcr::CPACSTreeItem* item) const;
+
+    // Populate the drawableMap cache by iterating geometric components
+    // in the current configuration. This avoids expensive calls to
+    // GetLoft() during paint/data operations.
+    void populateDrawableCache();
+
+    mutable std::unordered_map<std::string, bool> drawableMap;
+    bool isDrawable(const std::string& uid) const;
+
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H

@@ -34,7 +34,7 @@
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
-
+#include <QTimer>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -969,6 +969,8 @@ QVariant ModificatorModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 {
+    if (!configurationIsSet()) return QVariant();
+
     if (!index.isValid() || !isValid()) {
         return QVariant();
     }
@@ -982,17 +984,21 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
     // Check state handling (checkboxes live in column 0)
     if (role == Qt::CheckStateRole && index.column() == 0) {
         if (!item) return QVariant();
-        // Use explicit visibility if present for items with a UID
-        std::string selfUid = item->getUid();
-        if (!selfUid.empty()) {
-            auto it = visibilityMap.find(selfUid);
-            if (it != visibilityMap.end()) {
-                return it->second.visible ? Qt::Checked : Qt::Unchecked;
-            }
+
+        // Only show a checkbox if the item is checkable
+        if (!(flags(index) & Qt::ItemIsUserCheckable)) {
+            return QVariant();
         }
 
-        // No explicit visibility -> aggregate immediate children state
+        std::string uid = item->getUid();
+        if (!uid.empty() && isDrawable(uid)) {
+            auto it = visibilityMap.find(uid);
+            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+            return vis ? Qt::Checked : Qt::Unchecked;
+        }
+
         return aggregateChildrenState(item);
+        
     }
 
     if (role == Qt::UserRole) {
@@ -1021,94 +1027,88 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 
 bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!index.isValid()) {
+    if (!configurationIsSet()) return false; 
+
+    if (!index.isValid())
         return false;
+
+    if (role != Qt::CheckStateRole || index.column() != 0)
+        return QAbstractItemModel::setData(index, value, role);
+
+    cpcr::CPACSTreeItem* item = getItem(index);
+    if (!item)
+        return false;
+
+    const bool visible = (value.toInt() == Qt::Checked);
+    std::vector<QModelIndex> changedIdxs;
+    std::vector<std::string> changedUIDs;
+
+    auto updateVisibility = [&](cpcr::CPACSTreeItem* node) {
+        if (!node)
+            return;
+        const std::string uid = node->getUid();
+        if (uid.empty() || !isDrawable(uid))
+            return;
+
+        visibilityMap[uid].visible = visible;
+        const QModelIndex idx = getIndex(node, 0);
+        if (idx.isValid())
+            changedIdxs.push_back(idx);
+        changedUIDs.push_back(uid);
+    };
+
+    // Apply to this item and its immediate children
+    updateVisibility(item);
+    for (auto* child : item->getChildren())
+        updateVisibility(child);
+
+    // Notify views
+    for (const auto& idx : changedIdxs)
+        emit dataChanged(idx, idx, {Qt::CheckStateRole});
+
+    // Queue visibility signals (deferred to avoid painting reentrancy)
+    std::vector<std::pair<QString, bool>> pending;
+    pending.reserve(changedUIDs.size());
+    for (const auto& uid : changedUIDs) {
+        const auto it = visibilityMap.find(uid);
+        const bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+        pending.emplace_back(QString::fromStdString(uid), vis);
     }
 
-    if (role == Qt::CheckStateRole && index.column() == 0) {
-        cpcr::CPACSTreeItem* item = getItem(index);
-        if (!item) return false;
+    QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
+        for (const auto& p : pending)
+            emit componentVisibilityChanged(p.first, p.second);
+    });
 
-        bool visible = (value.toInt() == Qt::Checked);
+    // Update parent aggregate states
+    for (QModelIndex p = parent(index); p.isValid(); p = parent(p))
+        emit dataChanged(p, p, {Qt::CheckStateRole});
 
-        // collect changed indexes and uids to notify after updates
-        std::vector<QModelIndex> changedIdxs;
-        std::vector<std::string> changedUIDs;
-
-        if (item->getChildren().empty()) {
-            // leaf: just change itself (store visibility for any uid)
-            std::string uid = item->getUid();
-            if (uid.empty()) return false;
-            visibilityMap[uid].visible = visible;
-            changedIdxs.push_back(index);
-            changedUIDs.push_back(uid);
-        }
-        else {
-            // non-leaf: apply visibility to the item (if it has a uid) and its immediate children only (non-recursive)
-            std::string uid = item->getUid();
-            if (!uid.empty()) {
-                visibilityMap[uid].visible = visible;
-                changedIdxs.push_back(index);
-                changedUIDs.push_back(uid);
-            }
-
-            // immediate children only
-            for (auto child : item->getChildren()) {
-                if (!child) continue;
-                std::string cuid = child->getUid();
-                if (!cuid.empty()) {
-                    visibilityMap[cuid].visible = visible;
-                    QModelIndex cidx = getIndex(child, 0);
-                    if (cidx.isValid()) changedIdxs.push_back(cidx);
-                    changedUIDs.push_back(cuid);
-                }
-            }
-        }
-
-        // notify views for all changed indexes
-        for (const auto& idx : changedIdxs) {
-            emit dataChanged(idx, idx, { Qt::CheckStateRole });
-        }
-
-        // emit semantic signals for each UID changed
-        for (const auto& u : changedUIDs) {
-            auto it = visibilityMap.find(u);
-            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
-            emit componentVisibilityChanged(QString::fromStdString(u), vis);
-        }
-
-        // Also update parent chain states upward
-        QModelIndex parentIdx = parent(index);
-        while (parentIdx.isValid()) {
-            emit dataChanged(parentIdx, parentIdx, { Qt::CheckStateRole });
-            parentIdx = parent(parentIdx);
-        }
-
-        return true;
-    }
-
-    return QAbstractItemModel::setData(index, value, role);
+    return true;
 }
 
 
 
 Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* item) const
 {
-    if (!item) return Qt::Unchecked;
-    // Aggregate over immediate children; if a child has no uid, recurse into it.
+    if (!item)
+        return Qt::Unchecked;
+
     bool anyChecked = false;
     bool anyUnchecked = false;
 
-        for (auto child : item->getChildren()) {
-        if (!child) continue;
+    for (auto* child : item->getChildren()) {
+        if (!child)
+            continue;
+
         Qt::CheckState st = Qt::Unchecked;
-        std::string uid = child->getUid();
-        if (!uid.empty()) {
-            auto it = visibilityMap.find(uid);
-            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+        const std::string uid = child->getUid();
+
+        if (!uid.empty() && isDrawable(uid)) {
+            const auto it = visibilityMap.find(uid);
+            const bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
             st = vis ? Qt::Checked : Qt::Unchecked;
-        }
-        else {
+        } else {
             st = aggregateChildrenState(child);
         }
 
@@ -1116,24 +1116,32 @@ Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* ite
         else if (st == Qt::Unchecked) anyUnchecked = true;
         else if (st == Qt::PartiallyChecked) { anyChecked = anyUnchecked = true; }
 
-        if (anyChecked && anyUnchecked) return Qt::PartiallyChecked;
+        if (anyChecked && anyUnchecked)
+            return Qt::PartiallyChecked;
     }
 
     if (anyChecked && !anyUnchecked) return Qt::Checked;
     if (!anyChecked && anyUnchecked) return Qt::Unchecked;
-    // default (no child uids) -> checked (visible)
-    return Qt::Checked;
+    return Qt::Checked;  
 }
 
 Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid()) return Qt::NoItemFlags;
+    if (!index.isValid())
+        return Qt::NoItemFlags;
 
     Qt::ItemFlags f = QAbstractItemModel::flags(index);
-    if (index.column() == 0) {
-        // Make the item checkable in column 0 (previous behaviour: all items had a checkbox)
+    if (index.column() != 0)
+        return f;
+
+    cpcr::CPACSTreeItem* item = getItem(index);
+    if (!item)
+        return f;
+
+    const std::string uid = item->getUid();
+    if ((!uid.empty() && isDrawable(uid)) || (uid.empty() && hasDrawableChildren(item)))
         f |= Qt::ItemIsUserCheckable;
-    }
+
     return f;
 }
 
@@ -1298,4 +1306,48 @@ std::vector<Handle(AIS_InteractiveObject)> ModificatorModel::getInteractiveObjec
     auto it = visibilityMap.find(uid);
     if (it == visibilityMap.end()) return {};
     return it->second.objects;
+}
+
+bool ModificatorModel::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
+
+{
+    if (!item) return false;
+
+    for (auto child : item->getChildren()) {
+        if (!child) continue;
+
+        std::string cuid = child->getUid();
+        if (!cuid.empty() && isDrawable(cuid))
+            return true; // direct drawable child
+    }
+
+    return false;
+}
+
+bool ModificatorModel::isDrawable(const std::string& uid) const
+{
+    if (uid.empty() || !configurationIsSet()) {
+        return false;
+    }
+
+    // Check cache first
+    auto it = drawableMap.find(uid);
+    if (it != drawableMap.end()) {
+        return it->second;
+    }
+
+    bool drawable = false;
+    try {
+    tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
+        PNamedShape loft = comp.GetLoft();
+        if (loft) {
+        drawable = true; 
+        }
+    }
+    catch (...) {
+        // UID does not map to a geometric component -> not drawable
+    }
+    // Cache the result
+    drawableMap[uid] = drawable;
+    return drawable;
 }
