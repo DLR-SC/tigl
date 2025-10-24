@@ -754,8 +754,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
     // define some component specific draw commands
     CallbackMap callbacks;
-    callbacks[TIGL_COMPONENT_ROTOR]                  = &TIGLCreatorDocument::drawRotorByUID;
-    callbacks[TIGL_COMPONENT_CONTROL_SURFACE_DEVICE] = &TIGLCreatorDocument::drawWingFlap;
+    callbacks[TIGL_COMPONENT_ROTOR] = &TIGLCreatorDocument::drawRotorByUID;
 
     try {
         START_COMMAND()
@@ -770,15 +769,23 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         }
 
         PNamedShape loft = component.GetLoft();
-        if (loft)
-            app->getScene()->displayShape(loft, true, getDefaultShapeColor());
-
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
-        if (geometricComp) {
-            PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-            if (mirroredLoft)
-                app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+        if (loft) {
+            double opacity = 0.66;
+            bool shaded = true;
+            // By default, we display the wing without cutouts (for performance). 
+            // Therefore, it is visually better to display the flaps using a wireframe rendering by default
+            if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
+                shaded = false;
+            }
+            app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
+            if (geometricComp) {
+                PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                if (mirroredLoft) {
+                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                }
+            }
         }
     }
     catch (tigl::CTiglError& err) {
@@ -797,6 +804,7 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_NACELLE);
     shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
+    shapesToDraw.push_back(TIGL_COMPONENT_CONTROL_SURFACE_DEVICE);
 
     try {
 
@@ -975,8 +983,26 @@ void TIGLCreatorDocument::drawFuselageGuideCurves()
 void TIGLCreatorDocument::drawWing()
 {
     QString wingUid = dlgGetWingSelection();
-    if (!wingUid.isEmpty()) {
+    if (wingUid == "") {
+        return;
+    }
+    else {
         drawComponentByUID(wingUid);
+    }
+
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    if (wing.GetComponentSegments())
+    {
+        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
+            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
+                continue;
+            }
+            if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
+                for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                    drawComponentByUID(ted->GetUID().c_str());
+                }
+            }
+        }
     }
 }
 

@@ -52,7 +52,7 @@
       </size>
      </property>
      <property name="text">
-      <string>Nb. section</string>
+      <string>Nb. sections</string>
      </property>
     </widget>
    </item>
@@ -72,7 +72,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Create a new fusealge with the above parameters</string>
+      <string>Create a new fuselage with the following parameters</string>
      </property>
     </widget>
    </item>
@@ -91,7 +91,7 @@
       </size>
      </property>
      <property name="text">
-      <string>ProfilesUiD</string>
+      <string>ProfileUID</string>
      </property>
     </widget>
    </item>
@@ -113,7 +113,7 @@
       </size>
      </property>
      <property name="text">
-      <string>UiD</string>
+      <string>UID</string>
      </property>
     </widget>
    </item>

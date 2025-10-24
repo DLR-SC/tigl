@@ -95,8 +95,6 @@ protected:
      */
     CTiglPoint GetStdDirForProfileUnitZ(TiglCoordinateSystem referenceCS) const override;
 
-    void InvalidateParent() override;
-
 private:
     CCPACSWingSectionElement* element;
     CCPACSWingSection* section;

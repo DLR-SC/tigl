@@ -20,6 +20,7 @@
 #define NEWWINGDIALOG_H
 
 #include <QDialog>
+#include "CTiglUIDManager.h"
 
 namespace Ui
 {
@@ -31,16 +32,15 @@ class NewWingDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewWingDialog(QStringList profileUIDs, QWidget *parent = nullptr);
+    explicit NewWingDialog(QStringList profileUIDs, tigl::CTiglUIDManager const& uid_mgr, QWidget *parent = nullptr);
     ~NewWingDialog();
-
 
     int getNbSection() const;
     QString getUID() const;
     QString getProfileUID() const;
 
-
 private:
+    std::function<QString(QString)> make_unique;
     Ui::NewWingDialog *ui;
 };
 
