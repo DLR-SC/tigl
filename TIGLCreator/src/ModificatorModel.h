@@ -175,10 +175,9 @@ public:
 
     void saveVisibilityToSettings();
 
-    // Register/unregister interactive AIS objects with a UID so the model can manage
+    // Register interactive AIS objects with a UID so the model can manage
     // appearing/disappearing without querying external managers.
     void registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
-    void unregisterInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
     bool hasInteractiveObjects(const std::string& uid) const;
     std::vector<Handle(AIS_InteractiveObject)> getInteractiveObjects(const std::string& uid) const;
 

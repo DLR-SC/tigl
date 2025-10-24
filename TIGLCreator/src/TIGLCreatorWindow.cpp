@@ -1055,7 +1055,7 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
         // find interactive objects for the given uid
         auto& shapeManager = myScene->GetShapeManager();
         if (visible) {
-            // draw component (this will create AIS objects and register them with the shape manager)
+            // display component if in map
             if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
                 auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
                 for (auto& obj : objs) {
@@ -1063,12 +1063,11 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
                 }
             }
             else {
+                // draw new component if not in map
                 cpacsConfiguration->drawComponentByUID(uid);
             }
-            // now query created objects and register them in the model's visibility map
         }
         else {
-            // Prefer the model's registered objects (model owns the mapping)
             if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
                 auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
                 for (auto& obj : objs) {
@@ -1076,7 +1075,7 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
                 }
             }
             else {
-                // fallback: ask shape manager for objects matching this uid
+                // TODO: Check if this can happen
                 auto objs = shapeManager.GetIObjectsFromShapeName(uid.toStdString());
                 for (auto& obj : objs) {
                     myScene->getContext()->Remove(obj, Standard_False);
@@ -1086,7 +1085,6 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
         myScene->getViewer()->Update();
     }
     catch (...) {
-        // ignore errors here; drawing may fail for non-geometric nodes
     }
 }
 

@@ -981,7 +981,7 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
-    // Check state handling (checkboxes live in column 0)
+
     if (role == Qt::CheckStateRole && index.column() == 0) {
         if (!item) return QVariant();
 
@@ -1067,6 +1067,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         emit dataChanged(idx, idx, {Qt::CheckStateRole});
 
     // Queue visibility signals (deferred to avoid painting reentrancy)
+    // TODO:CHECK IF STILL NECESSARY
     std::vector<std::pair<QString, bool>> pending;
     pending.reserve(changedUIDs.size());
     for (const auto& uid : changedUIDs) {
@@ -1086,8 +1087,6 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
 
     return true;
 }
-
-
 
 Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* item) const
 {
@@ -1269,7 +1268,6 @@ QModelIndex ModificatorModel::getAircraftModelIndex() const
     }
 }
 
-// Register an interactive AIS object for a given UID
 void ModificatorModel::registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
 {
     if (uid.empty() || obj.IsNull()) return;
@@ -1278,19 +1276,6 @@ void ModificatorModel::registerInteractiveObject(const std::string& uid, Handle(
     auto it = std::find(info.objects.begin(), info.objects.end(), obj);
     if (it == info.objects.end()) {
         info.objects.push_back(obj);
-    }
-}
-
-// Unregister an interactive AIS object for a given UID
-void ModificatorModel::unregisterInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
-{
-    if (uid.empty() || obj.IsNull()) return;
-    auto it = visibilityMap.find(uid);
-    if (it == visibilityMap.end()) return;
-    auto &objs = it->second.objects;
-    auto oit = std::find(objs.begin(), objs.end(), obj);
-    if (oit != objs.end()) {
-        objs.erase(oit);
     }
 }
 
@@ -1308,6 +1293,35 @@ std::vector<Handle(AIS_InteractiveObject)> ModificatorModel::getInteractiveObjec
     return it->second.objects;
 }
 
+bool ModificatorModel::isDrawable(const std::string& uid) const
+{
+    if (uid.empty() || !configurationIsSet()) {
+        return false;
+    }
+    
+    // Check if uid is already in the map
+    auto it = drawableMap.find(uid);
+    if (it != drawableMap.end()) {
+        return it->second;
+    }
+    
+    bool drawable = false;
+    try {
+        tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
+        PNamedShape loft = comp.GetLoft();
+        if (loft) {
+        drawable = true; 
+    }
+}
+catch (...) {
+
+}
+
+// write the uid in the map
+drawableMap[uid] = drawable;
+return drawable;
+}
+
 bool ModificatorModel::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
 
 {
@@ -1318,36 +1332,8 @@ bool ModificatorModel::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
 
         std::string cuid = child->getUid();
         if (!cuid.empty() && isDrawable(cuid))
-            return true; // direct drawable child
+            return true; 
     }
 
     return false;
-}
-
-bool ModificatorModel::isDrawable(const std::string& uid) const
-{
-    if (uid.empty() || !configurationIsSet()) {
-        return false;
-    }
-
-    // Check cache first
-    auto it = drawableMap.find(uid);
-    if (it != drawableMap.end()) {
-        return it->second;
-    }
-
-    bool drawable = false;
-    try {
-    tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
-        PNamedShape loft = comp.GetLoft();
-        if (loft) {
-        drawable = true; 
-        }
-    }
-    catch (...) {
-        // UID does not map to a geometric component -> not drawable
-    }
-    // Cache the result
-    drawableMap[uid] = drawable;
-    return drawable;
 }
