@@ -1002,6 +1002,11 @@ void TIGLCreatorDocument::drawWing()
                     drawComponentByUID(ted->GetUID().c_str());
                 }
             }
+            if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
+                for (auto& led : leds->GetLeadingEdgeDevices()) {
+                    drawComponentByUID(led->GetUID().c_str());
+                }
+            }
         }
     }
 }
