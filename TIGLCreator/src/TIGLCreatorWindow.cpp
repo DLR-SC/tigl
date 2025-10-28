@@ -147,6 +147,11 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    sceneGraph = new SceneGraph();
+    // Provide the model with the SceneGraph instance. The window owns the
+    // SceneGraph and will manage per-configuration attachment via
+    // SceneGraph::setDocument(...).
+    modificatorModel->setSceneGraph(sceneGraph);
     // connect model visibility changes to the scene
     connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
 
@@ -169,6 +174,7 @@ TIGLCreatorWindow::~TIGLCreatorWindow()
     delete stdoutStream;
     delete errorStream;
     delete modificatorModel;
+    delete sceneGraph;
 }
 
 void TIGLCreatorWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -298,6 +304,10 @@ void TIGLCreatorWindow::closeConfiguration()
     modificatorModel->setCPACSConfiguration(nullptr); // it will also reset the treeview
     treeWidget->refresh();
     if (cpacsConfiguration) {
+        if (sceneGraph) {
+            sceneGraph->setDocument(nullptr);
+        }
+
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
@@ -348,8 +358,17 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 
         if (fileType.toLower() == tr("xml")) {
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+
+            if (sceneGraph) {
+                sceneGraph->setDocument(config);
+            }
+
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
+                // revert scene graph document if opening failed
+                if (sceneGraph) {
+                    sceneGraph->setDocument(nullptr);
+                }
                 delete config;
                 return;
             }
@@ -357,6 +376,9 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             cpacsConfiguration = config;
 
             modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+            if (sceneGraph) {
+                sceneGraph->setDocument(cpacsConfiguration);
+            }
             treeWidget->refresh();
 
             connectConfiguration();
@@ -405,6 +427,9 @@ void TIGLCreatorWindow::reopenFile()
     if (currentFile.suffix().toLower() == tr("xml")){
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+        if (sceneGraph) {
+            sceneGraph->setDocument(cpacsConfiguration);
+        }
         treeWidget->refresh();
     }
     else {
@@ -455,6 +480,9 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
             cpacsConfiguration = config;
 
             modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+            if (sceneGraph) {
+                sceneGraph->setDocument(cpacsConfiguration);
+            }
             treeWidget->refresh();
 
             connectConfiguration();
@@ -1056,8 +1084,8 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
         auto& shapeManager = myScene->GetShapeManager();
         if (visible) {
             // display component if in map
-            if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
-                auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
+            if (sceneGraph->hasInteractiveObjects(uid.toStdString())) {
+                auto objs = sceneGraph->getInteractiveObjects(uid.toStdString());
                 for (auto& obj : objs) {
                     myScene->getContext()->Display(obj, Standard_False);
                 }
@@ -1068,8 +1096,8 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
             }
         }
         else {
-            if (modificatorModel->hasInteractiveObjects(uid.toStdString())) {
-                auto objs = modificatorModel->getInteractiveObjects(uid.toStdString());
+            if (sceneGraph->hasInteractiveObjects(uid.toStdString())) {
+                auto objs = sceneGraph->getInteractiveObjects(uid.toStdString());
                 for (auto& obj : objs) {
                     myScene->getContext()->Remove(obj, Standard_False);
                 }

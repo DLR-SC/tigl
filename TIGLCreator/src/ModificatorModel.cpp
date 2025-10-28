@@ -35,6 +35,7 @@
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
 #include <QTimer>
+#include <SceneGraph.h>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -44,6 +45,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 {
 
     doc          = nullptr;
+    sceneGraph   = nullptr;
     this->modificatorContainerWidget = modificatorContainerWidget;
     this->modificatorContainerWidget->setProfilesManager( &profilesDB);
     this->myUndoStack = undoStack;
@@ -991,9 +993,8 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         }
 
         std::string uid = item->getUid();
-        if (!uid.empty() && isDrawable(uid)) {
-            auto it = visibilityMap.find(uid);
-            bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+        if (!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)) {
+            bool vis = sceneGraph->getVisibility(uid);
             return vis ? Qt::Checked : Qt::Unchecked;
         }
 
@@ -1047,10 +1048,10 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         if (!node)
             return;
         const std::string uid = node->getUid();
-        if (uid.empty() || !isDrawable(uid))
+        if (uid.empty() || !sceneGraph || !sceneGraph->isDrawable(uid))
             return;
 
-        visibilityMap[uid].visible = visible;
+        sceneGraph->updateVisibility(uid, visible);
         const QModelIndex idx = getIndex(node, 0);
         if (idx.isValid())
             changedIdxs.push_back(idx);
@@ -1071,8 +1072,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     std::vector<std::pair<QString, bool>> pending;
     pending.reserve(changedUIDs.size());
     for (const auto& uid : changedUIDs) {
-        const auto it = visibilityMap.find(uid);
-        const bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+        const bool vis = sceneGraph ? sceneGraph->getVisibility(uid) : false;
         pending.emplace_back(QString::fromStdString(uid), vis);
     }
 
@@ -1103,9 +1103,8 @@ Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* ite
         Qt::CheckState st = Qt::Unchecked;
         const std::string uid = child->getUid();
 
-        if (!uid.empty() && isDrawable(uid)) {
-            const auto it = visibilityMap.find(uid);
-            const bool vis = (it == visibilityMap.end()) ? true : it->second.visible;
+        if (!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)) {
+            const bool vis = sceneGraph->getVisibility(uid);
             st = vis ? Qt::Checked : Qt::Unchecked;
         } else {
             st = aggregateChildrenState(child);
@@ -1138,7 +1137,7 @@ Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
         return f;
 
     const std::string uid = item->getUid();
-    if ((!uid.empty() && isDrawable(uid)) || (uid.empty() && hasDrawableChildren(item)))
+    if ((!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)))
         f |= Qt::ItemIsUserCheckable;
 
     return f;
@@ -1266,74 +1265,4 @@ QModelIndex ModificatorModel::getAircraftModelIndex() const
         auto const& config = doc->GetConfiguration();
         return getIdxForUID(config.GetUID());
     }
-}
-
-void ModificatorModel::registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
-{
-    if (uid.empty() || obj.IsNull()) return;
-    auto &info = visibilityMap[uid];
-    // avoid duplicates
-    auto it = std::find(info.objects.begin(), info.objects.end(), obj);
-    if (it == info.objects.end()) {
-        info.objects.push_back(obj);
-    }
-}
-
-bool ModificatorModel::hasInteractiveObjects(const std::string& uid) const
-{
-    const auto it = visibilityMap.find(uid);
-    if (it == visibilityMap.end()) return false;
-    return !it->second.objects.empty();
-}
-
-std::vector<Handle(AIS_InteractiveObject)> ModificatorModel::getInteractiveObjects(const std::string& uid) const
-{
-    auto it = visibilityMap.find(uid);
-    if (it == visibilityMap.end()) return {};
-    return it->second.objects;
-}
-
-bool ModificatorModel::isDrawable(const std::string& uid) const
-{
-    if (uid.empty() || !configurationIsSet()) {
-        return false;
-    }
-    
-    // Check if uid is already in the map
-    auto it = drawableMap.find(uid);
-    if (it != drawableMap.end()) {
-        return it->second;
-    }
-    
-    bool drawable = false;
-    try {
-        tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
-        PNamedShape loft = comp.GetLoft();
-        if (loft) {
-        drawable = true; 
-    }
-}
-catch (...) {
-
-}
-
-// write the uid in the map
-drawableMap[uid] = drawable;
-return drawable;
-}
-
-bool ModificatorModel::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
-
-{
-    if (!item) return false;
-
-    for (auto child : item->getChildren()) {
-        if (!child) continue;
-
-        std::string cuid = child->getUid();
-        if (!cuid.empty() && isDrawable(cuid))
-            return true; 
-    }
-
-    return false;
 }

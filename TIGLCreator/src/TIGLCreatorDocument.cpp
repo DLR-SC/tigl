@@ -755,26 +755,28 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             return;
         }
 
-        PNamedShape loft = component.GetLoft();
-        if (loft) {
-            app->getScene()->displayShape(loft, true, getDefaultShapeColor());
-            if (!app->getModificatorModel()->hasInteractiveObjects(uid.toStdString())) {
-                Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
-                app->getModificatorModel()->registerInteractiveObject(uid.toStdString(), obj);
-            }
-        }
+        if (!app->getSceneGraph()->hasInteractiveObjects(uid.toStdString())) {
+            PNamedShape loft = component.GetLoft();
+            if (loft) {
+                app->getScene()->displayShape(loft, true, getDefaultShapeColor());
+                    Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
+                    app->getSceneGraph()->registerInteractiveObject(uid.toStdString(), obj);
+                }
+            
 
-        auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+            auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
-        if (geometricComp) {
-            PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-            if (mirroredLoft) {
-                app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
-                Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
-                app->getModificatorModel()->registerInteractiveObject(uid.toStdString(), obj);
+            if (geometricComp) {
+                PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                if (mirroredLoft) {
+                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                    Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
+                    app->getSceneGraph()->registerInteractiveObject(uid.toStdString(), obj);
+                }
             }
         }
         auto& shapeManager = myScene->GetShapeManager();
+        app->getSceneGraph()->updateVisibility(uid.toStdString(), true);
 
     }
     catch(tigl::CTiglError& err) {

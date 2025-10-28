@@ -31,6 +31,7 @@
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
 #include <AIS_InteractiveObject.hxx>
+#include <SceneGraph.h>
 
 class TIGLCreatorWindow;
 
@@ -117,6 +118,10 @@ public:
 
     void setCPACSConfiguration(TIGLCreatorDocument* newDoc);
 
+    // Associate a SceneGraph instance with this model. The model does not own
+    // the pointer; the caller (TIGLCreatorWindow) manages SceneGraph lifetime.
+    void setSceneGraph(SceneGraph* sg) { sceneGraph = sg; }
+
     /**
      * @brief resets the currently loaded CCPACSConfiguration to the CPACS configuration in a string
      * 
@@ -177,9 +182,7 @@ public:
 
     // Register interactive AIS objects with a UID so the model can manage
     // appearing/disappearing without querying external managers.
-    void registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
-    bool hasInteractiveObjects(const std::string& uid) const;
-    std::vector<Handle(AIS_InteractiveObject)> getInteractiveObjects(const std::string& uid) const;
+ 
 
     bool setData(const QModelIndex& index, const QVariant& value, int role);
 
@@ -251,13 +254,7 @@ private:
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
-
-    struct VisibilityInfo {
-        bool visible = true;
-        std::vector<Handle(AIS_InteractiveObject)> objects;
-    };
-
-    std::unordered_map<std::string, VisibilityInfo> visibilityMap;
+    SceneGraph* sceneGraph;
 
     // helper for hierarchical visibility
     // NOTE: recursive visibility was removed; visibility changes are applied only to the clicked item
@@ -274,19 +271,12 @@ private:
     // (PNamedShape) which can be displayed in the viewer.
     bool isDrawableUID(const std::string& uid) const;
 
-    // Return true if the given tree item has any descendant that is drawable
-    // (i.e. any child or deeper descendant maps to a drawable UID). This allows
-    // parents that group drawable items to be checkable even if the parent itself
-    // does not have a UID.
-    bool hasDrawableChildren(cpcr::CPACSTreeItem* item) const;
 
     // Populate the drawableMap cache by iterating geometric components
     // in the current configuration. This avoids expensive calls to
     // GetLoft() during paint/data operations.
     void populateDrawableCache();
 
-    mutable std::unordered_map<std::string, bool> drawableMap;
-    bool isDrawable(const std::string& uid) const;
 
 };
 
