@@ -299,6 +299,17 @@
                                         </translation>
                                     </transformation>
                                 </component>
+                                <component uID="electricMotor">
+                                    <name>Installed electric motor</name>
+                                    <systemElementUID>predElectricMotor</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -458,6 +469,18 @@
                     </geometry>
                 </genericComponent>
             </genericComponents>
+            <electricMotors>
+                <electricMotor uID="predElectricMotor">
+                    <name>Predefined electric motor</name>
+                    <geometry>
+                        <ellipsoid>
+                            <radiusX>1.</radiusX>
+                            <radiusY>0.5</radiusY>
+                            <radiusZ>0.5</radiusZ>
+                        </ellipsoid>
+                    </geometry>
+                </electricMotor>
+            </electricMotors>
         </systemElements>
         <profiles>
             <wingAirfoils>

@@ -29,17 +29,21 @@
 namespace tigl
 {
 
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSVehicleElementBase& vehicleElement)
-    : m_vehicleElement(vehicleElement) {};
+CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry)
+    : m_geometry(&geometry)
+{
+}
 
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSVehicleElementBase& vehicleElement,
+CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
                                                        const CTiglTransformation& transformation)
-    : m_vehicleElement(vehicleElement)
-    , m_transformation(&transformation) {};
+    : m_geometry(&geometry)
+    , m_transformation(&transformation)
+{
+}
 
 PNamedShape CTiglVehicleElementBuilder::BuildShape()
 {
-    const auto& geom = m_vehicleElement.GetGeometry();
+    const auto& geom = *m_geometry;
     TopoDS_Shape elementShape;
 
     if (auto& p = geom.GetCuboid_choice1()) {
@@ -58,7 +62,10 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
         throw CTiglError("Unsupported geometry type");
     }
 
-    std::string loftName = m_vehicleElement.GetUID().c_str();
+    std::string loftName = "unnamed";
+    if (const auto* parent = geom.GetNextUIDParent()) {
+        loftName = parent->GetObjectUID().get_value_or(loftName);
+    }
     PNamedShape loft(new CNamedShape(elementShape, loftName));
 
     if (m_transformation) {

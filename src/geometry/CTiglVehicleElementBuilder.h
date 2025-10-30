@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-#include <generated/CPACSVehicleElementBase.h>
+#include <generated/CPACSElementGeometry.h>
 #include "tigl_internal.h"
 
 #pragma once
@@ -24,8 +24,8 @@ namespace tigl
 class CTiglVehicleElementBuilder
 {
 public:
-    explicit CTiglVehicleElementBuilder(const CCPACSVehicleElementBase& vehicleElement);
-    explicit CTiglVehicleElementBuilder(const CCPACSVehicleElementBase& vehicleElement,
+    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry);
+    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
                                         const CTiglTransformation& transformation);
 
     TIGL_EXPORT operator PNamedShape();
@@ -33,8 +33,8 @@ public:
     TIGL_EXPORT PNamedShape BuildShape();
 
 private:
-    const CCPACSVehicleElementBase& m_vehicleElement;
-    CTiglTransformation const* m_transformation = nullptr;
+    const CCPACSElementGeometry* m_geometry     = nullptr;
+    const CTiglTransformation* m_transformation = nullptr;
 
     TopoDS_Shape BuildCuboidShape(const CCPACSCuboid& c);
     TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);

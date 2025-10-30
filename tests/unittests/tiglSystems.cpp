@@ -76,6 +76,8 @@ protected:
     tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
     tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
 
+    tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
+
     // std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
 };
 
@@ -108,4 +110,7 @@ TEST_F(Systems, temp)
     auto& loft4 = cone_1->GetLoft();
 
     EXPECT_EQ(1., 1.);
+
+    auto& loft5 = eMotor->GetLoft();
+
 }

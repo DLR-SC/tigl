@@ -20,9 +20,63 @@
 #include "CTiglUIDManager.h"
 #include "CTiglVehicleElementBuilder.h"
 #include "generated/CPACSVehicleElementBase.h"
+#include "generated/CPACSElectricMotor.h"
+#include "generated/CPACSBattery.h"
+#include "generated/CPACSGearBox.h"
+#include "generated/CPACSGasTurbine.h"
+#include "generated/CPACSGenerator.h"
+#include "generated/CPACSTurboGenerator.h"
+#include "generated/CPACSHeatExchanger.h"
 
 namespace tigl
 {
+
+static const CCPACSElementGeometry* TryGetGeometryByUID(CTiglUIDManager* mgr, const std::string& uid)
+{
+    try {
+        return &mgr->ResolveObject<generated::CPACSVehicleElementBase>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSElectricMotor>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSBattery>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSGearBox>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSGasTurbine>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSGenerator>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSTurboGenerator>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+    try {
+        return &mgr->ResolveObject<generated::CPACSHeatExchanger>(uid).GetGeometry();
+    }
+    catch (...) {
+    }
+
+
+    return nullptr;
+}
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
@@ -39,9 +93,10 @@ PNamedShape CCPACSComponent::BuildLoft() const
 {
     auto systemElementUID = m_systemElementUID_choice1.get();
 
-    CCPACSVehicleElementBase& element = m_uidMgr->ResolveObject<CCPACSVehicleElementBase>(systemElementUID);
-    auto transform                    = this->GetTransformationMatrix();
-    CTiglVehicleElementBuilder builder(element, transform);
+    const CCPACSElementGeometry* geom = TryGetGeometryByUID(m_uidMgr, systemElementUID);
+
+    const auto transform              = this->GetTransformationMatrix();
+    CTiglVehicleElementBuilder builder(*geom, transform);
     return builder.BuildShape();
 }
 
