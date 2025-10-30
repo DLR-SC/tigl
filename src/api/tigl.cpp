@@ -35,6 +35,7 @@
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
+#include "CCPACSFuselage.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
@@ -179,6 +180,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         // Note: should return a deprication warning when TiGL is at v3.5
         if (tixiRet != SUCCESS) {
             tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
+        }
+
+        if (tixiCheckElement(tixiHandle, "/cpacs/header/cpacsVersion") == SUCCESS) {
+            LOG(WARNING) << "The use of the cpacsVersion node right at /cpacs/header/ is deprecated since CPACS version 3.5.\n" \
+                "This node has to be moved exclusively into the /cpacs/header/versionInfos[]/versionInfo node to be supported by future TiGL versions.\n" \
+                "More information can be found in the CPACS documentation.";
         }
 
         if (tixiRet != SUCCESS) {

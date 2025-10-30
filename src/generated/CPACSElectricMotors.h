@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSElectricMotor>>& GetElectricMotors() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSElectricMotor>>& GetElectricMotors();
 
+        TIGL_EXPORT virtual size_t GetElectricMotorCount() const;
+        TIGL_EXPORT virtual size_t GetElectricMotorIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSElectricMotor& GetElectricMotor(size_t index) const;
+        TIGL_EXPORT virtual CPACSElectricMotor& GetElectricMotor(size_t index);
+
+        TIGL_EXPORT virtual const CPACSElectricMotor& GetElectricMotor(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSElectricMotor& GetElectricMotor(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSElectricMotor& AddElectricMotor();
         TIGL_EXPORT virtual void RemoveElectricMotor(CPACSElectricMotor& ref);
 

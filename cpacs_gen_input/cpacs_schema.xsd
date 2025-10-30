@@ -36754,7 +36754,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="cone" type="coneType"/>
                         <xsd:element name="ellipsoid" type="ellipsoidType"/>
                         <!-- <xsd:element name="sphere" type="sphereType"/> -->
-                        <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
+                        <!-- <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/> -->
                         <xsd:element name="external" type="externalGeometryType"/>
                         <!-- <xsd:element name="boundingBox" type="boundingBoxType"/> -->
                     </xsd:choice>
@@ -36765,7 +36765,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="multiSegmentShapeType">
+    <!--
+	<xsd:complexType name="multiSegmentShapeType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36786,6 +36787,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+	-->
 
     <xsd:complexType name="elementMassType">
         <xsd:annotation>
@@ -37259,7 +37261,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
 						<xsd:element name="cuboid" type="cuboidType"/>
 						<xsd:element name="cone" type="cylinderType"/>
 						<xsd:element name="ellipsoid" type="ellipsoidType"/>
-						<xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
+						<!-- <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/> -->
 						<xsd:element name="external" type="externalGeometryType"/>
 					</xsd:choice>
 					<xsd:element name="transformation" type="transformationSE3Type"/>

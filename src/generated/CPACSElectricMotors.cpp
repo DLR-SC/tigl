@@ -108,6 +108,59 @@ namespace generated
         return m_electricMotors;
     }
 
+    size_t CPACSElectricMotors::GetElectricMotorCount() const
+    {
+        return m_electricMotors.size();
+    }
+
+    size_t CPACSElectricMotors::GetElectricMotorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetElectricMotorCount(); i++) {
+            const std::string tmpUID(m_electricMotors[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSElectricMotors::GetElectricMotorIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSElectricMotor& CPACSElectricMotors::GetElectricMotor(size_t index)
+    {
+        if (index < 1 || index > GetElectricMotorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSElectricMotor>>::GetElectricMotor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_electricMotors[index];
+    }
+
+    const CPACSElectricMotor& CPACSElectricMotors::GetElectricMotor(size_t index) const
+    {
+        if (index < 1 || index > GetElectricMotorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSElectricMotor>>::GetElectricMotor", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_electricMotors[index];
+    }
+
+    CPACSElectricMotor& CPACSElectricMotors::GetElectricMotor(const std::string& UID)
+    {
+        for (auto& elem : m_electricMotors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSElectricMotors::GetElectricMotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSElectricMotor& CPACSElectricMotors::GetElectricMotor(const std::string& UID) const
+    {
+        for (auto& elem : m_electricMotors ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSElectricMotors::GetElectricMotor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSElectricMotor& CPACSElectricMotors::AddElectricMotor()
     {
         m_electricMotors.push_back(make_unique<CPACSElectricMotor>(this, m_uidMgr));

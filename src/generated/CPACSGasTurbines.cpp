@@ -108,6 +108,59 @@ namespace generated
         return m_gasTurbines;
     }
 
+    size_t CPACSGasTurbines::GetGasTurbineCount() const
+    {
+        return m_gasTurbines.size();
+    }
+
+    size_t CPACSGasTurbines::GetGasTurbineIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGasTurbineCount(); i++) {
+            const std::string tmpUID(m_gasTurbines[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSGasTurbines::GetGasTurbineIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSGasTurbine& CPACSGasTurbines::GetGasTurbine(size_t index)
+    {
+        if (index < 1 || index > GetGasTurbineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGasTurbine>>::GetGasTurbine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_gasTurbines[index];
+    }
+
+    const CPACSGasTurbine& CPACSGasTurbines::GetGasTurbine(size_t index) const
+    {
+        if (index < 1 || index > GetGasTurbineCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGasTurbine>>::GetGasTurbine", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_gasTurbines[index];
+    }
+
+    CPACSGasTurbine& CPACSGasTurbines::GetGasTurbine(const std::string& UID)
+    {
+        for (auto& elem : m_gasTurbines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGasTurbines::GetGasTurbine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSGasTurbine& CPACSGasTurbines::GetGasTurbine(const std::string& UID) const
+    {
+        for (auto& elem : m_gasTurbines ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGasTurbines::GetGasTurbine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSGasTurbine& CPACSGasTurbines::AddGasTurbine()
     {
         m_gasTurbines.push_back(make_unique<CPACSGasTurbine>(this, m_uidMgr));

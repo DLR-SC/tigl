@@ -40,25 +40,34 @@ public:
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSFuselageSegments(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
-    // Invalidates internal state
+    // Invalidate internal state
     TIGL_EXPORT void Invalidate(const boost::optional<std::string>& source = boost::none) const;
 
-    // Gets a segment by index.
-    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
-    TIGL_EXPORT const CCPACSFuselageSegment& GetSegment(int index) const;
+    // Get the segment that is spanned by the elements fromElemUID and toElementUID.
+    // If there is no such segment, the function raises an error
+    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElementUID, const std::string toElementUID);
 
-    // Gets a segment by uid 
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
-
-    // Gets total segment count
-    TIGL_EXPORT int GetSegmentCount() const;
-
-    // Gets the parent component
+    // Get the parent component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
+
+    // return the element uids in order from nose to tail
+    // It assumes that the elements are already ordered according to m_segments !
+    TIGL_EXPORT std::vector<std::string> GetElementUIDsInOrder() const;
+
+    /**
+     * Split the segment into two segments.
+     * The split element will be used as the junction between the two segments.
+     *
+     * @remark Only the segment is split and we do not care about the position of the splitter.
+     * @param segmentToSplit: the uid of the segment to split
+     * @param splitterElement: the uid of the element to be used to connect the two segments
+     * @return the new created segment
+     */
+    TIGL_EXPORT CCPACSFuselageSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
+
 
 
     // CPACSFuselageSegments interface
@@ -66,12 +75,16 @@ public:
 
     TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
+    TIGL_EXPORT void ReorderSegments();
+
+    // check order of segments - each segment must start with the element of the previous segment
+    TIGL_EXPORT bool NeedReordering() const;
 private:
-    void ReorderSegments();
 
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
     Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
+
 };
 
 } // end namespace tigl

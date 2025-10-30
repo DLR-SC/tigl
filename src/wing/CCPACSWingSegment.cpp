@@ -34,7 +34,7 @@
 #include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSConfiguration.h"
@@ -169,6 +169,7 @@ void CCPACSWingSegment::InvalidateImpl(const boost::optional<std::string>& sourc
     CTiglAbstractSegment<CCPACSWingSegment>::Reset();
     surfaceCache.clear();
     areaCache.clear();
+    chordSurfaceCache.clear();
     volumeCache.clear();
     // AIRBUS: added missing invalidation of guide curves
     if (m_guideCurves) {
@@ -369,6 +370,10 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         // build loft using inner and outer wires and possibly guidecurves
         TopoDS_Wire innerWire = GetInnerWire();
         TopoDS_Wire outerWire = GetOuterWire();
+
+        if (GetInnerConnection().GetProfile().HasBluntTE() != GetOuterConnection().GetProfile().HasBluntTE()) {
+            throw CTiglError("Cannot mix profiles with blunt and sharp trailing edges in one wing segment.", TIGL_ERROR);
+        }
 
         // Build loft
         CTiglMakeLoft lofter;

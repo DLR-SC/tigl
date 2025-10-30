@@ -196,7 +196,7 @@ namespace generated
     /// Wing 1 is mirrored on the x-z plane. Wing 2 has wing 1 as parent element, but suppresses its symmetry inheritance. Wing 3 has wing 2 as parent element and sets a new symmetry at the x-y plane. Wing 4 has wing 3 as parent element and no symmetry attribute specified. Thus, it inherits the symmetry at the x-y plane from wing 3. Note : The corresponding transformations are not shown here.
     /// 8.2. Referencing symmetric elements
     /// All nodes (e.g., parentUID ) in CPACS that refer to a component holding the symmetry attribute (e.g., wing) might also have a symmetry attribute to specify how symmetry is propagated through the resulting element hierarchy.
-    /// The symmetry attribute of a referencing element may take three values: symm , def , full : def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour) 
+    /// The symmetry attribute of a referencing element may take three values: symm , def , full : def: The element refers to the geometric component that has a symmetry attribute and refers only to the defined side of the geometric component. symm: The element refers to the geometric component that has a symmetry attribute and refers only to the symmetric side of the geometric component. (Similar to the previous _symm solution) full: The element refers to the geometric component that has a symmetry attribute and refers to the complete component. (This is the default behaviour)
     /// @see symmetry2
     /// For example, to refer to the "other" side of a mirrored wing the following the following syntax might be used:
     /// 
@@ -219,7 +219,7 @@ namespace generated
     /// &lt;!-- array of dimension length(altitude) x length(controlParameters): --&gt;
     /// &lt;dcl&gt;11.;12.;13.;14.;21.;22.;23.;24.;31.;32.;33.;34.&lt;/dcl&gt;
     /// Values for cl increments:
-    /// Control parameter = -1 Control parameter = -0.5 Control parameter =  0 Control parameter =  1 Altitude = 1000m 11. 12. 13. 14. Altitude = 2000m 21. 22. 23. 24. Altitude = 3000m 31. 32. 33. 34.  
+    /// Control parameter = -1 Control parameter = -0.5 Control parameter =  0 Control parameter =  1 Altitude = 1000m 11. 12. 13. 14. Altitude = 2000m 21. 22. 23. 24. Altitude = 3000m 31. 32. 33. 34.
     /// 
     /// 10. Control Parameters
     /// Control parameters are abstract parameters, linking a generic floating point value to a certain status of a control device

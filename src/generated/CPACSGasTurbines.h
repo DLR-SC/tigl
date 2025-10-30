@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSGasTurbine>>& GetGasTurbines() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSGasTurbine>>& GetGasTurbines();
 
+        TIGL_EXPORT virtual size_t GetGasTurbineCount() const;
+        TIGL_EXPORT virtual size_t GetGasTurbineIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSGasTurbine& GetGasTurbine(size_t index) const;
+        TIGL_EXPORT virtual CPACSGasTurbine& GetGasTurbine(size_t index);
+
+        TIGL_EXPORT virtual const CPACSGasTurbine& GetGasTurbine(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSGasTurbine& GetGasTurbine(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSGasTurbine& AddGasTurbine();
         TIGL_EXPORT virtual void RemoveGasTurbine(CPACSGasTurbine& ref);
 

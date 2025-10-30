@@ -141,6 +141,30 @@ namespace generated
         return m_steps;
     }
 
+    size_t CPACSLandingGearSteeringFunction::GetStepCount() const
+    {
+        return m_steps.size();
+    }
+
+    CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(size_t index)
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearSteeringFunctionStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+    const CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::GetStep(size_t index) const
+    {
+        if (index < 1 || index > GetStepCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSLandingGearSteeringFunctionStep>>::GetStep", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_steps[index];
+    }
+
+
     CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::AddStep()
     {
         m_steps.push_back(make_unique<CPACSLandingGearSteeringFunctionStep>(this));

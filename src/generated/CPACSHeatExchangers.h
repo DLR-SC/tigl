@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSHeatExchanger>>& GetHeatExchangers() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSHeatExchanger>>& GetHeatExchangers();
 
+        TIGL_EXPORT virtual size_t GetHeatExchangerCount() const;
+        TIGL_EXPORT virtual size_t GetHeatExchangerIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSHeatExchanger& GetHeatExchanger(size_t index) const;
+        TIGL_EXPORT virtual CPACSHeatExchanger& GetHeatExchanger(size_t index);
+
+        TIGL_EXPORT virtual const CPACSHeatExchanger& GetHeatExchanger(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSHeatExchanger& GetHeatExchanger(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSHeatExchanger& AddHeatExchanger();
         TIGL_EXPORT virtual void RemoveHeatExchanger(CPACSHeatExchanger& ref);
 

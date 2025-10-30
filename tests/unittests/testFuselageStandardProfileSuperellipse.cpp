@@ -18,6 +18,7 @@
 #include "tigl.h"
 #include "Debugging.h"
 #include "tiglcommonfunctions.h"
+#include "CCPACSFuselage.h"
 #include "BRepBuilderAPI_Transform.hxx"
 #include <BRepCheck_Analyzer.hxx>
 #include "CCPACSConfigurationManager.h"
@@ -149,4 +150,39 @@ TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesInvalidInp
 
     // fuselage cannot be build with invalid profile
     ASSERT_THROW(config1.GetFuselage(1).GetLoft(),tigl::CTiglError);
+}
+
+
+TEST(FuselageStandardProfileSuperEllipse_kinks, issue_1094)
+{
+    const char* filename = "TestData/superellipses_kink.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TixiDocumentHandle tiglHandle = -1;
+    TiglCPACSConfigurationHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+
+    // check number of faces. It should be Front, Rear and additionally four faces, one face per quadrant.
+    // If there are additional kinks, there are more faces
+    auto fuselage = config.GetFuselage(1).GetLoft();
+    int face_count = 0;
+    for (int i=0; i < fuselage->GetFaceCount(); ++i) {
+        if (fuselage->GetFaceTraits(i).Name() != "Front" && fuselage->GetFaceTraits(i).Name() != "Rear") {
+            face_count++;
+        }
+    }
+    ASSERT_EQ(face_count, 4);
+
+    ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+    ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+    tiglHandle = -1;
+    tixiHandle = -1;
 }

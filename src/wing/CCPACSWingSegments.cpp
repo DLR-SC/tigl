@@ -25,6 +25,20 @@
 #include "CCPACSWing.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSWingSegment.h"
+#include "sorting.h"
+#include "CCPACSWingSectionElement.h"
+
+namespace
+{
+    bool segment_follows(const std::unique_ptr<tigl::CCPACSWingSegment>& s2, const std::unique_ptr<tigl::CCPACSWingSegment>& s1)
+    {
+        if (!s2 || !s1) {
+            return false;
+        }
+
+        return s2->GetFromElementUID() == s1->GetToElementUID();
+    }
+}
 
 namespace tigl
 {
@@ -40,6 +54,16 @@ CCPACSWingSegments::CCPACSWingSegments(CCPACSEnginePylon* parent, CTiglUIDManage
     : generated::CPACSWingSegments(parent, uidMgr)
     , m_parentVariant(parent)
 {
+}
+
+void CCPACSWingSegments::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSWingSegments::ReadCPACS(tixiHandle, xpath);
+
+    if (NeedReordering()) {
+        LOG(WARNING) << "Wing segments in wrong order! Trying to reorder.";
+        ReorderSegments();
+    }
 }
 
 // Invalidates internal state
@@ -63,58 +87,101 @@ void CCPACSWingSegments::RemoveSegment(CCPACSWingSegment& ref)
     InvalidateParent();
 }
 
-// Gets a segment by index. 
-CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-const CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSegmentCount()) {
-        throw CTiglError("Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
-    }
-    return *m_segments[index];
-}
-
-// Gets a segment by uid. 
-CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-const CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID) const
-{
-    for (std::size_t i = 0; i < m_segments.size(); i++) {
-        if (m_segments[i]->GetUID() == segmentUID) {
-            return *m_segments[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSegments::GetSegment", TIGL_UID_ERROR);
-}
-
-// Gets total segment count
-int CCPACSWingSegments::GetSegmentCount() const
-{
-    return static_cast<int>(m_segments.size());
-}
-
 void CCPACSWingSegments::InvalidateParent() const
 {
     // Invalidate wing or EnginePylon
     if (const auto* parent = GetNextUIDParent()) {
         parent->Invalidate();
     }
+}
+
+bool CCPACSWingSegments::NeedReordering() const
+{
+    if (GetSegmentCount() <= 1) {
+        return false;
+    }
+
+    bool mustReorderSegments   = false;
+    std::string prevElementUID = GetSegment(1).GetToElementUID();
+    for (int i = 2; i <= GetSegmentCount(); ++i) {
+        const CCPACSWingSegment& segment = GetSegment(i);
+        if (prevElementUID != segment.GetFromElementUID()) {
+            mustReorderSegments = true;
+        }
+        prevElementUID = segment.GetToElementUID();
+    }
+    return mustReorderSegments;
+}
+
+void CCPACSWingSegments::ReorderSegments()
+{
+    try {
+        tigl::follow_sort(GetSegments().begin(), GetSegments().end(), segment_follows);
+    }
+    catch (std::invalid_argument) {
+        throw CTiglError("CCPACSWingSegments::ReorderSegments: The wing segments are not continuous.");
+    }
+}
+
+
+CCPACSWingSegment& CCPACSWingSegments::GetSegmentFromTo(const std::string& fromElemUID,
+                                                                const std::string toElementUID)
+{
+
+    for (int i = 0; i < m_segments.size(); i++) {
+        if (m_segments[i]->GetFromElementUID() == fromElemUID && m_segments[i]->GetToElementUID() == toElementUID) {
+            return GetSegment(i + 1);
+        }
+    }
+
+    throw CTiglError("Segment with the given from and to UID not found", TIGL_UID_ERROR);
+}
+
+std::vector<std::string> CCPACSWingSegments::GetElementUIDsInOrder() const
+{
+    std::vector<std::string> elementUIDs;
+    std::string tempStartUID;
+    std::string tempEndUID;
+    for (int i = 0; i < m_segments.size(); i++) {
+        tempStartUID = m_segments[i]->GetFromElementUID();
+        tempEndUID   = m_segments[i]->GetToElementUID();
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempStartUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempStartUID);
+        }
+        if (std::find(elementUIDs.begin(), elementUIDs.end(), tempEndUID) == elementUIDs.end()) {
+            elementUIDs.push_back(tempEndUID);
+        }
+    }
+    return elementUIDs;
+}
+
+
+CCPACSWingSegment& CCPACSWingSegments::SplitSegment(const std::string& segmentUID,
+                                                    const std::string& splitterElementUID)
+{
+    CCPACSWingSegment& segment = this->GetSegment(segmentUID);
+    CCPACSWingSectionElement& splitterElement =
+        GetUIDManager().ResolveObject<CCPACSWingSectionElement>(splitterElementUID);
+
+    // create a additional segment
+    CCPACSWingSegment& additionalSegment = this->AddSegment();
+    std::string additionalSegmentUID     = GetUIDManager().MakeUIDUnique(segment.GetUID() + "bis");
+    additionalSegment.SetUID(additionalSegmentUID);
+    additionalSegment.SetName(additionalSegmentUID);
+
+    // set the segment from splitter element to the old end
+    additionalSegment.SetFromElementUID(splitterElement.GetUID());
+    additionalSegment.SetToElementUID(segment.GetToElementUID());
+
+    // reset the old segment to end at the splitter
+    segment.SetToElementUID(splitterElement.GetUID());
+
+    Invalidate();
+    // Reordering is necessary: After splitting a segment and adding another one, the order is not correct
+    // Without reordering, this results in a wrong shape visible in the TiGLCreator
+    ReorderSegments();
+
+    return additionalSegment;
 }
 
 } // end namespace tigl

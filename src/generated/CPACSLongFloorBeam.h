@@ -66,6 +66,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& GetLongFloorBeamPositions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>>& GetLongFloorBeamPositions();
 
+        TIGL_EXPORT virtual size_t GetLongFloorBeamPositionCount() const;
+        TIGL_EXPORT virtual size_t GetLongFloorBeamPositionIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSLongFloorBeamPosition& GetLongFloorBeamPosition(size_t index) const;
+        TIGL_EXPORT virtual CCPACSLongFloorBeamPosition& GetLongFloorBeamPosition(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSLongFloorBeamPosition& GetLongFloorBeamPosition(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSLongFloorBeamPosition& GetLongFloorBeamPosition(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSLongFloorBeamPosition& AddLongFloorBeamPosition();
         TIGL_EXPORT virtual void RemoveLongFloorBeamPosition(CCPACSLongFloorBeamPosition& ref);
 

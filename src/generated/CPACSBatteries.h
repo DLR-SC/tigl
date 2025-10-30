@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSBattery>>& GetBatterys() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSBattery>>& GetBatterys();
 
+        TIGL_EXPORT virtual size_t GetBatteryCount() const;
+        TIGL_EXPORT virtual size_t GetBatteryIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSBattery& GetBattery(size_t index) const;
+        TIGL_EXPORT virtual CPACSBattery& GetBattery(size_t index);
+
+        TIGL_EXPORT virtual const CPACSBattery& GetBattery(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSBattery& GetBattery(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSBattery& AddBattery();
         TIGL_EXPORT virtual void RemoveBattery(CPACSBattery& ref);
 

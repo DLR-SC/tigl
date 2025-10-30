@@ -62,6 +62,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSkin>>& GetSkinLayers() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSkin>>& GetSkinLayers();
 
+        TIGL_EXPORT virtual size_t GetSkinLayerCount() const;
+
+        TIGL_EXPORT virtual const CCPACSSkin& GetSkinLayer(size_t index) const;
+        TIGL_EXPORT virtual CCPACSSkin& GetSkinLayer(size_t index);
+
         TIGL_EXPORT virtual CCPACSSkin& AddSkinLayer();
         TIGL_EXPORT virtual void RemoveSkinLayer(CCPACSSkin& ref);
 

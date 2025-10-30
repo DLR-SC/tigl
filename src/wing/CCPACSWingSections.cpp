@@ -22,6 +22,8 @@
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
+#include "CTiglUIDManager.h"
+#include "CCPACSWingSectionElement.h"
 
 namespace tigl
 {
@@ -31,31 +33,24 @@ CCPACSWingSections::CCPACSWingSections(CCPACSWing* parent, CTiglUIDManager* uidM
 CCPACSWingSections::CCPACSWingSections(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSWingSections(parent, uidMgr) {}
 
-// Get section count
-int CCPACSWingSections::GetSectionCount() const
+CCPACSWingSection& CCPACSWingSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
 {
-    return static_cast<int>(m_sections.size());
-}
+    CTiglUIDManager& uidManager = GetUIDManager();
 
-// Returns the section for a given index
-CCPACSWingSection& CCPACSWingSections::GetSection(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetSectionCount()) {
-        throw CTiglError("Invalid index in CCPACSWingSections::GetSection", TIGL_INDEX_ERROR);
-    }
-    return *m_sections[index];
-}
+    CCPACSWingSection& newSection = AddSection();
+    std::string newSectionUID     = uidManager.MakeUIDUnique(sectionUID);
+    newSection.SetUID(newSectionUID);
+    newSection.SetName(newSectionUID);
+    newSection.GetTransformation().Init(uidManager.MakeUIDUnique(newSectionUID + "Tr"));
 
-// Gets a section by uid.
-CCPACSWingSection& CCPACSWingSections::GetSection(const std::string& sectionUID)
-{
-    for (std::size_t i = 0; i < m_sections.size(); i++) {
-        if (m_sections[i]->GetUID() == sectionUID) {
-            return *m_sections[i];
-        }
-    }
-    throw CTiglError("Invalid uid in CCPACSWingSections::GetSection", TIGL_UID_ERROR);
+    CCPACSWingSectionElement& newElement = newSection.GetElements().AddElement();
+    std::string newElementUID            = uidManager.MakeUIDUnique(newSectionUID + "Elem1");
+    newElement.SetUID(newElementUID);
+    newElement.SetName(newElementUID);
+    newElement.GetTransformation().Init(uidManager.MakeUIDUnique(newElementUID + "Tr"));
+    newElement.SetAirfoilUID(profileUID);
+
+    return newSection;
 }
 
 } // end namespace tigl

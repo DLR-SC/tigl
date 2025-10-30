@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSGenerator>>& GetGenerators() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSGenerator>>& GetGenerators();
 
+        TIGL_EXPORT virtual size_t GetGeneratorCount() const;
+        TIGL_EXPORT virtual size_t GetGeneratorIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSGenerator& GetGenerator(size_t index) const;
+        TIGL_EXPORT virtual CPACSGenerator& GetGenerator(size_t index);
+
+        TIGL_EXPORT virtual const CPACSGenerator& GetGenerator(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSGenerator& GetGenerator(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSGenerator& AddGenerator();
         TIGL_EXPORT virtual void RemoveGenerator(CPACSGenerator& ref);
 

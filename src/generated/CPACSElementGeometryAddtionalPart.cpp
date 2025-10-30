@@ -117,25 +117,14 @@ namespace generated
             }
         }
 
-        // read element multiSegmentShape
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/multiSegmentShape")) {
-            m_multiSegmentShape_choice4 = boost::in_place(this, m_uidMgr);
-            try {
-                m_multiSegmentShape_choice4->ReadCPACS(tixiHandle, xpath + "/multiSegmentShape");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read multiSegmentShape at xpath " << xpath << ": " << e.what();
-                m_multiSegmentShape_choice4 = boost::none;
-            }
-        }
-
         // read element external
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/external")) {
-            m_external_choice5 = boost::in_place(this, m_uidMgr);
+            m_external_choice4 = boost::in_place(this, m_uidMgr);
             try {
-                m_external_choice5->ReadCPACS(tixiHandle, xpath + "/external");
+                m_external_choice4->ReadCPACS(tixiHandle, xpath + "/external");
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read external at xpath " << xpath << ": " << e.what();
-                m_external_choice5 = boost::none;
+                m_external_choice4 = boost::none;
             }
         }
 
@@ -154,7 +143,7 @@ namespace generated
 
     void CPACSElementGeometryAddtionalPart::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "cone", "ellipsoid", "multiSegmentShape", "external", "transformation" };
+        const std::vector<std::string> childElemOrder = { "cuboid", "cone", "ellipsoid", "external", "transformation" };
 
         // write element cuboid
         if (m_cuboid_choice1) {
@@ -189,21 +178,10 @@ namespace generated
             }
         }
 
-        // write element multiSegmentShape
-        if (m_multiSegmentShape_choice4) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/multiSegmentShape", childElemOrder);
-            m_multiSegmentShape_choice4->WriteCPACS(tixiHandle, xpath + "/multiSegmentShape");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/multiSegmentShape")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/multiSegmentShape");
-            }
-        }
-
         // write element external
-        if (m_external_choice5) {
+        if (m_external_choice4) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/external", childElemOrder);
-            m_external_choice5->WriteCPACS(tixiHandle, xpath + "/external");
+            m_external_choice4->WriteCPACS(tixiHandle, xpath + "/external");
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/external")) {
@@ -232,9 +210,7 @@ namespace generated
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
-                        m_multiSegmentShape_choice4.is_initialized()
-                        ||
-                        m_external_choice5.is_initialized()
+                        m_external_choice4.is_initialized()
                     )
                 )
                 +
@@ -248,9 +224,7 @@ namespace generated
                         ||
                         m_ellipsoid_choice3.is_initialized()
                         ||
-                        m_multiSegmentShape_choice4.is_initialized()
-                        ||
-                        m_external_choice5.is_initialized()
+                        m_external_choice4.is_initialized()
                     )
                 )
                 +
@@ -264,15 +238,13 @@ namespace generated
                         ||
                         m_cone_choice2.is_initialized()
                         ||
-                        m_multiSegmentShape_choice4.is_initialized()
-                        ||
-                        m_external_choice5.is_initialized()
+                        m_external_choice4.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_multiSegmentShape_choice4.is_initialized()
+                    m_external_choice4.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -281,24 +253,6 @@ namespace generated
                         m_cone_choice2.is_initialized()
                         ||
                         m_ellipsoid_choice3.is_initialized()
-                        ||
-                        m_external_choice5.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_external_choice5.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_cuboid_choice1.is_initialized()
-                        ||
-                        m_cone_choice2.is_initialized()
-                        ||
-                        m_ellipsoid_choice3.is_initialized()
-                        ||
-                        m_multiSegmentShape_choice4.is_initialized()
                     )
                 )
                 == 1
@@ -337,24 +291,14 @@ namespace generated
         return m_ellipsoid_choice3;
     }
 
-    const boost::optional<CPACSMultiSegmentShape>& CPACSElementGeometryAddtionalPart::GetMultiSegmentShape_choice4() const
+    const boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice4() const
     {
-        return m_multiSegmentShape_choice4;
+        return m_external_choice4;
     }
 
-    boost::optional<CPACSMultiSegmentShape>& CPACSElementGeometryAddtionalPart::GetMultiSegmentShape_choice4()
+    boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice4()
     {
-        return m_multiSegmentShape_choice4;
-    }
-
-    const boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice5() const
-    {
-        return m_external_choice5;
-    }
-
-    boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice5()
-    {
-        return m_external_choice5;
+        return m_external_choice4;
     }
 
     const CCPACSTransformationSE3& CPACSElementGeometryAddtionalPart::GetTransformation() const
@@ -403,28 +347,16 @@ namespace generated
         m_ellipsoid_choice3 = boost::none;
     }
 
-    CPACSMultiSegmentShape& CPACSElementGeometryAddtionalPart::GetMultiSegmentShape_choice4(CreateIfNotExistsTag)
+    CPACSExternalGeometry& CPACSElementGeometryAddtionalPart::GetExternal_choice4(CreateIfNotExistsTag)
     {
-        if (!m_multiSegmentShape_choice4)
-            m_multiSegmentShape_choice4 = boost::in_place(this, m_uidMgr);
-        return *m_multiSegmentShape_choice4;
+        if (!m_external_choice4)
+            m_external_choice4 = boost::in_place(this, m_uidMgr);
+        return *m_external_choice4;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveMultiSegmentShape_choice4()
+    void CPACSElementGeometryAddtionalPart::RemoveExternal_choice4()
     {
-        m_multiSegmentShape_choice4 = boost::none;
-    }
-
-    CPACSExternalGeometry& CPACSElementGeometryAddtionalPart::GetExternal_choice5(CreateIfNotExistsTag)
-    {
-        if (!m_external_choice5)
-            m_external_choice5 = boost::in_place(this, m_uidMgr);
-        return *m_external_choice5;
-    }
-
-    void CPACSElementGeometryAddtionalPart::RemoveExternal_choice5()
-    {
-        m_external_choice5 = boost::none;
+        m_external_choice4 = boost::none;
     }
 
 } // namespace generated

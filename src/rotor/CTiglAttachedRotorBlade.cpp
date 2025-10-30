@@ -90,25 +90,45 @@ void CTiglAttachedRotorBlade::Update()
 }
 
 // Returns the original unattached rotor blade
-CCPACSWing& CTiglAttachedRotorBlade::GetUnattachedRotorBlade() const
+const CCPACSWing& CTiglAttachedRotorBlade::GetUnattachedRotorBlade() const
+{
+    return *rotorBlade;
+}
+
+CCPACSWing& CTiglAttachedRotorBlade::GetUnattachedRotorBlade()
 {
     return *rotorBlade;
 }
 
 // Returns the parent rotor blade attachment this rotor blade belongs to
-CCPACSRotorBladeAttachment& CTiglAttachedRotorBlade::GetRotorBladeAttachment() const
+const CCPACSRotorBladeAttachment& CTiglAttachedRotorBlade::GetRotorBladeAttachment() const
+{
+    return *parent;
+}
+
+CCPACSRotorBladeAttachment& CTiglAttachedRotorBlade::GetRotorBladeAttachment()
 {
     return *parent;
 }
 
 // Returns the parent rotor
-CCPACSRotor& CTiglAttachedRotorBlade::GetRotor() const
+const CCPACSRotor& CTiglAttachedRotorBlade::GetRotor() const
+{
+    return parent->GetRotor();
+}
+
+CCPACSRotor& CTiglAttachedRotorBlade::GetRotor()
 {
     return parent->GetRotor();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CTiglAttachedRotorBlade::GetConfiguration() const
+const CCPACSConfiguration& CTiglAttachedRotorBlade::GetConfiguration() const
+{
+    return parent->GetConfiguration();
+}
+
+CCPACSConfiguration& CTiglAttachedRotorBlade::GetConfiguration()
 {
     return parent->GetConfiguration();
 }

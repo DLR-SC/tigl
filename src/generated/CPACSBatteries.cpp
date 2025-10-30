@@ -108,6 +108,59 @@ namespace generated
         return m_batterys;
     }
 
+    size_t CPACSBatteries::GetBatteryCount() const
+    {
+        return m_batterys.size();
+    }
+
+    size_t CPACSBatteries::GetBatteryIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetBatteryCount(); i++) {
+            const std::string tmpUID(m_batterys[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSBatteries::GetBatteryIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSBattery& CPACSBatteries::GetBattery(size_t index)
+    {
+        if (index < 1 || index > GetBatteryCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSBattery>>::GetBattery", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_batterys[index];
+    }
+
+    const CPACSBattery& CPACSBatteries::GetBattery(size_t index) const
+    {
+        if (index < 1 || index > GetBatteryCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSBattery>>::GetBattery", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_batterys[index];
+    }
+
+    CPACSBattery& CPACSBatteries::GetBattery(const std::string& UID)
+    {
+        for (auto& elem : m_batterys ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSBatteries::GetBattery. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSBattery& CPACSBatteries::GetBattery(const std::string& UID) const
+    {
+        for (auto& elem : m_batterys ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSBatteries::GetBattery. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSBattery& CPACSBatteries::AddBattery()
     {
         m_batterys.push_back(make_unique<CPACSBattery>(this, m_uidMgr));

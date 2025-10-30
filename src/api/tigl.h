@@ -159,7 +159,7 @@ enum TiglAxis
     TIGL_Z_AXIS = 3
 };
 
-typedef enum TiglAxis TiglAxis;
+
 
 /**
  \ingroup Enums

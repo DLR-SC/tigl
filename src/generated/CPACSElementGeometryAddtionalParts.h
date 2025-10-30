@@ -62,6 +62,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>& GetAddidionalParts() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>& GetAddidionalParts();
 
+        TIGL_EXPORT virtual size_t GetAddidionalPartCount() const;
+
+        TIGL_EXPORT virtual const CPACSElementGeometryAddtionalPart& GetAddidionalPart(size_t index) const;
+        TIGL_EXPORT virtual CPACSElementGeometryAddtionalPart& GetAddidionalPart(size_t index);
+
         TIGL_EXPORT virtual CPACSElementGeometryAddtionalPart& AddAddidionalPart();
         TIGL_EXPORT virtual void RemoveAddidionalPart(CPACSElementGeometryAddtionalPart& ref);
 

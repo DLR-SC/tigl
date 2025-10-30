@@ -34,10 +34,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSEnginePylons;
 
 namespace generated
 {
+    class CPACSEnginePylons;
+
     // This class is used in:
     // CPACSEnginePylons
 
@@ -48,13 +49,13 @@ namespace generated
     class CPACSEnginePylon : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEnginePylon(CPACSEnginePylons* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSEnginePylon();
 
-        TIGL_EXPORT CCPACSEnginePylons* GetParent();
+        TIGL_EXPORT CPACSEnginePylons* GetParent();
 
-        TIGL_EXPORT const CCPACSEnginePylons* GetParent() const;
+        TIGL_EXPORT const CPACSEnginePylons* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -102,7 +103,7 @@ namespace generated
         TIGL_EXPORT virtual void RemovePositionings();
 
     protected:
-        CCPACSEnginePylons* m_parent;
+        CPACSEnginePylons* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -141,4 +142,7 @@ namespace generated
 } // namespace generated
 
 // CPACSEnginePylon is customized, use type CCPACSEnginePylon directly
+
+// Aliases in tigl namespace
+using CCPACSEnginePylons = generated::CPACSEnginePylons;
 } // namespace tigl

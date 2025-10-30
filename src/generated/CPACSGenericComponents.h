@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGenericComponents() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGenericComponents();
 
+        TIGL_EXPORT virtual size_t GetGenericComponentCount() const;
+        TIGL_EXPORT virtual size_t GetGenericComponentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGenericComponent(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGenericComponent(size_t index);
+
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGenericComponent(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGenericComponent(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSVehicleElementBase& AddGenericComponent();
         TIGL_EXPORT virtual void RemoveGenericComponent(CPACSVehicleElementBase& ref);
 

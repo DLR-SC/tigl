@@ -25,6 +25,7 @@
 #include "generated/CPACSFuselageElement.h"
 #include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
+#include "CTiglFuselageSectionElement.h"
 
 namespace tigl
 {
@@ -51,6 +52,13 @@ public:
     TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
 
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
+
+    TIGL_EXPORT inline CTiglFuselageSectionElement* GetCTiglSectionElement() { return &(ctilgElement); };
+
+private:
+
+    CTiglFuselageSectionElement ctilgElement;
+
 };
 
 } // end namespace tigl

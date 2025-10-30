@@ -108,6 +108,30 @@ namespace generated
         return m_addidionalParts;
     }
 
+    size_t CPACSElementGeometryAddtionalParts::GetAddidionalPartCount() const
+    {
+        return m_addidionalParts.size();
+    }
+
+    CPACSElementGeometryAddtionalPart& CPACSElementGeometryAddtionalParts::GetAddidionalPart(size_t index)
+    {
+        if (index < 1 || index > GetAddidionalPartCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>::GetAddidionalPart", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_addidionalParts[index];
+    }
+
+    const CPACSElementGeometryAddtionalPart& CPACSElementGeometryAddtionalParts::GetAddidionalPart(size_t index) const
+    {
+        if (index < 1 || index > GetAddidionalPartCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>::GetAddidionalPart", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_addidionalParts[index];
+    }
+
+
     CPACSElementGeometryAddtionalPart& CPACSElementGeometryAddtionalParts::AddAddidionalPart()
     {
         m_addidionalParts.push_back(make_unique<CPACSElementGeometryAddtionalPart>(this, m_uidMgr));

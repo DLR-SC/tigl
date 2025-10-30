@@ -102,6 +102,59 @@ namespace generated
         return m_components;
     }
 
+    size_t CPACSComponents::GetComponentCount() const
+    {
+        return m_components.size();
+    }
+
+    size_t CPACSComponents::GetComponentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetComponentCount(); i++) {
+            const std::string tmpUID(m_components[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSComponents::GetComponentIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSComponent& CPACSComponents::GetComponent(size_t index)
+    {
+        if (index < 1 || index > GetComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSComponent>>::GetComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_components[index];
+    }
+
+    const CCPACSComponent& CPACSComponents::GetComponent(size_t index) const
+    {
+        if (index < 1 || index > GetComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSComponent>>::GetComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_components[index];
+    }
+
+    CCPACSComponent& CPACSComponents::GetComponent(const std::string& UID)
+    {
+        for (auto& elem : m_components ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSComponents::GetComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSComponent& CPACSComponents::GetComponent(const std::string& UID) const
+    {
+        for (auto& elem : m_components ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSComponents::GetComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSComponent& CPACSComponents::AddComponent()
     {
         m_components.push_back(make_unique<CCPACSComponent>(reinterpret_cast<CCPACSComponents*>(this), m_uidMgr));

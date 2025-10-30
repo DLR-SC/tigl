@@ -108,6 +108,59 @@ namespace generated
         return m_heatExchangers;
     }
 
+    size_t CPACSHeatExchangers::GetHeatExchangerCount() const
+    {
+        return m_heatExchangers.size();
+    }
+
+    size_t CPACSHeatExchangers::GetHeatExchangerIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetHeatExchangerCount(); i++) {
+            const std::string tmpUID(m_heatExchangers[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSHeatExchangers::GetHeatExchangerIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSHeatExchanger& CPACSHeatExchangers::GetHeatExchanger(size_t index)
+    {
+        if (index < 1 || index > GetHeatExchangerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSHeatExchanger>>::GetHeatExchanger", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_heatExchangers[index];
+    }
+
+    const CPACSHeatExchanger& CPACSHeatExchangers::GetHeatExchanger(size_t index) const
+    {
+        if (index < 1 || index > GetHeatExchangerCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSHeatExchanger>>::GetHeatExchanger", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_heatExchangers[index];
+    }
+
+    CPACSHeatExchanger& CPACSHeatExchangers::GetHeatExchanger(const std::string& UID)
+    {
+        for (auto& elem : m_heatExchangers ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSHeatExchangers::GetHeatExchanger. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSHeatExchanger& CPACSHeatExchangers::GetHeatExchanger(const std::string& UID) const
+    {
+        for (auto& elem : m_heatExchangers ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSHeatExchangers::GetHeatExchanger. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSHeatExchanger& CPACSHeatExchangers::AddHeatExchanger()
     {
         m_heatExchangers.push_back(make_unique<CPACSHeatExchanger>(this, m_uidMgr));

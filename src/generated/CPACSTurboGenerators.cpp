@@ -108,6 +108,59 @@ namespace generated
         return m_turboGenerators;
     }
 
+    size_t CPACSTurboGenerators::GetTurboGeneratorCount() const
+    {
+        return m_turboGenerators.size();
+    }
+
+    size_t CPACSTurboGenerators::GetTurboGeneratorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetTurboGeneratorCount(); i++) {
+            const std::string tmpUID(m_turboGenerators[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSTurboGenerators::GetTurboGeneratorIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSTurboGenerator& CPACSTurboGenerators::GetTurboGenerator(size_t index)
+    {
+        if (index < 1 || index > GetTurboGeneratorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTurboGenerator>>::GetTurboGenerator", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_turboGenerators[index];
+    }
+
+    const CPACSTurboGenerator& CPACSTurboGenerators::GetTurboGenerator(size_t index) const
+    {
+        if (index < 1 || index > GetTurboGeneratorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTurboGenerator>>::GetTurboGenerator", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_turboGenerators[index];
+    }
+
+    CPACSTurboGenerator& CPACSTurboGenerators::GetTurboGenerator(const std::string& UID)
+    {
+        for (auto& elem : m_turboGenerators ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSTurboGenerators::GetTurboGenerator. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSTurboGenerator& CPACSTurboGenerators::GetTurboGenerator(const std::string& UID) const
+    {
+        for (auto& elem : m_turboGenerators ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSTurboGenerators::GetTurboGenerator. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSTurboGenerator& CPACSTurboGenerators::AddTurboGenerator()
     {
         m_turboGenerators.push_back(make_unique<CPACSTurboGenerator>(this, m_uidMgr));

@@ -26,7 +26,6 @@
 #include "CPACSCylinder.h"
 #include "CPACSEllipsoid.h"
 #include "CPACSExternalGeometry.h"
-#include "CPACSMultiSegmentShape.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -76,11 +75,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3() const;
         TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSMultiSegmentShape>& GetMultiSegmentShape_choice4() const;
-        TIGL_EXPORT virtual boost::optional<CPACSMultiSegmentShape>& GetMultiSegmentShape_choice4();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSExternalGeometry>& GetExternal_choice5() const;
-        TIGL_EXPORT virtual boost::optional<CPACSExternalGeometry>& GetExternal_choice5();
+        TIGL_EXPORT virtual const boost::optional<CPACSExternalGeometry>& GetExternal_choice4() const;
+        TIGL_EXPORT virtual boost::optional<CPACSExternalGeometry>& GetExternal_choice4();
 
         TIGL_EXPORT virtual const CCPACSTransformationSE3& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation();
@@ -94,23 +90,19 @@ namespace generated
         TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice3(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEllipsoid_choice3();
 
-        TIGL_EXPORT virtual CPACSMultiSegmentShape& GetMultiSegmentShape_choice4(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveMultiSegmentShape_choice4();
-
-        TIGL_EXPORT virtual CPACSExternalGeometry& GetExternal_choice5(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveExternal_choice5();
+        TIGL_EXPORT virtual CPACSExternalGeometry& GetExternal_choice4(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveExternal_choice4();
 
     protected:
         CPACSElementGeometryAddtionalParts* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSCuboid>            m_cuboid_choice1;
-        boost::optional<CPACSCylinder>          m_cone_choice2;
-        boost::optional<CPACSEllipsoid>         m_ellipsoid_choice3;
-        boost::optional<CPACSMultiSegmentShape> m_multiSegmentShape_choice4;
-        boost::optional<CPACSExternalGeometry>  m_external_choice5;
-        CCPACSTransformationSE3                 m_transformation;
+        boost::optional<CPACSCuboid>           m_cuboid_choice1;
+        boost::optional<CPACSCylinder>         m_cone_choice2;
+        boost::optional<CPACSEllipsoid>        m_ellipsoid_choice3;
+        boost::optional<CPACSExternalGeometry> m_external_choice4;
+        CCPACSTransformationSE3                m_transformation;
 
     private:
         CPACSElementGeometryAddtionalPart(const CPACSElementGeometryAddtionalPart&) = delete;

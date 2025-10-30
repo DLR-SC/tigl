@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -15,14 +15,14 @@
 * limitations under the License.
 */
 /**
-* @file 
+* @file
 * @brief  Implementation of CPACS fuselage section element handling routines.
 */
 
 #include "CCPACSFuselageSectionElement.h"
 
 #include "CCPACSFuselageSectionElements.h"
-#include "CCPACSFuselageSections.h"
+#include "generated/CPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselage.h"
 
@@ -31,7 +31,11 @@ namespace tigl
 
 // Constructor
 CCPACSFuselageSectionElement::CCPACSFuselageSectionElement(CCPACSFuselageSectionElements* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSFuselageElement(parent, uidMgr) {}
+    : generated::CPACSFuselageElement(parent, uidMgr) {
+
+    // Remark, if we one day, we implement cache in CTiglFuselageElement, we need to invalidate this cTiglElement
+    ctilgElement = CTiglFuselageSectionElement(this);
+}
 
 void CCPACSFuselageSectionElement::SetProfileUID(const std::string& value) {
     generated::CPACSFuselageElement::SetProfileUID(value);

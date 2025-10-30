@@ -61,6 +61,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSComponent>>& GetComponents() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSComponent>>& GetComponents();
 
+        TIGL_EXPORT virtual size_t GetComponentCount() const;
+        TIGL_EXPORT virtual size_t GetComponentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CCPACSComponent& GetComponent(size_t index) const;
+        TIGL_EXPORT virtual CCPACSComponent& GetComponent(size_t index);
+
+        TIGL_EXPORT virtual const CCPACSComponent& GetComponent(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSComponent& GetComponent(const std::string& UID);
+
         TIGL_EXPORT virtual CCPACSComponent& AddComponent();
         TIGL_EXPORT virtual void RemoveComponent(CCPACSComponent& ref);
 

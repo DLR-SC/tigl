@@ -37,7 +37,6 @@ namespace generated
     // CPACSGenericSystem
     // CPACSGuideCurveProfileGeometry
     // CPACSLandingGearBase
-    // CPACSMultiSegmentShape
     // CPACSProfileGeometry
     // CPACSRotor
     // CPACSWing

@@ -118,6 +118,59 @@ namespace generated
         return m_fuselages;
     }
 
+    size_t CPACSFuselages::GetFuselageCount() const
+    {
+        return m_fuselages.size();
+    }
+
+    size_t CPACSFuselages::GetFuselageIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetFuselageCount(); i++) {
+            const std::string tmpUID(m_fuselages[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
+    }
+
+    CCPACSFuselage& CPACSFuselages::GetFuselage(size_t index)
+    {
+        if (index < 1 || index > GetFuselageCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselage>>::GetFuselage", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuselages[index];
+    }
+
+    const CCPACSFuselage& CPACSFuselages::GetFuselage(size_t index) const
+    {
+        if (index < 1 || index > GetFuselageCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSFuselage>>::GetFuselage", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_fuselages[index];
+    }
+
+    CCPACSFuselage& CPACSFuselages::GetFuselage(const std::string& UID)
+    {
+        for (auto& elem : m_fuselages ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselages::GetFuselage. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CCPACSFuselage& CPACSFuselages::GetFuselage(const std::string& UID) const
+    {
+        for (auto& elem : m_fuselages ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSFuselages::GetFuselage. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CCPACSFuselage& CPACSFuselages::AddFuselage()
     {
         m_fuselages.push_back(make_unique<CCPACSFuselage>(reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr));

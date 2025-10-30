@@ -108,6 +108,59 @@ namespace generated
         return m_genericComponents;
     }
 
+    size_t CPACSGenericComponents::GetGenericComponentCount() const
+    {
+        return m_genericComponents.size();
+    }
+
+    size_t CPACSGenericComponents::GetGenericComponentIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGenericComponentCount(); i++) {
+            const std::string tmpUID(m_genericComponents[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSGenericComponents::GetGenericComponentIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSVehicleElementBase& CPACSGenericComponents::GetGenericComponent(size_t index)
+    {
+        if (index < 1 || index > GetGenericComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenericComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericComponents[index];
+    }
+
+    const CPACSVehicleElementBase& CPACSGenericComponents::GetGenericComponent(size_t index) const
+    {
+        if (index < 1 || index > GetGenericComponentCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenericComponent", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_genericComponents[index];
+    }
+
+    CPACSVehicleElementBase& CPACSGenericComponents::GetGenericComponent(const std::string& UID)
+    {
+        for (auto& elem : m_genericComponents ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenericComponents::GetGenericComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSVehicleElementBase& CPACSGenericComponents::GetGenericComponent(const std::string& UID) const
+    {
+        for (auto& elem : m_genericComponents ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenericComponents::GetGenericComponent. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSVehicleElementBase& CPACSGenericComponents::AddGenericComponent()
     {
         m_genericComponents.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));

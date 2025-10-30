@@ -18,6 +18,7 @@
 */
 
 #include "generated/CPACSTrailingEdgeDevice.h"
+#include "generated/CPACSTrailingEdgeDevices.h"
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "Cache.h"

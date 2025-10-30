@@ -59,6 +59,11 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSTrackJointPosition>>& GetJointPositions() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSTrackJointPosition>>& GetJointPositions();
 
+        TIGL_EXPORT virtual size_t GetJointPositionCount() const;
+
+        TIGL_EXPORT virtual const CPACSTrackJointPosition& GetJointPosition(size_t index) const;
+        TIGL_EXPORT virtual CPACSTrackJointPosition& GetJointPosition(size_t index);
+
         TIGL_EXPORT virtual CPACSTrackJointPosition& AddJointPosition();
         TIGL_EXPORT virtual void RemoveJointPosition(CPACSTrackJointPosition& ref);
 

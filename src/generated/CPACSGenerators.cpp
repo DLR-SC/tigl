@@ -108,6 +108,59 @@ namespace generated
         return m_generators;
     }
 
+    size_t CPACSGenerators::GetGeneratorCount() const
+    {
+        return m_generators.size();
+    }
+
+    size_t CPACSGenerators::GetGeneratorIndex(const std::string& UID) const
+    {
+        for (size_t i=0; i < GetGeneratorCount(); i++) {
+            const std::string tmpUID(m_generators[i]->GetUID());
+            if (tmpUID == UID) {
+                return i+1;
+            }
+        }
+        throw CTiglError("Invalid UID in CPACSGenerators::GetGeneratorIndex", TIGL_UID_ERROR);
+    }
+
+    CPACSGenerator& CPACSGenerators::GetGenerator(size_t index)
+    {
+        if (index < 1 || index > GetGeneratorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGenerator>>::GetGenerator", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_generators[index];
+    }
+
+    const CPACSGenerator& CPACSGenerators::GetGenerator(size_t index) const
+    {
+        if (index < 1 || index > GetGeneratorCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSGenerator>>::GetGenerator", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_generators[index];
+    }
+
+    CPACSGenerator& CPACSGenerators::GetGenerator(const std::string& UID)
+    {
+        for (auto& elem : m_generators ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenerators::GetGenerator. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+    const CPACSGenerator& CPACSGenerators::GetGenerator(const std::string& UID) const
+    {
+        for (auto& elem : m_generators ) {
+            if (elem->GetUID() == UID)
+                return *elem;
+            }
+            throw CTiglError("Invalid UID in CPACSGenerators::GetGenerator. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+    }
+
+
     CPACSGenerator& CPACSGenerators::AddGenerator()
     {
         m_generators.push_back(make_unique<CPACSGenerator>(this, m_uidMgr));

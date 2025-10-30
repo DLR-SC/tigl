@@ -27,6 +27,7 @@
 #include "tixi.h"
 #include <string>
 #include <vector>
+#include "CTiglFuselageSectionElement.h"
 
 namespace tigl
 {
@@ -39,16 +40,14 @@ public:
     TIGL_EXPORT CCPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSFuselageSections(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
 
-    // Get section count
-    TIGL_EXPORT int GetSectionCount() const;
-
-    // Returns the section for a given index
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
-
-    // Returns the section for a given uid
-    TIGL_EXPORT CCPACSFuselageSection& GetSection(const std::string& sectionUID);
+    /**
+     * Create a new section and a new element with the given profile uid.
+     * All uids are derived from the section uid.
+     * @remark This function differs from the "AddSection" function in a way that it takes care of
+     * creating an element and tries to set all possible parameters.
+     */
+    TIGL_EXPORT CCPACSFuselageSection& CreateSection(const std::string& sectionUID, const std::string& profileUID);
 };
 
 } // end namespace tigl

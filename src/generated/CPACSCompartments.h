@@ -59,6 +59,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCompartment>>& GetCompartments() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCompartment>>& GetCompartments();
 
+        TIGL_EXPORT virtual size_t GetCompartmentCount() const;
+        TIGL_EXPORT virtual size_t GetCompartmentIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSCompartment& GetCompartment(size_t index) const;
+        TIGL_EXPORT virtual CPACSCompartment& GetCompartment(size_t index);
+
+        TIGL_EXPORT virtual const CPACSCompartment& GetCompartment(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSCompartment& GetCompartment(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSCompartment& AddCompartment();
         TIGL_EXPORT virtual void RemoveCompartment(CPACSCompartment& ref);
 

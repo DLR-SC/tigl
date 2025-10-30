@@ -22,17 +22,18 @@
 #include <cmath>
 
 #include "CCPACSFuselageSegment.h"
+#include "generated/CPACSFuselageSegments.h"
 #include "CTiglFuselageSegmentGuidecurveBuilder.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSVessel.h"
-#include "CCPACSVessels.h"
+#include "generated/CPACSVessels.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
 #include "generated/CPACSGuideCurve.h"
-#include "CCPACSGuideCurveProfiles.h"
+#include "generated/CPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "CTiglLogging.h"
@@ -248,6 +249,17 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     default:
         throw CTiglError("Invalid coordinate system passed to CCPACSFuselageSegment::GetEndWire");
     }
+}
+
+TopoDS_Wire CCPACSFuselageSegment::GetWire(const std::string& elementUID, TiglCoordinateSystem referenceCS) const
+{
+    if (startConnection.GetSectionElementUID() == elementUID) {
+        return GetStartWire(referenceCS);
+    }
+    else if (endConnection.GetSectionElementUID() == elementUID) {
+        return GetEndWire(referenceCS);
+    }
+    throw CTiglError("Invalid uid element passed to CCPACSFuselageSegment::GetWire", TIGL_UID_ERROR);
 }
 
 // get short name for loft

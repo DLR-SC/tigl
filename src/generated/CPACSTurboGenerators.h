@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSTurboGenerator>>& GetTurboGenerators() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSTurboGenerator>>& GetTurboGenerators();
 
+        TIGL_EXPORT virtual size_t GetTurboGeneratorCount() const;
+        TIGL_EXPORT virtual size_t GetTurboGeneratorIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSTurboGenerator& GetTurboGenerator(size_t index) const;
+        TIGL_EXPORT virtual CPACSTurboGenerator& GetTurboGenerator(size_t index);
+
+        TIGL_EXPORT virtual const CPACSTurboGenerator& GetTurboGenerator(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSTurboGenerator& GetTurboGenerator(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSTurboGenerator& AddTurboGenerator();
         TIGL_EXPORT virtual void RemoveTurboGenerator(CPACSTurboGenerator& ref);
 

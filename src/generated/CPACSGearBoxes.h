@@ -62,6 +62,15 @@ namespace generated
         TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSGearBox>>& GetGearBoxs() const;
         TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSGearBox>>& GetGearBoxs();
 
+        TIGL_EXPORT virtual size_t GetGearBoxCount() const;
+        TIGL_EXPORT virtual size_t GetGearBoxIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSGearBox& GetGearBox(size_t index) const;
+        TIGL_EXPORT virtual CPACSGearBox& GetGearBox(size_t index);
+
+        TIGL_EXPORT virtual const CPACSGearBox& GetGearBox(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSGearBox& GetGearBox(const std::string& UID);
+
         TIGL_EXPORT virtual CPACSGearBox& AddGearBox();
         TIGL_EXPORT virtual void RemoveGearBox(CPACSGearBox& ref);
 

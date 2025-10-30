@@ -452,5 +452,16 @@ const ShapeContainerType& CTiglUIDManager::GetShapeContainer() const
     return allShapes;
 }
 
+std::string CTiglUIDManager::MakeUIDUnique(const std::string& baseUID) const
+{
+    std::string newUID = baseUID;
+    int suffix         = 1;
+    while (IsUIDRegistered(newUID)) {
+        newUID = baseUID + "U" +std::to_string(suffix);
+        suffix = suffix + 1;
+    }
+    return newUID;
+}
+
 } // end namespace tigl
 

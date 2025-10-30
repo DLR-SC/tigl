@@ -90,6 +90,30 @@ namespace generated
         return m_jointPositions;
     }
 
+    size_t CPACSTrackJointPositions::GetJointPositionCount() const
+    {
+        return m_jointPositions.size();
+    }
+
+    CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(size_t index)
+    {
+        if (index < 1 || index > GetJointPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackJointPosition>>::GetJointPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_jointPositions[index];
+    }
+
+    const CPACSTrackJointPosition& CPACSTrackJointPositions::GetJointPosition(size_t index) const
+    {
+        if (index < 1 || index > GetJointPositionCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSTrackJointPosition>>::GetJointPosition", TIGL_INDEX_ERROR);
+        }
+        index--;
+        return *m_jointPositions[index];
+    }
+
+
     CPACSTrackJointPosition& CPACSTrackJointPositions::AddJointPosition()
     {
         m_jointPositions.push_back(make_unique<CPACSTrackJointPosition>(this));
