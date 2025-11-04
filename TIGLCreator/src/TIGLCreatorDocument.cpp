@@ -776,8 +776,15 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
         }
         auto& shapeManager = myScene->GetShapeManager();
-        app->getSceneGraph()->updateVisibility(uid.toStdString(), true);
-
+        if (app->getSceneGraph()->hasVisibilityStored(uid.toStdString())) {
+            bool visibility = app->getSceneGraph()->getVisibility(uid.toStdString());
+            app->getSceneGraph()->updateVisibility(uid.toStdString(), visibility);
+        }
+        else {
+            app->getSceneGraph()->updateVisibility(uid.toStdString(), true);
+        }
+        
+    
     }
     catch(tigl::CTiglError& err) {
         displayError("Cannot display \"" + uid + "\": " + err.what());

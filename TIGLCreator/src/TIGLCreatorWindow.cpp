@@ -425,8 +425,10 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
+        sceneGraph->clearInteractiveObjects();
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+        getScene()->deleteAllObjects();
         if (sceneGraph) {
             sceneGraph->reloadSceneGraph(myScene);
         }

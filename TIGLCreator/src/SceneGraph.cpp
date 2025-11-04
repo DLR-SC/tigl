@@ -25,12 +25,10 @@ SceneGraph::SceneGraph()
     , drawableMap()
     , visibilityMap()
 {
-    // Ensure containers are initialized and ready for use.
 }
 
 SceneGraph::~SceneGraph()
 {
-    // Release any stored handles and clear internal state.
     clear();
 }
 
@@ -45,7 +43,6 @@ void SceneGraph::setDocument(TIGLCreatorDocument* d)
 
 void SceneGraph::clear()
 {
-    // release stored interactive object handles
     for (auto &kv : visibilityMap) {
         kv.second.objects.clear();
     }
@@ -53,6 +50,7 @@ void SceneGraph::clear()
     drawableMap.clear();
     doc = nullptr;
 }
+
 
 
 bool SceneGraph::isDrawable(const std::string& uid) const
@@ -109,6 +107,18 @@ std::vector<Handle(AIS_InteractiveObject)> SceneGraph::getInteractiveObjects(con
     return it->second.objects;
 }
 
+void SceneGraph::clearInteractiveObjects()
+{
+    for (auto &it : visibilityMap) {
+        auto &objs = it.second.objects;
+        for (auto &obj : objs) {
+            if (!obj.IsNull())
+                obj.Nullify();
+        }
+        objs.clear();
+    }
+}
+
 bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
 
 {
@@ -125,12 +135,11 @@ bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
     return false;
 }
 
-bool SceneGraph::getVisibility(const std::string& uid, bool defaultValue) const
+bool SceneGraph::getVisibility(const std::string& uid ) const
 {
     const auto it = visibilityMap.find(uid);
-    return (it == visibilityMap.end()) ? defaultValue : it->second.visible;
+    return (it == visibilityMap.end()) ? false : it->second.visible;
 }
-
 
 void SceneGraph::updateVisibility(const std::string& uid, bool visible)
 {
@@ -141,10 +150,19 @@ void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
 {
     for (auto& uid : visibilityMap) {
         if (uid.second.visible) {
-          auto objs = getInteractiveObjects(uid.first);
+            if (hasInteractiveObjects(uid.first)) {
+                auto objs = getInteractiveObjects(uid.first);
                 for (auto& obj : objs) {
                     myScene->getContext()->Display(obj, Standard_False);
                 }
+            }
+            else {
+                doc->drawComponentByUID(QString::fromStdString(uid.first));
+            }
         }
     }
+}
+bool SceneGraph::hasVisibilityStored(const std::string& uid) const
+{
+    return visibilityMap.find(uid) != visibilityMap.end();
 }

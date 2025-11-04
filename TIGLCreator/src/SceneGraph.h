@@ -29,15 +29,12 @@ namespace cpcr { class CPACSTreeItem; }
 
 class SceneGraph
 {
-    // wenn das ein QObject ist, gibt es schon automatische Serialisierungsfunktionalitten von Qt
 public:
     // Default constructor
     SceneGraph();
     ~SceneGraph();
 
-    // Associate the SceneGraph with a document. Passing nullptr will detach the
-    // SceneGraph from any document and clear per-configuration caches (drawable
-    // and visibility maps). Call this when a configuration is opened/closed so
+    // Associate the SceneGraph with a document. Call this when a configuration is opened/closed so
     // the SceneGraph lifetime is per-configuration.
     void setDocument(TIGLCreatorDocument* d);
 
@@ -50,22 +47,21 @@ public:
 
     bool isDrawable(const std::string& uid) const;
 
-    // Return true if the given tree item has any descendant that is drawable
-    // (i.e. any child or deeper descendant maps to a drawable UID). This allows
-    // parents that group drawable items to be checkable even if the parent itself
-    // does not have a UID.
     bool hasDrawableChildren(cpcr::CPACSTreeItem* item) const;
 
+    bool getVisibility(const std::string& uid) const;
 
     void reloadSceneGraph(TIGLCreatorContext* myScene);
-
-    bool getVisibility(const std::string& uid, bool defaultValue = false) const;
-
     void updateVisibility(const std::string& uid, bool visible);
+
+    bool hasVisibilityStored(const std::string& uid) const;
+
+    void clearInteractiveObjects();
 
     void registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
     bool hasInteractiveObjects(const std::string& uid) const;
     std::vector<Handle(AIS_InteractiveObject)> getInteractiveObjects(const std::string& uid) const;
+
 private:
     //std::unordered_map<std::string, VisibleMap> opened_files; // unter der Annahme, dass wir mehrere configurations gleichzeitig erlauben wollen
     // cameraPosition pos;
