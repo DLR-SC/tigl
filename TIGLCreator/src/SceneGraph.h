@@ -42,26 +42,33 @@ public:
     // is closed to ensure no stale state remains.
     void clear();
 
-    // read(QString filename);
-    // write(QString filename);
-
+    // Check if a component with the given uid is drawable and store the result in the drawable map
     bool isDrawable(const std::string& uid) const;
 
+    // Check if a CPACSTreeItem has any drawable children
     bool hasDrawableChildren(cpcr::CPACSTreeItem* item) const;
 
+    // Get the visibility of a component with the given uid
     bool getVisibility(const std::string& uid) const;
-
-    void reloadSceneGraph(TIGLCreatorContext* myScene);
+    // Update the visibility of a component in the map
     void updateVisibility(const std::string& uid, bool visible);
-
+    // Check if visibility is stored for a given uid
     bool hasVisibilityStored(const std::string& uid) const;
-
-    void clearInteractiveObjects();
-
+    
+    // Register an interactive object in the visibility map
     void registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj);
+    // Check if uid has interactive objects registered
     bool hasInteractiveObjects(const std::string& uid) const;
+    // Get interactive objects for a given uid
     std::vector<Handle(AIS_InteractiveObject)> getInteractiveObjects(const std::string& uid) const;
-
+    // Clear all registered interactive objects. Used when reloading documents.
+    void clearInteractiveObjects();
+    
+    // Reload the scene graph. Used when reloading documents.
+    void reloadSceneGraph(TIGLCreatorContext* myScene);
+    
+    // read(QString filename);
+    // write(QString filename);
 private:
     //std::unordered_map<std::string, VisibleMap> opened_files; // unter der Annahme, dass wir mehrere configurations gleichzeitig erlauben wollen
     // cameraPosition pos;

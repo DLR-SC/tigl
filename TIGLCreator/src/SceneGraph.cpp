@@ -51,8 +51,6 @@ void SceneGraph::clear()
     doc = nullptr;
 }
 
-
-
 bool SceneGraph::isDrawable(const std::string& uid) const
 {
     if (uid.empty() || doc == nullptr) {
@@ -80,6 +78,22 @@ catch (...) {
 // write the uid in the map
 drawableMap[uid] = drawable;
 return drawable;
+}
+
+bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
+
+{
+    if (!item) return false;
+
+    for (auto child : item->getChildren()) {
+        if (!child) continue;
+
+        std::string cuid = child->getUid();
+        if (!cuid.empty() && isDrawable(cuid))
+            return true;
+    }
+
+    return false;
 }
 
 void SceneGraph::registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
@@ -119,22 +133,6 @@ void SceneGraph::clearInteractiveObjects()
     }
 }
 
-bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
-
-{
-    if (!item) return false;
-
-    for (auto child : item->getChildren()) {
-        if (!child) continue;
-
-        std::string cuid = child->getUid();
-        if (!cuid.empty() && isDrawable(cuid))
-            return true;
-    }
-
-    return false;
-}
-
 bool SceneGraph::getVisibility(const std::string& uid ) const
 {
     const auto it = visibilityMap.find(uid);
@@ -144,6 +142,11 @@ bool SceneGraph::getVisibility(const std::string& uid ) const
 void SceneGraph::updateVisibility(const std::string& uid, bool visible)
 {
     visibilityMap[uid].visible = visible;
+}
+
+bool SceneGraph::hasVisibilityStored(const std::string& uid) const
+{
+    return visibilityMap.find(uid) != visibilityMap.end();
 }
 
 void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
@@ -161,8 +164,4 @@ void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
             }
         }
     }
-}
-bool SceneGraph::hasVisibilityStored(const std::string& uid) const
-{
-    return visibilityMap.find(uid) != visibilityMap.end();
 }
