@@ -428,7 +428,7 @@ void TIGLCreatorWindow::reopenFile()
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
         if (sceneGraph) {
-            sceneGraph->setDocument(cpacsConfiguration);
+            sceneGraph->reloadSceneGraph(myScene);
         }
         treeWidget->refresh();
     }

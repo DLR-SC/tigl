@@ -17,6 +17,7 @@
  */
 
  #include <SceneGraph.h>
+ #include <TIGLCreatorContext.h>
 
 
 SceneGraph::SceneGraph()
@@ -134,4 +135,16 @@ bool SceneGraph::getVisibility(const std::string& uid, bool defaultValue) const
 void SceneGraph::updateVisibility(const std::string& uid, bool visible)
 {
     visibilityMap[uid].visible = visible;
+}
+
+void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
+{
+    for (auto& uid : visibilityMap) {
+        if (uid.second.visible) {
+          auto objs = getInteractiveObjects(uid.first);
+                for (auto& obj : objs) {
+                    myScene->getContext()->Display(obj, Standard_False);
+                }
+        }
+    }
 }

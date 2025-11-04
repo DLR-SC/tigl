@@ -57,7 +57,7 @@ public:
     bool hasDrawableChildren(cpcr::CPACSTreeItem* item) const;
 
 
-
+    void reloadSceneGraph(TIGLCreatorContext* myScene);
 
     bool getVisibility(const std::string& uid, bool defaultValue = false) const;
 
