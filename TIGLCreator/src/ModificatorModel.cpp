@@ -685,7 +685,11 @@ void ModificatorModel::addProfile(QString const& profileID)
 
 void ModificatorModel::onAddWingRequested()
 {
-    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), modificatorContainerWidget);
+    if (!configurationIsSet()) {
+        return;
+    }
+
+    NewWingDialog wingDialog(profilesDB.getAllWingProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (wingDialog.exec() == QDialog::Accepted) {
         int nbSection       = wingDialog.getNbSection();
         QString uid         = wingDialog.getUID();
@@ -695,8 +699,6 @@ void ModificatorModel::onAddWingRequested()
 
         if ( !profilesDB.hasProfileConfigSuffix(profileID) ) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* wings = getWings();
@@ -845,7 +847,7 @@ void ModificatorModel::onAddFuselageRequested()
 
     auto& fuselages = doc->GetConfiguration().GetFuselages();
 
-    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), modificatorContainerWidget);
+    NewFuselageDialog fuselageDialog(profilesDB.getAllFuselagesProfiles(), doc->GetConfiguration().GetUIDManager(), modificatorContainerWidget);
     if (fuselageDialog.exec() == QDialog::Accepted) {
         int nbSection       = fuselageDialog.getNbSection();
         QString uid         = fuselageDialog.getUID();
@@ -853,8 +855,6 @@ void ModificatorModel::onAddFuselageRequested()
 
         if (!profilesDB.hasProfileConfigSuffix(profileID)) {
             addProfile(profileID);
-        } else {
-            LOG(WARNING) << "ModificatorManager: Cannot add the airfoil. An airfoil with the same name already exists in the configuration.";
         }
 
         auto* fuselages_node = getFuselages();

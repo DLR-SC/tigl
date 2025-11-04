@@ -335,7 +335,7 @@ void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 }
 
 // a small helper when we just want to display a shape
-void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency)
+void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -343,6 +343,7 @@ void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewe
     myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
+    myContext->SetDisplayMode(shape, shaded, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
@@ -366,7 +367,7 @@ void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewe
 }
 
 // a small helper when we just want to display a shape
-void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency)
+void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     if (!pshape) {
         return;
@@ -378,6 +379,7 @@ void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateView
     myContext->SetMaterial(shape, settings.defaultMaterial(), Standard_False);
     myContext->SetColor(shape, color, Standard_False);
     myContext->SetTransparency(shape, transparency, Standard_False);
+    myContext->SetDisplayMode(shape, shaded, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)

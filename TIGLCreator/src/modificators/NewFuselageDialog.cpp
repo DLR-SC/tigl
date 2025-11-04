@@ -19,13 +19,14 @@
 #include "NewFuselageDialog.h"
 #include "ui_NewFuselageDialog.h"
 
-NewFuselageDialog::NewFuselageDialog(QStringList profilesUID, QWidget* parent)
-    : QDialog(parent)
+NewFuselageDialog::NewFuselageDialog(QStringList profilesUID, tigl::CTiglUIDManager const& uid_mgr, QWidget* parent)
+    : make_unique([&](QString const& in){ return QString::fromStdString(uid_mgr.MakeUIDUnique(in.toStdString())); })
+    , QDialog(parent)
     , ui(new Ui::NewFuselageDialog)
 {
     ui->setupUi(this);
     ui->comboBoxProfilesUID->addItems(profilesUID);
-    ui->lineEditUID->setText("generatedFuselage");
+    ui->lineEditUID->setText(make_unique("fuselage"));
 }
 
 NewFuselageDialog::~NewFuselageDialog()
@@ -40,7 +41,13 @@ int NewFuselageDialog::getNbSection() const
 
 QString NewFuselageDialog::getUID() const
 {
-    return ui->lineEditUID->text();
+    QString inputUID = ui->lineEditUID->text();
+    QString uniqueUID = make_unique(inputUID);
+
+    if (uniqueUID != inputUID) {
+        LOG(WARNING) << "The wanted uID " << inputUID.toStdString() << " is already taken. It is changed to the uID " << uniqueUID.toStdString() << "." << std::endl;
+    }
+    return uniqueUID;
 }
 
 QString NewFuselageDialog::getProfileUID() const
