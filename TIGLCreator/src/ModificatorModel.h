@@ -256,27 +256,7 @@ private:
     ProfilesDBManager profilesDB;
     SceneGraph* sceneGraph;
 
-    // helper for hierarchical visibility
-    // NOTE: recursive visibility was removed; visibility changes are applied only to the clicked item
-    // and its immediate children (non-recursively).
-
-    // Register/unregister interactive AIS objects with a UID so the model can manage
-    // appearing/disappearing without querying external managers.
-    // Note: these methods are declared in the public section above. Keep only the
-    // non-duplicated helper declaration here.
     Qt::CheckState aggregateChildrenState(cpcr::CPACSTreeItem* item) const;
-
-    // Return whether the given UID corresponds to a drawable geometric component.
-    // Drawable here means the UID maps to an ITiglGeometricComponent that provides a loft
-    // (PNamedShape) which can be displayed in the viewer.
-    bool isDrawableUID(const std::string& uid) const;
-
-
-    // Populate the drawableMap cache by iterating geometric components
-    // in the current configuration. This avoids expensive calls to
-    // GetLoft() during paint/data operations.
-    void populateDrawableCache();
-
 
 };
 

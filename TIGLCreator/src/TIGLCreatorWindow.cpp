@@ -173,9 +173,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     treeWidget->SetModel(modificatorModel);
 
     sceneGraph = new SceneGraph();
-    // Provide the model with the SceneGraph instance. The window owns the
-    // SceneGraph and will manage per-configuration attachment via
-    // SceneGraph::setDocument(...).
+
     modificatorModel->setSceneGraph(sceneGraph);
     // connect model visibility changes to the scene
     connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));

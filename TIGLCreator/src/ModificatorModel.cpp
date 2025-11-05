@@ -1009,7 +1009,6 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         return data;
     }
 
-    // Display roles
     if (index.column() == 0) { // combine uid and type
         data = QString(item->getUid().c_str());
         if (data == "") {
@@ -1080,7 +1079,6 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         emit dataChanged(idx, idx, {Qt::CheckStateRole});
 
     // Queue visibility signals (deferred to avoid painting reentrancy)
-    // TODO:CHECK IF STILL NECESSARY
     std::vector<std::pair<QString, bool>> pending;
     pending.reserve(changedUIDs.size());
     for (const auto& uid : changedUIDs) {
