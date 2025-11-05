@@ -985,7 +985,9 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
     QVariant data;
 
     if (role == Qt::CheckStateRole && index.column() == 0) {
-        if (!item) return QVariant();
+        if (!item) {
+            return QVariant();
+        }
 
         // Only show a checkbox if the item is checkable
         if (!(flags(index) & Qt::ItemIsUserCheckable)) {
@@ -1026,17 +1028,22 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 
 bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!configurationIsSet()) return false; 
-
-    if (!index.isValid())
+    if (!configurationIsSet()) {
         return false;
+    }
 
-    if (role != Qt::CheckStateRole || index.column() != 0)
+    if (!index.isValid()) {
+        return false;
+    }
+
+    if (role != Qt::CheckStateRole || index.column() != 0) {
         return QAbstractItemModel::setData(index, value, role);
+    }
 
     cpcr::CPACSTreeItem* item = getItem(index);
-    if (!item)
+    if (!item) {    
         return false;
+    }
 
     const bool visible = (value.toInt() == Qt::Checked);
     std::vector<QModelIndex> changedIdxs;
@@ -1088,8 +1095,9 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     }
 
     QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
-        for (const auto& p : pending)
+        for (const auto& p : pending) {
             emit componentVisibilityChanged(p.first, p.second);
+        }
     });
 
     // Update parent aggregate states
@@ -1101,20 +1109,24 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
 
 Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) { 
         return Qt::NoItemFlags;
+    }   
 
     Qt::ItemFlags f = QAbstractItemModel::flags(index);
-    if (index.column() != 0)
+    if (index.column() != 0) {
         return f;
+    }
 
     cpcr::CPACSTreeItem* item = getItem(index);
-    if (!item)
+    if (!item) {
         return f;
+    }
 
     const std::string uid = item->getUid();
-    if ((!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)))
+    if ((!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid))) {
         f |= Qt::ItemIsUserCheckable;
+    }
 
     return f;
 }

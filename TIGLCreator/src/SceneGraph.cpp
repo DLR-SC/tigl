@@ -84,14 +84,17 @@ bool SceneGraph::isDrawable(const std::string& uid) const
 bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
 
 {
-    if (!item) return false;
+    if (!item) { 
+        return false;
+    }
 
     for (auto child : item->getChildren()) {
         if (!child) continue;
 
         std::string cuid = child->getUid();
-        if (!cuid.empty() && isDrawable(cuid))
+        if (!cuid.empty() && isDrawable(cuid)) {
             return true;
+        }
     }
 
     return false;
@@ -99,7 +102,9 @@ bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
 
 void SceneGraph::registerInteractiveObject(const std::string& uid, Handle(AIS_InteractiveObject) obj)
 {
-    if (uid.empty() || obj.IsNull()) return;
+    if (uid.empty() || obj.IsNull()) {
+        return;
+    }
     auto &info = visibilityMap[uid];
     // avoid duplicates
     auto it = std::find(info.objects.begin(), info.objects.end(), obj);
@@ -111,14 +116,18 @@ void SceneGraph::registerInteractiveObject(const std::string& uid, Handle(AIS_In
 bool SceneGraph::hasInteractiveObjects(const std::string& uid) const
 {
     const auto it = visibilityMap.find(uid);
-    if (it == visibilityMap.end()) return false;
+    if (it == visibilityMap.end()) {
+        return false;
+    }
     return !it->second.objects.empty();
 }
 
 std::vector<Handle(AIS_InteractiveObject)> SceneGraph::getInteractiveObjects(const std::string& uid) const
 {
     auto it = visibilityMap.find(uid);
-    if (it == visibilityMap.end()) return {};
+    if (it == visibilityMap.end()) {
+        return {};
+    }
     return it->second.objects;
 }
 
@@ -128,8 +137,9 @@ void SceneGraph::clearInteractiveObjects()
     for (auto &it : visibilityMap) {
         auto &objs = it.second.objects;
         for (auto &obj : objs) {
-            if (!obj.IsNull())
+            if (!obj.IsNull()) {
                 obj.Nullify();
+            }
         }
         objs.clear();
     }
