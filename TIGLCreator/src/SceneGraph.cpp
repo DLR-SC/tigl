@@ -63,21 +63,22 @@ bool SceneGraph::isDrawable(const std::string& uid) const
         return it->second;
     }
     
+    // If UID not in map, determine if drawable
     bool drawable = false;
     try {
         tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
         PNamedShape loft = comp.GetLoft();
         if (loft) {
         drawable = true; 
+        }
     }
-}
-catch (...) {
+    catch (...) {
 
-}
+    }
 
-// write the uid in the map
-drawableMap[uid] = drawable;
-return drawable;
+    // write the uid in the map
+    drawableMap[uid] = drawable;
+    return drawable;
 }
 
 bool SceneGraph::hasDrawableChildren(cpcr::CPACSTreeItem* item) const
@@ -123,6 +124,7 @@ std::vector<Handle(AIS_InteractiveObject)> SceneGraph::getInteractiveObjects(con
 
 void SceneGraph::clearInteractiveObjects()
 {
+    // keep visibility info, just clear the objects
     for (auto &it : visibilityMap) {
         auto &objs = it.second.objects;
         for (auto &obj : objs) {
@@ -151,6 +153,7 @@ bool SceneGraph::hasVisibilityStored(const std::string& uid) const
 
 void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
 {
+    // redraw all components based on the stored visibility map
     for (auto& uid : visibilityMap) {
         if (uid.second.visible) {
             if (hasInteractiveObjects(uid.first)) {
@@ -159,6 +162,7 @@ void SceneGraph::reloadSceneGraph(TIGLCreatorContext* myScene)
                     myScene->getContext()->Display(obj, Standard_False);
                 }
             }
+            // if there is no registered interactive object but the component is visible, redraw it
             else {
                 doc->drawComponentByUID(QString::fromStdString(uid.first));
             }

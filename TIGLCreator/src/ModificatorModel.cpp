@@ -992,13 +992,12 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
             return QVariant();
         }
 
+        // get visibility state and check or uncheck accordingly
         std::string uid = item->getUid();
         if (!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)) {
             bool vis = sceneGraph->getVisibility(uid);
             return vis ? Qt::Checked : Qt::Unchecked;
         }
-
-        return aggregateChildrenState(item);
         
     }
 
@@ -1043,6 +1042,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     std::vector<QModelIndex> changedIdxs;
     std::vector<std::string> changedUIDs;
 
+    // update visibility in scene graph
     auto updateVisibility = [&](cpcr::CPACSTreeItem* node) {
         if (!node)
             return;
@@ -1057,6 +1057,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         changedUIDs.push_back(uid);
     };
 
+    // Hide all children recursively if hiding a UID
     if (!visible) {
         std::function<void(cpcr::CPACSTreeItem*)> updateRec;
         updateRec = [&](cpcr::CPACSTreeItem* node) {
@@ -1096,41 +1097,6 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         emit dataChanged(p, p, {Qt::CheckStateRole});
 
     return true;
-}
-
-Qt::CheckState ModificatorModel::aggregateChildrenState(cpcr::CPACSTreeItem* item) const
-{
-    if (!item)
-        return Qt::Unchecked;
-
-    bool anyChecked = false;
-    bool anyUnchecked = false;
-
-    for (auto* child : item->getChildren()) {
-        if (!child)
-            continue;
-
-        Qt::CheckState st = Qt::Unchecked;
-        const std::string uid = child->getUid();
-
-        if (!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)) {
-            const bool vis = sceneGraph->getVisibility(uid);
-            st = vis ? Qt::Checked : Qt::Unchecked;
-        } else {
-            st = aggregateChildrenState(child);
-        }
-
-        if (st == Qt::Checked) anyChecked = true;
-        else if (st == Qt::Unchecked) anyUnchecked = true;
-        else if (st == Qt::PartiallyChecked) { anyChecked = anyUnchecked = true; }
-
-        if (anyChecked && anyUnchecked)
-            return Qt::PartiallyChecked;
-    }
-
-    if (anyChecked && !anyUnchecked) return Qt::Checked;
-    if (!anyChecked && anyUnchecked) return Qt::Unchecked;
-    return Qt::Checked;  
 }
 
 Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const

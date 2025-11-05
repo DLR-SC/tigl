@@ -256,8 +256,6 @@ private:
     ProfilesDBManager profilesDB;
     SceneGraph* sceneGraph;
 
-    Qt::CheckState aggregateChildrenState(cpcr::CPACSTreeItem* item) const;
-
 };
 
 #endif // TIGL_MODIFICATORMANAGER_H
