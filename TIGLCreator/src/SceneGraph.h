@@ -66,15 +66,9 @@ public:
     
     // Reload the scene graph. Used when reloading documents.
     void reloadSceneGraph(TIGLCreatorContext* myScene);
-    
-    // read(QString filename);
-    // write(QString filename);
+
 private:
-    //std::unordered_map<std::string, VisibleMap> opened_files; // unter der Annahme, dass wir mehrere configurations gleichzeitig erlauben wollen
-    // cameraPosition pos;
-    // cameraLookatPosition lookat;
-    // wireframe_settings settings;
-    // std::vector<lightsources> lightsources;
+
     TIGLCreatorDocument* doc;
 
     mutable std::unordered_map<std::string, bool> drawableMap;
