@@ -1058,10 +1058,22 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         changedUIDs.push_back(uid);
     };
 
-    // Apply to this item and its immediate children
-    updateVisibility(item);
-    for (auto* child : item->getChildren())
-        updateVisibility(child);
+    if (!visible) {
+        std::function<void(cpcr::CPACSTreeItem*)> updateRec;
+        updateRec = [&](cpcr::CPACSTreeItem* node) {
+            if (!node) return;
+            updateVisibility(node);
+            for (auto* child : node->getChildren())
+                updateRec(child);
+        };
+        updateRec(item);
+    }
+    else {
+        // Apply to this item and its immediate children (existing behavior)
+        updateVisibility(item);
+        for (auto* child : item->getChildren())
+            updateVisibility(child);
+    }
 
     // Notify views
     for (const auto& idx : changedIdxs)
