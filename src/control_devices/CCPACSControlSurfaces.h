@@ -18,6 +18,8 @@
 */
 
 #include "generated/CPACSControlSurfaces.h"
+#include <string>
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -27,5 +29,7 @@ public:
     TIGL_EXPORT CCPACSControlSurfaces(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t ControlSurfaceCount() const;
+
+    TIGL_EXPORT const std::string& GetControlSurfaceUID(size_t index) const;
 };
 }
