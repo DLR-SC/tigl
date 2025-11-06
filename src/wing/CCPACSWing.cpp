@@ -449,8 +449,8 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
             const CCPACSTrailingEdgeDevices& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
 
-            for (size_t j = TrailingEdgeDevices.GetTrailingEdgeDevices().size(); j > 0; j--) {
-                CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *TrailingEdgeDevices.GetTrailingEdgeDevices().at(j - 1);
+            for (size_t ted_index = 0; ted_index < TrailingEdgeDevices.GetTrailingEdgeDevices().size(); ted_index++) {
+                CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *TrailingEdgeDevices.GetTrailingEdgeDevices().at(ted_index);
 
                 PNamedShape TrailingEdgeDevicePrism = TrailingEdgeDevice.GetCutOutShape();
                     if (!first) {
@@ -469,8 +469,8 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         if (controlSurfs.GetLeadingEdgeDevices().is_initialized()) {
             const CCPACSLeadingEdgeDevices& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
 
-            for (size_t j = LeadingEdgeDevices.GetLeadingEdgeDevices().size(); j > 0; j--) {
-                CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *LeadingEdgeDevices.GetLeadingEdgeDevices().at(j - 1);
+            for (size_t led_index = 0; led_index < LeadingEdgeDevices.GetLeadingEdgeDevices().size(); led_index++) {
+                CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *LeadingEdgeDevices.GetLeadingEdgeDevices().at(led_index);
 
                 PNamedShape LeadingEdgeDevicePrism = LeadingEdgeDevice.GetCutOutShape();
                 if (LeadingEdgeDevice.GetType() != SPOILER) {
@@ -525,9 +525,9 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
         if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
             const auto& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
             const auto& TED                 = TrailingEdgeDevices.GetTrailingEdgeDevices();
-            for (size_t j = TED.size(); j > 0; j--) {
+            for (size_t ted_index = 0; ted_index < TED.size(); ted_index++) {
 
-                const auto& TrailingEdgeDevice = *TED.at(j - 1);
+                const auto& TrailingEdgeDevice = *TED.at(ted_index);
                 auto TEDShape                  = TrailingEdgeDevice.GetTransformedFlapShape();
                 flapsAndWingShapes.push_back(TEDShape);
             }
@@ -536,9 +536,9 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
 
             const auto& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
             const auto& LED                = LeadingEdgeDevices.GetLeadingEdgeDevices();
-            for (size_t j = LED.size(); j > 0; j--) {
+            for (size_t led_index = 0; led_index < LED.size(); led_index++) {
 
-                const auto& LeadingEdgeDevice = *LED.at(j - 1);
+                const auto& LeadingEdgeDevice = *LED.at(led_index);
                 auto LEDShape                 = LeadingEdgeDevice.GetTransformedFlapShape();
                 flapsAndWingShapes.push_back(LEDShape);
             }
