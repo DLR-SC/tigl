@@ -1804,12 +1804,14 @@ namespace
 
     size_t NumberOfControlSurfaces(const CCPACSWing& wing)
     {
+        size_t nControlSurfaces = 0;
         for (const auto& componentSegment : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!componentSegment->GetControlSurfaces()) {
                 continue;
             }
-            return componentSegment->GetControlSurfaces()->ControlSurfaceCount();
+            nControlSurfaces += componentSegment->GetControlSurfaces()->ControlSurfaceCount();
         }
+        return nControlSurfaces;
     }
 
 } // namespace
