@@ -132,49 +132,64 @@ TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceCount)
     ASSERT_EQ(numDevicesPtr, 6);
 }
 
-TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceUID)
+TEST_F(TiglControlSurfaceDevice, tiglGetTrailingEdgeDeviceUID)
 {
     char* uid1 = nullptr;
     char* uid2 = nullptr;
     char* uid3 = nullptr;
-    char* uid4 = nullptr;
-    char* uid5 = nullptr;
-    char* uid6 = nullptr;
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, NULL));
-    ASSERT_EQ(TIGL_UID_ERROR, tiglGetControlSurfaceUID(tiglHandle, "rmplstlzchn", 1, &uid1));
-    ASSERT_EQ(TIGL_NOT_FOUND, tiglGetControlSurfaceUID(-1, "D150_VAMP_W1_CompSeg1", 1, &uid1));
-    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 0, &uid1));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, &uid1));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 2, &uid2));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 3, &uid3));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 4, &uid4));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 5, &uid5));
-    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 6, &uid6));
-    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetControlSurfaceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 7, &uid6));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, NULL));
+    ASSERT_EQ(TIGL_UID_ERROR, tiglGetTrailingEdgeDeviceUID(tiglHandle, "rmplstlzchn", 1, &uid1));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglGetTrailingEdgeDeviceUID(-1, "D150_VAMP_W1_CompSeg1", 1, &uid1));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 0, &uid1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, &uid1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 2, &uid2));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 3, &uid3));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetTrailingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 4, &uid3));
     ASSERT_STREQ(uid1, "D150_VAMP_W1_CompSeg1_innerFlap");
     ASSERT_STREQ(uid2, "D150_VAMP_W1_CompSeg1_outerFlap");
     ASSERT_STREQ(uid3, "D150_VAMP_W1_CompSeg1_aileron");
-    ASSERT_STREQ(uid4, "D150_VAMP_W1_CompSeg1_innerLED");
-    ASSERT_STREQ(uid5, "D150_VAMP_W1_CompSeg1_outerLED1");
-    ASSERT_STREQ(uid6, "D150_VAMP_W1_CompSeg1_outerLED2");
+}
+
+TEST_F(TiglControlSurfaceDevice, tiglGetLeadingEdgeDeviceUID)
+{
+    char* uid1 = nullptr;
+    char* uid2 = nullptr;
+    char* uid3 = nullptr;
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, NULL));
+    ASSERT_EQ(TIGL_UID_ERROR, tiglGetLeadingEdgeDeviceUID(tiglHandle, "rmplstlzchn", 1, &uid1));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglGetLeadingEdgeDeviceUID(-1, "D150_VAMP_W1_CompSeg1", 1, &uid1));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 0, &uid1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 1, &uid1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 2, &uid2));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 3, &uid3));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglGetLeadingEdgeDeviceUID(tiglHandle, "D150_VAMP_W1_CompSeg1", 4, &uid3));
+    ASSERT_STREQ(uid1, "D150_VAMP_W1_CompSeg1_innerLED");
+    ASSERT_STREQ(uid2, "D150_VAMP_W1_CompSeg1_outerLED1");
+    ASSERT_STREQ(uid3, "D150_VAMP_W1_CompSeg1_outerLED2");
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglGetControlSurfaceType)
 {
-    TiglControlSurfaceType type1, type2, type3;
+    TiglControlSurfaceType type1, type2, type3, type4, type5, type6;
     ASSERT_EQ(TIGL_UID_ERROR, tiglGetControlSurfaceType(tiglHandle, "rmplstlzchn", &type1));
     ASSERT_EQ(TIGL_NOT_FOUND, tiglGetControlSurfaceType(-1, "D150_VAMP_W1_CompSeg1_innerFlap", &type1));
     ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &type1));
     ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &type2));
     ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron", &type3));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_innerLED", &type4));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED1", &type5));
+    ASSERT_EQ(TIGL_SUCCESS, tiglGetControlSurfaceType(tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED2", &type6));
     ASSERT_EQ(TRAILING_EDGE_DEVICE, type1);
     ASSERT_EQ(TRAILING_EDGE_DEVICE, type2);
     ASSERT_EQ(TRAILING_EDGE_DEVICE, type3);
+    ASSERT_EQ(LEADING_EDGE_DEVICE, type4);
+    ASSERT_EQ(LEADING_EDGE_DEVICE, type5);      
+    ASSERT_EQ(LEADING_EDGE_DEVICE, type6);
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumControlParameter)
 {
-    double controlParm1, controlParm2, controlParm3;
+    double controlParm1, controlParm2, controlParm3, controlParm4, controlParm5, controlParm6;
     ASSERT_EQ(TIGL_UID_ERROR,
               tiglControlSurfaceGetMinimumControlParameter(tiglHandle, "rmplstlzchn", &controlParm1));
     ASSERT_EQ(TIGL_NOT_FOUND,
@@ -185,14 +200,23 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMinimumControlParameter)
                                 tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2));
     ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMinimumControlParameter(
                                 tiglHandle, "D150_VAMP_W1_CompSeg1_aileron", &controlParm3));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMinimumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_innerLED", &controlParm4));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMinimumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED1", &controlParm5));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMinimumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED2", &controlParm6));
     ASSERT_EQ(0, controlParm1);
     ASSERT_EQ(0, controlParm2);
     ASSERT_EQ(-1, controlParm3);
+    ASSERT_EQ(0, controlParm4);
+    ASSERT_EQ(0, controlParm5);
+    ASSERT_EQ(0, controlParm6);
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumControlParameter)
 {
-    double controlParm1, controlParm2, controlParm3;
+    double controlParm1, controlParm2, controlParm3, controlParm4, controlParm5, controlParm6;
     ASSERT_EQ(TIGL_UID_ERROR,
               tiglControlSurfaceGetMaximumControlParameter(tiglHandle, "rmplstlzchn", &controlParm1));
     ASSERT_EQ(TIGL_NOT_FOUND,
@@ -203,14 +227,23 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetMaximumControlParameter)
                                 tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2));
     ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMaximumControlParameter(
                                 tiglHandle, "D150_VAMP_W1_CompSeg1_aileron", &controlParm3));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMaximumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_innerLED", &controlParm4));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMaximumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED1", &controlParm5));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetMaximumControlParameter(
+                                tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED2", &controlParm6));
     ASSERT_EQ(1, controlParm1);
     ASSERT_EQ(1, controlParm2);
     ASSERT_EQ(1, controlParm3);
+    ASSERT_EQ(1, controlParm4);
+    ASSERT_EQ(1, controlParm5);
+    ASSERT_EQ(1, controlParm6);
 }
 
 TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
 {
-    double controlParm1, controlParm2, controlParm3;
+    double controlParm1, controlParm2, controlParm3, controlParm4, controlParm5, controlParm6;
     ASSERT_EQ(TIGL_UID_ERROR, tiglControlSurfaceGetControlParameter(tiglHandle, "rmplstlzchn", &controlParm1));
     ASSERT_EQ(TIGL_NOT_FOUND,
               tiglControlSurfaceGetControlParameter(-1, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm1));
@@ -220,9 +253,18 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
               tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerFlap", &controlParm2));
     ASSERT_EQ(TIGL_SUCCESS,
               tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_aileron", &controlParm3));
+    ASSERT_EQ(TIGL_SUCCESS,
+              tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerLED", &controlParm4));
+    ASSERT_EQ(TIGL_SUCCESS,
+              tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED1", &controlParm5));
+    ASSERT_EQ(TIGL_SUCCESS,
+              tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_outerLED2", &controlParm6));
     ASSERT_EQ(0, controlParm1);
     ASSERT_EQ(0, controlParm2);
     ASSERT_EQ(0, controlParm3);
+    ASSERT_EQ(0, controlParm4);
+    ASSERT_EQ(0, controlParm5);
+    ASSERT_EQ(0, controlParm6);
 
     double controlParm;
 

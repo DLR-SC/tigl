@@ -30,6 +30,5 @@ public:
 
     TIGL_EXPORT size_t ControlSurfaceCount() const;
 
-    TIGL_EXPORT const std::string& GetControlSurfaceUID(size_t index) const;
 };
 }

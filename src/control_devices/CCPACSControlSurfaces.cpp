@@ -41,25 +41,4 @@ size_t CCPACSControlSurfaces::ControlSurfaceCount() const
     return count;
 }
 
-const std::string& CCPACSControlSurfaces::GetControlSurfaceUID(size_t index) const
-{
-    // trailing edge devices first
-    if (GetTrailingEdgeDevices()) {
-        const auto& teds = GetTrailingEdgeDevices()->GetTrailingEdgeDevices();
-        if (index < teds.size()) {
-            return teds.at(index)->GetUID();
-        }
-        index -= teds.size();
-    }
-
-    if (GetLeadingEdgeDevices()) {
-        const auto& leds = GetLeadingEdgeDevices()->GetLeadingEdgeDevices();
-        if (index < leds.size()) {
-            return leds.at(index)->GetUID();
-        }
-    }
-
-    throw CTiglError("GetControlSurfaceUID: index out of range", TIGL_INDEX_ERROR);
-}
-
 } // namespace tigl
