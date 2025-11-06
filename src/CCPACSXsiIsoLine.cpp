@@ -43,11 +43,6 @@ void CCPACSXsiIsoLine::SetXsi(const double& value)
     InvalidateParent();
 }
 
-const double& CCPACSXsiIsoLine::GetXsi() const
-{
-    return generated::CPACSXsiIsoLine::GetXsi();
-}
-
 void CCPACSXsiIsoLine::SetReferenceUID(const std::string& value)
 {
     generated::CPACSXsiIsoLine::SetReferenceUID(value);

@@ -441,8 +441,9 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
 
         const CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
-        if (!componentSegment.GetControlSurfaces().is_initialized())
+        if (!componentSegment.GetControlSurfaces().is_initialized()) {
             continue;
+        }
 
         const CCPACSControlSurfaces& controlSurfs = componentSegment.GetControlSurfaces().value();
         if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
@@ -452,7 +453,6 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
                 CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *TrailingEdgeDevices.GetTrailingEdgeDevices().at(j - 1);
 
                 PNamedShape TrailingEdgeDevicePrism = TrailingEdgeDevice.GetCutOutShape();
-                if (TrailingEdgeDevice.GetType() != SPOILER) {
                     if (!first) {
                         ListPNamedShape childs;
                         childs.push_back(TrailingEdgeDevicePrism);
@@ -462,7 +462,6 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
                         first      = false;
                         fusedBoxes = TrailingEdgeDevicePrism;
                     }
-                }
                 // trigger build of the flap
                 TrailingEdgeDevice.GetLoft();
             }
@@ -1805,23 +1804,12 @@ namespace
 
     size_t NumberOfControlSurfaces(const CCPACSWing& wing)
     {
-        size_t nControlSurfaces = 0;
         for (const auto& componentSegment : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!componentSegment->GetControlSurfaces()) {
                 continue;
             }
-            if (componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices().is_initialized()) {
-                const CCPACSTrailingEdgeDevices& teds =
-                    componentSegment->GetControlSurfaces()->GetTrailingEdgeDevices().value();
-                nControlSurfaces += teds.GetTrailingEdgeDevices().size();
-            }
-            if (componentSegment->GetControlSurfaces()->GetLeadingEdgeDevices().is_initialized()) {
-                const CCPACSLeadingEdgeDevices& leds =
-                    componentSegment->GetControlSurfaces()->GetLeadingEdgeDevices().value();
-                nControlSurfaces += leds.GetLeadingEdgeDevices().size();
-            }
+            return componentSegment->GetControlSurfaces()->ControlSurfaceCount();
         }
-        return nControlSurfaces;
     }
 
 } // namespace

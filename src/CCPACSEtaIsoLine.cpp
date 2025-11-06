@@ -78,11 +78,6 @@ void CCPACSEtaIsoLine::SetEta(const double& value)
     InvalidateParent();
 }
 
-const double& CCPACSEtaIsoLine::GetEta() const
-{
-    return generated::CPACSEtaIsoLine::GetEta();
-}
-
 void CCPACSEtaIsoLine::SetReferenceUID(const std::string& value)
 {
     generated::CPACSEtaIsoLine::SetReferenceUID(value);
