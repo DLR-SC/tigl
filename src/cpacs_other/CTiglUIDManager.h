@@ -89,6 +89,8 @@ public:
         return *static_cast<T* const>(ResolveObject(uid, typeid(T)).ptr);
     }
 
+    TIGL_EXPORT CTiglUIDObject& ResolveUIDObject(const std::string& uid) const;
+
     template<typename T>
     std::vector<T*> ResolveObjects() const
     {

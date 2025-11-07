@@ -78,6 +78,8 @@ protected:
 
     tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
 
+    tigl::CCPACSComponent const* wrongReference = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wrongUIDReference");
+
     // std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
 };
 
@@ -109,8 +111,9 @@ TEST_F(Systems, temp)
     auto& loft3 = cylinder_1->GetLoft();
     auto& loft4 = cone_1->GetLoft();
 
-    EXPECT_EQ(1., 1.);
-
     auto& loft5 = eMotor->GetLoft();
+
+    CheckExceptionMessage([&]() { wrongReference->GetLoft(); },
+        "Unsupported system element for uid \"NACA0009\" in CCPACSComponent::BuildLoft");
 
 }

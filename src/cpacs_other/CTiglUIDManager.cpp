@@ -154,6 +154,15 @@ CTiglUIDManager::TypedPtr CTiglUIDManager::ResolveObject(const std::string& uid)
     return it->second;
 }
 
+CTiglUIDObject& CTiglUIDManager::ResolveUIDObject(const std::string& uid) const
+{
+    const TypedPtr tp = ResolveObject(uid);
+    auto* obj = static_cast<CTiglUIDObject*>(tp.ptr);
+    if (!obj) {
+        throw CTiglError("Object with uid \"" + uid + "\" is not a CTiglUIDObject", TIGL_UID_ERROR);
+    }
+    return *obj;
+}
 
 namespace {
     bool isChildOf(const tigl::CTiglUIDObject* obj, const std::string& parentUID)

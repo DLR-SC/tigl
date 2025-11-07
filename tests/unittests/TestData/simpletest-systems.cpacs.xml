@@ -310,6 +310,17 @@
                                         </translation>
                                     </transformation>
                                 </component>
+								<component uID="wrongUIDReference">
+									<name>Wrong UID Reference</name>
+									<systemElementUID>NACA0009</systemElementUID>
+									<transformation>
+										<translation>
+											<x>20</x>
+											<y>0</y>
+											<z>0</z>
+										</translation>
+									</transformation>
+								</component>
                             </components>
                         </genericSystem>
                     </genericSystems>

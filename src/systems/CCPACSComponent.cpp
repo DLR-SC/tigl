@@ -27,56 +27,23 @@
 #include "generated/CPACSGenerator.h"
 #include "generated/CPACSTurboGenerator.h"
 #include "generated/CPACSHeatExchanger.h"
+#include "CPACSElementGeometry.h" 
 
 namespace tigl
 {
 
-static const CCPACSElementGeometry* TryGetGeometryByUID(CTiglUIDManager* mgr, const std::string& uid)
-{
-    try {
-        return &mgr->ResolveObject<generated::CPACSVehicleElementBase>(uid).GetGeometry();
+    static const CCPACSElementGeometry* GetGeometryFrom(CTiglUIDObject& obj)
+    {
+        if (auto* ve = dynamic_cast<generated::CPACSVehicleElementBase*>(&obj)) return &ve->GetGeometry();
+        if (auto* em = dynamic_cast<generated::CPACSElectricMotor*>(&obj)) return &em->GetGeometry();
+        if (auto* b = dynamic_cast<generated::CPACSBattery*>(&obj)) return &b->GetGeometry();
+        if (auto* gb = dynamic_cast<generated::CPACSGearBox*>(&obj)) return &gb->GetGeometry();
+        if (auto* gt = dynamic_cast<generated::CPACSGasTurbine*>(&obj)) return &gt->GetGeometry();
+        if (auto* gen = dynamic_cast<generated::CPACSGenerator*>(&obj)) return &gen->GetGeometry();
+        if (auto* tg = dynamic_cast<generated::CPACSTurboGenerator*>(&obj)) return &tg->GetGeometry();
+        if (auto* hx = dynamic_cast<generated::CPACSHeatExchanger*>(&obj)) return &hx->GetGeometry();
+        return nullptr;
     }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSElectricMotor>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSBattery>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSGearBox>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSGasTurbine>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSGenerator>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSTurboGenerator>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-    try {
-        return &mgr->ResolveObject<generated::CPACSHeatExchanger>(uid).GetGeometry();
-    }
-    catch (...) {
-    }
-
-
-    return nullptr;
-}
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
@@ -93,10 +60,13 @@ PNamedShape CCPACSComponent::BuildLoft() const
 {
     auto systemElementUID = m_systemElementUID_choice1.get();
 
-    const CCPACSElementGeometry* geom = TryGetGeometryByUID(m_uidMgr, systemElementUID);
+    CTiglUIDObject& any = m_uidMgr->ResolveUIDObject(systemElementUID);
+    const CCPACSElementGeometry* geom = GetGeometryFrom(any);
+    if (!geom) {
+        throw CTiglError("Unsupported system element for uid \"" + systemElementUID + "\" in CCPACSComponent::BuildLoft");
+    }
 
-    const auto transform              = this->GetTransformationMatrix();
-    CTiglVehicleElementBuilder builder(*geom, transform);
+    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix());
     return builder.BuildShape();
 }
 
