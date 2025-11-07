@@ -63,6 +63,28 @@ class ControlSurfaceTest(unittest.TestCase):
         curparm2 = self.tigl.controlSurfaceGetControlParameter(uid)
         self.assertEqual(curparm2, 1.0)
 
+    def test_control_surfaces(self):
+        comp_seg = self.config.get_wing(1).get_component_segment("WING_CS1")
+
+        ctrl_surfaces_opt = comp_seg.get_control_surfaces()
+        self.assertTrue(bool(ctrl_surfaces_opt))
+        ctrl_surfaces = ctrl_surfaces_opt
+
+        teds_opt = ctrl_surfaces.get_trailing_edge_devices()
+        self.assertTrue(bool(teds_opt))
+        teds = teds_opt
+        ted = teds.get_trailing_edge_device(1)
+        self.assertEqual(ted.get_defaulted_uid(), "FlapInner")
+        short_name = ted.get_short_name()
+        self.assertEqual(short_name, "W1CS1TED0")
+
+        leds_opt = ctrl_surfaces.get_leading_edge_devices()
+        self.assertTrue(bool(leds_opt))
+        leds = leds_opt
+        led = leds.get_leading_edge_device(1)
+        self.assertEqual(led.get_defaulted_uid(), "InnerLED")
+        short_name = led.get_short_name()
+        self.assertEqual(short_name, "W1CS1LED0")
 
 
 if __name__ == "__main__":
