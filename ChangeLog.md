@@ -5,6 +5,7 @@ Changes since last release
 --------------------------
 - General changes
   - Always display the borders of the control surfaces on the wing
+  - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
 
 - Fixes
   - Update modificator widget's references after undo/redo action. Fixes ([#1240](https://github.com/DLR-SC/tigl/issues/1240))
