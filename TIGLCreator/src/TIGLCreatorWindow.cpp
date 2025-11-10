@@ -1023,6 +1023,7 @@ void TIGLCreatorWindow::connectSignals()
     // modificatorManager will emit a configurationEdited when he modifies the tigl configuration (for later)
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
+    connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
     connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
@@ -1092,6 +1093,19 @@ void TIGLCreatorWindow::updateRecentFileActions()
     recentFileMenu->setEnabled(numRecentFiles > 0);
 
     myLastFolder = settings.value("lastFolder").toString();
+}
+
+void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
+{
+    auto idx = modificatorModel->getIdxForUID(treeWidget->getLastSelectedUID());
+    if (!idx.isValid()) {
+        return;
+    }
+    auto item = modificatorModel->getItem(idx);
+    if (!item) {
+        return;
+    }
+    modificatorModel->dispatch(item);
 }
 
 void TIGLCreatorWindow::updateMenus()
