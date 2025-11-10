@@ -93,7 +93,7 @@ public slots:
     void updateScene();
 
 private slots:
-    void updateCurrentWidget();
+    void dispatchLastSelectedItemOnConfigurationEdited();
     void updateMenus();
     void newFile();
     void open();
