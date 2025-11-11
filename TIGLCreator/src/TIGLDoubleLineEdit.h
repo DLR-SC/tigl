@@ -19,20 +19,51 @@
 #ifndef TIGLDOUBLELINEEDIT_H
 #define TIGLDOUBLELINEEDIT_H
 
+#include <QLabel>
 #include <QLineEdit>
 
-class TIGLDoubleLineEdit : public QLineEdit
+class QKeyEvent;
+class QDoubleValidator;
+
+class TiGLDoubleLineEdit : public QLabel
 {
     Q_OBJECT
-
 public:
-    TIGLDoubleLineEdit();
-    TIGLDoubleLineEdit(double minValue, double maxValue, double value, int nrDecimalsPrint);
+    explicit TiGLDoubleLineEdit(QWidget *parent = nullptr);
 
-    void setRange(double minValue, double maxValue);
+    void setValue(double value);
 
-    void setValue(double value, int nrDecimalsPrint);
+    void setRange(double min, double max);
 
+protected:
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+
+    void keyPressEvent(QKeyEvent* event) override;
+
+    void focusInEvent(QFocusEvent* event) override;
+
+    void focusOutEvent(QFocusEvent* event) override;
+
+    void paintEvent(QPaintEvent* event) override;
+
+private:
+    void enterEditMode();
+
+    void enterViewMode();
+
+    void cancelEditMode();
+
+private:
+    bool isEditMode;
+    bool isTransitioningFocus; // Flag to prevent focusOutEvent interference
+    QString current_value; // Rounded value for display
+    double full_precision_value; // Full precision value for internal use
+    double min_value; // Minimum allowed value
+    double max_value; // Maximum allowed value
+    QLineEdit* editor = nullptr; // Editor widget for editing mode
+    QDoubleValidator* validator; // Validator for range validation
 };
+
+
 
 #endif // TIGLDOUBLELINEEDIT_H

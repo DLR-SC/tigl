@@ -33,7 +33,7 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     , dx(new QDoubleSpinBox())
     , dy(new QDoubleSpinBox())
     , dz(new QDoubleSpinBox())
-    , concentration(new TIGLDoubleLineEdit())
+    , concentration(new TiGLDoubleLineEdit(this))
 {
     setWindowTitle("Add a spotlight");
 
@@ -69,7 +69,7 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     dy->setValue(1.);
     dz->setValue(1.);
 
-    concentration->setValue(0.5, 2);
+    concentration->setValue(0.5);
 
     // The main layout is vertical with a horizontal layout on top
     // and the dialog buttons below

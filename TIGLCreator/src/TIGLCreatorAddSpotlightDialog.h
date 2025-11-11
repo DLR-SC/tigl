@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <TIGLDoubleLineEdit.h>
 
+
 class TIGLCreatorAddSpotlightDialog : public QDialog
 {
     Q_OBJECT
@@ -43,7 +44,7 @@ private:
     QDoubleSpinBox* dx;
     QDoubleSpinBox* dy;
     QDoubleSpinBox* dz;
-    TIGLDoubleLineEdit* concentration;
+    TiGLDoubleLineEdit* concentration;
 };
 
 #endif // TIGLCREATORADDSPOTLIGHTDIALOG_H
