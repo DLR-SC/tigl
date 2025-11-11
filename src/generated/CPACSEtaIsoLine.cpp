@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CCPACSWingCellPositionSpanwise.h"
 #include "CPACSControlSurfaceAirfoil.h"
@@ -51,6 +52,15 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSControlSurfaceAirfoil);
+    }
+
+    CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSControlSurfaceBorderLeadingEdge);
     }
 
     CPACSEtaIsoLine::CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
@@ -123,6 +133,9 @@ namespace generated
             if (IsParent<CPACSControlSurfaceAirfoil>()) {
                 return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
             }
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();
             }
@@ -153,6 +166,9 @@ namespace generated
             }
             if (IsParent<CPACSControlSurfaceAirfoil>()) {
                 return GetParent<CPACSControlSurfaceAirfoil>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSControlSurfaceBorderLeadingEdge>()) {
+                return GetParent<CCPACSControlSurfaceBorderLeadingEdge>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSControlSurfaceBorderTrailingEdge>()) {
                 return GetParent<CCPACSControlSurfaceBorderTrailingEdge>()->GetNextUIDParent();

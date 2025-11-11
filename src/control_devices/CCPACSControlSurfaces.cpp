@@ -16,8 +16,9 @@
 * limitations under the License.
 */
 
-
 #include "CCPACSControlSurfaces.h"
+#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
 
 namespace tigl
 {
@@ -32,6 +33,9 @@ size_t CCPACSControlSurfaces::ControlSurfaceCount() const
     size_t count = 0;
     if (GetTrailingEdgeDevices()) {
         count += GetTrailingEdgeDevices()->GetTrailingEdgeDevices().size();
+    }
+    if (GetLeadingEdgeDevices()) {
+        count += GetLeadingEdgeDevices()->GetLeadingEdgeDevices().size();
     }
 
     return count;
