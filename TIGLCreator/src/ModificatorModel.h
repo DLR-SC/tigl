@@ -30,6 +30,8 @@
 #include <QAbstractItemModel>
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
+#include <AIS_InteractiveObject.hxx>
+#include <SceneGraph.h>
 
 class TIGLCreatorWindow;
 
@@ -61,6 +63,7 @@ class ModificatorModel : public QAbstractItemModel
 
 signals:
     void configurationEdited();
+    void componentVisibilityChanged(const QString& uid, bool visible);
 
 public slots:
     void dispatch(cpcr::CPACSTreeItem* item);
@@ -115,6 +118,10 @@ public:
 
     void setCPACSConfiguration(TIGLCreatorDocument* newDoc);
 
+    // Associate a SceneGraph instance with this model. The model does not own
+    // the pointer; the caller (TIGLCreatorWindow) manages SceneGraph lifetime.
+    void setSceneGraph(SceneGraph* sg) { sceneGraph = sg; }
+
     /**
      * @brief resets the currently loaded CCPACSConfiguration to the CPACS configuration in a string
      * 
@@ -160,12 +167,28 @@ public:
     // count the number of data a index hold
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     // Return true if there is a valid root
     bool isValid() const;
 
+    bool isVisible(const std::string& uid) const;
+
+    void setVisibility(const std::string& uid, bool visible);
+
+    void loadVisibilityFromSettings();
+
+    void saveVisibilityToSettings();
+
+    // Register interactive AIS objects with a UID so the model can manage
+    // appearing/disappearing without querying external managers.
+ 
+
+    bool setData(const QModelIndex& index, const QVariant& value, int role);
+
     QModelIndex getIdxForUID(std::string uid) const;
 
-    std::string getUidForIdx(QModelIndex idx);
+    std::string getUidForIdx(QModelIndex idx) const;
 
     cpcr::CPACSTreeItem* getItemFromSelection(const QItemSelection& newSelection);
 
@@ -231,6 +254,7 @@ private:
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
+    SceneGraph* sceneGraph;
 
 };
 

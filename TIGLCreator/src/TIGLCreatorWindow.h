@@ -32,6 +32,7 @@
 #include "ui_TIGLCreatorWindow.h"
 
 #include "ModificatorModel.h"
+#include "SceneGraph.h"
 
 class QAction;
 class QLabel;
@@ -87,6 +88,7 @@ public slots:
     TIGLCreatorContext*  getScene() { return myScene; }
     TIGLCreatorSettings*  getViewerSettings() { return tiglCreatorSettings; }
     TIGLCreatorDocument* getDocument() { return cpacsConfiguration; }
+    SceneGraph* getSceneGraph() { return sceneGraph; }
 
     //update function for modificator
 
@@ -118,6 +120,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void onComponentVisibilityChanged(const QString& uid, bool visible);
 
 private:
     void connectSignals();
@@ -155,6 +158,7 @@ private:
     bool suppressErrors{false};
 
     ModificatorModel* modificatorModel;
+    SceneGraph* sceneGraph;
 
 };
 
