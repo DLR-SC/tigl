@@ -758,7 +758,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
         if (loft) {
-            double opacity = 0.66;
+            double opacity = 0.;
             bool shaded = true;
             // By default, we display the wing without cutouts (for performance). 
             // Therefore, it is visually better to display the flaps using a wireframe rendering by default
