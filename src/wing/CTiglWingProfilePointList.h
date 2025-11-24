@@ -40,6 +40,7 @@
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
 #include "CCPACSPointListXYVector.h"
+#include "CPACSApproximationSettings.h"
 #include "Cache.h"
 
 namespace tigl
@@ -130,6 +131,8 @@ private:
     const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const std::string                   profileUID;      /**< Reference to the wing profile */
+
+    const tigl::generated::CPACSApproximationSettings *m_approximationSettings = nullptr;
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };

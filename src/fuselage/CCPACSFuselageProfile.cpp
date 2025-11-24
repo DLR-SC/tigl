@@ -26,6 +26,7 @@
 #include "CTiglTransformation.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglBSplineAlgorithms.h"
+#include "CTiglBSplineApproxInterp.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 #include "Debugging.h"
@@ -206,10 +207,10 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         }
 
         auto points = m_pointList_choice1->AsVector();
-        auto params = m_pointList_choice1->GetParamsAsMap();
+        auto paramsMap = m_pointList_choice1->GetParamsAsMap();
         auto kinks  = m_pointList_choice1->GetKinksAsVector();
         if (mirrorSymmetry) {
-            SymmetrizeFuselageProfile(points, params, kinks);
+            SymmetrizeFuselageProfile(points, paramsMap, kinks);
         }
 
         // Build the B-Spline
@@ -227,10 +228,47 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
             occPoints->SetValue(occPoints->Upper(), pMiddle);
         }
 
-        // Here, the B-spline is reparameterized based on the CPACS profile after setting it up at first for accuracy reasons
-        // Also, a tolerance is passed used for knot insertion and removal during the reparameterization algorithm
-        CTiglInterpolatePointsWithKinks interp(occPoints, kinks, params, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, 1e-8);
-        auto spline = interp.Curve();
+        Handle(Geom_BSplineCurve) spline;
+        if (m_pointList_choice1->GetApproximationSettings()) {
+            auto& approxSettings = m_pointList_choice1->GetApproximationSettings();
+            double errApproxCalc = -1.;
+            if (approxSettings->GetControlPointNumber_choice1()) {
+                int nrControlPoints = approxSettings->GetControlPointNumber_choice1().value();
+                if (nrControlPoints < 3) {
+                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: controlPointNumber must be 3 or larger");
+                }
+
+                CTiglBSplineApproxInterp approx(*occPoints, nrControlPoints, 3, true);
+                for(auto idx : kinks) {
+                    approx.InterpolatePoint(idx, true);
+                }
+                auto paramsVec = computeParams(occPoints, paramsMap, 0.5);
+
+                // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
+                // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
+
+                CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
+
+                LOG(WARNING) << "I am approximated" << std::endl;
+                spline = approxResult.curve;
+                errApproxCalc = approxResult.error;
+                LOG(WARNING) << "#Poles: " << spline->NbPoles();
+                LOG(WARNING) << "#Knots: " << spline->NbKnots();
+
+                LOG(WARNING) << "The profile with uID '" << GetUID() << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+            }
+            else if (approxSettings->GetMaximumError_choice2()) {
+                throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: 'Max Error' open for implementation");
+            }
+            else
+                throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: Invalid Definition of Approximation Settings");
+        }
+        else {
+            // Here, the B-spline is reparameterized based on the CPACS profile after setting it up at first for accuracy reasons
+            // Also, a tolerance is passed used for knot insertion and removal during the reparameterization algorithm
+            CTiglInterpolatePointsWithKinks interp(occPoints, kinks, paramsMap, 0.5, 3, CTiglInterpolatePointsWithKinks::Algo::InterpolateFirstThenReparametrize, 1e-8);
+            spline = interp.Curve();
+        }
 
         if (mirrorSymmetry) {
             double umin = spline->FirstParameter();
@@ -242,7 +280,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         // Reparamaterization based on a ParamMap defined in the CPACS file within CTiglInterpolatePointsWithKinks does not get along with reparametrizeBSplineNiceKnots.
         // The geometry is changed in a way that is not acceptable anymore. However out of performance reasons, the feature should not be rejected in the most cases.
         // Due to those conflicts, the function is only called, when there are no parameters defined in the CPACS file:
-        if (params.empty()) {
+        if (paramsMap.empty()) {
             // we reparametrize the spline to get better performing lofts.
             // there might be a small accuracy loss though.
             spline = CTiglBSplineAlgorithms::reparametrizeBSplineNiceKnots(spline).curve;

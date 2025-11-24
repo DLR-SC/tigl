@@ -27,10 +27,13 @@
 #include "TopoDS_Edge.hxx"
 #include "TColgp_HArray1OfPnt.hxx"
 #include "CTiglPointsToBSplineInterpolation.h"
+#include "CTiglBSplineApproxInterp.h"
 #include "Precision.hxx"
 #include "math.h"
 #include <algorithm>
 #include <iostream>
+#include "BRepTools.hxx"
+#include "CTiglLogging.h"
 
 namespace tigl 
 {
@@ -44,6 +47,24 @@ CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire()
 // Destructor
 CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire()
 {
+}
+
+CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(const tigl::generated::CPACSApproximationSettings *approximationSettings,
+                                                         const std::string& profileUID)
+{
+    continuity = _C0;
+    m_approximationSettings = approximationSettings;
+    m_profileUID = &profileUID;
+}
+
+void CTiglInterpolateBsplineWire::setApproximationSettings(const tigl::generated::CPACSApproximationSettings *approximationSettings)
+{
+    m_approximationSettings = approximationSettings;
+}
+
+void CTiglInterpolateBsplineWire::setProfileUID(const std::string& profileUID)
+{
+    m_profileUID = &profileUID;
 }
 
 // Builds the wire from the given points
@@ -94,8 +115,48 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         hpoints->SetValue(j + 1, usedPoints[j]);
     }
 
-    CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);
-    Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
+    Handle(Geom_BSplineCurve) hcurve;
+    if (m_approximationSettings) {
+        double errApproxCalc = -1.;
+        if (m_approximationSettings->GetControlPointNumber_choice1()) {
+            int nrControlPoints = m_approximationSettings->GetControlPointNumber_choice1().value();
+            if (nrControlPoints < 3) {
+                throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
+            }
+
+            CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
+
+            // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+            approx.InterpolatePoint(0);
+            approx.InterpolatePoint(hpoints->Length()-1);
+
+            // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
+            // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
+            CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
+            LOG(WARNING) << "I am approximated" << std::endl;
+            hcurve = approxResult.curve;
+            errApproxCalc = approxResult.error;
+            LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
+            LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
+            LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+        }
+        else if (m_approximationSettings->GetMaximumError_choice2()) {
+            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: 'Max Error' open for implementation");
+        }
+        else {
+            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: Invalid Definition of Approximation Settings");
+        }
+
+        BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineApprox.brep");
+    }
+    else {
+        CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);
+        hcurve = interpol.Curve();
+        LOG(WARNING) << "I am interpolated" << std::endl;
+        LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
+        LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
+        BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineInterp.brep");
+    }
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);

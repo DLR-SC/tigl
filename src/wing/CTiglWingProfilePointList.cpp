@@ -89,6 +89,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
+    , m_approximationSettings(cpacsPointList.GetApproximationSettings() ? &(*(cpacsPointList.GetApproximationSettings())) : nullptr)
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
 }
@@ -97,6 +98,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile&
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
+    , m_approximationSettings(nullptr) //TODO: Pass also for nacelles
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
 }
@@ -139,7 +141,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     }
 
     // Build wires from wing profile points.
-    const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+    ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
 
     // CCPACSWingSegment::makeSurfaces cannot handle currently
     // wire with multiple edges. Thus we get problems if we have
@@ -149,8 +151,21 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
-    TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
+    TopoDS_Wire tempShapeOpened;
+    TopoDS_Wire tempShapeClosed;
+
+    if (m_approximationSettings && typeid(wireBuilder) == typeid(CTiglInterpolateBsplineWire)) {
+        CTiglInterpolateBsplineWire* wireBuilderPointList = dynamic_cast<CTiglInterpolateBsplineWire*>(&wireBuilder);
+        wireBuilderPointList->setApproximationSettings(m_approximationSettings);
+        wireBuilderPointList->setProfileUID(profileUID);
+
+        tempShapeOpened = wireBuilderPointList->BuildWire(openPoints, false);
+        tempShapeClosed = wireBuilderPointList->BuildWire(closedPoints, true);
+    }
+    else {
+        tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
+        tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
+    }
     if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }

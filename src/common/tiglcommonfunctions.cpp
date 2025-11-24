@@ -2255,4 +2255,35 @@ tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis)
 }
 
 
+double calcPointVecErrorMax(std::vector<gp_Pnt> pntsRef, std::vector<gp_Pnt> pntsCmp)
+{
+    if (pntsRef.size() != pntsCmp.size()) {
+        throw tigl::CTiglError("Number of the reference points does not match the number of the points to compare with in error calculation!");
+    }
+
+    double tempErr;
+    double error = 0;
+    for(int i = 0; i < pntsRef.size(); i++) {
+        tempErr = pntsCmp[i].Distance(pntsRef[i]);
+        error = std::max(tempErr, error);
+    }
+
+    return error;
+}
+
+double calcPointVecErrorRMSE(std::vector<gp_Pnt> pntsRef, std::vector<gp_Pnt> pntsCmp)
+{
+    if (pntsRef.size() != pntsCmp.size()) {
+        throw tigl::CTiglError("Number of the reference points does not match the number of the points to compare with in error calculation!");
+    }
+
+    double tempErr;
+    double error = 0;
+    for(int i = 0; i < pntsRef.size(); i++) {
+        tempErr = pntsCmp[i].Distance(pntsRef[i]);
+        error += tempErr*tempErr;
+    }
+
+    return std::sqrt(error / pntsRef.size());
+}
 
