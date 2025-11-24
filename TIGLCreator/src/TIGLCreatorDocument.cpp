@@ -779,6 +779,68 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
 }
 
+void TIGLCreatorDocument::drawControlPointNet()
+{
+    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    START_COMMAND()
+    foreach (QString componentUID, dialog.GetSelectedUids()) {
+        drawControlPointNetByUID(componentUID);
+    }
+}
+
+void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
+{
+    try {
+        tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
+        PNamedShape loft = component.GetLoft();
+        for (int i = 0; i < loft->GetFaceCount(); ++i) {
+            TopoDS_Face face = GetFace(loft->Shape(), i);
+
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+            if (surf.IsNull()) {
+                return;
+            }
+
+            Handle(Geom_BSplineSurface) bs = Handle(Geom_BSplineSurface)::DownCast(surf);
+            if (bs.IsNull()) {
+                return; // not a bspline surface
+            }
+
+            const Standard_Integer uCount = bs->NbUPoles();
+            const Standard_Integer vCount = bs->NbVPoles();
+
+            for (Standard_Integer i = 1; i <= uCount; ++i) {
+                for (Standard_Integer j = 1; j <= vCount; ++j) {
+
+                    gp_Pnt p = bs->Pole(i, j);
+
+                    TopoDS_Vertex vtx = BRepBuilderAPI_MakeVertex(p);
+                    app->getScene()->displayPoint(p, "", false, 0., 0., 0., 0);
+
+                    if (i < uCount) {
+                        gp_Pnt q = bs->Pole(i + 1, j);
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        app->getScene()->displayShape(edge, false, Quantity_NOC_YELLOW);
+                    }
+
+                    if (j < vCount) {
+                        gp_Pnt q = bs->Pole(i, j + 1);
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        app->getScene()->displayShape(edge, false, Quantity_NOC_YELLOW);
+                    }
+                }
+            }
+        }
+    }
+    catch(tigl::CTiglError& err) {
+        displayError("Cannot display control point net for \"" + uid + "\": " + err.what());
+    }
+}
+
 void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
 {
     tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);

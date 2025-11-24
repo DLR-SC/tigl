@@ -902,6 +902,7 @@ void TIGLCreatorWindow::connectConfiguration()
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
     connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
     connect(drawComponentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawComponent()));
+    connect(drawControlPointNetAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawControlPointNet()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
