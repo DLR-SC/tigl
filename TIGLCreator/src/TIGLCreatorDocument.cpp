@@ -46,6 +46,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -813,27 +814,49 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
             const Standard_Integer uCount = bs->NbUPoles();
             const Standard_Integer vCount = bs->NbVPoles();
 
+            BRep_Builder builder;
+            TopoDS_Compound control_point_net;
+            builder.MakeCompound(control_point_net);
+
+            // make vertices
             for (Standard_Integer i = 1; i <= uCount; ++i) {
                 for (Standard_Integer j = 1; j <= vCount; ++j) {
-
-                    gp_Pnt p = bs->Pole(i, j);
-
-                    TopoDS_Vertex vtx = BRepBuilderAPI_MakeVertex(p);
-                    app->getScene()->displayPoint(p, "", false, 0., 0., 0., 0);
-
-                    if (i < uCount) {
-                        gp_Pnt q = bs->Pole(i + 1, j);
-                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
-                        app->getScene()->displayShape(edge, false, Quantity_NOC_YELLOW);
-                    }
-
-                    if (j < vCount) {
-                        gp_Pnt q = bs->Pole(i, j + 1);
-                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
-                        app->getScene()->displayShape(edge, false, Quantity_NOC_YELLOW);
-                    }
+                    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(bs->Pole(i, j)).Vertex();
+                    builder.Add(control_point_net, v);
                 }
             }
+
+            // make wires in v direction
+            for (Standard_Integer i = 1; i <= uCount; ++i) {
+                auto wire_builder = BRepBuilderAPI_MakeWire();
+                for (Standard_Integer j = 1; j < vCount; ++j) {
+
+                    gp_Pnt p = bs->Pole(i, j);
+                    gp_Pnt q = bs->Pole(i, j + 1);
+                    if (!p.IsEqual(q, Precision::SquareConfusion()) ) {
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        wire_builder.Add(edge);
+                    }
+                }
+                builder.Add(control_point_net, wire_builder.Wire());
+            }
+
+            // make wires in u direction
+            for (Standard_Integer j = 1; j <= vCount; ++j) {
+                auto wire_builder = BRepBuilderAPI_MakeWire();
+                for (Standard_Integer i = 1; i < uCount; ++i) {
+
+                    gp_Pnt p = bs->Pole(i, j);
+                    gp_Pnt q = bs->Pole(i + 1, j);
+                    if (!p.IsEqual(q, Precision::SquareConfusion()) ) {
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        wire_builder.Add(edge);
+                    }
+                }
+                builder.Add(control_point_net, wire_builder.Wire());
+            }
+
+            app->getScene()->displayShape(control_point_net, false, Quantity_NOC_YELLOW);
         }
     }
     catch(tigl::CTiglError& err) {
