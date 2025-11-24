@@ -782,7 +782,11 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
 void TIGLCreatorDocument::drawControlPointNet()
 {
-    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app);
+    TIGLGeometryChoserDialog dialog(
+        GetConfiguration().GetUIDManager(), 
+        app,
+        [](auto* shape) { return shape->GetLoft()->GetFaceCount() > 0; }
+    );
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
