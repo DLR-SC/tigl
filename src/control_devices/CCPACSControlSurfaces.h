@@ -18,8 +18,6 @@
 */
 
 #include "generated/CPACSControlSurfaces.h"
-#include <string>
-#include "CTiglError.h"
 
 namespace tigl
 {

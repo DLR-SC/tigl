@@ -124,58 +124,35 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::cleanup()
     return;
 }
 
-double TIGLCreatorSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue(std::string uid)
+double TIGLCreatorSelectWingAndFlapStatusDialog::getFlapValue(std::string uid)
 {
-    try {
-        auto it = _deviceMap.find(uid);
-        if (it == _deviceMap.end()) {
-            throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
-        }
-
-        tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
-        tigl::CCPACSTrailingEdgeDevice* device = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(controlSurfaceDevice);
-
-        return device->GetControlParameter();
+    if (uidMgr().IsType<tigl::CCPACSTrailingEdgeDevice>(uid)) {
+        auto& ted = uidMgr().ResolveObject<tigl::CCPACSTrailingEdgeDevice>(uid);
+        return ted.GetControlParameter();
     }
-    catch (...) {
-        return 0;
+    else if (uidMgr().IsType<tigl::CCPACSLeadingEdgeDevice>(uid)) {
+        auto& led = uidMgr().ResolveObject<tigl::CCPACSLeadingEdgeDevice>(uid);
+        return led.GetControlParameter();
     }
-}
-
-double TIGLCreatorSelectWingAndFlapStatusDialog::getLeadingEdgeFlapValue(std::string uid)
-{
-    try {
-        auto it = _deviceMap.find(uid);
-        if (it == _deviceMap.end()) {
-            throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
-        }
-
-        tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
-        tigl::CCPACSLeadingEdgeDevice* device = dynamic_cast<tigl::CCPACSLeadingEdgeDevice*>(controlSurfaceDevice);
-
-        return device->GetControlParameter();
+    else {
+        throw tigl::CTiglError("getFlapValue: UID not found", TIGL_UID_ERROR);
     }
-    catch (...) {
-        return 0;
-    }
+    
 }
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(
-    const tigl::CTiglAbstractGeometricComponent* basecontrolSurfaceDevice, int rowIdx, QTableWidget* gridLayout)
+     const ControlDevice& device, int rowIdx, QTableWidget* gridLayout)
 {
-    if (auto* ted = dynamic_cast<const tigl::CCPACSTrailingEdgeDevice*>(basecontrolSurfaceDevice)) {
-        buildFlapRow_helper(ted, rowIdx, gridLayout);
-    }
-    else if (auto* led = dynamic_cast<const tigl::CCPACSLeadingEdgeDevice*>(basecontrolSurfaceDevice)) {
-        buildFlapRow_helper(led, rowIdx, gridLayout);
-    }
+    std::visit([&](auto& device) {
+        buildFlapRow_helper(device, rowIdx, gridLayout);
+    }, device);
 }
 
 template <typename DeviceType>
-void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceType* controlSurfaceDevice, int rowIdx,
+void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceType& controlSurfaceDevice, int rowIdx,
                                                                    QTableWidget* gridLayout)
 {
-    QString uid           = controlSurfaceDevice->GetUID().c_str();
+    QString uid           = QString::fromStdString(controlSurfaceDevice.uid());
     QLabel* labelUID      = new QLabel(uid, this);
     QString transparentBG = "background-color: rgba(0, 0, 0, 0.0); padding-left: 6px; padding-right: 6px;";
     labelUID->setStyleSheet(transparentBG);
@@ -197,8 +174,8 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 
     QString rot;
 
-    if (controlSurfaceDevice->GetPath().GetSteps().GetSteps().size() > 0) {
-        const auto& step = controlSurfaceDevice->GetPath().GetSteps().GetSteps().front();
+    if (controlSurfaceDevice.device->GetPath().GetSteps().GetSteps().size() > 0) {
+        const auto& step = controlSurfaceDevice.device->GetPath().GetSteps().GetSteps().front();
         if (step) {
             rot.append(QString::number(step->GetHingeLineRotation().value_or(0.)));
         }
@@ -209,10 +186,10 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 
     gridLayout->setCellWidget(rowIdx, 3, labelRotation);
 
-    double savedValue = controlSurfaceDevice->GetControlParameter();
+    double savedValue = controlSurfaceDevice.control_parameter();
 
-    double minControlParam = controlSurfaceDevice->GetMinControlParameter();
-    double maxControlParam = controlSurfaceDevice->GetMaxControlParameter();
+    double minControlParam = controlSurfaceDevice.device->GetMinControlParameter();
+    double maxControlParam = controlSurfaceDevice.device->GetMaxControlParameter();
 
     int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) /
                                           (maxControlParam - minControlParam) * (savedValue - minControlParam)) +
@@ -248,7 +225,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
     tigl::CCPACSWing& wing            = config.GetWing(wingUID);
 
-    std::vector<tigl::CTiglAbstractGeometricComponent*> devices;
+    std::vector<ControlDevice> devices;
 
     for (int i = 1; i <= wing.GetComponentSegmentCount(); i++) {
         tigl::CCPACSWingComponentSegment& componentSegment =
@@ -262,14 +239,14 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
             for (auto& device : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
                 if (!device || !ui->checkTED->isChecked())
                     continue;
-                devices.push_back(device.get());
+                devices.emplace_back(TED{device.get()});
             }
         }
         if (controlSurfaces->GetLeadingEdgeDevices().is_initialized()) {
             for (auto& device : controlSurfaces->GetLeadingEdgeDevices()->GetLeadingEdgeDevices()) {
                 if (!device || !ui->checkLED->isChecked())
                     continue;
-                devices.push_back(device.get());
+                devices.emplace_back(LED{device.get()});
             }
         }
     }
@@ -277,19 +254,17 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
     auto* tableWidget = new QTableWidget(static_cast<int>(devices.size()), 4);
 
     int rowIdx = 0;
-    for (auto* device : devices) {
+    for (const ControlDevice& device : devices) {
+
         buildFlapRow(device, rowIdx++, tableWidget);
 
-        auto* ted = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(device);
-        auto* led = dynamic_cast<tigl::CCPACSLeadingEdgeDevice*>(device);
-        if (ted) {
-            _deviceMap[ted->GetUID()] = ted;
-            updateWidgets(ted->GetUID(), ted->GetControlParameter());
-        }
-        else if (led) {
-            _deviceMap[led->GetUID()] = led;
-            updateWidgets(led->GetUID(), led->GetControlParameter());
-        }
+        std::visit([&](auto& control_device) {
+            auto* device = control_device.device;  
+
+            _deviceMap[control_device.uid()] = device;
+
+            updateWidgets(control_device.uid(), control_device.control_parameter());
+        }, device);
     }
 
     // set style
@@ -328,14 +303,9 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string control
 
     QString textVal;
 
-    auto it = _deviceMap.find(controlSurfaceDeviceUID);
-    if (it == _deviceMap.end()) {
-        return;
-    }
-    tigl::CTiglAbstractGeometricComponent* controlSurfaceDevice = it->second;
-
-    if (auto* ted = dynamic_cast<tigl::CCPACSTrailingEdgeDevice*>(controlSurfaceDevice)) {
-        auto rotationdata = getRotation(ted, controlParam);
+    if (uidMgr().IsType<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceDeviceUID)) {
+        auto& ted = uidMgr().ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceDeviceUID);
+        auto rotationdata = getRotation(&ted, controlParam);
         int sliderVal     = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), rotationdata.factor));
 
         QString textRot = QString::number(rotationdata.rotation);
@@ -343,10 +313,11 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string control
         elms.slider->setValue(sliderVal);
         elms.controlParamBox->setValue(rotationdata.controlParam);
         elms.rotAngleLabel->setText(textRot);
-        ted->SetControlParameter(rotationdata.controlParam);
+        ted.SetControlParameter(rotationdata.controlParam);
     }
-    else if (auto* led = dynamic_cast<tigl::CCPACSLeadingEdgeDevice*>(controlSurfaceDevice)) {
-        auto rotationdata = getRotation(led, controlParam);
+    else if (uidMgr().IsType<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceDeviceUID)) {
+        auto& led = uidMgr().ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceDeviceUID);
+        auto rotationdata = getRotation(&led, controlParam);
         int sliderVal     = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), rotationdata.factor));
 
         QString textRot = QString::number(rotationdata.rotation);
@@ -354,7 +325,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string control
         elms.slider->setValue(sliderVal);
         elms.controlParamBox->setValue(rotationdata.controlParam);
         elms.rotAngleLabel->setText(textRot);
-        led->SetControlParameter(rotationdata.controlParam);
+        led.SetControlParameter(rotationdata.controlParam);
     }
 }
 

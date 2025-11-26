@@ -17,8 +17,6 @@
 */
 
 #include "CCPACSControlSurfaces.h"
-#include "CCPACSTrailingEdgeDevice.h"
-#include "CCPACSLeadingEdgeDevice.h"
 
 namespace tigl
 {

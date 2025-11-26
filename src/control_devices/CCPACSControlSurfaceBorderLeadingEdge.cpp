@@ -193,9 +193,9 @@ const CCPACSWingComponentSegment& ComponentSegment(const CCPACSControlSurfaceBor
         throw CTiglError("Missing parant Pointer");
     }
 
-    const auto& ted = self.GetParent()->GetParent();
+    const auto& led = self.GetParent()->GetParent();
 
-    return ComponentSegment(*ted);
+    return ComponentSegment(*led);
 }
 
 } // namespace tigl

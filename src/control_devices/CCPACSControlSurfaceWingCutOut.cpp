@@ -43,10 +43,6 @@ CTiglAbstractGeometricComponent const* CCPACSControlSurfaceWingCutOut::GetParent
     if (IsParent<CCPACSLeadingEdgeDevice>()) {
         return (CCPACSLeadingEdgeDevice*)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
     }
-    // if (IsParent<CCPACSSpoiler>())
-    // {
-    //   return GetParent<CCPACSSpoiler>()->GetParent();
-    // }
     throw CTiglError("Unexpected error:");
 }
 

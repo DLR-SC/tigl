@@ -251,6 +251,7 @@ void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
                                             GetNormalOfControlSurfaceDevice());
     }
     else {
+        throw CTiglError("Not implemented yet.");
         shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
                                          GetNormalOfControlSurfaceDevice());
     }

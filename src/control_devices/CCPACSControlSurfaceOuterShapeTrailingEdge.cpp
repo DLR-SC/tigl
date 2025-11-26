@@ -19,6 +19,7 @@
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSTrailingEdgeDevices.h"
 #include "CNamedShape.h"
 #include "CTiglLogging.h"

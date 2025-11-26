@@ -21,6 +21,7 @@
 #include "generated/CPACSControlSurfaceStep.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CTiglFusePlane.h"
+#include "CCPACSControlSurfaceSteps.h"
 
 #include "tiglcommonfunctions.h"
 #include "tiglmathfunctions.h"
@@ -77,53 +78,7 @@ std::string CCPACSLeadingEdgeDevice::GetShortName() const
 
 gp_Trsf CCPACSLeadingEdgeDevice::GetFlapTransform() const
 {
-    // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
-    // to the given controlParal by using a linearInterpolation.
-    std::vector<double> controlParams, innerXTrans, outerXTrans, innerYTrans, innerZTrans, outerZTrans, rotations;
-
-    const CCPACSControlSurfaceSteps& steps = GetPath().GetSteps();
-    for (const auto& step : steps.GetSteps()) {
-        controlParams.push_back(step->GetControlParameter());
-        CTiglPoint innerHingeTrans(0, 0, 0);
-        if (step->GetInnerHingeTranslation().is_initialized()) {
-            innerHingeTrans = step->GetInnerHingeTranslation()->AsPoint();
-        }
-        innerXTrans.push_back(innerHingeTrans.x);
-        innerYTrans.push_back(innerHingeTrans.y);
-        innerZTrans.push_back(innerHingeTrans.z);
-
-        CTiglPoint outerHingeTrans(0, 0, 0);
-        if (step->GetOuterHingeTranslation().is_initialized()) {
-            outerHingeTrans.x = step->GetOuterHingeTranslation()->GetX();
-            outerHingeTrans.z = step->GetOuterHingeTranslation()->GetZ();
-        }
-
-        outerXTrans.push_back(outerHingeTrans.x);
-        outerZTrans.push_back(outerHingeTrans.z);
-        rotations.push_back(step->GetHingeLineRotation().value_or(0.));
-    }
-
-    double rotation          = Interpolate(controlParams, rotations, m_currentControlParam);
-    double innerTranslationX = Interpolate(controlParams, innerXTrans, m_currentControlParam);
-    double innerTranslationY = Interpolate(controlParams, innerYTrans, m_currentControlParam);
-    double innerTranslationZ = Interpolate(controlParams, innerZTrans, m_currentControlParam);
-    double outerTranslationX = Interpolate(controlParams, outerXTrans, m_currentControlParam);
-    double outerTranslationZ = Interpolate(controlParams, outerZTrans, m_currentControlParam);
-
-    auto wingTrafo       = Wing().GetTransformation().getTransformationMatrix();
-    gp_Pnt innerHingeOld = wingTrafo.Transform(m_hingePoints->inner);
-    gp_Pnt outerHingeOld = wingTrafo.Transform(m_hingePoints->outer);
-
-    // innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
-    // Path/Step/HingeLineTransformation for more information.
-    gp_Pnt outerHingeNew = outerHingeOld.XYZ() + gp_XYZ(outerTranslationX, innerTranslationY, outerTranslationZ);
-    gp_Pnt innerHingeNew = innerHingeOld.XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
-
-    // calculating the needed transformations
-    CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, innerHingeNew, outerHingeNew,
-                                                     rotation);
-
-    return transformation.getTotalTransformation();
+    return CCPACSControlSurfaceSteps::GetTransformation(m_currentControlParam);
 }
 
 double CCPACSLeadingEdgeDevice::GetMinControlParameter() const
@@ -251,6 +206,8 @@ void CCPACSLeadingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
                                             GetNormalOfControlSurfaceDevice());
     }
     else {
+        throw CTiglError("Not implemented yet.");
+        
         shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
                                          GetNormalOfControlSurfaceDevice());
     }

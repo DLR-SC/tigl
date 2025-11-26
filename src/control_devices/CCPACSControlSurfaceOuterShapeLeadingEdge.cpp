@@ -19,6 +19,7 @@
 #include "CCPACSControlSurfaceOuterShapeLeadingEdge.h"
 #include "CCPACSControlSurfaceBorderLeadingEdge.h"
 #include "CCPACSLeadingEdgeDevice.h"
+#include "CCPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSLeadingEdgeDevices.h"
 #include "CNamedShape.h"
 #include "CTiglLogging.h"

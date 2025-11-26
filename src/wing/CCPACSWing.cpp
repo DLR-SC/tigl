@@ -473,17 +473,17 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
                 CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *LeadingEdgeDevices.GetLeadingEdgeDevices().at(led_index);
 
                 PNamedShape LeadingEdgeDevicePrism = LeadingEdgeDevice.GetCutOutShape();
-                if (LeadingEdgeDevice.GetType() != SPOILER) {
-                    if (!first) {
-                        ListPNamedShape childs;
-                        childs.push_back(LeadingEdgeDevicePrism);
-                        fusedBoxes = CFuseShapes(fusedBoxes, childs);
-                    }
-                    else {
-                        first      = false;
-                        fusedBoxes = LeadingEdgeDevicePrism;
-                    }
+
+                if (!first) {
+                    ListPNamedShape childs;
+                    childs.push_back(LeadingEdgeDevicePrism);
+                    fusedBoxes = CFuseShapes(fusedBoxes, childs);
                 }
+                else {
+                    first      = false;
+                    fusedBoxes = LeadingEdgeDevicePrism;
+                }
+                
                 // trigger build of the flap
                 LeadingEdgeDevice.GetLoft();
             }
