@@ -87,6 +87,8 @@ public slots:
     void drawSystems();
     void drawComponent();
     void drawComponentByUID(const QString& uid);
+    void drawControlPointNet();
+    void drawControlPointNetByUID(const QString& uid);
 
     // Wing slots
     void drawWingProfiles();

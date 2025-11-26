@@ -171,6 +171,7 @@
      <addaction name="drawFarFieldAction"/>
      <addaction name="drawSystemsAction"/>
      <addaction name="drawComponentAction"/>
+     <addaction name="drawControlPointNetAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -1404,6 +1405,11 @@
   <action name="drawComponentAction">
    <property name="text">
     <string>Draw any Component</string>
+   </property>
+  </action>
+  <action name="drawControlPointNetAction">
+   <property name="text">
+    <string>Draw Control Point Net</string>
    </property>
   </action>
   <action name="selectAllAction">
