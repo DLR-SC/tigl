@@ -798,6 +798,9 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
     try {
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
         PNamedShape loft = component.GetLoft();
+        if (loft == nullptr) {
+            return;
+        }
         for (int i = 0; i < loft->GetFaceCount(); ++i) {
             TopoDS_Face face = GetFace(loft->Shape(), i);
 
