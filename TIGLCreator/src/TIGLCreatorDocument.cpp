@@ -782,7 +782,13 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
 void TIGLCreatorDocument::drawControlPointNet()
 {
-    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app);
+    auto pre_filter = [](auto* shape) { 
+        return shape != nullptr &&
+            shape->GetComponentType() != TIGL_COMPONENT_PLANE &&
+            shape->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT; 
+    };
+
+    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app, pre_filter);
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
