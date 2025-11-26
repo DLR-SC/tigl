@@ -805,8 +805,13 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
         PNamedShape loft = component.GetLoft();
         if (loft == nullptr) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" is invalid.";
             return;
         }
+        if (loft->GetFaceCount() == 0) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces.";
+        }
+        int valid_face_count = 0;
         for (int i = 0; i < loft->GetFaceCount(); ++i) {
             TopoDS_Face face = GetFace(loft->Shape(), i);
 
@@ -819,6 +824,8 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
             if (bs.IsNull()) {
                 return; // not a bspline surface
             }
+
+            valid_face_count++;
 
             const Standard_Integer uCount = bs->NbUPoles();
             const Standard_Integer vCount = bs->NbVPoles();
@@ -868,6 +875,9 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
             }
 
             app->getScene()->displayShape(control_point_net, false, Quantity_NOC_YELLOW);
+        }
+        if (valid_face_count == 0) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces that are a B-Spline surface.";
         }
     }
     catch(tigl::CTiglError& err) {
