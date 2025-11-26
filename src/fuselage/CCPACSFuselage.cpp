@@ -234,7 +234,7 @@ std::string CCPACSFuselage::GetShortShapeName () const
 void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    int nFacesAero = nFacesTotal;
+    //int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -243,28 +243,40 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
+    /*
     if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
           nFacesAero-=1;
     }
     if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
           nFacesAero-=1;
     }
+          */
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = this->GetSegmentCount();
+    //int nSegments = this->GetSegmentCount();
 
-    int facesPerSegment = nFacesAero/ nSegments;
+    //int facesPerSegment = nFacesAero/ nSegments;
 
     int iFaceTotal = 0;
-    int nSymmetryFaces = (int) hasSymmetryPlane;
+    //int nSymmetryFaces = (int) hasSymmetryPlane;
+
+    loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+    if (hasSymmetryPlane) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
+    }
+
+    /*
     for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
         for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
+            if ( iFaceTotal < loft->GetFaceCount())
             loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
         }
         for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
+            if ( iFaceTotal < loft->GetFaceCount())
             loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
         }
     }
+        */
 
     // set the caps
     int iFace = 2;
