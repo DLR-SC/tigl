@@ -65,7 +65,7 @@ jobs:
             pixienv: "default"
             documentation: "OFF"
             package: "OFF"
-          - os: "macos-14"
+          - os: "macos-13"
             config: "Release"
             pixienv: "occt-static"
             documentation: "OFF"
