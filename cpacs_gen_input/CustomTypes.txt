@@ -124,6 +124,7 @@ CPACSLeadingEdgeDevice                    CCPACSLeadingEdgeDevice
 CPACSControlSurfaceOuterShapeTrailingEdge CCPACSControlSurfaceOuterShapeTrailingEdge
 CPACSControlSurfaceOuterShapeLeadingEdge  CCPACSControlSurfaceOuterShapeLeadingEdge
 CPACSControlSurfaceWingCutOut             CCPACSControlSurfaceWingCutOut
+CPACSControlSurfaceSteps                 CCPACSControlSurfaceSteps
 
 // Pylons
 CPACSEnginePylon                         CCPACSEnginePylon

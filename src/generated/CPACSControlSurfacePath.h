@@ -17,11 +17,11 @@
 
 #pragma once
 
+#include <CCPACSControlSurfaceSteps.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
 #include "CPACSControlSurfaceHingePoint.h"
-#include "CPACSControlSurfaceSteps.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -116,8 +116,8 @@ namespace generated
         TIGL_EXPORT virtual const CPACSControlSurfaceHingePoint& GetOuterHingePoint() const;
         TIGL_EXPORT virtual CPACSControlSurfaceHingePoint& GetOuterHingePoint();
 
-        TIGL_EXPORT virtual const CPACSControlSurfaceSteps& GetSteps() const;
-        TIGL_EXPORT virtual CPACSControlSurfaceSteps& GetSteps();
+        TIGL_EXPORT virtual const CCPACSControlSurfaceSteps& GetSteps() const;
+        TIGL_EXPORT virtual CCPACSControlSurfaceSteps& GetSteps();
 
     protected:
         void* m_parent;
@@ -127,7 +127,7 @@ namespace generated
 
         CPACSControlSurfaceHingePoint m_innerHingePoint;
         CPACSControlSurfaceHingePoint m_outerHingePoint;
-        CPACSControlSurfaceSteps      m_steps;
+        CCPACSControlSurfaceSteps     m_steps;
 
     private:
         CPACSControlSurfacePath(const CPACSControlSurfacePath&) = delete;

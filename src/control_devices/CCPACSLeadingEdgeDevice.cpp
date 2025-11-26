@@ -78,7 +78,10 @@ std::string CCPACSLeadingEdgeDevice::GetShortName() const
 
 gp_Trsf CCPACSLeadingEdgeDevice::GetFlapTransform() const
 {
-    return CCPACSControlSurfaceSteps::GetTransformation(m_currentControlParam);
+    auto wingTrafo       = Wing().GetTransformation().getTransformationMatrix();
+    gp_Pnt innerHingeOld = wingTrafo.Transform(m_hingePoints->inner);
+    gp_Pnt outerHingeOld = wingTrafo.Transform(m_hingePoints->outer);
+    return GetPath().GetSteps().GetTransformation(m_currentControlParam, innerHingeOld, outerHingeOld);
 }
 
 double CCPACSLeadingEdgeDevice::GetMinControlParameter() const

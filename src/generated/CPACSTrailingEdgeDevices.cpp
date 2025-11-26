@@ -86,19 +86,19 @@ namespace generated
     {
         // read element trailingEdgeDevice
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeDevice")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1,
-                                   tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
+
     }
 
     void CPACSTrailingEdgeDevices::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write element trailingEdgeDevice
         tixi::TixiSaveElements(tixiHandle, xpath + "/trailingEdgeDevice", m_trailingEdgeDevices);
+
     }
 
-    const std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>&
-    CPACSTrailingEdgeDevices::GetTrailingEdgeDevices() const
+    const std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>& CPACSTrailingEdgeDevices::GetTrailingEdgeDevices() const
     {
         return m_trailingEdgeDevices;
     }
@@ -115,10 +115,10 @@ namespace generated
 
     size_t CPACSTrailingEdgeDevices::GetTrailingEdgeDeviceIndex(const std::string& UID) const
     {
-        for (size_t i = 0; i < GetTrailingEdgeDeviceCount(); i++) {
+        for (size_t i=0; i < GetTrailingEdgeDeviceCount(); i++) {
             const std::string tmpUID(m_trailingEdgeDevices[i]->GetUID());
             if (tmpUID == UID) {
-                return i + 1;
+                return i+1;
             }
         }
         throw CTiglError("Invalid UID in CPACSTrailingEdgeDevices::GetTrailingEdgeDeviceIndex", TIGL_UID_ERROR);
@@ -127,9 +127,7 @@ namespace generated
     CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::GetTrailingEdgeDevice(size_t index)
     {
         if (index < 1 || index > GetTrailingEdgeDeviceCount()) {
-            throw CTiglError(
-                "Invalid index in std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>::GetTrailingEdgeDevice",
-                TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>::GetTrailingEdgeDevice", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_trailingEdgeDevices[index];
@@ -138,9 +136,7 @@ namespace generated
     const CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::GetTrailingEdgeDevice(size_t index) const
     {
         if (index < 1 || index > GetTrailingEdgeDeviceCount()) {
-            throw CTiglError(
-                "Invalid index in std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>::GetTrailingEdgeDevice",
-                TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>>::GetTrailingEdgeDevice", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_trailingEdgeDevices[index];
@@ -148,25 +144,22 @@ namespace generated
 
     CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::GetTrailingEdgeDevice(const std::string& UID)
     {
-        for (auto& elem : m_trailingEdgeDevices) {
+        for (auto& elem : m_trailingEdgeDevices ) {
             if (elem->GetUID() == UID)
                 return *elem;
-        }
-        throw CTiglError("Invalid UID in CPACSTrailingEdgeDevices::GetTrailingEdgeDevice. \"" + UID +
-                             "\" not found in CPACS file!",
-                         TIGL_UID_ERROR);
+            }
+            throw CTiglError("Invalid UID in CPACSTrailingEdgeDevices::GetTrailingEdgeDevice. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
     const CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::GetTrailingEdgeDevice(const std::string& UID) const
     {
-        for (auto& elem : m_trailingEdgeDevices) {
+        for (auto& elem : m_trailingEdgeDevices ) {
             if (elem->GetUID() == UID)
                 return *elem;
-        }
-        throw CTiglError("Invalid UID in CPACSTrailingEdgeDevices::GetTrailingEdgeDevice. \"" + UID +
-                             "\" not found in CPACS file!",
-                         TIGL_UID_ERROR);
+            }
+            throw CTiglError("Invalid UID in CPACSTrailingEdgeDevices::GetTrailingEdgeDevice. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
+
 
     CCPACSTrailingEdgeDevice& CPACSTrailingEdgeDevices::AddTrailingEdgeDevice()
     {

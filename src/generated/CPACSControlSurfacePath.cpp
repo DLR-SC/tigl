@@ -161,12 +161,12 @@ namespace generated
         return m_outerHingePoint;
     }
 
-    const CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
+    const CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
     {
         return m_steps;
     }
 
-    CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
+    CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
     {
         return m_steps;
     }

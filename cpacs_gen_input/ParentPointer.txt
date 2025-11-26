@@ -78,6 +78,7 @@ CPACSCrossBeam
 CPACSFrame
 CPACSLongFloorBeam
 CPACSControlSurfaceWingCutOut
+CPACSControlSurfaceSteps
 CPACSWingStringer
 CPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices

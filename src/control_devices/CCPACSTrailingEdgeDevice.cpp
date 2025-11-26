@@ -77,53 +77,10 @@ std::string CCPACSTrailingEdgeDevice::GetShortName() const
 
 gp_Trsf CCPACSTrailingEdgeDevice::GetFlapTransform() const
 {
-    // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
-    // to the given controlParal by using a linearInterpolation.
-    std::vector<double> controlParams, innerXTrans, outerXTrans, innerYTrans, innerZTrans, outerZTrans, rotations;
-
-    const CCPACSControlSurfaceSteps& steps = GetPath().GetSteps();
-    for (const auto& step : steps.GetSteps()) {
-        controlParams.push_back(step->GetControlParameter());
-        CTiglPoint innerHingeTrans(0, 0, 0);
-        if (step->GetInnerHingeTranslation().is_initialized()) {
-            innerHingeTrans = step->GetInnerHingeTranslation()->AsPoint();
-        }
-        innerXTrans.push_back(innerHingeTrans.x);
-        innerYTrans.push_back(innerHingeTrans.y);
-        innerZTrans.push_back(innerHingeTrans.z);
-
-        CTiglPoint outerHingeTrans(0, 0, 0);
-        if (step->GetOuterHingeTranslation().is_initialized()) {
-            outerHingeTrans.x = step->GetOuterHingeTranslation()->GetX();
-            outerHingeTrans.z = step->GetOuterHingeTranslation()->GetZ();
-        }
-
-        outerXTrans.push_back(outerHingeTrans.x);
-        outerZTrans.push_back(outerHingeTrans.z);
-        rotations.push_back(step->GetHingeLineRotation().value_or(0.));
-    }
-
-    double rotation          = Interpolate(controlParams, rotations, m_currentControlParam);
-    double innerTranslationX = Interpolate(controlParams, innerXTrans, m_currentControlParam);
-    double innerTranslationY = Interpolate(controlParams, innerYTrans, m_currentControlParam);
-    double innerTranslationZ = Interpolate(controlParams, innerZTrans, m_currentControlParam);
-    double outerTranslationX = Interpolate(controlParams, outerXTrans, m_currentControlParam);
-    double outerTranslationZ = Interpolate(controlParams, outerZTrans, m_currentControlParam);
-
     auto wingTrafo       = Wing().GetTransformation().getTransformationMatrix();
     gp_Pnt innerHingeOld = wingTrafo.Transform(m_hingePoints->inner);
     gp_Pnt outerHingeOld = wingTrafo.Transform(m_hingePoints->outer);
-
-    // innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
-    // Path/Step/HingeLineTransformation for more information.
-    gp_Pnt outerHingeNew = outerHingeOld.XYZ() + gp_XYZ(outerTranslationX, innerTranslationY, outerTranslationZ);
-    gp_Pnt innerHingeNew = innerHingeOld.XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
-
-    // calculating the needed transformations
-    CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, innerHingeNew, outerHingeNew,
-                                                     rotation);
-
-    return transformation.getTotalTransformation();
+    return GetPath().GetSteps().GetTransformation(m_currentControlParam, innerHingeOld, outerHingeOld);
 }
 
 double CCPACSTrailingEdgeDevice::GetMinControlParameter() const
