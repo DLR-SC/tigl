@@ -74,7 +74,7 @@ PNamedShape ControlSurfaceDeviceHelper::outerShapeGetLoft_helper(PNamedShape sha
 
 #ifdef DEBUG
         DEBUG_SCOPE(debug);
-        debug.dumpShape(outerShape->Shape(), _uid);
+        debug.dumpShape(outerShape->Shape(), uid);
 #endif
 
         return outerShape;
