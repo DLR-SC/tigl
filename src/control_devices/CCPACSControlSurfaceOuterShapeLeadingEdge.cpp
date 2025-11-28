@@ -21,6 +21,7 @@
 #include "CCPACSLeadingEdgeDevice.h"
 #include "CCPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSLeadingEdgeDevices.h"
+#include "ControlSurfaceDeviceHelper.h"
 #include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include "CBopCommon.h"
@@ -42,23 +43,13 @@ PNamedShape CCPACSControlSurfaceOuterShapeLeadingEdge::GetLoft(PNamedShape wingC
     DLOG(INFO) << "Building " << _uid << " loft";
     PNamedShape shapeBox = CutoutShape(wingCleanShape, upDir);
     assert(shapeBox);
+
+    // perform the boolean intersection of the flap box with the wing
+    PNamedShape outerShape = CBopCommon(wingCleanShape, shapeBox);
+
     if (NeedsWingIntersection()) {
-
-        // perform the boolean intersection of the flap box with the wing
-        PNamedShape outerShape = CBopCommon(wingCleanShape, shapeBox);
-
-        for (int iFace = 0; iFace < static_cast<int>(outerShape->GetFaceCount()); ++iFace) {
-            CFaceTraits ft = outerShape->GetFaceTraits(iFace);
-            ft.SetOrigin(shapeBox);
-            outerShape->SetFaceTraits(iFace, ft);
-        }
-
-#ifdef DEBUG
-        DEBUG_SCOPE(debug);
-        debug.dumpShape(outerShape->Shape(), _uid);
-#endif
-
-        return outerShape;
+        ControlSurfaceDeviceHelper helper;
+        return helper.outerShapeGetLoft_helper(shapeBox, outerShape);
     }
     else {
         return shapeBox;
