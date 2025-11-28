@@ -20,6 +20,7 @@
 #include "tiglcommonfunctions.h"
 #include "tiglmathfunctions.h"
 #include "tigletaxsifunctions.h"
+#include "Debugging.h"
 
 #include <BRepBuilderAPI_Transform.hxx>
 #include "CNamedShape.h"
@@ -63,7 +64,7 @@ gp_Vec ControlSurfaceDeviceHelper::GetNormalOfControlSurfaceDevice_helper(const 
     return nvV;
 }
 
-PNamedShape ControlSurfaceDeviceHelper::outerShapeGetLoft_helper(PNamedShape shapeBox, PNamedShape outerShape) const
+PNamedShape ControlSurfaceDeviceHelper::outerShapeGetLoft_helper(PNamedShape shapeBox, PNamedShape outerShape, std::string const& uid) const
 {
         for (int iFace = 0; iFace < static_cast<int>(outerShape->GetFaceCount()); ++iFace) {
             CFaceTraits ft = outerShape->GetFaceTraits(iFace);
