@@ -27,5 +27,6 @@ public:
     TIGL_EXPORT CCPACSControlSurfaces(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t ControlSurfaceCount() const;
+
 };
 }

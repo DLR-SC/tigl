@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSLeadingEdgeDevice.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CPACSControlSurfacePath.h"
 #include "CTiglError.h"
@@ -28,6 +29,17 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSControlSurfacePath::CPACSControlSurfacePath(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_innerHingePoint(this, m_uidMgr)
+        , m_outerHingePoint(this, m_uidMgr)
+        , m_steps(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSLeadingEdgeDevice);
+    }
+
     CPACSControlSurfacePath::CPACSControlSurfacePath(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_innerHingePoint(this, m_uidMgr)
@@ -36,30 +48,37 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSTrailingEdgeDevice);
     }
 
     CPACSControlSurfacePath::~CPACSControlSurfacePath()
     {
     }
 
-    const CCPACSTrailingEdgeDevice* CPACSControlSurfacePath::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSTrailingEdgeDevice* CPACSControlSurfacePath::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSControlSurfacePath::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSControlSurfacePath::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
+            if (IsParent<CCPACSTrailingEdgeDevice>()) {
+                return GetParent<CCPACSTrailingEdgeDevice>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSControlSurfacePath::GetUIDManager()
@@ -142,12 +161,12 @@ namespace generated
         return m_outerHingePoint;
     }
 
-    const CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
+    const CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps() const
     {
         return m_steps;
     }
 
-    CPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
+    CCPACSControlSurfaceSteps& CPACSControlSurfacePath::GetSteps()
     {
         return m_steps;
     }

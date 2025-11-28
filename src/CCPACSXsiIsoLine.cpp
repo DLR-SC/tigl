@@ -18,10 +18,16 @@
 #include "tigletaxsifunctions.h"
 
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 
 namespace tigl
 {
 CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSXsiIsoLine(parent, uidMgr)
+{
+}
+
+CCPACSXsiIsoLine::CCPACSXsiIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSXsiIsoLine(parent, uidMgr)
 {
 }

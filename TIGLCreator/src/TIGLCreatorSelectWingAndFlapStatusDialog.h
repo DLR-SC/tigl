@@ -23,8 +23,10 @@
 #include <QGridLayout>
 #include <map>
 #include <vector>
+#include <variant>
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
 #include "TIGLCreatorDocument.h"
 
 class QSlider;
@@ -33,24 +35,24 @@ class QDoubleSpinBox;
 
 namespace Ui
 {
-    class TIGLCreatorSelectWingAndFlapStatusDialog;
+class TIGLCreatorSelectWingAndFlapStatusDialog;
 }
 
 class TIGLCreatorSelectWingAndFlapStatusDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TIGLCreatorSelectWingAndFlapStatusDialog(TIGLCreatorDocument* document, QWidget* parent=0);
+    explicit TIGLCreatorSelectWingAndFlapStatusDialog(TIGLCreatorDocument* document, QWidget* parent = 0);
 
-    void setWing(std::string wingUID) {
+    void setWing(std::string wingUID)
+    {
         m_currentWing = wingUID;
         drawGUI();
     }
 
     ~TIGLCreatorSelectWingAndFlapStatusDialog();
-    double getTrailingEdgeFlapValue( std::string uid );
-    std::map<std::string,double> getControlParameters();
-
+    double getFlapValue(std::string uid);
+    std::map<std::string, double> getControlParameters();
 
 private slots:
     void slider_value_changed(int k);
@@ -60,7 +62,7 @@ private slots:
     void on_checkSpoiler_stateChanged(int arg1);
 
 private:
-    Ui::TIGLCreatorSelectWingAndFlapStatusDialog *ui;
+    Ui::TIGLCreatorSelectWingAndFlapStatusDialog* ui;
 
     struct DeviceWidgets {
         QSlider* slider;
@@ -68,18 +70,44 @@ private:
         QLabel* rotAngleLabel;
     };
 
-    std::map< std::string, DeviceWidgets> _guiMap;
-    std::map< std::string, tigl::CCPACSTrailingEdgeDevice*> _deviceMap;
-    std::string m_currentWing;
+    struct RotationData {
+        double controlParam;
+        double rotation;
+        double factor;
+    };
 
+    struct TED 
+    {
+        tigl::CCPACSTrailingEdgeDevice* device;
+        std::string uid() const { return device->GetUID(); }
+        double control_parameter() const { return device->GetControlParameter(); }
+    };
+
+    struct LED 
+    {
+        tigl::CCPACSLeadingEdgeDevice* device;
+        std::string uid() const { return device->GetUID(); }
+        double control_parameter() const { return device->GetControlParameter(); }
+    };
+
+    using ControlDevice = std::variant<TED, LED>;
+
+    std::map<std::string, DeviceWidgets> _guiMap;
+    std::map<std::string, tigl::CTiglAbstractGeometricComponent*> _deviceMap;
+    std::string m_currentWing;
+    
     TIGLCreatorDocument* _document;
-    void updateWidgets(std::string controlSurfaceDeviceUID,
-                       double controlParam);
+    void updateWidgets(std::string controlSurfaceDeviceUID, double controlParam);
+    template <typename DeviceType> RotationData getRotation(const DeviceType* device, double controlParam);
+    auto& uidMgr() { return _document->GetConfiguration().GetUIDManager(); }
+    
     void drawGUI();
     void cleanup();
 
-
-    void buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, int rowIdx, class QTableWidget *);
+    void buildFlapRow(const ControlDevice& device, int rowIdx,
+                      class QTableWidget*);
+    template <typename DeviceType>
+    void buildFlapRow_helper(const DeviceType& controlSurfaceDevice, int rowIdx, QTableWidget* gridLayout);
 };
 
 #endif // TIGLCREATORSELECTWINGANDFLAPSTATUSDIALOG_H
