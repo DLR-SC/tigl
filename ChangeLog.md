@@ -5,6 +5,7 @@ Changes since last release
 --------------------------
 - General changes
   - Always display the borders of the control surfaces on the wing
+  - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
 
 - Fixes
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))
