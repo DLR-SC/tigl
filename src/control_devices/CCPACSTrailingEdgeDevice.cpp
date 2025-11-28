@@ -61,7 +61,7 @@ std::string CCPACSTrailingEdgeDevice::GetShortName() const
     size_t idx = IndexFromUid(devices->GetTrailingEdgeDevices(), GetUID());
     if (idx < devices->GetTrailingEdgeDevices().size()) {
         std::stringstream shortName;
-        else if (m_type == TRAILING_EDGE_DEVICE) {
+        if (m_type == TRAILING_EDGE_DEVICE) {
             shortName << tmp << "TED" << idx;
         }
         return shortName.str();
