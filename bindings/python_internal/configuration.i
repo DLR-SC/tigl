@@ -78,6 +78,8 @@
 #include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "generated/CPACSControlSurfaceOuterShapeLeadingEdge.h"
 #include "generated/CPACSControlSurfacePath.h"
+#include "CCPACSControlSurfaceSteps.h"
+#include "generated/CPACSControlSurfaceSteps.h"
 #include "generated/CPACSCutOutControlPoints.h"
 #include "generated/CPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
@@ -88,6 +90,7 @@
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
+#include "ControlSurfaceDeviceHelper.h"
 #include "generated/CPACSTrailingEdgeDevices.h"
 #include "generated/CPACSLeadingEdgeDevices.h"
 #include "CCPACSEnginePylon.h"
@@ -310,6 +313,7 @@ namespace tigl
 %include "generated/CPACSLeadingEdgeHollow.h"
 %include "generated/CPACSCutOutControlPoint.h"
 %include "generated/CPACSCutOutControlPoints.h"
+%include "CCPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceHingePoint.h"
 %include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
@@ -340,6 +344,7 @@ namespace tigl
 %include "generated/CPACSLeadingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
+%include "ControlSurfaceDeviceHelper.h"
 
 // --------------- Fuselage structure -----------------//
 
