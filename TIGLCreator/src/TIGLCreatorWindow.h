@@ -90,9 +90,10 @@ public slots:
 
     //update function for modificator
 
-    void updateScene(); 
-    
+    void updateScene();
+
 private slots:
+    void dispatchLastSelectedItemOnConfigurationEdited();
     void updateMenus();
     void newFile();
     void open();
