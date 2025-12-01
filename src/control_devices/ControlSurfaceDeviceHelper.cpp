@@ -27,12 +27,10 @@
 
 namespace tigl
 {
-
-ControlSurfaceDeviceHelper::ControlSurfaceDeviceHelper()
+namespace ControlSurfaceDeviceHelper
 {
-}
 
-PNamedShape ControlSurfaceDeviceHelper::GetTransformedFlapShape_helper(PNamedShape deviceShape, gp_Trsf T) const
+PNamedShape GetTransformedFlapShape(PNamedShape deviceShape, gp_Trsf T)
 {
     BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
     deviceShape->SetShape(form.Shape());
@@ -50,7 +48,7 @@ PNamedShape ControlSurfaceDeviceHelper::GetTransformedFlapShape_helper(PNamedSha
     return deviceShape;
 }
 
-gp_Vec ControlSurfaceDeviceHelper::GetNormalOfControlSurfaceDevice_helper(const CCPACSWingComponentSegment& compSeg)
+gp_Vec GetNormalOfControlSurfaceDevice(const CCPACSWingComponentSegment& compSeg)
 {
     gp_Pnt point1                             = compSeg.GetPoint(0, 0);
     gp_Pnt point2                             = compSeg.GetPoint(0, 1);
@@ -64,7 +62,7 @@ gp_Vec ControlSurfaceDeviceHelper::GetNormalOfControlSurfaceDevice_helper(const 
     return nvV;
 }
 
-PNamedShape ControlSurfaceDeviceHelper::outerShapeGetLoft_helper(PNamedShape shapeBox, PNamedShape outerShape, std::string const& uid) const
+PNamedShape outerShapeGetLoft(PNamedShape shapeBox, PNamedShape outerShape, std::string const& uid)
 {
         for (int iFace = 0; iFace < static_cast<int>(outerShape->GetFaceCount()); ++iFace) {
             CFaceTraits ft = outerShape->GetFaceTraits(iFace);
@@ -80,7 +78,7 @@ PNamedShape ControlSurfaceDeviceHelper::outerShapeGetLoft_helper(PNamedShape sha
         return outerShape;
 }
 
-gp_Pnt ControlSurfaceDeviceHelper::calc_hinge_point(
+gp_Pnt calc_hinge_point(
         CCPACSControlSurfaceHingePoint const& hinge_point, 
         CCPACSEtaIsoLine const& etaLE,
         CCPACSWingComponentSegment const& cSegment,
@@ -126,4 +124,5 @@ gp_Pnt ControlSurfaceDeviceHelper::calc_hinge_point(
         return lower;
     };
 
+}
 }

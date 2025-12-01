@@ -1112,16 +1112,16 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 {
     tigl::CTiglUIDManager::TypedPtr obj = GetConfiguration().GetUIDManager().ResolveObject(controlUID);
 
+    gp_Trsf trsf;
+    IObjectList flaps;
+
     if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice)) {
         auto* controlSurfaceDevice = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
         try {
-            gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
+            trsf = controlSurfaceDevice->GetFlapTransform();
 
-            IObjectList flaps =
+            flaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
-            for (const auto& flap : flaps) {
-                app->getScene()->getContext()->SetLocation(flap, trsf);
-            }
         }
         catch (const tigl::CTiglError&) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
@@ -1132,20 +1132,21 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
     else if (*obj.type == typeid(tigl::CCPACSLeadingEdgeDevice)) {
         auto* controlSurfaceDevice = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
         try {
-            gp_Trsf trsf = controlSurfaceDevice->GetFlapTransform();
+            trsf = controlSurfaceDevice->GetFlapTransform();
 
-            IObjectList flaps =
+            flaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
-            for (const auto& flap : flaps) {
-                app->getScene()->getContext()->SetLocation(flap, trsf);
-            }
         }
         catch (const tigl::CTiglError&) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
-                         QString("Error"));
+            QString("Error"));
         }
     }
-
+        
+    for (const auto& flap : flaps) {
+        app->getScene()->getContext()->SetLocation(flap, trsf);
+    }
+    
     app->getViewer()->update();
 }
 

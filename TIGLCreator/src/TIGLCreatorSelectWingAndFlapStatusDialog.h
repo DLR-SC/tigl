@@ -28,6 +28,7 @@
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
 #include "TIGLCreatorDocument.h"
+#include "CCPACSControlSurfaces.h"
 
 class QSlider;
 class QLabel;
@@ -76,24 +77,7 @@ private:
         double factor;
     };
 
-    struct TED 
-    {
-        tigl::CCPACSTrailingEdgeDevice* device;
-        std::string uid() const { return device->GetUID(); }
-        double control_parameter() const { return device->GetControlParameter(); }
-    };
-
-    struct LED 
-    {
-        tigl::CCPACSLeadingEdgeDevice* device;
-        std::string uid() const { return device->GetUID(); }
-        double control_parameter() const { return device->GetControlParameter(); }
-    };
-
-    using ControlDevice = std::variant<TED, LED>;
-
     std::map<std::string, DeviceWidgets> _guiMap;
-    std::map<std::string, tigl::CTiglAbstractGeometricComponent*> _deviceMap;
     std::string m_currentWing;
     
     TIGLCreatorDocument* _document;
@@ -104,7 +88,7 @@ private:
     void drawGUI();
     void cleanup();
 
-    void buildFlapRow(const ControlDevice& device, int rowIdx,
+    void buildFlapRow(const tigl::CCPACSControlSurfaces::ControlDevice& device, int rowIdx,
                       class QTableWidget*);
     template <typename DeviceType>
     void buildFlapRow_helper(const DeviceType& controlSurfaceDevice, int rowIdx, QTableWidget* gridLayout);

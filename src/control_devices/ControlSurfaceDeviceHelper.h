@@ -26,18 +26,15 @@
 namespace tigl
 {
 
-class ControlSurfaceDeviceHelper
+namespace ControlSurfaceDeviceHelper
 {
-public:
-    TIGL_EXPORT ControlSurfaceDeviceHelper();
+    TIGL_EXPORT PNamedShape GetTransformedFlapShape(PNamedShape deviceShape, gp_Trsf T);
 
-    TIGL_EXPORT PNamedShape GetTransformedFlapShape_helper(PNamedShape deviceShape, gp_Trsf T) const;
+    TIGL_EXPORT gp_Vec GetNormalOfControlSurfaceDevice(const CCPACSWingComponentSegment& cSegment);
 
-    TIGL_EXPORT gp_Vec GetNormalOfControlSurfaceDevice_helper(const CCPACSWingComponentSegment& cSegment);
-
-    TIGL_EXPORT PNamedShape outerShapeGetLoft_helper(PNamedShape shapeBox, PNamedShape outerShape, std::string const& uid) const;
+    TIGL_EXPORT PNamedShape outerShapeGetLoft(PNamedShape shapeBox, PNamedShape outerShape, std::string const& uid);
 
     TIGL_EXPORT  gp_Pnt calc_hinge_point(CCPACSControlSurfaceHingePoint const& hinge_point, CCPACSEtaIsoLine const& etaLE, CCPACSWingComponentSegment const& cSegment, CTiglUIDManager const* uidMgr, std::string const& innerOuter);
 
-};
+}
 }

@@ -135,16 +135,15 @@ CCPACSWing& CCPACSTrailingEdgeDevice::Wing()
 
 void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::HingePoints& hingePoints) const
 {
-    ControlSurfaceDeviceHelper helper;
    
-    hingePoints.inner = helper.calc_hinge_point(
+    hingePoints.inner = ControlSurfaceDeviceHelper::calc_hinge_point(
         GetPath().GetInnerHingePoint(), 
         GetOuterShape().GetInnerBorder().GetEtaLE(),
         ComponentSegment(*this),
         m_uidMgr,
         "inner"
     );
-    hingePoints.outer = helper.calc_hinge_point(
+    hingePoints.outer = ControlSurfaceDeviceHelper::calc_hinge_point(
         GetPath().GetOuterHingePoint(),  
         GetOuterShape().GetOuterBorder().GetEtaLE(),
         ComponentSegment(*this),
@@ -155,15 +154,11 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
 
 void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
 {
-    if (!GetWingCutOut()) {
-        shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
+
+    shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
                                             GetNormalOfControlSurfaceDevice());
-    }
-    else {
-        throw CTiglError("Not implemented yet.");
-        shape = GetWingCutOut()->GetLoft(ComponentSegment(*this).GetWing().GetWingCleanShape(), GetOuterShape(),
-                                         GetNormalOfControlSurfaceDevice());
-    }
+    
+
 }
 
 void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
@@ -174,8 +169,7 @@ void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const
 
 gp_Vec CCPACSTrailingEdgeDevice::GetNormalOfControlSurfaceDevice() const
 {
-    ControlSurfaceDeviceHelper helper;
-    return helper.GetNormalOfControlSurfaceDevice_helper(ComponentSegment(*this));
+    return ControlSurfaceDeviceHelper::GetNormalOfControlSurfaceDevice(ComponentSegment(*this));
 }
 
 TiglControlSurfaceType CCPACSTrailingEdgeDevice::GetType() const
@@ -210,8 +204,7 @@ PNamedShape CCPACSTrailingEdgeDevice::GetFlapShape() const
 
 PNamedShape CCPACSTrailingEdgeDevice::GetTransformedFlapShape() const
 {
-    ControlSurfaceDeviceHelper helper;
-    return helper.GetTransformedFlapShape_helper(GetFlapShape()->DeepCopy(), GetFlapTransform());
+    return ControlSurfaceDeviceHelper::GetTransformedFlapShape(GetFlapShape()->DeepCopy(), GetFlapTransform());
 }
 
 PNamedShape CCPACSTrailingEdgeDevice::BuildLoft() const

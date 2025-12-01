@@ -47,8 +47,7 @@ PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::GetLoft(PNamedShape wing
     PNamedShape outerShape = CBopCommon(wingCleanShape, shapeBox);
 
     if (NeedsWingIntersection()) {
-        ControlSurfaceDeviceHelper helper;
-        return helper.outerShapeGetLoft_helper(shapeBox, outerShape, _uid);
+        return ControlSurfaceDeviceHelper::outerShapeGetLoft(shapeBox, outerShape, _uid);
     }
     else {
         return shapeBox;

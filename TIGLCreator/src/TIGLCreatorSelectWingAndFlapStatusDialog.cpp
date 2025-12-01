@@ -141,7 +141,7 @@ double TIGLCreatorSelectWingAndFlapStatusDialog::getFlapValue(std::string uid)
 }
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(
-     const ControlDevice& device, int rowIdx, QTableWidget* gridLayout)
+     const tigl::CCPACSControlSurfaces::ControlDevice& device, int rowIdx, QTableWidget* gridLayout)
 {
     std::visit([&](auto& device) {
         buildFlapRow_helper(device, rowIdx, gridLayout);
@@ -152,7 +152,7 @@ template <typename DeviceType>
 void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceType& controlSurfaceDevice, int rowIdx,
                                                                    QTableWidget* gridLayout)
 {
-    QString uid           = QString::fromStdString(controlSurfaceDevice.uid());
+    QString uid           = QString::fromStdString(controlSurfaceDevice->GetUID());
     QLabel* labelUID      = new QLabel(uid, this);
     QString transparentBG = "background-color: rgba(0, 0, 0, 0.0); padding-left: 6px; padding-right: 6px;";
     labelUID->setStyleSheet(transparentBG);
@@ -174,8 +174,8 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 
     QString rot;
 
-    if (controlSurfaceDevice.device->GetPath().GetSteps().GetSteps().size() > 0) {
-        const auto& step = controlSurfaceDevice.device->GetPath().GetSteps().GetSteps().front();
+    if (controlSurfaceDevice->GetPath().GetSteps().GetSteps().size() > 0) {
+        const auto& step = controlSurfaceDevice->GetPath().GetSteps().GetSteps().front();
         if (step) {
             rot.append(QString::number(step->GetHingeLineRotation().value_or(0.)));
         }
@@ -186,10 +186,10 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 
     gridLayout->setCellWidget(rowIdx, 3, labelRotation);
 
-    double savedValue = controlSurfaceDevice.control_parameter();
+    double savedValue = controlSurfaceDevice->GetControlParameter();
 
-    double minControlParam = controlSurfaceDevice.device->GetMinControlParameter();
-    double maxControlParam = controlSurfaceDevice.device->GetMaxControlParameter();
+    double minControlParam = controlSurfaceDevice->GetMinControlParameter();
+    double maxControlParam = controlSurfaceDevice->GetMaxControlParameter();
 
     int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) /
                                           (maxControlParam - minControlParam) * (savedValue - minControlParam)) +
@@ -225,7 +225,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
     tigl::CCPACSWing& wing            = config.GetWing(wingUID);
 
-    std::vector<ControlDevice> devices;
+    std::vector<tigl::CCPACSControlSurfaces::ControlDevice> devices;
 
     for (int i = 1; i <= wing.GetComponentSegmentCount(); i++) {
         tigl::CCPACSWingComponentSegment& componentSegment =
@@ -239,14 +239,14 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
             for (auto& device : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
                 if (!device || !ui->checkTED->isChecked())
                     continue;
-                devices.emplace_back(TED{device.get()});
+                devices.emplace_back(device.get());
             }
         }
         if (controlSurfaces->GetLeadingEdgeDevices().is_initialized()) {
             for (auto& device : controlSurfaces->GetLeadingEdgeDevices()->GetLeadingEdgeDevices()) {
                 if (!device || !ui->checkLED->isChecked())
                     continue;
-                devices.emplace_back(LED{device.get()});
+                devices.emplace_back(device.get());
             }
         }
     }
@@ -254,16 +254,14 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
     auto* tableWidget = new QTableWidget(static_cast<int>(devices.size()), 4);
 
     int rowIdx = 0;
-    for (const ControlDevice& device : devices) {
+    for (const tigl::CCPACSControlSurfaces::ControlDevice& device : devices) {
 
         buildFlapRow(device, rowIdx++, tableWidget);
 
         std::visit([&](auto& control_device) {
-            auto* device = control_device.device;  
+            auto* device = control_device;  
 
-            _deviceMap[control_device.uid()] = device;
-
-            updateWidgets(control_device.uid(), control_device.control_parameter());
+            updateWidgets(control_device->GetUID(), control_device->GetControlParameter());
         }, device);
     }
 
