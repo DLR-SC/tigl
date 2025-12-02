@@ -17,6 +17,8 @@
 */
 
 #include "CCPACSControlSurfaces.h"
+#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
 
 namespace tigl
 {
@@ -39,4 +41,76 @@ size_t CCPACSControlSurfaces::ControlSurfaceCount() const
     return count;
 }
 
+void CCPACSControlSurfaces::GetFusedControlSurfaceCutOutShape(PNamedShape& fusedBoxes) const
+{
+    bool first = false;
+    if (!fusedBoxes)
+    {
+        first = true;
+    }
+
+    if (GetTrailingEdgeDevices()) {
+
+
+        for (size_t ted_index = 0; ted_index < GetTrailingEdgeDevices()->GetTrailingEdgeDevices().size(); ted_index++) {
+            CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *GetTrailingEdgeDevices()->GetTrailingEdgeDevices().at(ted_index);
+
+            PNamedShape TrailingEdgeDevicePrism = TrailingEdgeDevice.GetCutOutShape();
+                if (!first) {
+                    ListPNamedShape childs;
+                    childs.push_back(TrailingEdgeDevicePrism);
+                    fusedBoxes = CFuseShapes(fusedBoxes, childs);
+                }
+                else {
+                    first      = false;
+                    fusedBoxes = TrailingEdgeDevicePrism;
+                }
+            // trigger build of the flap
+            TrailingEdgeDevice.GetLoft();
+        }
+    }
+    if (GetLeadingEdgeDevices()) {
+
+        for (size_t led_index = 0; led_index < GetLeadingEdgeDevices()->GetLeadingEdgeDevices().size(); led_index++) {
+            CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *GetLeadingEdgeDevices()->GetLeadingEdgeDevices().at(led_index);
+
+            PNamedShape LeadingEdgeDevicePrism = LeadingEdgeDevice.GetCutOutShape();
+
+            if (!first) {
+                ListPNamedShape childs;
+                childs.push_back(LeadingEdgeDevicePrism);
+                fusedBoxes = CFuseShapes(fusedBoxes, childs);
+            }
+            else {
+                first      = false;
+                fusedBoxes = LeadingEdgeDevicePrism;
+            }
+            
+            // trigger build of the flap
+            LeadingEdgeDevice.GetLoft();
+        }
+    }
+}
+
+void CCPACSControlSurfaces::GetFlapsShapes(ListPNamedShape& flapsAndWingShapes) const
+{
+    if (GetTrailingEdgeDevices()) {
+        const auto& TED                 = GetTrailingEdgeDevices()->GetTrailingEdgeDevices();
+        for (size_t ted_index = 0; ted_index < TED.size(); ted_index++) {
+
+            const auto& TrailingEdgeDevice = *TED.at(ted_index);
+            auto TEDShape                  = TrailingEdgeDevice.GetTransformedFlapShape();
+            flapsAndWingShapes.push_back(TEDShape);
+        }
+    }
+    if (GetLeadingEdgeDevices()) {
+        const auto& LED                = GetLeadingEdgeDevices()->GetLeadingEdgeDevices();
+        for (size_t led_index = 0; led_index < LED.size(); led_index++) {
+
+            const auto& LeadingEdgeDevice = *LED.at(led_index);
+            auto LEDShape                 = LeadingEdgeDevice.GetTransformedFlapShape();
+            flapsAndWingShapes.push_back(LEDShape);
+        }
+    }
+}
 } // namespace tigl

@@ -439,55 +439,14 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
     PNamedShape fusedBoxes;
     bool first = true;
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
-
+        
         const CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
         if (!componentSegment.GetControlSurfaces().is_initialized()) {
             continue;
         }
-
-        const CCPACSControlSurfaces& controlSurfs = componentSegment.GetControlSurfaces().value();
-        if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
-            const CCPACSTrailingEdgeDevices& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
-
-            for (size_t ted_index = 0; ted_index < TrailingEdgeDevices.GetTrailingEdgeDevices().size(); ted_index++) {
-                CCPACSTrailingEdgeDevice& TrailingEdgeDevice = *TrailingEdgeDevices.GetTrailingEdgeDevices().at(ted_index);
-
-                PNamedShape TrailingEdgeDevicePrism = TrailingEdgeDevice.GetCutOutShape();
-                    if (!first) {
-                        ListPNamedShape childs;
-                        childs.push_back(TrailingEdgeDevicePrism);
-                        fusedBoxes = CFuseShapes(fusedBoxes, childs);
-                    }
-                    else {
-                        first      = false;
-                        fusedBoxes = TrailingEdgeDevicePrism;
-                    }
-                // trigger build of the flap
-                TrailingEdgeDevice.GetLoft();
-            }
-        }
-        if (controlSurfs.GetLeadingEdgeDevices().is_initialized()) {
-            const CCPACSLeadingEdgeDevices& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
-
-            for (size_t led_index = 0; led_index < LeadingEdgeDevices.GetLeadingEdgeDevices().size(); led_index++) {
-                CCPACSLeadingEdgeDevice& LeadingEdgeDevice = *LeadingEdgeDevices.GetLeadingEdgeDevices().at(led_index);
-
-                PNamedShape LeadingEdgeDevicePrism = LeadingEdgeDevice.GetCutOutShape();
-
-                if (!first) {
-                    ListPNamedShape childs;
-                    childs.push_back(LeadingEdgeDevicePrism);
-                    fusedBoxes = CFuseShapes(fusedBoxes, childs);
-                }
-                else {
-                    first      = false;
-                    fusedBoxes = LeadingEdgeDevicePrism;
-                }
-                
-                // trigger build of the flap
-                LeadingEdgeDevice.GetLoft();
-            }
-        }
+        
+        componentSegment.GetControlSurfaces()->GetFusedControlSurfaceCutOutShape(fusedBoxes);
+        
     }
 
     CCutShape cutter(*wingCleanShape, fusedBoxes);
@@ -518,31 +477,9 @@ PNamedShape CCPACSWing::GroupedFlapsAndWingShapes() const
     for (const auto& componentSegment : GetComponentSegments()->GetComponentSegments()) {
 
         if (!componentSegment->GetControlSurfaces().is_initialized())
-            continue;
-
-        const auto& controlSurfs = componentSegment->GetControlSurfaces().value();
-
-        if (controlSurfs.GetTrailingEdgeDevices().is_initialized()) {
-            const auto& TrailingEdgeDevices = controlSurfs.GetTrailingEdgeDevices().value();
-            const auto& TED                 = TrailingEdgeDevices.GetTrailingEdgeDevices();
-            for (size_t ted_index = 0; ted_index < TED.size(); ted_index++) {
-
-                const auto& TrailingEdgeDevice = *TED.at(ted_index);
-                auto TEDShape                  = TrailingEdgeDevice.GetTransformedFlapShape();
-                flapsAndWingShapes.push_back(TEDShape);
-            }
-        }
-        if (controlSurfs.GetLeadingEdgeDevices().is_initialized()) {
-
-            const auto& LeadingEdgeDevices = controlSurfs.GetLeadingEdgeDevices().value();
-            const auto& LED                = LeadingEdgeDevices.GetLeadingEdgeDevices();
-            for (size_t led_index = 0; led_index < LED.size(); led_index++) {
-
-                const auto& LeadingEdgeDevice = *LED.at(led_index);
-                auto LEDShape                 = LeadingEdgeDevice.GetTransformedFlapShape();
-                flapsAndWingShapes.push_back(LEDShape);
-            }
-        }
+        continue;
+        
+        componentSegment->GetControlSurfaces()->GetFlapsShapes(flapsAndWingShapes);
     }
 
     flapsAndWingShapes.push_back(*wingShapeWithCutouts);

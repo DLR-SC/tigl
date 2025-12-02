@@ -155,10 +155,18 @@ void CCPACSTrailingEdgeDevice::ComputeHingePoints(CCPACSTrailingEdgeDevice::Hing
 void CCPACSTrailingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
 {
 
-    shape = GetOuterShape().CutoutShape(ComponentSegment(*this).GetWing().GetWingCleanShape(),
-                                            GetNormalOfControlSurfaceDevice());
+    if (!GetWingCutOut()) {
+        shape = GetOuterShape().CutoutShape(
+                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
+                    GetNormalOfControlSurfaceDevice());
+    }
+    else {
+        shape = GetWingCutOut()->GetLoft(
+                    ComponentSegment(*this).GetWing().GetWingCleanShape(),
+                    GetOuterShape(),
+                    GetNormalOfControlSurfaceDevice());
+    }
     
-
 }
 
 void CCPACSTrailingEdgeDevice::ComputeFlapShape(PNamedShape& shape) const

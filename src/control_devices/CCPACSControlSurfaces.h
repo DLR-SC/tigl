@@ -19,6 +19,9 @@
 
 #include "generated/CPACSControlSurfaces.h"
 #include <variant>
+#include "PNamedShape.h"
+#include "ListPNamedShape.h"
+#include "CFuseShapes.h"
 
 namespace tigl
 {
@@ -28,6 +31,10 @@ public:
     TIGL_EXPORT CCPACSControlSurfaces(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT size_t ControlSurfaceCount() const;
+
+    TIGL_EXPORT void GetFusedControlSurfaceCutOutShape(PNamedShape& fusedBoxes) const;
+
+    TIGL_EXPORT void GetFlapsShapes(ListPNamedShape& flapShapes) const;
 
     using ControlDevice = std::variant<tigl::CCPACSTrailingEdgeDevice*, tigl::CCPACSLeadingEdgeDevice*>;
 
