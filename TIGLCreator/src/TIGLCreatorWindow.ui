@@ -263,6 +263,7 @@
      <addaction name="separator"/>
      <addaction name="showWireframeAction"/>
      <addaction name="showReflectionLinesAction"/>
+     <addaction name="addSpotlightAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
      <property name="title">
@@ -1399,6 +1400,11 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="addSpotlightAction">
+   <property name="text">
+    <string>Add a spotlight</string>
    </property>
   </action>
   <action name="drawComponentAction">
