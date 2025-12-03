@@ -102,7 +102,7 @@ CCPACSControlSurfaceBorderLeadingEdge::GetAirfoilWire(CTiglControlSurfaceBorderC
 
     // scale
     CTiglTransformation scale;
-    scale.AddScaling(coords.getLe().Distance(coords.getLe()), 1, GetAirfoil_choice3()->GetScalZ());
+    scale.AddScaling(coords.getLe().Distance(coords.getTe()), 1, GetAirfoil_choice3()->GetScalZ());
 
     // bring the wire into the coordinate system of
     // the airfoil by swapping z with y

@@ -77,13 +77,13 @@ CControlSurfaceBorderBuilder::~CControlSurfaceBorderBuilder()
 TopoDS_Wire CControlSurfaceBorderBuilder::borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper,
                                                             double xsiLower)
 {
-    return boarderWithInnerShapeImpl(rLEHeight, xsiNose, xsiUpper, xsiLower, 5.0);
+    return borderWithInnerShapeImpl(rLEHeight, xsiNose, xsiUpper, xsiLower, 5.0);
 }
 
 TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper,
                                                                double xsiTELower)
 {
-    return boarderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
+    return borderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
 }
 
 TopoDS_Wire CControlSurfaceBorderBuilder::wholeWingBorder()
@@ -193,7 +193,7 @@ gp_Vec2d CControlSurfaceBorderBuilder::lowerTangent()
     return _loTan2d;
 }
 
-TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint,
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint,
                                                                     double xsiEdgeUpper, double xsiEdgeLower,
                                                                     double offset_factor)
 {

@@ -156,7 +156,6 @@ void CCPACSLeadingEdgeDevice::ComputeHingePoints(CCPACSLeadingEdgeDevice::HingeP
 
 void CCPACSLeadingEdgeDevice::ComputeCutoutShape(PNamedShape& shape) const
 {
-
     if (!GetWingCutOut()) {
         shape = GetOuterShape().CutoutShape(
                     ComponentSegment(*this).GetWing().GetWingCleanShape(),
