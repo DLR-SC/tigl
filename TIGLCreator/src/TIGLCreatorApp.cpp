@@ -60,6 +60,8 @@ TIGLCreatorApp::TIGLCreatorApp(int& argc, char* argv[])
     setlocale(LC_NUMERIC, "C");
 #endif
 
+    QLocale::setDefault(QLocale(QLocale::English));
+
     mainwindow.reset(new TIGLCreatorWindow);
 
     for (int iarg = 0; iarg < argc; ++iarg) {
