@@ -5,6 +5,7 @@ Changes since last release
 --------------------------
 - General changes
   - Always display the borders of the control surfaces on the wing
+  - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
 
 - Fixes
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))

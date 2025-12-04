@@ -46,6 +46,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -777,6 +778,113 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
         displayError("Cannot display \"" + uid + "\": " + err.what());
     }
 
+}
+
+void TIGLCreatorDocument::drawControlPointNet()
+{
+    auto pre_filter = [](auto* shape) { 
+        return shape != nullptr &&
+            shape->GetComponentType() != TIGL_COMPONENT_PLANE &&
+            shape->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT; 
+    };
+
+    TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app, pre_filter);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    START_COMMAND()
+    foreach (QString componentUID, dialog.GetSelectedUids()) {
+        drawControlPointNetByUID(componentUID);
+    }
+}
+
+void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
+{
+    try {
+        tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
+        PNamedShape loft = component.GetLoft();
+        if (loft == nullptr) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" is invalid.";
+            return;
+        }
+        if (loft->GetFaceCount() == 0) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces.";
+        }
+        int valid_face_count = 0;
+        for (int i = 0; i < loft->GetFaceCount(); ++i) {
+            TopoDS_Face face = GetFace(loft->Shape(), i);
+
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
+            if (surf.IsNull()) {
+                return;
+            }
+
+            Handle(Geom_BSplineSurface) bs = Handle(Geom_BSplineSurface)::DownCast(surf);
+            if (bs.IsNull()) {
+                return; // not a bspline surface
+            }
+
+            valid_face_count++;
+
+            const Standard_Integer uCount = bs->NbUPoles();
+            const Standard_Integer vCount = bs->NbVPoles();
+
+            BRep_Builder builder;
+            TopoDS_Compound control_point_net;
+            builder.MakeCompound(control_point_net);
+
+            // make vertices
+            for (Standard_Integer i = 1; i <= uCount; ++i) {
+                for (Standard_Integer j = 1; j <= vCount; ++j) {
+                    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(bs->Pole(i, j)).Vertex();
+                    builder.Add(control_point_net, v);
+                }
+            }
+
+            // make wires in v direction
+            for (Standard_Integer i = 1; i <= uCount; ++i) {
+                auto wire_builder = BRepBuilderAPI_MakeWire();
+                for (Standard_Integer j = 1; j < vCount; ++j) {
+
+                    gp_Pnt p = bs->Pole(i, j);
+                    gp_Pnt q = bs->Pole(i, j + 1);
+                    if (!p.IsEqual(q, Precision::SquareConfusion()) ) {
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        wire_builder.Add(edge);
+                    }
+                }
+                if (wire_builder.IsDone()) {
+                    builder.Add(control_point_net, wire_builder.Wire());
+                }
+            }
+
+            // make wires in u direction
+            for (Standard_Integer j = 1; j <= vCount; ++j) {
+                auto wire_builder = BRepBuilderAPI_MakeWire();
+                for (Standard_Integer i = 1; i < uCount; ++i) {
+
+                    gp_Pnt p = bs->Pole(i, j);
+                    gp_Pnt q = bs->Pole(i + 1, j);
+                    if (!p.IsEqual(q, Precision::SquareConfusion()) ) {
+                        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(p, q).Edge();
+                        wire_builder.Add(edge);
+                    }
+                }
+                if (wire_builder.IsDone()) {
+                    builder.Add(control_point_net, wire_builder.Wire());
+                }
+            }
+
+            app->getScene()->displayShape(control_point_net, false, Quantity_NOC_YELLOW);
+        }
+        if (valid_face_count == 0) {
+            LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces that are a B-Spline surface.";
+        }
+    }
+    catch(tigl::CTiglError& err) {
+        displayError("Cannot display control point net for \"" + uid + "\": " + err.what());
+    }
 }
 
 void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)

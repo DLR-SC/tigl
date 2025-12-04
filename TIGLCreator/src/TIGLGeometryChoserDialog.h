@@ -21,6 +21,7 @@
 
 #include "CTiglUIDManager.h"
 #include <QDialog>
+#include <functional>
 
 namespace Ui {
 class TIGLGeometryChoserDialog;
@@ -31,7 +32,11 @@ class TIGLGeometryChoserDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit TIGLGeometryChoserDialog(const tigl::CTiglUIDManager& uidManager, QWidget *parent = 0);
+    explicit TIGLGeometryChoserDialog(
+        const tigl::CTiglUIDManager& uidManager, 
+        QWidget *parent = 0,
+        std::function<bool(tigl::ITiglGeometricComponent*)> pre_filter = [](auto*){ return true; }
+    );
     ~TIGLGeometryChoserDialog();
     
     QStringList GetSelectedUids() const;
@@ -44,7 +49,7 @@ private:
     const tigl::CTiglUIDManager& m_uidMgr;
     class QSortFilterProxyModel* m_model;
 
-    void SetComponentUIDs();
+    void SetComponentUIDs(std::function<bool(tigl::ITiglGeometricComponent*)> pre_filter);
 };
 
 #endif // TIGLGEOMETRYCHOSERDIALOG_H
