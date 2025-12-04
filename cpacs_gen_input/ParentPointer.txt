@@ -62,8 +62,10 @@ CPACSGenericGeometryComponents
 CPACSStructuralProfile
 CPACSSheetList
 CPACSControlSurfaceBorderTrailingEdge
+CPACSControlSurfaceBorderLeadingEdge
 CPACSControlSurfaceHingePoint
 CPACSControlSurfaceOuterShapeTrailingEdge
+CPACSControlSurfaceOuterShapeLeadingEdge
 CPACSControlSurfacePath
 CPACSControlSurfaceStep
 CPACSControlSurfaceSteps
@@ -76,9 +78,12 @@ CPACSCrossBeam
 CPACSFrame
 CPACSLongFloorBeam
 CPACSControlSurfaceWingCutOut
+CPACSControlSurfaceSteps
 CPACSWingStringer
 CPACSTrailingEdgeDevice
 CPACSTrailingEdgeDevices
+CPACSLeadingEdgeDevice
+CPACSLeadingEdgeDevices
 CPACSDoorAssemblyPosition
 CPACSStringer
 CPACSStringerFramePosition
