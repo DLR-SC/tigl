@@ -22,7 +22,11 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 
-TIGLGeometryChoserDialog::TIGLGeometryChoserDialog(const tigl::CTiglUIDManager& uidManager, QWidget *parent)
+TIGLGeometryChoserDialog::TIGLGeometryChoserDialog(
+    const tigl::CTiglUIDManager& uidManager, 
+    QWidget *parent,
+    std::function<bool(tigl::ITiglGeometricComponent*)> pre_filter
+)
     : QDialog(parent)
     , ui(new Ui::TIGLGeometryChoserDialog)
     , m_uidMgr(uidManager)
@@ -36,20 +40,22 @@ TIGLGeometryChoserDialog::TIGLGeometryChoserDialog(const tigl::CTiglUIDManager& 
     m_model = new QSortFilterProxyModel(this);
     m_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
     ui->objectsList->setModel(m_model);
-    SetComponentUIDs();
+    SetComponentUIDs(pre_filter);
 
     connect(ui->searchBox, SIGNAL(textChanged(QString)), this, SLOT(onFilterChanged(QString)));
 }
 
-void TIGLGeometryChoserDialog::SetComponentUIDs()
+void TIGLGeometryChoserDialog::SetComponentUIDs(std::function<bool(tigl::ITiglGeometricComponent*)> pre_filter)
 {
     QStandardItemModel *model = new QStandardItemModel(0, 1, this);
 
     tigl::ShapeContainerType shapes = m_uidMgr.GetShapeContainer();
     for (tigl::ShapeContainerType::const_iterator it = shapes.begin(); it != shapes.end(); ++it) {
-        int count = model->rowCount();
-        model->insertRow(count);
-        model->setData(model->index(count, 0), it->first.c_str());
+        if (pre_filter(it->second)) {
+            int count = model->rowCount();
+            model->insertRow(count);
+            model->setData(model->index(count, 0), it->first.c_str());
+        }
     }
 
     m_model->setSourceModel(model);

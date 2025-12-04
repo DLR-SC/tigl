@@ -5,8 +5,11 @@ Changes since last release
 --------------------------
 - General changes
   - Always display the borders of the control surfaces on the wing
+  - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
 
 - Fixes
+  - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))
+  - Update modificator widget's references after undo/redo action. Fixes ([#1240](https://github.com/DLR-SC/tigl/issues/1240))
   - Fix wrong scaling of the main application, if the screen scale is set to 150% on Windows ([#1238](https://github.com/DLR-SC/tigl/issues/1238))
   - Add undo/redo buttons to toolbar ([#1123](https://github.com/DLR-SC/tigl/issues/1123))
   - Fix incorrect invalidation logic of elements, sections and fuselages/wings. This caused invalid geometries for some combinations of positionings and transformations when applying CPACS changes in TiGLCreator ([#1209](https://github.com/DLR-SC/tigl/issues/1209))
