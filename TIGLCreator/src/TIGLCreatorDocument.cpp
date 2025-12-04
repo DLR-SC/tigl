@@ -854,7 +854,9 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
                         wire_builder.Add(edge);
                     }
                 }
-                builder.Add(control_point_net, wire_builder.Wire());
+                if (wire_builder.IsDone()) {
+                    builder.Add(control_point_net, wire_builder.Wire());
+                }
             }
 
             // make wires in u direction
