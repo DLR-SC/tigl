@@ -27,6 +27,7 @@
 #include "ITiglWireAlgorithm.h"
 #include "Geom_BSplineCurve.hxx"
 #include "CPACSApproximationSettings.h"
+#include <variant>
 
 namespace tigl 
 {
@@ -53,7 +54,7 @@ public:
     // Builds the wire from the given points
     TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const override;
 
-    TIGL_EXPORT void setApproximationSettings(const tigl::generated::CPACSApproximationSettings *approximationSettings);
+    TIGL_EXPORT void setApproximationSettings(std::variant<std::monostate, int, double> approximationSettings);
 
     TIGL_EXPORT void setProfileUID(const std::string& profileUID);
 
@@ -86,7 +87,7 @@ private:
 
     ETiglContinuity continuity;
 
-    const tigl::generated::CPACSApproximationSettings* m_approximationSettings = nullptr;
+    std::variant<std::monostate, int, double> m_approximationSettings;
 
     const std::string* m_profileUID;
 };

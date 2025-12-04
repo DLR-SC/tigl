@@ -89,16 +89,28 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
-    , m_approximationSettings(cpacsPointList.GetApproximationSettings() ? &(*(cpacsPointList.GetApproximationSettings())) : nullptr)
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
+    // TODO: Check on correct type of input (e.g. print warning if choice1 selected and double is entered -> truncate value to int)
+    if (cpacsPointList.GetApproximationSettings()) {
+        if (cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1()) {
+            m_approximationSettings = *(cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1());
+        }
+        else if (cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2()) {
+            m_approximationSettings = *(cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2());
+        }
+        else {
+            throw CTiglError("CTiglWingProfilePointList: Invalid Definition of Approximation Settings");
+        }
+    }
+
 }
 
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
-    , m_approximationSettings(nullptr) //TODO: Pass also for nacelles
+    //, m_approximationSettings(nullptr) //TODO: Pass also for nacelles
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
 }
@@ -154,7 +166,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     TopoDS_Wire tempShapeOpened;
     TopoDS_Wire tempShapeClosed;
 
-    if (m_approximationSettings && typeid(wireBuilder) == typeid(CTiglInterpolateBsplineWire)) {
+    if (!std::holds_alternative<std::monostate>(m_approximationSettings) && typeid(wireBuilder) == typeid(CTiglInterpolateBsplineWire)) {
         CTiglInterpolateBsplineWire* wireBuilderPointList = dynamic_cast<CTiglInterpolateBsplineWire*>(&wireBuilder);
         wireBuilderPointList->setApproximationSettings(m_approximationSettings);
         wireBuilderPointList->setProfileUID(profileUID);

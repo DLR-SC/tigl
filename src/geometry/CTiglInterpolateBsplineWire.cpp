@@ -53,11 +53,22 @@ CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(const tigl::generated::
                                                          const std::string& profileUID)
 {
     continuity = _C0;
-    m_approximationSettings = approximationSettings;
     m_profileUID = &profileUID;
+
+    if (approximationSettings) {
+        if (approximationSettings->GetControlPointNumber_choice1()) {
+            m_approximationSettings = *(approximationSettings->GetControlPointNumber_choice1());
+        }
+        else if (approximationSettings->GetMaximumError_choice2()) {
+            m_approximationSettings = *(approximationSettings->GetMaximumError_choice2());
+        }
+        else {
+            throw CTiglError("CTiglInterpolateBsplineWire: Invalid Definition of Approximation Settings");
+        }
+    }
 }
 
-void CTiglInterpolateBsplineWire::setApproximationSettings(const tigl::generated::CPACSApproximationSettings *approximationSettings)
+void CTiglInterpolateBsplineWire::setApproximationSettings(std::variant<std::monostate, int, double> approximationSettings)
 {
     m_approximationSettings = approximationSettings;
 }
@@ -116,38 +127,35 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
     }
 
     Handle(Geom_BSplineCurve) hcurve;
-    if (m_approximationSettings) {
+    if (std::holds_alternative<int>(m_approximationSettings)) {
+        int nrControlPoints = std::get<int>(m_approximationSettings);
         double errApproxCalc = -1.;
-        if (m_approximationSettings->GetControlPointNumber_choice1()) {
-            int nrControlPoints = m_approximationSettings->GetControlPointNumber_choice1().value();
-            if (nrControlPoints < 3) {
-                throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
-            }
 
-            CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
+        if (nrControlPoints < 3) {
+            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
+        }
 
-            // Make sure that the first and last point is still interpolated to ensure a closed wing profile
-            approx.InterpolatePoint(0);
-            approx.InterpolatePoint(hpoints->Length()-1);
+        CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
 
-            // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
-            // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
-            CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
-            LOG(WARNING) << "I am approximated" << std::endl;
-            hcurve = approxResult.curve;
-            errApproxCalc = approxResult.error;
-            LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-            LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
-            LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
-        }
-        else if (m_approximationSettings->GetMaximumError_choice2()) {
-            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: 'Max Error' open for implementation");
-        }
-        else {
-            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: Invalid Definition of Approximation Settings");
-        }
+        // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+        approx.InterpolatePoint(0);
+        approx.InterpolatePoint(hpoints->Length()-1);
+
+        // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
+        // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
+        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
+        LOG(WARNING) << "I am approximated" << std::endl;
+        hcurve = approxResult.curve;
+        errApproxCalc = approxResult.error;
+        LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
+        LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
+        LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
 
         BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineApprox.brep");
+    }
+    else if (std::holds_alternative<double>(m_approximationSettings)) {
+        double maxErrorApprox = std::get<double>(m_approximationSettings);
+        throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: 'Max Error' open for implementation");
     }
     else {
         CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);

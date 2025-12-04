@@ -42,6 +42,7 @@
 #include "CCPACSPointListXYVector.h"
 #include "CPACSApproximationSettings.h"
 #include "Cache.h"
+#include <variant>
 
 namespace tigl
 {
@@ -132,7 +133,7 @@ private:
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const std::string                   profileUID;      /**< Reference to the wing profile */
 
-    const tigl::generated::CPACSApproximationSettings *m_approximationSettings = nullptr;
+    std::variant<std::monostate, int, double> m_approximationSettings;
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };
