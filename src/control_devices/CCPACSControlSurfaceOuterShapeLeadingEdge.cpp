@@ -56,29 +56,29 @@ PNamedShape CCPACSControlSurfaceOuterShapeLeadingEdge::GetLoft(PNamedShape wingC
     // Solution: apply a small inward offset (epsilon) to the device box
     // before performing the boolean intersection.
     
-    gp_Vec epsilonVec = upDir;       
-    epsilonVec *= -1e-3;             
-    gp_Trsf trsf;
-    trsf.SetTranslation(epsilonVec);
+    // gp_Vec epsilonVec = upDir;       
+    // epsilonVec *= -1e-6;             
+    // gp_Trsf trsf;
+    // trsf.SetTranslation(epsilonVec);
 
-    BRepBuilderAPI_Transform transformer(shapeBox->Shape(), trsf, true);
-    TopoDS_Shape offsetBox = transformer.Shape();
+    // BRepBuilderAPI_Transform transformer(shapeBox->Shape(), trsf, true);
+    // TopoDS_Shape offsetBox = transformer.Shape();
 
-    PNamedShape shapeBoxOffset(new CNamedShape(offsetBox, shapeBox->Name().c_str()));
+    // PNamedShape shapeBoxOffset(new CNamedShape(offsetBox, shapeBox->Name().c_str()));
 
 
-    BRepAlgoAPI_Common common(wingCleanShape->Shape(), shapeBoxOffset->Shape());;
-    common.Build();
+    // BRepAlgoAPI_Common common(wingCleanShape->Shape(), shapeBoxOffset->Shape());;
+    // common.Build();
 
-    TopoDS_Shape outerShapeTopo = common.Shape();
-    PNamedShape outerShape(new CNamedShape(outerShapeTopo, shapeBox->Name().c_str()));
+    // TopoDS_Shape outerShapeTopo = common.Shape();
+    // PNamedShape outerShape(new CNamedShape(outerShapeTopo, shapeBox->Name().c_str()));
 
-    if (NeedsWingIntersection()) {
-        return ControlSurfaceDeviceHelper::outerShapeGetLoft(shapeBox, outerShape, _uid);
-    }
-    else {
+    // if (NeedsWingIntersection()) {
+    //     return ControlSurfaceDeviceHelper::outerShapeGetLoft(shapeBox, outerShape, _uid);
+    // }
+    // else {
         return shapeBox;
-    }
+    // }
 }
 
 PNamedShape CCPACSControlSurfaceOuterShapeLeadingEdge::CutoutShape(PNamedShape wingShape, gp_Vec upDir) const
