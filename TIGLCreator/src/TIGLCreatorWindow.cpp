@@ -172,6 +172,9 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    // connect model visibility changes to the scene
+    connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
+
     connectSignals();
     createMenus();
     updateMenus();
@@ -182,7 +185,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     setMinimumSize(160, 160);
 
-
+    (void)modificatorModel; // keep unused var warning away if any
 }
 
 
@@ -320,6 +323,7 @@ void TIGLCreatorWindow::closeConfiguration()
     modificatorModel->setCPACSConfiguration(nullptr); // it will also reset the treeview
     treeWidget->refresh();
     if (cpacsConfiguration) {
+
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
@@ -370,6 +374,8 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 
         if (fileType.toLower() == tr("xml")) {
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+
+
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
@@ -425,8 +431,14 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
+        std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
+        getScene()->GetShapeManager().clear();
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+        getScene()->deleteAllObjects();
+        for (const auto& name : displayedShapeNames) {
+            cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
+        }
         treeWidget->refresh();
     }
     else {
@@ -1063,6 +1075,36 @@ void TIGLCreatorWindow::connectSignals()
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
 
+void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)
+{
+    if (!cpacsConfiguration) return;
+
+    try {
+        // find interactive objects for the given uid
+        auto& shapeManager = myScene->GetShapeManager();
+        if (visible) {
+                cpacsConfiguration->drawComponentByUID(uid);
+        }
+        else {
+            if (myScene->GetShapeManager().HasShapeEntry(uid.toStdString())) {
+                auto objs = myScene->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+            else {
+                // TODO: Check if this can happen
+                auto objs = shapeManager.GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+        }
+        myScene->getViewer()->Update();
+    }
+    catch (...) {
+    }
+}
 
 void TIGLCreatorWindow::createMenus()
 {

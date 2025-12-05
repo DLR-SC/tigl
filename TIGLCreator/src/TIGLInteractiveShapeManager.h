@@ -41,16 +41,22 @@ public:
 
     PNamedShape GetShapeFromName(const std::string& name);
     PNamedShape GetShapeFromIObject(Handle(AIS_InteractiveObject) obj);
-    IObjectList GetIObjectsFromShapeName(const std::string& name);
+    IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
     std::vector<PNamedShape> GetAllShapes() const;
 
     // removes the shape and all interactive objects belonging to the shape
     void removeObject(const std::string& name);
+    void clear();
 
     // removes only the interactive object from the shape manager
     void removeObject(Handle(AIS_InteractiveObject) obj);
     void addObject(PNamedShape shape, const Handle(AIS_InteractiveObject) iObject);
+    
+    bool HasShapeEntry(const std::string& name) const;
+    bool GetVisibility(const std::string& name) const;
+
+    std::vector<std::string> GetDisplayedShapeNames() const;
 
 private:
     ShapeEntry& GetShapeEntry(const std::string& name);

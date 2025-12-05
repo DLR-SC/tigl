@@ -754,24 +754,35 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             return;
         }
 
-        PNamedShape loft = component.GetLoft();
-        auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+        if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
+            PNamedShape loft = component.GetLoft();
 
-        if (loft) {
-            double opacity = 0.;
-            bool shaded = true;
-            // By default, we display the wing without cutouts (for performance). 
-            // Therefore, it is visually better to display the flaps using a wireframe rendering by default
-            if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
-                shaded = false;
-            }
-            app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
-            if (geometricComp) {
-                PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
-                if (mirroredLoft) {
-                    app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+            if (loft) {
+                double opacity = 0;
+                bool shaded = true;
+                // By default, we display the wing without cutouts (for performance). 
+                // Therefore, it is visually better to display the flaps using a wireframe rendering by default
+                if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
+                    shaded = false;
+                }
+
+                app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
+
+                auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+                if (geometricComp) {
+                    PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
+                    if (mirroredLoft) {
+                        app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                    }
                 }
             }
+        }
+        else {
+            IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+            for (auto& obj : objects) {
+                app->getScene()->getContext()->Display(obj, Standard_False);
+            }
+            app->getScene()->getViewer()->Update();
         }
     }
     catch(tigl::CTiglError& err) {
@@ -1191,8 +1202,6 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
         displayError(ex.what(), "Error");
     }
 }
-
-
 
 void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 {
