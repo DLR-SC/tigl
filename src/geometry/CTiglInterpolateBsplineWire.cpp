@@ -32,7 +32,6 @@
 #include "math.h"
 #include <algorithm>
 #include <iostream>
-#include "BRepTools.hxx"
 #include "CTiglLogging.h"
 
 namespace tigl 
@@ -55,16 +54,6 @@ CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(std::variant<std::monos
     continuity = _C0;
     m_profileUID = &profileUID;
     m_approximationSettings = approximationSettings;
-}
-
-void CTiglInterpolateBsplineWire::setApproximationSettings(std::variant<std::monostate, int, double> approximationSettings)
-{
-    m_approximationSettings = approximationSettings;
-}
-
-void CTiglInterpolateBsplineWire::setProfileUID(const std::string& profileUID)
-{
-    m_profileUID = &profileUID;
 }
 
 // Builds the wire from the given points
@@ -138,8 +127,6 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         errApproxCalc = approxResult.error;
         LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
         LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
-
-        BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineApprox.brep");
     }
     else if (std::holds_alternative<double>(m_approximationSettings)) {
         double maxErrorApprox = std::get<double>(m_approximationSettings);

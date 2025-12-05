@@ -153,7 +153,7 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     }
 
     // Build wires from wing profile points.
-    ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+    const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
 
     // CCPACSWingSegment::makeSurfaces cannot handle currently
     // wire with multiple edges. Thus we get problems if we have
@@ -165,7 +165,6 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
 
     TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
     TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
-
     if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }

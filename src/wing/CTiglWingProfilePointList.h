@@ -40,7 +40,6 @@
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
 #include "CCPACSPointListXYVector.h"
-#include "CPACSApproximationSettings.h"
 #include "Cache.h"
 #include <variant>
 

@@ -26,7 +26,6 @@
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
 #include "Geom_BSplineCurve.hxx"
-#include "CPACSApproximationSettings.h"
 #include <variant>
 
 namespace tigl 
@@ -54,9 +53,6 @@ public:
     // Builds the wire from the given points
     TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const override;
 
-    TIGL_EXPORT void setApproximationSettings(std::variant<std::monostate, int, double> approximationSettings);
-
-    TIGL_EXPORT void setProfileUID(const std::string& profileUID);
 
     // if set to true, the endpoints of a closed wire will be c1 steady
     TIGL_EXPORT virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
