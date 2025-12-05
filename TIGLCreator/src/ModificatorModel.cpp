@@ -139,9 +139,17 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
     unHighlight();
     if (item->getType() == "transformation") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSTransformation& transformation =
-            uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
-        modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
+        if(item->getUid().empty()){
+            LOG(WARNING) << "The 'transformation'-element you are trying to access has no UID and is not editable. If you want to be able to edit add UID." << std::endl;
+        } else {
+            try{
+                tigl::CCPACSTransformation& transformation =
+                    uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
+                modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
+            } catch (tigl::CTiglError& ex) {
+                LOG(ERROR) << ex.what() << std::endl;
+            }
+        }
     }
     else if (item->getType() == "fuselage") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
