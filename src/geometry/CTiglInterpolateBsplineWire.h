@@ -45,7 +45,7 @@ public:
     // Constructor
     TIGL_EXPORT CTiglInterpolateBsplineWire();
 
-    TIGL_EXPORT CTiglInterpolateBsplineWire(const tigl::generated::CPACSApproximationSettings *approximationSettings,
+    TIGL_EXPORT CTiglInterpolateBsplineWire(std::variant<std::monostate, int, double> approximationSettings,
                                             const std::string& profileUID);
 
     // Destructor

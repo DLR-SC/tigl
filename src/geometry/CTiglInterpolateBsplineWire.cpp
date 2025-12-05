@@ -49,23 +49,12 @@ CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire()
 {
 }
 
-CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(const tigl::generated::CPACSApproximationSettings *approximationSettings,
+CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(std::variant<std::monostate, int, double> approximationSettings,
                                                          const std::string& profileUID)
 {
     continuity = _C0;
     m_profileUID = &profileUID;
-
-    if (approximationSettings) {
-        if (approximationSettings->GetControlPointNumber_choice1()) {
-            m_approximationSettings = *(approximationSettings->GetControlPointNumber_choice1());
-        }
-        else if (approximationSettings->GetMaximumError_choice2()) {
-            m_approximationSettings = *(approximationSettings->GetMaximumError_choice2());
-        }
-        else {
-            throw CTiglError("CTiglInterpolateBsplineWire: Invalid Definition of Approximation Settings");
-        }
-    }
+    m_approximationSettings = approximationSettings;
 }
 
 void CTiglInterpolateBsplineWire::setApproximationSettings(std::variant<std::monostate, int, double> approximationSettings)
@@ -148,7 +137,6 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         hcurve = approxResult.curve;
         errApproxCalc = approxResult.error;
         LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-        LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
         LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
 
         BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineApprox.brep");
@@ -162,8 +150,6 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         hcurve = interpol.Curve();
         LOG(WARNING) << "I am interpolated" << std::endl;
         LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-        LOG(WARNING) << "#Knots: " << hcurve->NbKnots();
-        BRepTools::Write(BRepBuilderAPI_MakeEdge(hcurve), "splineInterp.brep");
     }
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);

@@ -87,7 +87,6 @@ const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 // Constructor
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
-    , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
@@ -104,6 +103,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
         }
     }
 
+    profileWireAlgo = std::make_unique<CTiglInterpolateBsplineWire>(m_approximationSettings, profileUID);
 }
 
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
@@ -163,21 +163,9 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempShapeOpened;
-    TopoDS_Wire tempShapeClosed;
+    TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
+    TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
 
-    if (!std::holds_alternative<std::monostate>(m_approximationSettings) && typeid(wireBuilder) == typeid(CTiglInterpolateBsplineWire)) {
-        CTiglInterpolateBsplineWire* wireBuilderPointList = dynamic_cast<CTiglInterpolateBsplineWire*>(&wireBuilder);
-        wireBuilderPointList->setApproximationSettings(m_approximationSettings);
-        wireBuilderPointList->setProfileUID(profileUID);
-
-        tempShapeOpened = wireBuilderPointList->BuildWire(openPoints, false);
-        tempShapeClosed = wireBuilderPointList->BuildWire(closedPoints, true);
-    }
-    else {
-        tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
-        tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
-    }
     if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
