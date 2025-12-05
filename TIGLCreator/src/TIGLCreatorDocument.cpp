@@ -744,7 +744,6 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
     try {
         START_COMMAND()
-        std::cout << "DEBUGGING: " << uid.toStdString() << std::endl;
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
 
         auto found = callbacks.find(component.GetComponentType());
@@ -754,7 +753,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             return;
         }
 
-        if (!app->getSceneGraph()->hasInteractiveObjects(uid.toStdString())) {
+        if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
             PNamedShape loft = component.GetLoft();
 
             if (loft) {
@@ -767,7 +766,6 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                 }
                 app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
                 Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
-                app->getSceneGraph()->registerInteractiveObject(uid.toStdString(), obj);
             
         
                 auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
@@ -777,19 +775,16 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     if (mirroredLoft) {
                         app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
                         Handle_AIS_InteractiveObject obj = app->getScene()->getCurrentShape();
-                        app->getSceneGraph()->registerInteractiveObject(uid.toStdString(), obj);
                     }
                 }
             }
         }
-        
-        auto& shapeManager = myScene->GetShapeManager();
-        if (app->getSceneGraph()->hasVisibilityStored(uid.toStdString())) {
-            bool visibility = app->getSceneGraph()->getVisibility(uid.toStdString());
-            app->getSceneGraph()->updateVisibility(uid.toStdString(), visibility);
-        }
         else {
-            app->getSceneGraph()->updateVisibility(uid.toStdString(), true);
+            IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objects) {
+                    app->getScene()->getContext()->Display(obj, Standard_False);
+                }
+            app->getScene()->getViewer()->Update();
         }
         
     

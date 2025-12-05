@@ -35,7 +35,6 @@
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
 #include <QTimer>
-#include <SceneGraph.h>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -45,7 +44,6 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 {
 
     doc          = nullptr;
-    sceneGraph   = nullptr;
     this->modificatorContainerWidget = modificatorContainerWidget;
     this->modificatorContainerWidget->setProfilesManager( &profilesDB);
     this->myUndoStack = undoStack;
@@ -996,8 +994,8 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 
         // get visibility state and check or uncheck accordingly
         std::string uid = item->getUid();
-        if (!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid)) {
-            bool vis = sceneGraph->getVisibility(uid);
+        if (!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
+            bool vis = scene->GetShapeManager().GetVisibility(uid);
             return vis ? Qt::Checked : Qt::Unchecked;
         }
         
@@ -1049,15 +1047,14 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     std::vector<QModelIndex> changedIdxs;
     std::vector<std::string> changedUIDs;
 
-    // update visibility in scene graph
+    // update visibility
     auto updateVisibility = [&](cpcr::CPACSTreeItem* node) {
         if (!node)
             return;
         const std::string uid = node->getUid();
-        if (uid.empty() || !sceneGraph || !sceneGraph->isDrawable(uid))
+        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))
             return;
 
-        sceneGraph->updateVisibility(uid, visible);
         const QModelIndex idx = getIndex(node, 0);
         if (idx.isValid())
             changedIdxs.push_back(idx);
@@ -1076,7 +1073,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         updateRec(item);
     }
     else {
-        // Apply to this item and its immediate children (existing behavior)
+        // Apply to this item and its immediate children
         updateVisibility(item);
         for (auto* child : item->getChildren())
             updateVisibility(child);
@@ -1088,11 +1085,17 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
 
     // Queue visibility signals (deferred to avoid painting reentrancy)
     std::vector<std::pair<QString, bool>> pending;
-    pending.reserve(changedUIDs.size());
-    for (const auto& uid : changedUIDs) {
-        const bool vis = sceneGraph ? sceneGraph->getVisibility(uid) : false;
-        pending.emplace_back(QString::fromStdString(uid), vis);
-    }
+        pending.reserve(changedUIDs.size());
+        for (const auto& uid : changedUIDs) {
+            QString q = QString::fromStdString(uid);
+            bool already = false;
+            for (const auto& p : pending) {
+                if (p.first == q) { already = true; break; }
+            }
+            if (!already) {
+                pending.emplace_back(q, visible);
+            }
+        }
 
     QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
         for (const auto& p : pending) {
@@ -1124,7 +1127,7 @@ Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
     }
 
     const std::string uid = item->getUid();
-    if ((!uid.empty() && sceneGraph && sceneGraph->isDrawable(uid))) {
+    if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
         f |= Qt::ItemIsUserCheckable;
     }
 

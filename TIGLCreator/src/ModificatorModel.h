@@ -31,7 +31,7 @@
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
 #include <AIS_InteractiveObject.hxx>
-#include <SceneGraph.h>
+#include "TIGLInteractiveShapeManager.h"
 
 class TIGLCreatorWindow;
 
@@ -117,10 +117,6 @@ public:
     );
 
     void setCPACSConfiguration(TIGLCreatorDocument* newDoc);
-
-    // Associate a SceneGraph instance with this model. The model does not own
-    // the pointer; the caller (TIGLCreatorWindow) manages SceneGraph lifetime.
-    void setSceneGraph(SceneGraph* sg) { sceneGraph = sg; }
 
     /**
      * @brief resets the currently loaded CCPACSConfiguration to the CPACS configuration in a string
@@ -254,7 +250,6 @@ private:
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
-    SceneGraph* sceneGraph;
 
 };
 
