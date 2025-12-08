@@ -29,6 +29,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglApproximateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CTiglWingProfilePointList.h"
@@ -91,19 +92,24 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
 {
     // TODO: Check on correct type of input (e.g. print warning if choice1 selected and double is entered -> truncate value to int)
+    // Profile points are approximated, not interpolated
     if (cpacsPointList.GetApproximationSettings()) {
         if (cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1()) {
-            m_approximationSettings = *(cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1());
+            int nrControlPoints = *(cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true);
         }
         else if (cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2()) {
-            m_approximationSettings = *(cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2());
+            double tolerance = *(cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true);
         }
         else {
-            throw CTiglError("CTiglWingProfilePointList: Invalid Definition of Approximation Settings");
+            throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
         }
     }
-
-    profileWireAlgo = std::make_unique<CTiglInterpolateBsplineWire>(m_approximationSettings, profileUID);
+    // Profile points are interpolated, not approximated
+    else {
+        profileWireAlgo = std::make_unique<CTiglInterpolateBsplineWire>();
+    }
 }
 
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)

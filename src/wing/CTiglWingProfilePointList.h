@@ -41,7 +41,6 @@
 #include "TopoDS_Edge.hxx"
 #include "CCPACSPointListXYVector.h"
 #include "Cache.h"
-#include <variant>
 
 namespace tigl
 {
@@ -131,12 +130,6 @@ private:
     const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const std::string                   profileUID;      /**< Reference to the wing profile */
-
-    // When approximation of the point list is wanted, there are two possible ways:
-    // Either, controlPointNumber (-> int) or maximumError (-> double) is defined
-    // If the profile should not be approximated (but interpolated), the variable is set to std::monostate
-    // to make clear that m_approximationSettings are not set.
-    std::variant<std::monostate, int, double> m_approximationSettings;
 
     Cache<WireCache, CTiglWingProfilePointList> wireCache;
 };

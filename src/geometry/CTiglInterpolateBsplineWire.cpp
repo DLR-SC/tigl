@@ -27,12 +27,10 @@
 #include "TopoDS_Edge.hxx"
 #include "TColgp_HArray1OfPnt.hxx"
 #include "CTiglPointsToBSplineInterpolation.h"
-#include "CTiglBSplineApproxInterp.h"
 #include "Precision.hxx"
 #include "math.h"
 #include <algorithm>
 #include <iostream>
-#include "CTiglLogging.h"
 
 namespace tigl 
 {
@@ -48,21 +46,13 @@ CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire()
 {
 }
 
-CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire(std::variant<std::monostate, int, double> approximationSettings,
-                                                         const std::string& profileUID)
-{
-    continuity = _C0;
-    m_profileUID = &profileUID;
-    m_approximationSettings = approximationSettings;
-}
-
 // Builds the wire from the given points
 TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
 {
     bool endTangency = (continuity == _C1);
 
     if (points.size() < 2) {
-        throw CTiglError("To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
+        throw CTiglError("Too few points to build a curve in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
     // If first and last point are identical always force wire closure independently of given forceClosed flag.
@@ -70,7 +60,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         forceClosed = true;
     }
 
-    // Remove points which are to close to each other.
+    // Remove points which are too close to each other.
     gp_Pnt prevPnt = points[0];
     CPointContainer usedPoints;
     usedPoints.push_back(prevPnt);
@@ -91,12 +81,12 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
     gp_Pnt endPnt   = usedPoints[pointCount - 1];
 
     if (forceClosed  && startPnt.Distance(endPnt) > Precision::Confusion()) {
-        // do to compatibilty, tangency is only allowed if start and endpoint are specified the same
+        // due to compatibility, tangency is only allowed if start and endpoint are specified the same
         endTangency = false;
     }
 
     if (pointCount < 2) {
-        throw CTiglError("To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
+        throw CTiglError("Too few points to build a curve in CTiglInterpolateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
@@ -104,40 +94,8 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
         hpoints->SetValue(j + 1, usedPoints[j]);
     }
 
-    Handle(Geom_BSplineCurve) hcurve;
-    if (std::holds_alternative<int>(m_approximationSettings)) {
-        int nrControlPoints = std::get<int>(m_approximationSettings);
-        double errApproxCalc = -1.;
-
-        if (nrControlPoints < 3) {
-            throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
-        }
-
-        CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
-
-        // Make sure that the first and last point is still interpolated to ensure a closed wing profile
-        approx.InterpolatePoint(0);
-        approx.InterpolatePoint(hpoints->Length()-1);
-
-        // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
-        // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
-        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
-        LOG(WARNING) << "I am approximated" << std::endl;
-        hcurve = approxResult.curve;
-        errApproxCalc = approxResult.error;
-        LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-        LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
-    }
-    else if (std::holds_alternative<double>(m_approximationSettings)) {
-        double maxErrorApprox = std::get<double>(m_approximationSettings);
-        throw CTiglError("CTiglInterpolateBsplineWire::BuildWire: 'Max Error' open for implementation");
-    }
-    else {
-        CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);
-        hcurve = interpol.Curve();
-        LOG(WARNING) << "I am interpolated" << std::endl;
-        LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-    }
+    CTiglPointsToBSplineInterpolation interpol(hpoints, 3, endTangency);
+    Handle(Geom_BSplineCurve) hcurve = interpol.Curve();
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);
@@ -168,7 +126,7 @@ TiglAlgorithmCode CTiglInterpolateBsplineWire::GetAlgorithmCode() const
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinX(const CPointContainer& points) const
 {        
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
     }
 
     gp_Pnt minXPnt = points[0];
@@ -184,7 +142,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinX(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxX(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
     }
 
     gp_Pnt maxXPnt = points[0];
@@ -200,7 +158,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxX(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
     }
 
     gp_Pnt minYPnt = points[0];
@@ -216,7 +174,7 @@ gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMinY(const CPointContainer& poin
 gp_Pnt CTiglInterpolateBsplineWire::GetPointWithMaxY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
     }
 
     gp_Pnt maxYPnt = points[0];

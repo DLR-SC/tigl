@@ -27,6 +27,7 @@
 
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
+#include <variant>
 
 namespace tigl 
 {
@@ -37,6 +38,9 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 public:
     // Constructor
     TIGL_EXPORT CTiglApproximateBsplineWire();
+
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile);
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile);
 
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;
@@ -66,6 +70,13 @@ private:
     // Assignment operator
     void operator=(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
 
+    ETiglContinuity continuity;
+
+    std::variant<std::monostate, int, double> m_approximationSettings;
+
+    const std::string* m_profileUID;
+
+    bool m_isWingProfile;
 };
 
 } // end namespace tigl

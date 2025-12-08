@@ -26,16 +26,9 @@
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
 #include "Geom_BSplineCurve.hxx"
-#include <variant>
 
 namespace tigl 
 {
-// TODO(bgruber): prefixed _ as these enum values name clash with the one's of enum TiglContinuity
-enum ETiglContinuity
-{
-    _C0,
-    _C1
-};
 
 class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
 {
@@ -43,9 +36,6 @@ class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
 public:
     // Constructor
     TIGL_EXPORT CTiglInterpolateBsplineWire();
-
-    TIGL_EXPORT CTiglInterpolateBsplineWire(std::variant<std::monostate, int, double> approximationSettings,
-                                            const std::string& profileUID);
 
     // Destructor
     TIGL_EXPORT ~CTiglInterpolateBsplineWire() override;
@@ -83,9 +73,6 @@ private:
 
     ETiglContinuity continuity;
 
-    std::variant<std::monostate, int, double> m_approximationSettings;
-
-    const std::string* m_profileUID;
 };
 
 } // end namespace tigl
