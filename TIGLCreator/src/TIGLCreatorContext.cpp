@@ -261,6 +261,27 @@ void TIGLCreatorContext::gridOn  ( void )
     myViewer->SetGridEcho ( Standard_True );
 }
 
+void TIGLCreatorContext::applyGridSettings()
+{
+    TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
+
+    myViewer->SetRectangularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridSize(),
+        0.
+        );
+
+    myViewer->SetCircularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridRadialDivisions(),
+        0.
+    );
+}
+
 /*! 
 \brief    Turn the grid off.
 */
