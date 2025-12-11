@@ -256,6 +256,12 @@ void TIGLCreatorSettings::restoreDefaults()
     _nVIsosPerFace = DEFAULT_NISO_FACES;
     _drawFaceBoundaries = DEFAULT_DRAW_FACE_BOUNDARIES;
     _defaultMaterial = Graphic3d_NOM_METALIZED;
+
+    _grid_origin_x = 0.;
+    _grid_origin_y = 0.;
+    _grid_size = 10.;
+    _grid_radial_divisions = 8;
+
     // Possible issue:
     // restoreDefaults() is called in the constructor
     // -> the dir will be always create at start up of the application
@@ -286,4 +292,44 @@ QString TIGLCreatorSettings::profilesDBPath() const
 void TIGLCreatorSettings::setProfilesDBPath(QString path)
 {
     _profilesDBPath = path;  // not check on the file is performed
+}
+
+void TIGLCreatorSettings::setGridOriginX(double x)
+{
+    _grid_origin_x = x;
+}
+
+double TIGLCreatorSettings::gridOriginX() const
+{
+    return _grid_origin_x;
+}
+
+void TIGLCreatorSettings::setGridOriginY(double y)
+{
+    _grid_origin_y = y;
+}
+
+double TIGLCreatorSettings::gridOriginY() const
+{
+    return _grid_origin_y;
+}
+
+void TIGLCreatorSettings::setGridSize(double delta)
+{
+    _grid_size = delta;
+}
+
+double TIGLCreatorSettings::gridSize() const
+{
+    return _grid_size;
+}
+
+void TIGLCreatorSettings::setGridRadialDivisions(int n)
+{
+    _grid_radial_divisions = n;
+}
+
+int TIGLCreatorSettings::gridRadialDivisions() const
+{
+    return _grid_radial_divisions;
 }
