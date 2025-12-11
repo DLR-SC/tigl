@@ -16,11 +16,13 @@
  * limitations under the License.
  */
 
-#ifndef MODIFICATORCONTAINERWIDGET_H
-#define MODIFICATORCONTAINERWIDGET_H
+#pragma once
 
-#include <QWidget>
+#include "modificators/CpacsEditorBase.h"
+#include "modificators/ModificatorDisplayOptionsWidget.h"
+#include <QTabWidget>
 #include <QPushButton>
+#include "TIGLCreatorContext.h"
 #include "modificators/ModificatorWingWidget.h"
 #include "modificators/ModificatorFuselageWidget.h"
 #include "modificators/ModificatorTransformationWidget.h"
@@ -51,13 +53,21 @@ class ModificatorContainerWidget;
  * or cancel button is pressed, the correct function will be called on the wing widget.
  *
  */
-class ModificatorContainerWidget : public QWidget
+class ModificatorContainerWidget : public CpacsEditorBase
 {
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
     void addProfileRequested(QString const&);
+    /** Emitted when the Parameters tab is selected by the user. */
+    void parametersTabRequested();
+    /** Emitted when the Display tab is selected by the user. */
+    void displayOptionsRequested();
+    // Forwarded requests from the display options widget
+    void setTransparencyRequested(int);
+    void setRenderingModeRequested(int);
+    void setColorRequested(const QColor&);
+    void setMaterialRequested(const QString&);
     void addWingRequested();
     void deleteWingRequested();
     void addFuselageRequested();
@@ -99,15 +109,32 @@ public:
 
     void setNoInterfaceWidget();
 
+    /**
+     * Show the display options editor inside the container.
+     */
+    void setDisplayOptionsModificator();
+
+    /**
+     * Populate the internal display options widget using the provided tree item and scene/document.
+     * This is called by the main window when the display tab is opened so the widget can copy current
+     * settings from the selected element.
+     */
+    void setDisplayOptionsFromItem(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context=nullptr);
+
     void hideAllSpecializedWidgets();
+
+private slots:
+    void onEditorTabChanged(int idx);
 
 private:
     Ui::ModificatorContainerWidget* ui;
 
     ModificatorWidget* currentModificator;
 
+    // Note: UI-managed widgets `ui->displayOptionsWidget` and `ui->editorTabWidget`
+    // are used instead of programmatic members.
+
     ProfilesDBManager* profilesDB;
 
 };
 
-#endif // MODIFICATORCONTAINERWIDGET_H

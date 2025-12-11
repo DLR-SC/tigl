@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ModificatorDisplayOptionsWidget</class>
+ <widget class="QWidget" name="ModificatorDisplayOptionsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="infoLabel">
+      <property name="text">
+        <string>Please select an editable element from the CPACS Tree.</string>
+      </property>
+     </widget>
+    </item>
+  <item>
+   <widget class="QLabel" name="labelTransparency">
+    <property name="text">
+    <string>Transparency:</string>
+    </property>
+    <property name="visible">
+    <bool>false</bool>
+    </property>
+   </widget>
+  </item>
+    <item>
+     <widget class="QSlider" name="transparencySlider">
+      <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="visible">
+        <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+  <item>
+   <widget class="QLabel" name="labelRenderingMode">
+    <property name="text">
+    <string>Rendering mode:</string>
+    </property>
+    <property name="visible">
+    <bool>false</bool>
+    </property>
+   </widget>
+  </item>
+    <item>
+     <widget class="QComboBox" name="renderingModeCombo">
+      <property name="visible">
+        <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="colorButton">
+      <property name="text">
+        <string>Choose Color</string>
+      </property>
+      <property name="visible">
+        <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+  <item>
+   <widget class="QLabel" name="labelMaterial">
+    <property name="text">
+    <string>Material:</string>
+    </property>
+    <property name="visible">
+    <bool>false</bool>
+    </property>
+   </widget>
+  </item>
+    <item>
+      <widget class="QComboBox" name="materialCombo">
+      <property name="visible">
+        <bool>false</bool>
+      </property>
+      </widget>
+    </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
