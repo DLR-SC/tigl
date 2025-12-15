@@ -155,7 +155,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download build directory
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: build-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
       - name: Extract build archive
