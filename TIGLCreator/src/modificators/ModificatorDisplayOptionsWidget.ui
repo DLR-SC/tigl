@@ -64,11 +64,14 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_color">
       <item>
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="labelColor">
         <property name="text">
          <string>Color:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -104,22 +107,26 @@
       </item>
      </layout>
     </item>
-      <item>
-   <widget class="QLabel" name="labelDraw">
-    <property name="text">
-    <string>Draw Options:</string>
-    </property>
-    <property name="visible">
-    <bool>false</bool>
-    </property>
-   </widget>
-  </item>
     <item>
-      <widget class="QComboBox" name="drawOptionsCombo">
-      <property name="visible">
-        <bool>false</bool>
-      </property>
-      </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_drawOptions">
+      <item>
+       <widget class="QLabel" name="labelDrawOptions">
+        <property name="text">
+         <string>Material:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="drawOptionsCombo">
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
   </layout>
  </widget>
