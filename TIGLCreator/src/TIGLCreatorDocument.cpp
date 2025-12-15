@@ -773,6 +773,8 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                     if (mirroredLoft) {
                         app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                        auto shape = app->getScene()->getCurrentShape();
+                        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
                     }
                 }
             }
