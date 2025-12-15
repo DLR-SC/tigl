@@ -237,7 +237,7 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
         //check if we have to close upper and lower wing shells
         // TODO: maybe change the implementation to ensure that this is true, since the
         //       open profile should always have a trailing edge
-        if (te_up.SqaureDistance(te_down) > Precision::SquareConfusion()) {
+        if (te_up.SquareDistance(te_down) > Precision::SquareConfusion()) {
             cache.trailingEdge = BRepBuilderAPI_MakeEdge(te_up,te_down);
         }
         else {
