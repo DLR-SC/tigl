@@ -1072,23 +1072,23 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         changedUIDs.push_back(uid);
     };
 
-    // Hide all children recursively if hiding a UID
+    // Hide all displayed children recursively if hiding a UID
     if (!visible) {
-        auto mark_recursive = [&](cpcr::CPACSTreeItem* node) {
-            if (!node) { return; }
-            updateVisibility(node);
+        std::function<void(cpcr::CPACSTreeItem*)> mark_recursive = [&](cpcr::CPACSTreeItem* node) {
+            if (!node) {
+                return; 
+            }
+            if (scene->GetShapeManager().GetVisibility(node->getUid())) {
+                mark_as_changed(node);
+            }
             for (auto* child : node->getChildren()) {
-                updateRec(child);
+                mark_recursive(child);
             }
         };
-        updateRec(item);
+        mark_recursive(item);
     }
     else {
-        // Apply to this item and its immediate children
-        updateVisibility(item);
-        for (auto* child : item->getChildren()) {
-            updateVisibility(child);
-        }
+        mark_as_changed(item);
     }
 
     // Notify views
@@ -1096,25 +1096,10 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
         emit dataChanged(idx, idx, {Qt::CheckStateRole});
     }
 
-    // Queue visibility signals (deferred to avoid painting reentrancy)
-    std::vector<std::pair<QString, bool>> pending;
-    pending.reserve(changedUIDs.size());
     for (const auto& uid : changedUIDs) {
-        QString q = QString::fromStdString(uid);
-        bool already = false;
-        for (const auto& p : pending) {
-            if (p.first == q) { already = true; break; }
-        }
-       if (!already) {
-            pending.emplace_back(q, visible);
-        }
+        QString quid = QString::fromStdString(uid);
+        emit componentVisibilityChanged(quid, visible);
     }
-
-    QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
-        for (const auto& p : pending) {
-            emit componentVisibilityChanged(p.first, p.second);
-        }
-    });
 
     // Update parent aggregate states
     for (QModelIndex p = parent(index); p.isValid(); p = parent(p))
