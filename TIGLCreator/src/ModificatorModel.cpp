@@ -1056,54 +1056,59 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     std::vector<std::string> changedUIDs;
 
     // update visibility
-    auto updateVisibility = [&](cpcr::CPACSTreeItem* node) {
-        if (!node)
+    auto mark_as_changed = [&](cpcr::CPACSTreeItem* node) {
+        if (!node) {
             return;
+        }
         const std::string uid = node->getUid();
-        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))
+        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
             return;
+        }
 
         const QModelIndex idx = getIndex(node, 0);
-        if (idx.isValid())
+        if (idx.isValid()) {
             changedIdxs.push_back(idx);
+        }
         changedUIDs.push_back(uid);
     };
 
     // Hide all children recursively if hiding a UID
     if (!visible) {
-        std::function<void(cpcr::CPACSTreeItem*)> updateRec;
-        updateRec = [&](cpcr::CPACSTreeItem* node) {
-            if (!node) return;
+        auto mark_recursive = [&](cpcr::CPACSTreeItem* node) {
+            if (!node) { return; }
             updateVisibility(node);
-            for (auto* child : node->getChildren())
+            for (auto* child : node->getChildren()) {
                 updateRec(child);
+            }
         };
         updateRec(item);
     }
     else {
         // Apply to this item and its immediate children
         updateVisibility(item);
-        for (auto* child : item->getChildren())
+        for (auto* child : item->getChildren()) {
             updateVisibility(child);
+        }
     }
 
     // Notify views
-    for (const auto& idx : changedIdxs)
+    for (const auto& idx : changedIdxs) {
         emit dataChanged(idx, idx, {Qt::CheckStateRole});
+    }
 
     // Queue visibility signals (deferred to avoid painting reentrancy)
     std::vector<std::pair<QString, bool>> pending;
-        pending.reserve(changedUIDs.size());
-        for (const auto& uid : changedUIDs) {
-            QString q = QString::fromStdString(uid);
-            bool already = false;
-            for (const auto& p : pending) {
-                if (p.first == q) { already = true; break; }
-            }
-            if (!already) {
-                pending.emplace_back(q, visible);
-            }
+    pending.reserve(changedUIDs.size());
+    for (const auto& uid : changedUIDs) {
+        QString q = QString::fromStdString(uid);
+        bool already = false;
+        for (const auto& p : pending) {
+            if (p.first == q) { already = true; break; }
         }
+       if (!already) {
+            pending.emplace_back(q, visible);
+        }
+    }
 
     QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
         for (const auto& p : pending) {

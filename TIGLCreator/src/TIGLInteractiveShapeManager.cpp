@@ -261,9 +261,13 @@ std::vector<std::string> InteractiveShapeManager::GetDisplayedShapeNames() const
 
         // If any registered AIS object for this shape is displayed, record the name
         for (const auto& obj : entry.aisObjects) {
-            if (obj.IsNull()) continue;
+            if (obj.IsNull())  {
+                continue;
+            }
             Handle(AIS_InteractiveContext) context = obj->InteractiveContext();
-            if (context.IsNull()) continue;
+            if (context.IsNull()) {
+                continue;
+            }
             if (context->IsDisplayed(obj)) {
                 list.push_back(name);
                 break; // move to next shape name

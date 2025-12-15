@@ -1081,13 +1081,13 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
 
     try {
         // find interactive objects for the given uid
-        auto& shapeManager = myScene->GetShapeManager();
         if (visible) {
-                cpacsConfiguration->drawComponentByUID(uid);
+            cpacsConfiguration->drawComponentByUID(uid);
         }
         else {
-            if (myScene->GetShapeManager().HasShapeEntry(uid.toStdString())) {
-                auto objs = myScene->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+            auto& shapeManager = myScene->GetShapeManager();
+            if (shapeManager .HasShapeEntry(uid.toStdString())) {
+                auto objs = shapeManager .GetIObjectsFromShapeName(uid.toStdString());
                 for (auto& obj : objs) {
                     myScene->getContext()->Remove(obj, Standard_False);
                 }
