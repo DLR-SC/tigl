@@ -244,24 +244,18 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
                 }
                 auto paramsVec = computeParams(occPoints, paramsMap, 0.5);
 
-                // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
-                // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
-
                 CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
 
-                LOG(WARNING) << "I am approximated" << std::endl;
                 spline = approxResult.curve;
                 errApproxCalc = approxResult.error;
-                LOG(WARNING) << "#Poles: " << spline->NbPoles();
-                LOG(WARNING) << "#Knots: " << spline->NbKnots();
 
-                LOG(WARNING) << "The profile with uID '" << GetUID() << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+                LOG(WARNING) << "The profile with uID '" << GetUID() << "' is created by approximating the point list using " << spline->NbPoles() << " poles. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
             }
             else if (approxSettings->GetMaximumError_choice2()) {
                 throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: 'Max Error' open for implementation");
             }
             else
-                throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: Invalid Definition of Approximation Settings");
+                throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: Invalid definition of approximationSettings");
         }
         else {
             // Here, the B-spline is reparameterized based on the CPACS profile after setting it up at first for accuracy reasons

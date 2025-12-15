@@ -286,11 +286,6 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
         }
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
 
-        LOG(WARNING) << "SURFACE: Knots u dir: " << surface->NbUKnots();
-        LOG(WARNING) << "SURFACE: Knots v dir: " << surface->NbVKnots();
-        LOG(WARNING) << "SURFACE: Poles u dir: " << surface->NbUPoles();
-        LOG(WARNING) << "SURFACE: Poles v dir: " << surface->NbVPoles();
-
         // remember the profile parameters used for the skinning
         if (vparams.size()==0) {
             vparams = surfaceSkinner.GetParameters();

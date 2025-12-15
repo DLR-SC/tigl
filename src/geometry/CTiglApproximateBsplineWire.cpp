@@ -131,21 +131,19 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
             approx.InterpolatePoint(hpoints->Length()-1);
         }
 
-        // Potentially use `CTiglBSplineApproxInterp::FitCurveOptimal`? Do we want to allow 'optimizing' the parameters?
-        // IDEA: Choice for error calc could be also implemented in CPACS? Guess, thats no big deal... -> More user flexibility
         CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
-        LOG(WARNING) << "I am approximated" << std::endl;
+
         hcurve = approxResult.curve;
         errApproxCalc = approxResult.error;
-        LOG(WARNING) << "#Poles: " << hcurve->NbPoles();
-        LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+
+        LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list using " << hcurve->NbPoles() << " poles. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
     }
     else if (std::holds_alternative<double>(m_approximationSettings)) {
         double maxErrorApprox = std::get<double>(m_approximationSettings);
         throw CTiglError("CTiglApproximateBsplineWire::BuildWire: 'Max Error' open for implementation");
     }
     else {
-        throw CTiglError("Invalid defintion of approximationSettings");
+        throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Invalid defintion of approximationSettings");
     }
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
