@@ -18,10 +18,96 @@
       </property>
      </widget>
     </item>
-  <item>
-   <widget class="QLabel" name="labelTransparency">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_transparency">
+      <item>
+       <widget class="QLabel" name="labelTransparency">
+        <property name="text">
+         <string>Transparency:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="transparencySlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_rendering">
+      <item>
+       <widget class="QLabel" name="labelRenderingMode">
+        <property name="text">
+         <string>Rendering mode:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="renderingModeCombo">
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Color:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonColorChoser">
+        <property name="sizePolicy">
+        </property>
+        <property name="text">
+         <string>choose</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_material">
+      <item>
+       <widget class="QLabel" name="labelMaterial">
+        <property name="text">
+         <string>Material:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="materialCombo">
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+      <item>
+   <widget class="QLabel" name="labelDraw">
     <property name="text">
-    <string>Transparency:</string>
+    <string>Draw Options:</string>
     </property>
     <property name="visible">
     <bool>false</bool>
@@ -29,54 +115,7 @@
    </widget>
   </item>
     <item>
-     <widget class="QSlider" name="transparencySlider">
-      <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="visible">
-        <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-  <item>
-   <widget class="QLabel" name="labelRenderingMode">
-    <property name="text">
-    <string>Rendering mode:</string>
-    </property>
-    <property name="visible">
-    <bool>false</bool>
-    </property>
-   </widget>
-  </item>
-    <item>
-     <widget class="QComboBox" name="renderingModeCombo">
-      <property name="visible">
-        <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="colorButton">
-      <property name="text">
-        <string>Choose Color</string>
-      </property>
-      <property name="visible">
-        <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-  <item>
-   <widget class="QLabel" name="labelMaterial">
-    <property name="text">
-    <string>Material:</string>
-    </property>
-    <property name="visible">
-    <bool>false</bool>
-    </property>
-   </widget>
-  </item>
-    <item>
-      <widget class="QComboBox" name="materialCombo">
+      <widget class="QComboBox" name="drawOptionsCombo">
       <property name="visible">
         <bool>false</bool>
       </property>

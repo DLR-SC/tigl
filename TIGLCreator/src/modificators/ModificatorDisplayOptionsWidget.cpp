@@ -31,6 +31,7 @@
 #include "../TIGLCreatorContext.h"
 #include "ui_ModificatorDisplayOptionsWidget.h"
 
+#define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
 ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent)
     : CpacsEditorBase(parent)
@@ -41,7 +42,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     infoLabel = ui->infoLabel;
     transparencySlider = ui->transparencySlider;
     renderingModeCombo = ui->renderingModeCombo;
-    colorButton = ui->colorButton;
+    buttonColorChoser = ui->buttonColorChoser;
     materialCombo = ui->materialCombo;
 
     renderingModeCombo->addItem("Wireframe", 0);
@@ -53,13 +54,10 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     }
 
     // interactions
-    connect(colorButton, &QPushButton::clicked, this, &ModificatorDisplayOptionsWidget::onColorChosen);
-
-    // immediate apply connections (display-only)
-    connect(transparencySlider, &QSlider::valueChanged, this, &ModificatorDisplayOptionsWidget::onTransparencyChanged);
-    // use idClicked (not deprecated) instead of buttonClicked
-    connect(renderingModeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ModificatorDisplayOptionsWidget::onRenderingModeChanged);
-    connect(materialCombo, &QComboBox::currentTextChanged, this, &ModificatorDisplayOptionsWidget::onMaterialChanged);
+    connect(transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
+    connect(renderingModeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRenderingModeChanged(int)));
+    connect(materialCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onMaterialChanged(const QString &)));
+    connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
@@ -72,15 +70,15 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     currentContext = context;
 
     if (!item) {
-        // No item selected: show info text and hide interactive controls
-        infoLabel->setText(tr("Please select an editable element from the CPACS Tree."));
+        // infoLabel->setText(tr("Please select an editable element from the CPACS Tree."));
 
         if (ui) {
+            ui->infoLabel->setVisible(true);
             ui->labelTransparency->setVisible(false);
             ui->transparencySlider->setVisible(false);
             ui->labelRenderingMode->setVisible(false);
             ui->renderingModeCombo->setVisible(false);
-            ui->colorButton->setVisible(false);
+            ui->buttonColorChoser->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
         }
@@ -89,11 +87,12 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     }
 
     if (ui) {
+        ui->infoLabel->setVisible(false);
         ui->labelTransparency->setVisible(true);
         ui->transparencySlider->setVisible(true);
         ui->labelRenderingMode->setVisible(true);
         ui->renderingModeCombo->setVisible(true);
-        ui->colorButton->setVisible(true);
+        ui->buttonColorChoser->setVisible(true);
         ui->labelMaterial->setVisible(true);
         ui->materialCombo->setVisible(true);
     }
@@ -110,21 +109,24 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
         auto obj = objs[0];
         Standard_Real transparency;
         int displayMode;
+        QColor color;
 
         if (!obj.IsNull()) {
             Handle(Prs3d_Drawer) drawer = obj->Attributes();
             transparency = drawer->Transparency(); 
             displayMode = drawer->DisplayMode();
+            Quantity_Color qc = drawer->Color();
+            color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
 
         }
         transparencySlider->setValue(transparency*100);
         renderingModeCombo->setCurrentIndex(displayMode);
+        updateColorButton(color);
 
     }
 
     materialCombo->setCurrentIndex(0);
     
-    infoLabel->setText(uid.isEmpty() ? tr("Group: %1").arg(type) : tr("Item: %1 (%2)").arg(type, uid));
 
 }
 
@@ -151,7 +153,7 @@ bool ModificatorDisplayOptionsWidget::apply()
                 }
                 transparency = transparencySlider ? transparencySlider->value()*0.01 : transparency;
 
-                QColor qc = colorButton ? colorButton->palette().color(QPalette::Button) : QColor();
+                QColor qc = buttonColorChoser ? buttonColorChoser->palette().color(QPalette::Button) : QColor();
                 Quantity_Color qcolor;
                 bool haveColor = false;
                 if (qc.isValid()) {
@@ -276,6 +278,7 @@ void ModificatorDisplayOptionsWidget::onColorChosen()
     const QString uid = QString::fromStdString(currentItem->getUid());
     auto &sm = currentContext->GetShapeManager();
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+
     if (!objs.empty()) {
         auto obj = objs[0];
         if (!obj.IsNull()) {
@@ -285,30 +288,32 @@ void ModificatorDisplayOptionsWidget::onColorChosen()
         }
     }
     
-    
-
-    QColor c = QColorDialog::getColor(initial, this);
-    if (!c.isValid()) {
+    QColor color = QColorDialog::getColor(initial, this);
+    if (!color.isValid()) {
         return;
     }
-
 
     if (uid.isEmpty()) {
         return;
     }
-    if (!sm.HasShapeEntry(uid.toStdString()) && currentDoc) {
-        currentDoc->drawComponentByUID(uid);
-    }
-    Quantity_Color qcolor(c.redF(), c.greenF(), c.blueF(), Quantity_TOC_RGB);
-    auto ctx = currentContext->getContext();
+
+    Quantity_Color qcolor(color.redF(), color.greenF(), color.blueF(), Quantity_TOC_RGB);
+    auto context = currentContext->getContext();
     for (auto &obj : objs) {
-        if (obj.IsNull()) {
-            continue;
-        }
-        if (!ctx.IsNull()) {
-            ctx->SetColor(obj, qcolor, Standard_True);
+        if (!context.IsNull()) {
+            context->SetColor(obj, qcolor, Standard_True);
         }
     }
+    if (!currentContext->getContext().IsNull()) {
+        currentContext->updateViewer();
+    }
+    updateColorButton(color);
+}
+
+void ModificatorDisplayOptionsWidget::updateColorButton(QColor color)
+{
+    QString qss = QString(BTN_STYLE).arg(color.name(), "buttonColorChoser");
+    buttonColorChoser->setStyleSheet(qss);
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }
@@ -332,13 +337,13 @@ void ModificatorDisplayOptionsWidget::onMaterialChanged(const QString &mat)
     if (it == tiglMaterials::materialMap.end()) {
         return;
     }
-    auto ctx = currentContext->getContext();
+    auto context = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-        if (!ctx.IsNull()) {
-            ctx->SetMaterial(obj, it->second, Standard_True);
+        if (!context.IsNull()) {
+            context->SetMaterial(obj, it->second, Standard_True);
         }
     }
     if (!currentContext->getContext().IsNull()) {

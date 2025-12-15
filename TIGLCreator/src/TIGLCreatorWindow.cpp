@@ -175,36 +175,13 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
-    // remember the last selected item from the tree so we can restore the
-    // parameter editor even if focus/selection changes when switching tabs
-    connect(treeWidget, &CPACSTreeWidget::newSelectedTreeItem, this, &TIGLCreatorWindow::onTreeSelectionChanged);
-
-    // When the Parameters tab is selected in the editor, re-dispatch the last
-    // selected CPACS tree item so the parameter editor is restored without
-    // requiring the user to reselect the element.
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::parametersTabRequested, this, &TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited);
-    // When the Display tab is selected, populate the display options widget
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::displayOptionsRequested, this, &TIGLCreatorWindow::onDisplayOptionsRequested);
-    // Forward requests from the display options widget to the viewer/context
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::setTransparencyRequested, this, [this](int v){ if (myScene) myScene->setTransparency(v); });
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::setRenderingModeRequested, this, [this](int mode){
-        if (!myScene) return;
-        if (mode == 0) myScene->setObjectsWireframe();
-        else if (mode == 1) myScene->setObjectsShading();
-        else if (mode == 3) {
-            // Ask user for texture file
-            QString fileName = QFileDialog::getOpenFileName(nullptr, tr("Choose texture image"), QString(), tr("Images (*.png *.jpeg *.jpg *.bmp);"));
-            if (!fileName.isEmpty()) myScene->setObjectsTexture(fileName);
-        }
-    });
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::setColorRequested, this, [this](const QColor &c){ if (myScene) myScene->setObjectsColor(c); });
-    connect(modificatorContainerWidget, &ModificatorContainerWidget::setMaterialRequested, this, [this](const QString &m){
-        if (!myScene) return;
-        auto it = tiglMaterials::materialMap.find(m);
-        if (it != tiglMaterials::materialMap.end()) {
-            myScene->setObjectsMaterial(it->second);
-        }
-    });
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this, SLOT(onTreeSelectionChanged(cpcr::CPACSTreeItem*)));
+    connect(modificatorContainerWidget, SIGNAL(parametersTabRequested()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
+    connect(modificatorContainerWidget, SIGNAL(displayOptionsRequested()), this, SLOT(onDisplayOptionsRequested()));
+    connect(modificatorContainerWidget, SIGNAL(setTransparencyRequested(int)), this, SLOT(onSetTransparencyRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setRenderingModeRequested(int)), this, SLOT(onSetRenderingModeRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setColorRequested(const QColor&)), this, SLOT(onSetColorRequested(const QColor&)));
+    connect(modificatorContainerWidget, SIGNAL(setMaterialRequested(const QString&)), this, SLOT(onSetMaterialRequested(const QString&)));
 
     // connect model visibility changes to the scene
     connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
@@ -1408,12 +1385,11 @@ void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
     modificatorModel->dispatch(item);
 }
 
-// NOTE: this slot is connected to CPACSTreeWidget::newSelectedTreeItem and
-// receives the cpcr::CPACSTreeItem* parameter so we can remember group
-// selections that don't expose a UID.
 void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
 {
-    if (!treeWidget) return;
+    if (!treeWidget) {
+        return;
+    }
     lastSelectedTreeUID = treeWidget->getSelectedUID();
     lastSelectedTreeItem = item;
 }
@@ -1439,4 +1415,43 @@ void TIGLCreatorWindow::onDisplayOptionsRequested()
     }
 
     modificatorContainerWidget->setDisplayOptionsFromItem(item, cpacsConfiguration, myScene);
+}
+
+void TIGLCreatorWindow::onSetTransparencyRequested(int v)
+{
+    if (myScene) {
+        myScene->setTransparency(v);
+    }
+}
+
+void TIGLCreatorWindow::onSetRenderingModeRequested(int mode)
+{
+    if (!myScene) {
+        return;
+    }
+    if (mode == 0) {
+        myScene->setObjectsWireframe();
+    }
+    else if (mode == 1) {
+        myScene->setObjectsShading();
+    }
+
+}
+
+void TIGLCreatorWindow::onSetColorRequested(const QColor &c)
+{
+    if (myScene){
+        myScene->setObjectsColor(c);
+    }
+}
+
+void TIGLCreatorWindow::onSetMaterialRequested(const QString &m)
+{
+    if (!myScene) {
+        return;
+    }
+    auto it = tiglMaterials::materialMap.find(m);
+    if (it != tiglMaterials::materialMap.end()) {
+        myScene->setObjectsMaterial(it->second);
+    }
 }

@@ -123,6 +123,11 @@ private slots:
     void onComponentVisibilityChanged(const QString& uid, bool visible);
     void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
     void onDisplayOptionsRequested();
+    // Slots to receive forwarded requests from the modificator container
+    void onSetTransparencyRequested(int v);
+    void onSetRenderingModeRequested(int mode);
+    void onSetColorRequested(const QColor &c);
+    void onSetMaterialRequested(const QString &m);
 
 private:
     void connectSignals();

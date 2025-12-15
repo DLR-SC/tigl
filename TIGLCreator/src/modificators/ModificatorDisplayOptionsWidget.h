@@ -62,11 +62,14 @@ signals:
     void setMaterialRequested(const QString& material);
 
 private:
+
+    void updateColorButton(QColor color);
+
     Ui::ModificatorDisplayOptionsWidget* ui{nullptr};
     QLabel* infoLabel{nullptr};
     QSlider* transparencySlider{nullptr};
     QComboBox* renderingModeCombo{nullptr};
-    QPushButton* colorButton{nullptr};
+    QPushButton* buttonColorChoser{nullptr};
     QComboBox* materialCombo{nullptr};
 
     cpcr::CPACSTreeItem* currentItem{nullptr};

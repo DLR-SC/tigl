@@ -219,17 +219,10 @@ void ModificatorContainerWidget::setDisplayOptionsModificator()
 void ModificatorContainerWidget::onEditorTabChanged(int idx)
 {
     if (idx == 1) {
-        // show display options
-        // notify the main window so it can populate the display options based
-        // on the current selection before showing the widget
         emit displayOptionsRequested();
         setDisplayOptionsModificator();
     }
     else if (idx == 0) {
-        // when returning to Parameters tab, first reset to the no-interface
-        // state so widgets (apply/cancel etc.) are consistent while the
-        // main window re-dispatches the last selected item. Then request
-        // re-dispatch of the last selected item.
         setNoInterfaceWidget();
         emit parametersTabRequested();
     }
