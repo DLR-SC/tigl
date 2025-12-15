@@ -1126,7 +1126,11 @@ Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
 
     const std::string uid = item->getUid();
     if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
-        f |= Qt::ItemIsUserCheckable;
+        tigl::ITiglGeometricComponent& comp = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid);
+        PNamedShape loft = comp.GetLoft();
+        if (loft) {
+            f |= Qt::ItemIsUserCheckable;
+        }
     }
 
     return f;
