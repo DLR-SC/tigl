@@ -43,16 +43,14 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetWire(PNamedShape wingShap
     CTiglControlSurfaceBorderCoordinateSystem coords = GetCoordinateSystem(upDir);
     CControlSurfaceBorderBuilder builder(coords, wingShape->Shape());
 
-
-
     TopoDS_Wire wire;
     if (getXsiLE() < 1e-3) {
         wire = builder.wholeWingBorder();
     }
     else if (GetLeadingEdgeShape().is_initialized()) {
         wire = builder.borderWithLEShape(GetLeadingEdgeShape()->GetRelHeightLE(), 1.0,
-                                          GetLeadingEdgeShape()->GetXsiUpperSkin(),
-                                          GetLeadingEdgeShape()->GetXsiLowerSkin());
+                                         GetLeadingEdgeShape()->GetXsiUpperSkin(),
+                                         GetLeadingEdgeShape()->GetXsiLowerSkin());
     }
     else if (GetInnerShape().is_initialized()) {
         throw CTiglError("Trailing Edge Device with InnerShape not yet implemented");
@@ -78,12 +76,13 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetWire(PNamedShape wingShap
     return wire;
 }
 
-TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlSurfaceBorderCoordinateSystem& coords) const
+TopoDS_Wire
+CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlSurfaceBorderCoordinateSystem& coords) const
 {
     assert(GetAirfoil().is_initialized());
 
     CCPACSWingProfile& profile = uidMgr().ResolveObject<CCPACSWingProfile>(GetAirfoil()->GetAirfoilUID());
-    TopoDS_Wire w = profile.GetWire();
+    TopoDS_Wire w              = profile.GetWire();
 
     // scale
     CTiglTransformation scale;
@@ -92,7 +91,7 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlS
     // bring the wire into the coordinate system of
     // the airfoil by swapping z with y
     gp_Trsf trafo;
-    trafo.SetTransformation(gp_Ax3(gp_Pnt(0,0,0), gp_Vec(0,-1,0), gp_Vec(1,0,0)));
+    trafo.SetTransformation(gp_Ax3(gp_Pnt(0, 0, 0), gp_Vec(0, -1, 0), gp_Vec(1, 0, 0)));
     CTiglTransformation flipZY(trafo);
 
     // put the airfoil to the correct place
@@ -107,13 +106,14 @@ TopoDS_Wire CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlS
     return w;
 }
 
-CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceBorderTrailingEdge::GetCoordinateSystem(gp_Vec upDir) const
+CTiglControlSurfaceBorderCoordinateSystem
+CCPACSControlSurfaceBorderTrailingEdge::GetCoordinateSystem(gp_Vec upDir) const
 {
     const auto& segment = ComponentSegment(*this);
-    auto& etaLE = GetEtaLE();
-    auto& etaTE = GetEtaTE().is_initialized()? GetEtaTE().value() : GetEtaLE();
-    gp_Pnt pLE = segment.GetPoint(transformEtaToCSOrTed(etaLE, *m_uidMgr), getXsiLE());
-    gp_Pnt pTE = segment.GetPoint(transformEtaToCSOrTed(etaTE, *m_uidMgr), getXsiTE());
+    auto& etaLE         = GetEtaLE();
+    auto& etaTE         = GetEtaTE().is_initialized() ? GetEtaTE().value() : GetEtaLE();
+    gp_Pnt pLE          = segment.GetPoint(transformEtaToCSOrTed(etaLE, *m_uidMgr), getXsiLE());
+    gp_Pnt pTE          = segment.GetPoint(transformEtaToCSOrTed(etaTE, *m_uidMgr), getXsiTE());
 
     CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
     return coords;
@@ -157,7 +157,7 @@ double CCPACSControlSurfaceBorderTrailingEdge::getXsiTE() const
     return 1.0;
 }
 
-const CTiglUIDManager &CCPACSControlSurfaceBorderTrailingEdge::uidMgr() const
+const CTiglUIDManager& CCPACSControlSurfaceBorderTrailingEdge::uidMgr() const
 {
     if (GetParent() && GetParent()->GetParent()) {
         return GetParent()->GetParent()->GetUIDManager();
