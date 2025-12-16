@@ -29,6 +29,7 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSWingCellPositionSpanwise;
+class CCPACSControlSurfaceBorderLeadingEdge;
 class CCPACSControlSurfaceBorderTrailingEdge;
 
 namespace generated
@@ -43,6 +44,7 @@ namespace generated
     // This class is used in:
     // CPACSCellPositioningSpanwise
     // CPACSControlSurfaceAirfoil
+    // CPACSControlSurfaceBorderLeadingEdge
     // CPACSControlSurfaceBorderTrailingEdge
     // CPACSControlSurfaceSkinCutOutBorder
     // CPACSControlSurfaceTrackType
@@ -60,6 +62,7 @@ namespace generated
     public:
         TIGL_EXPORT CPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceAirfoil* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSEtaIsoLine(CPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
@@ -78,7 +81,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -88,7 +91,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
+            static_assert(std::is_same<P, CCPACSWingCellPositionSpanwise>::value || std::is_same<P, CPACSControlSurfaceAirfoil>::value || std::is_same<P, CCPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value || std::is_same<P, CPACSControlSurfaceSkinCutOutBorder>::value || std::is_same<P, CPACSControlSurfaceTrackType>::value || std::is_same<P, CPACSCutOutProfile>::value || std::is_same<P, CPACSLandingGearSupportBeamPosition>::value || std::is_same<P, CPACSSparCell>::value, "template argument for P is not a parent class of CPACSEtaIsoLine");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

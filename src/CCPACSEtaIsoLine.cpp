@@ -19,6 +19,7 @@
 #include "CCPACSWingCellPositionSpanwise.h"
 #include "generated/CPACSControlSurfaceAirfoil.h"
 #include "CCPACSControlSurfaceBorderTrailingEdge.h"
+#include "CCPACSControlSurfaceBorderLeadingEdge.h"
 #include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
 #include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSCutOutProfile.h"
@@ -37,6 +38,11 @@ CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent, CTiglUID
 }
 
 CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSEtaIsoLine(parent, uidMgr)
+{
+}
+
+CCPACSEtaIsoLine::CCPACSEtaIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSEtaIsoLine(parent, uidMgr)
 {
 }

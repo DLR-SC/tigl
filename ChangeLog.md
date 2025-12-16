@@ -2,8 +2,10 @@ Changelog
 =========
 
 Changes since last release
---------------------------
-- General changes
+----------------
+2025/09/26
+-General changes
+  - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
 
