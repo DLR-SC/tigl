@@ -25,6 +25,9 @@
 
 #include "CCPACSCurvePointListXYZ.h"
 #include "CCPACSCurveParamPointMap.h"
+#include "CTiglBSplineApproxInterp.h"
+#include "CTiglApproximateBsplineWire.h"
+#include "ITiglWireAlgorithm.h"
 
 TEST(WingProfileBugs, getPoint1)
 {
@@ -79,4 +82,50 @@ TEST(WingProfileParams, GetParamMap)
 
     EXPECT_TRUE(ArraysMatch({30}, curve.GetParameterMap()->GetPointIndexAsVector()));
     EXPECT_TRUE(ArraysMatch({-0.2}, curve.GetParameterMap()->GetParamAsVector()));
+}
+
+TEST(WingProfileApproximation, ComputeApproximatedProfile)
+{
+    TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
+    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+
+    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[1]/pointList"));
+
+    // Get points
+    auto xCoords = curve.GetX().AsVector();
+    auto zCoords = curve.GetZ().AsVector();
+
+    // Get profile option
+    auto& approximationSettings = curve.GetApproximationSettings();
+    int nrControlPoints;
+
+    ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
+    ASSERT_TRUE(nrControlPoints == 10);
+    ASSERT_TRUE(xCoords.size() == zCoords.size());
+
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, xCoords.size());
+    tigl::ITiglWireAlgorithm::CPointContainer cpoints;
+    for (int j = 0; j < xCoords.size(); j++) {
+        gp_Pnt pnt(xCoords[j], 0., zCoords[j]);
+        hpoints->SetValue(j + 1, pnt);
+        cpoints.push_back(pnt);
+    }
+
+    tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, false);
+    // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+    approx.InterpolatePoint(0);
+    approx.InterpolatePoint(hpoints->Length()-1);
+
+    // Compare two different ways to compute the approximation error
+    tigl::CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
+    ASSERT_NEAR(approxResult.error, 0.00982994, 1e-7);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 10);
+
+    approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorMax);
+    ASSERT_NEAR(approxResult.error, 0.0234777, 1e-7);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 10);
+
+    // Error should be thrown, because nrControlPoints (=2) is not large enough
+    tigl::CTiglApproximateBsplineWire approxDummy(2, "DummyUID", true);
+    ASSERT_THROW(approxDummy.BuildWire(cpoints, true), tigl::CTiglError);
 }

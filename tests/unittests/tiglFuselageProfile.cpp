@@ -21,6 +21,8 @@
 #include "tixi.h"
 
 #include "CCPACSConfigurationManager.h"
+#include "CTiglBSplineApproxInterp.h"
+#include "ITiglWireAlgorithm.h"
 
 TEST(FuselageProfile, getHeight_getWidth)
 {
@@ -65,4 +67,49 @@ TEST(FuselageProfile, getHeight_getWidth)
 
     EXPECT_NEAR(width, 0.92, tolerance);
     EXPECT_NEAR(height, 2.3, tolerance);
+}
+
+TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
+{
+    TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
+    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+
+    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList"));
+
+    // Get points
+    auto yCoords = curve.GetY().AsVector();
+    auto zCoords = curve.GetZ().AsVector();
+
+    // Get profile options
+    auto paramsMap = curve.GetParamsAsMap();
+    auto kinks = curve.GetKinksAsVector();
+    auto& approximationSettings = curve.GetApproximationSettings();
+    int nrControlPoints;
+
+    ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
+    ASSERT_TRUE(nrControlPoints == 12);
+    ASSERT_TRUE(yCoords.size() == zCoords.size());
+
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, yCoords.size());
+    tigl::ITiglWireAlgorithm::CPointContainer cpoints;
+    for (int j = 0; j < yCoords.size(); j++) {
+        gp_Pnt pnt(0., yCoords[j], zCoords[j]);
+        hpoints->SetValue(j + 1, pnt);
+    }
+
+    // Profile contains one kink to test for more robustness
+    tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, true);
+    for(auto idx : kinks) {
+        approx.InterpolatePoint(idx, true);
+    }
+    auto paramsVec = tigl::computeParams(hpoints, paramsMap, 0.5);
+
+    // Compare two different ways to compute the approximation error
+    tigl::CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
+    ASSERT_NEAR(approxResult.error, 0.0167852, 1e-7);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 15);
+
+    approxResult = approx.FitCurve(paramsVec, calcPointVecErrorMax);
+    ASSERT_NEAR(approxResult.error, 0.0593323, 1e-7);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 15);
 }

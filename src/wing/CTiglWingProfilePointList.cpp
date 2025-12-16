@@ -92,7 +92,6 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
     , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
-    // TODO: Check on correct type of input (e.g. print warning if choice1 selected and double is entered -> truncate value to int)
     // Profile points are approximated, not interpolated
     if (cpacsPointList.GetApproximationSettings()) {
         if (cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1()) {
