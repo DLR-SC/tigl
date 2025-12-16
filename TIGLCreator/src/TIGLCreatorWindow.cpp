@@ -332,6 +332,7 @@ void TIGLCreatorWindow::closeConfiguration()
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
+    getScene()->GetShapeManager().clear();
 }
 
 void TIGLCreatorWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -436,7 +437,7 @@ void TIGLCreatorWindow::reopenFile()
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
         getScene()->deleteAllObjects();
         for (const auto& name : displayedShapeNames) {
-            cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
+                    cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
         }
         treeWidget->refresh();
     }
