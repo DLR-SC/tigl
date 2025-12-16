@@ -33,6 +33,16 @@
        </property>
       </widget>
      </item>
+    <item>
+     <widget class="QCheckBox" name="sceneGraphCheckBox">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Limit the CPACS tree to elements available in the scene graph (only checkable UIDs).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Scene Graph</string>
+      </property>
+     </widget>
+    </item>
     </layout>
    </item>
    <item>
