@@ -787,8 +787,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     if (geometricComp) {
                         PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                         if (mirroredLoft) {
-                            app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
-                            auto shape = app->getScene()->getCurrentShape();
+                            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
                             app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
                         }
                     }
@@ -2478,8 +2477,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 
         // Draw rotor disk
         TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
-        app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
-        auto shape = app->getScene()->getCurrentShape();
+        auto shape = app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
         app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
 
         if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -2487,8 +2485,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
         }
 
         // Draw mirrored rotor
-        app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
-        shape = app->getScene()->getCurrentShape();
+        shape = app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
         app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
 
         // Draw mirrored rotor disk
@@ -2507,8 +2504,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
         BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
         const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
 
-        app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
-        shape = app->getScene()->getCurrentShape();
+        shape = app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
         app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
     }
     else {
