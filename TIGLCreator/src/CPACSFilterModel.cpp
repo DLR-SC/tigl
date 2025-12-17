@@ -29,7 +29,7 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
     searchPattern.setPattern("");
 
     expertView = false;
-    sceneGraph = false;
+    geometryNodes = false;
 }
 
 void CPACSFilterModel::setModel(ModificatorModel *model)
@@ -61,7 +61,7 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
         return false;
     }
 
-    if (sceneGraph) {
+    if (geometryNodes) {
         if (idx0.isValid()) {
             if (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable) {
                 return true;
@@ -107,9 +107,9 @@ void CPACSFilterModel::setExpertView(bool value)
     invalidateFilter();
 }
 
-void CPACSFilterModel::setSceneGraph(bool value)
+void CPACSFilterModel::setgeometryNodes(bool value)
 {
-    sceneGraph = value;
+    geometryNodes = value;
     invalidateFilter();
 }
 

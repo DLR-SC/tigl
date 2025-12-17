@@ -44,8 +44,8 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     // connect the expert check box to its effect
     connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView()));
 
-    // connect the scene graph check box to its effect
-    connect(ui->sceneGraphCheckBox, SIGNAL(toggled(bool)), this, SLOT(setSceneGraph()));
+    // connect the Geometry Nodes check box to its effect
+    connect(ui->geometryNodesCheckBox, SIGNAL(toggled(bool)), this, SLOT(setgeometryNodes()));
 
 
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
@@ -115,9 +115,9 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
     bool blockValue2 = ui->expertViewCheckBox->signalsBlocked();
     ui->expertViewCheckBox->blockSignals(true);
     bool blockValue3 = false;
-    if (ui->sceneGraphCheckBox) {
-        blockValue3 = ui->sceneGraphCheckBox->signalsBlocked();
-        ui->sceneGraphCheckBox->blockSignals(true);
+    if (ui->geometryNodesCheckBox) {
+        blockValue3 = ui->geometryNodesCheckBox->signalsBlocked();
+        ui->geometryNodesCheckBox->blockSignals(true);
     }
 
     if (filterModel->isValid()) {
@@ -131,8 +131,8 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
 
     ui->searchLineEdit->blockSignals(blockValue1);
     ui->expertViewCheckBox->blockSignals(blockValue2);
-    if (ui->sceneGraphCheckBox) {
-        ui->sceneGraphCheckBox->blockSignals(blockValue3);
+    if (ui->geometryNodesCheckBox) {
+        ui->geometryNodesCheckBox->blockSignals(blockValue3);
     }
 }
 
@@ -179,21 +179,21 @@ void CPACSTreeWidget::setExpertView()
     selectionModel->blockSignals(blockValue);
 }
 
-void CPACSTreeWidget::setSceneGraph()
+void CPACSTreeWidget::setgeometryNodes()
 {
     if (filterModel->sourceModel() == nullptr) {
         return;
     }
     bool sceneMode = false;
-    if (ui->sceneGraphCheckBox) {
-        sceneMode = ui->sceneGraphCheckBox->isChecked();
+    if (ui->geometryNodesCheckBox) {
+        sceneMode = ui->geometryNodesCheckBox->isChecked();
     }
 
     // to avoid that on selectionChanged is called during the transformation of the tree
     bool blockValue = selectionModel->signalsBlocked();
     selectionModel->blockSignals(true);
 
-    filterModel->setSceneGraph(sceneMode);
+    filterModel->setgeometryNodes(sceneMode);
 
     selectionModel->blockSignals(blockValue);
 }
