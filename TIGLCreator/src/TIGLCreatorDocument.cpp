@@ -918,7 +918,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
 void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
 {
     tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);
-
+    
     std::vector<TiglGeometricComponentType> shapesToDraw;
     shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
     shapesToDraw.push_back(TIGL_COMPONENT_WING);
@@ -2471,36 +2471,53 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 {
     START_COMMAND()
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(uid.toStdString());
+    if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
 
-    // Draw segment loft
-    app->getScene()->displayShape(rotor.GetLoft(), true, Quantity_NOC_RotorCol);
+        // Draw segment loft
+        app->getScene()->displayShape(rotor.GetLoft(), true, Quantity_NOC_RotorCol);
 
-    // Draw rotor disk
-    TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
-    app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
+        // Draw rotor disk
+        TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
+        app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
+        auto shape = app->getScene()->getCurrentShape();
+        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
 
-    if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-        return;
-    }
+        if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+            return;
+        }
 
-    // Draw mirrored rotor
-    app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
-    // Draw mirrored rotor disk
-    gp_Ax2 mirrorPlane;
-    if (rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 1., 0.));
+        // Draw mirrored rotor
+        app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
+        shape = app->getScene()->getCurrentShape();
+        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+
+        // Draw mirrored rotor disk
+        gp_Ax2 mirrorPlane;
+        if (rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 1., 0.));
+        }
+        else if (rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 0., 1.));
+        }
+        else if (rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE) {
+            mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1., 0., 0.));
+        }
+        gp_Trsf theTransformation;
+        theTransformation.SetMirror(mirrorPlane);
+        BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
+        const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
+
+        app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
+        shape = app->getScene()->getCurrentShape();
+        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
     }
-    else if (rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0., 0., 1.));
+    else {
+        IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+        for (auto& obj : objects) {
+            app->getScene()->getContext()->Display(obj, Standard_False);
+        }
+        app->getScene()->getViewer()->Update();
     }
-    else if (rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE) {
-        mirrorPlane = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1., 0., 0.));
-    }
-    gp_Trsf theTransformation;
-    theTransformation.SetMirror(mirrorPlane);
-    BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
-    const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
-    app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
 }
 
 void TIGLCreatorDocument::drawRotor()

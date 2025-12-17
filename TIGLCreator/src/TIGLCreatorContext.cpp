@@ -364,6 +364,7 @@ void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    currentShape = shape;
 }
 
 // a small helper when we just want to display a shape
