@@ -489,8 +489,8 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     CTiglApproxResult result;
     result.curve = new Geom_BSplineCurve(poles, knots, mults, m_degree, false);
 
-    // Create gp_Pnt vectors of the exact points and the evaluations of the created approximation function
-    // to compute the approximation error
+    // Create gp_Pnt vectors containing the exact points and their projections on the created
+    // approximation function, respectively, to compute the approximation error
     gp_Pnt curvePnt;
     std::vector<gp_Pnt> pnts;
     std::vector<gp_Pnt> curveEval;
@@ -501,7 +501,8 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
         pnts.push_back(m_pnts.Value(ipnt));
 
         double param = params[*it_idx];
-        curveEval.push_back(result.curve->Value(param));
+        double projectedParam = projectOnCurve(pnts.back(), result.curve, param).parameter;
+        curveEval.push_back(result.curve->Value(projectedParam));
     }
 
     result.error = calcErrorFct(pnts, curveEval);

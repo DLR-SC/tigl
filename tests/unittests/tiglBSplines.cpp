@@ -187,7 +187,7 @@ TEST_F(BSplineInterpolation, approxAndInterpolate)
     app.InterpolatePoint(100);
     tigl::CTiglApproxResult result = app.FitCurve(parms);
     // Value from different splinelib implementation
-    EXPECT_NEAR(0.01317089, result.error, 1e-5);
+    EXPECT_NEAR(0.00445120, result.error, 1e-5);
     EXPECT_NEAR(0.0, result.curve->Value(parms[0]).Distance(pnts.Value(1)), 1e-10);
     EXPECT_NEAR(0.0, result.curve->Value(parms[50]).Distance(pnts.Value(51)), 1e-10);
     EXPECT_NEAR(0.0, result.curve->Value(parms[100]).Distance(pnts.Value(101)), 1e-10);

@@ -106,10 +106,10 @@ TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
 
     // Compare two different ways to compute the approximation error
     tigl::CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
-    ASSERT_NEAR(approxResult.error, 0.0167852, 1e-7);
+    ASSERT_NEAR(approxResult.error, 0.012737449282103385, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 15);
 
     approxResult = approx.FitCurve(paramsVec, calcPointVecErrorMax);
-    ASSERT_NEAR(approxResult.error, 0.0593323, 1e-7);
+    ASSERT_NEAR(approxResult.error, 0.04210473367562604, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 15);
 }

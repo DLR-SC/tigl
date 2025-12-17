@@ -118,11 +118,11 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
 
     // Compare two different ways to compute the approximation error
     tigl::CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
-    ASSERT_NEAR(approxResult.error, 0.00982994, 1e-7);
+    ASSERT_NEAR(approxResult.error, 0.0061003427082530152, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 10);
 
     approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorMax);
-    ASSERT_NEAR(approxResult.error, 0.0234777, 1e-7);
+    ASSERT_NEAR(approxResult.error, 0.023468016076850805, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 10);
 
     // Error should be thrown, because nrControlPoints (=2) is not large enough
