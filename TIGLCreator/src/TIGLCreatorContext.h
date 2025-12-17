@@ -55,7 +55,6 @@ public:
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
-    Handle(AIS_InteractiveObject)&   getCurrentShape();
     Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
@@ -106,8 +105,8 @@ public:
     void removeShape( Handle(AIS_InteractiveObject) shape);
 
 public slots:
-    void displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
-    void displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    Handle(AIS_InteractiveObject) displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    Handle(AIS_InteractiveObject) displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
 
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
@@ -141,7 +140,6 @@ private:
 
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
-    Handle_AIS_InteractiveObject    currentShape;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;
