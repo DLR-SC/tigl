@@ -159,7 +159,7 @@ Handle(AIS_InteractiveContext)& TIGLCreatorContext::getContext()
 
 Handle(AIS_InteractiveObject)& TIGLCreatorContext::getCurrentShape()
 {
-    return currentshape;
+    return currentShape;
 }
 
 Handle(V3d_Viewer) TIGLCreatorContext::createViewer( const Standard_ExtString aName,
@@ -364,6 +364,7 @@ void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    currentShape = shape;
 }
 
 // a small helper when we just want to display a shape
@@ -410,7 +411,7 @@ void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateView
         }
     }
     GetShapeManager().addObject(pshape, shape);
-    currentshape = shape;
+    currentShape = shape;
 }
 
 // Displays a point on the screen

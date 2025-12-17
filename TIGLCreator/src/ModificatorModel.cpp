@@ -62,7 +62,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
-
+ 
     doc = newDoc;
     resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
@@ -1056,60 +1056,50 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
     std::vector<std::string> changedUIDs;
 
     // update visibility
-    auto updateVisibility = [&](cpcr::CPACSTreeItem* node) {
-        if (!node)
+    auto mark_as_changed = [&](cpcr::CPACSTreeItem* node) {
+        if (!node) {
             return;
+        }
         const std::string uid = node->getUid();
-        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))
+        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
             return;
+        }
 
         const QModelIndex idx = getIndex(node, 0);
-        if (idx.isValid())
+        if (idx.isValid()) {
             changedIdxs.push_back(idx);
+        }
         changedUIDs.push_back(uid);
     };
 
-    // Hide all children recursively if hiding a UID
+    // Hide all displayed children recursively if hiding a UID
     if (!visible) {
-        std::function<void(cpcr::CPACSTreeItem*)> updateRec;
-        updateRec = [&](cpcr::CPACSTreeItem* node) {
-            if (!node) return;
-            updateVisibility(node);
-            for (auto* child : node->getChildren())
-                updateRec(child);
+        std::function<void(cpcr::CPACSTreeItem*)> mark_recursive = [&](cpcr::CPACSTreeItem* node) {
+            if (!node) {
+                return; 
+            }
+            if (scene->GetShapeManager().GetVisibility(node->getUid())) {
+                mark_as_changed(node);
+            }
+            for (auto* child : node->getChildren()) {
+                mark_recursive(child);
+            }
         };
-        updateRec(item);
+        mark_recursive(item);
     }
     else {
-        // Apply to this item and its immediate children
-        updateVisibility(item);
-        for (auto* child : item->getChildren())
-            updateVisibility(child);
+        mark_as_changed(item);
     }
 
     // Notify views
-    for (const auto& idx : changedIdxs)
+    for (const auto& idx : changedIdxs) {
         emit dataChanged(idx, idx, {Qt::CheckStateRole});
+    }
 
-    // Queue visibility signals (deferred to avoid painting reentrancy)
-    std::vector<std::pair<QString, bool>> pending;
-        pending.reserve(changedUIDs.size());
-        for (const auto& uid : changedUIDs) {
-            QString q = QString::fromStdString(uid);
-            bool already = false;
-            for (const auto& p : pending) {
-                if (p.first == q) { already = true; break; }
-            }
-            if (!already) {
-                pending.emplace_back(q, visible);
-            }
-        }
-
-    QTimer::singleShot(0, this, [this, pending = std::move(pending)]() {
-        for (const auto& p : pending) {
-            emit componentVisibilityChanged(p.first, p.second);
-        }
-    });
+    for (const auto& uid : changedUIDs) {
+        QString quid = QString::fromStdString(uid);
+        emit componentVisibilityChanged(quid, visible);
+    }
 
     // Update parent aggregate states
     for (QModelIndex p = parent(index); p.isValid(); p = parent(p))
@@ -1136,7 +1126,14 @@ Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
 
     const std::string uid = item->getUid();
     if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
-        f |= Qt::ItemIsUserCheckable;
+        const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
+        auto it = shapes.find(uid);
+        if (it != shapes.end() && it->second != nullptr) {
+            tigl::ITiglGeometricComponent* comp = it->second;
+            if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                f |= Qt::ItemIsUserCheckable;
+            }
+        }
     }
 
     return f;

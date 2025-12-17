@@ -196,7 +196,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     setMinimumSize(160, 160);
 
-    (void)modificatorModel; // keep unused var warning away if any
 }
 
 
@@ -344,6 +343,7 @@ void TIGLCreatorWindow::closeConfiguration()
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
+    getScene()->GetShapeManager().clear();
 }
 
 void TIGLCreatorWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -444,11 +444,12 @@ void TIGLCreatorWindow::reopenFile()
     if (currentFile.suffix().toLower() == tr("xml")){
         std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
         getScene()->GetShapeManager().clear();
+        modificatorModel->setCPACSConfiguration(nullptr);
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
         getScene()->deleteAllObjects();
         for (const auto& name : displayedShapeNames) {
-            cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
+                    cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
         }
         treeWidget->refresh();
     }
@@ -1092,28 +1093,25 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
 
     try {
         // find interactive objects for the given uid
-        auto& shapeManager = myScene->GetShapeManager();
         if (visible) {
-                cpacsConfiguration->drawComponentByUID(uid);
+            cpacsConfiguration->drawComponentByUID(uid);
         }
         else {
-            if (myScene->GetShapeManager().HasShapeEntry(uid.toStdString())) {
-                auto objs = myScene->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+            auto& shapeManager = myScene->GetShapeManager();
+            if (shapeManager .HasShapeEntry(uid.toStdString())) {
+                auto objs = shapeManager .GetIObjectsFromShapeName(uid.toStdString());
                 for (auto& obj : objs) {
                     myScene->getContext()->Remove(obj, Standard_False);
                 }
             }
             else {
-                // TODO: Check if this can happen
-                auto objs = shapeManager.GetIObjectsFromShapeName(uid.toStdString());
-                for (auto& obj : objs) {
-                    myScene->getContext()->Remove(obj, Standard_False);
-                }
+                throw tigl::CTiglError("Component with UID " + uid.toStdString() + " not found in shape manager");
             }
         }
         myScene->getViewer()->Update();
     }
-    catch (...) {
+    catch (tigl::CTiglError& ) {
+        throw tigl::CTiglError("Error changing visibility of component with UID " + uid.toStdString());
     }
 }
 
