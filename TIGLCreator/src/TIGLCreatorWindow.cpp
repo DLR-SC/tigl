@@ -1359,11 +1359,6 @@ void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
     if (!modificatorModel) return;
     if (!treeWidget) return;
 
-    // Try to obtain the currently selected UID first. If the selected node
-    // is a group node (like "wings" or "fuselages"), it may have an empty
-    // UID. In that case, fall back to the lastSelectedTreeItem that we stored
-    // from the tree selection signal so that group nodes without UID are
-    // correctly re-dispatched.
     QString uid = treeWidget->getSelectedUID();
     cpcr::CPACSTreeItem* item = nullptr;
 
@@ -1375,7 +1370,6 @@ void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
     }
 
     if (item == nullptr && lastSelectedTreeItem != nullptr) {
-        // Use the stored pointer for items that don't have a UID (eg. groups)
         item = lastSelectedTreeItem;
     }
 
@@ -1394,8 +1388,6 @@ void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
 
 void TIGLCreatorWindow::onDisplayOptionsRequested()
 {
-    // Forward the stored lastSelectedTreeItem (or current selection) to the
-    // modificator container so the display options widget can be populated.
     cpcr::CPACSTreeItem* item = nullptr;
     QString uid = QString();
     if (treeWidget) {

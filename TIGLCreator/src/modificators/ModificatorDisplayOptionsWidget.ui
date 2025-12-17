@@ -64,11 +64,14 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_Color">
       <item>
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="label_color">
         <property name="text">
          <string>Color:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

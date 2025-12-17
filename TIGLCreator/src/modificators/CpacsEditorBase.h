@@ -28,23 +28,12 @@ public:
     explicit CpacsEditorBase(QWidget* parent = nullptr);
     virtual ~CpacsEditorBase();
 
-    /**
-     * Called when the user presses the commit / apply button on the containing
-     * editor. Default implementation does nothing.
-     */
     virtual void applyCurrentModifications();
 
-    /**
-     * Called when the user presses the cancel/reset button on the containing
-     * editor. Default implementation does nothing.
-     */
     virtual void applyCurrentCancellation();
 
 signals:
-    /**
-     * Signal that can be emitted by the editor to indicate an undo command
-     * should be created by the surrounding model/controller.
-     */
+
     void undoCommandRequired();
 };
 

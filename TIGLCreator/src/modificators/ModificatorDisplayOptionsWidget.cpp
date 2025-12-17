@@ -70,7 +70,6 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     currentContext = context;
 
     if (!item) {
-        // infoLabel->setText(tr("Please select an editable element from the CPACS Tree."));
 
         if (ui) {
             ui->infoLabel->setVisible(true);
@@ -79,55 +78,80 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->labelRenderingMode->setVisible(false);
             ui->renderingModeCombo->setVisible(false);
             ui->buttonColorChoser->setVisible(false);
+            ui->label_color->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
         }
         currentItem = nullptr;
         return;
     }
+    if (item) 
+    {
+        auto uid = item->getUid();
+        if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
+            const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
+            auto it = shapes.find(uid);
+            if (it != shapes.end() && it->second != nullptr) {
+                tigl::ITiglGeometricComponent* comp = it->second;
+                if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                    if (ui) {
+                        ui->infoLabel->setVisible(false);
+                        ui->labelTransparency->setVisible(true);
+                        ui->transparencySlider->setVisible(true);
+                        ui->labelRenderingMode->setVisible(true);
+                        ui->renderingModeCombo->setVisible(true);
+                        ui->label_color->setVisible(true);
+                        ui->buttonColorChoser->setVisible(true);
+                        ui->labelMaterial->setVisible(true);
+                        ui->materialCombo->setVisible(true);
+                    }
+                    
+                    const QString type = QString::fromStdString(item->getType());
+                    const QString uid = QString::fromStdString(item->getUid());
 
-    if (ui) {
-        ui->infoLabel->setVisible(false);
-        ui->labelTransparency->setVisible(true);
-        ui->transparencySlider->setVisible(true);
-        ui->labelRenderingMode->setVisible(true);
-        ui->renderingModeCombo->setVisible(true);
-        ui->buttonColorChoser->setVisible(true);
-        ui->labelMaterial->setVisible(true);
-        ui->materialCombo->setVisible(true);
-    }
-    
-    const QString type = QString::fromStdString(item->getType());
-    const QString uid = QString::fromStdString(item->getUid());
 
+                    // get current values
+                    auto &sm = context->GetShapeManager();
+                    if (sm.HasShapeEntry(uid.toStdString())) {
+                        auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+                        
+                        auto obj = objs[0];
+                        Standard_Real transparency;
+                        int displayMode;
+                        QColor color;
 
-    // get current values
-    auto &sm = context->GetShapeManager();
-    if (sm.HasShapeEntry(uid.toStdString())) {
-        auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-        
-        auto obj = objs[0];
-        Standard_Real transparency;
-        int displayMode;
-        QColor color;
+                        if (!obj.IsNull()) {
+                            Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                            transparency = drawer->Transparency(); 
+                            displayMode = drawer->DisplayMode();
+                            Quantity_Color qc = drawer->Color();
+                            color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
 
-        if (!obj.IsNull()) {
-            Handle(Prs3d_Drawer) drawer = obj->Attributes();
-            transparency = drawer->Transparency(); 
-            displayMode = drawer->DisplayMode();
-            Quantity_Color qc = drawer->Color();
-            color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
+                        }
+                        transparencySlider->setValue(transparency*100);
+                        renderingModeCombo->setCurrentIndex(displayMode);
+                        updateColorButton(color);
 
+                    }
+
+                    materialCombo->setCurrentIndex(0);
+                }
+            }
         }
-        transparencySlider->setValue(transparency*100);
-        renderingModeCombo->setCurrentIndex(displayMode);
-        updateColorButton(color);
-
+        else {
+            if (ui) {
+                ui->infoLabel->setVisible(true);
+                ui->labelTransparency->setVisible(false);
+                ui->transparencySlider->setVisible(false);
+                ui->labelRenderingMode->setVisible(false);
+                ui->renderingModeCombo->setVisible(false);
+                ui->buttonColorChoser->setVisible(false);
+                ui->label_color->setVisible(false);
+                ui->labelMaterial->setVisible(false);
+                ui->materialCombo->setVisible(false);
+            }
+        }
     }
-
-    materialCombo->setCurrentIndex(0);
-    
-
 }
 
 bool ModificatorDisplayOptionsWidget::apply()

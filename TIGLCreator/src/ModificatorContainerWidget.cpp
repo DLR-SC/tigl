@@ -53,7 +53,7 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
 
-    // Forward signals from the display options widget to allow the main window
+    // Signals from the display options widget to allow the main window
     // to apply viewer/context changes (transparency, color, material, rendering)
     connect(ui->displayOptionsWidget, &ModificatorDisplayOptionsWidget::setTransparencyRequested,
         this, &ModificatorContainerWidget::setTransparencyRequested);
