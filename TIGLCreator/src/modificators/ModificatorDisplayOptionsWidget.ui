@@ -64,9 +64,9 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_color">
+     <layout class="QHBoxLayout" name="horizontalLayout_Color">
       <item>
-       <widget class="QLabel" name="labelColor">
+       <widget class="QLabel" name="label_color">
         <property name="text">
          <string>Color:</string>
         </property>

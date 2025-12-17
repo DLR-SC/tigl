@@ -44,6 +44,10 @@ CPACSTreeWidget::CPACSTreeWidget(QWidget* parent)
     // connect the expert check box to its effect
     connect(ui->expertViewCheckBox, SIGNAL(toggled(bool)), this, SLOT(setExpertView()));
 
+    // connect the Geometry Nodes check box to its effect
+    connect(ui->geometryNodesCheckBox, SIGNAL(toggled(bool)), this, SLOT(setgeometryNodes()));
+
+
     connect(ui->searchLineEdit, SIGNAL(textEdited(const QString)), this, SLOT(setNewSearch(const QString)));
 
     connect(ui->treeView, &CPACSTreeView::customContextMenuRequestedForItem, this, &CPACSTreeWidget::onCustomContextMenuRequested);
@@ -110,6 +114,11 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
     ui->searchLineEdit->blockSignals(true);
     bool blockValue2 = ui->expertViewCheckBox->signalsBlocked();
     ui->expertViewCheckBox->blockSignals(true);
+    bool blockValue3 = false;
+    if (ui->geometryNodesCheckBox) {
+        blockValue3 = ui->geometryNodesCheckBox->signalsBlocked();
+        ui->geometryNodesCheckBox->blockSignals(true);
+    }
 
     if (filterModel->isValid()) {
         cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
@@ -122,6 +131,9 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
 
     ui->searchLineEdit->blockSignals(blockValue1);
     ui->expertViewCheckBox->blockSignals(blockValue2);
+    if (ui->geometryNodesCheckBox) {
+        ui->geometryNodesCheckBox->blockSignals(blockValue3);
+    }
 }
 
 void CPACSTreeWidget::setNewSearch(const QString newText)
@@ -163,6 +175,25 @@ void CPACSTreeWidget::setExpertView()
     else {
         ui->treeView->setRootIndex(QModelIndex()); // the empty index is the root by default.
     }
+
+    selectionModel->blockSignals(blockValue);
+}
+
+void CPACSTreeWidget::setgeometryNodes()
+{
+    if (filterModel->sourceModel() == nullptr) {
+        return;
+    }
+    bool sceneMode = false;
+    if (ui->geometryNodesCheckBox) {
+        sceneMode = ui->geometryNodesCheckBox->isChecked();
+    }
+
+    // to avoid that on selectionChanged is called during the transformation of the tree
+    bool blockValue = selectionModel->signalsBlocked();
+    selectionModel->blockSignals(true);
+
+    filterModel->setgeometryNodes(sceneMode);
 
     selectionModel->blockSignals(blockValue);
 }

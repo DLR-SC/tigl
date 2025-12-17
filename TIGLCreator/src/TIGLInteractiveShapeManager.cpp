@@ -196,19 +196,6 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
     // check if shape is already there
     ShapeIterator shapeIt = _shapeEntries.find(name);
 
-    // check if base shape for mirrored shape is already there
-    if (shapeIt == _shapeEntries.end() &&
-        !name.empty() && name.back() == 'M')
-    {
-        std::string baseName = name.substr(0, name.size() - 1);
-
-        ShapeIterator baseIt = _shapeEntries.find(baseName);
-        if (baseIt != _shapeEntries.end())
-        {
-            shapeIt = baseIt;
-        }
-    }
-
     if (shapeIt != _shapeEntries.end())
     {
         // add iObject to shape
@@ -236,6 +223,37 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
     _names[iObject] = name;
 }
 
+void InteractiveShapeManager::addObject(std::string uid, Handle(AIS_InteractiveObject) iObject)
+{
+    ShapeIterator shapeIt = _shapeEntries.find(uid);
+
+    if (shapeIt != _shapeEntries.end())
+    {
+        // add iObject to shape
+        ShapeEntry& entry = shapeIt->second;
+        entry.aisObjects.push_back(iObject);
+
+#ifdef DEBUG
+        DLOG(INFO) << "added shape " << uid;
+#endif
+    }
+    else
+    {
+        // Create a new shape entry and add it to map
+        ShapeEntry entry;
+        entry.aisObjects.push_back(iObject);
+        _shapeEntries.insert(shapeIt, ShapeMap::value_type(uid, entry));
+
+#ifdef DEBUG
+        DLOG(INFO) << "Created new shape " << uid;
+#endif
+    }
+
+    // add also to interactive objects list
+    _names[iObject] = uid;
+}
+
+
 std::vector<PNamedShape> InteractiveShapeManager::GetAllShapes() const
 {
     std::vector<PNamedShape> list;
@@ -261,9 +279,13 @@ std::vector<std::string> InteractiveShapeManager::GetDisplayedShapeNames() const
 
         // If any registered AIS object for this shape is displayed, record the name
         for (const auto& obj : entry.aisObjects) {
-            if (obj.IsNull()) continue;
+            if (obj.IsNull())  {
+                continue;
+            }
             Handle(AIS_InteractiveContext) context = obj->InteractiveContext();
-            if (context.IsNull()) continue;
+            if (context.IsNull()) {
+                continue;
+            }
             if (context->IsDisplayed(obj)) {
                 list.push_back(name);
                 break; // move to next shape name

@@ -43,29 +43,30 @@
 namespace
 {
 
-    struct Intersection2dResult
-    {
-        gp_Vec2d tangent;
-        gp_Pnt2d pnt;
-        double parmOnFirst;
-    };
-    
-    TopoDS_Edge pointsToEdge(Handle(Geom_Surface) surf, gp_Pnt2d p1, gp_Pnt2d p2)
-    {
-        gp_Pnt p13d = surf->Value(p1.X(), p1.Y());
-        gp_Pnt p23d = surf->Value(p2.X(), p2.Y());
-        BRepBuilderAPI_MakeEdge edgemaker(p13d, p23d);
-        TopoDS_Edge edge =  edgemaker.Edge();
-        return edge;
-    }
+struct Intersection2dResult {
+    gp_Vec2d tangent;
+    gp_Pnt2d pnt;
+    double parmOnFirst;
+};
 
+TopoDS_Edge pointsToEdge(Handle(Geom_Surface) surf, gp_Pnt2d p1, gp_Pnt2d p2)
+{
+    gp_Pnt p13d = surf->Value(p1.X(), p1.Y());
+    gp_Pnt p23d = surf->Value(p2.X(), p2.Y());
+    BRepBuilderAPI_MakeEdge edgemaker(p13d, p23d);
+    TopoDS_Edge edge = edgemaker.Edge();
+    return edge;
 }
+
+} // namespace
 
 namespace tigl
 {
 
-CControlSurfaceBorderBuilder::CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape)
-    : _wingShape(wingShape), _coords(coords)
+CControlSurfaceBorderBuilder::CControlSurfaceBorderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords,
+                                                           TopoDS_Shape wingShape)
+    : _wingShape(wingShape)
+    , _coords(coords)
 {
 }
 
@@ -73,38 +74,38 @@ CControlSurfaceBorderBuilder::~CControlSurfaceBorderBuilder()
 {
 }
 
-TopoDS_Wire CControlSurfaceBorderBuilder::borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper,
+                                                            double xsiLower)
 {
-    return boarderWithInnerShapeImpl(rLEHeight, xsiNose, xsiUpper, xsiLower, 5.0);
+    return borderWithInnerShapeImpl(rLEHeight, xsiNose, xsiUpper, xsiLower, 5.0);
 }
 
-TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShape(double rTEHeight, double xsiTail, double xsiTEUpper,
+                                                               double xsiTELower)
 {
-    return boarderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
+    return borderWithInnerShapeImpl(rTEHeight, xsiTail, xsiTEUpper, xsiTELower, -5.0);
 }
 
 TopoDS_Wire CControlSurfaceBorderBuilder::wholeWingBorder()
 {
     // compute position of the leading and trailing edge in local coords
-    gp_Pln plane = _coords.getPlane();
+    gp_Pln plane   = _coords.getPlane();
     gp_Pnt2d _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     gp_Pnt2d _te2d = ProjectPointOnPlane(plane, _coords.getTe());
-
 
     gp_Pnt2d up2d = _le2d;
 
     // compute some extra points with enough offset, to close the wire outside the wing
     double offset_factor = 5.;
-    double scale = offset_factor*(_te2d.X() - _le2d.X());
-
+    double scale         = offset_factor * (_te2d.X() - _le2d.X());
 
     double xmax = _le2d.X() + scale;
 
-    double ymax = up2d.Y() + scale;;
+    double ymax = up2d.Y() + scale;
+    ;
 
-    gp_Pnt2d upFront2d(-0.01*xmax, ymax);
-    gp_Pnt2d loFront2d(-0.01*xmax, -ymax);
-
+    gp_Pnt2d upFront2d(-0.01 * xmax, ymax);
+    gp_Pnt2d loFront2d(-0.01 * xmax, -ymax);
 
     gp_Pnt2d upBack2d(xmax, ymax);
     gp_Pnt2d loBack2d(xmax, -ymax);
@@ -113,10 +114,10 @@ TopoDS_Wire CControlSurfaceBorderBuilder::wholeWingBorder()
 
     // create the wire
     BRepBuilderAPI_MakeWire wiremaker;
-    wiremaker.Add(pointsToEdge( surf, loFront2d, upFront2d));
-    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
-    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
-    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
+    wiremaker.Add(pointsToEdge(surf, loFront2d, upFront2d));
+    wiremaker.Add(pointsToEdge(surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge(surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge(surf, loBack2d, loFront2d));
 
     TopoDS_Wire result = wiremaker.Wire();
     return result;
@@ -125,49 +126,49 @@ TopoDS_Wire CControlSurfaceBorderBuilder::wholeWingBorder()
 TopoDS_Wire CControlSurfaceBorderBuilder::borderSimple(double xsiUpper, double xsiLower)
 {
     // compute position of the leading and trailing edge in local coords
-    gp_Pln plane = _coords.getPlane();
+    gp_Pln plane   = _coords.getPlane();
     gp_Pnt2d _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     gp_Pnt2d _te2d = ProjectPointOnPlane(plane, _coords.getTe());
-    
+
     computeSkinPoints(xsiUpper, xsiLower);
-    
+
     gp_Pnt2d lp2d = _lp2d;
     gp_Pnt2d up2d = _up2d;
-    
+
     gp_Vec2d upNorm2d = up2d.XY() - lp2d.XY();
     gp_Vec2d loNorm2d = -upNorm2d.XY();
-    
+
     if (upNorm2d.Y() < 0) {
         upNorm2d.Multiply(-1.);
     }
-    
+
     if (loNorm2d.Y() > 0) {
         loNorm2d.Multiply(-1.);
     }
-    
+
     // compute some extra points with enough offset, to close the wire outside the wing
     double offset_factor = 5.;
-    double ymax = std::max(fabs(lp2d.Y()), fabs(up2d.Y())) * offset_factor;
-    double alphaUp = (ymax - up2d.Y())/upNorm2d.Y();
-    double alphaLo = (-ymax - lp2d.Y())/loNorm2d.Y();
+    double ymax          = std::max(fabs(lp2d.Y()), fabs(up2d.Y())) * offset_factor;
+    double alphaUp       = (ymax - up2d.Y()) / upNorm2d.Y();
+    double alphaLo       = (-ymax - lp2d.Y()) / loNorm2d.Y();
 
-    gp_Pnt2d upFront2d = up2d.XY() + alphaUp*upNorm2d.XY();
-    gp_Pnt2d loFront2d = lp2d.XY() + alphaLo*loNorm2d.XY();
+    gp_Pnt2d upFront2d = up2d.XY() + alphaUp * upNorm2d.XY();
+    gp_Pnt2d loFront2d = lp2d.XY() + alphaLo * loNorm2d.XY();
 
-    double xmax = _le2d.X() + offset_factor*(_te2d.X() - _le2d.X());
+    double xmax = _le2d.X() + offset_factor * (_te2d.X() - _le2d.X());
 
     gp_Pnt2d upBack2d(xmax, ymax);
     gp_Pnt2d loBack2d(xmax, -ymax);
 
     Handle(Geom_Surface) surf = new Geom_Plane(plane);
-    
+
     // create the wire
     BRepBuilderAPI_MakeWire wiremaker;
-    wiremaker.Add(pointsToEdge( surf, loFront2d, upFront2d));
-    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
-    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
-    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
-    
+    wiremaker.Add(pointsToEdge(surf, loFront2d, upFront2d));
+    wiremaker.Add(pointsToEdge(surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge(surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge(surf, loBack2d, loFront2d));
+
     TopoDS_Wire result = wiremaker.Wire();
     return result;
 }
@@ -192,10 +193,12 @@ gp_Vec2d CControlSurfaceBorderBuilder::lowerTangent()
     return _loTan2d;
 }
 
-TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint, double xsiEdgeUpper, double xsiEdgeLower, double offset_factor)
+TopoDS_Wire CControlSurfaceBorderBuilder::borderWithInnerShapeImpl(double relHeightCenterPoint, double xsiCenterPoint,
+                                                                    double xsiEdgeUpper, double xsiEdgeLower,
+                                                                    double offset_factor)
 {
     // compute position of the leading and trailing edge in local coords
-    gp_Pln plane = _coords.getPlane();
+    gp_Pln plane   = _coords.getPlane();
     gp_Pnt2d _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     gp_Pnt2d _te2d = ProjectPointOnPlane(plane, _coords.getTe());
 
@@ -205,7 +208,7 @@ TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHe
     gp_Pnt2d upTmp, loTmp;
     gp_Vec2d dummyVec;
     computeSkinPointsImpl(xsiCenterPoint, upTmp, dummyVec, loTmp, dummyVec);
-    gp_Pnt2d centerPoint2d = loTmp.XY() * (1. - relHeightCenterPoint) + upTmp.XY()*relHeightCenterPoint;
+    gp_Pnt2d centerPoint2d = loTmp.XY() * (1. - relHeightCenterPoint) + upTmp.XY() * relHeightCenterPoint;
 
     // Compute normals
     gp_Vec2d upNorm2d(-_upTan2d.Y(), _upTan2d.X());
@@ -220,7 +223,7 @@ TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHe
     }
 
     // Compute the inner edge by interpolating upper, lower and center point
-    Handle(TColgp_HArray1OfPnt2d) points = new TColgp_HArray1OfPnt2d(1,3);
+    Handle(TColgp_HArray1OfPnt2d) points = new TColgp_HArray1OfPnt2d(1, 3);
     points->SetValue(1, _lp2d);
     points->SetValue(2, centerPoint2d);
     points->SetValue(3, _up2d);
@@ -244,14 +247,14 @@ TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHe
     BRepLib::BuildCurves3d(innerEdge);
 
     // compute some extra points with enough offset, to close the wire outside the wing
-    double ymax = std::max(fabs(_lp2d.Y()), fabs(_up2d.Y())) * fabs(offset_factor);
-    double alphaUp = (ymax - _up2d.Y())/upNorm2d.Y();
-    double alphaLo = (-ymax - _lp2d.Y())/loNorm2d.Y();
+    double ymax    = std::max(fabs(_lp2d.Y()), fabs(_up2d.Y())) * fabs(offset_factor);
+    double alphaUp = (ymax - _up2d.Y()) / upNorm2d.Y();
+    double alphaLo = (-ymax - _lp2d.Y()) / loNorm2d.Y();
 
-    gp_Pnt2d upFront2d = _up2d.XY() + alphaUp*upNorm2d.XY();
-    gp_Pnt2d loFront2d = _lp2d.XY() + alphaLo*loNorm2d.XY();
+    gp_Pnt2d upFront2d = _up2d.XY() + alphaUp * upNorm2d.XY();
+    gp_Pnt2d loFront2d = _lp2d.XY() + alphaLo * loNorm2d.XY();
 
-    double xmax = _le2d.X() + offset_factor*(_te2d.X() - _le2d.X());
+    double xmax = _le2d.X() + offset_factor * (_te2d.X() - _le2d.X());
 
     gp_Pnt2d upBack2d(xmax, ymax);
     gp_Pnt2d loBack2d(xmax, -ymax);
@@ -261,26 +264,26 @@ TopoDS_Wire CControlSurfaceBorderBuilder::boarderWithInnerShapeImpl(double relHe
     // create the wire
     BRepBuilderAPI_MakeWire wiremaker;
     wiremaker.Add(innerEdge);
-    wiremaker.Add(pointsToEdge( surf, _up2d, upFront2d));
-    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
-    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
-    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
-    wiremaker.Add(pointsToEdge( surf, loFront2d, _lp2d));
+    wiremaker.Add(pointsToEdge(surf, _up2d, upFront2d));
+    wiremaker.Add(pointsToEdge(surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge(surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge(surf, loBack2d, loFront2d));
+    wiremaker.Add(pointsToEdge(surf, loFront2d, _lp2d));
 
     TopoDS_Wire result = wiremaker.Wire();
     return result;
 }
 
-
-void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
+void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo,
+                                                         gp_Vec2d& tanLo)
 {
-    gp_Pnt start3d = _coords.getTe().XYZ() * (1-xsi) + _coords.getLe().XYZ()*xsi;
+    gp_Pnt start3d = _coords.getTe().XYZ() * (1 - xsi) + _coords.getLe().XYZ() * xsi;
     gp_Lin line3d(start3d, _coords.getYDir().XYZ());
 
     std::vector<Intersection2dResult> intersections;
 
     BRepIntCurveSurface_Inter intersector;
-    for(intersector.Init(_wingShape, line3d, 1e-6); intersector.More(); intersector.Next()) {
+    for (intersector.Init(_wingShape, line3d, 1e-6); intersector.More(); intersector.Next()) {
         // compute normal vector to the face
         const TopoDS_Face& face = intersector.Face();
 
@@ -293,7 +296,7 @@ void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& p
         gp_Vec tangent3d = _coords.getNormal().Crossed(faceNormal3d);
 
         // convert to 2d
-        gp_Pnt2d pnt2d = ProjectPointOnPlane(_coords.getPlane(), pnt3d);
+        gp_Pnt2d pnt2d  = ProjectPointOnPlane(_coords.getPlane(), pnt3d);
         gp_Pnt2d stop2d = ProjectPointOnPlane(_coords.getPlane(), pnt3d.XYZ() + tangent3d.XYZ());
 
         gp_Vec2d tan2d = stop2d.XY() - pnt2d.XY();
@@ -301,13 +304,13 @@ void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& p
         // store results
         Intersection2dResult result;
         result.parmOnFirst = intersector.W();
-        result.pnt = pnt2d;
-        result.tangent = tan2d;
+        result.pnt         = pnt2d;
+        result.tangent     = tan2d;
         intersections.push_back(result);
     }
 
     if (intersections.size() != 2) {
-        throw CTiglError("Number of intersections is not 2");
+        throw CTiglError("Failed to compute Skin Points. Number of intersections is not 2");
     }
 
     Intersection2dResult lowerInters = intersections[0];
@@ -316,8 +319,8 @@ void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& p
     // sort according to direction of line2d
     if (lowerInters.parmOnFirst > upperInters.parmOnFirst) {
         Intersection2dResult tmp = upperInters;
-        upperInters = lowerInters;
-        lowerInters = tmp;
+        upperInters              = lowerInters;
+        lowerInters              = tmp;
     }
 
     pntUp = upperInters.pnt;
@@ -329,16 +332,15 @@ void CControlSurfaceBorderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& p
 void CControlSurfaceBorderBuilder::computeSkinPoints(double xsiUpper, double xsiLower)
 {
     // get the points on the skin
-    if (fabs(xsiUpper-xsiLower) < 1e-10) {
+    if (fabs(xsiUpper - xsiLower) < 1e-10) {
         computeSkinPointsImpl(xsiUpper, _up2d, _upTan2d, _lp2d, _loTan2d);
     }
     else {
         gp_Pnt2d tmpPnt;
         gp_Vec2d tmpVec;
         computeSkinPointsImpl(xsiUpper, _up2d, _upTan2d, tmpPnt, tmpVec);
-        computeSkinPointsImpl(xsiLower,  tmpPnt, tmpVec, _lp2d, _loTan2d);
+        computeSkinPointsImpl(xsiLower, tmpPnt, tmpVec, _lp2d, _loTan2d);
     }
 }
-
 
 } // namespace tigl

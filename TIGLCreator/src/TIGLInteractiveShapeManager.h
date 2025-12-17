@@ -52,6 +52,7 @@ public:
     // removes only the interactive object from the shape manager
     void removeObject(Handle(AIS_InteractiveObject) obj);
     void addObject(PNamedShape shape, const Handle(AIS_InteractiveObject) iObject);
+    void addObject(std::string uid, Handle(AIS_InteractiveObject) iObject);
     
     bool HasShapeEntry(const std::string& name) const;
     bool GetVisibility(const std::string& name) const;

@@ -19,16 +19,20 @@
 
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSControlSurfaceBorderLeadingEdge;
 class CCPACSControlSurfaceBorderTrailingEdge;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSControlSurfaceBorderLeadingEdge
     // CPACSControlSurfaceBorderTrailingEdge
 
     /// @brief Optional definition of the airfoil inner shape of
@@ -42,13 +46,36 @@ namespace generated
     class CPACSLeadingEdgeHollow
     {
     public:
+        TIGL_EXPORT CPACSLeadingEdgeHollow(CCPACSControlSurfaceBorderLeadingEdge* parent);
         TIGL_EXPORT CPACSLeadingEdgeHollow(CCPACSControlSurfaceBorderTrailingEdge* parent);
 
         TIGL_EXPORT virtual ~CPACSLeadingEdgeHollow();
 
-        TIGL_EXPORT CCPACSControlSurfaceBorderTrailingEdge* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSControlSurfaceBorderTrailingEdge* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value, "template argument for P is not a parent class of CPACSLeadingEdgeHollow");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSControlSurfaceBorderLeadingEdge>::value || std::is_same<P, CCPACSControlSurfaceBorderTrailingEdge>::value, "template argument for P is not a parent class of CPACSLeadingEdgeHollow");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -63,7 +90,8 @@ namespace generated
         TIGL_EXPORT virtual void SetXsiTE(const double& value);
 
     protected:
-        CCPACSControlSurfaceBorderTrailingEdge* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         /// Relative height of the most forward point of
         /// the LED's rear part, based on the airfoil height of the parent

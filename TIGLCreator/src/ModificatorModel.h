@@ -30,8 +30,6 @@
 #include <QAbstractItemModel>
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
-#include <AIS_InteractiveObject.hxx>
-#include "TIGLInteractiveShapeManager.h"
 
 class TIGLCreatorWindow;
 

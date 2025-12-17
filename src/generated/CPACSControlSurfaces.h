@@ -21,6 +21,7 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include "CPACSLeadingEdgeDevices.h"
 #include "CPACSTrailingEdgeDevices.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
@@ -62,8 +63,14 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const boost::optional<CPACSLeadingEdgeDevices>& GetLeadingEdgeDevices() const;
+        TIGL_EXPORT virtual boost::optional<CPACSLeadingEdgeDevices>& GetLeadingEdgeDevices();
+
         TIGL_EXPORT virtual const boost::optional<CPACSTrailingEdgeDevices>& GetTrailingEdgeDevices() const;
         TIGL_EXPORT virtual boost::optional<CPACSTrailingEdgeDevices>& GetTrailingEdgeDevices();
+
+        TIGL_EXPORT virtual CPACSLeadingEdgeDevices& GetLeadingEdgeDevices(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveLeadingEdgeDevices();
 
         TIGL_EXPORT virtual CPACSTrailingEdgeDevices& GetTrailingEdgeDevices(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTrailingEdgeDevices();
@@ -73,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        boost::optional<CPACSLeadingEdgeDevices>  m_leadingEdgeDevices;
         boost::optional<CPACSTrailingEdgeDevices> m_trailingEdgeDevices;
 
     private:

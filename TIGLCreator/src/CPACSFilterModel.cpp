@@ -22,13 +22,14 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 {
     basicTreeRegExp.setPatternSyntax(QRegExp::RegExp2);
     basicTreeRegExp.setCaseSensitivity(Qt::CaseInsensitive);
-    basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage)$");
+    basicTreeRegExp.setPattern("^(aircraft|rotorcraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage|rotors|rotor|rotorHub|rotorBladeAttachments|rotorBladeAttachment|rotorBlades|rotorBlade|rotorAirfoils|rotorAirfoil)$");
 
     searchPattern.setPatternSyntax(QRegExp::FixedString);
     searchPattern.setCaseSensitivity(Qt::CaseInsensitive);
     searchPattern.setPattern("");
 
     expertView = false;
+    geometryNodes = false;
 }
 
 void CPACSFilterModel::setModel(ModificatorModel *model)
@@ -53,8 +54,27 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
     QModelIndex typeIndex = sourceModel()->index(sourceRow, 1, sourceParent);
     QModelIndex uidIndex  = sourceModel()->index(sourceRow, 2, sourceParent);
 
+    QModelIndex idx0 = sourceModel()->index(sourceRow, 0, sourceParent);
+
     // check if we should considerate this tree branch
     if ((expertView == false) && (sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp) == false)) {
+        return false;
+    }
+
+    if (geometryNodes) {
+        if (idx0.isValid()) {
+            if (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable) {
+                return true;
+            }
+
+            // show parent nodes if any child matches
+            int childNumber = sourceModel()->rowCount(idx0);
+            for (int i = 0; i < childNumber; i++) {
+                if (filterAcceptsRow(i, idx0)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -84,6 +104,12 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
 void CPACSFilterModel::setExpertView(bool value)
 {
     expertView = value;
+    invalidateFilter();
+}
+
+void CPACSFilterModel::setgeometryNodes(bool value)
+{
+    geometryNodes = value;
     invalidateFilter();
 }
 
