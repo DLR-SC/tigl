@@ -64,10 +64,31 @@ bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& source
     if (geometryNodes) {
         if (idx0.isValid()) {
             if (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable) {
-                return true;
+                // If no search is active show all geometry nodes
+                if (searchPattern.isEmpty()) {
+                    return true;
+                }
+
+                // Check if the row itself matches the search (type or uid)
+                QModelIndex typeIndexG = sourceModel()->index(sourceRow, 1, sourceParent);
+                QModelIndex uidIndexG  = sourceModel()->index(sourceRow, 2, sourceParent);
+                if (sourceModel()->data(typeIndexG).toString().contains(searchPattern) ||
+                    (matchingOnUID && sourceModel()->data(uidIndexG).toString().contains(searchPattern))) {
+                    return true;
+                }
+
+                // Otherwise show it only if any child matches
+                int childNumberG = sourceModel()->rowCount(idx0);
+                for (int i = 0; i < childNumberG; i++) {
+                    if (filterAcceptsRow(i, idx0)) {
+                        return true;
+                    }
+                }
+                // no match
+                return false;
             }
 
-            // show parent nodes if any child matches
+            // show parent nodes if any child matches (non-checkable parents)
             int childNumber = sourceModel()->rowCount(idx0);
             for (int i = 0; i < childNumber; i++) {
                 if (filterAcceptsRow(i, idx0)) {

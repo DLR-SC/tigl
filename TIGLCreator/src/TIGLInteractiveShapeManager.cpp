@@ -198,9 +198,11 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
 
     if (shapeIt != _shapeEntries.end())
     {
-        // add iObject to shape
-        ShapeEntry& entry = shapeIt->second;
+    // add iObject to shape if not already present
+    ShapeEntry& entry = shapeIt->second;
+    if (std::find(entry.aisObjects.begin(), entry.aisObjects.end(), iObject) == entry.aisObjects.end()) {
         entry.aisObjects.push_back(iObject);
+    }
 
 #ifdef DEBUG
         DLOG(INFO) << "added shape " << name;
@@ -229,10 +231,11 @@ void InteractiveShapeManager::addObject(std::string uid, Handle(AIS_InteractiveO
 
     if (shapeIt != _shapeEntries.end())
     {
-        // add iObject to shape
+        // add iObject to shape if not already present
         ShapeEntry& entry = shapeIt->second;
-        entry.aisObjects.push_back(iObject);
-
+        if (std::find(entry.aisObjects.begin(), entry.aisObjects.end(), iObject) == entry.aisObjects.end()) {
+            entry.aisObjects.push_back(iObject);
+        }
 #ifdef DEBUG
         DLOG(INFO) << "added shape " << uid;
 #endif
