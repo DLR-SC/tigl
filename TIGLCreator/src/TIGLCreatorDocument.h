@@ -93,7 +93,7 @@ public slots:
 
     // Wing slots
     void drawWingProfiles();
-    void drawWing();
+    void drawWing(const QString& Uid=nullptr);
     void drawWingOverlayProfilePoints();
     void drawWingGuideCurves();
     void drawWingTriangulation();
@@ -102,7 +102,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
-    void drawWingFlaps();
+    void drawWingFlaps(const QString& wingUID=nullptr);
     void drawWingStructure();
 
     // Fuselage slots

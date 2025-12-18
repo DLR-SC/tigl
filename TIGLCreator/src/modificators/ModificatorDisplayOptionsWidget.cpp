@@ -82,7 +82,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->renderingModeCombo->setVisible(false);
             ui->labelColor->setVisible(false);
             ui->buttonColorChoser->setVisible(false);
-            ui->label_color->setVisible(false);
+            ui->labelColor->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
             ui->drawOptionsCombo->setVisible(false);
@@ -92,10 +92,10 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     }
     if (item) 
     {
-        auto uid = item->getUid();
-        if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
+        const QString uid = QString::fromStdString(item->getUid());
+        if ((!uid.isEmpty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString()))) {
             const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
-            auto it = shapes.find(uid);
+            auto it = shapes.find(uid.toStdString());
             if (it != shapes.end() && it->second != nullptr) {
                 tigl::ITiglGeometricComponent* comp = it->second;
                 if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
@@ -105,14 +105,13 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->transparencySlider->setVisible(true);
                         ui->labelRenderingMode->setVisible(true);
                         ui->renderingModeCombo->setVisible(true);
-                        ui->label_color->setVisible(true);
+                        ui->labelColor->setVisible(true);
                         ui->buttonColorChoser->setVisible(true);
                         ui->labelMaterial->setVisible(true);
                         ui->materialCombo->setVisible(true);
+                        ui->drawOptionsCombo->setVisible(true);
                     }
-                    
-                    const QString type = QString::fromStdString(item->getType());
-                    const QString uid = QString::fromStdString(item->getUid());
+                
 
 
                     // get current values
@@ -151,65 +150,68 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->labelRenderingMode->setVisible(false);
                 ui->renderingModeCombo->setVisible(false);
                 ui->buttonColorChoser->setVisible(false);
-                ui->label_color->setVisible(false);
+                ui->labelColor->setVisible(false);
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
+                ui->drawOptionsCombo->setVisible(false);
             }
         }
-    }
-
-    // Populate draw options combo when the selected item is a wing (type or uid == "wing").
-    ui->drawOptionsCombo->clear();
-    drawCallbacks.clear();
-    auto type = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
-
-    if (type == TIGL_COMPONENT_WING) {
-        // Add entries and store callbacks that call the document drawing functions
-        ui->drawOptionsCombo->addItem(tr("Profiles"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
-
-        ui->drawOptionsCombo->addItem(tr("Overlay profile points"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingOverlayProfilePoints(); });
-
-        ui->drawOptionsCombo->addItem(tr("Guide curves"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingGuideCurves(); });
-
-        ui->drawOptionsCombo->addItem(tr("Wing"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWing(); });
-
-        ui->drawOptionsCombo->addItem(tr("Triangulation"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingTriangulation(); });
-
-        ui->drawOptionsCombo->addItem(tr("Sample points"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingSamplePoints(); });
-
-        ui->drawOptionsCombo->addItem(tr("Fused wing"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawFusedWing(); });
-
-        ui->drawOptionsCombo->addItem(tr("Component segment"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingComponentSegment(); });
-
-        ui->drawOptionsCombo->addItem(tr("Component segment points"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingComponentSegmentPoints(); });
-
-        ui->drawOptionsCombo->addItem(tr("Shells"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingShells(); });
-
-        ui->drawOptionsCombo->addItem(tr("Structure"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingStructure(); });
-
-        ui->drawOptionsCombo->addItem(tr("Flaps"));
-        drawCallbacks.push_back([doc]() { if (doc) doc->drawWingFlaps(); });
-
-        // Trigger the corresponding callback when an item is activated. Use UniqueConnection to avoid duplicate connections.
-        connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-            [this](int idx) {
-                if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                    drawCallbacks[idx]();
-                }
-            }, Qt::UniqueConnection);
-    }
     
+
+        // Populate draw options combo when the selected item is a wing (type or uid == "wing").
+        ui->drawOptionsCombo->clear();
+        drawCallbacks.clear();
+        if (doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString())) {
+            auto type = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
+
+            if (type == TIGL_COMPONENT_WING) {
+                // Add entries and store callbacks that call the document drawing functions
+                ui->drawOptionsCombo->addItem(tr("Wing"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWing(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Profiles"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
+
+                ui->drawOptionsCombo->addItem(tr("Overlay profile points"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingOverlayProfilePoints(); });
+
+                ui->drawOptionsCombo->addItem(tr("Guide curves"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingGuideCurves(); });
+
+                ui->drawOptionsCombo->addItem(tr("Triangulation"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingTriangulation(); });
+
+                ui->drawOptionsCombo->addItem(tr("Sample points"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingSamplePoints(); });
+
+                ui->drawOptionsCombo->addItem(tr("Fused wing"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawFusedWing(); });
+
+                ui->drawOptionsCombo->addItem(tr("Component segment"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingComponentSegment(); });
+
+                ui->drawOptionsCombo->addItem(tr("Component segment points"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingComponentSegmentPoints(); });
+
+                ui->drawOptionsCombo->addItem(tr("Shells"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingShells(); });
+
+                ui->drawOptionsCombo->addItem(tr("Structure"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingStructure(); });
+
+                ui->drawOptionsCombo->addItem(tr("Flaps"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingFlaps(uid); });
+
+                // Trigger the corresponding callback when an item is activated. Use UniqueConnection to avoid duplicate connections.
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+            }
+        }
+    }   
 
 }
 

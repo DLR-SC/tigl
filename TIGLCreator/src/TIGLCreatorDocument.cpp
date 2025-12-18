@@ -1101,17 +1101,28 @@ void TIGLCreatorDocument::drawFuselageGuideCurves()
     app->getScene()->getContext()->UpdateCurrentViewer();
 }
 
-void TIGLCreatorDocument::drawWing()
+void TIGLCreatorDocument::drawWing(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
+    QString wingUid;
+    if (Uid == nullptr) {
+        wingUid = dlgGetWingSelection();
+        if (wingUid == "") {
+            return;
+        }
+        else {
+            drawComponentByUID(wingUid);
+        }
     }
     else {
-        drawComponentByUID(wingUid);
+        wingUid = Uid;
     }
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    auto obejcts = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
+    for (auto& obj : obejcts) {
+        app->getScene()->GetShapeManager().removeObject(obj);
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+    }
     if (wing.GetComponentSegments())
     {
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
@@ -1132,11 +1143,17 @@ void TIGLCreatorDocument::drawWing()
     }
 }
 
-void TIGLCreatorDocument::drawWingFlaps()
+void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
+    QString wingUid;
+    if (Uid == nullptr) {
+        wingUid = dlgGetWingSelection();
+        if (wingUid == "") {
+            return;
+        }
+    }
+    else {
+        wingUid = Uid;
     }
 
     try {
@@ -1177,8 +1194,14 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             return false;
         }
 
-        app->getScene()->deleteAllObjects();
+        auto obejcts = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+        for (auto& obj : obejcts) {
+            app->getScene()->GetShapeManager().removeObject(obj);
+            app->getScene()->getContext()->Remove(obj, Standard_False);
+        }
         app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
+        auto shape = app->getScene()->getCurrentShape();
+        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
