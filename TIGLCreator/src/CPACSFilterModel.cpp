@@ -30,6 +30,7 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 
     expertView = false;
     geometryNodes = false;
+    matchingOnUID = false;
 }
 
 void CPACSFilterModel::setModel(ModificatorModel *model)
@@ -50,76 +51,35 @@ cpcr::CPACSTreeItem *CPACSFilterModel::getItem(QModelIndex index) const
 
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-
     QModelIndex typeIndex = sourceModel()->index(sourceRow, 1, sourceParent);
     QModelIndex uidIndex  = sourceModel()->index(sourceRow, 2, sourceParent);
-
     QModelIndex idx0 = sourceModel()->index(sourceRow, 0, sourceParent);
 
-    // check if we should considerate this tree branch
-    if ((expertView == false) && (sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp) == false)) {
+    bool matchesExpertViewFilter = expertView || sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp);
+    if (!matchesExpertViewFilter) {
         return false;
     }
 
-    if (geometryNodes) {
-        if (idx0.isValid()) {
-            if (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable) {
-                // If no search is active show all geometry nodes
-                if (searchPattern.isEmpty()) {
-                    return true;
-                }
+    bool matchesSearchPattern = searchPattern.isEmpty() ||
+                                sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
+                                (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern));
 
-                // Check if the row itself matches the search (type or uid)
-                QModelIndex typeIndexG = sourceModel()->index(sourceRow, 1, sourceParent);
-                QModelIndex uidIndexG  = sourceModel()->index(sourceRow, 2, sourceParent);
-                if (sourceModel()->data(typeIndexG).toString().contains(searchPattern) ||
-                    (matchingOnUID && sourceModel()->data(uidIndexG).toString().contains(searchPattern))) {
-                    return true;
-                }
 
-                // Otherwise show it only if any child matches
-                int childNumberG = sourceModel()->rowCount(idx0);
-                for (int i = 0; i < childNumberG; i++) {
-                    if (filterAcceptsRow(i, idx0)) {
-                        return true;
-                    }
-                }
-                // no match
-                return false;
-            }
+    bool matchesGeometryFilter = !geometryNodes || (idx0.isValid() && (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable));
 
-            // show parent nodes if any child matches (non-checkable parents)
-            int childNumber = sourceModel()->rowCount(idx0);
-            for (int i = 0; i < childNumber; i++) {
-                if (filterAcceptsRow(i, idx0)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    if (searchPattern.isEmpty()) {
+    // Combine matchers: a row is immediately accepted when it satisfies
+    if (matchesSearchPattern && matchesGeometryFilter) {
         return true;
     }
-    // the case where search is activate
-    else {
-        // if the row itself match the pattern
-        if (sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
-            (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern))) {
-                return true;
-        }
-        // check if one of its child match the pattern (recursive call)
-        else {
-            int childNumber = sourceModel()->rowCount(typeIndex);
-            for (int i = 0; i < childNumber; i++) {
-                if (filterAcceptsRow(i, typeIndex)) {
-                    return true;
-                }
-            }
-            return false;
+
+    int childNumber = idx0.isValid() ? sourceModel()->rowCount(idx0) : 0;
+    for (int i = 0; i < childNumber; ++i) {
+        if (filterAcceptsRow(i, idx0)) {
+            return true;
         }
     }
+
+    return false;
 }
 
 void CPACSFilterModel::setExpertView(bool value)
