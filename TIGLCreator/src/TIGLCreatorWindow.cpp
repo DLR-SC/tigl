@@ -1074,6 +1074,8 @@ void TIGLCreatorWindow::connectSignals()
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
+
+    connect(settingsDialog, SIGNAL(settingsUpdated()), myScene, SLOT(applyGridSettings()));
 }
 
 void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)

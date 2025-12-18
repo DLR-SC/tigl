@@ -8,6 +8,7 @@ Changes since last release
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
+  - TiGLCreator: Add option to set the grid resolution in the settings menu [#1269](https://github.com/DLR-SC/tigl/pull/1269)
 
 - Fixes
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))

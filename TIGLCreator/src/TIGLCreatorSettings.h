@@ -55,6 +55,18 @@ public:
     void setDefaultMaterial(Graphic3d_NameOfMaterial material);
     Graphic3d_NameOfMaterial defaultMaterial() const;
 
+    void setGridOriginX(double x);
+    double gridOriginX() const;
+
+    void setGridOriginY(double y);
+    double gridOriginY() const;
+
+    void setGridSize(double delta);
+    double gridSize() const;
+
+    void setGridRadialDivisions(int n);
+    int gridRadialDivisions() const;
+
     QDir templateDir() const;
     void setTemplateDir(QString path);
 
@@ -93,6 +105,12 @@ private:
     QColor _shapecolor;
     QColor _shapesymmetrycolor;
     Graphic3d_NameOfMaterial _defaultMaterial;
+
+    // grid settings
+    double _grid_origin_x;
+    double _grid_origin_y;
+    double _grid_size;
+    int _grid_radial_divisions;
 
     bool _debugBOPs;
     bool _enumFaces;

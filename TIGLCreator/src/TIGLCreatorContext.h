@@ -119,6 +119,7 @@ public slots:
     void gridOff    ();
     void gridRect   ();
     void gridCirc   ();
+    void applyGridSettings ();
     void wireFrame  ( bool );
     void selectAll();
     void eraseSelected();
