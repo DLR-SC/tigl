@@ -1200,8 +1200,7 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             app->getScene()->GetShapeManager().removeObject(obj);
             app->getScene()->getContext()->Remove(obj, Standard_False);
         }
-        app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
-        auto shape = app->getScene()->getCurrentShape();
+        auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
         app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
