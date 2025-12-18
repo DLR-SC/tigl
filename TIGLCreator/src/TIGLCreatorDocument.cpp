@@ -780,8 +780,9 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
                         shaded = false;
                     }
-
-                    app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
+                    
+                    auto shape = app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
+                    app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
 
                     auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
                     if (geometricComp) {
