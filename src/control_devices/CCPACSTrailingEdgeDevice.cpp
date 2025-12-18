@@ -200,6 +200,12 @@ TiglGeometricComponentIntent CCPACSTrailingEdgeDevice::GetComponentIntent() cons
     return TIGL_INTENT_OUTER_AERO_SURFACE | TIGL_INTENT_PHYSICAL;
 }
 
+// Use symmetry from the parent wing
+TiglSymmetryAxis CCPACSTrailingEdgeDevice::GetSymmetryAxis() const
+{
+    return Wing().GetSymmetryAxis();
+}
+
 PNamedShape CCPACSTrailingEdgeDevice::GetCutOutShape(void) const
 {
     return *m_cutoutShape;
