@@ -20,7 +20,7 @@
 #include "CNamedShape.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include <AIS_InteractiveObject.hxx>
+#include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 
 #include <algorithm>
@@ -42,7 +42,7 @@ PNamedShape InteractiveShapeManager::GetShapeFromName(const std::string& name)
 }
 
 PNamedShape InteractiveShapeManager::GetShapeFromIObject(const
-        Handle(AIS_InteractiveObject) obj)
+        Handle(AIS_Shape) obj)
 {
     NameIterator it = _names.find(obj);
 
@@ -64,7 +64,7 @@ PNamedShape InteractiveShapeManager::GetShapeFromIObject(const
     return shapeIt->second.shape;
 }
 
-std::vector<Handle(AIS_InteractiveObject)>
+std::vector<Handle(AIS_Shape)>
 InteractiveShapeManager::GetIObjectsFromShapeName(const std::string& name) const
 {
     auto shapeIt = _shapeEntries.find(name);
@@ -112,7 +112,7 @@ bool InteractiveShapeManager::GetVisibility(const std::string& name) const
         return false;
     }
 
-    const Handle(AIS_InteractiveObject)& obj = objects[0];
+    const Handle(AIS_Shape)& obj = objects[0];
     if (obj.IsNull()) {
         return false;
     }
@@ -132,7 +132,7 @@ void InteractiveShapeManager::removeObject(const std::string& name)
     if (shapeIt != _shapeEntries.end())
     {
         // remove mapping if iobjects with name3
-        std::vector<Handle(AIS_InteractiveObject)>& ais_objects =
+        std::vector<Handle(AIS_Shape)>& ais_objects =
             shapeIt->second.aisObjects;
 
         for (unsigned int i = 0; i < ais_objects.size(); ++i)
@@ -150,7 +150,7 @@ void InteractiveShapeManager::removeObject(const std::string& name)
     }
 }
 
-void InteractiveShapeManager::removeObject(Handle(AIS_InteractiveObject) obj)
+void InteractiveShapeManager::removeObject(Handle(AIS_Shape) obj)
 {
     NameIterator nameIt = _names.find(obj);
 
@@ -166,7 +166,7 @@ void InteractiveShapeManager::removeObject(Handle(AIS_InteractiveObject) obj)
             ShapeEntry& entry = shapeIt->second;
 
             // remove obj from aisObjects
-            std::vector<Handle(AIS_InteractiveObject)>::iterator aisIt;
+            std::vector<Handle(AIS_Shape)>::iterator aisIt;
             aisIt = std::find(entry.aisObjects.begin(), entry.aisObjects.end(), obj);
 
             if (aisIt != entry.aisObjects.end())
@@ -189,7 +189,7 @@ void InteractiveShapeManager::clear()
     _names.clear();
 }
 
-void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_InteractiveObject) iObject)
+void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Shape) iObject)
 {
     std::string name = shape->Name();
 
@@ -225,7 +225,7 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
     _names[iObject] = name;
 }
 
-void InteractiveShapeManager::addObject(std::string uid, Handle(AIS_InteractiveObject) iObject)
+void InteractiveShapeManager::addObject(std::string uid, Handle(AIS_Shape) iObject)
 {
     ShapeIterator shapeIt = _shapeEntries.find(uid);
 

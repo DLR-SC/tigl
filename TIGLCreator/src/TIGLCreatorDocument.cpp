@@ -796,6 +796,19 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
             else {
                 IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                if (objects[0]->Shape() != component.GetLoft()->Shape()) {
+                    objects[0]->SetShape(component.GetLoft()->Shape());
+                }
+                else {
+                    auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+                    if (geometricComp) {
+                        if (geometricComp->GetMirroredLoft()) {
+                            if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
+                                objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
+                            }
+                        }
+                    }
+                }
                 for (auto& obj : objects) {
                     app->getScene()->getContext()->Display(obj, Standard_False);
                 }

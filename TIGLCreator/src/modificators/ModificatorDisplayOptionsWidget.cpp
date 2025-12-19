@@ -87,8 +87,8 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     }
     if (item) 
     {
-        auto uid = item->getUid();
-        if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
+        if ((!item->getUid().empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(item->getUid()))) {
+            auto uid = item->getUid();
             const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
             auto it = shapes.find(uid);
             if (it != shapes.end() && it->second != nullptr) {
