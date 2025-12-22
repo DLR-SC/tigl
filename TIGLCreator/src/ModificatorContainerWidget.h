@@ -108,6 +108,7 @@ public:
 
     void setDisplayOptionsModificator();
     void setDisplayOptionsFromItem(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context=nullptr);
+    void updateDisplayOptionsIfActive(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context=nullptr);
 
     void hideAllSpecializedWidgets();
 
