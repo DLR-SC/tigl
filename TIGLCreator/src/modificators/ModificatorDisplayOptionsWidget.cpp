@@ -30,6 +30,7 @@
 #include "TIGLCreatorMaterials.h"
 #include "../TIGLCreatorContext.h"
 #include "ui_ModificatorDisplayOptionsWidget.h"
+#include <QFileDialog>
 
 #define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
@@ -47,6 +48,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
 
     renderingModeCombo->addItem("Wireframe", 0);
     renderingModeCombo->addItem("Shaded", 1);
+    renderingModeCombo->addItem("Textured", 2);
     // populate materials list after ui setup
     materialCombo->clear();
     for (const auto &kv : tiglMaterials::materialMap) {
@@ -247,13 +249,13 @@ void ModificatorDisplayOptionsWidget::onTransparencyChanged(int value)
     }
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     Standard_Real tr = value * 0.01;
-    auto ctx = currentContext->getContext();
+    auto context = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-        if (!ctx.IsNull()) {
-            ctx->SetTransparency(obj, tr, Standard_True);
+        if (!context.IsNull()) {
+            context->SetTransparency(obj, tr, Standard_True);
         }
     }
     if (!currentContext->getContext().IsNull()) {
@@ -269,19 +271,31 @@ void ModificatorDisplayOptionsWidget::onRenderingModeChanged(int displayMode)
     if (!currentItem) {
         return;
     }
+    auto context = currentContext->getContext();
+
+    if (displayMode == 2) { // Textured
+        QString fileName = QFileDialog::getOpenFileName (this,
+                                                     tr("Choose texture image"),
+                                                     QString(),
+                                                     tr("Images (*.png *.jpeg *.jpg *.bmp);") );
+
+        if (!fileName.isEmpty()) {
+            currentContext->setObjectsTexture(fileName);
+        }
+    }
+
     const QString uid = QString::fromStdString(currentItem->getUid());
     if (uid.isEmpty()) {
         return;
     }
     auto &sm = currentContext->GetShapeManager();
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-    auto ctx = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-        if (!ctx.IsNull()) {
-            ctx->SetDisplayMode(obj, displayMode, Standard_True);
+        if (!context.IsNull()) {
+            context->SetDisplayMode(obj, displayMode, Standard_True);
         }
     }
     if (!currentContext->getContext().IsNull()) {
