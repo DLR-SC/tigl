@@ -23,6 +23,7 @@
 #include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSApproximationSettings.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -94,29 +95,39 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSCurveParamPointMap>& GetParameterMap() const;
         TIGL_EXPORT virtual boost::optional<CCPACSCurveParamPointMap>& GetParameterMap();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSApproximationSettings>& GetApproximationSettings() const;
+        TIGL_EXPORT virtual boost::optional<CPACSApproximationSettings>& GetApproximationSettings();
+
         TIGL_EXPORT virtual CCPACSStringVector& GetKinkIndices(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveKinkIndices();
 
         TIGL_EXPORT virtual CCPACSCurveParamPointMap& GetParameterMap(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveParameterMap();
 
+        TIGL_EXPORT virtual CPACSApproximationSettings& GetApproximationSettings(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveApproximationSettings();
+
     protected:
         CPACSProfileGeometry* m_parent;
 
         /// Vector of x coordinates
-        CCPACSStringVector                        m_x;
+        CCPACSStringVector                          m_x;
 
         /// Vector of y coordinates
-        CCPACSStringVector                        m_y;
+        CCPACSStringVector                          m_y;
 
         /// Vector of z coordinates
-        CCPACSStringVector                        m_z;
+        CCPACSStringVector                          m_z;
 
         /// Indices of points at which the curve has a kink. Each index is in the range [1, npoints].
-        boost::optional<CCPACSStringVector>       m_kinkIndices;
+        boost::optional<CCPACSStringVector>         m_kinkIndices;
 
         /// Map between point index and curve parameter.
-        boost::optional<CCPACSCurveParamPointMap> m_parameterMap;
+        boost::optional<CCPACSCurveParamPointMap>   m_parameterMap;
+
+        /// If this element is specified, the given point list is approximated instead of interpolated when creating a b-spline representation of the profile.
+        /// This has the advantage of more control over the complexity of the resulting b-spline curves, but does not guarantee that the b-spline curve passes through all given points as for the interpolation approach introducing possible imprecisions in the geometrical representation of the profile.
+        boost::optional<CPACSApproximationSettings> m_approximationSettings;
 
     private:
         CPACSCurvePointListXYZ(const CPACSCurvePointListXYZ&) = delete;

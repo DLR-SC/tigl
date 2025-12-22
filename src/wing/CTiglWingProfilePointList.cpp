@@ -29,6 +29,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglApproximateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CTiglWingProfilePointList.h"
@@ -87,28 +88,89 @@ const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
 // Constructor
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
-    , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
-    , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
+    , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
+    , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
+    // Profile points are approximated, not interpolated. Read out and pass the corresponding options
+    auto& approxSettings = cpacsPointList.GetApproximationSettings();
+    if (approxSettings) {
+
+        // Determine the method that should be used to compute the approximation error
+        // RMSE defined as default
+        std::string approxErrStr = "RMSE";
+        if (approxSettings->GetErrorComputationMethod()) {
+            if (*(approxSettings->GetErrorComputationMethod()) == "MaxError") {
+                approxErrStr = "MaxError";
+            }
+            // If RMSE is seleted, TiGL just uses the default value
+            else if (*(approxSettings->GetErrorComputationMethod()) != "RMSE"){
+                throw CTiglError("CTiglWingProfilePointList: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
+            }
+        }
+        // Pass the (optional) list of indices whose belonging points should still be interpolated
+        std::vector<double> interpPointsIndices = std::vector<double>{};
+        if(approxSettings->GetInterpolatedPointsIndices()) {
+            interpPointsIndices = approxSettings->GetInterpolatedPointsIndices()->AsVector();
+        }
+
+        if (approxSettings->GetControlPointNumber_choice1()) {
+            int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true, approxErrStr, interpPointsIndices);
+        }
+        else if (approxSettings->GetMaximumError_choice2()) {
+            double tolerance = *(approxSettings->GetMaximumError_choice2());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true, approxErrStr, interpPointsIndices);
+        }
+        else {
+            throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
+        }
+    }
+    // Profile points are interpolated, not approximated
+    else {
+        profileWireAlgo = std::make_unique<CTiglInterpolateBsplineWire>();
+    }
 }
 
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile& profile, const CCPACSPointListXYVector& cpacsPointList)
     : coordinates(cpacsPointList.AsVector())
     , profileWireAlgo(new CTiglInterpolateBsplineWire)
     , profileUID(profile.GetUID())
-    , wireCache(*this, &CTiglWingProfilePointList::BuildWires)
+    , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
+    , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
+    // Up to now, profile approximation is not implemented for nacelles. Also needs CPACS adaptation
 }
 
 void CTiglWingProfilePointList::Invalidate() const
 {
-    wireCache.clear();
+    wireCacheOpened.clear();
+    wireCacheClosed.clear();
+}
+
+bool CTiglWingProfilePointList::isProfileClosed() const
+{
+    gp_Pnt startPnt =  coordinates[0].Get_gp_Pnt();
+    gp_Pnt endPnt = coordinates[coordinates.size()-1].Get_gp_Pnt();
+
+    if (startPnt.SquareDistance(endPnt) >= Precision::SquareConfusion()) {
+        return false;
+    }
+    return true;
+}
+
+void CTiglWingProfilePointList::BuildWiresOpened(WireCache& cache) const
+{
+    BuildWiresImpl(cache, false);
+}
+void CTiglWingProfilePointList::BuildWiresClosed(WireCache& cache) const
+{
+    BuildWiresImpl(cache, true);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
 // wing profile element transformation.
-void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
+void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) const
 {
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
@@ -127,15 +189,11 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
     // compute list of open and closed profile points
     openPoints = points;
     closedPoints = points;
-    if (startPnt.Distance(endPnt) >= Precision::Confusion()) {
+    if (startPnt.SquareDistance(endPnt) >= Precision::SquareConfusion()) {
         closeProfilePoints(closedPoints);
-        // save information that profile is opened by default
-        cache.profileIsClosed = false;
     }
     else {
         openProfilePoints(openPoints);
-        // save information that profile is closed by default
-        cache.profileIsClosed = true;
     }
 
     // Build wires from wing profile points.
@@ -149,68 +207,66 @@ void CTiglWingProfilePointList::BuildWires(WireCache& cache) const
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempShapeOpened = wireBuilder.BuildWire(openPoints, false);
-    TopoDS_Wire tempShapeClosed = wireBuilder.BuildWire(closedPoints, true);
-    if (tempShapeOpened.IsNull() || tempShapeClosed.IsNull()) {
+    TopoDS_Wire tempShape;
+    if (closed) {
+        tempShape = wireBuilder.BuildWire(closedPoints, true);
+    }
+    else {
+        tempShape = wireBuilder.BuildWire(openPoints, false);
+    }
+
+    if (tempShape.IsNull()) {
         throw CTiglError("TopoDS_Wire is null in CTiglWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
-    // the open wire should consist of only 1 edge - lets check
-    if (GetNumberOfEdges(tempShapeOpened) != 1 || GetNumberOfEdges(tempShapeClosed) != 1) {
+    // the wire should consist of only 1 edge - lets check
+    if (GetNumberOfEdges(tempShape) != 1 ) {
         throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");
     }
-    TopExp_Explorer wireExOpened(tempShapeOpened, TopAbs_EDGE);
-    TopoDS_Edge profileEdgeTmpOpened = TopoDS::Edge(wireExOpened.Current());
-    TopExp_Explorer wireExClosed(tempShapeClosed, TopAbs_EDGE);
-    TopoDS_Edge profileEdgeTmpClosed = TopoDS::Edge(wireExClosed.Current());
+    TopExp_Explorer wireEx(tempShape, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmp = TopoDS::Edge(wireEx.Current());
 
     BuildLETEPoints(cache);
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle_Geom_Curve curveOpened = BRep_Tool::Curve(profileEdgeTmpOpened, u1, u2);
-    curveOpened = new Geom_TrimmedCurve(curveOpened, u1, u2);
-    Handle_Geom_Curve curveClosed = BRep_Tool::Curve(profileEdgeTmpClosed, u1, u2);
-    curveClosed = new Geom_TrimmedCurve(curveClosed, u1, u2);
+    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
 
     // Get Leading edge parameter on curve
-    double lep_par_opened = GeomAPI_ProjectPointOnCurve(cache.lePoint, curveOpened).LowerDistanceParameter();
-    double lep_par_closed = GeomAPI_ProjectPointOnCurve(cache.lePoint, curveClosed).LowerDistanceParameter();
+    double lep_par = GeomAPI_ProjectPointOnCurve(cache.lePoint, curve).LowerDistanceParameter();
 
     // upper and lower curve
-    Handle(Geom_TrimmedCurve) lowerCurveOpened = new Geom_TrimmedCurve(curveOpened, curveOpened->FirstParameter(), lep_par_opened);
-    Handle(Geom_TrimmedCurve) upperCurveOpened = new Geom_TrimmedCurve(curveOpened, lep_par_opened, curveOpened->LastParameter());
-    Handle(Geom_TrimmedCurve) lowerCurveClosed = new Geom_TrimmedCurve(curveClosed, curveClosed->FirstParameter(), lep_par_closed);
-    Handle(Geom_TrimmedCurve) upperCurveClosed = new Geom_TrimmedCurve(curveClosed, lep_par_closed, curveClosed->LastParameter());
+    Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
+    Handle(Geom_TrimmedCurve) upperCurve = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
 
-    trimUpperLowerCurve(cache, lowerCurveOpened, upperCurveOpened, curveOpened);
-    trimUpperLowerCurve(cache, lowerCurveClosed, upperCurveClosed, curveClosed);
+    trimUpperLowerCurve(cache, lowerCurve, upperCurve, curve);
 
     // upper and lower edges
-    cache.lowerWireOpened = BRepBuilderAPI_MakeEdge(lowerCurveOpened);
-    cache.upperWireOpened = BRepBuilderAPI_MakeEdge(upperCurveOpened);
-    cache.upperLowerEdgeOpened = BRepBuilderAPI_MakeEdge(curveOpened);
-    cache.lowerWireClosed = BRepBuilderAPI_MakeEdge(lowerCurveClosed);
-    cache.upperWireClosed = BRepBuilderAPI_MakeEdge(upperCurveClosed);
-    cache.upperLowerEdgeClosed = BRepBuilderAPI_MakeEdge(curveClosed);
+    cache.lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
+    cache.upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
+    cache.upperLowerEdge = BRepBuilderAPI_MakeEdge(curve);
 
-    // Trailing edge points
-    gp_Pnt te_up, te_down;
-    te_up = upperCurveOpened->EndPoint();
-    te_down = lowerCurveOpened->StartPoint();
+    if (!closed) {
+        //  Trailing edge points
+        gp_Pnt te_up, te_down;
+        te_up = upperCurve->EndPoint();
+        te_down = lowerCurve->StartPoint();
 
-    //check if we have to close upper and lower wing shells
-    // TODO: maybe change the implementation to ensure that this is true, since the 
-    //       open profile should always have a trailing edge
-    if (te_up.Distance(te_down) > Precision::Confusion()) {
-        cache.trailingEdgeOpened = BRepBuilderAPI_MakeEdge(te_up,te_down);
+        //check if we have to close upper and lower wing shells
+        // TODO: maybe change the implementation to ensure that this is true, since the
+        //       open profile should always have a trailing edge
+        if (te_up.SquareDistance(te_down) > Precision::SquareConfusion()) {
+            cache.trailingEdge = BRepBuilderAPI_MakeEdge(te_up,te_down);
+        }
+        else {
+            cache.trailingEdge.Nullify();
+        }
     }
     else {
-        cache.trailingEdgeOpened.Nullify();
+        // closed profile never has a trailing edge
+        cache.trailingEdge.Nullify();
     }
-
-    // closed profile nevere has a trailing edge
-    cache.trailingEdgeClosed.Nullify();
 }
 
 // Builds leading and trailing edge points of the wing profile wire.
@@ -261,18 +317,18 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetUpperWire(TiglShapeModifier mod
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        if (wireCache->profileIsClosed) {
-            return wireCache->upperWireClosed;
+        if (isProfileClosed()) {
+            return wireCacheClosed->upperWire;
         }
         else {
-            return wireCache->upperWireOpened;
+            return wireCacheOpened->upperWire;
         }
         break;
     case SHARP_TRAILINGEDGE:
-        return wireCache->upperWireClosed;
+        return wireCacheClosed->upperWire;
         break;
     case BLUNT_TRAILINGEDGE:
-        return wireCache->upperWireOpened;
+        return wireCacheOpened->upperWire;
         break;
     default:
         throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetUpperWire");
@@ -284,18 +340,18 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetLowerWire(TiglShapeModifier mod
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        if (wireCache->profileIsClosed) {
-            return wireCache->lowerWireClosed;
+        if (isProfileClosed()) {
+            return wireCacheClosed->lowerWire;
         }
         else {
-            return wireCache->lowerWireOpened;
+            return wireCacheOpened->lowerWire;
         }
         break;
     case SHARP_TRAILINGEDGE:
-        return wireCache->lowerWireClosed;
+        return wireCacheClosed->lowerWire;
         break;
     case BLUNT_TRAILINGEDGE:
-        return wireCache->lowerWireOpened;
+        return wireCacheOpened->lowerWire;
         break;
     default:
         throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetLowerWire");
@@ -307,18 +363,18 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetUpperLowerWire(TiglShapeModifie
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        if (wireCache->profileIsClosed) {
-            return wireCache->upperLowerEdgeClosed;
+        if (isProfileClosed()) {
+            return wireCacheClosed->upperLowerEdge;
         }
         else {
-            return wireCache->upperLowerEdgeOpened;
+            return wireCacheOpened->upperLowerEdge;
         }
         break;
     case SHARP_TRAILINGEDGE:
-        return wireCache->upperLowerEdgeClosed;
+        return wireCacheClosed->upperLowerEdge;
         break;
     case BLUNT_TRAILINGEDGE:
-        return wireCache->upperLowerEdgeOpened;
+        return wireCacheOpened->upperLowerEdge;
         break;
     default:
         throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetUpperLowerWire");
@@ -330,18 +386,18 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge(TiglShapeModifier 
 {
     switch (mod) {
     case UNMODIFIED_SHAPE:
-        if (wireCache->profileIsClosed) {
-            return wireCache->trailingEdgeClosed;
+        if (isProfileClosed()) {
+            return wireCacheClosed->trailingEdge;
         }
         else {
-            return wireCache->trailingEdgeOpened;
+            return wireCacheOpened->trailingEdge;
         }
         break;
     case SHARP_TRAILINGEDGE:
-        return wireCache->trailingEdgeClosed;
+        return wireCacheClosed->trailingEdge;
         break;
     case BLUNT_TRAILINGEDGE:
-        return wireCache->trailingEdgeOpened;
+        return wireCacheOpened->trailingEdge;
         break;
     default:
         throw CTiglError("Unknown TiglShapeModifier passed to CTiglWingProfilePointList::GetTrailingEdge");
@@ -351,13 +407,23 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge(TiglShapeModifier 
 // get leading edge point();
 const gp_Pnt& CTiglWingProfilePointList::GetLEPoint() const
 {
-    return wireCache->lePoint;
+    if (isProfileClosed()) {
+        return wireCacheClosed->lePoint;
+    }
+    else {
+        return wireCacheOpened->lePoint;
+    }
 }
 
 // get trailing edge point();
 const gp_Pnt& CTiglWingProfilePointList::GetTEPoint() const
 {
-    return wireCache->tePoint;
+    if (isProfileClosed()) {
+        return wireCacheClosed->tePoint;
+    }
+    else {
+        return wireCacheOpened->tePoint;
+    }
 }
 
 // Helper method for closing profile points at trailing edge

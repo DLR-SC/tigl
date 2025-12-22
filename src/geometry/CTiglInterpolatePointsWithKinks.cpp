@@ -90,37 +90,6 @@ namespace
         return result;
     }
 
-    std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts, tigl::ParamMap& params, double alpha)
-    {
-        auto initial_params = tigl::CTiglBSplineAlgorithms::computeParamsBSplineCurve(pnts, alpha);
-
-        unsigned int n_pnts = static_cast<unsigned int>(pnts->Length());
-
-        if (!in(0, params)) {
-            params[0] = 0.;
-        }
-        if (!in(n_pnts - 1, params)) {
-            params[n_pnts - 1] = 1.;
-        }
-
-        std::vector<double> kink_params_new;
-        std::vector<double> kink_params_old;
-
-        for (const auto& p : params) {
-            kink_params_new.push_back(p.second);
-            kink_params_old.push_back(initial_params[p.first]);
-        }
-
-        // Perform linear interpolation to get the new parameters
-        std::vector<double> new_params;
-        std::transform(std::begin(initial_params), std::end(initial_params),
-                       std::back_inserter(new_params), [&](double p) {
-           return  tigl::Interpolate(kink_params_old, kink_params_new, p);
-        });
-
-        return new_params;
-    }
-
 } // namespace
 
 namespace tigl
@@ -152,6 +121,37 @@ Handle(Geom_BSplineCurve) CTiglInterpolatePointsWithKinks::Curve() const
 std::vector<double> CTiglInterpolatePointsWithKinks::Parameters() const
 {
     return m_result->parameters;
+}
+
+std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts, tigl::ParamMap& params, double alpha)
+{
+    auto initial_params = tigl::CTiglBSplineAlgorithms::computeParamsBSplineCurve(pnts, alpha);
+
+    unsigned int n_pnts = static_cast<unsigned int>(pnts->Length());
+
+    if (!in(0, params)) {
+        params[0] = 0.;
+    }
+    if (!in(n_pnts - 1, params)) {
+        params[n_pnts - 1] = 1.;
+    }
+
+    std::vector<double> kink_params_new;
+    std::vector<double> kink_params_old;
+
+    for (const auto& p : params) {
+        kink_params_new.push_back(p.second);
+        kink_params_old.push_back(initial_params[p.first]);
+    }
+
+    // Perform linear interpolation to get the new parameters
+    std::vector<double> new_params;
+    std::transform(std::begin(initial_params), std::end(initial_params),
+                    std::back_inserter(new_params), [&](double p) {
+        return  tigl::Interpolate(kink_params_old, kink_params_new, p);
+    });
+
+    return new_params;
 }
 
 void CTiglInterpolatePointsWithKinks::ComputeResult(Result& result) const

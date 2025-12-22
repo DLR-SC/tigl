@@ -27,6 +27,7 @@
 
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
+#include <variant>
 
 namespace tigl 
 {
@@ -36,7 +37,8 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire();
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;
@@ -66,6 +68,17 @@ private:
     // Assignment operator
     void operator=(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
 
+    ETiglContinuity continuity;
+
+    std::variant<std::monostate, int, double> m_approximationSettings;
+
+    const std::string* m_profileUID;
+
+    bool m_isWingProfile;
+
+    const std::string m_approxErrStr; // Currently allowed entries are "root mean square error", "maximum error"
+
+    std::vector<double> m_interpolatedPointsIndices; // Contains indices of points that should still be interpolated
 };
 
 } // end namespace tigl

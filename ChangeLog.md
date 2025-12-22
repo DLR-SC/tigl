@@ -5,6 +5,7 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
