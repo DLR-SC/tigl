@@ -54,6 +54,7 @@ private slots:
     void onRenderingModeChanged(int id);
     void onColorChosen();
     void onMaterialChanged(const QString& mat);
+    void onResetOptions();
 
 signals:
     void setTransparencyRequested(int value);
@@ -71,6 +72,7 @@ private:
     QComboBox* renderingModeCombo{nullptr};
     QPushButton* buttonColorChoser{nullptr};
     QComboBox* materialCombo{nullptr};
+    QPushButton* buttonResetOptions{nullptr};
 
     cpcr::CPACSTreeItem* currentItem{nullptr};
     TIGLCreatorDocument* currentDoc{nullptr};

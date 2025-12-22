@@ -44,6 +44,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     transparencySlider = ui->transparencySlider;
     renderingModeCombo = ui->renderingModeCombo;
     buttonColorChoser = ui->buttonColorChoser;
+    buttonResetOptions = ui->buttonResetOptions;
     materialCombo = ui->materialCombo;
 
     renderingModeCombo->addItem("Wireframe", 0);
@@ -60,6 +61,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     connect(renderingModeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRenderingModeChanged(int)));
     connect(materialCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onMaterialChanged(const QString &)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
+    connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
@@ -83,6 +85,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->label_color->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
+            ui->buttonResetOptions->setVisible(false);
         }
         currentItem = nullptr;
         return;
@@ -106,6 +109,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->buttonColorChoser->setVisible(true);
                         ui->labelMaterial->setVisible(true);
                         ui->materialCombo->setVisible(true);
+                        ui->buttonResetOptions->setVisible(true);
                     }
                     
                     const QString type = QString::fromStdString(item->getType());
@@ -151,6 +155,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->label_color->setVisible(false);
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
+                ui->buttonResetOptions->setVisible(false);
             }
         }
     }
@@ -387,4 +392,37 @@ void ModificatorDisplayOptionsWidget::onMaterialChanged(const QString &mat)
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }
+}
+
+void ModificatorDisplayOptionsWidget::onResetOptions()
+{
+    if (!currentContext) {
+        return;
+    }
+    if (!currentItem) {
+        return;
+    }
+    const QString uid = QString::fromStdString(currentItem->getUid());
+    if (uid.isEmpty()) {
+        return;
+    }
+    auto &sm = currentContext->GetShapeManager();
+    auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+    auto context = currentContext->getContext();
+    for (auto &obj : objs) {
+        if (obj.IsNull()) {
+            continue;
+        }
+        if (!context.IsNull()) {
+            // redraw component to reset options (necessary to reset different colors on mirrored components)
+            context->Remove(obj, Standard_False);
+            sm.removeObject(obj);
+            currentDoc->drawComponentByUID(uid);
+        }
+    }
+    if (!currentContext->getContext().IsNull()) {
+        currentContext->updateViewer();
+    }
+
+    setFromItem(currentItem, currentDoc, currentContext);
 }
