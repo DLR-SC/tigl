@@ -134,6 +134,7 @@ public slots:
 signals:
 
     void error (int errorCode, QString& errorDescription);
+    void displayAttributesChanged();
 
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();

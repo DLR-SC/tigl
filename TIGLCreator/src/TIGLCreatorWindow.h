@@ -127,6 +127,7 @@ private slots:
     void onSetRenderingModeRequested(int mode);
     void onSetColorRequested(const QColor &c);
     void onSetMaterialRequested(const QString &m);
+    void onSceneDisplayAttributesChanged();
 
 private:
     void connectSignals();

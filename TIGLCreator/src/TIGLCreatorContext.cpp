@@ -519,6 +519,7 @@ void TIGLCreatorContext::setTransparency(int tr)
             myContext->SetTransparency(myContext->SelectedInteractive(), transparency, Standard_True);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsWireframe()
@@ -528,6 +529,7 @@ void TIGLCreatorContext::setObjectsWireframe()
             myContext->SetDisplayMode(myContext->SelectedInteractive(), 0, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsShading()
@@ -537,6 +539,7 @@ void TIGLCreatorContext::setObjectsShading()
             myContext->SetDisplayMode(myContext->SelectedInteractive(), 1, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
@@ -546,6 +549,7 @@ void TIGLCreatorContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
              myContext->SetMaterial (myContext->SelectedInteractive(),  material, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsTexture(const QString &filename)
@@ -569,6 +573,7 @@ void TIGLCreatorContext::setObjectsTexture(const QString &filename)
         }
         QApplication::restoreOverrideCursor();
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setReflectionlinesEnabled(bool enable)
@@ -591,6 +596,7 @@ void TIGLCreatorContext::setObjectsColor(const QColor& color)
         QUndoCommand* command = new TiGLCreator::ChangeObjectsColor(myContext, selected(), color);
         myUndoStack->push(command);
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setFaceBoundariesEnabled(bool enabled) {

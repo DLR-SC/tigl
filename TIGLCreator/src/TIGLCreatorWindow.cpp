@@ -129,6 +129,10 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     myOCC->setContext(myScene);
 
+    // refresh display options UI when the scene reports display-attribute changes
+    connect(myScene, &TIGLCreatorContext::displayAttributesChanged,
+        this, &TIGLCreatorWindow::onSceneDisplayAttributesChanged);
+
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
     // TIGLCreator to also open a document many times.
@@ -1433,6 +1437,27 @@ void TIGLCreatorWindow::onSetColorRequested(const QColor &c)
     if (myScene){
         myScene->setObjectsColor(c);
     }
+}
+
+void TIGLCreatorWindow::onSceneDisplayAttributesChanged()
+{
+    cpcr::CPACSTreeItem* item = nullptr;
+    QString uid;
+    if (treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+    if (!uid.isEmpty() && modificatorModel) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    modificatorContainerWidget->updateDisplayOptionsIfActive(item, cpacsConfiguration, myScene);
 }
 
 void TIGLCreatorWindow::onSetMaterialRequested(const QString &m)
