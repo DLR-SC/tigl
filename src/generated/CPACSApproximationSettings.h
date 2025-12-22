@@ -19,8 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSStringVector.h>
 #include <string>
 #include <tixi.h>
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -52,21 +54,40 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetErrorComputationMethod() const;
+        TIGL_EXPORT virtual void SetErrorComputationMethod(const boost::optional<std::string>& value);
+
         TIGL_EXPORT virtual const boost::optional<int>& GetControlPointNumber_choice1() const;
         TIGL_EXPORT virtual void SetControlPointNumber_choice1(const boost::optional<int>& value);
 
         TIGL_EXPORT virtual const boost::optional<double>& GetMaximumError_choice2() const;
         TIGL_EXPORT virtual void SetMaximumError_choice2(const boost::optional<double>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSStringVector>& GetInterpolatedPointsIndices() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSStringVector>& GetInterpolatedPointsIndices();
+
+        TIGL_EXPORT virtual CCPACSStringVector& GetInterpolatedPointsIndices(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveInterpolatedPointsIndices();
+
     protected:
         CCPACSCurvePointListXYZ* m_parent;
 
-        /// Defines the number of control points that should be used for approximating the given points with a b-spline curve.
-        boost::optional<int>    m_controlPointNumber_choice1;
+        /// Here, the approximation error's computation method can be chosen. The error is computed between the defined points (A) and their respective projections on the approximated curve (B).
+        /// By default, this error is computed as the root mean square error of the distances between (A) and (B).
+        /// In the following, the currently allowed entries are listed together with their meaning (-> respective computation method):
+        /// 1. RMSE: Root Mean Square Error
+        /// 2. MaxError: Maximum Error
+        boost::optional<std::string>        m_errorComputationMethod;
 
-        /// Instead of specifying the number of control points, the upper bound for the root mean square error of the approximation is provided.
+        /// Defines the number of control points that should be used for approximating the given points with a b-spline curve.
+        boost::optional<int>                m_controlPointNumber_choice1;
+
+        /// Instead of specifying the number of control points, the upper bound for the error of the approximation is provided.
         /// The number of control points is increased automatically until the approximation error lies below the given maximum approximation error.
-        boost::optional<double> m_maximumError_choice2;
+        boost::optional<double>             m_maximumError_choice2;
+
+        /// Index list of points that should still be interpolated. Each index is in the range [1, npoints].
+        boost::optional<CCPACSStringVector> m_interpolatedPointsIndices;
 
     private:
         CPACSApproximationSettings(const CPACSApproximationSettings&) = delete;

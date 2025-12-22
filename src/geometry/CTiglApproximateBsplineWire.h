@@ -37,10 +37,8 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire();
-
-    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile);
-    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile);
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;
@@ -77,6 +75,10 @@ private:
     const std::string* m_profileUID;
 
     bool m_isWingProfile;
+
+    const std::string m_approxErrStr; // Currently allowed entries are "root mean square error", "maximum error"
+
+    std::vector<double> m_interpolatedPointsIndices; // Contains indices of points that should still be interpolated
 };
 
 } // end namespace tigl

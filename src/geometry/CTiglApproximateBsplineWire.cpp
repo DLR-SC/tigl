@@ -39,32 +39,29 @@ namespace tigl
 {
 
 // Constructor
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire()
-{
-    continuity = _C0;
-    m_isWingProfile = false;
-}
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+    : continuity(_C0)
+    , m_approximationSettings(nrControlPoints)
+    , m_profileUID(&profileUID)
+    , m_isWingProfile(isWingProfile)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+{}
+
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+    : continuity(_C0)
+    , m_approximationSettings(tolerance)
+    , m_profileUID(&profileUID)
+    , m_isWingProfile(isWingProfile)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+{}
 
 // Destructor
 CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire()
 {
 }
 
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile)
-{
-    continuity = _C0;
-    m_profileUID = &profileUID;
-    m_approximationSettings = nrControlPoints;
-    m_isWingProfile = isWingProfile;
-}
-
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile)
-{
-    continuity = _C0;
-    m_profileUID = &profileUID;
-    m_approximationSettings = tolerance;
-    m_isWingProfile = isWingProfile;
-}
 
 // Builds the wire from the given points
 TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
@@ -114,6 +111,17 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         hpoints->SetValue(j + 1, usedPoints[j]);
     }
 
+    // Define root mean square error as the default approximation error computation method
+    CalcPointVecErrorFct approxErrFct = calcPointVecErrorRMSE;
+    std::string approxErrStrLong = "root mean square error";
+    if (m_approxErrStr == "MaxError") {
+        approxErrFct = calcPointVecErrorMax;
+        approxErrStrLong = "maximum error";
+    }
+    else if (m_approxErrStr != "RMSE"){
+        throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
+    }
+
     Handle(Geom_BSplineCurve) hcurve;
     if (std::holds_alternative<int>(m_approximationSettings)) {
         int nrControlPoints = std::get<int>(m_approximationSettings);
@@ -127,16 +135,26 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
 
         if (m_isWingProfile) {
             // Make sure that the first and last point is still interpolated to ensure a closed wing profile
-            approx.InterpolatePoint(0);
-            approx.InterpolatePoint(hpoints->Length()-1);
+            approx.InterpolatePoint(0, false);
+            approx.InterpolatePoint(hpoints->Length()-1, false);
         }
 
-        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
+        // Account for optional defined indices whose points should be interpolated
+        for(auto idx: m_interpolatedPointsIndices) {
+            int idxInt = (int) idx;
+            if ( idxInt < 1 || points.size() < idxInt) {
+                throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Index " + std::to_string(idxInt) + " in interpolatedPointsIndices must be in range of [1, npoints]");
+            }
+            // User input it 1-based, internal vectors are 0-based
+            approx.InterpolatePoint(idxInt-1, false);
+        }
+
+        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), approxErrFct);
 
         hcurve = approxResult.curve;
         errApproxCalc = approxResult.error;
 
-        LOG(WARNING) << "The profile with uID '" << *m_profileUID << "' is created by approximating the point list using " << hcurve->NbPoles() << " poles. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+        LOG(WARNING) << "The profile '" << *m_profileUID << "' is created by approximating the point list using " << hcurve->NbPoles() << " poles. This leads to a " << approxErrStrLong << " of " << errApproxCalc << "." << std::endl;
     }
     else if (std::holds_alternative<double>(m_approximationSettings)) {
         double maxErrorApprox = std::get<double>(m_approximationSettings);

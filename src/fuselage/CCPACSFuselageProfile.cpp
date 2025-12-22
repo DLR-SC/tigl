@@ -231,6 +231,22 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
         Handle(Geom_BSplineCurve) spline;
         if (m_pointList_choice1->GetApproximationSettings()) {
             auto& approxSettings = m_pointList_choice1->GetApproximationSettings();
+
+            // Define root mean square error as the default approximation error computation method
+            CalcPointVecErrorFct approxErrFct = calcPointVecErrorRMSE;
+            std::string approxErrStr = "root mean square error";
+            if (approxSettings->GetErrorComputationMethod()) {
+                if (*(approxSettings->GetErrorComputationMethod()) == "MaxError") {
+                    approxErrFct = calcPointVecErrorMax;
+                    approxErrStr = "maximum error";
+                }
+                // RMSE set as default case, variables set above
+                // If RMSE is seleted, TiGL just uses the default values
+                else if (*(approxSettings->GetErrorComputationMethod()) != "RMSE"){
+                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
+                }
+            }
+
             double errApproxCalc = -1.;
             if (approxSettings->GetControlPointNumber_choice1()) {
                 int nrControlPoints = approxSettings->GetControlPointNumber_choice1().value();
@@ -240,16 +256,32 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
 
                 CTiglBSplineApproxInterp approx(*occPoints, nrControlPoints, 3, true);
                 for(auto idx : kinks) {
-                    approx.InterpolatePoint(idx, true);
+                    // User input it 1-based, internal vectors are 0-based
+                    approx.InterpolatePoint(idx-1, true);
                 }
+
+                if(approxSettings->GetInterpolatedPointsIndices()) {
+                    auto& interpPointsIndices = approxSettings->GetInterpolatedPointsIndices()->AsVector();
+
+                    // Account for optional defined indices whose points should be interpolated
+                    for(auto idx: interpPointsIndices) {
+                        int idxInt = (int) idx;
+                        if ( idxInt < 1 || GetNumPoints() < idxInt) {
+                            throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: Index " + std::to_string(idxInt) + " in interpolatedPointsIndices must be in range of [1, npoints]");
+                        }
+                        // User input it 1-based, internal vectors are 0-based
+                        approx.InterpolatePoint(idxInt-1, false);
+                    }
+                }
+
                 auto paramsVec = computeParams(occPoints, paramsMap, 0.5);
 
-                CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
+                CTiglApproxResult approxResult = approx.FitCurve(paramsVec, approxErrFct);
 
                 spline = approxResult.curve;
                 errApproxCalc = approxResult.error;
 
-                LOG(WARNING) << "The profile with uID '" << GetUID() << "' is created by approximating the point list using " << spline->NbPoles() << " poles. This leads to a root mean square error of " << errApproxCalc << "." << std::endl;
+                LOG(WARNING) << "The profile '" << GetUID() << "' is created by approximating the point list using " << spline->NbPoles() << " poles. This leads to a " << approxErrStr << " of " << errApproxCalc << "." << std::endl;
             }
             else if (approxSettings->GetMaximumError_choice2()) {
                 throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: 'Max Error' open for implementation");

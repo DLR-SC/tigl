@@ -28,6 +28,8 @@
 #include "CTiglBSplineApproxInterp.h"
 #include "CTiglApproximateBsplineWire.h"
 #include "ITiglWireAlgorithm.h"
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <Precision.hxx>
 
 TEST(WingProfileBugs, getPoint1)
 {
@@ -98,10 +100,18 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
     // Get profile option
     auto& approximationSettings = curve.GetApproximationSettings();
     int nrControlPoints;
+    std::string errorComputationMethod;
+    std::vector<double> interpolatedPointsIndices;
 
+    // Read out options of approximationSettings node
     ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
+    ASSERT_NO_THROW(errorComputationMethod = *(approximationSettings->GetErrorComputationMethod()));
+    ASSERT_NO_THROW(interpolatedPointsIndices = approximationSettings->GetInterpolatedPointsIndices()->AsVector());
+
     ASSERT_TRUE(nrControlPoints == 10);
+    ASSERT_TRUE(errorComputationMethod == "MaxError");
     ASSERT_TRUE(xCoords.size() == zCoords.size());
+    ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
 
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, xCoords.size());
     tigl::ITiglWireAlgorithm::CPointContainer cpoints;
@@ -111,21 +121,41 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
         cpoints.push_back(pnt);
     }
 
-    tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, false);
+
+    // Profile contains one interpolation point to test for more robustness
+    tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3);
+
+    approx.InterpolatePoint(interpolatedPointsIndices[0]-1);
+
     // Make sure that the first and last point is still interpolated to ensure a closed wing profile
     approx.InterpolatePoint(0);
     approx.InterpolatePoint(hpoints->Length()-1);
 
     // Compare two different ways to compute the approximation error
     tigl::CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
-    ASSERT_NEAR(approxResult.error, 0.0061003427082530152, 1e-8);
+    ASSERT_NEAR(approxResult.error, 0.0061707237406683612, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 10);
 
     approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorMax);
-    ASSERT_NEAR(approxResult.error, 0.023468016076850805, 1e-8);
+    ASSERT_NEAR(approxResult.error, 0.023565195267064902, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 10);
 
     // Error should be thrown, because nrControlPoints (=2) is not large enough
     tigl::CTiglApproximateBsplineWire approxDummy(2, "DummyUID", true);
     ASSERT_THROW(approxDummy.BuildWire(cpoints, true), tigl::CTiglError);
+
+    const gp_Pnt pntStart(1., 0., 0.); // Starting point in CPACS configuration
+    const gp_Pnt pntEnd(1., 0., 0.); // Last point in CPACS configuration
+    const gp_Pnt pntInterp(0.975456, 0., -0.001938); // As defined as interpolation point in CPACS configuration
+
+    // Check whether wanted points are really interpolated
+    // => distance between point and its orthogonal projection on the curve has to vanish
+    GeomAPI_ProjectPointOnCurve projectStartPnt(pntStart, approxResult.curve);
+    ASSERT_TRUE(projectStartPnt.LowerDistance() < Precision::Confusion());
+
+    GeomAPI_ProjectPointOnCurve projectEndPnt(pntEnd, approxResult.curve);
+    ASSERT_TRUE(projectEndPnt.LowerDistance() < Precision::Confusion());
+
+    GeomAPI_ProjectPointOnCurve projectInterp(pntInterp, approxResult.curve);
+    ASSERT_TRUE(projectInterp.LowerDistance() < Precision::Confusion());
 }

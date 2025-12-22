@@ -65,6 +65,14 @@ namespace generated
 
     void CPACSApproximationSettings::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute errorComputationMethod
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "errorComputationMethod")) {
+            m_errorComputationMethod = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "errorComputationMethod");
+            if (m_errorComputationMethod->empty()) {
+                LOG(WARNING) << "Optional attribute errorComputationMethod is present but empty at xpath " << xpath;
+            }
+        }
+
         // read element controlPointNumber
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlPointNumber")) {
             m_controlPointNumber_choice1 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/controlPointNumber");
@@ -75,6 +83,17 @@ namespace generated
             m_maximumError_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maximumError");
         }
 
+        // read element interpolatedPointsIndices
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/interpolatedPointsIndices")) {
+            m_interpolatedPointsIndices = boost::in_place(this);
+            try {
+                m_interpolatedPointsIndices->ReadCPACS(tixiHandle, xpath + "/interpolatedPointsIndices");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read interpolatedPointsIndices at xpath " << xpath << ": " << e.what();
+                m_interpolatedPointsIndices = boost::none;
+            }
+        }
+
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -82,9 +101,21 @@ namespace generated
 
     void CPACSApproximationSettings::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        const std::vector<std::string> childElemOrder = { "controlPointNumber", "maximumError", "interpolatedPointsIndices" };
+
+        // write attribute errorComputationMethod
+        if (m_errorComputationMethod) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "errorComputationMethod", *m_errorComputationMethod);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "errorComputationMethod")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "errorComputationMethod");
+            }
+        }
+
         // write element controlPointNumber
         if (m_controlPointNumber_choice1) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/controlPointNumber");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/controlPointNumber", childElemOrder);
             tixi::TixiSaveElement(tixiHandle, xpath + "/controlPointNumber", *m_controlPointNumber_choice1);
         }
         else {
@@ -95,12 +126,23 @@ namespace generated
 
         // write element maximumError
         if (m_maximumError_choice2) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/maximumError");
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/maximumError", childElemOrder);
             tixi::TixiSaveElement(tixiHandle, xpath + "/maximumError", *m_maximumError_choice2);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/maximumError")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/maximumError");
+            }
+        }
+
+        // write element interpolatedPointsIndices
+        if (m_interpolatedPointsIndices) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/interpolatedPointsIndices", childElemOrder);
+            m_interpolatedPointsIndices->WriteCPACS(tixiHandle, xpath + "/interpolatedPointsIndices");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/interpolatedPointsIndices")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/interpolatedPointsIndices");
             }
         }
 
@@ -136,6 +178,16 @@ namespace generated
         ;
     }
 
+    const boost::optional<std::string>& CPACSApproximationSettings::GetErrorComputationMethod() const
+    {
+        return m_errorComputationMethod;
+    }
+
+    void CPACSApproximationSettings::SetErrorComputationMethod(const boost::optional<std::string>& value)
+    {
+        m_errorComputationMethod = value;
+    }
+
     const boost::optional<int>& CPACSApproximationSettings::GetControlPointNumber_choice1() const
     {
         return m_controlPointNumber_choice1;
@@ -154,6 +206,28 @@ namespace generated
     void CPACSApproximationSettings::SetMaximumError_choice2(const boost::optional<double>& value)
     {
         m_maximumError_choice2 = value;
+    }
+
+    const boost::optional<CCPACSStringVector>& CPACSApproximationSettings::GetInterpolatedPointsIndices() const
+    {
+        return m_interpolatedPointsIndices;
+    }
+
+    boost::optional<CCPACSStringVector>& CPACSApproximationSettings::GetInterpolatedPointsIndices()
+    {
+        return m_interpolatedPointsIndices;
+    }
+
+    CCPACSStringVector& CPACSApproximationSettings::GetInterpolatedPointsIndices(CreateIfNotExistsTag)
+    {
+        if (!m_interpolatedPointsIndices)
+            m_interpolatedPointsIndices = boost::in_place(this);
+        return *m_interpolatedPointsIndices;
+    }
+
+    void CPACSApproximationSettings::RemoveInterpolatedPointsIndices()
+    {
+        m_interpolatedPointsIndices = boost::none;
     }
 
 } // namespace generated

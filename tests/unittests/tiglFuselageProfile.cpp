@@ -23,6 +23,8 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglBSplineApproxInterp.h"
 #include "ITiglWireAlgorithm.h"
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <Precision.hxx>
 
 TEST(FuselageProfile, getHeight_getWidth)
 {
@@ -72,23 +74,34 @@ TEST(FuselageProfile, getHeight_getWidth)
 TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
 {
     TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
-    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+    tigl::CCPACSCurvePointListXYZ profile(nullptr);
 
-    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList"));
+    // Read approximated profile that computes the error as RMSE
+    ASSERT_NO_THROW(profile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[1]/pointList"));
 
     // Get points
-    auto yCoords = curve.GetY().AsVector();
-    auto zCoords = curve.GetZ().AsVector();
+    auto yCoords = profile.GetY().AsVector();
+    auto zCoords = profile.GetZ().AsVector();
 
     // Get profile options
-    auto paramsMap = curve.GetParamsAsMap();
-    auto kinks = curve.GetKinksAsVector();
-    auto& approximationSettings = curve.GetApproximationSettings();
-    int nrControlPoints;
+    auto paramsMap = profile.GetParamsAsMap();
+    auto kinks = profile.GetKinksAsVector();
+    auto& approximationSettings = profile.GetApproximationSettings();
 
+    int nrControlPoints;
+    std::string errorComputationMethod;
+    std::vector<double> interpolatedPointsIndices;
+
+    // Read out options of approximationSettings node
     ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
+    ASSERT_NO_THROW(errorComputationMethod = *(approximationSettings->GetErrorComputationMethod()));
+    ASSERT_NO_THROW(interpolatedPointsIndices = approximationSettings->GetInterpolatedPointsIndices()->AsVector());
+
     ASSERT_TRUE(nrControlPoints == 12);
+    ASSERT_TRUE(errorComputationMethod == "RMSE");
     ASSERT_TRUE(yCoords.size() == zCoords.size());
+    ASSERT_TRUE(kinks.size() == 1);
+    ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
 
     Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, yCoords.size());
     tigl::ITiglWireAlgorithm::CPointContainer cpoints;
@@ -97,19 +110,30 @@ TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
         hpoints->SetValue(j + 1, pnt);
     }
 
-    // Profile contains one kink to test for more robustness
+    // Profile contains one kink and one additional interpolation point to test for more robustness
     tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, true);
-    for(auto idx : kinks) {
-        approx.InterpolatePoint(idx, true);
-    }
+    approx.InterpolatePoint(kinks[0]-1, true);
+    approx.InterpolatePoint(interpolatedPointsIndices[0]-1, false);
+
     auto paramsVec = tigl::computeParams(hpoints, paramsMap, 0.5);
 
     // Compare two different ways to compute the approximation error
     tigl::CTiglApproxResult approxResult = approx.FitCurve(paramsVec, calcPointVecErrorRMSE);
-    ASSERT_NEAR(approxResult.error, 0.012737449282103385, 1e-8);
+    ASSERT_NEAR(approxResult.error, 0.016571963592557491, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 15);
 
     approxResult = approx.FitCurve(paramsVec, calcPointVecErrorMax);
-    ASSERT_NEAR(approxResult.error, 0.04210473367562604, 1e-8);
+    ASSERT_NEAR(approxResult.error, 0.068584746277230407, 1e-8);
     ASSERT_EQ(approxResult.curve->NbPoles(), 15);
+
+    const gp_Pnt pntKink(0., 0.999999, 0.); // As defined as kink in CPACS configuration
+    const gp_Pnt pntInterp(0., -0.853516, 0.); // As defined as interpolation point in CPACS configuration
+
+    // Check whether wanted points are really interpolated
+    // => distance between point and its orthogonal projection on the curve has to vanish
+    GeomAPI_ProjectPointOnCurve projectKink(pntKink, approxResult.curve);
+    ASSERT_TRUE(projectKink.LowerDistance() < Precision::Confusion());
+
+    GeomAPI_ProjectPointOnCurve projectInterp(pntInterp, approxResult.curve);
+    ASSERT_TRUE(projectInterp.LowerDistance() < Precision::Confusion());
 }

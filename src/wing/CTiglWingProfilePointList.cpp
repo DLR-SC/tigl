@@ -92,15 +92,35 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
     , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
-    // Profile points are approximated, not interpolated
-    if (cpacsPointList.GetApproximationSettings()) {
-        if (cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1()) {
-            int nrControlPoints = *(cpacsPointList.GetApproximationSettings()->GetControlPointNumber_choice1());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true);
+    // Profile points are approximated, not interpolated. Read out and pass the corresponding options
+    auto& approxSettings = cpacsPointList.GetApproximationSettings();
+    if (approxSettings) {
+
+        // Determine the method that should be used to compute the approximation error
+        // RMSE defined as default
+        std::string approxErrStr = "RMSE";
+        if (approxSettings->GetErrorComputationMethod()) {
+            if (*(approxSettings->GetErrorComputationMethod()) == "MaxError") {
+                approxErrStr = "MaxError";
+            }
+            // If RMSE is seleted, TiGL just uses the default value
+            else if (*(approxSettings->GetErrorComputationMethod()) != "RMSE"){
+                throw CTiglError("CTiglWingProfilePointList: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
+            }
         }
-        else if (cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2()) {
-            double tolerance = *(cpacsPointList.GetApproximationSettings()->GetMaximumError_choice2());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true);
+        // Pass the (optional) list of indices whose belonging points should still be interpolated
+        std::vector<double> interpPointsIndices = std::vector<double>{};
+        if(approxSettings->GetInterpolatedPointsIndices()) {
+            interpPointsIndices = approxSettings->GetInterpolatedPointsIndices()->AsVector();
+        }
+
+        if (approxSettings->GetControlPointNumber_choice1()) {
+            int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true, approxErrStr, interpPointsIndices);
+        }
+        else if (approxSettings->GetMaximumError_choice2()) {
+            double tolerance = *(approxSettings->GetMaximumError_choice2());
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true, approxErrStr, interpPointsIndices);
         }
         else {
             throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
