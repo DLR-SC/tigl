@@ -34,7 +34,7 @@
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
-
+#include <QTimer>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -62,7 +62,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
-
+ 
     doc = newDoc;
     resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
@@ -977,16 +977,37 @@ QVariant ModificatorModel::headerData(int section, Qt::Orientation orientation, 
 
 QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 {
+    if (!configurationIsSet()) return QVariant();
+
     if (!index.isValid() || !isValid()) {
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role !=Qt::UserRole) {
+    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole) {
         return QVariant();
     }
 
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
+
+    if (role == Qt::CheckStateRole && index.column() == 0) {
+        if (!item) {
+            return QVariant();
+        }
+
+        // Only show a checkbox if the item is checkable
+        if (!(flags(index) & Qt::ItemIsUserCheckable)) {
+            return QVariant();
+        }
+
+        // get visibility state and check or uncheck accordingly
+        std::string uid = item->getUid();
+        if (!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
+            bool vis = scene->GetShapeManager().GetVisibility(uid);
+            return vis ? Qt::Checked : Qt::Unchecked;
+        }
+        
+    }
 
     if (role == Qt::UserRole) {
         // we use Qt::UserRole to mark eligable parents for context menus in the tree view
@@ -1007,11 +1028,115 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
     else if (index.column() == 2 ) {
         data = QString(item->getUid().c_str());
     }
-    else {
-        data = QVariant();
-    }
 
     return data;
+}
+
+bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    if (!configurationIsSet()) {
+        return false;
+    }
+
+    if (!index.isValid()) {
+        return false;
+    }
+
+    if (role != Qt::CheckStateRole || index.column() != 0) {
+        return QAbstractItemModel::setData(index, value, role);
+    }
+
+    cpcr::CPACSTreeItem* item = getItem(index);
+    if (!item) {    
+        return false;
+    }
+
+    const bool visible = (value.toInt() == Qt::Checked);
+    std::vector<QModelIndex> changedIdxs;
+    std::vector<std::string> changedUIDs;
+
+    // update visibility
+    auto mark_as_changed = [&](cpcr::CPACSTreeItem* node) {
+        if (!node) {
+            return;
+        }
+        const std::string uid = node->getUid();
+        if (uid.empty() || !doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
+            return;
+        }
+
+        const QModelIndex idx = getIndex(node, 0);
+        if (idx.isValid()) {
+            changedIdxs.push_back(idx);
+        }
+        changedUIDs.push_back(uid);
+    };
+
+    // Hide all displayed children recursively if hiding a UID
+    if (!visible) {
+        std::function<void(cpcr::CPACSTreeItem*)> mark_recursive = [&](cpcr::CPACSTreeItem* node) {
+            if (!node) {
+                return; 
+            }
+            if (scene->GetShapeManager().GetVisibility(node->getUid())) {
+                mark_as_changed(node);
+            }
+            for (auto* child : node->getChildren()) {
+                mark_recursive(child);
+            }
+        };
+        mark_recursive(item);
+    }
+    else {
+        mark_as_changed(item);
+    }
+
+    // Notify views
+    for (const auto& idx : changedIdxs) {
+        emit dataChanged(idx, idx, {Qt::CheckStateRole});
+    }
+
+    for (const auto& uid : changedUIDs) {
+        QString quid = QString::fromStdString(uid);
+        emit componentVisibilityChanged(quid, visible);
+    }
+
+    // Update parent aggregate states
+    for (QModelIndex p = parent(index); p.isValid(); p = parent(p))
+        emit dataChanged(p, p, {Qt::CheckStateRole});
+
+    return true;
+}
+
+Qt::ItemFlags ModificatorModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid()) { 
+        return Qt::NoItemFlags;
+    }   
+
+    Qt::ItemFlags f = QAbstractItemModel::flags(index);
+    if (index.column() != 0) {
+        return f;
+    }
+
+    cpcr::CPACSTreeItem* item = getItem(index);
+    if (!item) {
+        return f;
+    }
+
+    const std::string uid = item->getUid();
+    if ((!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid))) {
+        const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
+        auto it = shapes.find(uid);
+        if (it != shapes.end() && it->second != nullptr) {
+            tigl::ITiglGeometricComponent* comp = it->second;
+            if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                f |= Qt::ItemIsUserCheckable;
+            }
+        }
+    }
+
+    return f;
 }
 
 // return the index of the parent
@@ -1075,7 +1200,7 @@ QModelIndex ModificatorModel::getIdxForUID(std::string uid) const
     }
 }
 
-std::string ModificatorModel::getUidForIdx(QModelIndex idx)
+std::string ModificatorModel::getUidForIdx(QModelIndex idx) const
 {
     if (!isValid()) {
         return "";

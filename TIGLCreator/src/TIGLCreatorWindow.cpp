@@ -172,6 +172,9 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    // connect model visibility changes to the scene
+    connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
+
     connectSignals();
     createMenus();
     updateMenus();
@@ -181,7 +184,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
     setMinimumSize(160, 160);
-
 
 }
 
@@ -320,6 +322,7 @@ void TIGLCreatorWindow::closeConfiguration()
     modificatorModel->setCPACSConfiguration(nullptr); // it will also reset the treeview
     treeWidget->refresh();
     if (cpacsConfiguration) {
+
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
@@ -329,6 +332,7 @@ void TIGLCreatorWindow::closeConfiguration()
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
+    getScene()->GetShapeManager().clear();
 }
 
 void TIGLCreatorWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -370,6 +374,8 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 
         if (fileType.toLower() == tr("xml")) {
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+
+
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
@@ -425,8 +431,15 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
+        std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
+        getScene()->GetShapeManager().clear();
+        modificatorModel->setCPACSConfiguration(nullptr);
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+        getScene()->deleteAllObjects();
+        for (const auto& name : displayedShapeNames) {
+                    cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
+        }
         treeWidget->refresh();
     }
     else {
@@ -1063,6 +1076,33 @@ void TIGLCreatorWindow::connectSignals()
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
 
+void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)
+{
+    if (!cpacsConfiguration) return;
+
+    try {
+        // find interactive objects for the given uid
+        if (visible) {
+            cpacsConfiguration->drawComponentByUID(uid);
+        }
+        else {
+            auto& shapeManager = myScene->GetShapeManager();
+            if (shapeManager .HasShapeEntry(uid.toStdString())) {
+                auto objs = shapeManager .GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+            else {
+                throw tigl::CTiglError("Component with UID " + uid.toStdString() + " not found in shape manager");
+            }
+        }
+        myScene->getViewer()->Update();
+    }
+    catch (tigl::CTiglError& ) {
+        throw tigl::CTiglError("Error changing visibility of component with UID " + uid.toStdString());
+    }
+}
 
 void TIGLCreatorWindow::createMenus()
 {

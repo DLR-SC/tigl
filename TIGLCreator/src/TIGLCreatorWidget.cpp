@@ -682,7 +682,7 @@ void TIGLCreatorWidget::setTransparency()
     dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
 
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    dialog->setIntValue(0); // TODO: Include this value within the scene graph and set value to current and not a hard-wired default
+    dialog->setIntValue(0); // TODO: Include this value within the Geometry Nodes and set value to current and not a hard-wired default
     dialog->setIntRange(0, 100);
 
     dialog->show();
