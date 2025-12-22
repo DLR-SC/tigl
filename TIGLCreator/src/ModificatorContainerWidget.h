@@ -16,11 +16,13 @@
  * limitations under the License.
  */
 
-#ifndef MODIFICATORCONTAINERWIDGET_H
-#define MODIFICATORCONTAINERWIDGET_H
+#pragma once
 
-#include <QWidget>
+#include "modificators/CpacsEditorBase.h"
+#include "modificators/ModificatorDisplayOptionsWidget.h"
+#include <QTabWidget>
 #include <QPushButton>
+#include "TIGLCreatorContext.h"
 #include "modificators/ModificatorWingWidget.h"
 #include "modificators/ModificatorFuselageWidget.h"
 #include "modificators/ModificatorTransformationWidget.h"
@@ -51,13 +53,18 @@ class ModificatorContainerWidget;
  * or cancel button is pressed, the correct function will be called on the wing widget.
  *
  */
-class ModificatorContainerWidget : public QWidget
+class ModificatorContainerWidget : public CpacsEditorBase
 {
     Q_OBJECT
 
 signals:
-    void undoCommandRequired();
     void addProfileRequested(QString const&);
+    void parametersTabRequested();
+    void displayOptionsRequested();
+    void setTransparencyRequested(int);
+    void setRenderingModeRequested(int);
+    void setColorRequested(const QColor&);
+    void setMaterialRequested(const QString&);
     void addWingRequested();
     void deleteWingRequested();
     void addFuselageRequested();
@@ -99,7 +106,14 @@ public:
 
     void setNoInterfaceWidget();
 
+    void setDisplayOptionsModificator();
+    void setDisplayOptionsFromItem(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context=nullptr);
+    void updateDisplayOptionsIfActive(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context=nullptr);
+
     void hideAllSpecializedWidgets();
+
+private slots:
+    void onEditorTabChanged(int idx);
 
 private:
     Ui::ModificatorContainerWidget* ui;
@@ -110,4 +124,3 @@ private:
 
 };
 
-#endif // MODIFICATORCONTAINERWIDGET_H

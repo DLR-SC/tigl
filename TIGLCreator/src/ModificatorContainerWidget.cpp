@@ -19,12 +19,16 @@
 #include "ModificatorContainerWidget.h"
 #include "ui_ModificatorContainerWidget.h"
 #include "CTiglLogging.h"
+#include <QVBoxLayout>
 
 ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
-    : QWidget(parent)
+    : CpacsEditorBase(parent)
     , ui(new Ui::ModificatorContainerWidget)
 {
     ui->setupUi(this);
+
+
+    connect(ui->editorTabWidget, &QTabWidget::currentChanged, this, &ModificatorContainerWidget::onEditorTabChanged);
 
     setNoInterfaceWidget();
 
@@ -48,6 +52,17 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
 
     connect(ui->sectionsModificator, SIGNAL(addSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardAddSectionRequested(Ui::ElementModificatorInterface&)));
     connect(ui->sectionsModificator, SIGNAL(deleteSectionRequested(Ui::ElementModificatorInterface&)), this, SLOT(forwardDeleteSectionRequested(Ui::ElementModificatorInterface&)));
+
+    // Signals from the display options widget to allow the main window
+    // to apply viewer/context changes (transparency, color, material, rendering)
+    connect(ui->displayOptionsWidget, &ModificatorDisplayOptionsWidget::setTransparencyRequested,
+        this, &ModificatorContainerWidget::setTransparencyRequested);
+    connect(ui->displayOptionsWidget, &ModificatorDisplayOptionsWidget::setRenderingModeRequested,
+        this, &ModificatorContainerWidget::setRenderingModeRequested);
+    connect(ui->displayOptionsWidget, &ModificatorDisplayOptionsWidget::setColorRequested,
+        this, &ModificatorContainerWidget::setColorRequested);
+    connect(ui->displayOptionsWidget, &ModificatorDisplayOptionsWidget::setMaterialRequested,
+        this, &ModificatorContainerWidget::setMaterialRequested);
 }
 
 ModificatorContainerWidget::~ModificatorContainerWidget()
@@ -75,6 +90,7 @@ void ModificatorContainerWidget::hideAllSpecializedWidgets()
     ui->sectionModificator->setVisible(visible);
     ui->sectionsModificator->setVisible(visible);
     ui->positioningModificator->setVisible(visible);
+    ui->displayOptionsWidget->setVisible(visible);
     currentModificator = nullptr;
 }
 
@@ -175,8 +191,49 @@ void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSFuselage&
 void ModificatorContainerWidget::setNoInterfaceWidget()
 {
     hideAllSpecializedWidgets();
+    if (ui->editorTabWidget) {
+        ui->editorTabWidget->setCurrentIndex(0);
+    }
     ui->noInterfaceWidget->setVisible(true);
     currentModificator = nullptr;
+}
+
+void ModificatorContainerWidget::setDisplayOptionsModificator()
+{
+    hideAllSpecializedWidgets();
+    ui->displayOptionsWidget->setVisible(true);
+    ui->applyWidget->setVisible(true);
+    currentModificator = ui->displayOptionsWidget;
+}
+
+void ModificatorContainerWidget::updateDisplayOptionsIfActive(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context)
+{
+    if (!ui) return;
+    // If the display options tab is currently active (assumed index 1), reload the widget
+    if (ui->editorTabWidget && ui->editorTabWidget->currentIndex() == 1) {
+        setDisplayOptionsModificator();
+        setDisplayOptionsFromItem(item, doc, context);
+    }
+}
+
+void ModificatorContainerWidget::onEditorTabChanged(int idx)
+{
+    if (idx == 1) {
+        emit displayOptionsRequested();
+        setDisplayOptionsModificator();
+    }
+    else if (idx == 0) {
+        setNoInterfaceWidget();
+        emit parametersTabRequested();
+    }
+}
+
+void ModificatorContainerWidget::setDisplayOptionsFromItem(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context)
+{
+    if (!ui) return;
+    if (ui->displayOptionsWidget) {
+        ui->displayOptionsWidget->setFromItem(item, doc, context);
+    }
 }
 
 void ModificatorContainerWidget::applyCurrentModifications()
