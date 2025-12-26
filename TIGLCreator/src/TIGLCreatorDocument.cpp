@@ -2978,6 +2978,10 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     START_COMMAND();
 
     std::string modelUID = GetConfiguration().GetUID();
+
+    //save filepath from old configuration
+    const char* cCPACSPath = GetLoadedConfigurationFileName().toStdString().c_str();
+
     tiglCloseCPACSConfiguration(m_cpacsHandle);
     m_cpacsHandle = -1;
     app->getScene()->deleteAllObjects();
@@ -2987,6 +2991,10 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     TixiDocumentHandle tixiHandle = -1;
 
     ReturnCode tixiRet = tixiImportFromString(tixiContent.c_str(), &tixiHandle);
+
+    //set future filepath for new configuration to former config-path
+    tixiSetDocumentPath(tixiHandle, cCPACSPath);
+
     if (tixiRet != SUCCESS) {
         displayError(QString("TIGLCreatorDocument::updateCpacsConfigurationFromString: Error in function "
                              "<u>tixiOpenDocument</u> when importing the string Error code: %1")
