@@ -128,6 +128,15 @@
       </item>
      </layout>
     </item>
+  <item>
+   <widget class="QPushButton" name="buttonResetOptions">
+    <property name="sizePolicy">
+    </property>
+    <property name="text">
+     <string>Reset Options</string>
+    </property>
+   </widget>
+  </item>
   </layout>
  </widget>
  <resources/>

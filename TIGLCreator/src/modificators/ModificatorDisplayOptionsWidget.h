@@ -57,6 +57,7 @@ private slots:
     void onRenderingModeChanged(int id);
     void onColorChosen();
     void onMaterialChanged(const QString& mat);
+    void onResetOptions();
 
 signals:
     void setTransparencyRequested(int value);
@@ -74,6 +75,7 @@ private:
     QComboBox* renderingModeCombo{nullptr};
     QPushButton* buttonColorChoser{nullptr};
     QComboBox* materialCombo{nullptr};
+    QPushButton* buttonResetOptions{nullptr};
 
     // Callbacks mapped to indices of ui->drawOptionsCombo (used for wing draw options)
     std::vector<std::function<void()>> drawCallbacks;

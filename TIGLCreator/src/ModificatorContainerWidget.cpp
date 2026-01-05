@@ -100,7 +100,6 @@ void ModificatorContainerWidget::setTransformationModificator(tigl::CCPACSTransf
     ui->transformationModificator->setTransformation(transformation, config);
     ui->transformationModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->transformationModificator;
 }
 
@@ -110,7 +109,6 @@ void ModificatorContainerWidget::setWingModificator(tigl::CCPACSWing& wing)
     ui->wingModificator->setWing(wing, profilesDB);
     ui->wingModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->wingModificator;
 }
 
@@ -120,7 +118,6 @@ void ModificatorContainerWidget::setWingsModificator()
     hideAllSpecializedWidgets();
     ui->wingsModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->wingsModificator;
 }
 
@@ -130,7 +127,6 @@ void ModificatorContainerWidget::setFuselageModificator(tigl::CCPACSFuselage& fu
     ui->fuselageModificator->setFuselage(fuselage, profilesDB);
     ui->fuselageModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->fuselageModificator;
 }
 
@@ -140,7 +136,6 @@ void ModificatorContainerWidget::setFuselagesModificator()
     hideAllSpecializedWidgets();
     ui->fuselagesModificator->setVisible(true);
     ui->applyWidget->setVisible(false);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->fuselagesModificator;
 }
 
@@ -150,7 +145,6 @@ void ModificatorContainerWidget::setElementModificator(tigl::CTiglSectionElement
     ui->elementModificator->setElement(element, profilesDB);
     ui->elementModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->elementModificator;
 }
 
@@ -160,7 +154,6 @@ void ModificatorContainerWidget::setSectionModificator(QList<tigl::CTiglSectionE
     ui->sectionModificator->setAssociatedElements(elements, profilesDB);
     ui->sectionModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->sectionModificator;
 }
 
@@ -170,7 +163,6 @@ void ModificatorContainerWidget::setSectionsModificator(const Ui::ElementModific
     hideAllSpecializedWidgets();
     ui->sectionsModificator->setCreateConnectedElement(element);
     ui->sectionsModificator->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->sectionModificator;
 }
 
@@ -181,7 +173,6 @@ void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSWing& win
     ui->positioningModificator->setPositioning(wing, positioning);
     ui->positioningModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->positioningModificator;
 }
 
@@ -193,7 +184,6 @@ void ModificatorContainerWidget::setPositioningModificator(tigl::CCPACSFuselage&
     ui->positioningModificator->setPositioning(fuselage, positioning);
     ui->positioningModificator->setVisible(true);
     ui->applyWidget->setVisible(true);
-    ui->editorTabWidget->setCurrentIndex(0);
     currentModificator = ui->positioningModificator;
 }
 
@@ -214,6 +204,16 @@ void ModificatorContainerWidget::setDisplayOptionsModificator()
     ui->displayOptionsWidget->setVisible(true);
     ui->applyWidget->setVisible(true);
     currentModificator = ui->displayOptionsWidget;
+}
+
+void ModificatorContainerWidget::updateDisplayOptionsIfActive(cpcr::CPACSTreeItem* item, TIGLCreatorDocument* doc, TIGLCreatorContext* context)
+{
+    if (!ui) return;
+    // If the display options tab is currently active (assumed index 1), reload the widget
+    if (ui->editorTabWidget && ui->editorTabWidget->currentIndex() == 1) {
+        setDisplayOptionsModificator();
+        setDisplayOptionsFromItem(item, doc, context);
+    }
 }
 
 void ModificatorContainerWidget::onEditorTabChanged(int idx)

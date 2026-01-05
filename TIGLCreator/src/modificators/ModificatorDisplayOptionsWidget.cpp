@@ -30,6 +30,7 @@
 #include "TIGLCreatorMaterials.h"
 #include "../TIGLCreatorContext.h"
 #include "ui_ModificatorDisplayOptionsWidget.h"
+#include <QFileDialog>
 #include "TIGLCreatorWindow.h"
 
 #define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
@@ -44,10 +45,12 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     transparencySlider = ui->transparencySlider;
     renderingModeCombo = ui->renderingModeCombo;
     buttonColorChoser = ui->buttonColorChoser;
+    buttonResetOptions = ui->buttonResetOptions;
     materialCombo = ui->materialCombo;
 
     renderingModeCombo->addItem("Wireframe", 0);
     renderingModeCombo->addItem("Shaded", 1);
+    renderingModeCombo->addItem("Textured", 2);
     // populate materials list after ui setup
     materialCombo->clear();
     for (const auto &kv : tiglMaterials::materialMap) {
@@ -59,8 +62,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     connect(renderingModeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRenderingModeChanged(int)));
     connect(materialCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onMaterialChanged(const QString &)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
-
-    // Wing draw actions are invoked via the drawOptionsCombo callbacks (set in setFromItem)
+    connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
@@ -85,6 +87,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->labelColor->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
+            ui->buttonResetOptions->setVisible(false);
             ui->drawOptionsCombo->setVisible(false);
         }
         currentItem = nullptr;
@@ -109,6 +112,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->buttonColorChoser->setVisible(true);
                         ui->labelMaterial->setVisible(true);
                         ui->materialCombo->setVisible(true);
+                        ui->buttonResetOptions->setVisible(true);
                         ui->drawOptionsCombo->setVisible(true);
                     }
                 
@@ -153,6 +157,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->labelColor->setVisible(false);
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
+                ui->buttonResetOptions->setVisible(false);
                 ui->drawOptionsCombo->setVisible(false);
             }
         }
@@ -308,13 +313,13 @@ void ModificatorDisplayOptionsWidget::onTransparencyChanged(int value)
     }
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     Standard_Real tr = value * 0.01;
-    auto ctx = currentContext->getContext();
+    auto context = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-        if (!ctx.IsNull()) {
-            ctx->SetTransparency(obj, tr, Standard_True);
+        if (!context.IsNull()) {
+            context->SetTransparency(obj, tr, Standard_True);
         }
     }
     if (!currentContext->getContext().IsNull()) {
@@ -330,19 +335,31 @@ void ModificatorDisplayOptionsWidget::onRenderingModeChanged(int displayMode)
     if (!currentItem) {
         return;
     }
+    auto context = currentContext->getContext();
+
+    if (displayMode == 2) { // Textured
+        QString fileName = QFileDialog::getOpenFileName (this,
+                                                     tr("Choose texture image"),
+                                                     QString(),
+                                                     tr("Images (*.png *.jpeg *.jpg *.bmp);") );
+
+        if (!fileName.isEmpty()) {
+            currentContext->setObjectsTexture(fileName);
+        }
+    }
+
     const QString uid = QString::fromStdString(currentItem->getUid());
     if (uid.isEmpty()) {
         return;
     }
     auto &sm = currentContext->GetShapeManager();
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-    auto ctx = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-        if (!ctx.IsNull()) {
-            ctx->SetDisplayMode(obj, displayMode, Standard_True);
+        if (!context.IsNull()) {
+            context->SetDisplayMode(obj, displayMode, Standard_True);
         }
     }
     if (!currentContext->getContext().IsNull()) {
@@ -434,4 +451,37 @@ void ModificatorDisplayOptionsWidget::onMaterialChanged(const QString &mat)
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }
+}
+
+void ModificatorDisplayOptionsWidget::onResetOptions()
+{
+    if (!currentContext) {
+        return;
+    }
+    if (!currentItem) {
+        return;
+    }
+    const QString uid = QString::fromStdString(currentItem->getUid());
+    if (uid.isEmpty()) {
+        return;
+    }
+    auto &sm = currentContext->GetShapeManager();
+    auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+    auto context = currentContext->getContext();
+    for (auto &obj : objs) {
+        if (obj.IsNull()) {
+            continue;
+        }
+        if (!context.IsNull()) {
+            // redraw component to reset options (necessary to reset different colors on mirrored components)
+            context->Remove(obj, Standard_False);
+            sm.removeObject(obj);
+            currentDoc->drawComponentByUID(uid);
+        }
+    }
+    if (!currentContext->getContext().IsNull()) {
+        currentContext->updateViewer();
+    }
+
+    setFromItem(currentItem, currentDoc, currentContext);
 }
