@@ -1312,6 +1312,13 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
         else if (*obj.type == typeid(tigl::CCPACSLeadingEdgeDevice)) {
             auto* led = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
             app->getScene()->displayShape(led->GetLoft(), false, Quantity_NOC_GREEN);
+
+             // if flap has mirrored loft, display it too (not mirrored), to later update its transform and then mirror it
+            PNamedShape mirrored_loft = led->GetMirroredLoft();
+            if (mirrored_loft) { 
+                PNamedShape mirror_named(new CNamedShape(led->GetLoft()->Shape(), (led->GetUID() + "M").c_str()));
+                auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
+            }
             updateFlapTransform(led->GetUID());
         }
     }
@@ -1337,7 +1344,7 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
             mflaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+"M");
-            }
+        }
         catch (const tigl::CTiglError&) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
                          QString("Error"));
@@ -1351,6 +1358,8 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 
             flaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+            mflaps =
+                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+"M");
         }
         catch (const tigl::CTiglError&) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
