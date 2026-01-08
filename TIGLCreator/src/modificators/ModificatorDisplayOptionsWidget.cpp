@@ -166,7 +166,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
         // Populate draw options combo when the selected item is a wing (type or uid == "wing").
         ui->drawOptionsCombo->clear();
         drawCallbacks.clear();
-        if (doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString())) {
+        if (!uid.isEmpty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString())) {
             auto type = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
 
             if (type == TIGL_COMPONENT_WING) {
