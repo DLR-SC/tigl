@@ -65,6 +65,7 @@
 #include "CTiglPoint.h"
 #include "CTiglError.h"
 #include "TIGLCreatorSettings.h"
+#include "CTiglTransformation.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLCreatorWindow.h"
 #include "TIGLCreatorEtaXsiDialog.h"
@@ -81,6 +82,8 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 #include "CTiglExportCollada.h"
+#include "CNamedShape.h"
+#include "TiglSymmetryAxis.h"
 #include "CCPACSWingCSStructure.h"
 #include "CCPACSWingSparSegment.h"
 #include "CCPACSWingRibsDefinition.h"
@@ -775,12 +778,12 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                 if (loft) {
                     double opacity = 0;
                     bool shaded = true;
-                    // By default, we display the wing without cutouts (for performance). 
+                    // By default, we display the wing without cutouts (for performance).
                     // Therefore, it is visually better to display the flaps using a wireframe rendering by default
                     if (component.GetComponentType() == TIGL_COMPONENT_CONTROL_SURFACE_DEVICE) {
                         shaded = false;
                     }
-                    
+
                     auto shape = app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
                     app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
 
@@ -823,10 +826,10 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
 
 void TIGLCreatorDocument::drawControlPointNet()
 {
-    auto pre_filter = [](auto* shape) { 
+    auto pre_filter = [](auto* shape) {
         return shape != nullptr &&
             shape->GetComponentType() != TIGL_COMPONENT_PLANE &&
-            shape->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT; 
+            shape->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT;
     };
 
     TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app, pre_filter);
@@ -931,7 +934,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
 void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
 {
     tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);
-    
+
     std::vector<TiglGeometricComponentType> shapesToDraw;
     shapesToDraw.push_back(TIGL_COMPONENT_FUSELAGE);
     shapesToDraw.push_back(TIGL_COMPONENT_WING);
@@ -1208,13 +1211,42 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             return false;
         }
 
-        auto obejcts = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
-        for (auto& obj : obejcts) {
-            app->getScene()->GetShapeManager().removeObject(obj);
+        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+        for (auto& obj : objects) {
             app->getScene()->getContext()->Remove(obj, Standard_False);
+            app->getScene()->GetShapeManager().removeObject(obj);
         }
         auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
         app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+
+        // manually mirror wing with cutouts
+        tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(wing.GetUID());
+        auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+
+        if (geometricComp) {
+            TiglSymmetryAxis sym = geometricComp->GetSymmetryAxis();
+            if (sym != TIGL_NO_SYMMETRY) {
+                tigl::CTiglTransformation trafo;
+                if (sym == TIGL_X_Z_PLANE) {
+                    trafo.AddMirroringAtXZPlane();
+                }
+                else if (sym == TIGL_X_Y_PLANE) {
+                    trafo.AddMirroringAtXYPlane();
+                }
+                else if (sym == TIGL_Y_Z_PLANE) {
+                    trafo.AddMirroringAtYZPlane();
+                }
+
+                TopoDS_Shape loftCutouts = wing.GetLoftWithCutouts();
+                PNamedShape loftNamed(new CNamedShape(loftCutouts, wing.GetUID().c_str()));
+
+                PNamedShape mirrored = trafo.Transform(loftNamed);
+                if (mirrored) {
+                    auto mshape = app->getScene()->displayShape(mirrored, false, getDefaultShapeSymmetryColor());
+                    app->getScene()->GetShapeManager().addObject(wing.GetUID(), mshape);
+                }
+            }
+        }
 
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
             if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
@@ -1223,18 +1255,33 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                    auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
+                    // remove old wireframe flap shapes
+                    for (auto& obj : objs) {
+                        app->getScene()->getContext()->Remove(obj, Standard_True);
+                        app->getScene()->GetShapeManager().removeObject(obj);
+                    }
                     drawWingFlap(ted->GetUID().c_str());
+
+
                 }
             }
 
             if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
                 for (auto& led : leds->GetLeadingEdgeDevices()) {
+                    auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
+                    // remove old wireframe flap shapes
+                    for (auto& obj : objs) {
+                        app->getScene()->getContext()->Remove(obj, Standard_True);
+                        app->getScene()->GetShapeManager().removeObject(obj);
+                    }
                     drawWingFlap(led->GetUID().c_str());
                 }
             }
         }
         app->getScene()->updateViewer();
     }
+
     catch (tigl::CTiglError& ex) {
         displayError(ex.what(), "Error");
         return false;
@@ -1251,13 +1298,21 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
         if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice)) {
             auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
             app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
+
+            // if flap has mirrored loft, display it too (not mirrored), to later update its transform and then mirror it
+            PNamedShape mirrored_loft = ted->GetMirroredLoft();
+            if (mirrored_loft) { 
+                PNamedShape mirror_named(new CNamedShape(ted->GetLoft()->Shape(), (ted->GetUID() + "M").c_str()));
+                auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
+            }
             updateFlapTransform(ted->GetUID());
+
         }
 
         else if (*obj.type == typeid(tigl::CCPACSLeadingEdgeDevice)) {
-            auto* ted = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
-            app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
-            updateFlapTransform(ted->GetUID());
+            auto* led = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
+            app->getScene()->displayShape(led->GetLoft(), false, Quantity_NOC_GREEN);
+            updateFlapTransform(led->GetUID());
         }
     }
     catch (const tigl::CTiglError& ex) {
@@ -1271,6 +1326,7 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 
     gp_Trsf trsf;
     IObjectList flaps;
+    IObjectList mflaps;
 
     if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice)) {
         auto* controlSurfaceDevice = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
@@ -1279,7 +1335,9 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 
             flaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
-        }
+            mflaps =
+                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+"M");
+            }
         catch (const tigl::CTiglError&) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
                          QString("Error"));
@@ -1299,11 +1357,36 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
             QString("Error"));
         }
     }
-        
+
     for (const auto& flap : flaps) {
         app->getScene()->getContext()->SetLocation(flap, trsf);
     }
-    
+
+    for (const auto& mflap : mflaps) {
+        // apply mirroring on transformed flap 
+        tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(controlUID);
+        auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+        if (geometricComp) {
+            TiglSymmetryAxis sym = geometricComp->GetSymmetryAxis();
+            if (sym != TIGL_NO_SYMMETRY) {
+                gp_Trsf mirror_trsf;
+                tigl::CTiglTransformation trafo(trsf);
+                if (sym == TIGL_X_Z_PLANE) {
+                    mirror_trsf.SetMirror(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)));
+                }
+                else if (sym == TIGL_X_Y_PLANE) {
+                    mirror_trsf.SetMirror(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+                }
+                else if (sym == TIGL_Y_Z_PLANE) {
+                    mirror_trsf.SetMirror(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)));
+                }
+
+                app->getScene()->getContext()->SetLocation(mflap, mirror_trsf * trsf);
+                
+            }
+        }
+    }
+
     app->getViewer()->update();
 }
 
