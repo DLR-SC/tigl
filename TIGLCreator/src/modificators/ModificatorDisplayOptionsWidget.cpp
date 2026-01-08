@@ -476,6 +476,7 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
+            sm.removeObject(currentItem->getUid());
             currentDoc->drawComponentByUID(uid);
         }
     }

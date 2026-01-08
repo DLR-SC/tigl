@@ -802,16 +802,16 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                 if (objects[0]->Shape() != component.GetLoft()->Shape()) {
                     objects[0]->SetShape(component.GetLoft()->Shape());
                 }
-                else {
-                    auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
-                    if (geometricComp) {
-                        if (geometricComp->GetMirroredLoft()) {
-                            if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
-                                objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
-                            }
+                
+                auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+                if (geometricComp) {
+                    if (geometricComp->GetMirroredLoft()) {
+                        if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
+                            objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
                         }
                     }
                 }
+                
                 for (auto& obj : objects) {
                     app->getScene()->getContext()->Display(obj, Standard_False);
                 }
@@ -1135,11 +1135,13 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
     }
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    auto obejcts = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
-    for (auto& obj : obejcts) {
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
+    for (auto& obj : objects) {
         app->getScene()->GetShapeManager().removeObject(obj);
         app->getScene()->getContext()->Remove(obj, Standard_False);
     }
+    drawComponentByUID(wingUid);
+    
     if (wing.GetComponentSegments())
     {
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
@@ -1148,12 +1150,26 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
             }
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    drawComponentByUID(ted->GetUID().c_str());
+                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
+                    for (auto& obj : objects) {
+                        app->getScene()->getContext()->Remove(obj, Standard_False);
+                    }
+                    objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID()+"M");
+                    for (auto& obj : objects) {
+                        app->getScene()->getContext()->Remove(obj, Standard_False);
+                    }
                 }
             }
             if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
                 for (auto& led : leds->GetLeadingEdgeDevices()) {
-                    drawComponentByUID(led->GetUID().c_str());
+                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
+                    for (auto& obj : objects) {
+                        app->getScene()->getContext()->Remove(obj, Standard_False);
+                    }
+                    objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID()+"M");
+                    for (auto& obj : objects) {
+                        app->getScene()->getContext()->Remove(obj, Standard_False);
+                    }
                 }
             }
         }
@@ -1304,6 +1320,7 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
             if (mirrored_loft) { 
                 PNamedShape mirror_named(new CNamedShape(ted->GetLoft()->Shape(), (ted->GetUID() + "M").c_str()));
                 auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
+                app->getScene()->GetShapeManager().addObject(ted->GetUID(), mirror_shape);
             }
             updateFlapTransform(ted->GetUID());
 
@@ -1318,6 +1335,8 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
             if (mirrored_loft) { 
                 PNamedShape mirror_named(new CNamedShape(led->GetLoft()->Shape(), (led->GetUID() + "M").c_str()));
                 auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
+                app->getScene()->GetShapeManager().addObject(led->GetUID(), mirror_shape);
+
             }
             updateFlapTransform(led->GetUID());
         }
