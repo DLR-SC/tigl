@@ -476,10 +476,22 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
-            sm.removeObject(currentItem->getUid());
-            currentDoc->drawComponentByUID(uid);
+
         }
     }
+
+    auto type = currentDoc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
+    if (type == TIGL_COMPONENT_WING) {
+        tigl::CCPACSWing& wing = currentDoc->GetConfiguration().GetWing(uid.toStdString());
+        wing.SetBuildFlaps(false);
+        currentDoc->drawWing(uid);
+
+    }
+
+    else {
+        currentDoc->drawComponentByUID(uid);
+    }       
+    
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }
