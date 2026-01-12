@@ -8418,21 +8418,6 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="nacaProfileType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>nacaProfileType</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para/>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-    </xsd:complexType>
-
     <xsd:complexType name="curveProfilesType">
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
@@ -22191,7 +22176,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="pointList" type="curvePointListXYZType"/>
                         <xsd:element name="cst2D" type="cst2DType"/>
                         <xsd:element name="standardProfile" type="standardProfileType"/>
-                        <xsd:element name="naca" type="nacaProfileType"/>
+                        <xsd:element name="naca" type="stringBaseType"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>

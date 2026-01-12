@@ -178,12 +178,9 @@ namespace generated
 
         // read element naca
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
-            m_naca_choice4 = boost::in_place(this);
-            try {
-                m_naca_choice4->ReadCPACS(tixiHandle, xpath + "/naca");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read naca at xpath " << xpath << ": " << e.what();
-                m_naca_choice4 = boost::none;
+            m_naca_choice4 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/naca");
+            if (m_naca_choice4->empty()) {
+                LOG(WARNING) << "Optional element naca is present but empty at xpath " << xpath;
             }
         }
 
@@ -261,7 +258,7 @@ namespace generated
         // write element naca
         if (m_naca_choice4) {
             tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/naca", childElemOrder);
-            m_naca_choice4->WriteCPACS(tixiHandle, xpath + "/naca");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/naca", *m_naca_choice4);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
@@ -415,14 +412,14 @@ namespace generated
         return m_standardProfile_choice3;
     }
 
-    const boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNaca_choice4() const
+    const boost::optional<std::string>& CPACSProfileGeometry::GetNaca_choice4() const
     {
         return m_naca_choice4;
     }
 
-    boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNaca_choice4()
+    void CPACSProfileGeometry::SetNaca_choice4(const boost::optional<std::string>& value)
     {
-        return m_naca_choice4;
+        m_naca_choice4 = value;
     }
 
     CCPACSCurvePointListXYZ& CPACSProfileGeometry::GetPointList_choice1(CreateIfNotExistsTag)
@@ -459,18 +456,6 @@ namespace generated
     void CPACSProfileGeometry::RemoveStandardProfile_choice3()
     {
         m_standardProfile_choice3 = boost::none;
-    }
-
-    CPACSNacaProfile& CPACSProfileGeometry::GetNaca_choice4(CreateIfNotExistsTag)
-    {
-        if (!m_naca_choice4)
-            m_naca_choice4 = boost::in_place(this);
-        return *m_naca_choice4;
-    }
-
-    void CPACSProfileGeometry::RemoveNaca_choice4()
-    {
-        m_naca_choice4 = boost::none;
     }
 
 } // namespace generated
