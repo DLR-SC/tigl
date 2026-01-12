@@ -8418,6 +8418,88 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
+    <xsd:complexType name="nacaProfileType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>NACA airfoil definition</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>Parametric definition of a NACA airfoil (4-digit or 5-digit series).</ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:choice>
+                        <xsd:element name="naca4DigitCode">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <sd:schemaDoc>
+                                        <ddue:summary>
+                                            <ddue:para>NACA 4-digit airfoil code</ddue:para>
+                                        </ddue:summary>
+                                        <ddue:remarks>
+                                            <ddue:para>Four digits defining a NACA 4-digit airfoil, e.g. <ddue:emphasis>2412</ddue:emphasis> or <ddue:emphasis>0012</ddue:emphasis>.</ddue:para>
+                                        </ddue:remarks>
+                                    </sd:schemaDoc>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:pattern value="[0-9]{4}"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="naca5DigitCode">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <sd:schemaDoc>
+                                        <ddue:summary>
+                                            <ddue:para>NACA 5-digit airfoil code</ddue:para>
+                                        </ddue:summary>
+                                        <ddue:remarks>
+                                            <ddue:para>Five digits defining a NACA 5-digit airfoil, e.g. <ddue:emphasis>23012</ddue:emphasis>.</ddue:para>
+                                        </ddue:remarks>
+                                    </sd:schemaDoc>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:pattern value="[0-9]{5}"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                    </xsd:choice>
+                    <xsd:element name="trailingEdgeThickness" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <sd:schemaDoc>
+                                    <ddue:summary>
+                                        <ddue:para>Trailing edge thickness</ddue:para>
+                                    </ddue:summary>
+                                    <ddue:remarks>
+                                        <ddue:para>Trailing edge thickness normalized with respect to chord length. Must be greater than or equal to 0. A value of 0 corresponds to a closed trailing edge.</ddue:para>
+                                    </ddue:remarks>
+                                </sd:schemaDoc>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
     <xsd:complexType name="curveProfilesType">
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
