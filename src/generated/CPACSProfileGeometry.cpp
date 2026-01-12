@@ -176,6 +176,17 @@ namespace generated
             }
         }
 
+        // read element naca
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
+            m_naca_choice4 = boost::in_place(this);
+            try {
+                m_naca_choice4->ReadCPACS(tixiHandle, xpath + "/naca");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read naca at xpath " << xpath << ": " << e.what();
+                m_naca_choice4 = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
@@ -184,7 +195,7 @@ namespace generated
 
     void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D", "standardProfile" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D", "standardProfile", "naca" };
 
         // write attribute symmetry
         if (m_symmetry) {
@@ -247,6 +258,17 @@ namespace generated
             }
         }
 
+        // write element naca
+        if (m_naca_choice4) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/naca", childElemOrder);
+            m_naca_choice4->WriteCPACS(tixiHandle, xpath + "/naca");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/naca");
+            }
+        }
+
     }
 
     bool CPACSProfileGeometry::ValidateChoices() const
@@ -263,6 +285,8 @@ namespace generated
                         m_cst2D_choice2.is_initialized()
                         ||
                         m_standardProfile_choice3.is_initialized()
+                        ||
+                        m_naca_choice4.is_initialized()
                     )
                 )
                 +
@@ -275,6 +299,8 @@ namespace generated
                         m_pointList_choice1.is_initialized()
                         ||
                         m_standardProfile_choice3.is_initialized()
+                        ||
+                        m_naca_choice4.is_initialized()
                     )
                 )
                 +
@@ -287,6 +313,22 @@ namespace generated
                         m_pointList_choice1.is_initialized()
                         ||
                         m_cst2D_choice2.is_initialized()
+                        ||
+                        m_naca_choice4.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_naca_choice4.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_pointList_choice1.is_initialized()
+                        ||
+                        m_cst2D_choice2.is_initialized()
+                        ||
+                        m_standardProfile_choice3.is_initialized()
                     )
                 )
                 == 1
@@ -373,6 +415,16 @@ namespace generated
         return m_standardProfile_choice3;
     }
 
+    const boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNaca_choice4() const
+    {
+        return m_naca_choice4;
+    }
+
+    boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNaca_choice4()
+    {
+        return m_naca_choice4;
+    }
+
     CCPACSCurvePointListXYZ& CPACSProfileGeometry::GetPointList_choice1(CreateIfNotExistsTag)
     {
         if (!m_pointList_choice1)
@@ -407,6 +459,18 @@ namespace generated
     void CPACSProfileGeometry::RemoveStandardProfile_choice3()
     {
         m_standardProfile_choice3 = boost::none;
+    }
+
+    CPACSNacaProfile& CPACSProfileGeometry::GetNaca_choice4(CreateIfNotExistsTag)
+    {
+        if (!m_naca_choice4)
+            m_naca_choice4 = boost::in_place(this);
+        return *m_naca_choice4;
+    }
+
+    void CPACSProfileGeometry::RemoveNaca_choice4()
+    {
+        m_naca_choice4 = boost::none;
     }
 
 } // namespace generated
