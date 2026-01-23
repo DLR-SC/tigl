@@ -2458,6 +2458,16 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             TopoDS_Shape sparGeom                   = spar.GetSparGeometry();
             auto spar_shape = app->getScene()->displayShape(sparGeom, true, Quantity_NOC_RED);
             app->getScene()->GetShapeManager().addObject(Uid.toStdString(), spar_shape);
+
+            PNamedShape loftNamed(new CNamedShape(sparGeom, Uid.toStdString()));
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+            PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
+            if (mirroredLoft)
+            {
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+                
+            }
         }
 
         // draw ribs
@@ -2466,6 +2476,16 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             TopoDS_Shape ribGeom                      = rib.GetRibsGeometry();
             auto rib_shape = app->getScene()->displayShape(ribGeom, true, Quantity_NOC_RED);
             app->getScene()->GetShapeManager().addObject(Uid.toStdString(), rib_shape);
+
+            PNamedShape loftNamed(new CNamedShape(ribGeom, Uid.toStdString()));
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+            PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
+            if (mirroredLoft)
+            {
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+
+            }
         }
     }
     catch (tigl::CTiglError& err) {
