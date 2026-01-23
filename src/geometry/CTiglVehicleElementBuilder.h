@@ -40,6 +40,7 @@ private:
     TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);
     TopoDS_Shape BuildConeShape(const CCPACSCone& c);
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
+    TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e);
 };
 
 } //namespace tigl

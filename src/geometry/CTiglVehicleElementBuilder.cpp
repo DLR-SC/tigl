@@ -19,6 +19,9 @@
 #include "UniquePtr.h"
 #include "CNamedShape.h"
 
+#include "CTiglImporterFactory.h"
+#include "CGroupShapes.h"
+
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -57,6 +60,9 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     }
     else if (auto& e = geom.GetEllipsoid_choice4()) {
         elementShape = BuildEllipsoidShape(*e);
+    }
+    else if (auto& e = geom.GetExternal_choice5()) {
+        elementShape = BuildExternalShape(*e);
     }
     else {
         throw CTiglError("Unsupported geometry type");
@@ -173,6 +179,34 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
     BRepBuilderAPI_GTransform transformer(sphere, gtrsf, true);
 
     return transformer.Shape();
+}
+
+TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)
+{
+    const auto& link = e.GetLinkToFile();
+
+    if (!link.GetFormat()) {
+        throw CTiglError("Cannot open external file. No file format specified.", TIGL_XML_ERROR);
+    }
+
+    const std::string fileType = CPACSLinkToFileType_formatToString(*link.GetFormat());
+
+    PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(fileType);
+    if (!importer) {
+        throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
+    }
+
+    const std::string& filePath = link.GetValue();
+    ListPNamedShape shapes      = importer->Read(filePath);
+
+    // ToDo: Transformation should be slightly different from the one used in relatively positioned components: 
+    //       as there is no parent, there should not be a refType attribute.
+    //       This change in XSD would affect CCPACSTransformation and CTiglTransformation.
+    PNamedShape shapeGroup = CGroupShapes(shapes);
+    const CTiglTransformation tr = e.GetTransformation().getTransformationMatrix();
+    shapeGroup->SetShape(tr.Transform(shapeGroup->Shape()));
+
+    return shapeGroup->Shape();
 }
 
 CTiglVehicleElementBuilder::operator PNamedShape()

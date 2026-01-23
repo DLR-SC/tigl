@@ -75,6 +75,7 @@ protected:
     tigl::CCPACSComponent const* wedge_1           = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
     tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
     tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
+    tigl::CCPACSComponent const* external          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("external");
 
     tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
 
@@ -112,6 +113,8 @@ TEST_F(Systems, temp)
     auto& loft4 = cone_1->GetLoft();
 
     auto& loft5 = eMotor->GetLoft();
+
+    auto& loft6 = external->GetLoft();
 
     CheckExceptionMessage([&]() { wrongReference->GetLoft(); },
         "Unsupported system element for uid \"NACA0009\" in CCPACSComponent::BuildLoft");

@@ -109,13 +109,6 @@
                     <genericSystems>
                         <genericSystem uID="genSys_1">
                             <name>Generic System 1</name>
-                            <transformation>
-                                <translation>
-                                    <x>0</x>
-                                    <y>0</y>
-                                    <z>0</z>
-                                </translation>
-                            </transformation>
                             <components>
                                 <component uID="rectCube_1">
                                     <name>Installed cube 1</name>
@@ -310,17 +303,33 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="wrongUIDReference">
-									<name>Wrong UID Reference</name>
-									<systemElementUID>NACA0009</systemElementUID>
-									<transformation>
-										<translation>
-											<x>20</x>
-											<y>0</y>
-											<z>0</z>
-										</translation>
-									</transformation>
-								</component>
+                                <component uID="external">
+                                    <name>External geometry test</name>
+                                    <systemElementUID>predExternal</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>25</x>
+                                            <y>5</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                            </components>
+                        </genericSystem>
+                        <genericSystem uID="corruptSystem">
+                            <name>Corrupt system</name>
+                            <components>
+                                <component uID="wrongUIDReference">
+                                    <name>Wrong UID Reference</name>
+                                    <systemElementUID>NACA0009</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>  
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -329,6 +338,28 @@
         </aircraft>
         <systemElements>
             <genericComponents>
+				<genericComponent uID="predExternal">
+                    <name>Predefined rectangular cube 1</name>
+                    <geometry>
+                        <external>
+							<!-- ToDo: find a way to pass tests without user-specific path -->
+							<linkToFile format="step">D:\Entwicklung\TiGL\systems_3.5\build-vs\tests\unittests\TestData\nacelle.stp</linkToFile>
+                            <transformation>
+                                <scaling>
+                                    <x>1.5</x>
+                                    <y>1.5</y>
+                                    <z>1.5</z>
+                                </scaling>
+                                <rotation>
+                                    <z>90.</z>
+                                </rotation>
+                                <translation>
+                                    <y>5.</y>
+                                </translation>
+                            </transformation>
+                        </external>
+                    </geometry>
+                </genericComponent>
                 <genericComponent uID="predRectCube_1">
                     <name>Predefined rectangular cube 1</name>
                     <geometry>
