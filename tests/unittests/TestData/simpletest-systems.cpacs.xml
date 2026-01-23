@@ -342,8 +342,7 @@
                     <name>Predefined rectangular cube 1</name>
                     <geometry>
                         <external>
-							<!-- ToDo: find a way to pass tests without user-specific path -->
-							<linkToFile format="step">D:\Entwicklung\TiGL\systems_3.5\build-vs\tests\unittests\TestData\nacelle.stp</linkToFile>
+							<linkToFile format="step">TestData\nacelle.stp</linkToFile>
                             <transformation>
                                 <scaling>
                                     <x>1.5</x>
