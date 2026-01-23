@@ -103,7 +103,7 @@ public slots:
     void drawWingComponentSegmentPoints();
     void drawWingShells();
     void drawWingFlaps(const QString& wingUID=nullptr);
-    void drawWingStructure();
+    void drawWingStructure(const QString& wingUID=nullptr);
 
     // Fuselage slots
     void drawFuselageProfiles();
@@ -164,7 +164,7 @@ private slots:
     // Wing selection dialogs
     QString dlgGetWingOrRotorBladeSelection();
     QString dlgGetWingSelection();
-    QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingComponentSegmentSelection(const QString& wingUID=nullptr);
     QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
@@ -216,6 +216,7 @@ private:
     void drawWingShells(tigl::CCPACSWing& wing);
     bool drawWingFlaps(tigl::CCPACSWing& wing);
     void drawWingFlap(const QString& flapUID);
+    void removeWingFlaps(const QString& Uid);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

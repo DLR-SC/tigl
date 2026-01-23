@@ -202,7 +202,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingShells(); });
 
                 ui->drawOptionsCombo->addItem(tr("Structure"));
-                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingStructure(); });
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingStructure(uid); });
 
                 ui->drawOptionsCombo->addItem(tr("Flaps"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingFlaps(uid); });
@@ -491,7 +491,7 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
     else {
         currentDoc->drawComponentByUID(uid);
     }       
-    
+
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }

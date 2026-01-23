@@ -439,23 +439,39 @@ QString TIGLCreatorDocument::dlgGetWingSelection()
 }
 
 // Wing Component Segment selection Dialog
-QString TIGLCreatorDocument::dlgGetWingComponentSegmentSelection()
+QString TIGLCreatorDocument::dlgGetWingComponentSegmentSelection(const QString& wingUID)
 {
     QStringList compSegs;
     bool ok;
 
-    // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
-    for (int i = 1; i <= wingCount; i++) {
-        tigl::CCPACSWing& wing = config.GetWing(i);
-        if (wing.IsRotorBlade()) {
-            continue;
+    if (wingUID.isEmpty()) {
+    
+        int wingCount                     = config.GetWingCount();
+        for (int i = 1; i <= wingCount; i++) {
+            tigl::CCPACSWing& wing = config.GetWing(i);
+            if (wing.IsRotorBlade()) {
+                continue;
+            }
+            // Get all component segments
+            for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
+                tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
+                compSegs << segment.GetUID().c_str();
+            }
         }
-
+    }
+    else {
+        tigl::CCPACSWing& wing = config.GetWing(wingUID.toStdString());
+        if (wing.IsRotorBlade()) {
+                throw tigl::CTiglError("Selected wing is a rotor blade!", TIGL_ERROR);
+            }
+        // Only get component segments of the selected wing
         for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
             tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
             compSegs << segment.GetUID().c_str();
+        }
+        if (wing.GetComponentSegmentCount() == 1 && !compSegs.empty()) {
+            return compSegs[0];
         }
     }
 
@@ -1239,29 +1255,11 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(wing.GetUID());
         auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
 
-        if (geometricComp) {
-            TiglSymmetryAxis sym = geometricComp->GetSymmetryAxis();
-            if (sym != TIGL_NO_SYMMETRY) {
-                tigl::CTiglTransformation trafo;
-                if (sym == TIGL_X_Z_PLANE) {
-                    trafo.AddMirroringAtXZPlane();
-                }
-                else if (sym == TIGL_X_Y_PLANE) {
-                    trafo.AddMirroringAtXYPlane();
-                }
-                else if (sym == TIGL_Y_Z_PLANE) {
-                    trafo.AddMirroringAtYZPlane();
-                }
-
-                TopoDS_Shape loftCutouts = wing.GetLoftWithCutouts();
-                PNamedShape loftNamed(new CNamedShape(loftCutouts, wing.GetUID().c_str()));
-
-                PNamedShape mirrored = trafo.Transform(loftNamed);
-                if (mirrored) {
-                    auto mshape = app->getScene()->displayShape(mirrored, false, getDefaultShapeSymmetryColor());
-                    app->getScene()->GetShapeManager().addObject(wing.GetUID(), mshape);
-                }
-            }
+        PNamedShape loftNamed(new CNamedShape(wing.GetLoftWithCutouts(), wing.GetUID().c_str()));
+        PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed);
+        if (mirroredLoft) {
+            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
         }
 
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
@@ -1417,6 +1415,37 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
 
     app->getViewer()->update();
 }
+
+void TIGLCreatorDocument::removeWingFlaps(const QString& Uid)
+{
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+
+    for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
+        tigl::CCPACSWingComponentSegment& cs = wing.GetComponentSegment(j);
+        
+        if (auto& teds = cs.GetControlSurfaces()->GetTrailingEdgeDevices()) {
+            for (auto& ted : teds->GetTrailingEdgeDevices()) {
+                auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
+                // remove flap shapes
+                for (auto& obj : objs) {
+                    app->getScene()->getContext()->Remove(obj, Standard_True);
+                    app->getScene()->GetShapeManager().removeObject(obj);
+                }
+            }
+        }   
+        if (auto& leds = cs.GetControlSurfaces()->GetLeadingEdgeDevices()) {
+            for (auto& led : leds->GetLeadingEdgeDevices()) {
+                auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
+                // remove flap shapes
+                for (auto& obj : objs) {
+                    app->getScene()->getContext()->Remove(obj, Standard_True);
+                    app->getScene()->GetShapeManager().removeObject(obj);
+                }
+            }
+        }   
+    }
+}
+
 
 void TIGLCreatorDocument::drawFuselage()
 {
@@ -2372,9 +2401,9 @@ void TIGLCreatorDocument::drawWingShells()
     }
 }
 
-void TIGLCreatorDocument::drawWingStructure()
+void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
 {
-    QString csUid = dlgGetWingComponentSegmentSelection();
+    QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
     }
@@ -2409,10 +2438,17 @@ void TIGLCreatorDocument::drawWingStructure()
             return;
         }
 
-        app->getScene()->deleteAllObjects();
+        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(Uid.toStdString());
+        for (auto& obj : objects) {
+            app->getScene()->getContext()->Remove(obj, Standard_False);
+            app->getScene()->GetShapeManager().removeObject(obj);
+        }
+
+        removeWingFlaps(Uid);
 
         // display component segment shape with transparency
-        app->getScene()->displayShape(cs.GetLoft(), true, Quantity_NOC_ShapeCol, 0.5);
+        auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, Quantity_NOC_ShapeCol, 0.5);
+        app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
 
         const tigl::CCPACSWingCSStructure& structure = *cs.GetStructure();
 
@@ -2420,14 +2456,16 @@ void TIGLCreatorDocument::drawWingStructure()
         for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
             const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
             TopoDS_Shape sparGeom                   = spar.GetSparGeometry();
-            app->getScene()->displayShape(sparGeom, true, Quantity_NOC_RED);
+            auto spar_shape = app->getScene()->displayShape(sparGeom, true, Quantity_NOC_RED);
+            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), spar_shape);
         }
 
         // draw ribs
         for (int irib = 1; irib <= structure.GetRibsDefinitionCount(); ++irib) {
             const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
             TopoDS_Shape ribGeom                      = rib.GetRibsGeometry();
-            app->getScene()->displayShape(ribGeom, true, Quantity_NOC_RED);
+            auto rib_shape = app->getScene()->displayShape(ribGeom, true, Quantity_NOC_RED);
+            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), rib_shape);
         }
     }
     catch (tigl::CTiglError& err) {
