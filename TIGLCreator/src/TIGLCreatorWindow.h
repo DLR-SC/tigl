@@ -90,9 +90,10 @@ public slots:
 
     //update function for modificator
 
-    void updateScene(); 
-    
+    void updateScene();
+
 private slots:
+    void dispatchLastSelectedItemOnConfigurationEdited();
     void updateMenus();
     void newFile();
     void open();
@@ -117,6 +118,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void onComponentVisibilityChanged(const QString& uid, bool visible);
 
 private:
     void connectSignals();

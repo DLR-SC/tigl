@@ -22,13 +22,15 @@ CPACSFilterModel::CPACSFilterModel(cpcr::CPACSTree* tree, QObject* parent)
 {
     basicTreeRegExp.setPatternSyntax(QRegExp::RegExp2);
     basicTreeRegExp.setCaseSensitivity(Qt::CaseInsensitive);
-    basicTreeRegExp.setPattern("^(aircraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage)$");
+    basicTreeRegExp.setPattern("^(aircraft|rotorcraft|model|wings|wing|sections|section|positionings|positioning|fuselages|fuselage|rotors|rotor|rotorHub|rotorBladeAttachments|rotorBladeAttachment|rotorBlades|rotorBlade|rotorAirfoils|rotorAirfoil)$");
 
     searchPattern.setPatternSyntax(QRegExp::FixedString);
     searchPattern.setCaseSensitivity(Qt::CaseInsensitive);
     searchPattern.setPattern("");
 
     expertView = false;
+    geometryNodes = false;
+    matchingOnUID = false;
 }
 
 void CPACSFilterModel::setModel(ModificatorModel *model)
@@ -49,41 +51,46 @@ cpcr::CPACSTreeItem *CPACSFilterModel::getItem(QModelIndex index) const
 
 bool CPACSFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-
     QModelIndex typeIndex = sourceModel()->index(sourceRow, 1, sourceParent);
     QModelIndex uidIndex  = sourceModel()->index(sourceRow, 2, sourceParent);
+    QModelIndex idx0 = sourceModel()->index(sourceRow, 0, sourceParent);
 
-    // check if we should considerate this tree branch
-    if ((expertView == false) && (sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp) == false)) {
+    bool matchesExpertViewFilter = expertView || sourceModel()->data(typeIndex).toString().contains(basicTreeRegExp);
+    if (!matchesExpertViewFilter) {
         return false;
     }
 
-    if (searchPattern.isEmpty()) {
+    bool matchesSearchPattern = searchPattern.isEmpty() ||
+                                sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
+                                (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern));
+
+
+    bool matchesGeometryFilter = !geometryNodes || (idx0.isValid() && (sourceModel()->flags(idx0) & Qt::ItemIsUserCheckable));
+
+    // Combine matchers: a row is immediately accepted when it satisfies
+    if (matchesSearchPattern && matchesGeometryFilter) {
         return true;
     }
-    // the case where search is activate
-    else {
-        // if the row itself match the pattern
-        if (sourceModel()->data(typeIndex).toString().contains(searchPattern) ||
-            (matchingOnUID && sourceModel()->data(uidIndex).toString().contains(searchPattern))) {
-                return true;
-        }
-        // check if one of its child match the pattern (recursive call)
-        else {
-            int childNumber = sourceModel()->rowCount(typeIndex);
-            for (int i = 0; i < childNumber; i++) {
-                if (filterAcceptsRow(i, typeIndex)) {
-                    return true;
-                }
-            }
-            return false;
+
+    int childNumber = idx0.isValid() ? sourceModel()->rowCount(idx0) : 0;
+    for (int i = 0; i < childNumber; ++i) {
+        if (filterAcceptsRow(i, idx0)) {
+            return true;
         }
     }
+
+    return false;
 }
 
 void CPACSFilterModel::setExpertView(bool value)
 {
     expertView = value;
+    invalidateFilter();
+}
+
+void CPACSFilterModel::setgeometryNodes(bool value)
+{
+    geometryNodes = value;
     invalidateFilter();
 }
 

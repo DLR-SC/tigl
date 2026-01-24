@@ -44,6 +44,7 @@ class CPACSFilterModel : public QSortFilterProxyModel
 public slots:
 
     void setExpertView(bool value);
+    void setgeometryNodes(bool value);
 
     /**
      * enable the match on uid for the search pattern
@@ -87,6 +88,7 @@ private:
     QRegExp searchPattern;
     bool matchingOnUID;
     bool expertView;
+    bool geometryNodes;
 };
 
 #endif //TIGL_CPACSFILTERMODEL_H

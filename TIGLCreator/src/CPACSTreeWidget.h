@@ -75,6 +75,7 @@ private slots:
     void setNewSearch(const QString newText);
 
     void setExpertView();
+    void setgeometryNodes();
 
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);
@@ -90,6 +91,7 @@ public:
     void setSelectedUID(const QString & uid);
 
     QString getSelectedUID();
+    std::string getLastSelectedUID();
 
 private:
 
@@ -97,6 +99,7 @@ private:
 
     Ui::CPACSTreeWidget* ui;
 
+    std::string last_selected_uid;
     CPACSFilterModel* filterModel;
     QItemSelectionModel* selectionModel;
 };
