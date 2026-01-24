@@ -44,6 +44,22 @@ CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeomet
 {
 }
 
+// Neue Konstruktoren mit shapeName
+CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry, const std::string& shapeName)
+    : m_geometry(&geometry)
+    , m_shapeName(shapeName)
+{
+}
+
+CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
+                                                       const CTiglTransformation& transformation,
+                                                       const std::string& shapeName)
+    : m_geometry(&geometry)
+    , m_transformation(&transformation)
+    , m_shapeName(shapeName)
+{
+}
+
 PNamedShape CTiglVehicleElementBuilder::BuildShape()
 {
     const auto& geom = *m_geometry;
@@ -68,12 +84,17 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
         throw CTiglError("Unsupported geometry type");
     }
 
+    // Set shape name
     std::string loftName = "unnamed";
-    if (const auto* parent = geom.GetNextUIDParent()) {
+    if (!m_shapeName.empty()) {
+        loftName = m_shapeName;
+    }
+    else if (const auto* parent = geom.GetNextUIDParent()) {
         loftName = parent->GetObjectUID().get_value_or(loftName);
     }
     PNamedShape loft(new CNamedShape(elementShape, loftName));
 
+    // Apply transformation if available
     if (m_transformation) {
         loft = m_transformation->Transform(loft);
     }

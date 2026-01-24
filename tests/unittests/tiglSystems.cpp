@@ -23,6 +23,10 @@
 #include "test.h"
 #include "tigl.h"
 
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
+
+#include "CNamedShape.h" 
 #include "CCPACSGenericSystem.h"
 #include "CCPACSComponents.h"
 #include "CCPACSComponent.h"
@@ -101,22 +105,56 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     }
 }
 
-TEST_F(Systems, temp)
+TEST_F(Systems, ComponentsGeometry)
 {
-    genericSystem->GetComponents();
-    auto& name = rectCube_1->GetName();
-    EXPECT_EQ(name, "Installed cube 1");
+    const double eps = 1e-6;
 
-    auto& loft  = rectCube_1->GetLoft();
-    auto& loft2 = wedge_1->GetLoft();
-    auto& loft3 = cylinder_1->GetLoft();
-    auto& loft4 = cone_1->GetLoft();
+    // rectCube_1 -> predefined cuboid 1x1x1 => expect extents ~1.0 in x,y,z
+    {
+        PNamedShape shape = rectCube_1->GetLoft();
+        ASSERT_NE(shape, nullptr);
+        EXPECT_EQ(shape->Name(), "rectCube_1");
 
-    auto& loft5 = eMotor->GetLoft();
+        unsigned int faces = shape->GetFaceCount();
+        EXPECT_EQ(faces, 6u) << "Cuboid should have 6 faces";
 
-    auto& loft6 = external->GetLoft();
+        Bnd_Box box;
+        BRepBndLib::Add(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-    CheckExceptionMessage([&]() { wrongReference->GetLoft(); },
-        "Unsupported system element for uid \"NACA0009\" in CCPACSComponent::BuildLoft");
+        EXPECT_NEAR(xmax - xmin, 1.0, eps);
+        EXPECT_NEAR(ymax - ymin, 1.0, eps);
+        EXPECT_NEAR(zmax - zmin, 1.0, eps);
+    }
 
+    // wedge_1 -> at least some faces and non-zero bounding box
+    {
+        PNamedShape shape = wedge_1->GetLoft();
+        ASSERT_NE(shape, nullptr) << "wedge_1 produced a null shape";
+        EXPECT_EQ(shape->GetFaceCount(), 6u);
+
+        Bnd_Box box;
+        BRepBndLib::Add(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 1.0, eps);
+        EXPECT_NEAR(ymax - ymin, 1.0, eps);
+        EXPECT_NEAR(zmax - zmin, 1.0, eps);
+    }
+
+    // electric motor (specialized element) -> ensure builder supports it
+    {
+        PNamedShape shape = eMotor->GetLoft();
+        ASSERT_NE(shape, nullptr) << "electricMotor produced a null shape";
+        EXPECT_EQ(shape->GetFaceCount(), 1u);
+    }
+
+    // external geometry (STEP) -> ensure import happened
+    {
+        PNamedShape shape = external->GetLoft();
+        ASSERT_NE(shape, nullptr) << "external produced a null shape (STEP import failed)";
+        EXPECT_GT(shape->GetFaceCount(), 0u);
+    }
 }

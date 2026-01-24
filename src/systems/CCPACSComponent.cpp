@@ -66,7 +66,9 @@ PNamedShape CCPACSComponent::BuildLoft() const
         throw CTiglError("Unsupported system element for uid \"" + systemElementUID + "\" in CCPACSComponent::BuildLoft");
     }
 
-    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix());
+    // Use component UID as shape name
+    std::string compUid = this->GetObjectUID().get_value_or("unnamed");
+    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix(), compUid);
     return builder.BuildShape();
 }
 
