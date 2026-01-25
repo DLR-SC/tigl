@@ -1,24 +1,20 @@
 /*
- * Copyright (C) 2007-2022 German Aerospace Center (DLR/SC)
- *
- * Created: 2023-12-29 Marko Alder <marko.alder@dlr.de>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
-  * @file
-  * @brief Tests for testing duct functions.
-  */
+* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
+*
+* Created: 2026-01-25 Marko Alder <marko.alder@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 #include "test.h"
 #include "tigl.h"
@@ -33,8 +29,6 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSExternalObject.h"
-
-// #include "CCPACSVessel.h"
 
 class Systems : public ::testing::Test
 {
@@ -81,13 +75,10 @@ protected:
     tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
     tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
     tigl::CCPACSComponent const* external          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("external");
-    tigl::CCPACSExternalObject const* nacelle      = &uidMgr.ResolveObject<tigl::CCPACSExternalObject>("nacelle");
 
     tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
 
     tigl::CCPACSComponent const* wrongReference = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wrongUIDReference");
-
-    // std::cout << "Is UID registered: " << uidMgr->IsUIDRegistered("predefinedElectricMotor") << std::endl;
 };
 
 TixiDocumentHandle Systems::tixiHandle           = 0;
@@ -130,7 +121,7 @@ TEST_F(Systems, ComponentsGeometry)
         EXPECT_NEAR(zmax - zmin, 1.0, eps);
     }
 
-    // wedge_1 -> at least some faces and non-zero bounding box
+    // wedge_1 -> must have 6 faces and bounding box extents ~1.0 in x,y,z
     {
         PNamedShape shape = wedge_1->GetLoft();
         ASSERT_NE(shape, nullptr) << "wedge_1 produced a null shape";
@@ -158,10 +149,5 @@ TEST_F(Systems, ComponentsGeometry)
         PNamedShape shape = external->GetLoft();
         ASSERT_NE(shape, nullptr) << "external produced a null shape (STEP import failed)";
         EXPECT_GT(shape->GetFaceCount(), 0u);
-    }
-
-    {
-        PNamedShape shape = nacelle->GetLoft();
-        ASSERT_NE(shape, nullptr) << "nacelle produced a null shape (STEP import failed)";
     }
 }

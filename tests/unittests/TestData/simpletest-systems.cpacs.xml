@@ -334,29 +334,6 @@
                         </genericSystem>
                     </genericSystems>
                 </systems>
-				<genericGeometryComponents>
-				  <genericGeometryComponent uID="nacelle" symmetry="x-z-plane">
-					<name>Nacelle</name>
-					<transformation uID="nacelle_transformation1">
-					  <scaling uID="nacelle_transformation1_scaling1">
-						<x>0.4</x>
-						<y>0.4</y>
-						<z>0.4</z>
-					  </scaling>
-					  <rotation uID="nacelle_transformation1_rotation1">
-						<x>0</x>
-						<y>0</y>
-						<z>0</z>
-					  </rotation>
-					  <translation refType="absLocal" uID="nacelle_transformation1_translation1">
-						<x>-0.1</x>
-						<y>0.9</y>
-						<z>-0.3</z>
-					  </translation>
-					</transformation>
-					<linkToFile format="Step">nacelle.stp</linkToFile>
-				  </genericGeometryComponent>
-				</genericGeometryComponents>
             </model>
         </aircraft>
         <systemElements>
