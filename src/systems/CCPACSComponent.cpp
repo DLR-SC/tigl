@@ -19,6 +19,7 @@
 #include "generated/CPACSComponent.h"
 #include "CTiglUIDManager.h"
 #include "CTiglVehicleElementBuilder.h"
+#include "tiglcommonfunctions.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSElectricMotor.h"
 #include "generated/CPACSBattery.h"
@@ -56,6 +57,25 @@ std::string CCPACSComponent::GetDefaultedUID() const
     return generated::CPACSComponent::GetUID();
 }
 
+void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
+{
+    Reset();
+    generated::CPACSComponent::ReadCPACS(tixiHandle, objectXPath);
+
+    char* cCPACSPath = NULL;
+    tixiGetDocumentPath(tixiHandle, &cCPACSPath);
+    _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
+
+    //_filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
+
+    //// test if file can be read
+    //if (!IsFileReadable(_filePath)) {
+    //    if (m_uidMgr && !m_uID.empty())
+    //        m_uidMgr->UnregisterObject(m_uID);
+    //    throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
+    //}
+}
+
 PNamedShape CCPACSComponent::BuildLoft() const
 {
     auto systemElementUID = m_systemElementUID_choice1.get();
@@ -68,7 +88,7 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
     // Use component UID as shape name
     std::string compUid = this->GetObjectUID().get_value_or("unnamed");
-    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix(), compUid);
+    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix(), compUid, _cpacsDocPath);
     return builder.BuildShape();
 }
 

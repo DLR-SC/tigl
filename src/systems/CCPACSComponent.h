@@ -30,6 +30,8 @@ public:
 
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
+
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_SYSTEM_COMPONENT;
@@ -44,6 +46,10 @@ public:
 
 protected:
     virtual PNamedShape BuildLoft() const override;
+
+private:
+    std::string _cpacsDocPath;
+
 };
 
 } // namespace tigl

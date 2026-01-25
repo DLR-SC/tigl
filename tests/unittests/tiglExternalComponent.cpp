@@ -20,14 +20,7 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglError.h"
 #include "CNamedShape.h"
-
-namespace tigl
-{
-namespace external_object_private
-{
-    std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath);
-}
-}
+#include "tiglexternalfilehelpers.h"
 
 class TiglExternalComponent : public ::testing::Test
 {
@@ -76,10 +69,9 @@ TEST_F(TiglExternalComponent, invalidFiletype)
     ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[2]"), tigl::CTiglError);
 }
 
-TEST(TiglExternalComponentInternal, getPathRelativeToApp)
+TEST(TiglExternalFileHelpers, getPathRelativeToApp)
 {
     std::string resultPath;
-    using tigl::external_object_private::getPathRelativeToApp;
 
     resultPath = getPathRelativeToApp("TestData/aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());

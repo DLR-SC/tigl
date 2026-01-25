@@ -22,6 +22,9 @@
 #include "CTiglImporterFactory.h"
 #include "CGroupShapes.h"
 
+#include "tiglcommonfunctions.h"
+#include "tiglexternalfilehelpers.h"
+
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -32,31 +35,14 @@
 namespace tigl
 {
 
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry)
-    : m_geometry(&geometry)
-{
-}
-
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
-                                                       const CTiglTransformation& transformation)
-    : m_geometry(&geometry)
-    , m_transformation(&transformation)
-{
-}
-
-// Neue Konstruktoren mit shapeName
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry, const std::string& shapeName)
-    : m_geometry(&geometry)
-    , m_shapeName(shapeName)
-{
-}
-
 CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
                                                        const CTiglTransformation& transformation,
-                                                       const std::string& shapeName)
+                                                       const std::string& shapeName,
+                                                       const std::string& cpacsDocumentPath)
     : m_geometry(&geometry)
     , m_transformation(&transformation)
     , m_shapeName(shapeName)
+    , m_cpacsDocumentPath(cpacsDocumentPath)
 {
 }
 
@@ -217,8 +203,11 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternal
         throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
     }
 
-    const std::string& filePath = link.GetValue();
-    ListPNamedShape shapes      = importer->Read(filePath);
+    std::string filePath = link.GetValue();
+    if (!m_cpacsDocumentPath.empty()) {
+        filePath = evaluatePathRelativeToApp(m_cpacsDocumentPath, filePath);
+    }
+    ListPNamedShape shapes = importer->Read(filePath);
 
     // ToDo: Transformation should be slightly different from the one used in relatively positioned components: 
     //       as there is no parent, there should not be a refType attribute.

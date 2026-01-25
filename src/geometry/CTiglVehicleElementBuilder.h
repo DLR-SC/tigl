@@ -24,14 +24,10 @@ namespace tigl
 class CTiglVehicleElementBuilder
 {
 public:
-    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry);
-    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
-                                        const CTiglTransformation& transformation);
-    // Neuer Konstruktor-Parameter: optionaler Shape-Name (z. B. Komponenten-UID)
-    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry, const std::string& shapeName);
     explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
                                         const CTiglTransformation& transformation,
-                                        const std::string& shapeName);
+                                        const std::string& shapeName,
+                                        const std::string& cpacsDocumentPath);
 
     TIGL_EXPORT operator PNamedShape();
 
@@ -40,7 +36,9 @@ public:
 private:
     const CCPACSElementGeometry* m_geometry     = nullptr;
     const CTiglTransformation* m_transformation = nullptr;
+
     std::string m_shapeName;
+    std::string m_cpacsDocumentPath;
 
     TopoDS_Shape BuildCuboidShape(const CCPACSCuboid& c);
     TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);

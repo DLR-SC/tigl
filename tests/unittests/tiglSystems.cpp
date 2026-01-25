@@ -32,6 +32,7 @@
 #include "CCPACSComponent.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
+#include "CCPACSExternalObject.h"
 
 // #include "CCPACSVessel.h"
 
@@ -80,6 +81,7 @@ protected:
     tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
     tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
     tigl::CCPACSComponent const* external          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("external");
+    tigl::CCPACSExternalObject const* nacelle      = &uidMgr.ResolveObject<tigl::CCPACSExternalObject>("nacelle");
 
     tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
 
@@ -156,5 +158,10 @@ TEST_F(Systems, ComponentsGeometry)
         PNamedShape shape = external->GetLoft();
         ASSERT_NE(shape, nullptr) << "external produced a null shape (STEP import failed)";
         EXPECT_GT(shape->GetFaceCount(), 0u);
+    }
+
+    {
+        PNamedShape shape = nacelle->GetLoft();
+        ASSERT_NE(shape, nullptr) << "nacelle produced a null shape (STEP import failed)";
     }
 }
