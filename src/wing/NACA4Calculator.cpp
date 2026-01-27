@@ -20,8 +20,11 @@
 * @brief Calculator for NACA wing profile coordinates
 */
 
+
 #include <gp_Vec2d.hxx>
 #include "NACA4Calculator.h"
+
+namespace tigl{
         
         NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness)
          : max_camber(max_camber/100)
@@ -88,5 +91,5 @@
             }
             return normal/nrm;
         }
-
+} //namespace tigl
 

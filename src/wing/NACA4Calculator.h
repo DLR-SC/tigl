@@ -24,6 +24,8 @@
 
 //docstrings dazu (richtiges format) (nur im header file), extention?
 
+namespace tigl{
+
 class gp_Vec2d;
 
 class NACA4Calculator{
@@ -47,3 +49,4 @@ class NACA4Calculator{
     private:
         double  max_camber, max_camber_position, max_profile_thickness;
 };
+}
