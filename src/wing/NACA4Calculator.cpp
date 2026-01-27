@@ -29,8 +29,21 @@ namespace tigl{
         NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness)
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
-         , max_profile_thickness(max_profile_thickness/100)//hier überprüfungen hinzuf+gen
-        {}
+         , max_profile_thickness(max_profile_thickness/100)
+        {
+            if(max_camber !=0 && max_camber !=2 && max_camber !=4 && max_camber !=6 ){
+                throw std::logic_error("error in NACA4Calculator: max_camber must be 0; 2; 4 or 6.");
+            }
+            if(max_camber == 0 && max_camber_position != 0){
+                throw std::logic_error("error in NACA4Calculator: if max_camber is 0 max_camber_position has to be 0 as well");
+            }
+            if(max_camber_position !=0 && max_camber_position !=2 && max_camber_position !=3 && max_camber_position !=4 && max_camber_position !=5 && max_camber_position !=6 && max_camber_position !=7 ){
+                throw std::logic_error("error in NACA4Calculator: max_camber_position must be 0; 2; 3; 4; 5; 6 or 7.");
+            }
+            if(max_profile_thickness != 6 && max_profile_thickness != 9 && max_profile_thickness != 12 && max_profile_thickness != 15 && max_profile_thickness != 18 && max_profile_thickness != 21 && max_profile_thickness != 25){
+                throw std::logic_error("error in NACA4Calculator: max_profile_thickness must be 6; 9; 12; 15; 18; 21 or 25.");
+            }
+        }
 
         double NACA4Calculator::camberline(double x){
         
@@ -45,12 +58,18 @@ namespace tigl{
             else{
                 throw std::logic_error("error in NACA4Calculator::camberline: x must be between 0 and 1.");
             }
+            if(std::isnan(x)){
+                throw std::logic_error("error in NACA4Calculator::camberline: x must be a number between 0 and 1.");
+            }
         }
 
         gp_Vec2d NACA4Calculator::upper_curve(double x){
-            double yt = profile_thickness(x);
-            double yc = camberline(x);
+            double yt = profile_thickness(x); 
+            double yc = camberline(x); //checked
             auto point = gp_Vec2d{x, yc};
+            if(yt < 0){
+                throw std::logic_error("error in NACA4Calculator::upper_curve: the profile_thickness must be positive or 0.");
+            }
             return point + yt*normal(x);
         }
 
@@ -58,14 +77,15 @@ namespace tigl{
             double yt = profile_thickness(x);
             double yc = camberline(x);
             auto point = gp_Vec2d{x, yc};
+            if(yt < 0){
+                throw std::logic_error("error in NACA4Calculator::upper_curve: the profile_thickness must be positive or 0.");
+            }
             return point - yt*normal(x);
         }
 
-    
-
-        double NACA4Calculator::profile_thickness(double x){
+        double NACA4Calculator::profile_thickness(double x){ //wird in upper/lower curve getestet, da gehts leichter, sollt ihcs trzdm hier hins chreibn?
             double t = this->max_profile_thickness; 
-            return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - 0.1015*pow(x,4)); //muss nicht überprüft werden weild ie ja private is
+            return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - 0.1015*pow(x,4));
         }
 
         double NACA4Calculator::camberline_derivative(double x){ //c'(x)

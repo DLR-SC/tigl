@@ -22,28 +22,78 @@
 
 #pragma once
 
-//docstrings dazu (richtiges format) (nur im header file), extention?
+//docstrings dazu (richtiges format) (nur im header file), extension?
 
 namespace tigl{
 
-class gp_Vec2d;
+//class gp_Vec2d; //schaun warum des nd geht
+#include <gp_Vec2d.hxx>
 
 class NACA4Calculator{
 
     public:
+    /**
+     * @brief Construct a new NACA4Calculator object
+     * 
+     * @param max_camber 
+     * @param max_camber_position 
+     * @param max_profile_thickness 
+     */
         NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness);
 
+        /**
+         * @brief Calculate the camberline
+         * 
+         * @param x 
+         * @return double 
+         */
         double camberline(double x);
 
+
+        /**
+         * @brief Calculate the y coordinate for the upper curve
+         * 
+         * @param x 
+         * @return gp_Vec2d 
+         */
         gp_Vec2d upper_curve(double x);
 
+
+        /**
+         * @brief Calculate the y coordinate for the lower curve
+         * 
+         * @param x 
+         * @return gp_Vec2d 
+         */
         gp_Vec2d lower_curve(double x);
+
+        
+        /**
+         * @brief Calculate the thickness of the profile
+         * 
+         * @param x 
+         * @return double 
+         */
+        double profile_thickness(double x);
 
     private:
 
-        double profile_thickness(double x);
+     
 
+        /**
+         * @brief Calculate the derivative of the camberline
+         * 
+         * @param x 
+         * @return double 
+         */
         double camberline_derivative(double x);
+
+        /**
+         * @brief Calculate the normal by using the norm
+         * 
+         * @param x 
+         * @return gp_Vec2d 
+         */
         gp_Vec2d normal(double x);
 
     private:
