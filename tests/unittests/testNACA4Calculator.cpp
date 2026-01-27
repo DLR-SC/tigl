@@ -35,7 +35,7 @@
 
 
 TEST(NACA4Calculator, Nacacalculatortest1){
-    NACA4Calculator  NACA4(2,2,12);
+    tigl::NACA4Calculator  NACA4(2,2,12);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
@@ -46,7 +46,7 @@ TEST(NACA4Calculator, Nacacalculatortest1){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest2){
-    NACA4Calculator NACA4(0,0,12);
+    tigl::NACA4Calculator NACA4(0,0,12);
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
     EXPECT_NEAR(result1.X(), (0.5), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
@@ -57,7 +57,7 @@ TEST(NACA4Calculator, Nacacalculatortest2){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest3){
-    NACA4Calculator NACA4(0,0,9);
+    tigl::NACA4Calculator NACA4(0,0,9);
     gp_Vec2d result1 = NACA4.upper_curve(0.2);
     EXPECT_NEAR(result1.X(), (0.2), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.0430316), 1e-7);
@@ -68,7 +68,7 @@ TEST(NACA4Calculator, Nacacalculatortest3){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest4){
-    NACA4Calculator NACA4(6,5,9);
+    tigl::NACA4Calculator NACA4(6,5,9);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00022), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.000918906), 1e-9);
@@ -76,3 +76,14 @@ TEST(NACA4Calculator, Nacacalculatortest4){
     EXPECT_NEAR(result2.X(), (0.999779), 1e-6); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result2.Y(), (-0.000918906), 1e-9);
 }
+
+TEST(NACA4Calculator, Nacacalculatortest5_thickness){ 
+    tigl::NACA4Calculator NACA4(0,0,12);
+    double result1 = NACA4.profile_thickness(0.3); 
+    double left_result = NACA4.profile_thickness(0.299); //bei 2.999 läuft der test nicht mehr durch
+    double right_result = NACA4.profile_thickness(0.311);
+    EXPECT_GT(result1, left_result);
+    EXPECT_GT(result1, right_result);
+}
+
+
