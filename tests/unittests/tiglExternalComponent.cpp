@@ -97,5 +97,9 @@ TEST(TiglExternalFileHelpers, getPathRelativeToApp)
 
     resultPath = getPathRelativeToApp("aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("nacelle.stp", resultPath.c_str());
+
+    // evaluate if file exists
+    EXPECT_NO_THROW(evaluatePathRelativeToApp("TestData/aircraft.xml", "nacelle.stp"));
+    EXPECT_THROW(evaluatePathRelativeToApp("TestData/aircraft.xml", "doesNotExist.stp"), tigl::CTiglError);
 }
 

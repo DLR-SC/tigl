@@ -2,11 +2,8 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglError.h"
 
-#include <filesystem>
 #include <string>
 #include <cstddef>
-
-namespace fs = std::filesystem;
 
 std::string getPathRelativeToApp(const std::string& cpacsDocumentPath,
                                  const std::string& linkedFilePath)
