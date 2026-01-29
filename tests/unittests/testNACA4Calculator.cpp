@@ -34,8 +34,8 @@
 
 
 
-TEST(NACA4Calculator, Nacacalculatortest1){
-    tigl::NACA4Calculator  NACA4(2,2,12);
+TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00126);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
@@ -45,8 +45,8 @@ TEST(NACA4Calculator, Nacacalculatortest1){
 
 }
 
-TEST(NACA4Calculator, Nacacalculatortest2){
-    tigl::NACA4Calculator NACA4(0,0,12);
+TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
+    tigl::NACA4Calculator NACA4(0,0,12, 0.00126);
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
     EXPECT_NEAR(result1.X(), (0.5), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
@@ -56,8 +56,8 @@ TEST(NACA4Calculator, Nacacalculatortest2){
 
 }
 
-TEST(NACA4Calculator, Nacacalculatortest3){
-    tigl::NACA4Calculator NACA4(0,0,9);
+TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
+    tigl::NACA4Calculator NACA4(0,0,9, 0.000945);
     gp_Vec2d result1 = NACA4.upper_curve(0.2);
     EXPECT_NEAR(result1.X(), (0.2), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.0430316), 1e-7);
@@ -67,8 +67,8 @@ TEST(NACA4Calculator, Nacacalculatortest3){
 
 }
 
-TEST(NACA4Calculator, Nacacalculatortest4){
-    tigl::NACA4Calculator NACA4(6,5,9);
+TEST(NACA4Calculator, Nacacalculatortest4_coordinates){
+    tigl::NACA4Calculator NACA4(6,5,9, 0.000945);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00022), 1e-5); // hier muss jz ein vektor das ergebnis sein
     EXPECT_NEAR(result1.Y(), (0.000918906), 1e-9);
@@ -78,12 +78,48 @@ TEST(NACA4Calculator, Nacacalculatortest4){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest5_thickness){ 
-    tigl::NACA4Calculator NACA4(0,0,12);
+    tigl::NACA4Calculator NACA4(0,0,12, 0.00126);
     double result1 = NACA4.profile_thickness(0.3); 
     double left_result = NACA4.profile_thickness(0.299); //bei 2.999 läuft der test nicht mehr durch
     double right_result = NACA4.profile_thickness(0.311);
     EXPECT_GT(result1, left_result);
     EXPECT_GT(result1, right_result);
 }
+
+TEST(NACA4Calculator, Nacacalculatortest6_thickness){ 
+    tigl::NACA4Calculator NACA4(0,0,18, 0.00189);
+    double result1 = NACA4.profile_thickness(0.3); 
+    double left_result = NACA4.profile_thickness(0.299); //bei 2.999 läuft der test nicht mehr durch
+    double right_result = NACA4.profile_thickness(0.311);
+    EXPECT_GT(result1, left_result);
+    EXPECT_GT(result1, right_result);
+    EXPECT_NEAR(result1, 0.09, 1e-2); //TODO: Fact check this
+}
+
+TEST(NACA4Calculator, Nacacalculatortest7_camberline){ 
+    tigl::NACA4Calculator NACA4(2,2,12, 0.00126);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}
+
+TEST(NACA4Calculator, Nacacalculatortest8_camberline){ 
+    tigl::NACA4Calculator NACA4(4,5,9, 0.000945);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}
+
+TEST(NACA4Calculator, Nacacalculatortest9_camberline){ 
+    tigl::NACA4Calculator NACA4(0,0,15, 0.001575);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}   
+
+
 
 

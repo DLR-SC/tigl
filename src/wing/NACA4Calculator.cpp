@@ -26,10 +26,11 @@
 
 namespace tigl{
         
-        NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness)
+        NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
          , max_profile_thickness(max_profile_thickness/100)
+         , trailing_edge_thickness(trailing_edge_thickness)
         {
             if(max_camber !=0 && max_camber !=2 && max_camber !=4 && max_camber !=6 ){
                 throw std::logic_error("error in NACA4Calculator: max_camber must be 0; 2; 4 or 6.");
@@ -45,10 +46,15 @@ namespace tigl{
             }
         }
 
+
+
         double NACA4Calculator::camberline(double x){
         
             double m = this->max_camber;
             double p = this->max_camber_position;
+            if(p == 0){
+                return 0;
+            }
             if(0 <= x && x <= p){
                 return (2*p*x - x*x)*m/(p*p);; 
             }
@@ -85,14 +91,15 @@ namespace tigl{
 
         double NACA4Calculator::profile_thickness(double x){ //wird in upper/lower curve getestet, da gehts leichter, sollt ihcs trzdm hier hins chreibn?
             double t = this->max_profile_thickness; 
-            return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - 0.1015*pow(x,4));
+            double e = trailing_edge_thickness_function(trailing_edge_thickness);
+            return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - e*pow(x,4));
         }
 
         double NACA4Calculator::camberline_derivative(double x){ //c'(x)
             double m = this->max_camber;
             double p = this->max_camber_position;
 
-            if(0 < x && x <= p){
+            if(0 <= x && x <= p){
                 return (2*p - 2*x)*m/(p*p);
             }
             else if(x > p){
@@ -110,6 +117,11 @@ namespace tigl{
                 return gp_Vec2d{0,1};
             }
             return normal/nrm;
+        }
+
+        double NACA4Calculator::trailing_edge_thickness_function(double y){ //y ist die dicke bei x = 1 aber wenn ihc fürs gl profil bei x = 0.5 die dicke ausrechnen will brauche ich ja dnn das e
+            double t = max_profile_thickness;
+            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843);
         }
 } //namespace tigl
 
