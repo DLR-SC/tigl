@@ -120,7 +120,62 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component>  
+                                </component>
+								<component uID="invalidCuboid">
+                                    <name>Negative Cuboid</name>
+                                    <systemElementUID>invalidPredCuboid</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+								<component uID="invalidCylinder">
+                                    <name>Negative Cylinder</name>
+                                    <systemElementUID>invalidPredCylinder</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+								<component uID="invalidCone">
+                                    <name>Negative Cone</name>
+                                    <systemElementUID>invalidPredCone</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component> 
+								<component uID="cylinderCone">
+                                    <name>Cone which is acutally a cylinder</name>
+                                    <systemElementUID>PredCylinderCone</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+								<component uID="invalidEllipsoid">
+                                    <name>Negative Ellipsolid</name>
+                                    <systemElementUID>invalidPredEllipsoid</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component> 
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -129,27 +184,6 @@
         </aircraft>
         <systemElements>
             <genericComponents>
-				<genericComponent uID="predExternal">
-                    <name>Predefined rectangular cube 1</name>
-                    <geometry>
-                        <external>
-							<linkToFile format="step">nacelle.stp</linkToFile>
-                            <transformation>
-                                <scaling>
-                                    <x>1.5</x>
-                                    <y>1.5</y>
-                                    <z>1.5</z>
-                                </scaling>
-                                <rotation>
-                                    <z>90.</z>
-                                </rotation>
-                                <translation>
-                                    <y>5.</y>
-                                </translation>
-                            </transformation>
-                        </external>
-                    </geometry>
-                </genericComponent>
                 <genericComponent uID="predRectCube_1">
                     <name>Predefined rectangular cube 1</name>
                     <geometry>
@@ -160,159 +194,53 @@
                         </cuboid>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predRectCube_2">
-                    <name>Predefined rectangular cube 2</name>
+				<genericComponent uID="invalidPredCuboid">
+                    <name>Predefined rectangular cuboid with negative length</name>
                     <geometry>
                         <cuboid>
-                            <lengthX>3.</lengthX>
-                            <depthY>0.5</depthY>
-                            <heightZ>0.5</heightZ>
-                        </cuboid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predWedge_1">
-                    <name>Predefined wedge 1</name>
-                    <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
+                            <lengthX>-1.</lengthX>
                             <depthY>1.</depthY>
                             <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.1</upperFaceXmin>
-                            <upperFaceXmax>0.9</upperFaceXmax>
-                            <upperFaceYmin>0.1</upperFaceYmin>
-                            <upperFaceYmax>0.9</upperFaceYmax>
                         </cuboid>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predWedge_2">
-                    <name>Predefined wedge 2</name>
-                    <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.5</upperFaceXmin>
-                            <upperFaceXmax>0.5</upperFaceXmax>
-                            <upperFaceYmin>0.0</upperFaceYmin>
-                            <upperFaceYmax>1.0</upperFaceYmax>
-                        </cuboid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predWedge_3">
-                    <name>Predefined wedge 3</name>
-                    <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.0</upperFaceXmin>
-                            <upperFaceXmax>1.0</upperFaceXmax>
-                            <upperFaceYmin>0.5</upperFaceYmin>
-                            <upperFaceYmax>0.5</upperFaceYmax>
-                        </cuboid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predWedge_4">
-                    <name>Predefined wedge 4</name>
-                    <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.5</upperFaceXmin>
-                            <upperFaceXmax>0.5</upperFaceXmax>
-                            <upperFaceYmin>0.5</upperFaceYmin>
-                            <upperFaceYmax>0.5</upperFaceYmax>
-                        </cuboid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predCylinder_1">
-                    <name>Predefined cylinder 1</name>
+				<genericComponent uID="invalidPredCylinder">
+                    <name>Predefined cylinder with negative radius</name>
                     <geometry>
                         <cylinder>
-                            <radius>0.5</radius>
-                            <height>1.</height>
-                        </cylinder>
+							<radius>-1.</radius>
+							<height>1.</height>
+						</cylinder>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predCone_1">
-                    <name>Predefined cone 1</name>
+				<genericComponent uID="invalidPredCone">
+                    <name>Predefined cone with negative radius</name>
                     <geometry>
                         <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <upperRadius>0.25</upperRadius>
-                            <height>1.</height>
-                        </cone>
+							<lowerRadius>-1.</lowerRadius>
+							<height>1</height>
+						</cone>
                     </geometry>
                 </genericComponent>
-                <genericComponent uID="predCone_2">
-                    <name>Predefined cone 2</name>
+				<genericComponent uID="PredCylinderCone">
+                    <name>Predefined cone which is actually a cylinder</name>
                     <geometry>
                         <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <upperRadius>0.74</upperRadius>
-                            <height>1.</height>
-                        </cone>
+							<lowerRadius>1.</lowerRadius>
+							<upperRadius>1.</upperRadius>
+							<height>1</height>
+						</cone>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="predCone_3">
-                    <name>Predefined cone 3</name>
-                    <geometry>
-                        <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <height>1.</height>
-                        </cone>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predEllipsoid_1">
-                    <name>Predefined ellipsoid 1</name>
+				<genericComponent uID="invalidPredEllipsoid">
+                    <name>Predefined ellipsoid with negative radius</name>
                     <geometry>
                         <ellipsoid>
-                            <radiusX>1.</radiusX>
-                        </ellipsoid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predEllipsoid_2">
-                    <name>Predefined ellipsoid 2</name>
-                    <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                        </ellipsoid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predEllipsoid_3">
-                    <name>Predefined ellipsoid 3</name>
-                    <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusZ>0.5</radiusZ>
-                        </ellipsoid>
-                    </geometry>
-                </genericComponent>
-                <genericComponent uID="predEllipsoid_4">
-                    <name>Predefined ellipsoid 4</name>
-                    <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                            <radiusZ>0.5</radiusZ>
+                            <radiusX>-1.</radiusX>
                         </ellipsoid>
                     </geometry>
                 </genericComponent>
             </genericComponents>
-            <electricMotors>
-                <electricMotor uID="predElectricMotor">
-                    <name>Predefined electric motor</name>
-                    <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                            <radiusZ>0.5</radiusZ>
-                        </ellipsoid>
-                    </geometry>
-                </electricMotor>
-            </electricMotors>
         </systemElements>
         <profiles>
             <wingAirfoils>
