@@ -120,6 +120,15 @@ TEST(NACA4Calculator, Nacacalculatortest9_camberline){
     EXPECT_NEAR(result1, 0, 1e-14);
 }   
 
+TEST(NACA4Calculator, Nacacalculatortest10_trailingedge){
+    tigl::NACA4Calculator NACA4(0,0,15, 9e-05);
+    double result1 = NACA4.trailing_edge_thickness_function(9e-05);
+    EXPECT_NEAR(result1, 0.10348, 1e-14);
+}
 
-
+TEST(NACA4Calculator, Nacacalculatortest11_trailingedge){
+    tigl::NACA4Calculator NACA4(6,4,21, 0.000945);
+    double result1 = NACA4.trailing_edge_thickness_function(0.000945);
+    EXPECT_NEAR(result1, 0.1027, 1e-14);
+}
 
