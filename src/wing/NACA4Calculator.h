@@ -39,7 +39,7 @@ class NACA4Calculator{
      * @param max_camber_position 
      * @param max_profile_thickness 
      */
-        NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness);
+        NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness);
 
         /**
          * @brief Calculate the camberline
@@ -67,7 +67,7 @@ class NACA4Calculator{
          */
         gp_Vec2d lower_curve(double x);
 
-        
+
         /**
          * @brief Calculate the thickness of the profile
          * 
@@ -75,6 +75,14 @@ class NACA4Calculator{
          * @return double 
          */
         double profile_thickness(double x);
+
+        /**
+         * @brief Construct a new trailing edge thickness object
+         * 
+         * @param y 
+         * @return double
+         */
+        double trailing_edge_thickness_function(double y);
 
     private:
 
@@ -97,6 +105,6 @@ class NACA4Calculator{
         gp_Vec2d normal(double x);
 
     private:
-        double  max_camber, max_camber_position, max_profile_thickness;
+        double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness;
 };
 }
