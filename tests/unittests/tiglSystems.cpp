@@ -181,12 +181,12 @@ TEST_F(Systems, ComponentsGeometry)
     }
 }
 
-class SystemsBugs : public ::testing::Test
+class InvalidSystems : public ::testing::Test
 {
 protected:
     static void SetUpTestCase()
     {
-        const char* filename = "TestData/simpletest-systems-bugs.cpacs.xml";
+        const char* filename = "TestData/simpletest-invalid-systems.cpacs.xml";
         ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
         ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
     }
@@ -210,12 +210,12 @@ protected:
     static TiglCPACSConfigurationHandle tiglHandle;
 
     tigl::CTiglUIDManager& uidMgr =
-        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(SystemsBugs::tiglHandle).GetUIDManager();
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(InvalidSystems::tiglHandle).GetUIDManager();
 
     tigl::CCPACSGenericSystem const* testSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem");
 };
 
-TEST_F(SystemsBugs, Exceptions)
+TEST_F(InvalidSystems, Exceptions)
 {
 
     // Exception for wrong UID reference
@@ -228,7 +228,7 @@ TEST_F(SystemsBugs, Exceptions)
     }
 }
 
-TEST_F(SystemsBugs, VehicleElementBuilderExceptions)
+TEST_F(InvalidSystems, VehicleElementBuilderExceptions)
 {
     // Ensures that building a vehicle element fails if no geometry choice is set.
     {
@@ -260,7 +260,7 @@ TEST_F(SystemsBugs, VehicleElementBuilderExceptions)
     }
 }
 
-TEST_F(SystemsBugs, InvalidShapes)
+TEST_F(InvalidSystems, InvalidShapes)
 {
     {
         auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCuboid");
@@ -296,5 +296,20 @@ TEST_F(SystemsBugs, InvalidShapes)
     }
 }
 
-TixiDocumentHandle SystemsBugs::tixiHandle           = 0;
-TiglCPACSConfigurationHandle SystemsBugs::tiglHandle = 0;
+TEST_F(InvalidSystems, InvalidFileHandling)
+{
+    {
+        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidExternal1");
+        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+                              "Cannot open external file. No file format specified.");
+    }
+
+    {
+        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidExternal2");
+        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+                              "Cannot open external element. Unknown file format: Stl");
+    }
+}
+
+TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
+TiglCPACSConfigurationHandle InvalidSystems::tiglHandle = 0;

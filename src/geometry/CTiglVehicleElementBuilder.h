@@ -30,8 +30,6 @@ public:
                                         const CTiglTransformation& transformation, const std::string& shapeName,
                                         const std::string& cpacsDocumentPath);
 
-    TIGL_EXPORT operator PNamedShape();
-
     TIGL_EXPORT PNamedShape BuildShape();
 
 private:

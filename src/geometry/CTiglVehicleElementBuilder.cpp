@@ -201,7 +201,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternal
 
     PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(fileType);
     if (!importer) {
-        throw CTiglError("Cannot open externalComponent. Unknown file format " + fileType);
+        throw CTiglError("Cannot open external element. Unknown file format: " + fileType);
     }
 
     std::string filePath = link.GetValue();
@@ -219,10 +219,5 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternal
 
     return shapeGroup->Shape();
 }
-
-CTiglVehicleElementBuilder::operator PNamedShape()
-{
-    return BuildShape();
-};
 
 } // namespace tigl
