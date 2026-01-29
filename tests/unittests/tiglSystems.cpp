@@ -22,7 +22,7 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
-#include "CNamedShape.h" 
+#include "CNamedShape.h"
 #include "CCPACSGenericSystem.h"
 #include "CCPACSComponents.h"
 #include "CCPACSComponent.h"
@@ -77,8 +77,6 @@ protected:
     tigl::CCPACSComponent const* external          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("external");
 
     tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
-
-    tigl::CCPACSComponent const* wrongReference = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wrongUIDReference");
 };
 
 TixiDocumentHandle Systems::tixiHandle           = 0;
@@ -96,6 +94,16 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     catch (...) {
         FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
     }
+}
+
+TEST_F(Systems, Basics)
+{
+    // defaulted UID check
+    EXPECT_EQ(rectCube_1->GetDefaultedUID(), "rectCube_1");
+
+    // check components' type and intent
+    EXPECT_EQ(rectCube_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
+    EXPECT_EQ(rectCube_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -151,3 +159,51 @@ TEST_F(Systems, ComponentsGeometry)
         EXPECT_GT(shape->GetFaceCount(), 0u);
     }
 }
+
+class SystemsBugs : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-systems-bugs.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    void SetUp() override
+    {
+    }
+    void TearDown() override
+    {
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+
+    tigl::CTiglUIDManager& uidMgr =
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(SystemsBugs::tiglHandle).GetUIDManager();
+};
+
+TEST_F(SystemsBugs, Exceptions)
+{
+
+    // Exception for wrong UID reference
+    {
+        auto const* wrongReference = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wrongUIDReference");
+        ASSERT_NE(wrongReference, nullptr);
+
+        CheckExceptionMessage([&] { (void)wrongReference->GetLoft(); },
+                              "Unsupported system element for uid \"NACA0009\" in CCPACSComponent::BuildLoft");
+    }
+}
+
+TixiDocumentHandle SystemsBugs::tixiHandle           = 0;
+TiglCPACSConfigurationHandle SystemsBugs::tiglHandle = 0;
