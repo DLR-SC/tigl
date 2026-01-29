@@ -1,7 +1,8 @@
 /*
-* Copyright (C) 2018 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
 *
-* Created: 2019-01-31 Jan Kleinert <jan.kleinert@dlr.de>
+* Created: 2026-01-25 Marko Alder <marko.alder@dlr.de>
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -28,23 +29,35 @@
 #include "generated/CPACSGenerator.h"
 #include "generated/CPACSTurboGenerator.h"
 #include "generated/CPACSHeatExchanger.h"
-#include "CPACSElementGeometry.h" 
+#include "CPACSElementGeometry.h"
 
 namespace tigl
 {
 
-    static const CCPACSElementGeometry* GetGeometryFrom(CTiglUIDObject& obj)
-    {
-        if (auto* ve = dynamic_cast<generated::CPACSVehicleElementBase*>(&obj)) return &ve->GetGeometry();
-        if (auto* em = dynamic_cast<generated::CPACSElectricMotor*>(&obj)) return &em->GetGeometry();
-        if (auto* b = dynamic_cast<generated::CPACSBattery*>(&obj)) return &b->GetGeometry();
-        if (auto* gb = dynamic_cast<generated::CPACSGearBox*>(&obj)) return &gb->GetGeometry();
-        if (auto* gt = dynamic_cast<generated::CPACSGasTurbine*>(&obj)) return &gt->GetGeometry();
-        if (auto* gen = dynamic_cast<generated::CPACSGenerator*>(&obj)) return &gen->GetGeometry();
-        if (auto* tg = dynamic_cast<generated::CPACSTurboGenerator*>(&obj)) return &tg->GetGeometry();
-        if (auto* hx = dynamic_cast<generated::CPACSHeatExchanger*>(&obj)) return &hx->GetGeometry();
+template <typename T>
+static const CCPACSElementGeometry* ResolveGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    if (!uidMgr.IsType<T>(uid)) {
         return nullptr;
     }
+    return &uidMgr.ResolveObject<T>(uid).GetGeometry();
+}
+
+template <typename... Ts>
+static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    const CCPACSElementGeometry* g = nullptr;
+    ((g = g ? g : ResolveGeometry<Ts>(uidMgr, uid)), ...);
+    return g;
+}
+
+// List of supported system element types
+static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    return GetGeomFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor, generated::CPACSBattery,
+                            generated::CPACSGearBox, generated::CPACSGasTurbine, generated::CPACSGenerator,
+                            generated::CPACSTurboGenerator, generated::CPACSHeatExchanger>(uidMgr, uid);
+}
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
@@ -65,25 +78,16 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
-
-    //_filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
-
-    //// test if file can be read
-    //if (!IsFileReadable(_filePath)) {
-    //    if (m_uidMgr && !m_uID.empty())
-    //        m_uidMgr->UnregisterObject(m_uID);
-    //    throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
-    //}
 }
 
 PNamedShape CCPACSComponent::BuildLoft() const
 {
-    auto systemElementUID = m_systemElementUID_choice1.get();
+    auto systemElementUID             = m_systemElementUID_choice1.get();
+    const CCPACSElementGeometry* geom = GetGeometry(*m_uidMgr, systemElementUID);
 
-    CTiglUIDObject& any = m_uidMgr->ResolveUIDObject(systemElementUID);
-    const CCPACSElementGeometry* geom = GetGeometryFrom(any);
     if (!geom) {
-        throw CTiglError("Unsupported system element for uid \"" + systemElementUID + "\" in CCPACSComponent::BuildLoft");
+        throw CTiglError("Unsupported system element for uid \"" + systemElementUID +
+                         "\" in CCPACSComponent::BuildLoft");
     }
 
     // Use component UID as shape name

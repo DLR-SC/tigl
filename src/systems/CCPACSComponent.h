@@ -50,7 +50,6 @@ protected:
 
 private:
     std::string _cpacsDocPath;
-
 };
 
 } // namespace tigl
