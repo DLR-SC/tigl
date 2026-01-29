@@ -22,6 +22,9 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Solid.hxx>
+
 #include "CNamedShape.h"
 #include "CCPACSGenericSystem.h"
 #include "CCPACSComponents.h"
@@ -99,11 +102,25 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
 TEST_F(Systems, Basics)
 {
     // defaulted UID check
+    EXPECT_EQ(genericSystem->GetDefaultedUID(), "genSys_1");
     EXPECT_EQ(rectCube_1->GetDefaultedUID(), "rectCube_1");
 
     // check components' type and intent
     EXPECT_EQ(rectCube_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
     EXPECT_EQ(rectCube_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+}
+
+TEST_F(Systems, SystemsGeometry)
+{
+    PNamedShape shape = genericSystem->GetLoft();
+    ASSERT_NE(shape, nullptr);
+
+    // all component shapes should be included in grouped system shape
+    unsigned shapeCount = 0;
+    for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
+        ++shapeCount;
+    }
+    EXPECT_EQ(shapeCount, genericSystem->GetComponents().GetComponents().size());
 }
 
 TEST_F(Systems, ComponentsGeometry)
