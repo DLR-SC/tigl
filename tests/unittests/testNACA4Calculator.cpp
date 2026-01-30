@@ -132,3 +132,11 @@ TEST(NACA4Calculator, Nacacalculatortest11_trailingedge){
     EXPECT_NEAR(result1, 0.1027, 1e-14);
 }
 
+
+//TODO 
+TEST(NACA4Calculator, Nacacalculatortest12_trailingedge){
+    tigl::NACA4Calculator NACA4(0,0,15, 5);
+    double result1 = NACA4.trailing_edge_thickness_function(5);
+    EXPECT_NEAR(result1, -6.5630666666666668, 1e-14);//result 1 = -6.5630666666666668 , vgl wert ist : -6.5630699999999997
+}
+
