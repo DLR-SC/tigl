@@ -121,6 +121,9 @@ namespace tigl{
 
         double NACA4Calculator::trailing_edge_thickness_function(double y){ //y ist die dicke bei x = 1 aber wenn ihc fürs gl profil bei x = 0.5 die dicke ausrechnen will brauche ich ja dnn das e
             double t = max_profile_thickness;
+            if(y < 0){
+                throw std::logic_error("error in NACA4Calculator::trailing_edge_thickness_function: trailing_edge_thickness must be bigger then 0.");
+            }
             return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843);
         }
 } //namespace tigl
