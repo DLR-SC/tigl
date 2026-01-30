@@ -35,12 +35,23 @@ class Systems(unittest.TestCase):
         self.config = mgr.get_configuration(self.tigl._handle.value)
         uid_mgr = self.config.get_uidmanager()
 
+        self.genSys = uid_mgr.get_geometric_component("genSys_1")
+
     def tearDown(self):
         self.tigl.close()
         self.tixi.close()
 
-    def test_configuration(self):
-        self.assertTrue(True)
+    def test_genericSystem(self):
+
+        # Access to CPACSGenericSystem
+        self.assertEqual(self.genSys.get_name(), "Generic System 1")
+        self.assertEqual(self.genSys.get_uid(), "genSys_1")
+
+        # Access to CCPACSGenericSystem
+        self.assertEqual(self.genSys.get_defaulted_uid(), "genSys_1")
+        self.assertIsInstance(
+            self.genSys.get_components(), configuration.CCPACSComponents
+        )
 
 
 if __name__ == "__main__":
