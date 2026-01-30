@@ -615,6 +615,7 @@ class CCPACSGenericSystem;
 %boost_optional(tigl::CCPACSSystemElements)
 %boost_optional(tigl::CCPACSGenericSystems)
 
+%include "generated/CPACSComponents.h"
 %include "CCPACSComponents.h"
 %include "CCPACSComponent.h"
 %include "generated/CPACSGenericSystem.h"
