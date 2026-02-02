@@ -181,6 +181,22 @@ TEST_F(Systems, ComponentsGeometry)
     }
 }
 
+TEST_F(Systems, Masses)
+{
+    const double eps = 1e-6;
+
+    EXPECT_NEAR(rectCube_1->GetMass(), 1234.0, eps);
+
+    auto const* rectCube_2 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_2");
+    auto const* rectCube_3 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_3");
+    EXPECT_NEAR(rectCube_2->GetMass(), 0.375, eps);
+    EXPECT_NEAR(rectCube_2->GetMass(), rectCube_3->GetMass(), eps);
+
+    EXPECT_THROW(wedge_1->GetMass(), tigl::CTiglError);
+
+    EXPECT_NEAR(external->GetMass(), 0.6279341, eps);
+}
+
 class InvalidSystems : public ::testing::Test
 {
 protected:
@@ -309,6 +325,13 @@ TEST_F(InvalidSystems, InvalidFileHandling)
         CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
                               "Cannot open external element. Unknown file format: Stl");
     }
+}
+
+TEST_F(InvalidSystems, Masses)
+{
+    auto const* cuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidMass");
+    CheckExceptionMessage([&] { (void)cuboid->GetMass(); },
+                          "Invalid mass definition (no mass and no density) for uid \"invalidPredCuboid_2\".");
 }
 
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;

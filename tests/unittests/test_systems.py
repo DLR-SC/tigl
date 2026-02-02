@@ -91,6 +91,13 @@ class Systems(unittest.TestCase):
         shape = external.get_loft()
         self.assertEqual(shape.get_face_count(), 6)
 
+    def test_mass(self):
+
+        eps = 1e-6
+        cuboid = self.uid_mgr.get_geometric_component("rectCube_2")
+        # ToDo: This needs a fix, only ITiglGeometricComponent is accessable:
+        self.assertAlmostEqual(cuboid.get_mass(), 0.375, delta=eps)
+
 
 if __name__ == "__main__":
     unittest.main()

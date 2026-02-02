@@ -322,27 +322,6 @@
         </aircraft>
         <systemElements>
             <genericComponents>
-				<genericComponent uID="predExternal">
-                    <name>Predefined rectangular cube 1</name>
-                    <geometry>
-                        <external>
-							<linkToFile format="step">nacelle.stp</linkToFile>
-                            <transformation>
-                                <scaling>
-                                    <x>1.5</x>
-                                    <y>1.5</y>
-                                    <z>1.5</z>
-                                </scaling>
-                                <rotation>
-                                    <z>90.</z>
-                                </rotation>
-                                <translation>
-                                    <y>5.</y>
-                                </translation>
-                            </transformation>
-                        </external>
-                    </geometry>
-                </genericComponent>
                 <genericComponent uID="predRectCube_1">
                     <name>Predefined rectangular cube 1</name>
                     <geometry>
@@ -352,6 +331,9 @@
                             <heightZ>1.</heightZ>
                         </cuboid>
                     </geometry>
+					<mass>
+						<mass>1234</mass>
+					</mass>
                 </genericComponent>
                 <genericComponent uID="predRectCube_2">
                     <name>Predefined rectangular cube 2</name>
@@ -362,6 +344,9 @@
                             <heightZ>0.5</heightZ>
                         </cuboid>
                     </geometry>
+					<mass>
+						<density>0.5</density>
+					</mass>
                 </genericComponent>
                 <genericComponent uID="predWedge_1">
                     <name>Predefined wedge 1</name>
@@ -492,6 +477,30 @@
                             <radiusZ>0.5</radiusZ>
                         </ellipsoid>
                     </geometry>
+                </genericComponent>
+				<genericComponent uID="predExternal">
+                    <name>Predefined rectangular cube 1</name>
+                    <geometry>
+                        <external>
+							<linkToFile format="step">nacelle.stp</linkToFile>
+                            <transformation>
+                                <scaling>
+                                    <x>1.5</x>
+                                    <y>1.5</y>
+                                    <z>1.5</z>
+                                </scaling>
+                                <rotation>
+                                    <z>90.</z>
+                                </rotation>
+                                <translation>
+                                    <y>5.</y>
+                                </translation>
+                            </transformation>
+                        </external>
+                    </geometry>
+					<mass>
+						<density>0.1</density>
+					</mass>
                 </genericComponent>
             </genericComponents>
             <electricMotors>

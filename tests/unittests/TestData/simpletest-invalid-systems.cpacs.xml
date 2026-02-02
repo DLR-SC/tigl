@@ -198,6 +198,17 @@
                                         </translation>
                                     </transformation>
                                 </component> 
+								<component uID="invalidMass">
+                                    <name>Component with invalid mass</name>
+                                    <systemElementUID>invalidPredCuboid_2</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component> 
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -225,6 +236,17 @@
                             <heightZ>1.</heightZ>
                         </cuboid>
                     </geometry>
+                </genericComponent>
+				<genericComponent uID="invalidPredCuboid_2">
+                    <name>Predefined cuboid with invalid mass definition</name>
+                    <geometry>
+                        <cuboid>
+                            <lengthX>1.</lengthX>
+                            <depthY>1.</depthY>
+                            <heightZ>1.</heightZ>
+                        </cuboid>
+                    </geometry>
+					<mass/>
                 </genericComponent>
 				<genericComponent uID="invalidPredCylinder">
                     <name>Predefined cylinder with negative radius</name>

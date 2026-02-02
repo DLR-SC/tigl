@@ -43,6 +43,8 @@ public:
         return TIGL_INTENT_PHYSICAL;
     }
 
+    TIGL_EXPORT double GetMass() const;
+
     // ToDo: Override setters for invalidation
 
 protected:
@@ -50,6 +52,9 @@ protected:
 
 private:
     std::string _cpacsDocPath;
+
+    void BuildMass(double& cache) const;
+    Cache<double, CCPACSComponent> m_mass;
 };
 
 } // namespace tigl

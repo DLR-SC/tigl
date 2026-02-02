@@ -16,6 +16,9 @@
 * limitations under the License.
 */
 
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
+
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponent.h"
 #include "CTiglUIDManager.h"
@@ -30,6 +33,9 @@
 #include "generated/CPACSTurboGenerator.h"
 #include "generated/CPACSHeatExchanger.h"
 #include "CPACSElementGeometry.h"
+#include "CPACSElementMass.h"
+
+#include "CNamedShape.h"
 
 namespace tigl
 {
@@ -51,7 +57,6 @@ static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, co
     return g;
 }
 
-// List of supported system element types
 static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
 {
     return GetGeomFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor, generated::CPACSBattery,
@@ -59,9 +64,34 @@ static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const s
                             generated::CPACSTurboGenerator, generated::CPACSHeatExchanger>(uidMgr, uid);
 }
 
+template <typename T>
+static const boost::optional<CCPACSElementMass>* ResolveMass(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    if (!uidMgr.IsType<T>(uid)) {
+        return nullptr;
+    }
+    return &uidMgr.ResolveObject<T>(uid).GetMass();
+}
+
+template <typename... Ts>
+static const boost::optional<CCPACSElementMass>* GetMassFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    const boost::optional<CCPACSElementMass>* m = nullptr;
+    ((m = m ? m : ResolveMass<Ts>(uidMgr, uid)), ...);
+    return m;
+}
+
+static const boost::optional<CCPACSElementMass>* GetMassDef(CTiglUIDManager& uidMgr, const std::string& uid)
+{
+    return GetMassFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor, generated::CPACSBattery,
+                            generated::CPACSGearBox, generated::CPACSGasTurbine, generated::CPACSGenerator,
+                            generated::CPACSTurboGenerator, generated::CPACSHeatExchanger>(uidMgr, uid);
+}
+
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
+    , m_mass(*this, &CCPACSComponent::BuildMass)
 {
 }
 
@@ -80,6 +110,11 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
 }
 
+double CCPACSComponent::GetMass() const
+{
+    return *m_mass;
+}
+
 PNamedShape CCPACSComponent::BuildLoft() const
 {
     auto systemElementUID             = m_systemElementUID_choice1.get();
@@ -94,6 +129,33 @@ PNamedShape CCPACSComponent::BuildLoft() const
     std::string compUid = this->GetObjectUID().get_value_or("unnamed");
     CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix(), compUid, _cpacsDocPath);
     return builder.BuildShape();
+}
+
+void CCPACSComponent::BuildMass(double& cache) const
+{
+    const std::string uid = m_systemElementUID_choice1.get();
+
+    const auto* massPtr = GetMassDef(*m_uidMgr, uid);
+    if (!massPtr || !*massPtr) {
+        throw CTiglError("No mass definition for uid \"" + uid + "\"!");
+    }
+
+    const CCPACSElementMass& massDef = **massPtr;
+
+    if (const auto& m = massDef.GetMass_choice2(); m) {
+        cache = *m;
+        return;
+    }
+
+    if (const auto& rho = massDef.GetDensity_choice1(); rho) {
+        const PNamedShape loft = GetLoft(); // wichtig: cached, nicht BuildLoft
+        GProp_GProps props;
+        BRepGProp::VolumeProperties(loft->Shape(), props);
+        cache = (*rho) * props.Mass();
+        return;
+    }
+
+    throw CTiglError("Invalid mass definition (no mass and no density) for uid \"" + uid + "\".");
 }
 
 } //namespace tigl
