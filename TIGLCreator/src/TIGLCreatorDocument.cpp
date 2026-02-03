@@ -2149,14 +2149,8 @@ void TIGLCreatorDocument::drawFusedFuselage()
 
 void TIGLCreatorDocument::drawFusedWing(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
-    try {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-        drawFusedWing(wing);
-    }
-    catch (tigl::CTiglError& ex) {
-        displayError(ex.what());
-    }
+    // check if function can be removed entirely
+    drawWing(Uid);
 }
 
 void TIGLCreatorDocument::drawFusedAircraft()
