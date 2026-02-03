@@ -1190,6 +1190,7 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
             }
         }
     }
+    app->getScene()->updateViewer();
 }
 
 void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
@@ -2445,10 +2446,18 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
         }
 
         removeWingFlaps(Uid);
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
 
         // display component segment shape with transparency
         auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, Quantity_NOC_ShapeCol, 0.5);
         app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
+        PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
+            if (mirroredLoft)
+            {
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_ShapeCol, 0.5);
+                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+                
+            }
 
         const tigl::CCPACSWingCSStructure& structure = *cs.GetStructure();
 
@@ -2460,11 +2469,10 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             app->getScene()->GetShapeManager().addObject(Uid.toStdString(), spar_shape);
 
             PNamedShape loftNamed(new CNamedShape(sparGeom, Uid.toStdString()));
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
                 app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
                 
             }
@@ -2482,7 +2490,7 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
                 app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
 
             }
