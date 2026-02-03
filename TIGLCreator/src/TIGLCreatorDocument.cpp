@@ -2361,19 +2361,41 @@ void TIGLCreatorDocument::drawIntersectionLine()
     delete Intersector;
 }
 
-void TIGLCreatorDocument::drawWingComponentSegment()
+void TIGLCreatorDocument::drawWingComponentSegment(const QString& Uid)
 {
-    QString csUid = dlgGetWingComponentSegmentSelection();
+    QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
     }
 
-    drawComponentByUID(csUid);
+    auto& cs = GetConfiguration().GetUIDManager().ResolveObject<tigl::CCPACSWingComponentSegment>(csUid.toStdString());
+
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(Uid.toStdString());
+    for (auto& obj : objects) {
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+        app->getScene()->GetShapeManager().removeObject(obj);
+    }
+
+    removeWingFlaps(Uid);
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+
+    // display component segment shape with transparency
+    auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
+    PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
+        if (mirroredLoft)
+        {
+            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+            
+        }
+
+    app->getScene()->updateViewer();
 }
 
-void TIGLCreatorDocument::drawWingComponentSegmentPoints()
+void TIGLCreatorDocument::drawWingComponentSegmentPoints(const QString& Uid)
 {
-    QString csUid = dlgGetWingComponentSegmentSelection();
+    QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
     }
