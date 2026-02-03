@@ -178,7 +178,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
 
                 ui->drawOptionsCombo->addItem(tr("Show overlay profile points"));
-                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingOverlayProfilePoints(); });
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingOverlayProfilePoints(uid); });
 
                 ui->drawOptionsCombo->addItem(tr("Show Wing Guide curves"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingGuideCurves(); });

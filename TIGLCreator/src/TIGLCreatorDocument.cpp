@@ -1008,9 +1008,9 @@ void TIGLCreatorDocument::drawWingProfiles()
     }
 }
 
-void TIGLCreatorDocument::drawWingOverlayProfilePoints()
+void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingOverlayProfilePoints(wing);
@@ -2904,6 +2904,8 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 void TIGLCreatorDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
 {
     START_COMMAND()
+    
+    drawWing(QString::fromStdString(wing.GetUID()));
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Get segment
@@ -2922,7 +2924,8 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
             gp_Pnt pnt = j.Get_gp_Pnt();
             pnt        = innerT.Transform(pnt);
 
-            app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            auto point = app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
         }
 
         // Get outer profile point list
@@ -2940,9 +2943,11 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
             gp_Pnt pnt = j.Get_gp_Pnt();
             pnt        = outerT.Transform(pnt);
 
-            app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            auto point = app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
         }
     }
+    app->getScene()->updateViewer();
 }
 
 /*
