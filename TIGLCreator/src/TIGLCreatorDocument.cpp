@@ -1156,40 +1156,9 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
         app->getScene()->GetShapeManager().removeObject(obj);
         app->getScene()->getContext()->Remove(obj, Standard_False);
     }
+    removeWingFlaps(wingUid);
     drawComponentByUID(wingUid);
     
-    if (wing.GetComponentSegments())
-    {
-        for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
-            if (!pcs->GetControlSurfaces() || pcs->GetControlSurfaces()->ControlSurfaceCount() == 0) {
-                continue;
-            }
-            if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
-                for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
-                    for (auto& obj : objects) {
-                        app->getScene()->getContext()->Remove(obj, Standard_False);
-                    }
-                    objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID()+"M");
-                    for (auto& obj : objects) {
-                        app->getScene()->getContext()->Remove(obj, Standard_False);
-                    }
-                }
-            }
-            if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
-                for (auto& led : leds->GetLeadingEdgeDevices()) {
-                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
-                    for (auto& obj : objects) {
-                        app->getScene()->getContext()->Remove(obj, Standard_False);
-                    }
-                    objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID()+"M");
-                    for (auto& obj : objects) {
-                        app->getScene()->getContext()->Remove(obj, Standard_False);
-                    }
-                }
-            }
-        }
-    }
     app->getScene()->updateViewer();
 }
 
