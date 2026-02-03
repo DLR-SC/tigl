@@ -2178,7 +2178,7 @@ void TIGLCreatorDocument::drawFusedFuselage()
     app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
 }
 
-void TIGLCreatorDocument::drawFusedWing()
+void TIGLCreatorDocument::drawFusedWing(const QString& Uid)
 {
     QString wingUid = dlgGetWingSelection();
     try {

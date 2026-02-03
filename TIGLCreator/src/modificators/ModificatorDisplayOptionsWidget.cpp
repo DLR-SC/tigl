@@ -189,8 +189,8 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->drawOptionsCombo->addItem(tr("Sample points"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingSamplePoints(); });
 
-                ui->drawOptionsCombo->addItem(tr("Fused wing"));
-                drawCallbacks.push_back([doc]() { if (doc) doc->drawFusedWing(); });
+                ui->drawOptionsCombo->addItem(tr("Show Fused wing"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFusedWing(uid); });
 
                 ui->drawOptionsCombo->addItem(tr("Component segment"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegment(uid); });

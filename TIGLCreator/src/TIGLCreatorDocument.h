@@ -98,7 +98,7 @@ public slots:
     void drawWingGuideCurves();
     void drawWingTriangulation();
     void drawWingSamplePoints();
-    void drawFusedWing();
+    void drawFusedWing(const QString& wingUID=nullptr);
     void drawWingComponentSegment(const QString& wingUID=nullptr);
     void drawWingComponentSegmentPoints(const QString& wingUID=nullptr);
     void drawWingShells(const QString& wingUID=nullptr);
