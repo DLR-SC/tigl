@@ -1252,10 +1252,6 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
         app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
-        // manually mirror wing with cutouts
-        tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(wing.GetUID());
-        auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
-
         PNamedShape loftNamed(new CNamedShape(wing.GetLoftWithCutouts(), wing.GetUID().c_str()));
         PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed);
         if (mirroredLoft) {
@@ -2390,9 +2386,19 @@ void TIGLCreatorDocument::drawWingComponentSegmentPoints()
     }
 }
 
-void TIGLCreatorDocument::drawWingShells()
+void TIGLCreatorDocument::drawWingShells(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid;
+    if (Uid == nullptr) {
+        wingUid = dlgGetWingSelection();
+        if (wingUid == "") {
+            return;
+        }
+    }
+    else {
+        wingUid = Uid;
+    }
+
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingShells(wing);
@@ -3123,10 +3129,30 @@ void TIGLCreatorDocument::drawWingComponentSegmentPoint(const std::string& csUID
 void TIGLCreatorDocument::drawWingShells(tigl::CCPACSWing& wing)
 {
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
 
-    app->getScene()->displayShape(wing.GetUpperShape(), true, Quantity_NOC_GREEN);
-    app->getScene()->displayShape(wing.GetLowerShape(), true, Quantity_NOC_RED);
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+    for (auto& obj : objects) {
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+        app->getScene()->GetShapeManager().removeObject(obj);
+    }
+
+    removeWingFlaps(QString::fromStdString(wing.GetUID()));
+    
+    TopoDS_Shape shapes[2] = {wing.GetUpperShape(), wing.GetLowerShape()};
+    Quantity_NameOfColor colors[2] = {Quantity_NOC_GREEN, Quantity_NOC_RED};
+    for (int i = 0; i < 2; ++i) {
+
+        auto shape = app->getScene()->displayShape(shapes[i], true, colors[i]);
+        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+
+        PNamedShape loftNamed(new CNamedShape(shapes[i], wing.GetUID().c_str()));
+        PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed);
+        if (mirroredLoft) {
+            auto shape = app->getScene()->displayShape(mirroredLoft, true, colors[i]);
+            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+        }
+    }
+    app->getScene()->getViewer()->Update();
 }
 
 /*

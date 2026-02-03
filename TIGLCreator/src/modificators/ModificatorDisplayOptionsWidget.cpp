@@ -199,7 +199,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingComponentSegmentPoints(); });
 
                 ui->drawOptionsCombo->addItem(tr("Shells"));
-                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingShells(); });
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingShells(uid); });
 
                 ui->drawOptionsCombo->addItem(tr("Structure"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingStructure(uid); });
