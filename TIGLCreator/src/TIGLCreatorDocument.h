@@ -97,7 +97,7 @@ public slots:
     void drawWingOverlayProfilePoints();
     void drawWingGuideCurves();
     void drawWingTriangulation();
-    void drawWingSamplePoints();
+    void drawWingSamplePoints(const QString& wingUID=nullptr);
     void drawFusedWing(const QString& wingUID=nullptr);
     void drawWingComponentSegment(const QString& wingUID=nullptr);
     void drawWingComponentSegmentPoints(const QString& wingUID=nullptr);
@@ -163,7 +163,7 @@ private slots:
 
     // Wing selection dialogs
     QString dlgGetWingOrRotorBladeSelection();
-    QString dlgGetWingSelection();
+    QString dlgGetWingSelection(const QString& wingUID=nullptr);
     QString dlgGetWingComponentSegmentSelection(const QString& wingUID=nullptr);
     QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();

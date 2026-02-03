@@ -410,23 +410,29 @@ QString TIGLCreatorDocument::dlgGetWingOrRotorBladeSelection()
 }
 
 // Wing selection Dialog
-QString TIGLCreatorDocument::dlgGetWingSelection()
+QString TIGLCreatorDocument::dlgGetWingSelection(const QString& wingUid)
 {
     QStringList wings;
     bool ok;
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
-    for (int i = 1; i <= wingCount; i++) {
-        tigl::CCPACSWing& wing = config.GetWing(i);
-        if (!wing.IsRotorBlade()) {
-            std::string name = wing.GetUID();
-            if (name.empty()) {
-                name = "Unknown wing";
+
+    if (wingUid.isEmpty()) {
+        int wingCount                     = config.GetWingCount();
+        for (int i = 1; i <= wingCount; i++) {
+            tigl::CCPACSWing& wing = config.GetWing(i);
+            if (!wing.IsRotorBlade()) {
+                std::string name = wing.GetUID();
+                if (name.empty()) {
+                    name = "Unknown wing";
+                }
+                wings << name.c_str();
             }
-            wings << name.c_str();
         }
+    }
+    else {
+        return wingUid;
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
@@ -1136,19 +1142,7 @@ void TIGLCreatorDocument::drawFuselageGuideCurves()
 
 void TIGLCreatorDocument::drawWing(const QString& Uid)
 {
-    QString wingUid;
-    if (Uid == nullptr) {
-        wingUid = dlgGetWingSelection();
-        if (wingUid == "") {
-            return;
-        }
-        else {
-            drawComponentByUID(wingUid);
-        }
-    }
-    else {
-        wingUid = Uid;
-    }
+    QString wingUid = dlgGetWingSelection(Uid);
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
@@ -1164,16 +1158,7 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
 {
-    QString wingUid;
-    if (Uid == nullptr) {
-        wingUid = dlgGetWingSelection();
-        if (wingUid == "") {
-            return;
-        }
-    }
-    else {
-        wingUid = Uid;
-    }
+    QString wingUid = dlgGetWingSelection(Uid);
 
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1464,9 +1449,9 @@ void TIGLCreatorDocument::drawFuselageTriangulation()
     app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
 }
 
-void TIGLCreatorDocument::drawWingSamplePoints()
+void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingSamplePoints(wing);
@@ -2373,16 +2358,7 @@ void TIGLCreatorDocument::drawWingComponentSegmentPoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingShells(const QString& Uid)
 {
-    QString wingUid;
-    if (Uid == nullptr) {
-        wingUid = dlgGetWingSelection();
-        if (wingUid == "") {
-            return;
-        }
-    }
-    else {
-        wingUid = Uid;
-    }
+    QString wingUid = dlgGetWingSelection(Uid);
 
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -3022,28 +2998,46 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
         return;
     }
 
-    app->getScene()->deleteAllObjects();
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+        for (auto& obj : objects) {
+            app->getScene()->getContext()->Remove(obj, Standard_False);
+            app->getScene()->GetShapeManager().removeObject(obj);
+        }
+    
+    removeWingFlaps(QString::fromStdString(wing.GetUID()));
 
     for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
         // Draw segment loft
         auto& segment = (tigl::CCPACSWingSegment&)wing.GetSegment(segmentIndex);
 
-        app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        auto shape = app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
+        PNamedShape mirroredLoft = wing.GetMirroredLoft(segment.GetLoft()); 
+            if (mirroredLoft)
+            {
+                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+                app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+                
+            }
+        
         // Draw some points on the wing segment
         for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
             for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
                 double x, y, z;
                 tiglWingGetUpperPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+                auto point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+                app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
 
                 tiglWingGetLowerPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+                point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+                app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
             }
         }
     }
+    app->getScene()->updateViewer();
 }
 
 /*

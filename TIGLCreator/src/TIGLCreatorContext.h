@@ -61,7 +61,7 @@ public:
 
     void setGridOffset (Standard_Real offset);
     
-    void displayPoint(const gp_Pnt& aPoint,
+    Handle(AIS_Shape) displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
                       Standard_Boolean UpdateViewer,
                       Standard_Real anXoffset,
