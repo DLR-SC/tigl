@@ -171,40 +171,40 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
 
             if (type == TIGL_COMPONENT_WING) {
                 // Add entries and store callbacks that call the document drawing functions
-                ui->drawOptionsCombo->addItem(tr("Wing"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWing(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Profiles"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Profiles"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
 
-                ui->drawOptionsCombo->addItem(tr("Overlay profile points"));
+                ui->drawOptionsCombo->addItem(tr("Show overlay profile points"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingOverlayProfilePoints(); });
 
-                ui->drawOptionsCombo->addItem(tr("Guide curves"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Guide curves"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingGuideCurves(); });
 
-                ui->drawOptionsCombo->addItem(tr("Triangulation"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Triangulation"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingTriangulation(); });
 
-                ui->drawOptionsCombo->addItem(tr("Sample points"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing sample points"));
                 drawCallbacks.push_back([doc]() { if (doc) doc->drawWingSamplePoints(); });
 
                 ui->drawOptionsCombo->addItem(tr("Show Fused wing"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFusedWing(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Component segment"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Component segment"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegment(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Component segment points"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Component segment points"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegmentPoints(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Shells"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Shells"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingShells(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Structure"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Structure"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingStructure(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Flaps"));
+                ui->drawOptionsCombo->addItem(tr("Show Wing Flaps"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingFlaps(uid); });
 
                 // Trigger the corresponding callback when an item is activated. Use UniqueConnection to avoid duplicate connections.
