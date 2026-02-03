@@ -1417,9 +1417,9 @@ void TIGLCreatorDocument::drawFuselage()
     }
 }
 
-void TIGLCreatorDocument::drawWingTriangulation()
+void TIGLCreatorDocument::drawWingTriangulation(const QString& Uid)
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingTriangulation(wing);
@@ -2968,14 +2968,30 @@ void TIGLCreatorDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
     START_COMMAND()
 
     //clear screen
-    app->getScene()->deleteAllObjects();
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+    for (auto& obj : objects) {
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+        app->getScene()->GetShapeManager().removeObject(obj);
+    }
+    
+    removeWingFlaps(QString::fromStdString(wing.GetUID()));
 
     //we do not fuse segments anymore but build it from scratch with the profiles
     const TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
-    app->getScene()->displayShape(compound, true, getDefaultShapeColor());
+    auto shape = app->getScene()->displayShape(compound, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+
+    PNamedShape loftNamed(new CNamedShape(compound, wing.GetUID().c_str()));
+    PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
+        if (mirroredLoft)
+        {
+            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+        }
+    app->getScene()->updateViewer();
 }
 
 /*
