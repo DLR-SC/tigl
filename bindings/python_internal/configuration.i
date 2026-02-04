@@ -614,10 +614,13 @@ class CCPACSGenericSystem;
 
 %boost_optional(tigl::CCPACSSystemElements)
 %boost_optional(tigl::CCPACSGenericSystems)
+%boost_optional(tigl::CPACSUIDSequence)
+%include "generated/CPACSUIDSequence.h"
 
+%include "generated/CPACSComponent.h"
+%include "CCPACSComponent.h"
 %include "generated/CPACSComponents.h"
 %include "CCPACSComponents.h"
-%include "CCPACSComponent.h"
 %include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"
 %include "generated/CPACSGenericSystems.h"
@@ -664,7 +667,8 @@ class CCPACSGenericSystem;
          tigl::CCPACSDuct,
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,
-         tigl::CCPACSVessel
+         tigl::CCPACSVessel,
+         tigl::CCPACSComponent
 );
 
 namespace tigl

@@ -95,7 +95,6 @@ class Systems(unittest.TestCase):
 
         eps = 1e-6
         cuboid = self.uid_mgr.get_geometric_component("rectCube_2")
-        # ToDo: This needs a fix, only ITiglGeometricComponent is accessable:
         self.assertAlmostEqual(cuboid.get_mass(), 0.375, delta=eps)
 
 
