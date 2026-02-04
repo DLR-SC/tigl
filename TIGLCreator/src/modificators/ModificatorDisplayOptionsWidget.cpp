@@ -101,7 +101,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             auto it = shapes.find(uid.toStdString());
             if (it != shapes.end() && it->second != nullptr) {
                 tigl::ITiglGeometricComponent* comp = it->second;
-                if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                if (comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
                     if (ui) {
                         ui->infoLabel->setVisible(false);
                         ui->labelTransparency->setVisible(true);
@@ -248,6 +248,45 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         }
                     }, Qt::UniqueConnection);
             }
+
+            if (type == TIGL_COMPONENT_PLANE) {
+
+                ui->drawOptionsCombo->addItem(tr("Show the complete aircraft"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawConfiguration(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show the complete aircraft with duct cutouts"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawConfigurationWithDuctCutouts(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show he complete aircraft fused (slow)"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawFusedAircraft(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show fused aircraft triangulation (slow)"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawFusedAircraftTriangulation(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show intersection line"));;
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawIntersectionLine(); });
+
+                ui->drawOptionsCombo->addItem(tr("Draw Far Field"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawFarField(); });
+
+                ui->drawOptionsCombo->addItem(tr("Draw Systems"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawSystems(); });
+
+                ui->drawOptionsCombo->addItem(tr("Draw any Component"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawComponent(); });
+
+                ui->drawOptionsCombo->addItem(tr("Draw Control Point Net"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawControlPointNet(); });
+
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);   
+
+            }
+
 
         }
     }   
