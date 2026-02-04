@@ -1020,9 +1020,9 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
     }
 }
 
-void TIGLCreatorDocument::drawWingGuideCurves()
+void TIGLCreatorDocument::drawWingGuideCurves(const QString& uid)
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingSelection(uid);
     if (wingUid == "") {
         return;
     }
