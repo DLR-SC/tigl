@@ -64,6 +64,12 @@ class Systems(unittest.TestCase):
         self.assertIsNotNone(component)
         self.assertEqual(component.get_defaulted_uid(), "rectCube_1")
 
+    def test_getGeometricComonent(self):
+
+        # Check if CCPACSComponent is part of CTiglUIDManager %factory
+        component = self.uid_mgr.get_geometric_component("rectCube_1")
+        self.assertIsInstance(component, configuration.CCPACSComponent)
+
     def test_shapes(self):
 
         # Shape from CPACSVehicleElementBase
