@@ -107,12 +107,12 @@ public slots:
 
     // Fuselage slots
     void drawFuselageProfiles();
-    void drawFuselage();
-    void drawFuselageTriangulation();
-    void drawFuselageSamplePoints();
-    void drawFuselageSamplePointsAngle();
-    void drawFusedFuselage();
-    void drawFuselageGuideCurves();
+    void drawFuselage(const QString& Uid=nullptr);
+    void drawFuselageTriangulation(const QString& Uid=nullptr);
+    void drawFuselageSamplePoints(const QString& Uid=nullptr);
+    void drawFuselageSamplePointsAngle(const QString& Uid=nullptr);
+    void drawFusedFuselage(const QString& Uid=nullptr);
+    void drawFuselageGuideCurves(const QString& Uid=nullptr);
 
     // Rotor blade slots
     void drawRotorProfiles();
@@ -178,7 +178,7 @@ private slots:
     QString dlgGetRotorProfileSelection();
 
     // Fuselage selection dialogs
-    QString dlgGetFuselageSelection();
+    QString dlgGetFuselageSelection(const QString& Uid=nullptr);
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
@@ -216,7 +216,9 @@ private:
     void drawWingShells(tigl::CCPACSWing& wing);
     bool drawWingFlaps(tigl::CCPACSWing& wing);
     void drawWingFlap(const QString& flapUID);
+    void removeWing(const QString& Uid);
     void removeWingFlaps(const QString& Uid);
+    void removeFuselage(const QString& Uid);
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     

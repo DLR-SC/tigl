@@ -691,12 +691,15 @@ QString TIGLCreatorDocument::dlgGetRotorProfileSelection()
 }
 
 // Fuselage selection Dialog
-QString TIGLCreatorDocument::dlgGetFuselageSelection()
+QString TIGLCreatorDocument::dlgGetFuselageSelection(const QString& Uid)
 {
     QStringList fuselages;
     bool ok;
 
-    // Initialize wing list
+    if (!Uid.isEmpty()) {
+        return Uid;
+    }
+    // Initialize fuselage list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int fuselageCount                 = config.GetFuselageCount();
     for (int i = 1; i <= fuselageCount; i++) {
@@ -1108,9 +1111,9 @@ void TIGLCreatorDocument::drawFuselageProfiles()
     }
 }
 
-void TIGLCreatorDocument::drawFuselageGuideCurves()
+void TIGLCreatorDocument::drawFuselageGuideCurves(const QString& Uid)
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
     }
@@ -1198,11 +1201,8 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
             return false;
         }
 
-        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
-        for (auto& obj : objects) {
-            app->getScene()->getContext()->Remove(obj, Standard_False);
-            app->getScene()->GetShapeManager().removeObject(obj);
-        }
+        removeWing(QString::fromStdString(wing.GetUID()));
+
         auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
         app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
@@ -1367,6 +1367,17 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
     app->getViewer()->update();
 }
 
+void TIGLCreatorDocument::removeWing(const QString& Uid)
+{
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+    for (auto& obj : objects) {
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+        app->getScene()->GetShapeManager().removeObject(obj);
+    }
+}
+
 void TIGLCreatorDocument::removeWingFlaps(const QString& Uid)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
@@ -1397,10 +1408,20 @@ void TIGLCreatorDocument::removeWingFlaps(const QString& Uid)
     }
 }
 
+void TIGLCreatorDocument::removeFuselage(const QString& Uid)
+                {
+                    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(Uid.toStdString());
+                
+                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(fuselage.GetUID());
+                    for (auto& obj : objects) {
+                        app->getScene()->getContext()->Remove(obj, Standard_False);
+                        app->getScene()->GetShapeManager().removeObject(obj);
+                    }
+                }
 
-void TIGLCreatorDocument::drawFuselage()
+void TIGLCreatorDocument::drawFuselage(const QString& Uid)
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
     }
@@ -1408,7 +1429,7 @@ void TIGLCreatorDocument::drawFuselage()
     START_COMMAND()
     auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
-    app->getScene()->deleteAllObjects();
+    removeFuselage(fuselageUid);
 
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         // Draw segment loft
@@ -1429,9 +1450,9 @@ void TIGLCreatorDocument::drawWingTriangulation(const QString& Uid)
     }
 }
 
-void TIGLCreatorDocument::drawFuselageTriangulation()
+void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
     }
@@ -1440,13 +1461,14 @@ void TIGLCreatorDocument::drawFuselageTriangulation()
     auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
-    app->getScene()->deleteAllObjects();
-    const TopoDS_Shape& fusedWing = fuselage.GetLoft()->Shape();
+    removeFuselage(fuselageUid);
+    const TopoDS_Shape& fusedFuselage = fuselage.GetLoft()->Shape();
 
     TopoDS_Compound triangulation;
-    createShapeTriangulation(fusedWing, triangulation);
+    createShapeTriangulation(fusedFuselage, triangulation);
 
-    app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    auto shape = app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), shape);
 }
 
 void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
@@ -1461,9 +1483,9 @@ void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
     }
 }
 
-void TIGLCreatorDocument::drawFuselageSamplePoints()
+void TIGLCreatorDocument::drawFuselageSamplePoints(const QString& Uid)
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
     }
@@ -1481,14 +1503,21 @@ void TIGLCreatorDocument::drawFuselageSamplePoints()
                                      1, // TODO: we need to implement that function to use UID instead of index!
                                      segmentIndex, eta, zeta, &x, &y, &z);
 
-                app->getScene()->displayPoint(gp_Pnt(x, y, z), "", false, 0, 0, 0, 1.0);
+                auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", false, 0, 0, 0, 1.0);
+                app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), points);
             }
         }
     }
+    app->getScene()->updateViewer();
 }
 
-void TIGLCreatorDocument::drawFuselageSamplePointsAngle()
+void TIGLCreatorDocument::drawFuselageSamplePointsAngle(const QString& Uid)
 {
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
+    if (fuselageUid == "") {
+        return;
+    }
+
     // ask user defined angle
     bool ok = false;
     double angle =
@@ -1498,10 +1527,10 @@ void TIGLCreatorDocument::drawFuselageSamplePointsAngle()
     }
 
     START_COMMAND()
-    int fuselageIndex = 1;
+    int fuselageIndex = GetConfiguration().GetFuselageIndex(fuselageUid.toStdString());
     double x, y, z;
 
-    app->getScene()->deleteAllObjects();
+    removeFuselage(fuselageUid);
     auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
     // Draw the fuselage
@@ -1513,8 +1542,10 @@ void TIGLCreatorDocument::drawFuselageSamplePointsAngle()
         // Display the intersection point
         tiglFuselageGetPointAngle(m_cpacsHandle, fuselageIndex, i, 0.5, angle, &x, &y, &z);
 
-        app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+        auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
+        app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), points);
     }
+    app->getScene()->updateViewer();
 }
 
 void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
@@ -1568,6 +1599,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
     }
     app->getScene()->updateViewer();
 }
+
 
 // -----------------------
 // Export Functions
@@ -2119,15 +2151,15 @@ void TIGLCreatorDocument::exportFuselageCurvesBRep()
     }
 }
 
-void TIGLCreatorDocument::drawFusedFuselage()
+void TIGLCreatorDocument::drawFusedFuselage(const QString& Uid)
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
     }
 
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
+    removeFuselage(fuselageUid);
     auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
 }
@@ -2973,12 +3005,7 @@ void TIGLCreatorDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
     START_COMMAND()
 
     //clear screen
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
-    for (auto& obj : objects) {
-        app->getScene()->getContext()->Remove(obj, Standard_False);
-        app->getScene()->GetShapeManager().removeObject(obj);
-    }
-    
+    removeWing(QString::fromStdString(wing.GetUID()));
     removeWingFlaps(QString::fromStdString(wing.GetUID()));
 
     //we do not fuse segments anymore but build it from scratch with the profiles
@@ -3019,12 +3046,7 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
         return;
     }
 
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
-        for (auto& obj : objects) {
-            app->getScene()->getContext()->Remove(obj, Standard_False);
-            app->getScene()->GetShapeManager().removeObject(obj);
-        }
-    
+    removeWing(QString::fromStdString(wing.GetUID()));
     removeWingFlaps(QString::fromStdString(wing.GetUID()));
 
     for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
@@ -3130,12 +3152,7 @@ void TIGLCreatorDocument::drawWingShells(tigl::CCPACSWing& wing)
 {
     START_COMMAND()
 
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
-    for (auto& obj : objects) {
-        app->getScene()->getContext()->Remove(obj, Standard_False);
-        app->getScene()->GetShapeManager().removeObject(obj);
-    }
-
+    removeWing(QString::fromStdString(wing.GetUID()));
     removeWingFlaps(QString::fromStdString(wing.GetUID()));
     
     TopoDS_Shape shapes[2] = {wing.GetUpperShape(), wing.GetLowerShape()};

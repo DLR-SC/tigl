@@ -170,42 +170,42 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             auto type = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
 
             if (type == TIGL_COMPONENT_WING) {
-                // Add entries and store callbacks that call the document drawing functions
+
                 ui->drawOptionsCombo->addItem(tr("Show Wing"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWing(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Show Wing Profiles"));
-                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
-
-                ui->drawOptionsCombo->addItem(tr("Show overlay profile points"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingOverlayProfilePoints(uid); });
-
-                ui->drawOptionsCombo->addItem(tr("Show Wing Guide curves"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingGuideCurves(uid); });
-
-                ui->drawOptionsCombo->addItem(tr("Show Wing Triangulation"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingTriangulation(uid); });
-
-                ui->drawOptionsCombo->addItem(tr("Show Wing sample points"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingSamplePoints(uid); });
-
                 ui->drawOptionsCombo->addItem(tr("Show Fused wing"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFusedWing(uid); });
+                
+                ui->drawOptionsCombo->addItem(tr("Show Wing Shells"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingShells(uid); });
 
                 ui->drawOptionsCombo->addItem(tr("Show Wing Component segment"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegment(uid); });
 
-                ui->drawOptionsCombo->addItem(tr("Show Wing Component segment points"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegmentPoints(uid); });
-
-                ui->drawOptionsCombo->addItem(tr("Show Wing Shells"));
-                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingShells(uid); });
-
                 ui->drawOptionsCombo->addItem(tr("Show Wing Structure"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingStructure(uid); });
 
+                ui->drawOptionsCombo->addItem(tr("Show Wing triangulation"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingTriangulation(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Wing Profiles"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawWingProfiles(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Wing Guide curves"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingGuideCurves(uid); });
+
                 ui->drawOptionsCombo->addItem(tr("Show Wing Flaps"));
                 drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingFlaps(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Wing Sample points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingSamplePoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Wing Overlay profile points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingOverlayProfilePoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Wing Component segment points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawWingComponentSegmentPoints(uid); });
 
                 // Trigger the corresponding callback when an item is activated. Use UniqueConnection to avoid duplicate connections.
                 connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
@@ -215,6 +215,40 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         }
                     }, Qt::UniqueConnection);
             }
+
+            if (type == TIGL_COMPONENT_FUSELAGE) {
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFuselage(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage Profiles"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawFuselageProfiles(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage Guide Curves"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFuselageGuideCurves(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage triangulation"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFuselageTriangulation(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage Sample points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFuselageSamplePoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fuselage Sample points at angle"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFuselageSamplePointsAngle(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fused fuselage"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFusedFuselage(uid); });
+
+
+                // Trigger the corresponding callback when an item is activated. Use UniqueConnection to avoid duplicate connections.
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+            }
+
         }
     }   
 
