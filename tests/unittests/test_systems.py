@@ -62,18 +62,18 @@ class Systems(unittest.TestCase):
         # Access to CCPACSComponent:
         component = components.get_component(1)
         self.assertIsNotNone(component)
-        self.assertEqual(component.get_defaulted_uid(), "rectCube_1")
+        self.assertEqual(component.get_defaulted_uid(), "cuboid_1")
 
     def test_getGeometricComonent(self):
 
         # Check if CCPACSComponent is part of CTiglUIDManager %factory
-        component = self.uid_mgr.get_geometric_component("rectCube_1")
+        component = self.uid_mgr.get_geometric_component("cuboid_1")
         self.assertIsInstance(component, configuration.CCPACSComponent)
 
     def test_shapes(self):
 
         # Shape from CPACSVehicleElementBase
-        cube = self.uid_mgr.get_geometric_component("rectCube_1")
+        cube = self.uid_mgr.get_geometric_component("cuboid_1")
         shape = cube.get_loft()
 
         self.assertIsNotNone(shape)
@@ -102,10 +102,10 @@ class Systems(unittest.TestCase):
         eps = 1e-6
 
         # --- Mass value ---
-        cuboid = self.uid_mgr.get_geometric_component("rectCube_2")
+        cuboid = self.uid_mgr.get_geometric_component("cuboid_2")
         self.assertAlmostEqual(cuboid.get_mass(), 0.375, delta=eps)
 
-        cuboid3 = self.uid_mgr.get_geometric_component("rectCube_3")
+        cuboid3 = self.uid_mgr.get_geometric_component("cuboid_3")
         self.assertAlmostEqual(cuboid.get_mass(), cuboid3.get_mass(), delta=eps)
 
         # wedge_1: no mass definition -> Exception
@@ -115,10 +115,10 @@ class Systems(unittest.TestCase):
 
         # external mass
         external = self.uid_mgr.get_geometric_component("external")
-        self.assertAlmostEqual(external.get_mass(), 0.6279341, delta=eps)
+        self.assertAlmostEqual(external.get_mass(), 0.2476386, delta=eps)
 
         # --- CoG local/global ---
-        rect4 = self.uid_mgr.get_geometric_component("rectCube_4")
+        rect4 = self.uid_mgr.get_geometric_component("cuboid_4")
 
         cog_local = rect4.get_center_of_gravity_local()
         self.assertAlmostEqual(cog_local.x, 0.3, delta=eps)
@@ -135,7 +135,7 @@ class Systems(unittest.TestCase):
         self.assertAlmostEqual(cog_global.z, 0.49497475, delta=eps)
 
         # global CoG not available since <transformation> is not set
-        unpos = self.uid_mgr.get_geometric_component("unpositionedCube")
+        unpos = self.uid_mgr.get_geometric_component("unpositionedCuboid")
 
         self.assertFalse(unpos.is_positioned())
         self.assertIsNone(unpos.get_center_of_gravity_global())

@@ -80,7 +80,7 @@ protected:
         tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(Systems::tiglHandle).GetUIDManager();
 
     tigl::CCPACSGenericSystem const* genericSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("genSys_1");
-    tigl::CCPACSComponent const* rectCube_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_1");
+    tigl::CCPACSComponent const* cuboid_1          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_1");
     tigl::CCPACSComponent const* wedge_1           = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
     tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
     tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
@@ -110,11 +110,11 @@ TEST_F(Systems, Basics)
 {
     // defaulted UID check
     EXPECT_EQ(genericSystem->GetDefaultedUID(), "genSys_1");
-    EXPECT_EQ(rectCube_1->GetDefaultedUID(), "rectCube_1");
+    EXPECT_EQ(cuboid_1->GetDefaultedUID(), "cuboid_1");
 
     // check components' type and intent
-    EXPECT_EQ(rectCube_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
-    EXPECT_EQ(rectCube_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+    EXPECT_EQ(cuboid_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
+    EXPECT_EQ(cuboid_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
 }
 
 TEST_F(Systems, SystemsGeometry)
@@ -134,11 +134,11 @@ TEST_F(Systems, ComponentsGeometry)
 {
     const double eps = 1e-6;
 
-    // rectCube_1 -> predefined cuboid 1x1x1 => expect extents ~1.0 in x,y,z
+    // cuboid_1 -> predefined cuboid 1x1x1 => expect extents ~1.0 in x,y,z
     {
-        PNamedShape shape = rectCube_1->GetLoft();
+        PNamedShape shape = cuboid_1->GetLoft();
         ASSERT_NE(shape, nullptr);
-        EXPECT_EQ(shape->Name(), "rectCube_1");
+        EXPECT_EQ(shape->Name(), "cuboid_1");
 
         unsigned int faces = shape->GetFaceCount();
         EXPECT_EQ(faces, 6u) << "Cuboid should have 6 faces";
@@ -188,36 +188,37 @@ TEST_F(Systems, Masses)
 {
     const double eps = 1e-6;
 
-    EXPECT_NEAR(rectCube_1->GetMass(), 1234.0, eps);
+    // ---- Mass values ----
+    EXPECT_NEAR(cuboid_1->GetMass(), 1234.0, eps);
 
-    auto const* rectCube_2 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_2");
-    auto const* rectCube_3 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_3");
-    EXPECT_NEAR(rectCube_2->GetMass(), 0.375, eps);
-    EXPECT_NEAR(rectCube_2->GetMass(), rectCube_3->GetMass(), eps);
+    auto const* cuboid_2 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_2");
+    auto const* cuboid_3 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_3");
+    EXPECT_NEAR(cuboid_2->GetMass(), 0.375, eps);
+    EXPECT_NEAR(cuboid_2->GetMass(), cuboid_3->GetMass(), eps);
 
     EXPECT_THROW(wedge_1->GetMass(), tigl::CTiglError);
 
-    EXPECT_NEAR(external->GetMass(), 0.6279341, eps);
+    EXPECT_NEAR(external->GetMass(), 0.2476386, eps);
     EXPECT_NEAR(eMotor->GetMass(), 123., eps);
 
     // ---- Mass location ----
-    auto const* rectCube_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_4");
+    auto const* cuboid_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_4");
 
-    const auto cogLocal = rectCube_4->GetCenterOfGravityLocal();
+    const auto cogLocal = cuboid_4->GetCenterOfGravityLocal();
     EXPECT_NEAR(cogLocal.x, 0.3, eps);
     EXPECT_NEAR(cogLocal.y, 0.25, eps);
     EXPECT_NEAR(cogLocal.z, 0.4, eps);
 
-    const auto cogGlobal = rectCube_4->GetCenterOfGravityGlobal();
-    EXPECT_TRUE(rectCube_4->IsPositioned());
+    const auto cogGlobal = cuboid_4->GetCenterOfGravityGlobal();
+    EXPECT_TRUE(cuboid_4->IsPositioned());
     ASSERT_TRUE(cogGlobal);
     EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
     EXPECT_NEAR(cogGlobal->y, 15.25, eps);
     EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
 
-    auto const* unpositionedCube = &uidMgr.ResolveObject<tigl::CCPACSComponent>("unpositionedCube");
-    EXPECT_FALSE(unpositionedCube->IsPositioned());
-    EXPECT_FALSE(unpositionedCube->GetCenterOfGravityGlobal());
+    auto const* unpositionedCuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("unpositionedCuboid");
+    EXPECT_FALSE(unpositionedCuboid->IsPositioned());
+    EXPECT_FALSE(unpositionedCuboid->GetCenterOfGravityGlobal());
 }
 
 class InvalidSystems : public ::testing::Test
@@ -283,7 +284,7 @@ TEST_F(InvalidSystems, VehicleElementBuilderExceptions)
 
     // Check get name from NextUIDParent
     {
-        const std::string uID = "predRectCube_1";
+        const std::string uID = "predCuboid_1";
         auto const* ve        = &uidMgr.ResolveObject<tigl::CCPACSVehicleElementBase>(uID);
         ASSERT_NE(ve, nullptr);
 

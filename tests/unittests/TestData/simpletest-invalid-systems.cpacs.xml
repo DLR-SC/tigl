@@ -228,8 +228,8 @@
         </aircraft>
         <systemElements>
             <genericComponents>
-                <genericComponent uID="predRectCube_1">
-                    <name>Predefined rectangular cube 1</name>
+				<genericComponent uID="predCuboid_1">
+                    <name>Predefined cuboid 1</name>
                     <geometry>
                         <cuboid>
                             <lengthX>1.</lengthX>
@@ -239,7 +239,7 @@
                     </geometry>
                 </genericComponent>
 				<genericComponent uID="invalidPredCuboid">
-                    <name>Predefined rectangular cuboid with negative length</name>
+                    <name>Predefined cuboid with negative length</name>
                     <geometry>
                         <cuboid>
                             <lengthX>-1.</lengthX>
