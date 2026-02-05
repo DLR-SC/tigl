@@ -522,6 +522,9 @@
                             <radiusZ>0.5</radiusZ>
                         </ellipsoid>
                     </geometry>
+					<mass>
+						<mass>123.</mass>
+					</mass>
                 </electricMotor>
             </electricMotors>
         </systemElements>

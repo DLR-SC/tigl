@@ -208,6 +208,17 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
+                                </component>
+								<component uID="zeroHeightComponent">
+                                    <name>Component with zero height</name>
+                                    <systemElementUID>predFace</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
                                 </component> 
                             </components>
                         </genericSystem>
@@ -301,6 +312,17 @@
 							<transformation/>
 						</external>
 					</geometry>
+                </genericComponent>
+				<genericComponent uID="predFace">
+                    <name>Predefined Face</name>
+                    <geometry>
+                        <external>
+							<linkToFile format="step">face.stp</linkToFile>
+                        </external>
+                    </geometry>
+					<mass>
+						<density>0.1</density>
+					</mass>
                 </genericComponent>
             </genericComponents>
         </systemElements>

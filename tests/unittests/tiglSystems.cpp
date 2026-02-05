@@ -198,8 +198,9 @@ TEST_F(Systems, Masses)
     EXPECT_THROW(wedge_1->GetMass(), tigl::CTiglError);
 
     EXPECT_NEAR(external->GetMass(), 0.6279341, eps);
+    EXPECT_NEAR(eMotor->GetMass(), 123., eps);
 
-    // Mass location
+    // ---- Mass location ----
     auto const* rectCube_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_4");
 
     const auto cogLocal = rectCube_4->GetCenterOfGravityLocal();
@@ -331,6 +332,12 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         auto const* cylinder = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinderCone");
         ASSERT_NE(cylinder->GetLoft(), nullptr);
+    }
+
+    {
+        auto const* face = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroHeightComponent");
+        CheckExceptionMessage([&] { (void)face->GetMass(); },
+                              "Cannot compute geometric center (zero volume) for uid \"predFace\".");
     }
 }
 
