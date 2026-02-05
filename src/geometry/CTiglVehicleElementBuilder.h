@@ -16,13 +16,15 @@
 * limitations under the License.
 */
 
-#include <generated/CPACSElementGeometry.h>
-#include "tigl_internal.h"
-
 #pragma once
+
+#include <generated/CPACSElementGeometry.h>
+#include <generated/CPACSSubElement.h>
+#include "tigl_internal.h"
 
 namespace tigl
 {
+
 class CTiglVehicleElementBuilder
 {
 public:
@@ -33,6 +35,21 @@ public:
     TIGL_EXPORT PNamedShape BuildShape();
 
 private:
+    template <typename TGeom> TopoDS_Shape BuildSingleShapeImpl(const TGeom& geom)
+    {
+        if (const auto& p = geom.GetCuboid_choice1())
+            return BuildCuboidShape(*p);
+        else if (const auto& c = geom.GetCylinder_choice2())
+            return BuildCylinderShape(*c);
+        else if (const auto& c = geom.GetCone_choice3())
+            return BuildConeShape(*c);
+        else if (const auto& e = geom.GetEllipsoid_choice4())
+            return BuildEllipsoidShape(*e);
+        else if (const auto& e = geom.GetExternal_choice5())
+            return BuildExternalShape(*e);
+        throw CTiglError("Unsupported geometry type");
+    }
+
     const CCPACSElementGeometry* m_geometry     = nullptr;
     const CTiglTransformation* m_transformation = nullptr;
 
@@ -44,6 +61,9 @@ private:
     TopoDS_Shape BuildConeShape(const CCPACSCone& c);
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
     TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e);
+
+    TopoDS_Shape BuildSingleShape(const CCPACSElementGeometry& geom);
+    TopoDS_Shape BuildSingleShape(const CCPACSSubElement& geom);
 };
 
 } //namespace tigl

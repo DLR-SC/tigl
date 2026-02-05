@@ -33,11 +33,11 @@ class CTiglUIDObject;
 namespace generated
 {
     class CPACSElementGeometry;
-    class CPACSElementGeometryAddtionalPart;
+    class CPACSSubElement;
 
     // This class is used in:
     // CPACSElementGeometry
-    // CPACSElementGeometryAddtionalPart
+    // CPACSSubElement
 
     /// @brief External geometry
     /// 
@@ -47,7 +47,7 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSExternalGeometry(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSExternalGeometry(CPACSElementGeometryAddtionalPart* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSExternalGeometry(CPACSSubElement* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSExternalGeometry();
 
@@ -60,7 +60,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSExternalGeometry");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSExternalGeometry");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +70,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSExternalGeometry");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSExternalGeometry");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -113,5 +113,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSExternalGeometry = generated::CPACSExternalGeometry;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
-using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
+using CCPACSSubElement = generated::CPACSSubElement;
 } // namespace tigl

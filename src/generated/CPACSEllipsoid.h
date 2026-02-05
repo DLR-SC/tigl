@@ -32,11 +32,11 @@ class CTiglUIDObject;
 namespace generated
 {
     class CPACSElementGeometry;
-    class CPACSElementGeometryAddtionalPart;
+    class CPACSSubElement;
 
     // This class is used in:
     // CPACSElementGeometry
-    // CPACSElementGeometryAddtionalPart
+    // CPACSSubElement
 
     /// @brief Ellipsoid
     /// 
@@ -47,7 +47,7 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSEllipsoid(CPACSElementGeometry* parent);
-        TIGL_EXPORT CPACSEllipsoid(CPACSElementGeometryAddtionalPart* parent);
+        TIGL_EXPORT CPACSEllipsoid(CPACSSubElement* parent);
 
         TIGL_EXPORT virtual ~CPACSEllipsoid();
 
@@ -60,7 +60,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSEllipsoid");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSEllipsoid");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -70,7 +70,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSElementGeometryAddtionalPart>::value, "template argument for P is not a parent class of CPACSEllipsoid");
+            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSEllipsoid");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -117,5 +117,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSEllipsoid = generated::CPACSEllipsoid;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
-using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
+using CCPACSSubElement = generated::CPACSSubElement;
 } // namespace tigl

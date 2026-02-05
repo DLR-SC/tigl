@@ -243,14 +243,14 @@ namespace generated
             }
         }
 
-        // read element addtionalParts
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/addtionalParts")) {
-            m_addtionalParts = boost::in_place(this, m_uidMgr);
+        // read element subElements
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/subElements")) {
+            m_subElements = boost::in_place(this, m_uidMgr);
             try {
-                m_addtionalParts->ReadCPACS(tixiHandle, xpath + "/addtionalParts");
+                m_subElements->ReadCPACS(tixiHandle, xpath + "/subElements");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read addtionalParts at xpath " << xpath << ": " << e.what();
-                m_addtionalParts = boost::none;
+                LOG(ERROR) << "Failed to read subElements at xpath " << xpath << ": " << e.what();
+                m_subElements = boost::none;
             }
         }
 
@@ -261,7 +261,7 @@ namespace generated
 
     void CPACSElementGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "external", "addtionalParts" };
+        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "external", "subElements" };
 
         // write attribute boundingShape
         if (m_boundingShape) {
@@ -328,14 +328,14 @@ namespace generated
             }
         }
 
-        // write element addtionalParts
-        if (m_addtionalParts) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/addtionalParts", childElemOrder);
-            m_addtionalParts->WriteCPACS(tixiHandle, xpath + "/addtionalParts");
+        // write element subElements
+        if (m_subElements) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/subElements", childElemOrder);
+            m_subElements->WriteCPACS(tixiHandle, xpath + "/subElements");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/addtionalParts")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/addtionalParts");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/subElements")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/subElements");
             }
         }
 
@@ -491,14 +491,14 @@ namespace generated
         return m_external_choice5;
     }
 
-    const boost::optional<CPACSElementGeometryAddtionalParts>& CPACSElementGeometry::GetAddtionalParts() const
+    const boost::optional<CPACSSubElements>& CPACSElementGeometry::GetSubElements() const
     {
-        return m_addtionalParts;
+        return m_subElements;
     }
 
-    boost::optional<CPACSElementGeometryAddtionalParts>& CPACSElementGeometry::GetAddtionalParts()
+    boost::optional<CPACSSubElements>& CPACSElementGeometry::GetSubElements()
     {
-        return m_addtionalParts;
+        return m_subElements;
     }
 
     CPACSCuboid& CPACSElementGeometry::GetCuboid_choice1(CreateIfNotExistsTag)
@@ -561,16 +561,16 @@ namespace generated
         m_external_choice5 = boost::none;
     }
 
-    CPACSElementGeometryAddtionalParts& CPACSElementGeometry::GetAddtionalParts(CreateIfNotExistsTag)
+    CPACSSubElements& CPACSElementGeometry::GetSubElements(CreateIfNotExistsTag)
     {
-        if (!m_addtionalParts)
-            m_addtionalParts = boost::in_place(this, m_uidMgr);
-        return *m_addtionalParts;
+        if (!m_subElements)
+            m_subElements = boost::in_place(this, m_uidMgr);
+        return *m_subElements;
     }
 
-    void CPACSElementGeometry::RemoveAddtionalParts()
+    void CPACSElementGeometry::RemoveSubElements()
     {
-        m_addtionalParts = boost::none;
+        m_subElements = boost::none;
     }
 
 } // namespace generated

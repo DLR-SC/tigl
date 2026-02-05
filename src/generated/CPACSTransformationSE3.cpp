@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include "CCPACSComponent.h"
-#include "CPACSElementGeometryAddtionalPart.h"
+#include "CPACSSubElement.h"
 #include "CPACSTransformationSE3.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -36,12 +36,12 @@ namespace generated
         m_parentType = &typeid(CCPACSComponent);
     }
 
-    CPACSTransformationSE3::CPACSTransformationSE3(CPACSElementGeometryAddtionalPart* parent, CTiglUIDManager* uidMgr)
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
+        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSTransformationSE3::~CPACSTransformationSE3()
@@ -55,8 +55,8 @@ namespace generated
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -68,8 +68,8 @@ namespace generated
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;

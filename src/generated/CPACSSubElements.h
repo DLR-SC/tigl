@@ -30,21 +30,21 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSElementGeometryAddtionalPart;
+    class CPACSSubElement;
     class CPACSElementGeometry;
 
     // This class is used in:
     // CPACSElementGeometry
 
-    /// @brief Additional Parts
+    /// @brief Sub-elements
     /// 
     /// 
-    class CPACSElementGeometryAddtionalParts
+    class CPACSSubElements
     {
     public:
-        TIGL_EXPORT CPACSElementGeometryAddtionalParts(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSubElements(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSElementGeometryAddtionalParts();
+        TIGL_EXPORT virtual ~CPACSSubElements();
 
         TIGL_EXPORT CPACSElementGeometry* GetParent();
 
@@ -59,35 +59,35 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>& GetAddidionalParts() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>>& GetAddidionalParts();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSubElement>>& GetSubElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSubElement>>& GetSubElements();
 
-        TIGL_EXPORT virtual size_t GetAddidionalPartCount() const;
+        TIGL_EXPORT virtual size_t GetSubElementCount() const;
 
-        TIGL_EXPORT virtual const CPACSElementGeometryAddtionalPart& GetAddidionalPart(size_t index) const;
-        TIGL_EXPORT virtual CPACSElementGeometryAddtionalPart& GetAddidionalPart(size_t index);
+        TIGL_EXPORT virtual const CPACSSubElement& GetSubElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSSubElement& GetSubElement(size_t index);
 
-        TIGL_EXPORT virtual CPACSElementGeometryAddtionalPart& AddAddidionalPart();
-        TIGL_EXPORT virtual void RemoveAddidionalPart(CPACSElementGeometryAddtionalPart& ref);
+        TIGL_EXPORT virtual CPACSSubElement& AddSubElement();
+        TIGL_EXPORT virtual void RemoveSubElement(CPACSSubElement& ref);
 
     protected:
         CPACSElementGeometry* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSElementGeometryAddtionalPart>> m_addidionalParts;
+        std::vector<std::unique_ptr<CPACSSubElement>> m_subElements;
 
     private:
-        CPACSElementGeometryAddtionalParts(const CPACSElementGeometryAddtionalParts&) = delete;
-        CPACSElementGeometryAddtionalParts& operator=(const CPACSElementGeometryAddtionalParts&) = delete;
+        CPACSSubElements(const CPACSSubElements&) = delete;
+        CPACSSubElements& operator=(const CPACSSubElements&) = delete;
 
-        CPACSElementGeometryAddtionalParts(CPACSElementGeometryAddtionalParts&&) = delete;
-        CPACSElementGeometryAddtionalParts& operator=(CPACSElementGeometryAddtionalParts&&) = delete;
+        CPACSSubElements(CPACSSubElements&&) = delete;
+        CPACSSubElements& operator=(CPACSSubElements&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSElementGeometryAddtionalParts = generated::CPACSElementGeometryAddtionalParts;
-using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
+using CCPACSSubElements = generated::CPACSSubElements;
+using CCPACSSubElement = generated::CPACSSubElement;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
 } // namespace tigl

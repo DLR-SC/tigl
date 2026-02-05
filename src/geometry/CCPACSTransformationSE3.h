@@ -32,7 +32,7 @@ class CCPACSTransformationSE3 : public generated::CPACSTransformationSE3
 {
 public:
     TIGL_EXPORT CCPACSTransformationSE3(CCPACSComponent* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSTransformationSE3(CCPACSElementGeometryAddtionalPart* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformationSE3(CCPACSSubElement* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void reset();
 

@@ -317,6 +317,17 @@
 										</rotation>
                                     </transformation>
                                 </component>
+								<component uID="combinedComponent">
+                                    <name>Component containing subelements</name>
+                                    <systemElementUID>predCombinedComponent</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
 								<component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>
@@ -510,6 +521,121 @@
 					<mass>
 						<density>0.1</density>
 					</mass>
+                </genericComponent>
+				<genericComponent uID="predCombinedComponent">
+                    <name>Predefined element with subelements</name>
+                    <geometry>
+                        <ellipsoid>
+                            <radiusX>1.</radiusX>
+                            <radiusY>0.25</radiusY>
+                            <radiusZ>0.25</radiusZ>
+                        </ellipsoid>
+						<subElements>
+							<subElement>
+								<cylinder>
+									<radius>0.25</radius>
+									<height>4.</height>
+								</cylinder>
+								<transformation>
+									<rotation>
+										<y>90</y>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cone>
+									<lowerRadius>0.1</lowerRadius>
+									<upperRadius>0.2</upperRadius>
+									<height>0.25</height>
+								</cone>
+								<transformation>
+									<translation>
+										<x>4</x>
+									</translation>
+									<rotation>
+										<y>90</y>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<x>3.5</x>
+										<z>0.25</z>
+									</translation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<x>3.5</x>
+										<y>-0.25</y>
+									</translation>
+									<rotation>
+										<x>90</x>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<x>3.5</x>
+										<z>-0.25</z>
+									</translation>
+									<rotation>
+										<x>180</x>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<x>3.5</x>
+										<y>0.25</y>
+									</translation>
+									<rotation>
+										<x>270</x>
+									</rotation>
+								</transformation>
+							</subElement>
+						</subElements>
+                    </geometry>
                 </genericComponent>
             </genericComponents>
             <electricMotors>

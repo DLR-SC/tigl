@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSElementGeometryAddtionalPart.h"
-#include "CPACSElementGeometryAddtionalParts.h"
+#include "CPACSSubElement.h"
+#include "CPACSSubElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -28,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSElementGeometryAddtionalPart::CPACSElementGeometryAddtionalPart(CPACSElementGeometryAddtionalParts* parent, CTiglUIDManager* uidMgr)
+    CPACSSubElement::CPACSSubElement(CPACSSubElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_transformation(this, m_uidMgr)
     {
@@ -36,21 +36,21 @@ namespace generated
         m_parent = parent;
     }
 
-    CPACSElementGeometryAddtionalPart::~CPACSElementGeometryAddtionalPart()
+    CPACSSubElement::~CPACSSubElement()
     {
     }
 
-    const CPACSElementGeometryAddtionalParts* CPACSElementGeometryAddtionalPart::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSElementGeometryAddtionalParts* CPACSElementGeometryAddtionalPart::GetParent()
+    const CPACSSubElements* CPACSSubElement::GetParent() const
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSElementGeometryAddtionalPart::GetNextUIDParent() const
+    CPACSSubElements* CPACSSubElement::GetParent()
+    {
+        return m_parent;
+    }
+
+    const CTiglUIDObject* CPACSSubElement::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -58,7 +58,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSElementGeometryAddtionalPart::GetNextUIDParent()
+    CTiglUIDObject* CPACSSubElement::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -66,7 +66,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSElementGeometryAddtionalPart::GetUIDManager()
+    CTiglUIDManager& CPACSSubElement::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -74,7 +74,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSElementGeometryAddtionalPart::GetUIDManager() const
+    const CTiglUIDManager& CPACSSubElement::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -82,7 +82,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSElementGeometryAddtionalPart::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSSubElement::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element cuboid
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cuboid")) {
@@ -152,7 +152,7 @@ namespace generated
         }
     }
 
-    void CPACSElementGeometryAddtionalPart::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSSubElement::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "external", "transformation" };
 
@@ -217,7 +217,7 @@ namespace generated
 
     }
 
-    bool CPACSElementGeometryAddtionalPart::ValidateChoices() const
+    bool CPACSSubElement::ValidateChoices() const
     {
         return
         (
@@ -307,122 +307,122 @@ namespace generated
         ;
     }
 
-    const boost::optional<CPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1() const
+    const boost::optional<CPACSCuboid>& CPACSSubElement::GetCuboid_choice1() const
     {
         return m_cuboid_choice1;
     }
 
-    boost::optional<CPACSCuboid>& CPACSElementGeometryAddtionalPart::GetCuboid_choice1()
+    boost::optional<CPACSCuboid>& CPACSSubElement::GetCuboid_choice1()
     {
         return m_cuboid_choice1;
     }
 
-    const boost::optional<CPACSCylinder>& CPACSElementGeometryAddtionalPart::GetCylinder_choice2() const
+    const boost::optional<CPACSCylinder>& CPACSSubElement::GetCylinder_choice2() const
     {
         return m_cylinder_choice2;
     }
 
-    boost::optional<CPACSCylinder>& CPACSElementGeometryAddtionalPart::GetCylinder_choice2()
+    boost::optional<CPACSCylinder>& CPACSSubElement::GetCylinder_choice2()
     {
         return m_cylinder_choice2;
     }
 
-    const boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice3() const
+    const boost::optional<CPACSCone>& CPACSSubElement::GetCone_choice3() const
     {
         return m_cone_choice3;
     }
 
-    boost::optional<CPACSCone>& CPACSElementGeometryAddtionalPart::GetCone_choice3()
+    boost::optional<CPACSCone>& CPACSSubElement::GetCone_choice3()
     {
         return m_cone_choice3;
     }
 
-    const boost::optional<CPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice4() const
+    const boost::optional<CPACSEllipsoid>& CPACSSubElement::GetEllipsoid_choice4() const
     {
         return m_ellipsoid_choice4;
     }
 
-    boost::optional<CPACSEllipsoid>& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice4()
+    boost::optional<CPACSEllipsoid>& CPACSSubElement::GetEllipsoid_choice4()
     {
         return m_ellipsoid_choice4;
     }
 
-    const boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice5() const
+    const boost::optional<CPACSExternalGeometry>& CPACSSubElement::GetExternal_choice5() const
     {
         return m_external_choice5;
     }
 
-    boost::optional<CPACSExternalGeometry>& CPACSElementGeometryAddtionalPart::GetExternal_choice5()
+    boost::optional<CPACSExternalGeometry>& CPACSSubElement::GetExternal_choice5()
     {
         return m_external_choice5;
     }
 
-    const CCPACSTransformationSE3& CPACSElementGeometryAddtionalPart::GetTransformation() const
+    const CCPACSTransformationSE3& CPACSSubElement::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CCPACSTransformationSE3& CPACSElementGeometryAddtionalPart::GetTransformation()
+    CCPACSTransformationSE3& CPACSSubElement::GetTransformation()
     {
         return m_transformation;
     }
 
-    CPACSCuboid& CPACSElementGeometryAddtionalPart::GetCuboid_choice1(CreateIfNotExistsTag)
+    CPACSCuboid& CPACSSubElement::GetCuboid_choice1(CreateIfNotExistsTag)
     {
         if (!m_cuboid_choice1)
             m_cuboid_choice1 = boost::in_place(this);
         return *m_cuboid_choice1;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveCuboid_choice1()
+    void CPACSSubElement::RemoveCuboid_choice1()
     {
         m_cuboid_choice1 = boost::none;
     }
 
-    CPACSCylinder& CPACSElementGeometryAddtionalPart::GetCylinder_choice2(CreateIfNotExistsTag)
+    CPACSCylinder& CPACSSubElement::GetCylinder_choice2(CreateIfNotExistsTag)
     {
         if (!m_cylinder_choice2)
             m_cylinder_choice2 = boost::in_place(this);
         return *m_cylinder_choice2;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveCylinder_choice2()
+    void CPACSSubElement::RemoveCylinder_choice2()
     {
         m_cylinder_choice2 = boost::none;
     }
 
-    CPACSCone& CPACSElementGeometryAddtionalPart::GetCone_choice3(CreateIfNotExistsTag)
+    CPACSCone& CPACSSubElement::GetCone_choice3(CreateIfNotExistsTag)
     {
         if (!m_cone_choice3)
             m_cone_choice3 = boost::in_place(this);
         return *m_cone_choice3;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveCone_choice3()
+    void CPACSSubElement::RemoveCone_choice3()
     {
         m_cone_choice3 = boost::none;
     }
 
-    CPACSEllipsoid& CPACSElementGeometryAddtionalPart::GetEllipsoid_choice4(CreateIfNotExistsTag)
+    CPACSEllipsoid& CPACSSubElement::GetEllipsoid_choice4(CreateIfNotExistsTag)
     {
         if (!m_ellipsoid_choice4)
             m_ellipsoid_choice4 = boost::in_place(this);
         return *m_ellipsoid_choice4;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveEllipsoid_choice4()
+    void CPACSSubElement::RemoveEllipsoid_choice4()
     {
         m_ellipsoid_choice4 = boost::none;
     }
 
-    CPACSExternalGeometry& CPACSElementGeometryAddtionalPart::GetExternal_choice5(CreateIfNotExistsTag)
+    CPACSExternalGeometry& CPACSSubElement::GetExternal_choice5(CreateIfNotExistsTag)
     {
         if (!m_external_choice5)
             m_external_choice5 = boost::in_place(this, m_uidMgr);
         return *m_external_choice5;
     }
 
-    void CPACSElementGeometryAddtionalPart::RemoveExternal_choice5()
+    void CPACSSubElement::RemoveExternal_choice5()
     {
         m_external_choice5 = boost::none;
     }

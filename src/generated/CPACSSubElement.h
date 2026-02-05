@@ -37,24 +37,24 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSElementGeometryAddtionalParts;
+    class CPACSSubElements;
 
     // This class is used in:
-    // CPACSElementGeometryAddtionalParts
+    // CPACSSubElements
 
-    /// @brief Additional Part
+    /// @brief Sub-element
     /// 
     /// 
-    class CPACSElementGeometryAddtionalPart
+    class CPACSSubElement
     {
     public:
-        TIGL_EXPORT CPACSElementGeometryAddtionalPart(CPACSElementGeometryAddtionalParts* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSubElement(CPACSSubElements* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSElementGeometryAddtionalPart();
+        TIGL_EXPORT virtual ~CPACSSubElement();
 
-        TIGL_EXPORT CPACSElementGeometryAddtionalParts* GetParent();
+        TIGL_EXPORT CPACSSubElements* GetParent();
 
-        TIGL_EXPORT const CPACSElementGeometryAddtionalParts* GetParent() const;
+        TIGL_EXPORT const CPACSSubElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -101,7 +101,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveExternal_choice5();
 
     protected:
-        CPACSElementGeometryAddtionalParts* m_parent;
+        CPACSSubElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -113,15 +113,15 @@ namespace generated
         CCPACSTransformationSE3                m_transformation;
 
     private:
-        CPACSElementGeometryAddtionalPart(const CPACSElementGeometryAddtionalPart&) = delete;
-        CPACSElementGeometryAddtionalPart& operator=(const CPACSElementGeometryAddtionalPart&) = delete;
+        CPACSSubElement(const CPACSSubElement&) = delete;
+        CPACSSubElement& operator=(const CPACSSubElement&) = delete;
 
-        CPACSElementGeometryAddtionalPart(CPACSElementGeometryAddtionalPart&&) = delete;
-        CPACSElementGeometryAddtionalPart& operator=(CPACSElementGeometryAddtionalPart&&) = delete;
+        CPACSSubElement(CPACSSubElement&&) = delete;
+        CPACSSubElement& operator=(CPACSSubElement&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSElementGeometryAddtionalPart = generated::CPACSElementGeometryAddtionalPart;
-using CCPACSElementGeometryAddtionalParts = generated::CPACSElementGeometryAddtionalParts;
+using CCPACSSubElement = generated::CPACSSubElement;
+using CCPACSSubElements = generated::CPACSSubElements;
 } // namespace tigl

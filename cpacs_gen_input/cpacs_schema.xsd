@@ -36758,7 +36758,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="external" type="externalGeometryType"/>
                         <!-- <xsd:element name="boundingBox" type="boundingBoxType"/> -->
                     </xsd:choice>
-                    <xsd:element name="addtionalParts" minOccurs="0" type="elementGeometryAddtionalPartsType"/>
+                    <xsd:element name="subElements" minOccurs="0" type="subElementsType"/>
             	</xsd:sequence>
                 <xsd:attribute name="boundingShape" type="xsd:boolean"/>
             </xsd:extension>
@@ -37225,12 +37225,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 	
-	<xsd:complexType name="elementGeometryAddtionalPartsType">
+	<xsd:complexType name="subElementsType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Additional Parts</ddue:para>
+                        <ddue:para>Sub-elements</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -37238,18 +37238,18 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="addidionalPart" maxOccurs="unbounded" type="elementGeometryAddtionalPartType"/>
+                    <xsd:element name="subElement" maxOccurs="unbounded" type="subElementType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 	
-	<xsd:complexType name="elementGeometryAddtionalPartType">
+	<xsd:complexType name="subElementType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Additional Part</ddue:para>
+                        <ddue:para>Sub-element</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>

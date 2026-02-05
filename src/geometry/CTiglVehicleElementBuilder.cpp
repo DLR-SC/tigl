@@ -33,6 +33,9 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 
+#include <generated/CPACSSubElements.h>
+#include <generated/CPACSSubElement.h>
+
 namespace tigl
 {
 
@@ -47,47 +50,64 @@ CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeomet
 {
 }
 
+TopoDS_Shape CTiglVehicleElementBuilder::BuildSingleShape(const CCPACSElementGeometry& geom)
+{
+    return BuildSingleShapeImpl(geom);
+}
+
+TopoDS_Shape CTiglVehicleElementBuilder::BuildSingleShape(const CCPACSSubElement& geom)
+{
+    return BuildSingleShapeImpl(geom);
+}
+
 PNamedShape CTiglVehicleElementBuilder::BuildShape()
 {
     const auto& geom = *m_geometry;
-    TopoDS_Shape elementShape;
-
-    if (auto& p = geom.GetCuboid_choice1()) {
-        elementShape = BuildCuboidShape(*p);
-    }
-    else if (auto& c = geom.GetCylinder_choice2()) {
-        elementShape = BuildCylinderShape(*c);
-    }
-    else if (auto& c = geom.GetCone_choice3()) {
-        elementShape = BuildConeShape(*c);
-    }
-    else if (auto& e = geom.GetEllipsoid_choice4()) {
-        elementShape = BuildEllipsoidShape(*e);
-    }
-    else if (auto& e = geom.GetExternal_choice5()) {
-        elementShape = BuildExternalShape(*e);
-    }
-    else {
-        throw CTiglError("Unsupported geometry type");
-    }
 
     // Set shape name
-    std::string loftName = "unnamed";
+    std::string baseName = "unnamed";
     if (!m_shapeName.empty()) {
-        loftName = m_shapeName;
+        baseName = m_shapeName;
     }
     else if (const auto* parent = geom.GetNextUIDParent()) {
-        loftName = parent->GetObjectUID().get_value_or(loftName);
+        baseName = parent->GetObjectUID().get_value_or(baseName);
     }
-    PNamedShape loft(new CNamedShape(elementShape, loftName));
+
+    // Base shape
+    TopoDS_Shape baseShape = BuildSingleShape(geom);
+
+    // Subelement shapes
+    ListPNamedShape shapes;
+    shapes.push_back(PNamedShape(new CNamedShape(baseShape, baseName)));
+
+    // Apply subelement shapes
+    if (geom.GetSubElements()) {
+        const auto& subElements = *geom.GetSubElements();
+
+        const auto& elementList = subElements.GetSubElements();
+        for (size_t i = 0; i < elementList.size(); ++i) {
+            const auto& element = *elementList[i];
+
+            TopoDS_Shape elementShape = BuildSingleShape(element);
+
+            // Transformation w.r.t. base shape
+            const CTiglTransformation elementTr = element.GetTransformation().getTransformationMatrix();
+            elementShape                        = elementTr.Transform(elementShape);
+
+            const std::string elementName = baseName + "_subElement_" + std::to_string(i + 1);
+
+            shapes.push_back(PNamedShape(new CNamedShape(elementShape, elementName)));
+        }
+    }
+    PNamedShape groupedShape = CGroupShapes(shapes);
 
     // Apply transformation if available
     if (m_transformation) {
-        loft = m_transformation->Transform(loft);
+        groupedShape = m_transformation->Transform(groupedShape);
     }
 
-    return loft;
-};
+    return groupedShape;
+}
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
 {

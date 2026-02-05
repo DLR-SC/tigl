@@ -18,7 +18,7 @@
 #include <cassert>
 #include "CPACSCylinder.h"
 #include "CPACSElementGeometry.h"
-#include "CPACSElementGeometryAddtionalPart.h"
+#include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -37,13 +37,13 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSCylinder::CPACSCylinder(CPACSElementGeometryAddtionalPart* parent)
+    CPACSCylinder::CPACSCylinder(CPACSSubElement* parent)
         : m_radius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
+        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSCylinder::~CPACSCylinder()
@@ -56,8 +56,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -69,8 +69,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;

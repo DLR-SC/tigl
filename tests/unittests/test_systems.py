@@ -57,7 +57,7 @@ class Systems(unittest.TestCase):
         # Access to CPACSComponents:
         components = genSys.get_components()
         self.assertIsNotNone(components)
-        self.assertEqual(components.get_component_count(), 19)
+        self.assertEqual(components.get_component_count(), 20)
 
         # Access to CCPACSComponent:
         component = components.get_component(1)

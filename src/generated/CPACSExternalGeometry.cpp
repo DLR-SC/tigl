@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include "CPACSElementGeometry.h"
-#include "CPACSElementGeometryAddtionalPart.h"
 #include "CPACSExternalGeometry.h"
+#include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -39,14 +39,14 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSExternalGeometry::CPACSExternalGeometry(CPACSElementGeometryAddtionalPart* parent, CTiglUIDManager* uidMgr)
+    CPACSExternalGeometry::CPACSExternalGeometry(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_linkToFile(this)
         , m_transformation(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
+        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSExternalGeometry::~CPACSExternalGeometry()
@@ -59,8 +59,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -72,8 +72,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;

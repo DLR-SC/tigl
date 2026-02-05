@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include "CPACSElementGeometry.h"
-#include "CPACSElementGeometryAddtionalPart.h"
 #include "CPACSEllipsoid.h"
+#include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -36,12 +36,12 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSEllipsoid::CPACSEllipsoid(CPACSElementGeometryAddtionalPart* parent)
+    CPACSEllipsoid::CPACSEllipsoid(CPACSSubElement* parent)
         : m_radiusX(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
+        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSEllipsoid::~CPACSEllipsoid()
@@ -54,8 +54,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -67,8 +67,8 @@ namespace generated
             if (IsParent<CPACSElementGeometry>()) {
                 return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
-                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            if (IsParent<CPACSSubElement>()) {
+                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;
