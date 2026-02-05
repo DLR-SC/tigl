@@ -25,34 +25,94 @@
 namespace tigl
 {
 
+/**
+ * @brief Geometric component representing a CPACS <component> within systems.
+ *
+ * A CCPACSComponent references a system element via @c systemElementUID and provides
+ * geometric and mass properties derived from that referenced element.
+ *
+ * Mass properties:
+ * - The mass can be given explicitly or computed from a density and the component volume.
+ * - The center of gravity (CoG) can be given explicitly via CPACS @c location.
+ *   If not provided, it is derived from the geometric centroid of the component.
+ *
+ * Coordinate frames:
+ * - Local values (mass, CoG local) are expressed in the component's local coordinate system.
+ * - Global CoG is only available if the component is explicitly positioned via a
+ *   CPACS @c <transformation> element (see IsPositioned()).
+ */
 class CCPACSComponent : public generated::CPACSComponent, public CTiglRelativelyPositionedComponent
 {
 public:
+    /**
+     * @brief Constructs a CCPACSComponent.
+     * @param parent Parent CPACS <components> container.
+     * @param uidMgr UID manager for resolving referenced system elements.
+     */
     TIGL_EXPORT CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr);
 
+    /**
+     * @brief Returns the component UID (defaulted if required).
+     */
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
+    /**
+     * @brief Reads the CPACS subtree of this component.
+     */
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
 
+    /// @brief Returns the TiGL geometric component type.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_SYSTEM_COMPONENT;
     }
 
+    /// @brief Returns the TiGL geometric component intent.
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
     {
         return TIGL_INTENT_PHYSICAL;
     }
 
-    // Mass properties
+    /**
+     * @brief Returns the component mass.
+     *
+     * The mass is obtained from the referenced system element:
+     * - If an explicit mass is provided in CPACS, it is returned.
+     * - Otherwise, if a density is provided, the mass is computed as density * volume.
+     *
+     * @return Mass.
+     */
     TIGL_EXPORT double GetMass() const;
 
+    /**
+     * @brief Returns the center of gravity in the component's local coordinate system.
+     *
+     * If CPACS @c location is provided, that value is used.
+     * Otherwise, the geometric centroid of the component volume is used.
+     *
+     * @return Local CoG (x,y,z).
+     */
     TIGL_EXPORT CTiglPoint GetCenterOfGravityLocal() const;
+
+    /**
+     * @brief Returns the center of gravity in the global coordinate system.
+     *
+     * The global CoG is obtained by applying the component transformation to the local CoG.
+     * This value is only available if the component is explicitly positioned (see IsPositioned()).
+     *
+     * @return Global CoG, or boost::none if the component has no explicit CPACS <transformation>.
+     */
     TIGL_EXPORT boost::optional<CTiglPoint> GetCenterOfGravityGlobal() const;
 
+    /**
+     * @brief Returns whether this component is explicitly positioned in CPACS.
+     *
+     * This checks for the presence of the optional CPACS @c <transformation> element
+     * under the component.
+     *
+     * @return true if an explicit transformation is present, false otherwise.
+     */
     TIGL_EXPORT bool IsPositioned() const;
-
-    // ToDo: Override setters for invalidation
 
 protected:
     virtual PNamedShape BuildLoft() const override;

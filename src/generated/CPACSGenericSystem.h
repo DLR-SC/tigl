@@ -19,10 +19,10 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSComponents.h>
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
+#include "CPACSComponents.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -74,8 +74,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CCPACSComponents& GetComponents() const;
-        TIGL_EXPORT virtual CCPACSComponents& GetComponents();
+        TIGL_EXPORT virtual const CPACSComponents& GetComponents() const;
+        TIGL_EXPORT virtual CPACSComponents& GetComponents();
 
     protected:
         CCPACSGenericSystems* m_parent;
@@ -92,7 +92,7 @@ namespace generated
         /// Description of the system component.
         boost::optional<std::string>      m_description;
 
-        CCPACSComponents                  m_components;
+        CPACSComponents                   m_components;
 
     private:
         CPACSGenericSystem(const CPACSGenericSystem&) = delete;

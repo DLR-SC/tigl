@@ -141,7 +141,6 @@
 #include "generated/CPACSComponent.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
-#include "CCPACSComponents.h"
 %}
 
 %feature("autodoc", "3");
@@ -622,7 +621,6 @@ class CCPACSGenericSystem;
 %include "generated/CPACSComponent.h"
 %include "CCPACSComponent.h"
 %include "generated/CPACSComponents.h"
-%include "CCPACSComponents.h"
 %include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"
 %include "generated/CPACSGenericSystems.h"

@@ -80,7 +80,7 @@ namespace generated
     {
         // read element component
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/component")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/component", m_components, 1, tixi::xsdUnbounded, reinterpret_cast<CCPACSComponents*>(this), m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/component", m_components, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSComponent& CPACSComponents::AddComponent()
     {
-        m_components.push_back(make_unique<CCPACSComponent>(reinterpret_cast<CCPACSComponents*>(this), m_uidMgr));
+        m_components.push_back(make_unique<CCPACSComponent>(this, m_uidMgr));
         return *m_components.back();
     }
 

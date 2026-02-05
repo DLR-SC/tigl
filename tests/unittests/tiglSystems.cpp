@@ -29,7 +29,6 @@
 
 #include "CNamedShape.h"
 #include "CCPACSGenericSystem.h"
-#include "CCPACSComponents.h"
 #include "CCPACSComponent.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"

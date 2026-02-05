@@ -214,12 +214,12 @@ namespace generated
         m_description = value;
     }
 
-    const CCPACSComponents& CPACSGenericSystem::GetComponents() const
+    const CPACSComponents& CPACSGenericSystem::GetComponents() const
     {
         return m_components;
     }
 
-    CCPACSComponents& CPACSGenericSystem::GetComponents()
+    CPACSComponents& CPACSGenericSystem::GetComponents()
     {
         return m_components;
     }
