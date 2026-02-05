@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CPACSCone.h"
 #include "CPACSElementGeometry.h"
+#include "CPACSElementGeometryAddtionalPart.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDObject.h"
@@ -33,26 +34,31 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSElementGeometry);
+    }
+
+    CPACSCone::CPACSCone(CPACSElementGeometryAddtionalPart* parent)
+        : m_lowerRadius(0)
+        , m_height(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSElementGeometryAddtionalPart);
     }
 
     CPACSCone::~CPACSCone()
     {
     }
 
-    const CPACSElementGeometry* CPACSCone::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSElementGeometry* CPACSCone::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSCone::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSElementGeometry>()) {
+                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
+                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -60,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSCone::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSElementGeometry>()) {
+                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSElementGeometryAddtionalPart>()) {
+                return GetParent<CPACSElementGeometryAddtionalPart>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

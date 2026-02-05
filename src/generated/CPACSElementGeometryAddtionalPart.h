@@ -22,6 +22,7 @@
 #include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSCone.h"
 #include "CPACSCuboid.h"
 #include "CPACSCylinder.h"
 #include "CPACSEllipsoid.h"
@@ -72,8 +73,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCylinder_choice2() const;
         TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCylinder_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCone_choice3() const;
-        TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCone_choice3();
+        TIGL_EXPORT virtual const boost::optional<CPACSCone>& GetCone_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCone>& GetCone_choice3();
 
         TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice4() const;
         TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice4();
@@ -90,7 +91,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSCylinder& GetCylinder_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCylinder_choice2();
 
-        TIGL_EXPORT virtual CPACSCylinder& GetCone_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSCone& GetCone_choice3(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCone_choice3();
 
         TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice4(CreateIfNotExistsTag);
@@ -106,7 +107,7 @@ namespace generated
 
         boost::optional<CPACSCuboid>           m_cuboid_choice1;
         boost::optional<CPACSCylinder>         m_cylinder_choice2;
-        boost::optional<CPACSCylinder>         m_cone_choice3;
+        boost::optional<CPACSCone>             m_cone_choice3;
         boost::optional<CPACSEllipsoid>        m_ellipsoid_choice4;
         boost::optional<CPACSExternalGeometry> m_external_choice5;
         CCPACSTransformationSE3                m_transformation;
