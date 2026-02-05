@@ -69,14 +69,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCuboid>& GetCuboid_choice1() const;
         TIGL_EXPORT virtual boost::optional<CPACSCuboid>& GetCuboid_choice1();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCone_choice2() const;
-        TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCone_choice2();
+        TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCylinder_choice2() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCylinder_choice2();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice3();
+        TIGL_EXPORT virtual const boost::optional<CPACSCylinder>& GetCone_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CPACSCylinder>& GetCone_choice3();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSExternalGeometry>& GetExternal_choice4() const;
-        TIGL_EXPORT virtual boost::optional<CPACSExternalGeometry>& GetExternal_choice4();
+        TIGL_EXPORT virtual const boost::optional<CPACSEllipsoid>& GetEllipsoid_choice4() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEllipsoid>& GetEllipsoid_choice4();
+
+        TIGL_EXPORT virtual const boost::optional<CPACSExternalGeometry>& GetExternal_choice5() const;
+        TIGL_EXPORT virtual boost::optional<CPACSExternalGeometry>& GetExternal_choice5();
 
         TIGL_EXPORT virtual const CCPACSTransformationSE3& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation();
@@ -84,14 +87,17 @@ namespace generated
         TIGL_EXPORT virtual CPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCuboid_choice1();
 
-        TIGL_EXPORT virtual CPACSCylinder& GetCone_choice2(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveCone_choice2();
+        TIGL_EXPORT virtual CPACSCylinder& GetCylinder_choice2(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCylinder_choice2();
 
-        TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice3(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveEllipsoid_choice3();
+        TIGL_EXPORT virtual CPACSCylinder& GetCone_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveCone_choice3();
 
-        TIGL_EXPORT virtual CPACSExternalGeometry& GetExternal_choice4(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveExternal_choice4();
+        TIGL_EXPORT virtual CPACSEllipsoid& GetEllipsoid_choice4(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEllipsoid_choice4();
+
+        TIGL_EXPORT virtual CPACSExternalGeometry& GetExternal_choice5(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveExternal_choice5();
 
     protected:
         CPACSElementGeometryAddtionalParts* m_parent;
@@ -99,9 +105,10 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSCuboid>           m_cuboid_choice1;
-        boost::optional<CPACSCylinder>         m_cone_choice2;
-        boost::optional<CPACSEllipsoid>        m_ellipsoid_choice3;
-        boost::optional<CPACSExternalGeometry> m_external_choice4;
+        boost::optional<CPACSCylinder>         m_cylinder_choice2;
+        boost::optional<CPACSCylinder>         m_cone_choice3;
+        boost::optional<CPACSEllipsoid>        m_ellipsoid_choice4;
+        boost::optional<CPACSExternalGeometry> m_external_choice5;
         CCPACSTransformationSE3                m_transformation;
 
     private:
