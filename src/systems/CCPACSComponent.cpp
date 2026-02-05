@@ -65,7 +65,7 @@ static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const s
 }
 
 template <typename T>
-static const boost::optional<CCPACSElementMass>* ResolveMass(CTiglUIDManager& uidMgr, const std::string& uid)
+static const boost::optional<CCPACSElementMass>* ResolveMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
 {
     if (!uidMgr.IsType<T>(uid)) {
         return nullptr;
@@ -74,18 +74,20 @@ static const boost::optional<CCPACSElementMass>* ResolveMass(CTiglUIDManager& ui
 }
 
 template <typename... Ts>
-static const boost::optional<CCPACSElementMass>* GetMassFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
+static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTiglUIDManager& uidMgr,
+                                                                             const std::string& uid)
 {
     const boost::optional<CCPACSElementMass>* m = nullptr;
-    ((m = m ? m : ResolveMass<Ts>(uidMgr, uid)), ...);
+    ((m = m ? m : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
     return m;
 }
 
-static const boost::optional<CCPACSElementMass>* GetMassDef(CTiglUIDManager& uidMgr, const std::string& uid)
+static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
 {
-    return GetMassFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor, generated::CPACSBattery,
-                            generated::CPACSGearBox, generated::CPACSGasTurbine, generated::CPACSGenerator,
-                            generated::CPACSTurboGenerator, generated::CPACSHeatExchanger>(uidMgr, uid);
+    return GetMassDescriptionFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor,
+                                       generated::CPACSBattery, generated::CPACSGearBox, generated::CPACSGasTurbine,
+                                       generated::CPACSGenerator, generated::CPACSTurboGenerator,
+                                       generated::CPACSHeatExchanger>(uidMgr, uid);
 }
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
@@ -112,7 +114,27 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
 
 double CCPACSComponent::GetMass() const
 {
-    return *m_mass;
+    return m_mass->mass;
+}
+
+CTiglPoint CCPACSComponent::GetCenterOfGravityLocal() const
+{
+    return m_mass->cogLocal;
+}
+
+boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
+{
+    if (!IsPositioned()) {
+        LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
+                     << "\" is only available if <transformation> is defined.";
+        return boost::none;
+    }
+    return GetTransformationMatrix() * m_mass->cogLocal;
+}
+
+bool CCPACSComponent::IsPositioned() const
+{
+    return GetTransformation().is_initialized();
 }
 
 PNamedShape CCPACSComponent::BuildLoft() const
@@ -131,27 +153,45 @@ PNamedShape CCPACSComponent::BuildLoft() const
     return builder.BuildShape();
 }
 
-void CCPACSComponent::BuildMass(double& cache) const
+void CCPACSComponent::BuildMass(MassCache& cache) const
 {
     const std::string uid = m_systemElementUID_choice1.get();
 
-    const auto* massPtr = GetMassDef(*m_uidMgr, uid);
+    const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
     if (!massPtr || !*massPtr) {
         throw CTiglError("No mass definition for uid \"" + uid + "\"!");
     }
 
     const CCPACSElementMass& massDef = **massPtr;
 
+    // Evaluate CoG
+    if (const auto& loc = massDef.GetLocation(); loc) {
+        cache.cogLocal = loc->AsPoint();
+    }
+    else {
+        const PNamedShape loft = GetLoft();
+        GProp_GProps props;
+        BRepGProp::VolumeProperties(loft->Shape(), props);
+
+        if (props.Mass() <= 0.0) {
+            throw CTiglError("Cannot compute geometric center (zero volume) for uid \"" + uid + "\".");
+        }
+
+        const gp_Pnt c = props.CentreOfMass();
+        cache.cogLocal = CTiglPoint(c.X(), c.Y(), c.Z());
+    }
+
+    // Evaluate mass
     if (const auto& m = massDef.GetMass_choice2(); m) {
-        cache = *m;
+        cache.mass = *m;
         return;
     }
 
     if (const auto& rho = massDef.GetDensity_choice1(); rho) {
-        const PNamedShape loft = GetLoft(); // wichtig: cached, nicht BuildLoft
+        const PNamedShape loft = GetLoft();
         GProp_GProps props;
         BRepGProp::VolumeProperties(loft->Shape(), props);
-        cache = (*rho) * props.Mass();
+        cache.mass = (*rho) * props.Mass();
         return;
     }
 

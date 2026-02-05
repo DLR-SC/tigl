@@ -19,6 +19,8 @@
 #include "test.h"
 #include "tigl.h"
 
+#include <boost/optional/optional_io.hpp>
+
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 
@@ -32,6 +34,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSExternalObject.h"
+#include "CTiglPoint.h"
 
 #include "generated/CPACSElementGeometry.h"
 #include "CTiglVehicleElementBuilder.h"
@@ -195,6 +198,25 @@ TEST_F(Systems, Masses)
     EXPECT_THROW(wedge_1->GetMass(), tigl::CTiglError);
 
     EXPECT_NEAR(external->GetMass(), 0.6279341, eps);
+
+    // Mass location
+    auto const* rectCube_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("rectCube_4");
+
+    const auto cogLocal = rectCube_4->GetCenterOfGravityLocal();
+    EXPECT_NEAR(cogLocal.x, 0.3, eps);
+    EXPECT_NEAR(cogLocal.y, 0.25, eps);
+    EXPECT_NEAR(cogLocal.z, 0.4, eps);
+
+    const auto cogGlobal = rectCube_4->GetCenterOfGravityGlobal();
+    EXPECT_TRUE(rectCube_4->IsPositioned());
+    ASSERT_TRUE(cogGlobal);
+    EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
+    EXPECT_NEAR(cogGlobal->y, 15.25, eps);
+    EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
+
+    auto const* unpositionedCube = &uidMgr.ResolveObject<tigl::CCPACSComponent>("unpositionedCube");
+    EXPECT_FALSE(unpositionedCube->IsPositioned());
+    EXPECT_FALSE(unpositionedCube->GetCenterOfGravityGlobal());
 }
 
 class InvalidSystems : public ::testing::Test

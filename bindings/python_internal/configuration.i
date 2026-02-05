@@ -615,8 +615,10 @@ class CCPACSGenericSystem;
 %boost_optional(tigl::CCPACSSystemElements)
 %boost_optional(tigl::CCPACSGenericSystems)
 %boost_optional(tigl::CPACSUIDSequence)
-%include "generated/CPACSUIDSequence.h"
+%boost_optional(tigl::CTiglPoint)
 
+%include "generated/CPACSUIDSequence.h"
+%include "CTiglPoint.h"
 %include "generated/CPACSComponent.h"
 %include "CCPACSComponent.h"
 %include "generated/CPACSComponents.h"

@@ -314,6 +314,10 @@
                                         </translation>
                                     </transformation>
                                 </component>
+								<component uID="unpositionedCube">
+                                    <name>Unpositioned Cube</name>
+                                    <systemElementUID>predRectCube_1</systemElementUID>
+                                </component>
                             </components>
                         </genericSystem>
                     </genericSystems>
@@ -333,6 +337,11 @@
                     </geometry>
 					<mass>
 						<mass>1234</mass>
+						<location>
+							<x>0.3</x>
+							<y>0.25</y>
+							<z>0.4</z>
+						</location>
 					</mass>
                 </genericComponent>
                 <genericComponent uID="predRectCube_2">

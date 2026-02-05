@@ -57,7 +57,7 @@ class Systems(unittest.TestCase):
         # Access to CPACSComponents:
         components = genSys.get_components()
         self.assertIsNotNone(components)
-        self.assertEqual(components.get_component_count(), 18)
+        self.assertEqual(components.get_component_count(), 19)
 
         # Access to CCPACSComponent:
         component = components.get_component(1)
@@ -100,8 +100,45 @@ class Systems(unittest.TestCase):
     def test_mass(self):
 
         eps = 1e-6
+
+        # --- Mass value ---
         cuboid = self.uid_mgr.get_geometric_component("rectCube_2")
         self.assertAlmostEqual(cuboid.get_mass(), 0.375, delta=eps)
+
+        cuboid3 = self.uid_mgr.get_geometric_component("rectCube_3")
+        self.assertAlmostEqual(cuboid.get_mass(), cuboid3.get_mass(), delta=eps)
+
+        # wedge_1: no mass definition -> Exception
+        wedge = self.uid_mgr.get_geometric_component("wedge_1")
+        with self.assertRaises(Exception):
+            wedge.get_mass()
+
+        # external mass
+        external = self.uid_mgr.get_geometric_component("external")
+        self.assertAlmostEqual(external.get_mass(), 0.6279341, delta=eps)
+
+        # --- CoG local/global ---
+        rect4 = self.uid_mgr.get_geometric_component("rectCube_4")
+
+        cog_local = rect4.get_center_of_gravity_local()
+        self.assertAlmostEqual(cog_local.x, 0.3, delta=eps)
+        self.assertAlmostEqual(cog_local.y, 0.25, delta=eps)
+        self.assertAlmostEqual(cog_local.z, 0.4, delta=eps)
+
+        # global CoG available since <transformation> is set
+        self.assertTrue(rect4.is_positioned())
+        cog_global = rect4.get_center_of_gravity_global()
+        self.assertIsNotNone(cog_global)
+
+        self.assertAlmostEqual(cog_global.x, -0.0707107, delta=eps)
+        self.assertAlmostEqual(cog_global.y, 15.25, delta=eps)
+        self.assertAlmostEqual(cog_global.z, 0.49497475, delta=eps)
+
+        # global CoG not available since <transformation> is not set
+        unpos = self.uid_mgr.get_geometric_component("unpositionedCube")
+
+        self.assertFalse(unpos.is_positioned())
+        self.assertIsNone(unpos.get_center_of_gravity_global())
 
 
 if __name__ == "__main__":

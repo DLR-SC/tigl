@@ -20,6 +20,7 @@
 
 #include "generated/CPACSComponent.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "CTiglPoint.h"
 
 namespace tigl
 {
@@ -43,7 +44,13 @@ public:
         return TIGL_INTENT_PHYSICAL;
     }
 
+    // Mass properties
     TIGL_EXPORT double GetMass() const;
+
+    TIGL_EXPORT CTiglPoint GetCenterOfGravityLocal() const;
+    TIGL_EXPORT boost::optional<CTiglPoint> GetCenterOfGravityGlobal() const;
+
+    TIGL_EXPORT bool IsPositioned() const;
 
     // ToDo: Override setters for invalidation
 
@@ -53,8 +60,13 @@ protected:
 private:
     std::string _cpacsDocPath;
 
-    void BuildMass(double& cache) const;
-    Cache<double, CCPACSComponent> m_mass;
+    struct MassCache {
+        double mass = 0.0;
+        CTiglPoint cogLocal;
+    };
+
+    void BuildMass(MassCache& cache) const;
+    Cache<MassCache, CCPACSComponent> m_mass;
 };
 
 } // namespace tigl
