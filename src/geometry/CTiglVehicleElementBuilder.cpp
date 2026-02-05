@@ -127,10 +127,10 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder
     const double radius = c.GetRadius();
     const double height = c.GetHeight();
 
-    if (radius < 0.0 || height <= 0.0) {
-        auto uID             = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
-        std::string errorMsg = "Invalid cylinder parameters for uID=\"" + uID +
-                               "\": Radius must be non-negative and height must be positive.";
+    if (radius <= 0.0 || height <= 0.0) {
+        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        std::string errorMsg =
+            "Invalid cylinder parameters for uID=\"" + uID + "\": Radius and height must be positive.";
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
@@ -147,10 +147,10 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
     const double upperRadius = c.GetUpperRadius().get_value_or(0);
     const double height      = c.GetHeight();
 
-    if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0) {
-        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
-        std::string errorMsg =
-            "Invalid cone parameters for uID=\"" + uID + "\": Radii must be non-negative and height must be positive.";
+    if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0 || (lowerRadius == 0.0 && upperRadius == 0.0)) {
+        auto uID             = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        std::string errorMsg = "Invalid cone parameters for uID=\"" + uID +
+                               "\": At least one radius must be positive and height must be positive.";
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 

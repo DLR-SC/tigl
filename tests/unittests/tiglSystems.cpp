@@ -310,16 +310,16 @@ TEST_F(InvalidSystems, InvalidShapes)
 
     {
         auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCylinder");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
-                              "Invalid cylinder parameters for uID=\"invalidPredCylinder\": Radius must be "
-                              "non-negative and height must be positive.");
+        CheckExceptionMessage(
+            [&] { (void)invalidShape->GetLoft(); },
+            "Invalid cylinder parameters for uID=\"invalidPredCylinder\": Radius and height must be positive.");
     }
 
     {
         auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCone");
         CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
-                              "Invalid cone parameters for uID=\"invalidPredCone\": Radii must be non-negative and "
-                              "height must be positive.");
+                              "Invalid cone parameters for uID=\"invalidPredCone\": At least one radius must be "
+                              "positive and height must be positive.");
     }
 
     {
