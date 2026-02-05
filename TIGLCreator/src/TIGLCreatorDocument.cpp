@@ -549,11 +549,13 @@ QString TIGLCreatorDocument::dlgGetWingProfileSelection()
 }
 
 // Rotor selection Dialog
-QString TIGLCreatorDocument::dlgGetRotorSelection()
+QString TIGLCreatorDocument::dlgGetRotorSelection(const QString& rotorUid)
 {
     QStringList rotors;
     bool ok;
-
+    if (!rotorUid.isEmpty()) {
+        return rotorUid;
+    }
     // Initialize rotorBlade list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int rotorCount                    = config.GetRotorCount();
@@ -576,11 +578,13 @@ QString TIGLCreatorDocument::dlgGetRotorSelection()
 }
 
 // Rotor Blade selection Dialog
-QString TIGLCreatorDocument::dlgGetRotorBladeSelection()
+QString TIGLCreatorDocument::dlgGetRotorBladeSelection(const QString& rotorBladeUid)
 {
     QStringList wings;
     bool ok;
-
+    if (!rotorBladeUid.isEmpty()) {
+        return rotorBladeUid;
+    }
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount                     = config.GetWingCount();
@@ -606,11 +610,14 @@ QString TIGLCreatorDocument::dlgGetRotorBladeSelection()
 }
 
 // Rotor Blade Component Segment Selection Dialog
-QString TIGLCreatorDocument::dlgGetRotorBladeComponentSegmentSelection()
+QString TIGLCreatorDocument::dlgGetRotorBladeComponentSegmentSelection(const QString& rotorBladeCompSegUid)
 {
     QStringList compSegs;
     bool ok;
 
+    if (!rotorBladeCompSegUid.isEmpty()) {
+        return rotorBladeCompSegUid;
+    }
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount                     = config.GetWingCount();
@@ -2560,9 +2567,9 @@ void TIGLCreatorDocument::drawRotorProfiles()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints()
+void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingOverlayProfilePoints(wing);
@@ -2585,9 +2592,9 @@ void TIGLCreatorDocument::drawRotorBladeGuideCurves()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBlade()
+void TIGLCreatorDocument::drawRotorBlade(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWing(wing);
@@ -2597,9 +2604,9 @@ void TIGLCreatorDocument::drawRotorBlade()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeTriangulation()
+void TIGLCreatorDocument::drawRotorBladeTriangulation(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingTriangulation(wing);
@@ -2609,9 +2616,9 @@ void TIGLCreatorDocument::drawRotorBladeTriangulation()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeSamplePoints()
+void TIGLCreatorDocument::drawRotorBladeSamplePoints(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingSamplePoints(wing);
@@ -2621,9 +2628,9 @@ void TIGLCreatorDocument::drawRotorBladeSamplePoints()
     }
 }
 
-void TIGLCreatorDocument::drawFusedRotorBlade()
+void TIGLCreatorDocument::drawFusedRotorBlade(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawFusedWing(wing);
@@ -2633,9 +2640,9 @@ void TIGLCreatorDocument::drawFusedRotorBlade()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeComponentSegment()
+void TIGLCreatorDocument::drawRotorBladeComponentSegment(const QString& Uid)
 {
-    QString csUid = dlgGetRotorBladeComponentSegmentSelection();
+    QString csUid = dlgGetRotorBladeComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
     }
@@ -2652,9 +2659,9 @@ void TIGLCreatorDocument::drawRotorBladeComponentSegment()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeComponentSegmentPoints()
+void TIGLCreatorDocument::drawRotorBladeComponentSegmentPoints(const QString& Uid)
 {
-    QString csUid = dlgGetRotorBladeComponentSegmentSelection();
+    QString csUid = dlgGetRotorBladeComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
     }
@@ -2666,9 +2673,9 @@ void TIGLCreatorDocument::drawRotorBladeComponentSegmentPoints()
     }
 }
 
-void TIGLCreatorDocument::drawRotorBladeShells()
+void TIGLCreatorDocument::drawRotorBladeShells(const QString& Uid)
 {
-    QString wingUid = dlgGetRotorBladeSelection();
+    QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
         drawWingShells(wing);
@@ -2741,9 +2748,9 @@ void TIGLCreatorDocument::drawRotor()
     drawRotorByUID(rotorUid);
 }
 
-void TIGLCreatorDocument::drawRotorDisk()
+void TIGLCreatorDocument::drawRotorDisk(const QString& uid)
 {
-    QString rotorUid = dlgGetRotorSelection();
+    QString rotorUid = dlgGetRotorSelection(uid);
     if (rotorUid == "") {
         return;
     }
@@ -2760,9 +2767,9 @@ void TIGLCreatorDocument::drawRotorDisk()
     app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
 }
 
-void TIGLCreatorDocument::showRotorProperties()
+void TIGLCreatorDocument::showRotorProperties(const QString& uid)
 {
-    QString rotorUid = dlgGetRotorSelection();
+    QString rotorUid = dlgGetRotorSelection(uid);
     if (rotorUid == "") {
         return;
     }

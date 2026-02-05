@@ -116,21 +116,21 @@ public slots:
 
     // Rotor blade slots
     void drawRotorProfiles();
-    void drawRotorBlade();
-    void drawRotorBladeOverlayProfilePoints();
+    void drawRotorBlade(const QString& uid=nullptr);
+    void drawRotorBladeOverlayProfilePoints(const QString& uid=nullptr);
     void drawRotorBladeGuideCurves();
-    void drawRotorBladeTriangulation();
-    void drawRotorBladeSamplePoints();
-    void drawFusedRotorBlade();
-    void drawRotorBladeComponentSegment();
-    void drawRotorBladeComponentSegmentPoints();
-    void drawRotorBladeShells();
+    void drawRotorBladeTriangulation(const QString& uid=nullptr);
+    void drawRotorBladeSamplePoints(const QString& uid=nullptr);
+    void drawFusedRotorBlade(const QString& uid=nullptr);
+    void drawRotorBladeComponentSegment(const QString& uid=nullptr);
+    void drawRotorBladeComponentSegmentPoints(const QString& uid=nullptr);
+    void drawRotorBladeShells(const QString& uid=nullptr);
 
     // Rotorcraft slots
-    void drawRotorByUID(const QString& uid);
+    void drawRotorByUID(const QString& uid=nullptr);
     void drawRotor();
-    void drawRotorDisk();
-    void showRotorProperties();
+    void drawRotorDisk(const QString& uid=nullptr);
+    void showRotorProperties(const QString& uid=nullptr);
 
     // TIGL slots
     void exportAsIges();
@@ -169,11 +169,11 @@ private slots:
     QString dlgGetWingProfileSelection();
 
     // Rotor selection dialogs
-    QString dlgGetRotorSelection();
+    QString dlgGetRotorSelection(const QString& rotorUid=nullptr);
 
     // Rotor Blade selection dialogs
-    QString dlgGetRotorBladeSelection();
-    QString dlgGetRotorBladeComponentSegmentSelection();
+    QString dlgGetRotorBladeSelection(const QString& rotorBladeUid=nullptr);
+    QString dlgGetRotorBladeComponentSegmentSelection(const QString& rotorBladeCompSegUid=nullptr);
     QString dlgGetRotorBladeSegmentSelection();
     QString dlgGetRotorProfileSelection();
 

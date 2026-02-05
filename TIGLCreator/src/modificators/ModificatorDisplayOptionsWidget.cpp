@@ -88,6 +88,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
             ui->buttonResetOptions->setVisible(false);
+            ui->labelDrawOptions->setVisible(false);
             ui->drawOptionsCombo->setVisible(false);
         }
         currentItem = nullptr;
@@ -101,7 +102,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             auto it = shapes.find(uid.toStdString());
             if (it != shapes.end() && it->second != nullptr) {
                 tigl::ITiglGeometricComponent* comp = it->second;
-                if (comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
                     if (ui) {
                         ui->infoLabel->setVisible(false);
                         ui->labelTransparency->setVisible(true);
@@ -113,6 +114,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->labelMaterial->setVisible(true);
                         ui->materialCombo->setVisible(true);
                         ui->buttonResetOptions->setVisible(true);
+                        ui->labelDrawOptions->setVisible(true);
                         ui->drawOptionsCombo->setVisible(true);
                     }
                 
@@ -144,6 +146,22 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
 
                     materialCombo->setCurrentIndex(0);
                 }
+                else if (comp->GetComponentType() == TIGL_COMPONENT_PLANE) {
+                    if (ui) {
+                        ui->infoLabel->setVisible(true);
+                        ui->labelTransparency->setVisible(false);
+                        ui->transparencySlider->setVisible(false);
+                        ui->labelRenderingMode->setVisible(false);
+                        ui->renderingModeCombo->setVisible(false);
+                        ui->buttonColorChoser->setVisible(false);
+                        ui->labelColor->setVisible(false);
+                        ui->labelMaterial->setVisible(false);
+                        ui->materialCombo->setVisible(false);
+                        ui->buttonResetOptions->setVisible(false);
+                        ui->labelDrawOptions->setVisible(true);
+                        ui->drawOptionsCombo->setVisible(true);
+                    }
+                }
             }
         }
         else {
@@ -158,6 +176,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
                 ui->buttonResetOptions->setVisible(false);
+                ui->labelDrawOptions->setVisible(false);
                 ui->drawOptionsCombo->setVisible(false);
             }
         }
@@ -287,6 +306,65 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
 
             }
 
+            if (type == TIGL_COMPONENT_ROTORBLADE) {
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBlade(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade Guide curves"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawRotorBladeGuideCurves(); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade overlay profile points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeOverlayProfilePoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade Triangulation"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeTriangulation(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Sample Rotor Blade points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeSamplePoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Fused Rotor Blade"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawFusedRotorBlade(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade Component segment"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeComponentSegment(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade Component segment points"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeComponentSegmentPoints(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Blade Shells"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorBladeShells(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show all Rotors, Wings and Fuselages"));
+                drawCallbacks.push_back([doc]() { if (doc) doc->drawAllFuselagesAndWingsSurfacePoints(); });
+
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);    
+            }
+            
+            if (type == TIGL_COMPONENT_ROTOR) {
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorByUID(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Disk"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->drawRotorDisk(uid); });
+
+                ui->drawOptionsCombo->addItem(tr("Show Rotor Properties"));
+                drawCallbacks.push_back([doc, uid]() { if (doc) doc->showRotorProperties(uid); });
+
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+
+            }
 
         }
     }   
