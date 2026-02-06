@@ -132,8 +132,6 @@ TEST(NACA4Calculator, Nacacalculatortest11_trailingedge){
     EXPECT_NEAR(result1, 0.1027, 1e-14);
 }
 
-
-
 TEST(NACA4Calculator, Nacacalculatortest12_trailingedge){
     tigl::NACA4Calculator NACA4(0,0,15, 5);
     double result1 = NACA4.trailing_edge_thickness_function(5);
@@ -146,4 +144,34 @@ TEST(NACA4Calculator, Nacacalculatortest13_trailingedge){
     double result1 = NACA4.trailing_edge_thickness_function(15);
     EXPECT_NEAR(result1, -24.8964, 1e-14);
 }
+
+TEST(NACA4Calculator, Nacacalculatortest14){
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    tigl::NACA4UpperCurve upperCurve(NACA4);
+    ASSERT_EQ(upperCurve.valueY(0.), 0.);
+    ASSERT_EQ(upperCurve.valueY(0.5), 0.);
+    ASSERT_EQ(upperCurve.valueY(1.), 0.);
+    gp_Vec2d pnt = NACA4.upper_curve(0.5);
+    ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
+    ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
+}
+/*
+TEST(NACA4Calculator, Nacacalculatortest15){
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    tigl::NACA4LowerCurve lowerCurve(NACA4);
+    ASSERT_EQ(lowerCurve.valueY(0.), 0.);
+    ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
+    ASSERT_EQ(lowerCurve.valueY(1.), 0.);
+    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
+    ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
+}
+*/
+TEST(NACA4Calculator, Nacacalculatortest16){
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    //Handle(Geom_BSplineCurve) upperCurve = NACA4.lower_bspline(); 
+    // mit .d0 die punkte verlgeihcen mit vorherigen berechnungen ASSERT_EQ()
+}
+
 

@@ -22,12 +22,17 @@
 
 #pragma once
 
+//class gp_Vec2d; //schaun warum des nd geht
+#include <gp_Vec2d.hxx>
+#include <math/tiglmathfunctions.h>
+//#include "MathFunc3d"
+#include "CFunctionToBspline.h"
+
 //docstrings dazu (richtiges format) (nur im header file), extension?
 
 namespace tigl{
 
-//class gp_Vec2d; //schaun warum des nd geht
-#include <gp_Vec2d.hxx>
+
 
 class NACA4Calculator{
 
@@ -41,13 +46,15 @@ class NACA4Calculator{
      */
         NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness);
 
+        explicit NACA4Calculator(const ::std::string& naca_code);
+
         /**
          * @brief Calculate the camberline
          * 
          * @param x 
          * @return double 
          */
-        double camberline(double x);
+        double camberline(double x) const;
 
 
         /**
@@ -56,7 +63,7 @@ class NACA4Calculator{
          * @param x 
          * @return gp_Vec2d 
          */
-        gp_Vec2d upper_curve(double x);
+        gp_Vec2d upper_curve(double x) const;
 
 
         /**
@@ -65,7 +72,7 @@ class NACA4Calculator{
          * @param x 
          * @return gp_Vec2d 
          */
-        gp_Vec2d lower_curve(double x);
+        gp_Vec2d lower_curve(double x) const;
 
 
         /**
@@ -74,7 +81,7 @@ class NACA4Calculator{
          * @param x 
          * @return double 
          */
-        double profile_thickness(double x);
+        double profile_thickness(double x) const;
 
         /**
          * @brief Construct a new trailing edge thickness object
@@ -82,7 +89,10 @@ class NACA4Calculator{
          * @param y 
          * @return double
          */
-        double trailing_edge_thickness_function(double y);
+        double trailing_edge_thickness_function(double y) const;
+
+
+        Handle(Geom_BSplineCurve) upper_bspline() const;
 
     private:
 
@@ -94,7 +104,7 @@ class NACA4Calculator{
          * @param x 
          * @return double 
          */
-        double camberline_derivative(double x);
+        double camberline_derivative(double x) const;
 
         /**
          * @brief Calculate the normal by using the norm
@@ -102,9 +112,25 @@ class NACA4Calculator{
          * @param x 
          * @return gp_Vec2d 
          */
-        gp_Vec2d normal(double x);
+        gp_Vec2d normal(double x) const;
+
+
 
     private:
         double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness;
 };
+
+class NACA4UpperCurve : public MathFunc3d {
+    public: 
+        explicit NACA4UpperCurve( NACA4Calculator const& calculator);
+
+        double valueX(double t) override;
+        double valueY(double t) override;
+        double valueZ(double t) override;
+
+    private:
+         NACA4Calculator const& calculator;
+};
+
+
 }

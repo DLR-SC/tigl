@@ -32,8 +32,10 @@
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
-#include "PTiglWingProfileAlgo.h"
+#include "ITiglWingProfileAlgo.h"
+#include "CTiglWingProfilePointList.h"
 #include "Cache.h"
+#include "CTiglWingProfileNACA.h"
 
 #include <gp_Pnt.hxx>
 
@@ -105,6 +107,8 @@ public:
     // Checks, whether the trailing edge is blunt or not
     TIGL_EXPORT bool HasBluntTE() const;
 
+    //std::unique_ptr<CTiglWingProfilePointList> buildPointListAlgo() const;
+
 protected:
     // Cleanup routine
     void Cleanup();
@@ -120,8 +124,9 @@ protected:
     Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
     void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
-
-private:
+    //void buildPointListAlgo() const;
+    void buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const; //Ctiflwingprofilealgo geht nicht, vorschlage von debugger: itiglwingprofilealgo (davor: ctiglwingprofilenaca)!!!!
+    
     // Copy constructor
     CCPACSWingProfile(const CCPACSWingProfile& );
 
@@ -134,6 +139,12 @@ private:
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
     Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
+    Cache<std::unique_ptr<CTiglWingProfileNACA>, CCPACSWingProfile> NACAAlgo; 
+    //Cache<std::unique_ptr<ITiglWingProfileAlgo>, CCPACSWingProfile> NACAAlgo; //hab ich so geändert, das es durchläuft, macht das sinn?? //wenn man das zurück änder au in der cpp zeile 380 ändern!
+    //Cache<CTiglWingProfilePointList, CCPACSWingProfile> pointListAlgo;
+    //Cache<CTiglWingProfileNACA, CCPACSWingProfile> NACAAlgo;
+
+
 
 }; // class CCPACSWingProfile
 
