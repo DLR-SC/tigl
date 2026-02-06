@@ -1,11 +1,12 @@
 //copyright, lizenz
 
 
-#include "generated/CPACSCProfileGeometry.h"
-#include "generated/CPACSCNacaProfile.h"
+#include "CPACSProfileGeometry.h"
+//#include "generated/CPACSNacaProfile.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
+#include "NACA4Calculator.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>
@@ -49,16 +50,13 @@ namespace tigl{
 
 
 
-    private:
-        struct WireCache {
-        TopoDS_Edge               upperWireOpened;      /**< wire of the upper wing profile */
-        TopoDS_Edge               lowerWireOpened;      /**< wire of the lower wing profile */
-        TopoDS_Edge               upperWireClosed;      /**< wire of the upper wing profile */
-        TopoDS_Edge               lowerWireClosed;      /**< wire of the lower wing profile */
-        TopoDS_Edge               upperLowerEdgeOpened; /**< edge consisting of upper and lower wing profile */
-        TopoDS_Edge               upperLowerEdgeClosed; /**< edge consisting of upper and lower wing profile */ 
-        TopoDS_Edge               trailingEdgeOpened;   /**< edge of the trailing edge */
-        TopoDS_Edge               trailingEdgeClosed;   /**< edge of the trailing edge */
+
+        private:
+    struct WireCache {
+        TopoDS_Edge               upperWire;      /**< wire of the upper wing profile */
+        TopoDS_Edge               lowerWire;      /**< wire of the lower wing profile */
+        TopoDS_Edge               upperLowerEdge; /**< edge consisting of upper and lower wing profile */
+        TopoDS_Edge               trailingEdge; 
         gp_Pnt                    lePoint;              /**< Leading edge point */
         gp_Pnt                    tePoint;              /**< Trailing edge point */
     };
@@ -66,10 +64,15 @@ namespace tigl{
     void InvalidateParent() const;
 
     // Builds the wing profile wires.
-    void BuildNaca(NacaCache& cache) const;
+    void BuildWires(WireCache& cache) const;
+
+
 
     private:
-        Cache<NacaCache, CCPACSWingProfileNACA> wireCache;
+       std::string profileUID;
+       NACA4Calculator calculator;
+       Cache<WireCache, CTiglWingProfileNACA> wireCache;
+
 
     };
 }

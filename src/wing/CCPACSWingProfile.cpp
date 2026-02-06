@@ -23,10 +23,15 @@
 #include <sstream>
 #include <vector>
 
+#include "CTiglWingProfilePointList.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglWingProfilePointList.h"
 #include "math.h"
+#include "CCPACSWingProfile.h"
+#include "CTiglWingProfileNACA.h"
+#include "ITiglWingProfileAlgo.h"
+
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -53,9 +58,8 @@
 #include "ShapeFix_Wire.hxx"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
-#include "ITiglWingProfileAlgo.h"
-#include "CCPACSWingProfile.h"
 #include "CTiglUIDManager.h"
+
 
 namespace tigl 
 {
@@ -96,13 +100,17 @@ CCPACSWingProfile::CCPACSWingProfile(CCPACSWingProfiles* parent, CTiglUIDManager
     : generated::CPACSProfileGeometry(parent, uidMgr)
     , isRotorProfile(false)
     , pointListAlgo(*this, &CCPACSWingProfile::buildPointListAlgo)
+    , NACAAlgo(*this, &CCPACSWingProfile::buildNACAAlgo)
 {
 }
+
+
 
 CCPACSWingProfile::CCPACSWingProfile(CCPACSRotorProfiles* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSProfileGeometry(parent, uidMgr)
     , isRotorProfile(false)
     , pointListAlgo(*this, &CCPACSWingProfile::buildPointListAlgo)
+    , NACAAlgo(*this, &CCPACSWingProfile::buildNACAAlgo)
 {
 }
 
@@ -113,6 +121,7 @@ void CCPACSWingProfile::Cleanup()
 {
     isRotorProfile = false;
     pointListAlgo.clear();
+    NACAAlgo.clear();
 }
 
 // Read wing profile file
@@ -366,11 +375,29 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine() const
     return chordLine;
 }
 
+
 void CCPACSWingProfile::buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const
 {
     cache.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));
 }
 
+
+
+void CCPACSWingProfile::buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const
+{
+    cache.reset(new CTiglWingProfileNACA(*this, *m_naca_choice4));
+}
+
+    
+    /*
+void CCPACSWingProfile::buildPointListAlgo(CTiglWingProfilePointList& cache) const {
+    cache.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));
+}
+
+void CCPACSWingProfile::buildNACAAlgo(CTiglWingProfileNACA& cache) const {
+    cache.reset(new CTiglWingProfileNACA(*this, *m_naca_choice4));
+}
+*/
 ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()
 {
     if (m_pointList_choice1) {
@@ -378,8 +405,11 @@ ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()
         return &**pointListAlgo;
     } else if (m_cst2D_choice2) {
         return &*m_cst2D_choice2;
-    } else {
-        throw CTiglError("Currently only point list and CST profile definitions are supported by TiGL.");
+    } else if (m_naca_choice4) {
+        return &**NACAAlgo;
+    }
+     else {
+        throw CTiglError("Currently only point list, NACA profile and CST profile definitions are supported by TiGL.");
     }
 }
 
@@ -398,3 +428,6 @@ bool CCPACSWingProfile::HasBluntTE() const
 }
 
 } // end namespace tigl
+
+
+//eif mal schaun wo das sonst noch so aufgerufen wird und ob ich da was falsch mach
