@@ -112,7 +112,7 @@
       <item>
        <widget class="QLabel" name="labelDrawOptions">
         <property name="text">
-         <string>Material:</string>
+         <string>Draw Options:</string>
         </property>
         <property name="visible">
          <bool>false</bool>
