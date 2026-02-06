@@ -192,15 +192,20 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
 {
-    double radiusX = e.GetRadiusX();
-    double radiusY = e.GetRadiusY().get_value_or(radiusX);
-    double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
+    double radiusX     = e.GetRadiusX();
+    double radiusY     = e.GetRadiusY().get_value_or(radiusX);
+    double radiusZ     = e.GetRadiusZ().get_value_or(radiusX);
+    const double angle = e.GetDiskAngle().get_value_or(2.0 * M_PI);
 
     if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
         throw tigl::CTiglError("Invalid ellipsoid parameters: All radii must be positive.", TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0).Shape();
+    if (angle <= 0.0 || angle > 2.0 * M_PI) {
+        throw tigl::CTiglError("Invalid ellipsoid diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+    }
+
+    TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0, angle).Shape();
 
     gp_Mat M(radiusX, 0.0, 0.0, 0.0, radiusY, 0.0, 0.0, 0.0, radiusZ);
     gp_GTrsf gtrsf(M, gp_XYZ(0.0, 0.0, 0.0));

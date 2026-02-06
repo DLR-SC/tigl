@@ -326,6 +326,9 @@
                                             <y>10</y>
                                             <z>0</z>
                                         </translation>
+										<rotation>
+											<z>90</z>
+										</rotation>
                                     </transformation>
                                 </component>
 								<component uID="unpositionedCuboid">
@@ -526,10 +529,16 @@
                     <name>Predefined element with subelements</name>
                     <geometry>
                         <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.25</radiusY>
+                            <radiusX>0.25</radiusX>
+                            <radiusY>1</radiusY>
                             <radiusZ>0.25</radiusZ>
+							<diskAngle>3.14159265359</diskAngle>
                         </ellipsoid>
+						<transformation>
+							<rotation>
+								<y>90</y>
+							</rotation>
+						</transformation>
 						<subElements>
 							<subElement>
 								<cylinder>
@@ -538,7 +547,7 @@
 								</cylinder>
 								<transformation>
 									<rotation>
-										<y>90</y>
+										<x>90</x>
 									</rotation>
 								</transformation>
 							</subElement>
@@ -550,47 +559,11 @@
 								</cone>
 								<transformation>
 									<translation>
-										<x>4</x>
-									</translation>
-									<rotation>
-										<y>90</y>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<x>3.5</x>
-										<z>0.25</z>
-									</translation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<x>3.5</x>
-										<y>-0.25</y>
+										<y>-4</y>
 									</translation>
 									<rotation>
 										<x>90</x>
+										<z>90</z>
 									</rotation>
 								</transformation>
 							</subElement>
@@ -606,11 +579,53 @@
 								</cuboid>
 								<transformation>
 									<translation>
-										<x>3.5</x>
+										<y>-3.5</y>
+										<z>0.25</z>
+									</translation>
+									<rotation>
+										<z>-90</z>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<x>-0.25</x>
+										<y>-3.5</y>
+									</translation>
+									<rotation>
+										<x>90</x>
+										<y>-90</y>
+									</rotation>
+								</transformation>
+							</subElement>
+							<subElement>
+								<cuboid>
+									<lengthX>0.5</lengthX>
+									<depthY>0.05</depthY>
+									<heightZ>0.3</heightZ>
+									<upperFaceXmin>0.2</upperFaceXmin>
+									<upperFaceXmax>0.6</upperFaceXmax>
+									<upperFaceYmin>0.015</upperFaceYmin>
+									<upperFaceYmax>0.035</upperFaceYmax>
+								</cuboid>
+								<transformation>
+									<translation>
+										<y>-3.5</y>
 										<z>-0.25</z>
 									</translation>
 									<rotation>
 										<x>180</x>
+										<z>90</z>
 									</rotation>
 								</transformation>
 							</subElement>
@@ -626,11 +641,12 @@
 								</cuboid>
 								<transformation>
 									<translation>
-										<x>3.5</x>
-										<y>0.25</y>
+										<x>0.25</x>
+										<y>-3.5</y>
 									</translation>
 									<rotation>
 										<x>270</x>
+										<y>90</y>
 									</rotation>
 								</transformation>
 							</subElement>

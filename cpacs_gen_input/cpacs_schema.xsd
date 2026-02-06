@@ -37077,6 +37077,11 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Radius in z-direction [m] (if not defined: equals radiusX)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+					<xsd:element name="diskAngle" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>	Angle between the radii lying within the bounding semidisks [rad]</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>

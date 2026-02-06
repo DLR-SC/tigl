@@ -94,6 +94,11 @@ namespace generated
             m_radiusZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusZ");
         }
 
+        // read element diskAngle
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
+            m_diskAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/diskAngle");
+        }
+
     }
 
     void CPACSEllipsoid::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -121,6 +126,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusZ")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/radiusZ");
+            }
+        }
+
+        // write element diskAngle
+        if (m_diskAngle) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/diskAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/diskAngle", *m_diskAngle);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/diskAngle");
             }
         }
 
@@ -154,6 +170,16 @@ namespace generated
     void CPACSEllipsoid::SetRadiusZ(const boost::optional<double>& value)
     {
         m_radiusZ = value;
+    }
+
+    const boost::optional<double>& CPACSEllipsoid::GetDiskAngle() const
+    {
+        return m_diskAngle;
+    }
+
+    void CPACSEllipsoid::SetDiskAngle(const boost::optional<double>& value)
+    {
+        m_diskAngle = value;
     }
 
 } // namespace generated

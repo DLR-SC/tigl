@@ -92,6 +92,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetRadiusZ() const;
         TIGL_EXPORT virtual void SetRadiusZ(const boost::optional<double>& value);
 
+        TIGL_EXPORT virtual const boost::optional<double>& GetDiskAngle() const;
+        TIGL_EXPORT virtual void SetDiskAngle(const boost::optional<double>& value);
+
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
@@ -104,6 +107,9 @@ namespace generated
 
         /// Radius in z-direction [m] (if not defined: equals radiusX)
         boost::optional<double> m_radiusZ;
+
+        /// Angle between the radii lying within the bounding semidisks [rad]
+        boost::optional<double> m_diskAngle;
 
     private:
         CPACSEllipsoid(const CPACSEllipsoid&) = delete;
