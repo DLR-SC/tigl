@@ -154,6 +154,21 @@ namespace tigl{
             return converter.Curve();
         }
 
+
+        Handle(Geom_BSplineCurve) NACA4Calculator::lower_bspline() const{
+            NACA4LowerCurve lowerCurve(*this);
+
+            const double umin = 0.;
+            const double umax = 1.;
+            int degree = 3;
+            double tolerance=1e-5;
+            int maxDepth = 10;
+
+
+            tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);     //zweck: das richtige format übergeben an cfunctiontobspline
+            return converter.Curve();
+        }
+
         NACA4UpperCurve::NACA4UpperCurve( NACA4Calculator const& calculator)
             : MathFunc3d(), //wurde bei der superellipse so gemacht, brauch ich das hier also auch?
             calculator(calculator)
@@ -170,6 +185,25 @@ namespace tigl{
             gp_Vec2d vec = calculator.upper_curve(t);
             return vec.Y();
         }
+
+
+        NACA4LowerCurve::NACA4LowerCurve( NACA4Calculator const& calculator)
+            : MathFunc3d(), //wurde bei der superellipse so gemacht, brauch ich das hier also auch?
+            calculator(calculator)
+        {}
+
+        double NACA4LowerCurve::valueX(double t)  {
+            gp_Vec2d vec = calculator.lower_curve(t);
+            return vec.X();
+        }
+        double NACA4LowerCurve::valueY(double t)  {
+            return 0.0;
+        }
+        double NACA4LowerCurve::valueZ(double t)  {
+            gp_Vec2d vec = calculator.lower_curve(t);
+            return vec.Y();
+        }
+
 
         //naca4uppercurve und die soll die upper_curve vom naca4calculator in  mathfunc3d übersetzen (in des value - format), also ich übergebe hier das ergebnis von upper_curve()
 // x vom punkt = value.x

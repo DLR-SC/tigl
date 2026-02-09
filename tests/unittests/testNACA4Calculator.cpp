@@ -155,7 +155,7 @@ TEST(NACA4Calculator, Nacacalculatortest14){
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
-/*
+
 TEST(NACA4Calculator, Nacacalculatortest15){
     tigl::NACA4Calculator NACA4(2,2,12, 15);
     tigl::NACA4LowerCurve lowerCurve(NACA4);
@@ -166,12 +166,15 @@ TEST(NACA4Calculator, Nacacalculatortest15){
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
-*/
+
 TEST(NACA4Calculator, Nacacalculatortest16){
     tigl::NACA4Calculator NACA4(2,2,12, 15);
     Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
-    //Handle(Geom_BSplineCurve) upperCurve = NACA4.lower_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
     // mit .d0 die punkte verlgeihcen mit vorherigen berechnungen ASSERT_EQ()
 }
 
+//lowercurve
+//trailing_edge
+//upperlowercurve erstmal weglassen (nur eine exception werfen)
 
