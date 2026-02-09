@@ -31,6 +31,8 @@
 #include "../TIGLCreatorContext.h"
 #include "ui_ModificatorDisplayOptionsWidget.h"
 #include <QFileDialog>
+#include "TIGLCreatorWindow.h"
+#include "../DrawOptionsActions.h"
 
 #define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
@@ -56,12 +58,21 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
         materialCombo->addItem(kv.first);
     }
 
-    // interactions
+    // General Display Options
     connect(transparencySlider, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
     connect(renderingModeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onRenderingModeChanged(int)));
     connect(materialCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onMaterialChanged(const QString &)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
     connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
+
+    // for (const auto& action : getDrawOptionsActions()) {
+    //     QAction* act = findChild<QAction*>(action.name);
+    //     if (act) {
+    //         connect(act, &QAction::triggered, this, [this, action]() {
+    //             action.handler(currentUid); // Pass the UID
+    //         });
+    //     }
+    // }
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
@@ -81,21 +92,24 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->transparencySlider->setVisible(false);
             ui->labelRenderingMode->setVisible(false);
             ui->renderingModeCombo->setVisible(false);
+            ui->labelColor->setVisible(false);
             ui->buttonColorChoser->setVisible(false);
-            ui->label_color->setVisible(false);
+            ui->labelColor->setVisible(false);
             ui->labelMaterial->setVisible(false);
             ui->materialCombo->setVisible(false);
             ui->buttonResetOptions->setVisible(false);
+            ui->labelDrawOptions->setVisible(false);
+            ui->drawOptionsCombo->setVisible(false);
         }
         currentItem = nullptr;
         return;
     }
     if (item) 
     {
-        if ((!item->getUid().empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(item->getUid()))) {
-            auto uid = item->getUid();
+        const QString uid = QString::fromStdString(item->getUid());
+        if ((!uid.isEmpty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString()))) {
             const auto& shapes = doc->GetConfiguration().GetUIDManager().GetShapeContainer();
-            auto it = shapes.find(uid);
+            auto it = shapes.find(uid.toStdString());
             if (it != shapes.end() && it->second != nullptr) {
                 tigl::ITiglGeometricComponent* comp = it->second;
                 if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
@@ -105,16 +119,15 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->transparencySlider->setVisible(true);
                         ui->labelRenderingMode->setVisible(true);
                         ui->renderingModeCombo->setVisible(true);
-                        ui->label_color->setVisible(true);
+                        ui->labelColor->setVisible(true);
                         ui->buttonColorChoser->setVisible(true);
                         ui->labelMaterial->setVisible(true);
                         ui->materialCombo->setVisible(true);
                         ui->buttonResetOptions->setVisible(true);
+                        ui->labelDrawOptions->setVisible(true);
+                        ui->drawOptionsCombo->setVisible(true);
                     }
-                    
-                    const QString type = QString::fromStdString(item->getType());
-                    const QString uid = QString::fromStdString(item->getUid());
-
+                
 
                     // get current values
                     auto &sm = context->GetShapeManager();
@@ -142,6 +155,22 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
 
                     materialCombo->setCurrentIndex(0);
                 }
+                else if (comp->GetComponentType() == TIGL_COMPONENT_PLANE) {
+                    if (ui) {
+                        ui->infoLabel->setVisible(true);
+                        ui->labelTransparency->setVisible(false);
+                        ui->transparencySlider->setVisible(false);
+                        ui->labelRenderingMode->setVisible(false);
+                        ui->renderingModeCombo->setVisible(false);
+                        ui->buttonColorChoser->setVisible(false);
+                        ui->labelColor->setVisible(false);
+                        ui->labelMaterial->setVisible(false);
+                        ui->materialCombo->setVisible(false);
+                        ui->buttonResetOptions->setVisible(false);
+                        ui->labelDrawOptions->setVisible(true);
+                        ui->drawOptionsCombo->setVisible(true);
+                    }
+                }
             }
         }
         else {
@@ -152,13 +181,111 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->labelRenderingMode->setVisible(false);
                 ui->renderingModeCombo->setVisible(false);
                 ui->buttonColorChoser->setVisible(false);
-                ui->label_color->setVisible(false);
+                ui->labelColor->setVisible(false);
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
                 ui->buttonResetOptions->setVisible(false);
+                ui->labelDrawOptions->setVisible(false);
+                ui->drawOptionsCombo->setVisible(false);
             }
         }
-    }
+    
+
+        // Populate draw options combo when the selected item is a wing (type or uid == "wing").
+        ui->drawOptionsCombo->clear();
+        drawCallbacks.clear();
+        if (!uid.isEmpty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString())) {
+            auto type = doc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
+
+
+            if (type == TIGL_COMPONENT_WING) {
+                drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                for (const auto& action : getWingDrawOptionsActions()) {
+                    ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
+                    drawCallbacks.push_back([this, action, uid, doc]() {
+                        action.handler(doc, uid);
+                    });
+                }
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+            }
+
+            if (type == TIGL_COMPONENT_FUSELAGE) {
+                drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                for (const auto& action : getFuselageDrawOptionsActions()) {
+                    ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
+                    drawCallbacks.push_back([this, action, uid, doc]() {
+                        action.handler(doc, uid);
+                    });
+                }
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+            }
+
+            if (type == TIGL_COMPONENT_PLANE) {
+                drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                for (const auto& action : getPlaneDrawOptionsActions()) {
+                    ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
+                    drawCallbacks.push_back([this, action, uid, doc]() {
+                        action.handler(doc, uid);
+                    });
+                }
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);   
+            }
+
+            if (type == TIGL_COMPONENT_ROTORBLADE) {
+                drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                for (const auto& action : getRotorBladeDrawOptionsActions()) {
+                    ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
+                    drawCallbacks.push_back([this, action, uid, doc]() {
+                        action.handler(doc, uid);
+                    });
+                }
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);    
+            }
+            
+            if (type == TIGL_COMPONENT_ROTOR) {
+                drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                for (const auto& action : getRotorDrawOptionsActions()) {
+                    ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
+                    drawCallbacks.push_back([this, action, uid, doc]() {
+                        action.handler(doc, uid);
+                    });
+                }
+                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+                    [this](int idx) {
+                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+                            drawCallbacks[idx]();
+                        }
+                    }, Qt::UniqueConnection);
+            }
+
+        }
+    }   
+
 }
 
 bool ModificatorDisplayOptionsWidget::apply()
@@ -417,9 +544,22 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
-            currentDoc->drawComponentByUID(uid);
+
         }
     }
+
+    auto type = currentDoc->GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString()).GetComponentType();
+    if (type == TIGL_COMPONENT_WING) {
+        tigl::CCPACSWing& wing = currentDoc->GetConfiguration().GetWing(uid.toStdString());
+        wing.SetBuildFlaps(false);
+        currentDoc->drawWing(uid);
+
+    }
+
+    else {
+        currentDoc->drawComponentByUID(uid);
+    }       
+
     if (!currentContext->getContext().IsNull()) {
         currentContext->updateViewer();
     }

@@ -30,6 +30,7 @@
 #include "CSharedPtr.h"
 
 #include "ui_TIGLCreatorWindow.h"
+#include "DrawOptionsActions.h"
 
 #include "ModificatorModel.h"
 
@@ -140,6 +141,9 @@ private:
     int dialogSaveBeforeClose();
     void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
+
+    void populateDrawMenu(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void setupDrawMenus();
 
     QAction *recentFileActions[MaxRecentFiles];
 
