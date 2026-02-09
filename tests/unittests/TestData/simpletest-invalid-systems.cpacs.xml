@@ -176,6 +176,10 @@
                                         </translation>
                                     </transformation>
                                 </component>
+								<component uID="zeroVolumeEllipsoid">
+                                    <name>Ellipsoid with zero volume</name>
+                                    <systemElementUID>predZeroVolumeEllipsoid</systemElementUID>
+                                </component> 
 								<component uID="invalidExternal1">
                                     <name>Invalid external component 1</name>
                                     <systemElementUID>invalidPredExternal1</systemElementUID>
@@ -292,6 +296,15 @@
                     <geometry>
                         <ellipsoid>
                             <radiusX>-1.</radiusX>
+                        </ellipsoid>
+                    </geometry>
+                </genericComponent>
+				<genericComponent uID="predZeroVolumeEllipsoid">
+                    <name>Predefined ellipsoid with zero volume</name>
+                    <geometry>
+                        <ellipsoid>
+                            <radiusX>1.</radiusX>
+							<diskAngle>0.</diskAngle>
                         </ellipsoid>
                     </geometry>
                 </genericComponent>

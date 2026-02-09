@@ -328,6 +328,12 @@ TEST_F(InvalidSystems, InvalidShapes)
                               "Invalid ellipsoid parameters: All radii must be positive.");
     }
 
+    {
+        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroVolumeEllipsoid");
+        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+                              "Invalid ellipsoid diskAngle: must be in range (0, 2*pi].");
+    }
+
     // It's ok to build a cone as cylinder (ToDo: checking the warning would be nice)
     {
         auto const* cylinder = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinderCone");
