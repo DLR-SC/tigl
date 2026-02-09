@@ -94,6 +94,8 @@ class NACA4Calculator{
 
         Handle(Geom_BSplineCurve) upper_bspline() const;
 
+        Handle(Geom_BSplineCurve) lower_bspline() const;
+
     private:
 
      
@@ -131,6 +133,20 @@ class NACA4UpperCurve : public MathFunc3d {
     private:
          NACA4Calculator const& calculator;
 };
+
+class NACA4LowerCurve : public MathFunc3d {
+    public: 
+        explicit NACA4LowerCurve( NACA4Calculator const& calculator);
+
+        double valueX(double t) override;
+        double valueY(double t) override;
+        double valueZ(double t) override;
+
+    private:
+         NACA4Calculator const& calculator;
+};
+
+
 
 
 }
