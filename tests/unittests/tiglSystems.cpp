@@ -181,6 +181,23 @@ TEST_F(Systems, ComponentsGeometry)
         ASSERT_NE(shape, nullptr) << "external produced a null shape (STEP import failed)";
         EXPECT_GT(shape->GetFaceCount(), 0u);
     }
+
+    // combined element -> ensure all subelements are built by evaluating the bounding box
+    {
+        auto const* combined = &uidMgr.ResolveObject<tigl::CCPACSComponent>("combinedComponent");
+        PNamedShape shape    = combined->GetLoft();
+        ASSERT_NE(shape, nullptr) << "combinedComponent produced a null shape";
+        EXPECT_EQ(shape->GetFaceCount(), 33u);
+
+        Bnd_Box box;
+        BRepBndLib::Add(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 5.25, eps);
+        EXPECT_NEAR(ymax - ymin, 1.1, eps);
+        EXPECT_NEAR(zmax - zmin, 1.1, eps);
+    }
 }
 
 TEST_F(Systems, Masses)

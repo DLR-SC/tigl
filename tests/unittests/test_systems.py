@@ -92,6 +92,11 @@ class Systems(unittest.TestCase):
         shape = emotor.get_loft()
         self.assertEqual(shape.get_face_count(), 1)
 
+        # Combined components
+        combined = self.uid_mgr.get_geometric_component("combinedComponent")
+        shape = combined.get_loft()
+        self.assertEqual(shape.get_face_count(), 33)
+
         # Shape from external elements
         external = self.uid_mgr.get_geometric_component("external")
         shape = external.get_loft()
