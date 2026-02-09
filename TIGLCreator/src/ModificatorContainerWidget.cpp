@@ -27,6 +27,18 @@ ModificatorContainerWidget::ModificatorContainerWidget(QWidget* parent)
 {
     ui->setupUi(this);
 
+    ui->editorTabWidget->setStyleSheet(R"(
+        
+    QTabBar::tab {
+        background: #444444;   /* light gray */
+    }
+
+    QTabBar::tab:selected {
+        background: #8f8f8f;   /* base gray */
+        border: 1px solid #ffffffff;
+    }
+
+    )");
 
     connect(ui->editorTabWidget, &QTabWidget::currentChanged, this, &ModificatorContainerWidget::onEditorTabChanged);
 
