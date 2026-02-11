@@ -102,30 +102,56 @@ class Systems(unittest.TestCase):
         shape = external.get_loft()
         self.assertEqual(shape.get_face_count(), 6)
 
+    def test_system_mass(self):
+        eps = 1e-6
+
+        generic = self.uid_mgr.get_geometric_component("genSys_1")
+
+        # ---- Mass values ----
+        m_all = generic.get_mass_all_components()
+        m_pos = generic.get_mass_positioned_components()
+
+        self.assertAlmostEqual(m_all, 1.4908386, delta=eps)
+        self.assertAlmostEqual(m_pos, 1.3674386, delta=eps)
+
+        # ---- Center of gravity ----
+        cog = generic.get_center_of_gravity()
+        self.assertIsNotNone(cog)
+
+        self.assertAlmostEqual(cog.x, 8.968763, delta=eps)
+        self.assertAlmostEqual(cog.y, 5.8527, delta=eps)
+        self.assertAlmostEqual(cog.z, 2.15364, delta=eps)
+
     def test_mass(self):
 
         eps = 1e-6
 
         # --- Mass value ---
         cuboid = self.uid_mgr.get_geometric_component("cuboid_2")
-        self.assertAlmostEqual(cuboid.get_mass(), 0.375, delta=eps)
+        m = cuboid.get_mass()
+        self.assertIsNotNone(m)
+        self.assertAlmostEqual(m, 0.375, delta=eps)
 
         cuboid3 = self.uid_mgr.get_geometric_component("cuboid_3")
-        self.assertAlmostEqual(cuboid.get_mass(), cuboid3.get_mass(), delta=eps)
+        m3 = cuboid3.get_mass()
+        self.assertIsNotNone(m3)
+        self.assertAlmostEqual(m, m3, delta=eps)
 
-        # wedge_1: no mass definition -> Exception
+        # wedge_1: no mass definition -> None
         wedge = self.uid_mgr.get_geometric_component("wedge_1")
-        with self.assertRaises(Exception):
-            wedge.get_mass()
+        self.assertIsNone(wedge.get_mass())
 
         # external mass
         external = self.uid_mgr.get_geometric_component("external")
-        self.assertAlmostEqual(external.get_mass(), 0.2476386, delta=eps)
+        m_ext = external.get_mass()
+        self.assertIsNotNone(m_ext)
+        self.assertAlmostEqual(m_ext, 0.2476386, delta=eps)
 
         # --- CoG local/global ---
         rect4 = self.uid_mgr.get_geometric_component("cuboid_4")
 
         cog_local = rect4.get_center_of_gravity_local()
+        self.assertIsNotNone(cog_local)
         self.assertAlmostEqual(cog_local.x, 0.3, delta=eps)
         self.assertAlmostEqual(cog_local.y, 0.25, delta=eps)
         self.assertAlmostEqual(cog_local.z, 0.4, delta=eps)
@@ -143,6 +169,7 @@ class Systems(unittest.TestCase):
         unpos = self.uid_mgr.get_geometric_component("unpositionedCuboid")
 
         self.assertFalse(unpos.is_positioned())
+        self.assertIsNotNone(unpos.get_center_of_gravity_local())
         self.assertIsNone(unpos.get_center_of_gravity_global())
 
 

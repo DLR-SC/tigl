@@ -63,6 +63,73 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
     return m_parent->GetConfiguration();
 }
 
+double CCPACSGenericSystem::GetMassAllComponents() const
+{
+    const auto& comps = GetComponents();
+    const auto n      = comps.GetComponentCount();
+
+    double total_mass = 0.0;
+    for (size_t i = 1; i <= n; ++i) {
+        const auto& c = comps.GetComponent(i);
+        total_mass += c.GetMass().get_value_or(0);
+    }
+    return total_mass;
+}
+
+double CCPACSGenericSystem::GetMassPositionedComponents() const
+{
+    const auto& comps = GetComponents();
+    const auto n      = comps.GetComponentCount();
+
+    double total_mass = 0.0;
+    for (size_t i = 1; i <= n; ++i) {
+        const auto& c = comps.GetComponent(i);
+        if (c.IsPositioned()) {
+            total_mass += c.GetMass().get_value_or(0);
+        }
+    }
+    return total_mass;
+}
+
+boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() const
+{
+    const auto& comps = GetComponents();
+    const auto n      = comps.GetComponentCount();
+
+    double mSum = 0.0;
+    double xSum = 0.0, ySum = 0.0, zSum = 0.0;
+
+    for (size_t i = 1; i <= n; ++i) {
+        const auto& c = comps.GetComponent(i);
+
+        // Only consider components which are positioned, have a proper mass description, and a global CoG
+        if (!c.IsPositioned()) {
+            continue;
+        }
+
+        const auto m = c.GetMass();
+        if (!m || *m <= 0.0) {
+            continue;
+        }
+
+        const auto cogG = c.GetCenterOfGravityGlobal();
+        if (!cogG) {
+            continue;
+        }
+
+        mSum += *m;
+        xSum += (*m) * cogG->x;
+        ySum += (*m) * cogG->y;
+        zSum += (*m) * cogG->z;
+    }
+
+    if (mSum <= 0.0) {
+        return boost::none;
+    }
+
+    return tigl::CTiglPoint(xSum / mSum, ySum / mSum, zSum / mSum);
+}
+
 // build loft
 PNamedShape CCPACSGenericSystem::BuildLoft() const
 {

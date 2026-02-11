@@ -129,6 +129,26 @@ TEST_F(Systems, SystemsGeometry)
     EXPECT_EQ(shapeCount, genericSystem->GetComponents().GetComponents().size());
 }
 
+TEST_F(Systems, SystemMass)
+{
+    const double eps = 1e-6;
+
+    // ---- Mass values ----
+    const double mAll = genericSystem->GetMassAllComponents();
+    const double mPos = genericSystem->GetMassPositionedComponents();
+
+    EXPECT_NEAR(mAll, 1.4908386, eps);
+    EXPECT_NEAR(mPos, 1.3674386, eps);
+
+    // ---- Mass location ----
+    const auto cog = genericSystem->GetCenterOfGravity();
+    ASSERT_TRUE(cog);
+
+    EXPECT_NEAR(cog->x, 8.968763, eps);
+    EXPECT_NEAR(cog->y, 5.8527, eps);
+    EXPECT_NEAR(cog->z, 2.15364, eps);
+}
+
 TEST_F(Systems, ComponentsGeometry)
 {
     const double eps = 1e-6;
@@ -205,27 +225,48 @@ TEST_F(Systems, Masses)
     const double eps = 1e-6;
 
     // ---- Mass values ----
-    EXPECT_NEAR(cuboid_1->GetMass(), 1234.0, eps);
+    {
+        const auto m = cuboid_1->GetMass();
+        ASSERT_TRUE(m);
+        EXPECT_NEAR(*m, 0.1234, eps);
+    }
 
     auto const* cuboid_2 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_2");
     auto const* cuboid_3 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_3");
-    EXPECT_NEAR(cuboid_2->GetMass(), 0.375, eps);
-    EXPECT_NEAR(cuboid_2->GetMass(), cuboid_3->GetMass(), eps);
 
-    EXPECT_THROW(wedge_1->GetMass(), tigl::CTiglError);
+    const auto m2 = cuboid_2->GetMass();
+    const auto m3 = cuboid_3->GetMass();
+    ASSERT_TRUE(m2);
+    ASSERT_TRUE(m3);
+    EXPECT_NEAR(*m2, 0.375, eps);
+    EXPECT_NEAR(*m2, *m3, eps);
 
-    EXPECT_NEAR(external->GetMass(), 0.2476386, eps);
-    EXPECT_NEAR(eMotor->GetMass(), 123., eps);
+    {
+        const auto m = wedge_1->GetMass();
+        EXPECT_FALSE(m);
+    }
+
+    {
+        const auto m = external->GetMass();
+        ASSERT_TRUE(m);
+        EXPECT_NEAR(*m, 0.2476386, eps);
+    }
+
+    {
+        const auto m = eMotor->GetMass();
+        ASSERT_TRUE(m);
+        EXPECT_NEAR(*m, 0.123, eps);
+    }
 
     // ---- Mass location ----
     auto const* cuboid_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_4");
 
-    const auto cogLocal = cuboid_4->GetCenterOfGravityLocal();
-    EXPECT_NEAR(cogLocal.x, 0.3, eps);
-    EXPECT_NEAR(cogLocal.y, 0.25, eps);
-    EXPECT_NEAR(cogLocal.z, 0.4, eps);
+    const boost::optional<tigl::CTiglPoint> cogLocal = cuboid_4->GetCenterOfGravityLocal();
+    EXPECT_NEAR(cogLocal->x, 0.3, eps);
+    EXPECT_NEAR(cogLocal->y, 0.25, eps);
+    EXPECT_NEAR(cogLocal->z, 0.4, eps);
 
-    const auto cogGlobal = cuboid_4->GetCenterOfGravityGlobal();
+    const boost::optional<tigl::CTiglPoint> cogGlobal = cuboid_4->GetCenterOfGravityGlobal();
     EXPECT_TRUE(cuboid_4->IsPositioned());
     ASSERT_TRUE(cogGlobal);
     EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
@@ -360,7 +401,7 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         auto const* face = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroHeightComponent");
         CheckExceptionMessage([&] { (void)face->GetMass(); },
-                              "Cannot compute geometric center (zero volume) for uid \"predFace\".");
+                              "Cannot compute mass properties of component with uid =\"predFace\" (zero volume).");
     }
 }
 

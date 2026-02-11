@@ -112,24 +112,25 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
 }
 
-double CCPACSComponent::GetMass() const
+boost::optional<double> CCPACSComponent::GetMass() const
 {
     return m_mass->mass;
 }
 
-CTiglPoint CCPACSComponent::GetCenterOfGravityLocal() const
+boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityLocal() const
 {
     return m_mass->cogLocal;
 }
 
 boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
 {
+    auto cogLocal = m_mass->cogLocal;
     if (!IsPositioned()) {
         LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
                      << "\" is only available if <transformation> is defined.";
         return boost::none;
     }
-    return GetTransformationMatrix() * m_mass->cogLocal;
+    return GetTransformationMatrix() * (*cogLocal);
 }
 
 bool CCPACSComponent::IsPositioned() const
@@ -159,10 +160,11 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
     const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
     if (!massPtr || !*massPtr) {
-        throw CTiglError("No mass definition for uid \"" + uid + "\"!");
+        LOG(WARNING) << "No mass definition for uid \"" + uid + "\"!";
+        return;
     }
 
-    const CCPACSElementMass& massDef = **massPtr;
+    const CCPACSElementMass& massDef = massPtr->get();
 
     // Evaluate CoG
     if (const auto& loc = massDef.GetLocation(); loc) {
@@ -174,7 +176,7 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
         BRepGProp::VolumeProperties(loft->Shape(), props);
 
         if (props.Mass() <= 0.0) {
-            throw CTiglError("Cannot compute geometric center (zero volume) for uid \"" + uid + "\".");
+            throw CTiglError("Cannot compute mass properties of component with uid =\"" + uid + "\" (zero volume).");
         }
 
         const gp_Pnt c = props.CentreOfMass();

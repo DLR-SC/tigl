@@ -353,7 +353,7 @@
                         </cuboid>
                     </geometry>
 					<mass>
-						<mass>1234</mass>
+						<mass>0.1234</mass>
 						<location>
 							<x>0.3</x>
 							<y>0.25</y>
@@ -665,7 +665,7 @@
                         </ellipsoid>
                     </geometry>
 					<mass>
-						<mass>123.</mass>
+						<mass>0.123</mass>
 					</mass>
                 </electricMotor>
             </electricMotors>

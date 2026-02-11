@@ -79,28 +79,33 @@ public:
      * The mass is obtained from the referenced system element:
      * - If an explicit mass is provided in CPACS, it is returned.
      * - Otherwise, if a density is provided, the mass is computed as density * volume.
+     * - If neither mass nor density is available, no mass value is returned.
      *
-     * @return Mass.
+     * @return Component mass, or boost::none if the mass cannot be determined.
      */
-    TIGL_EXPORT double GetMass() const;
+    TIGL_EXPORT boost::optional<double> GetMass() const;
 
     /**
      * @brief Returns the center of gravity in the component's local coordinate system.
      *
-     * If CPACS @c location is provided, that value is used.
-     * Otherwise, the geometric centroid of the component volume is used.
+     * If a CPACS @c location is provided, that value is used.
+     * Otherwise, the geometric centroid of the component volume is computed.
      *
-     * @return Local CoG (x,y,z).
+     * If the center of gravity cannot be determined (e.g., missing mass definition or
+     * zero-volume geometry), boost::none is returned.
+     *
+     * @return Local CoG (x, y, z), or boost::none if not available.
      */
-    TIGL_EXPORT CTiglPoint GetCenterOfGravityLocal() const;
+    TIGL_EXPORT boost::optional<CTiglPoint> GetCenterOfGravityLocal() const;
 
     /**
      * @brief Returns the center of gravity in the global coordinate system.
      *
      * The global CoG is obtained by applying the component transformation to the local CoG.
-     * This value is only available if the component is explicitly positioned (see IsPositioned()).
+     * This value is only available if the component is explicitly positioned
+     * (see IsPositioned()) and a local CoG exists.
      *
-     * @return Global CoG, or boost::none if the component has no explicit CPACS <transformation>.
+     * @return Global CoG, or boost::none if unavailable.
      */
     TIGL_EXPORT boost::optional<CTiglPoint> GetCenterOfGravityGlobal() const;
 
@@ -121,8 +126,8 @@ private:
     std::string _cpacsDocPath;
 
     struct MassCache {
-        double mass = 0.0;
-        CTiglPoint cogLocal;
+        boost::optional<double> mass         = boost::none;
+        boost::optional<CTiglPoint> cogLocal = boost::none;
     };
 
     void BuildMass(MassCache& cache) const;
