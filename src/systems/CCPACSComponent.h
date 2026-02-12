@@ -19,11 +19,29 @@
 #pragma once
 
 #include "generated/CPACSComponent.h"
+#include "generated/CPACSMassInertia.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglPoint.h"
 
 namespace tigl
 {
+
+/**
+ * @brief Mass inertia tensor components (local coordinates).
+ *
+ * Value type for mass inertia properties. Cross terms (Jxy, Jxz, Jyz) are optional.
+ * 
+ * ToDo: This is should become a class similar to CTiglPoint when used more frequently
+ */
+struct TiglMassInertia {
+    double Jxx = 0.0;
+    double Jyy = 0.0;
+    double Jzz = 0.0;
+
+    boost::optional<double> Jxy = boost::none;
+    boost::optional<double> Jxz = boost::none;
+    boost::optional<double> Jyz = boost::none;
+};
 
 /**
  * @brief Geometric component representing a CPACS <component> within systems.
@@ -110,6 +128,17 @@ public:
     TIGL_EXPORT boost::optional<CTiglPoint> GetCenterOfGravityGlobal() const;
 
     /**
+     * @brief Returns the mass inertia tensor components in the local coordinate system.
+     *
+     * If a CPACS @c massInertia definition is present, its values are returned.
+     * Otherwise, boost::none is returned. Cross terms (Jxy, Jxz, Jyz) are optional
+     * as in the CPACS schema.
+     *
+     * @return Local mass inertia components, or boost::none if not defined.
+     */
+    TIGL_EXPORT boost::optional<TiglMassInertia> GetMassInertiaLocal() const;
+
+    /**
      * @brief Returns whether this component is explicitly positioned in CPACS.
      *
      * This checks for the presence of the optional CPACS @c <transformation> element
@@ -126,8 +155,9 @@ private:
     std::string _cpacsDocPath;
 
     struct MassCache {
-        boost::optional<double> mass         = boost::none;
-        boost::optional<CTiglPoint> cogLocal = boost::none;
+        boost::optional<double> mass                  = boost::none;
+        boost::optional<CTiglPoint> cogLocal          = boost::none;
+        boost::optional<TiglMassInertia> inertiaLocal = boost::none;
     };
 
     void BuildMass(MassCache& cache) const;

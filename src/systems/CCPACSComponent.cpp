@@ -133,6 +133,11 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
     return GetTransformationMatrix() * (*cogLocal);
 }
 
+boost::optional<TiglMassInertia> CCPACSComponent::GetMassInertiaLocal() const
+{
+    return m_mass->inertiaLocal;
+}
+
 bool CCPACSComponent::IsPositioned() const
 {
     return GetTransformation().is_initialized();
@@ -181,6 +186,18 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
         const gp_Pnt c = props.CentreOfMass();
         cache.cogLocal = CTiglPoint(c.X(), c.Y(), c.Z());
+    }
+
+    // Get mass inertia
+    if (const auto& mi = massDef.GetMassInertia(); mi) {
+        TiglMassInertia out;
+        out.Jxx            = mi->GetJxx();
+        out.Jyy            = mi->GetJyy();
+        out.Jzz            = mi->GetJzz();
+        out.Jxy            = mi->GetJxy();
+        out.Jxz            = mi->GetJxz();
+        out.Jyz            = mi->GetJyz();
+        cache.inertiaLocal = out;
     }
 
     // Evaluate mass

@@ -359,6 +359,11 @@
 							<y>0.25</y>
 							<z>0.4</z>
 						</location>
+						<massInertia>
+							<Jxx>1</Jxx>
+							<Jyy>2</Jyy>
+							<Jzz>3</Jzz>
+						</massInertia>
 					</mass>
                 </genericComponent>
                 <genericComponent uID="predCuboid_2">

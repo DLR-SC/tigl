@@ -122,7 +122,7 @@ class Systems(unittest.TestCase):
         self.assertAlmostEqual(cog.y, 5.8527, delta=eps)
         self.assertAlmostEqual(cog.z, 2.15364, delta=eps)
 
-    def test_mass(self):
+    def test_component_mass(self):
 
         eps = 1e-6
 
@@ -171,6 +171,22 @@ class Systems(unittest.TestCase):
         self.assertFalse(unpos.is_positioned())
         self.assertIsNotNone(unpos.get_center_of_gravity_local())
         self.assertIsNone(unpos.get_center_of_gravity_global())
+
+        # --- MassInertia local ---
+        cuboid1 = self.uid_mgr.get_geometric_component("cuboid_1")
+        mi = cuboid1.get_mass_inertia_local()
+        self.assertIsNotNone(mi)
+
+        self.assertEqual(mi.Jxx, 1)
+        self.assertEqual(mi.Jyy, 2)
+        self.assertEqual(mi.Jzz, 3)
+        self.assertIsNone(mi.Jxy)
+        self.assertIsNone(mi.Jxz)
+        self.assertIsNone(mi.Jyz)
+
+        cuboid2 = self.uid_mgr.get_geometric_component("cuboid_2")
+        mi = cuboid2.get_mass_inertia_local()
+        self.assertIsNone(mi)
 
 
 if __name__ == "__main__":

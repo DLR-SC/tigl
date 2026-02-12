@@ -220,7 +220,7 @@ TEST_F(Systems, ComponentsGeometry)
     }
 }
 
-TEST_F(Systems, Masses)
+TEST_F(Systems, ComponentMasses)
 {
     const double eps = 1e-6;
 
@@ -276,6 +276,24 @@ TEST_F(Systems, Masses)
     auto const* unpositionedCuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("unpositionedCuboid");
     EXPECT_FALSE(unpositionedCuboid->IsPositioned());
     EXPECT_FALSE(unpositionedCuboid->GetCenterOfGravityGlobal());
+
+    // ---- Mass inertia ----
+    {
+        const auto mi = cuboid_1->GetMassInertiaLocal();
+        ASSERT_TRUE(mi);
+        EXPECT_EQ(mi->Jxx, 1);
+        EXPECT_EQ(mi->Jyy, 2);
+        EXPECT_EQ(mi->Jzz, 3);
+        EXPECT_FALSE(mi->Jxy);
+        EXPECT_FALSE(mi->Jxz);
+        EXPECT_FALSE(mi->Jyz);
+    }
+
+    {
+        const auto mi = cuboid_2->GetMassInertiaLocal();
+        EXPECT_FALSE(mi);
+    }
+    
 }
 
 class InvalidSystems : public ::testing::Test
