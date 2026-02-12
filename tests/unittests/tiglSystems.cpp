@@ -114,6 +114,9 @@ TEST_F(Systems, Basics)
     // check components' type and intent
     EXPECT_EQ(cuboid_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
     EXPECT_EQ(cuboid_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+
+    // available in configuration
+    EXPECT_EQ(genericSystem->GetConfiguration().GetUID(), "testAircraft");
 }
 
 TEST_F(Systems, SystemsGeometry)
