@@ -293,7 +293,6 @@ TEST_F(Systems, ComponentMasses)
         const auto mi = cuboid_2->GetMassInertiaLocal();
         EXPECT_FALSE(mi);
     }
-    
 }
 
 class InvalidSystems : public ::testing::Test
@@ -443,6 +442,23 @@ TEST_F(InvalidSystems, Masses)
     auto const* cuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidMass");
     CheckExceptionMessage([&] { (void)cuboid->GetMass(); },
                           "Invalid mass definition (no mass and no density) for uid \"invalidPredCuboid_2\".");
+}
+
+TEST_F(InvalidSystems, InvalidSystemMassProperties)
+{
+    // Systems with zero mass should not return a center of gravity
+    {
+        auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem2");
+        const auto cog  = sys->GetCenterOfGravity();
+        ASSERT_FALSE(cog);
+    }
+    
+    // System referring to an element without geometry
+    {
+        auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem3");
+        CheckExceptionMessage([&] { (void)sys->GetCenterOfGravity(); },
+                              "Unsupported geometry for uID=\"predElementWithoutGeometry\"");
+    }
 }
 
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;

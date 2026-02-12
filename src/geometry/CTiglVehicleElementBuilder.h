@@ -47,7 +47,12 @@ private:
             return BuildEllipsoidShape(*e);
         else if (const auto& e = geom.GetExternal_choice5())
             return BuildExternalShape(*e);
-        throw CTiglError("Unsupported geometry type");
+
+        std::string uid = "unknown";
+        if (const auto* parent = geom.GetNextUIDParent()) {
+            uid = parent->GetObjectUID().get_value_or(uid);
+        }
+        throw CTiglError("Unsupported geometry for uID=\"" + uid + "\"");
     }
 
     const CCPACSElementGeometry* m_geometry     = nullptr;

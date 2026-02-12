@@ -102,7 +102,7 @@ boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() cons
     for (size_t i = 1; i <= n; ++i) {
         const auto& c = comps.GetComponent(i);
 
-        // Only consider components which are positioned, have a proper mass description, and a global CoG
+        // Only consider components which have a proper mass description, and which are positioned
         if (!c.IsPositioned()) {
             continue;
         }
@@ -113,10 +113,6 @@ boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() cons
         }
 
         const auto cogG = c.GetCenterOfGravityGlobal();
-        if (!cogG) {
-            continue;
-        }
-
         mSum += *m;
         xSum += (*m) * cogG->x;
         ySum += (*m) * cogG->y;
@@ -151,17 +147,14 @@ PNamedShape CCPACSGenericSystem::BuildLoft() const
 // get short name for loft
 std::string CCPACSGenericSystem::GetShortShapeName() const
 {
-    unsigned int gsindex = 0;
-    for (int i = 1; i <= GetConfiguration().GetGenericSystemCount(); ++i) {
-        const tigl::CCPACSGenericSystem& gs = GetConfiguration().GetGenericSystem(i);
-        if (GetUID() == gs.GetUID()) {
-            gsindex = i;
-            std::stringstream shortName;
-            shortName << "GS" << gsindex;
-            return shortName.str();
+    unsigned int i = 0;
+
+    for (const auto& gs : GetParent()->GetGenericSystems()) {
+        ++i;
+        if (GetUID() == gs->GetUID()) {
+            return "GS" + std::to_string(i);
         }
     }
-    return "UNKNOWN";
 }
 
 } // end namespace tigl

@@ -226,6 +226,38 @@
                                 </component> 
                             </components>
                         </genericSystem>
+						<genericSystem uID="testSystem2">
+							<name>Corrupt system 2</name>
+                            <components>
+                                <component uID="ellipsoid">
+                                    <name>Component with zero mass</name>
+                                    <systemElementUID>predEllipsoid</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component> 
+							</components>
+						</genericSystem>
+						<genericSystem uID="testSystem3">
+							<name>Corrupt system 3</name>
+                            <components>
+                                <component uID="elementWithoutGeometry">
+                                    <name>Component without geometry</name>
+                                    <systemElementUID>predElementWithoutGeometry</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>0</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component> 
+							</components>
+						</genericSystem>
                     </genericSystems>
                 </systems>
             </model>
@@ -335,6 +367,23 @@
                     </geometry>
 					<mass>
 						<density>0.1</density>
+					</mass>
+                </genericComponent>
+				<genericComponent uID="predEllipsoid">
+                    <name>Predefined ellipsoid with zero mass</name>
+                    <geometry>
+                        <ellipsoid>
+                            <radiusX>1.</radiusX>
+                        </ellipsoid>
+                    </geometry>
+					<mass>
+						<mass>0.0</mass>
+					</mass>
+                </genericComponent>
+				<genericComponent uID="predElementWithoutGeometry">
+                    <name>Predefined element without geometry</name>
+					<mass>
+						<mass>0.0</mass>
 					</mass>
                 </genericComponent>
             </genericComponents>
