@@ -45,7 +45,9 @@ private:
             return BuildConeShape(*c);
         else if (const auto& e = geom.GetEllipsoid_choice4())
             return BuildEllipsoidShape(*e);
-        else if (const auto& e = geom.GetExternal_choice5())
+        else if (const auto& m = geom.GetMultiSegmentShape_choice5())
+            return BuildMultiSegmentShape(*m);
+        else if (const auto& e = geom.GetExternal_choice6())
             return BuildExternalShape(*e);
 
         std::string uid = "unknown";
@@ -65,6 +67,7 @@ private:
     TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);
     TopoDS_Shape BuildConeShape(const CCPACSCone& c);
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
+    TopoDS_Shape BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m);
     TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e);
 
     TopoDS_Shape BuildSingleShape(const CCPACSElementGeometry& geom);

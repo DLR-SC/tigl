@@ -105,6 +105,13 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     }
 }
 
+TEST_F(Systems, MultiSegment)
+{
+    auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent");
+    PNamedShape shape        = multiSegment->GetLoft();
+    ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
+}
+
 TEST_F(Systems, Basics)
 {
     // defaulted UID check
@@ -455,7 +462,7 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
         const auto cog  = sys->GetCenterOfGravity();
         ASSERT_FALSE(cog);
     }
-    
+
     // System referring to an element without geometry
     {
         auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem3");

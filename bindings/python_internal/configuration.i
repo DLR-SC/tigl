@@ -141,6 +141,7 @@
 #include "generated/CPACSComponent.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
+#include "generated/CPACSMultiSegmentShape.h"
 %}
 
 %feature("autodoc", "3");
@@ -382,6 +383,7 @@ namespace tigl
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
 %include "CCPACSFuselageSections.h"
+%include "generated/CPACSMultiSegmentShape.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"

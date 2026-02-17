@@ -35,6 +35,8 @@
 
 #include <generated/CPACSSubElements.h>
 #include <generated/CPACSSubElement.h>
+#include <CCPACSFuselageSegment.h>
+#include "CTiglMakeLoft.h"
 
 namespace tigl
 {
@@ -212,6 +214,43 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
     BRepBuilderAPI_GTransform transformer(sphere, gtrsf, true);
 
     return transformer.Shape();
+}
+
+TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)
+{
+    // Using this later to inject a pointer to CCPACSComponent into CCPACSFuselageSegments (so der Plan...)
+    // 
+    //CCPACSFuselageSegments& segments = const_cast<CCPACSFuselageSegments&>(m.GetSegments());
+    //segments.SetReferenceParent(const_cast<CCPACSComponent*>(m_parentCompPtr));
+
+    const auto& segments = m.GetSegments();
+    const int nSeg       = segments.GetSegmentCount();
+
+    if (nSeg < 1) {
+        throw CTiglError("Cannot build multi-segment shape: no segments defined.", TIGL_INVALID_VALUE);
+    }
+
+    const TiglContinuity cont     = segments.GetSegment(1).GetContinuity();
+    const Standard_Boolean smooth = (cont != ::C0);
+
+    CTiglMakeLoft lofter;
+
+    // profiles: start wire of each segment
+    for (int i = 1; i <= nSeg; ++i) {
+        lofter.addProfiles(segments.GetSegment(i).GetStartWire());
+    }
+
+    // final profile: end wire of last segment
+    lofter.addProfiles(segments.GetSegment(nSeg).GetEndWire());
+
+    // guides
+    lofter.addGuides(segments.GetGuideCurveWires());
+
+    // loft options
+    lofter.setMakeSolid(true);
+    lofter.setMakeSmooth(smooth);
+
+    return lofter.Shape();
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)

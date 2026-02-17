@@ -25,6 +25,7 @@
 #include <string>
 #include <boost/optional.hpp>
 
+#include "CCPACSComponent.h"
 #include "generated/CPACSFuselageSegments.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "TopoDS_Compound.hxx"
@@ -40,6 +41,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
@@ -79,11 +81,20 @@ public:
 
     // check order of segments - each segment must start with the element of the previous segment
     TIGL_EXPORT bool NeedReordering() const;
+
+    void SetReferenceParent(CTiglRelativelyPositionedComponent* refParent)
+    {
+        m_refParentPtr = refParent;
+    }
+
+
 private:
 
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
     Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
+
+    const CTiglRelativelyPositionedComponent* m_refParentPtr = nullptr;
 
 };
 

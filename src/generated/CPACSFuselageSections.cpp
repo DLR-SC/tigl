@@ -21,6 +21,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSVessel.h"
 #include "CPACSFuselageSections.h"
+#include "CPACSMultiSegmentShape.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -47,6 +48,14 @@ namespace generated
         m_parentType = &typeid(CCPACSFuselage);
     }
 
+    CPACSFuselageSections::CPACSFuselageSections(CPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSMultiSegmentShape);
+    }
+
     CPACSFuselageSections::CPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -68,6 +77,9 @@ namespace generated
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
             }
+            if (IsParent<CPACSMultiSegmentShape>()) {
+                return GetParent<CPACSMultiSegmentShape>();
+            }
             if (IsParent<CCPACSVessel>()) {
                 return GetParent<CCPACSVessel>();
             }
@@ -83,6 +95,9 @@ namespace generated
             }
             if (IsParent<CCPACSFuselage>()) {
                 return GetParent<CCPACSFuselage>();
+            }
+            if (IsParent<CPACSMultiSegmentShape>()) {
+                return GetParent<CPACSMultiSegmentShape>();
             }
             if (IsParent<CCPACSVessel>()) {
                 return GetParent<CCPACSVessel>();

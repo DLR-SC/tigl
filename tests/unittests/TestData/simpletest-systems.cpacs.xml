@@ -331,6 +331,20 @@
 										</rotation>
                                     </transformation>
                                 </component>
+								<component uID="multiSegmentComponent">
+                                    <name>Multi-segment component</name>
+                                    <systemElementUID>predMultiSegmentComponent</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>15</y>
+                                            <z>0</z>
+                                        </translation>
+										<rotation>
+											<z>90</z>
+										</rotation>
+                                    </transformation>
+                                </component>
 								<component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>
@@ -513,7 +527,7 @@
                     <name>Predefined external element</name>
                     <geometry>
                         <external>
-							<linkToFile format="step">nacelle.stp</linkToFile>
+							<linkToFile format="Step">nacelle.stp</linkToFile>
                             <transformation>
                                 <scaling>
                                     <x>1.1</x>
@@ -530,6 +544,53 @@
 						<density>0.1</density>
 					</mass>
                 </genericComponent>
+				<genericComponent uID="predMultiSegmentComponent">
+                    <name>Predefined multi-segment component</name>
+                    <geometry>
+						<multiSegmentShape uID="predMultiSegmentComponent_geometry">
+							<sections>
+								<section uID="predMultiSegmentComponent_section1">
+									<name>Fuselage Section 1</name>
+									<transformation />
+									<elements>
+										<element uID="predMultiSegmentComponent_section1_element1">
+											<name>Fuselage Section 1</name>
+											<profileUID>fuselageCircleProfile</profileUID>
+											<transformation />
+										</element>
+									</elements>
+								</section>
+								<section uID="predMultiSegmentComponent_section2">
+									<name>Fuselage Section 2</name>
+									<transformation>
+                                        <translation>
+                                            <x>1</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+									<elements>
+										<element uID="predMultiSegmentComponent_section2_element1">
+											<name>Fuselage Section 2</name>
+											<profileUID>fuselageCircleProfile</profileUID>
+											<transformation />
+										</element>
+									</elements>
+								</section>
+							</sections>
+							<segments>
+								<segment uID="predMultiSegmentComponent_segment">
+									<name>Segment</name>
+									<fromElementUID>predMultiSegmentComponent_section1_element1</fromElementUID>
+									<toElementUID>predMultiSegmentComponent_section2_element1</toElementUID>
+								</segment>
+							</segments>
+						</multiSegmentShape> 
+                    </geometry>
+					<mass>
+						<density>0.1</density>
+					</mass>
+                </genericComponent>
 				<genericComponent uID="predCombinedComponent">
                     <name>Predefined element with subelements</name>
                     <geometry>
@@ -539,11 +600,6 @@
                             <radiusZ>0.25</radiusZ>
 							<diskAngle>3.14159265359</diskAngle>
                         </ellipsoid>
-						<transformation>
-							<rotation>
-								<y>90</y>
-							</rotation>
-						</transformation>
 						<subElements>
 							<subElement>
 								<cylinder>
