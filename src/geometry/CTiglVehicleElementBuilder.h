@@ -28,8 +28,9 @@ namespace tigl
 class CTiglVehicleElementBuilder
 {
 public:
-    explicit CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
-                                        const CTiglTransformation& transformation, const std::string& shapeName,
+    explicit CTiglVehicleElementBuilder(const CTiglRelativelyPositionedComponent& refComponent,
+                                        const CCPACSConfiguration& refConfig,
+                                        const CCPACSElementGeometry& geometry, const std::string& shapeName,
                                         const std::string& cpacsDocumentPath);
 
     TIGL_EXPORT PNamedShape BuildShape();
@@ -57,8 +58,10 @@ private:
         throw CTiglError("Unsupported geometry for uID=\"" + uid + "\"");
     }
 
-    const CCPACSElementGeometry* m_geometry     = nullptr;
-    const CTiglTransformation* m_transformation = nullptr;
+    const CCPACSElementGeometry* m_geometry                  = nullptr;
+    const CTiglTransformation* m_transformation              = nullptr;
+    const CTiglRelativelyPositionedComponent* m_refComponent = nullptr;
+    const CCPACSConfiguration* m_refConfig                   = nullptr;
 
     std::string m_shapeName;
     std::string m_cpacsDocumentPath;

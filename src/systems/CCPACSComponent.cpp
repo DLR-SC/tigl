@@ -19,7 +19,12 @@
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
 
+#include "CCPACSConfiguration.h"
 #include "CCPACSComponent.h"
+#include "generated/CPACSComponents.h"
+#include "CCPACSGenericSystems.h"
+#include "CCPACSGenericSystem.h"
+#include "CCPACSACSystems.h"
 #include "generated/CPACSComponent.h"
 #include "CTiglUIDManager.h"
 #include "CTiglVehicleElementBuilder.h"
@@ -102,6 +107,11 @@ std::string CCPACSComponent::GetDefaultedUID() const
     return generated::CPACSComponent::GetUID();
 }
 
+CCPACSConfiguration const& CCPACSComponent::GetConfiguration() const
+{
+    return m_parent->GetParent()->GetParent()->GetConfiguration();
+}
+
 void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
 {
     Reset();
@@ -155,7 +165,7 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
     // Use component UID as shape name
     std::string compUid = this->GetObjectUID().get_value_or("unnamed");
-    CTiglVehicleElementBuilder builder(*geom, this->GetTransformationMatrix(), compUid, _cpacsDocPath);
+    CTiglVehicleElementBuilder builder(*this, this->GetConfiguration(), *geom, compUid, _cpacsDocPath);
     return builder.BuildShape();
 }
 

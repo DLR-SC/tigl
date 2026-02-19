@@ -36,17 +36,21 @@
 #include <generated/CPACSSubElements.h>
 #include <generated/CPACSSubElement.h>
 #include <CCPACSFuselageSegment.h>
+#include <CCPACSFuselageSegments.h>
 #include "CTiglMakeLoft.h"
 
 namespace tigl
 {
 
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CCPACSElementGeometry& geometry,
-                                                       const CTiglTransformation& transformation,
+CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CTiglRelativelyPositionedComponent& refComponent,
+                                                       const CCPACSConfiguration& refConfig,
+                                                       const CCPACSElementGeometry& geometry,
                                                        const std::string& shapeName,
                                                        const std::string& cpacsDocumentPath)
-    : m_geometry(&geometry)
-    , m_transformation(&transformation)
+    : m_refComponent(&refComponent)
+    , m_refConfig(&refConfig)
+    , m_geometry(&geometry)
+    , m_transformation(&refComponent.GetTransformationMatrix())
     , m_shapeName(shapeName)
     , m_cpacsDocumentPath(cpacsDocumentPath)
 {
@@ -218,13 +222,11 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)
 {
-    // Using this later to inject a pointer to CCPACSComponent into CCPACSFuselageSegments (so der Plan...)
-    // 
-    //CCPACSFuselageSegments& segments = const_cast<CCPACSFuselageSegments&>(m.GetSegments());
-    //segments.SetReferenceParent(const_cast<CCPACSComponent*>(m_parentCompPtr));
+    auto const& segments = m.GetSegments();
+    segments.SetReferenceParent(m_refComponent);
+    segments.SetConfiguration(m_refConfig);
 
-    const auto& segments = m.GetSegments();
-    const int nSeg       = segments.GetSegmentCount();
+    const int nSeg = segments.GetSegmentCount();
 
     if (nSeg < 1) {
         throw CTiglError("Cannot build multi-segment shape: no segments defined.", TIGL_INVALID_VALUE);
@@ -237,6 +239,9 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMult
 
     // profiles: start wire of each segment
     for (int i = 1; i <= nSeg; ++i) {
+        // ToDo: just for testing; remove the following 2 lines after completion
+        const auto& segment_i = segments.GetSegment(i);
+        const auto& startWire = segment_i.GetStartWire();
         lofter.addProfiles(segments.GetSegment(i).GetStartWire());
     }
 

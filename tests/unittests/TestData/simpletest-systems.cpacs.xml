@@ -568,6 +568,11 @@
                                             <y>0</y>
                                             <z>0</z>
                                         </translation>
+                                        <scaling>
+                                            <x>1</x>
+                                            <y>1</y>
+                                            <z>1</z>
+                                        </scaling>
                                     </transformation>
 									<elements>
 										<element uID="predMultiSegmentComponent_section2_element1">

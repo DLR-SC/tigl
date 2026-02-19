@@ -43,6 +43,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglPatchShell.h"
 #include "Debugging.h"
+#include "generated/CPACSMultiSegmentShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -226,6 +227,11 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
     case FUSELAGE_COORDINATE_SYSTEM:
         return transformProfileWire(identity, startConnection, startWire);
     case GLOBAL_COORDINATE_SYSTEM:
+        if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
+            const auto& tr = GetParent()->GetParentComponent()->GetTransformationMatrix();
+            //ToDo: handle tr being optional
+            return TopoDS::Wire(transformFuselageProfileGeometry(tr, startConnection, startWire)); 
+        }
         return TopoDS::Wire(
             transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
     default:

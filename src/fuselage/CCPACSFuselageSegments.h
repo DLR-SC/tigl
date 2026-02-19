@@ -25,7 +25,6 @@
 #include <string>
 #include <boost/optional.hpp>
 
-#include "CCPACSComponent.h"
 #include "generated/CPACSFuselageSegments.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "TopoDS_Compound.hxx"
@@ -50,7 +49,8 @@ public:
 
     // Get the segment that is spanned by the elements fromElemUID and toElementUID.
     // If there is no such segment, the function raises an error
-    TIGL_EXPORT CCPACSFuselageSegment & GetSegmentFromTo(const std::string &fromElementUID, const std::string toElementUID);
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegmentFromTo(const std::string& fromElementUID,
+                                                        const std::string toElementUID);
 
     // Get the parent component
     TIGL_EXPORT CTiglRelativelyPositionedComponent const* GetParentComponent() const;
@@ -68,12 +68,11 @@ public:
      * @param splitterElement: the uid of the element to be used to connect the two segments
      * @return the new created segment
      */
-    TIGL_EXPORT CCPACSFuselageSegment& SplitSegment(const std::string& segmentToSplit, const std::string& splitterElement);
-
-
+    TIGL_EXPORT CCPACSFuselageSegment& SplitSegment(const std::string& segmentToSplit,
+                                                    const std::string& splitterElement);
 
     // CPACSFuselageSegments interface
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle &tixiHandle, const std::string &xpath) override;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     TIGL_EXPORT const TopoDS_Compound& GetGuideCurveWires() const;
 
@@ -82,20 +81,23 @@ public:
     // check order of segments - each segment must start with the element of the previous segment
     TIGL_EXPORT bool NeedReordering() const;
 
-    void SetReferenceParent(CTiglRelativelyPositionedComponent* refParent)
+    void SetReferenceParent(CTiglRelativelyPositionedComponent const* refParent) const
     {
         m_refParentPtr = refParent;
     }
 
+    void SetConfiguration(CCPACSConfiguration const* cfg) const
+    {
+        m_refParentCfg = cfg;
+    }
 
 private:
-
     void BuildGuideCurves(TopoDS_Compound& cache) const;
 
     Cache<TopoDS_Compound, CCPACSFuselageSegments> guideCurves;
 
-    const CTiglRelativelyPositionedComponent* m_refParentPtr = nullptr;
-
+    mutable CTiglRelativelyPositionedComponent const* m_refParentPtr = nullptr;
+    mutable CCPACSConfiguration const* m_refParentCfg                = nullptr;
 };
 
 } // end namespace tigl

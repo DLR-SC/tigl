@@ -25,6 +25,7 @@
 
 namespace tigl
 {
+class CCPACSConfiguration;
 
 /**
  * @brief Mass inertia tensor components (local coordinates).
@@ -73,6 +74,8 @@ public:
      * @brief Returns the component UID (defaulted if required).
      */
     TIGL_EXPORT std::string GetDefaultedUID() const override;
+
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     /**
      * @brief Reads the CPACS subtree of this component.
