@@ -227,10 +227,9 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
     case FUSELAGE_COORDINATE_SYSTEM:
         return transformProfileWire(identity, startConnection, startWire);
     case GLOBAL_COORDINATE_SYSTEM:
-        if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
-            const auto& tr = GetParent()->GetParentComponent()->GetTransformationMatrix();
-            //ToDo: handle tr being optional
-            return TopoDS::Wire(transformFuselageProfileGeometry(tr, startConnection, startWire)); 
+        if (m_parent->IsParent<CCPACSMultiSegmentShape>()) {
+            //ToDo: consider optional tranformation in CCPACSMultiSegmentShape
+            return TopoDS::Wire(transformFuselageProfileGeometry(identity, startConnection, startWire));
         }
         return TopoDS::Wire(
             transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
@@ -250,6 +249,10 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     case FUSELAGE_COORDINATE_SYSTEM:
         return transformProfileWire(identity, endConnection, endWire);
     case GLOBAL_COORDINATE_SYSTEM:
+        if (m_parent->IsParent<CCPACSMultiSegmentShape>()) {
+            //ToDo: consider optional tranformation in CCPACSMultiSegmentShape
+            return TopoDS::Wire(transformFuselageProfileGeometry(identity, endConnection, endWire));
+        }
         return TopoDS::Wire(
             transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, endWire));
     default:

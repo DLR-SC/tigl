@@ -340,9 +340,6 @@
                                             <y>15</y>
                                             <z>0</z>
                                         </translation>
-										<rotation>
-											<z>90</z>
-										</rotation>
                                     </transformation>
                                 </component>
 								<component uID="unpositionedCuboid">
