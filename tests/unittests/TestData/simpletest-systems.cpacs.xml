@@ -342,6 +342,20 @@
                                         </translation>
                                     </transformation>
                                 </component>
+                                <component uID="multiSegmentComponent2">
+                                    <name>Multi-segment component 2</name>
+                                    <systemElementUID>predMultiSegmentComponent</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>20</y>
+                                            <z>0</z>
+                                        </translation>
+                                        <rotation>
+                                            <y>-90</y>
+                                        </rotation>
+                                    </transformation>
+                                </component>
 								<component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>

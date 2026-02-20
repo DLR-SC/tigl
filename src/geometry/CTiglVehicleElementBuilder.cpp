@@ -239,14 +239,11 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMult
 
     // profiles: start wire of each segment
     for (int i = 1; i <= nSeg; ++i) {
-        // ToDo: just for testing; remove the following 2 lines after completion
-        const auto& segment_i = segments.GetSegment(i);
-        const auto& startWire = segment_i.GetStartWire();
-        lofter.addProfiles(segments.GetSegment(i).GetStartWire());
+        lofter.addProfiles(segments.GetSegment(i).GetStartWire(FUSELAGE_COORDINATE_SYSTEM));
     }
 
     // final profile: end wire of last segment
-    lofter.addProfiles(segments.GetSegment(nSeg).GetEndWire());
+    lofter.addProfiles(segments.GetSegment(nSeg).GetEndWire(FUSELAGE_COORDINATE_SYSTEM));
 
     // guides
     lofter.addGuides(segments.GetGuideCurveWires());

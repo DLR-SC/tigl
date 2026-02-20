@@ -126,9 +126,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 
@@ -227,10 +229,6 @@ TopoDS_Wire CCPACSFuselageSegment::GetStartWire(TiglCoordinateSystem referenceCS
     case FUSELAGE_COORDINATE_SYSTEM:
         return transformProfileWire(identity, startConnection, startWire);
     case GLOBAL_COORDINATE_SYSTEM:
-        if (m_parent->IsParent<CCPACSMultiSegmentShape>()) {
-            //ToDo: consider optional tranformation in CCPACSMultiSegmentShape
-            return TopoDS::Wire(transformFuselageProfileGeometry(identity, startConnection, startWire));
-        }
         return TopoDS::Wire(
             transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), startConnection, startWire));
     default:
@@ -249,10 +247,6 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(TiglCoordinateSystem referenceCS) 
     case FUSELAGE_COORDINATE_SYSTEM:
         return transformProfileWire(identity, endConnection, endWire);
     case GLOBAL_COORDINATE_SYSTEM:
-        if (m_parent->IsParent<CCPACSMultiSegmentShape>()) {
-            //ToDo: consider optional tranformation in CCPACSMultiSegmentShape
-            return TopoDS::Wire(transformFuselageProfileGeometry(identity, endConnection, endWire));
-        }
         return TopoDS::Wire(
             transformFuselageProfileGeometry(GetParent()->GetParentComponent()->GetTransformationMatrix(), endConnection, endWire));
     default:
