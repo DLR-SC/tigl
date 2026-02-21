@@ -37101,7 +37101,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:extension base="complexBaseType">
                 <xsd:all>
                     <xsd:element name="linkToFile" type="linkToFileType"/>
-                    <xsd:element name="transformation" type="transformationType"/>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>

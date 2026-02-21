@@ -287,11 +287,18 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternal
     // ToDo: Transformation should be slightly different from the one used in relatively positioned components:
     //       as there is no parent, there should not be a refType attribute.
     //       This change in XSD would affect CCPACSTransformation and CTiglTransformation.
-    PNamedShape shapeGroup       = CGroupShapes(shapes);
-    const CTiglTransformation tr = e.GetTransformation().getTransformationMatrix();
-    shapeGroup->SetShape(tr.Transform(shapeGroup->Shape()));
+    PNamedShape shapeGroup = CGroupShapes(shapes);
 
-    return shapeGroup->Shape();
+    TopoDS_Shape shape = shapeGroup->Shape();
+
+    // apply transformation if present
+    const auto& optTr = e.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
 }
 
 } // namespace tigl

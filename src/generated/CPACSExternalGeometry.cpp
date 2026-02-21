@@ -32,7 +32,6 @@ namespace generated
     CPACSExternalGeometry::CPACSExternalGeometry(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_linkToFile(this)
-        , m_transformation(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -42,7 +41,6 @@ namespace generated
     CPACSExternalGeometry::CPACSExternalGeometry(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_linkToFile(this)
-        , m_transformation(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -107,10 +105,13 @@ namespace generated
 
         // read element transformation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
         }
 
     }
@@ -122,8 +123,15 @@ namespace generated
         m_linkToFile.WriteCPACS(tixiHandle, xpath + "/linkToFile");
 
         // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
+            }
+        }
 
     }
 
@@ -137,14 +145,26 @@ namespace generated
         return m_linkToFile;
     }
 
-    const CCPACSTransformation& CPACSExternalGeometry::GetTransformation() const
+    const boost::optional<CCPACSTransformation>& CPACSExternalGeometry::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CCPACSTransformation& CPACSExternalGeometry::GetTransformation()
+    boost::optional<CCPACSTransformation>& CPACSExternalGeometry::GetTransformation()
     {
         return m_transformation;
+    }
+
+    CCPACSTransformation& CPACSExternalGeometry::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSExternalGeometry::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated

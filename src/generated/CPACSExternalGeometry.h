@@ -17,11 +17,14 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
 #include "CPACSLinkToFile.h"
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -89,8 +92,11 @@ namespace generated
         TIGL_EXPORT virtual const CPACSLinkToFile& GetLinkToFile() const;
         TIGL_EXPORT virtual CPACSLinkToFile& GetLinkToFile();
 
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
+
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
 
     protected:
         void* m_parent;
@@ -98,8 +104,8 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        CPACSLinkToFile      m_linkToFile;
-        CCPACSTransformation m_transformation;
+        CPACSLinkToFile                       m_linkToFile;
+        boost::optional<CCPACSTransformation> m_transformation;
 
     private:
         CPACSExternalGeometry(const CPACSExternalGeometry&) = delete;
