@@ -21,6 +21,7 @@
 #include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -28,16 +29,18 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEllipsoid::CPACSEllipsoid(CPACSElementGeometry* parent)
-        : m_radiusX(0)
+    CPACSEllipsoid::CPACSEllipsoid(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_radiusX(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSEllipsoid::CPACSEllipsoid(CPACSSubElement* parent)
-        : m_radiusX(0)
+    CPACSEllipsoid::CPACSEllipsoid(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_radiusX(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -74,6 +77,22 @@ namespace generated
         return nullptr;
     }
 
+    CTiglUIDManager& CPACSEllipsoid::GetUIDManager()
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSEllipsoid::GetUIDManager() const
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
+    }
+
     void CPACSEllipsoid::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element radiusX
@@ -97,6 +116,17 @@ namespace generated
         // read element diskAngle
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
             m_diskAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/diskAngle");
+        }
+
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
         }
 
     }
@@ -140,6 +170,17 @@ namespace generated
             }
         }
 
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
+            }
+        }
+
     }
 
     const double& CPACSEllipsoid::GetRadiusX() const
@@ -180,6 +221,28 @@ namespace generated
     void CPACSEllipsoid::SetDiskAngle(const boost::optional<double>& value)
     {
         m_diskAngle = value;
+    }
+
+    const boost::optional<CCPACSTransformationSE3>& CPACSEllipsoid::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    boost::optional<CCPACSTransformationSE3>& CPACSEllipsoid::GetTransformation()
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformationSE3& CPACSEllipsoid::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSEllipsoid::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated

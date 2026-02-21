@@ -86,7 +86,7 @@ namespace generated
     {
         // read element cuboid
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cuboid")) {
-            m_cuboid_choice1 = boost::in_place(this);
+            m_cuboid_choice1 = boost::in_place(this, m_uidMgr);
             try {
                 m_cuboid_choice1->ReadCPACS(tixiHandle, xpath + "/cuboid");
             } catch(const std::exception& e) {
@@ -97,7 +97,7 @@ namespace generated
 
         // read element cylinder
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cylinder")) {
-            m_cylinder_choice2 = boost::in_place(this);
+            m_cylinder_choice2 = boost::in_place(this, m_uidMgr);
             try {
                 m_cylinder_choice2->ReadCPACS(tixiHandle, xpath + "/cylinder");
             } catch(const std::exception& e) {
@@ -108,7 +108,7 @@ namespace generated
 
         // read element cone
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cone")) {
-            m_cone_choice3 = boost::in_place(this);
+            m_cone_choice3 = boost::in_place(this, m_uidMgr);
             try {
                 m_cone_choice3->ReadCPACS(tixiHandle, xpath + "/cone");
             } catch(const std::exception& e) {
@@ -119,7 +119,7 @@ namespace generated
 
         // read element ellipsoid
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ellipsoid")) {
-            m_ellipsoid_choice4 = boost::in_place(this);
+            m_ellipsoid_choice4 = boost::in_place(this, m_uidMgr);
             try {
                 m_ellipsoid_choice4->ReadCPACS(tixiHandle, xpath + "/ellipsoid");
             } catch(const std::exception& e) {
@@ -430,7 +430,7 @@ namespace generated
     CPACSCuboid& CPACSSubElement::GetCuboid_choice1(CreateIfNotExistsTag)
     {
         if (!m_cuboid_choice1)
-            m_cuboid_choice1 = boost::in_place(this);
+            m_cuboid_choice1 = boost::in_place(this, m_uidMgr);
         return *m_cuboid_choice1;
     }
 
@@ -442,7 +442,7 @@ namespace generated
     CPACSCylinder& CPACSSubElement::GetCylinder_choice2(CreateIfNotExistsTag)
     {
         if (!m_cylinder_choice2)
-            m_cylinder_choice2 = boost::in_place(this);
+            m_cylinder_choice2 = boost::in_place(this, m_uidMgr);
         return *m_cylinder_choice2;
     }
 
@@ -454,7 +454,7 @@ namespace generated
     CPACSCone& CPACSSubElement::GetCone_choice3(CreateIfNotExistsTag)
     {
         if (!m_cone_choice3)
-            m_cone_choice3 = boost::in_place(this);
+            m_cone_choice3 = boost::in_place(this, m_uidMgr);
         return *m_cone_choice3;
     }
 
@@ -466,7 +466,7 @@ namespace generated
     CPACSEllipsoid& CPACSSubElement::GetEllipsoid_choice4(CreateIfNotExistsTag)
     {
         if (!m_ellipsoid_choice4)
-            m_ellipsoid_choice4 = boost::in_place(this);
+            m_ellipsoid_choice4 = boost::in_place(this, m_uidMgr);
         return *m_ellipsoid_choice4;
     }
 

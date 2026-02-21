@@ -19,14 +19,17 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
+class CTiglUIDManager;
 class CTiglUIDObject;
 
 namespace generated
@@ -45,8 +48,8 @@ namespace generated
     class CPACSCuboid
     {
     public:
-        TIGL_EXPORT CPACSCuboid(CPACSElementGeometry* parent);
-        TIGL_EXPORT CPACSCuboid(CPACSSubElement* parent);
+        TIGL_EXPORT CPACSCuboid(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCuboid(CPACSSubElement* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSCuboid();
 
@@ -79,6 +82,9 @@ namespace generated
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
 
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
@@ -103,30 +109,40 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetUpperFaceYmax() const;
         TIGL_EXPORT virtual void SetUpperFaceYmax(const boost::optional<double>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformationSE3>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformationSE3>& GetTransformation();
+
+        TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
+
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
+        CTiglUIDManager* m_uidMgr;
+
         /// Length x-direction [m]
-        double                  m_lengthX;
+        double                                   m_lengthX;
 
         /// Depth in y-direction [m]
-        double                  m_depthY;
+        double                                   m_depthY;
 
         /// Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]
-        double                  m_heightZ;
+        double                                   m_heightZ;
 
         /// ...
-        boost::optional<double> m_upperFaceXmin;
+        boost::optional<double>                  m_upperFaceXmin;
 
         /// ...
-        boost::optional<double> m_upperFaceXmax;
+        boost::optional<double>                  m_upperFaceXmax;
 
         /// ...
-        boost::optional<double> m_upperFaceYmin;
+        boost::optional<double>                  m_upperFaceYmin;
 
         /// ...
-        boost::optional<double> m_upperFaceYmax;
+        boost::optional<double>                  m_upperFaceYmax;
+
+        boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:
         CPACSCuboid(const CPACSCuboid&) = delete;

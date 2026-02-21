@@ -17,6 +17,10 @@
 
 #include <cassert>
 #include "CCPACSComponent.h"
+#include "CPACSCone.h"
+#include "CPACSCuboid.h"
+#include "CPACSCylinder.h"
+#include "CPACSEllipsoid.h"
 #include "CPACSMultiSegmentShape.h"
 #include "CPACSSubElement.h"
 #include "CPACSTransformationSE3.h"
@@ -35,6 +39,38 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSComponent);
+    }
+
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSCone* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCone);
+    }
+
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSCuboid* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCuboid);
+    }
+
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSCylinder* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCylinder);
+    }
+
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSEllipsoid* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSEllipsoid);
     }
 
     CPACSTransformationSE3::CPACSTransformationSE3(CPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
@@ -64,6 +100,18 @@ namespace generated
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
             }
+            if (IsParent<CPACSCone>()) {
+                return GetParent<CPACSCone>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCuboid>()) {
+                return GetParent<CPACSCuboid>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCylinder>()) {
+                return GetParent<CPACSCylinder>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSEllipsoid>()) {
+                return GetParent<CPACSEllipsoid>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSMultiSegmentShape>()) {
                 return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
             }
@@ -79,6 +127,18 @@ namespace generated
         if (m_parent) {
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
+            }
+            if (IsParent<CPACSCone>()) {
+                return GetParent<CPACSCone>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCuboid>()) {
+                return GetParent<CPACSCuboid>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCylinder>()) {
+                return GetParent<CPACSCylinder>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSEllipsoid>()) {
+                return GetParent<CPACSEllipsoid>()->GetNextUIDParent();
             }
             if (IsParent<CPACSMultiSegmentShape>()) {
                 return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();

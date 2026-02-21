@@ -36748,15 +36748,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
                     <xsd:choice>
-                        <!-- <xsd:element name="parallelepiped" type="parallelepipedType"/> -->
                         <xsd:element name="cuboid" type="cuboidType"/>
                         <xsd:element name="cylinder" type="cylinderType"/>
                         <xsd:element name="cone" type="coneType"/>
                         <xsd:element name="ellipsoid" type="ellipsoidType"/>
-                        <!-- <xsd:element name="sphere" type="sphereType"/> -->
                         <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
                         <xsd:element name="external" type="externalGeometryType"/>
-                        <!-- <xsd:element name="boundingBox" type="boundingBoxType"/> -->
                     </xsd:choice>
                     <xsd:element name="subElements" minOccurs="0" type="subElementsType"/>
             	</xsd:sequence>
@@ -36826,59 +36823,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
-
-    <xsd:complexType name="parallelepipedType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Parallelepiped</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>The component coordinate system is located in the center of the cuboid.
-                            This means that "length" extends in the x-direction, "width" in the y-direction and "height" in the z-direction, half in the positive and half in the negative direction.
-                        </ddue:para>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element name="a" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Length of edge a (if cuboid, then a equals the total length in x-direction) [m]</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="b" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Length of edge b (if cuboid, then b equals the total width in y-direction) [m]</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="c" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Length of edge c (if cuboid, then c equals the total height in z-direction) [m]</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-					<xsd:element name="alpha" minOccurs="0" type="doubleBaseType">
-						<xsd:annotation>
-							<xsd:documentation>Angle between edges in width and height direction (default: 90deg) [deg]</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element name="beta" minOccurs="0" type="doubleBaseType">
-						<xsd:annotation>
-							<xsd:documentation>Angle between edges in length and height direction (default: 90deg) [deg]</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-					<xsd:element name="gamma" minOccurs="0" type="doubleBaseType">
-						<xsd:annotation>
-							<xsd:documentation>Angle between edges in length and width direction (default: 90deg) [deg]</xsd:documentation>
-						</xsd:annotation>
-					</xsd:element>
-                </xsd:all>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
 	
 	<xsd:complexType name="sphereType">
         <xsd:annotation>
@@ -36924,7 +36868,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:annotation>
          <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:sequence>
+                <xsd:all>
                     <xsd:element name="lengthX" type="doubleBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Length x-direction [m]</xsd:documentation>
@@ -36960,7 +36904,8 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>...</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                </xsd:sequence>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
+                </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -36993,6 +36938,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Height [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
@@ -37036,6 +36982,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Height [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
@@ -37079,6 +37026,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>	Angle between the radii lying within the bounding semidisks [rad]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>

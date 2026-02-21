@@ -41,6 +41,30 @@ CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSMultiSegmentShape* parent
 {
 }
 
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSCuboid* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSCylinder* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSCone* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSEllipsoid* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
 void CCPACSTransformationSE3::reset()
 {
     if (m_rotation) {

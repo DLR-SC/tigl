@@ -21,6 +21,7 @@
 #include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -28,8 +29,9 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCylinder::CPACSCylinder(CPACSElementGeometry* parent)
-        : m_radius(0)
+    CPACSCylinder::CPACSCylinder(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_radius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
@@ -37,8 +39,9 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSCylinder::CPACSCylinder(CPACSSubElement* parent)
-        : m_radius(0)
+    CPACSCylinder::CPACSCylinder(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_radius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
@@ -76,6 +79,22 @@ namespace generated
         return nullptr;
     }
 
+    CTiglUIDManager& CPACSCylinder::GetUIDManager()
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSCylinder::GetUIDManager() const
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
+    }
+
     void CPACSCylinder::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element radius
@@ -94,6 +113,17 @@ namespace generated
             LOG(ERROR) << "Required element height is missing at xpath " << xpath;
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
+        }
+
     }
 
     void CPACSCylinder::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -105,6 +135,17 @@ namespace generated
         // write element height
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/height");
         tixi::TixiSaveElement(tixiHandle, xpath + "/height", m_height);
+
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
+            }
+        }
 
     }
 
@@ -126,6 +167,28 @@ namespace generated
     void CPACSCylinder::SetHeight(const double& value)
     {
         m_height = value;
+    }
+
+    const boost::optional<CCPACSTransformationSE3>& CPACSCylinder::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    boost::optional<CCPACSTransformationSE3>& CPACSCylinder::GetTransformation()
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformationSE3& CPACSCylinder::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSCylinder::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated

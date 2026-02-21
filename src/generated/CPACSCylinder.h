@@ -17,14 +17,19 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
+#include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
+class CTiglUIDManager;
 class CTiglUIDObject;
 
 namespace generated
@@ -43,8 +48,8 @@ namespace generated
     class CPACSCylinder
     {
     public:
-        TIGL_EXPORT CPACSCylinder(CPACSElementGeometry* parent);
-        TIGL_EXPORT CPACSCylinder(CPACSSubElement* parent);
+        TIGL_EXPORT CPACSCylinder(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCylinder(CPACSSubElement* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSCylinder();
 
@@ -77,6 +82,9 @@ namespace generated
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
 
+        TIGL_EXPORT CTiglUIDManager& GetUIDManager();
+        TIGL_EXPORT const CTiglUIDManager& GetUIDManager() const;
+
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
@@ -86,15 +94,25 @@ namespace generated
         TIGL_EXPORT virtual const double& GetHeight() const;
         TIGL_EXPORT virtual void SetHeight(const double& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformationSE3>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformationSE3>& GetTransformation();
+
+        TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
+
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
+        CTiglUIDManager* m_uidMgr;
+
         /// Radius [m]
-        double m_radius;
+        double                                   m_radius;
 
         /// Height [m]
-        double m_height;
+        double                                   m_height;
+
+        boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:
         CPACSCylinder(const CPACSCylinder&) = delete;

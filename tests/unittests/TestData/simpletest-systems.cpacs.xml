@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+    xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
     <header>
         <name>Fuel tanks test</name>
         <description>Simple fuel tank for unit testing</description>
@@ -237,7 +237,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="cone_3">
+                                <component uID="cone_3">
                                     <name>Installed cone 3</name>
                                     <systemElementUID>predCone_3</systemElementUID>
                                     <transformation>
@@ -312,12 +312,12 @@
                                             <y>5</y>
                                             <z>0</z>
                                         </translation>
-										<rotation>
-											<z>-90</z>
-										</rotation>
+                                        <rotation>
+                                            <z>-90</z>
+                                        </rotation>
                                     </transformation>
                                 </component>
-								<component uID="combinedComponent">
+                                <component uID="combinedComponent">
                                     <name>Component containing subelements</name>
                                     <systemElementUID>predCombinedComponent</systemElementUID>
                                     <transformation>
@@ -326,12 +326,12 @@
                                             <y>10</y>
                                             <z>0</z>
                                         </translation>
-										<rotation>
-											<z>90</z>
-										</rotation>
+                                        <rotation>
+                                            <z>90</z>
+                                        </rotation>
                                     </transformation>
                                 </component>
-								<component uID="multiSegmentComponent">
+                                <component uID="multiSegmentComponent">
                                     <name>Multi-segment component</name>
                                     <systemElementUID>predMultiSegmentComponent</systemElementUID>
                                     <transformation>
@@ -356,7 +356,7 @@
                                         </rotation>
                                     </transformation>
                                 </component>
-								<component uID="unpositionedCuboid">
+                                <component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>
                                 </component>
@@ -377,19 +377,19 @@
                             <heightZ>1.</heightZ>
                         </cuboid>
                     </geometry>
-					<mass>
-						<mass>0.1234</mass>
-						<location>
-							<x>0.3</x>
-							<y>0.25</y>
-							<z>0.4</z>
-						</location>
-						<massInertia>
-							<Jxx>1</Jxx>
-							<Jyy>2</Jyy>
-							<Jzz>3</Jzz>
-						</massInertia>
-					</mass>
+                    <mass>
+                        <mass>0.1234</mass>
+                        <location>
+                            <x>0.3</x>
+                            <y>0.25</y>
+                            <z>0.4</z>
+                        </location>
+                        <massInertia>
+                            <Jxx>1</Jxx>
+                            <Jyy>2</Jyy>
+                            <Jzz>3</Jzz>
+                        </massInertia>
+                    </mass>
                 </genericComponent>
                 <genericComponent uID="predCuboid_2">
                     <name>Predefined cuboid 2</name>
@@ -400,9 +400,9 @@
                             <heightZ>0.5</heightZ>
                         </cuboid>
                     </geometry>
-					<mass>
-						<density>0.5</density>
-					</mass>
+                    <mass>
+                        <density>0.5</density>
+                    </mass>
                 </genericComponent>
                 <genericComponent uID="predWedge_1">
                     <name>Predefined wedge 1</name>
@@ -489,7 +489,7 @@
                         </cone>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="predCone_3">
+                <genericComponent uID="predCone_3">
                     <name>Predefined cone 3</name>
                     <geometry>
                         <cone>
@@ -534,11 +534,11 @@
                         </ellipsoid>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="predExternal">
+                <genericComponent uID="predExternal">
                     <name>Predefined external element</name>
                     <geometry>
                         <external>
-							<linkToFile format="Step">nacelle.stp</linkToFile>
+                            <linkToFile format="Step">nacelle.stp</linkToFile>
                             <transformation>
                                 <scaling>
                                     <x>1.1</x>
@@ -551,34 +551,34 @@
                             </transformation>
                         </external>
                     </geometry>
-					<mass>
-						<density>0.1</density>
-					</mass>
+                    <mass>
+                        <density>0.1</density>
+                    </mass>
                 </genericComponent>
-				<genericComponent uID="predMultiSegmentComponent">
+                <genericComponent uID="predMultiSegmentComponent">
                     <name>Predefined multi-segment component</name>
                     <geometry>
-						<multiSegmentShape>
+                        <multiSegmentShape>
                             <transformation>
                                 <translation>
                                     <x>1</x>
                                 </translation>
                             </transformation>
-							<sections>
-								<section uID="predMultiSegmentComponent_section1">
-									<name>Fuselage Section 1</name>
-									<transformation />
-									<elements>
-										<element uID="predMultiSegmentComponent_section1_element1">
-											<name>Fuselage Section 1</name>
-											<profileUID>fuselageCircleProfile</profileUID>
-											<transformation />
-										</element>
-									</elements>
-								</section>
-								<section uID="predMultiSegmentComponent_section2">
-									<name>Fuselage Section 2</name>
-									<transformation>
+                            <sections>
+                                <section uID="predMultiSegmentComponent_section1">
+                                    <name>Fuselage Section 1</name>
+                                    <transformation />
+                                    <elements>
+                                        <element uID="predMultiSegmentComponent_section1_element1">
+                                            <name>Fuselage Section 1</name>
+                                            <profileUID>fuselageCircleProfile</profileUID>
+                                            <transformation />
+                                        </element>
+                                    </elements>
+                                </section>
+                                <section uID="predMultiSegmentComponent_section2">
+                                    <name>Fuselage Section 2</name>
+                                    <transformation>
                                         <translation>
                                             <x>1</x>
                                             <y>0</y>
@@ -590,149 +590,149 @@
                                             <z>1</z>
                                         </scaling>
                                     </transformation>
-									<elements>
-										<element uID="predMultiSegmentComponent_section2_element1">
-											<name>Fuselage Section 2</name>
-											<profileUID>fuselageCircleProfile</profileUID>
-											<transformation />
-										</element>
-									</elements>
-								</section>
-							</sections>
-							<segments>
-								<segment uID="predMultiSegmentComponent_segment">
-									<name>Segment</name>
-									<fromElementUID>predMultiSegmentComponent_section1_element1</fromElementUID>
-									<toElementUID>predMultiSegmentComponent_section2_element1</toElementUID>
-								</segment>
-							</segments>
-						</multiSegmentShape> 
+                                    <elements>
+                                        <element uID="predMultiSegmentComponent_section2_element1">
+                                            <name>Fuselage Section 2</name>
+                                            <profileUID>fuselageCircleProfile</profileUID>
+                                            <transformation />
+                                        </element>
+                                    </elements>
+                                </section>
+                            </sections>
+                            <segments>
+                                <segment uID="predMultiSegmentComponent_segment">
+                                    <name>Segment</name>
+                                    <fromElementUID>predMultiSegmentComponent_section1_element1</fromElementUID>
+                                    <toElementUID>predMultiSegmentComponent_section2_element1</toElementUID>
+                                </segment>
+                            </segments>
+                        </multiSegmentShape>
                     </geometry>
-					<mass>
-						<density>0.1</density>
-					</mass>
+                    <mass>
+                        <density>0.1</density>
+                    </mass>
                 </genericComponent>
-				<genericComponent uID="predCombinedComponent">
+                <genericComponent uID="predCombinedComponent">
                     <name>Predefined element with subelements</name>
                     <geometry>
                         <ellipsoid>
                             <radiusX>0.25</radiusX>
                             <radiusY>1</radiusY>
                             <radiusZ>0.25</radiusZ>
-							<diskAngle>3.14159265359</diskAngle>
+                            <diskAngle>3.14159265359</diskAngle>
                         </ellipsoid>
-						<subElements>
-							<subElement>
-								<cylinder>
-									<radius>0.25</radius>
-									<height>4.</height>
-								</cylinder>
-								<transformation>
-									<rotation>
-										<x>90</x>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cone>
-									<lowerRadius>0.1</lowerRadius>
-									<upperRadius>0.2</upperRadius>
-									<height>0.25</height>
-								</cone>
-								<transformation>
-									<translation>
-										<y>-4</y>
-									</translation>
-									<rotation>
-										<x>90</x>
-										<z>90</z>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<y>-3.5</y>
-										<z>0.25</z>
-									</translation>
-									<rotation>
-										<z>-90</z>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<x>-0.25</x>
-										<y>-3.5</y>
-									</translation>
-									<rotation>
-										<x>90</x>
-										<y>-90</y>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<y>-3.5</y>
-										<z>-0.25</z>
-									</translation>
-									<rotation>
-										<x>180</x>
-										<z>90</z>
-									</rotation>
-								</transformation>
-							</subElement>
-							<subElement>
-								<cuboid>
-									<lengthX>0.5</lengthX>
-									<depthY>0.05</depthY>
-									<heightZ>0.3</heightZ>
-									<upperFaceXmin>0.2</upperFaceXmin>
-									<upperFaceXmax>0.6</upperFaceXmax>
-									<upperFaceYmin>0.015</upperFaceYmin>
-									<upperFaceYmax>0.035</upperFaceYmax>
-								</cuboid>
-								<transformation>
-									<translation>
-										<x>0.25</x>
-										<y>-3.5</y>
-									</translation>
-									<rotation>
-										<x>270</x>
-										<y>90</y>
-									</rotation>
-								</transformation>
-							</subElement>
-						</subElements>
+                        <subElements>
+                            <subElement>
+                                <cylinder>
+                                    <radius>0.25</radius>
+                                    <height>4.</height>
+                                    <transformation>
+                                        <rotation>
+                                            <x>90</x>
+                                        </rotation>
+                                    </transformation>
+                                </cylinder>
+                            </subElement>
+                            <subElement>
+                                <cone>
+                                    <lowerRadius>0.1</lowerRadius>
+                                    <upperRadius>0.2</upperRadius>
+                                    <height>0.25</height>
+                                    <transformation>
+                                        <translation>
+                                            <y>-4</y>
+                                        </translation>
+                                        <rotation>
+                                            <x>90</x>
+                                            <z>90</z>
+                                        </rotation>
+                                    </transformation>
+                                </cone>
+                            </subElement>
+                            <subElement>
+                                <cuboid>
+                                    <lengthX>0.5</lengthX>
+                                    <depthY>0.05</depthY>
+                                    <heightZ>0.3</heightZ>
+                                    <upperFaceXmin>0.2</upperFaceXmin>
+                                    <upperFaceXmax>0.6</upperFaceXmax>
+                                    <upperFaceYmin>0.015</upperFaceYmin>
+                                    <upperFaceYmax>0.035</upperFaceYmax>
+                                    <transformation>
+                                        <translation>
+                                            <y>-3.5</y>
+                                            <z>0.25</z>
+                                        </translation>
+                                        <rotation>
+                                            <z>-90</z>
+                                        </rotation>
+                                    </transformation>
+                                </cuboid>
+                            </subElement>
+                            <subElement>
+                                <cuboid>
+                                    <lengthX>0.5</lengthX>
+                                    <depthY>0.05</depthY>
+                                    <heightZ>0.3</heightZ>
+                                    <upperFaceXmin>0.2</upperFaceXmin>
+                                    <upperFaceXmax>0.6</upperFaceXmax>
+                                    <upperFaceYmin>0.015</upperFaceYmin>
+                                    <upperFaceYmax>0.035</upperFaceYmax>
+                                    <transformation>
+                                        <translation>
+                                            <x>-0.25</x>
+                                            <y>-3.5</y>
+                                        </translation>
+                                        <rotation>
+                                            <x>90</x>
+                                            <y>-90</y>
+                                        </rotation>
+                                    </transformation>
+                                </cuboid>
+                            </subElement>
+                            <subElement>
+                                <cuboid>
+                                    <lengthX>0.5</lengthX>
+                                    <depthY>0.05</depthY>
+                                    <heightZ>0.3</heightZ>
+                                    <upperFaceXmin>0.2</upperFaceXmin>
+                                    <upperFaceXmax>0.6</upperFaceXmax>
+                                    <upperFaceYmin>0.015</upperFaceYmin>
+                                    <upperFaceYmax>0.035</upperFaceYmax>
+                                    <transformation>
+                                        <translation>
+                                            <y>-3.5</y>
+                                            <z>-0.25</z>
+                                        </translation>
+                                        <rotation>
+                                            <x>180</x>
+                                            <z>90</z>
+                                        </rotation>
+                                    </transformation>
+                                </cuboid>
+                            </subElement>
+                            <subElement>
+                                <cuboid>
+                                    <lengthX>0.5</lengthX>
+                                    <depthY>0.05</depthY>
+                                    <heightZ>0.3</heightZ>
+                                    <upperFaceXmin>0.2</upperFaceXmin>
+                                    <upperFaceXmax>0.6</upperFaceXmax>
+                                    <upperFaceYmin>0.015</upperFaceYmin>
+                                    <upperFaceYmax>0.035</upperFaceYmax>
+                                    <transformation>
+                                        <translation>
+                                            <x>0.25</x>
+                                            <y>-3.5</y>
+                                        </translation>
+                                        <rotation>
+                                            <x>270</x>
+                                            <y>90</y>
+                                        </rotation>
+                                    </transformation>
+                                </cuboid>
+                            </subElement>
+                        </subElements>
                     </geometry>
                 </genericComponent>
             </genericComponents>
@@ -746,9 +746,9 @@
                             <radiusZ>0.5</radiusZ>
                         </ellipsoid>
                     </geometry>
-					<mass>
-						<mass>0.123</mass>
-					</mass>
+                    <mass>
+                        <mass>0.123</mass>
+                    </mass>
                 </electricMotor>
             </electricMotors>
         </systemElements>

@@ -142,10 +142,17 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
     rot.SetRotation(xAxis, M_PI / 2.0);
     trl.SetTranslation(gp_Vec(0, depthY, 0));
 
-    gp_Trsf comb = trl * rot;
-    BRepBuilderAPI_Transform transformer(wedge, comb, /*copy=*/true);
+    gp_Trsf comb       = trl * rot;
+    TopoDS_Shape shape = BRepBuilderAPI_Transform(wedge, comb, /*copy=*/true).Shape();
 
-    return transformer.Shape();
+    // apply SE3 transformation if present
+    const auto& optTr = c.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder& c)
@@ -160,11 +167,16 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape cylinder;
+    TopoDS_Shape shape = BRepPrimAPI_MakeCylinder(radius, height).Shape();
 
-    cylinder = BRepPrimAPI_MakeCylinder(radius, height).Shape();
+    // apply transformation if present
+    const auto& optTr = c.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
 
-    return cylinder;
+    return shape;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
@@ -180,20 +192,27 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape cylinder;
+    TopoDS_Shape shape;
 
     if (std::abs(lowerRadius - upperRadius) < 1e-8) {
-        cylinder = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
+        shape    = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
         auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
         LOG(WARNING) << "Element with uID=\"" << uID
                      << "\" defines a cylinder via the cone definition! It is strongly recommended to use the cylinder "
                         "definition instead.";
     }
     else {
-        cylinder = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
+        shape = BRepPrimAPI_MakeCone(lowerRadius, upperRadius, height).Shape();
     }
 
-    return cylinder;
+    // apply transformation if present (robust against dangling-pointer bug)
+    const auto& optTr = c.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
@@ -217,7 +236,16 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
     gp_GTrsf gtrsf(M, gp_XYZ(0.0, 0.0, 0.0));
     BRepBuilderAPI_GTransform transformer(sphere, gtrsf, true);
 
-    return transformer.Shape();
+    TopoDS_Shape shape = transformer.Shape();
+
+    // apply transformation if present
+    const auto& optTr = e.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)

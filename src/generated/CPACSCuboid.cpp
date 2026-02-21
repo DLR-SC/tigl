@@ -21,6 +21,7 @@
 #include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CTiglUIDManager.h"
 #include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
@@ -28,8 +29,9 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCuboid::CPACSCuboid(CPACSElementGeometry* parent)
-        : m_lengthX(0)
+    CPACSCuboid::CPACSCuboid(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_lengthX(0)
         , m_depthY(0)
         , m_heightZ(0)
     {
@@ -38,8 +40,9 @@ namespace generated
         m_parentType = &typeid(CPACSElementGeometry);
     }
 
-    CPACSCuboid::CPACSCuboid(CPACSSubElement* parent)
-        : m_lengthX(0)
+    CPACSCuboid::CPACSCuboid(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_lengthX(0)
         , m_depthY(0)
         , m_heightZ(0)
     {
@@ -76,6 +79,22 @@ namespace generated
             }
         }
         return nullptr;
+    }
+
+    CTiglUIDManager& CPACSCuboid::GetUIDManager()
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
+    }
+
+    const CTiglUIDManager& CPACSCuboid::GetUIDManager() const
+    {
+        if (!m_uidMgr) {
+            throw CTiglError("UIDManager is null");
+        }
+        return *m_uidMgr;
     }
 
     void CPACSCuboid::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
@@ -124,27 +143,36 @@ namespace generated
             m_upperFaceYmax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmax");
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
+        }
+
     }
 
     void CPACSCuboid::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "lengthX", "depthY", "heightZ", "upperFaceXmin", "upperFaceXmax", "upperFaceYmin", "upperFaceYmax" };
-
         // write element lengthX
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/lengthX", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/lengthX");
         tixi::TixiSaveElement(tixiHandle, xpath + "/lengthX", m_lengthX);
 
         // write element depthY
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/depthY", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/depthY");
         tixi::TixiSaveElement(tixiHandle, xpath + "/depthY", m_depthY);
 
         // write element heightZ
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/heightZ", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/heightZ");
         tixi::TixiSaveElement(tixiHandle, xpath + "/heightZ", m_heightZ);
 
         // write element upperFaceXmin
         if (m_upperFaceXmin) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceXmin", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperFaceXmin");
             tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmin", *m_upperFaceXmin);
         }
         else {
@@ -155,7 +183,7 @@ namespace generated
 
         // write element upperFaceXmax
         if (m_upperFaceXmax) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceXmax", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperFaceXmax");
             tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceXmax", *m_upperFaceXmax);
         }
         else {
@@ -166,7 +194,7 @@ namespace generated
 
         // write element upperFaceYmin
         if (m_upperFaceYmin) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceYmin", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperFaceYmin");
             tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmin", *m_upperFaceYmin);
         }
         else {
@@ -177,12 +205,23 @@ namespace generated
 
         // write element upperFaceYmax
         if (m_upperFaceYmax) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/upperFaceYmax", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/upperFaceYmax");
             tixi::TixiSaveElement(tixiHandle, xpath + "/upperFaceYmax", *m_upperFaceYmax);
         }
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmax")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/upperFaceYmax");
+            }
+        }
+
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
             }
         }
 
@@ -256,6 +295,28 @@ namespace generated
     void CPACSCuboid::SetUpperFaceYmax(const boost::optional<double>& value)
     {
         m_upperFaceYmax = value;
+    }
+
+    const boost::optional<CCPACSTransformationSE3>& CPACSCuboid::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    boost::optional<CCPACSTransformationSE3>& CPACSCuboid::GetTransformation()
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformationSE3& CPACSCuboid::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSCuboid::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated
