@@ -22,7 +22,6 @@
 #include "CPACSCylinder.h"
 #include "CPACSEllipsoid.h"
 #include "CPACSMultiSegmentShape.h"
-#include "CPACSSubElement.h"
 #include "CPACSTransformationSE3.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -81,14 +80,6 @@ namespace generated
         m_parentType = &typeid(CPACSMultiSegmentShape);
     }
 
-    CPACSTransformationSE3::CPACSTransformationSE3(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSubElement);
-    }
-
     CPACSTransformationSE3::~CPACSTransformationSE3()
     {
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
@@ -115,9 +106,6 @@ namespace generated
             if (IsParent<CPACSMultiSegmentShape>()) {
                 return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
         }
         return nullptr;
     }
@@ -142,9 +130,6 @@ namespace generated
             }
             if (IsParent<CPACSMultiSegmentShape>()) {
                 return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
         }
         return nullptr;

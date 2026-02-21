@@ -37206,17 +37206,14 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-					<xsd:choice>
-						<xsd:element name="cuboid" type="cuboidType"/>
-						<xsd:element name="cylinder" type="cylinderType"/>
-						<xsd:element name="cone" type="coneType"/>
-						<xsd:element name="ellipsoid" type="ellipsoidType"/>
-						<xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
-						<xsd:element name="external" type="externalGeometryType"/>
-					</xsd:choice>
-					<xsd:element name="transformation" type="transformationSE3Type"/>
-                </xsd:sequence>
+                <xsd:choice>
+                    <xsd:element name="cuboid" type="cuboidType"/>
+                    <xsd:element name="cylinder" type="cylinderType"/>
+                    <xsd:element name="cone" type="coneType"/>
+                    <xsd:element name="ellipsoid" type="ellipsoidType"/>
+                    <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
+                    <xsd:element name="external" type="externalGeometryType"/>
+                </xsd:choice>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

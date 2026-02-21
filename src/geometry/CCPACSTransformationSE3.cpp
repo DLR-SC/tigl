@@ -29,12 +29,6 @@ CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSComponent* parent, CTiglU
 {
 }
 
-CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSSubElement* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformationSE3(parent, uidMgr)
-    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
-{
-}
-
 CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformationSE3(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)

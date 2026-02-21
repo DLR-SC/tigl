@@ -94,12 +94,7 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
         for (size_t i = 0; i < elementList.size(); ++i) {
             const auto& element = *elementList[i];
 
-            TopoDS_Shape elementShape = BuildSingleShape(element);
-
-            // Transformation w.r.t. base shape
-            const CTiglTransformation elementTr = element.GetTransformation().getTransformationMatrix();
-            elementShape                        = elementTr.Transform(elementShape);
-
+            TopoDS_Shape elementShape     = BuildSingleShape(element);
             const std::string elementName = baseName + "_subElement_" + std::to_string(i + 1);
 
             shapes.push_back(PNamedShape(new CNamedShape(elementShape, elementName)));

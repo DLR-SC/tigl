@@ -30,7 +30,6 @@ namespace generated
 {
     CPACSSubElement::CPACSSubElement(CPACSSubElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -150,14 +149,6 @@ namespace generated
             }
         }
 
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
-        }
-
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -165,11 +156,9 @@ namespace generated
 
     void CPACSSubElement::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "multiSegmentShape", "external", "transformation" };
-
         // write element cuboid
         if (m_cuboid_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cuboid", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cuboid");
             m_cuboid_choice1->WriteCPACS(tixiHandle, xpath + "/cuboid");
         }
         else {
@@ -180,7 +169,7 @@ namespace generated
 
         // write element cylinder
         if (m_cylinder_choice2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cylinder", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cylinder");
             m_cylinder_choice2->WriteCPACS(tixiHandle, xpath + "/cylinder");
         }
         else {
@@ -191,7 +180,7 @@ namespace generated
 
         // write element cone
         if (m_cone_choice3) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/cone", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cone");
             m_cone_choice3->WriteCPACS(tixiHandle, xpath + "/cone");
         }
         else {
@@ -202,7 +191,7 @@ namespace generated
 
         // write element ellipsoid
         if (m_ellipsoid_choice4) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/ellipsoid", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ellipsoid");
             m_ellipsoid_choice4->WriteCPACS(tixiHandle, xpath + "/ellipsoid");
         }
         else {
@@ -213,7 +202,7 @@ namespace generated
 
         // write element multiSegmentShape
         if (m_multiSegmentShape_choice5) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/multiSegmentShape", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/multiSegmentShape");
             m_multiSegmentShape_choice5->WriteCPACS(tixiHandle, xpath + "/multiSegmentShape");
         }
         else {
@@ -224,7 +213,7 @@ namespace generated
 
         // write element external
         if (m_external_choice6) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/external", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/external");
             m_external_choice6->WriteCPACS(tixiHandle, xpath + "/external");
         }
         else {
@@ -232,10 +221,6 @@ namespace generated
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/external");
             }
         }
-
-        // write element transformation
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
     }
 
@@ -415,16 +400,6 @@ namespace generated
     boost::optional<CPACSExternalGeometry>& CPACSSubElement::GetExternal_choice6()
     {
         return m_external_choice6;
-    }
-
-    const CCPACSTransformationSE3& CPACSSubElement::GetTransformation() const
-    {
-        return m_transformation;
-    }
-
-    CCPACSTransformationSE3& CPACSSubElement::GetTransformation()
-    {
-        return m_transformation;
     }
 
     CPACSCuboid& CPACSSubElement::GetCuboid_choice1(CreateIfNotExistsTag)

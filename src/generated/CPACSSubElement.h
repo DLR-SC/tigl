@@ -19,7 +19,6 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSCone.h"
@@ -86,9 +85,6 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSExternalGeometry>& GetExternal_choice6() const;
         TIGL_EXPORT virtual boost::optional<CPACSExternalGeometry>& GetExternal_choice6();
 
-        TIGL_EXPORT virtual const CCPACSTransformationSE3& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation();
-
         TIGL_EXPORT virtual CPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCuboid_choice1();
 
@@ -118,7 +114,6 @@ namespace generated
         boost::optional<CPACSEllipsoid>         m_ellipsoid_choice4;
         boost::optional<CPACSMultiSegmentShape> m_multiSegmentShape_choice5;
         boost::optional<CPACSExternalGeometry>  m_external_choice6;
-        CCPACSTransformationSE3                 m_transformation;
 
     private:
         CPACSSubElement(const CPACSSubElement&) = delete;
