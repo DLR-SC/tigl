@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
@@ -138,6 +139,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSSubElements>& GetSubElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSSubElements>& GetSubElements();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
+
         TIGL_EXPORT virtual CPACSCuboid& GetCuboid_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCuboid_choice1();
 
@@ -159,6 +163,9 @@ namespace generated
         TIGL_EXPORT virtual CPACSSubElements& GetSubElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSubElements();
 
+        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
+
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
@@ -173,6 +180,7 @@ namespace generated
         boost::optional<CPACSMultiSegmentShape> m_multiSegmentShape_choice5;
         boost::optional<CPACSExternalGeometry>  m_external_choice6;
         boost::optional<CPACSSubElements>       m_subElements;
+        boost::optional<CCPACSTransformation>   m_transformation;
 
     private:
         CPACSElementGeometry(const CPACSElementGeometry&) = delete;

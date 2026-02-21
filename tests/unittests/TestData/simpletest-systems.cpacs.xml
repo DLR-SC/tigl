@@ -326,9 +326,6 @@
                                             <y>10</y>
                                             <z>0</z>
                                         </translation>
-                                        <rotation>
-                                            <z>90</z>
-                                        </rotation>
                                     </transformation>
                                 </component>
                                 <component uID="multiSegmentComponent">
@@ -733,6 +730,16 @@
                                 </cuboid>
                             </subElement>
                         </subElements>
+                        <transformation>
+                            <rotation>
+                                <z>90</z>
+                            </rotation>
+                            <scaling>
+                                <x>0.8</x>
+                                <y>0.8</y>
+                                <z>0.8</z>
+                            </scaling>
+                        </transformation>
                     </geometry>
                 </genericComponent>
             </genericComponents>

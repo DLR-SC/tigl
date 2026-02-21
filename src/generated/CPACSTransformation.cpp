@@ -32,6 +32,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSectionElement.h"
+#include "CPACSElementGeometry.h"
 #include "CPACSExternalGeometry.h"
 #include "CPACSGenericGeometryComponent.h"
 #include "CPACSLandingGearBase.h"
@@ -59,6 +60,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSDuctAssembly);
+    }
+
+    CPACSTransformation::CPACSTransformation(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSElementGeometry);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr)
@@ -211,6 +220,9 @@ namespace generated
             if (IsParent<CCPACSDuctAssembly>()) {
                 return GetParent<CCPACSDuctAssembly>();
             }
+            if (IsParent<CPACSElementGeometry>()) {
+                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();
             }
@@ -274,6 +286,9 @@ namespace generated
             }
             if (IsParent<CCPACSDuctAssembly>()) {
                 return GetParent<CCPACSDuctAssembly>();
+            }
+            if (IsParent<CPACSElementGeometry>()) {
+                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSEnginePosition>()) {
                 return GetParent<CCPACSEnginePosition>();

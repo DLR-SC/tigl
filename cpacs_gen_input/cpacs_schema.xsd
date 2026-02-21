@@ -36756,6 +36756,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="external" type="externalGeometryType"/>
                     </xsd:choice>
                     <xsd:element name="subElements" minOccurs="0" type="subElementsType"/>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
             	</xsd:sequence>
                 <xsd:attribute name="boundingShape" type="xsd:boolean"/>
             </xsd:extension>

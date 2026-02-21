@@ -102,7 +102,13 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     }
     PNamedShape groupedShape = CGroupShapes(shapes);
 
-    // Apply transformation if available
+    // apply transformation from geom
+    if (const auto& optTr = geom.GetTransformation(); optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        groupedShape->SetShape(tr.Transform(groupedShape->Shape()));
+    }
+
+    // apply transformation from referencing component
     if (m_transformation) {
         groupedShape = m_transformation->Transform(groupedShape);
     }

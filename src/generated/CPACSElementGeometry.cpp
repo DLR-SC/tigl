@@ -265,6 +265,17 @@ namespace generated
             }
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
+        }
+
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -272,7 +283,7 @@ namespace generated
 
     void CPACSElementGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "multiSegmentShape", "external", "subElements" };
+        const std::vector<std::string> childElemOrder = { "cuboid", "cylinder", "cone", "ellipsoid", "multiSegmentShape", "external", "subElements", "transformation" };
 
         // write attribute boundingShape
         if (m_boundingShape) {
@@ -358,6 +369,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/subElements")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/subElements");
+            }
+        }
+
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
             }
         }
 
@@ -561,6 +583,16 @@ namespace generated
         return m_subElements;
     }
 
+    const boost::optional<CCPACSTransformation>& CPACSElementGeometry::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    boost::optional<CCPACSTransformation>& CPACSElementGeometry::GetTransformation()
+    {
+        return m_transformation;
+    }
+
     CPACSCuboid& CPACSElementGeometry::GetCuboid_choice1(CreateIfNotExistsTag)
     {
         if (!m_cuboid_choice1)
@@ -643,6 +675,18 @@ namespace generated
     void CPACSElementGeometry::RemoveSubElements()
     {
         m_subElements = boost::none;
+    }
+
+    CCPACSTransformation& CPACSElementGeometry::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSElementGeometry::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated
