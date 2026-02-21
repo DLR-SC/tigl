@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include "CCPACSComponent.h"
+#include "CPACSMultiSegmentShape.h"
 #include "CPACSSubElement.h"
 #include "CPACSTransformationSE3.h"
 #include "CTiglError.h"
@@ -34,6 +35,14 @@ namespace generated
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSComponent);
+    }
+
+    CPACSTransformationSE3::CPACSTransformationSE3(CPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSMultiSegmentShape);
     }
 
     CPACSTransformationSE3::CPACSTransformationSE3(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
@@ -55,6 +64,9 @@ namespace generated
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
             }
+            if (IsParent<CPACSMultiSegmentShape>()) {
+                return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSSubElement>()) {
                 return GetParent<CPACSSubElement>()->GetNextUIDParent();
             }
@@ -67,6 +79,9 @@ namespace generated
         if (m_parent) {
             if (IsParent<CCPACSComponent>()) {
                 return GetParent<CCPACSComponent>();
+            }
+            if (IsParent<CPACSMultiSegmentShape>()) {
+                return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSubElement>()) {
                 return GetParent<CPACSSubElement>()->GetNextUIDParent();

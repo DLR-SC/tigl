@@ -113,6 +113,17 @@ namespace generated
             LOG(ERROR) << "Required element segments is missing at xpath " << xpath;
         }
 
+        // read element transformation
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+            m_transformation = boost::in_place(this, m_uidMgr);
+            try {
+                m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read transformation at xpath " << xpath << ": " << e.what();
+                m_transformation = boost::none;
+            }
+        }
+
     }
 
     void CPACSMultiSegmentShape::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -124,6 +135,17 @@ namespace generated
         // write element segments
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
         m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
+
+        // write element transformation
+        if (m_transformation) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
+            m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/transformation");
+            }
+        }
 
     }
 
@@ -145,6 +167,28 @@ namespace generated
     CCPACSFuselageSegments& CPACSMultiSegmentShape::GetSegments()
     {
         return m_segments;
+    }
+
+    const boost::optional<CCPACSTransformationSE3>& CPACSMultiSegmentShape::GetTransformation() const
+    {
+        return m_transformation;
+    }
+
+    boost::optional<CCPACSTransformationSE3>& CPACSMultiSegmentShape::GetTransformation()
+    {
+        return m_transformation;
+    }
+
+    CCPACSTransformationSE3& CPACSMultiSegmentShape::GetTransformation(CreateIfNotExistsTag)
+    {
+        if (!m_transformation)
+            m_transformation = boost::in_place(this, m_uidMgr);
+        return *m_transformation;
+    }
+
+    void CPACSMultiSegmentShape::RemoveTransformation()
+    {
+        m_transformation = boost::none;
     }
 
 } // namespace generated

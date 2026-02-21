@@ -36,10 +36,12 @@ class CCPACSComponent;
 
 namespace generated
 {
+    class CPACSMultiSegmentShape;
     class CPACSSubElement;
 
     // This class is used in:
     // CPACSComponent
+    // CPACSMultiSegmentShape
     // CPACSSubElement
 
     /// @brief Transformation
@@ -54,6 +56,7 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSTransformationSE3(CCPACSComponent* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformationSE3(CPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformationSE3(CPACSSubElement* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSTransformationSE3();
@@ -67,7 +70,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
+            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSMultiSegmentShape>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -77,7 +80,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
+            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSMultiSegmentShape>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -141,5 +144,6 @@ namespace generated
 // CPACSTransformationSE3 is customized, use type CCPACSTransformationSE3 directly
 
 // Aliases in tigl namespace
+using CCPACSMultiSegmentShape = generated::CPACSMultiSegmentShape;
 using CCPACSSubElement = generated::CPACSSubElement;
 } // namespace tigl

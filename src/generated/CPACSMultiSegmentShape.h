@@ -17,11 +17,15 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
+#include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
+#include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
 
@@ -91,14 +95,21 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSFuselageSegments& GetSegments() const;
         TIGL_EXPORT virtual CCPACSFuselageSegments& GetSegments();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformationSE3>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformationSE3>& GetTransformation();
+
+        TIGL_EXPORT virtual CCPACSTransformationSE3& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTransformation();
+
     protected:
         void* m_parent;
         const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
-        CCPACSFuselageSections m_sections;
-        CCPACSFuselageSegments m_segments;
+        CCPACSFuselageSections                   m_sections;
+        CCPACSFuselageSegments                   m_segments;
+        boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:
         CPACSMultiSegmentShape(const CPACSMultiSegmentShape&) = delete;

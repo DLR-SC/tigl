@@ -336,8 +336,8 @@
                                     <systemElementUID>predMultiSegmentComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>20</x>
-                                            <y>15</y>
+                                            <x>25</x>
+                                            <y>0</y>
                                             <z>0</z>
                                         </translation>
                                     </transformation>
@@ -347,8 +347,8 @@
                                     <systemElementUID>predMultiSegmentComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>20</x>
-                                            <y>20</y>
+                                            <x>25</x>
+                                            <y>5</y>
                                             <z>0</z>
                                         </translation>
                                         <rotation>
@@ -559,6 +559,11 @@
                     <name>Predefined multi-segment component</name>
                     <geometry>
 						<multiSegmentShape>
+                            <transformation>
+                                <translation>
+                                    <x>1</x>
+                                </translation>
+                            </transformation>
 							<sections>
 								<section uID="predMultiSegmentComponent_section1">
 									<name>Fuselage Section 1</name>

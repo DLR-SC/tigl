@@ -35,6 +35,12 @@ CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSSubElement* parent, CTigl
 {
 }
 
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
 void CCPACSTransformationSE3::reset()
 {
     if (m_rotation) {

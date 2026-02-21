@@ -252,7 +252,15 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMult
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
-    return lofter.Shape();
+    TopoDS_Shape shape = lofter.Shape();
+
+    // apply SE3 transformation if present
+    if (const auto& optTr = m.GetTransformation(); optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
 }
 
 TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)
