@@ -353,6 +353,17 @@
                                         </rotation>
                                     </transformation>
                                 </component>
+                                <component uID="multiSegmentComponent3">
+                                    <name>Multi-segment component 3</name>
+                                    <systemElementUID>predComplexMultiSegmentComponent</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>25</x>
+                                            <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                                 <component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>
@@ -563,18 +574,18 @@
                             </transformation>
                             <sections>
                                 <section uID="predMultiSegmentComponent_section1">
-                                    <name>Fuselage Section 1</name>
+                                    <name>Section 1</name>
                                     <transformation />
                                     <elements>
                                         <element uID="predMultiSegmentComponent_section1_element1">
-                                            <name>Fuselage Section 1</name>
+                                            <name>Element</name>
                                             <profileUID>fuselageCircleProfile</profileUID>
                                             <transformation />
                                         </element>
                                     </elements>
                                 </section>
                                 <section uID="predMultiSegmentComponent_section2">
-                                    <name>Fuselage Section 2</name>
+                                    <name>Section 2</name>
                                     <transformation>
                                         <translation>
                                             <x>1</x>
@@ -589,7 +600,7 @@
                                     </transformation>
                                     <elements>
                                         <element uID="predMultiSegmentComponent_section2_element1">
-                                            <name>Fuselage Section 2</name>
+                                            <name>Element</name>
                                             <profileUID>fuselageCircleProfile</profileUID>
                                             <transformation />
                                         </element>
@@ -607,6 +618,99 @@
                     </geometry>
                     <mass>
                         <density>0.1</density>
+                    </mass>
+                </genericComponent>
+                <genericComponent uID="predComplexMultiSegmentComponent">
+                    <name>Predefined complex multi-segment component</name>
+                    <geometry>
+                        <multiSegmentShape>
+                            <transformation>
+                                <translation>
+                                    <x>1</x>
+                                </translation>
+                            </transformation>
+                            <sections>
+                                <section uID="predComplexMultiSegmentComponent_section1">
+                                    <name>Section 1</name>
+                                    <transformation />
+                                    <elements>
+                                        <element uID="predComplexMultiSegmentComponent_section1_element1">
+                                            <name>Element</name>
+                                            <profileUID>fuselageSuperEllipse1</profileUID>
+                                            <transformation />
+                                        </element>
+                                    </elements>
+                                </section>
+                                <section uID="predComplexMultiSegmentComponent_section2">
+                                    <name>Section 2</name>
+                                    <transformation>
+                                        <translation>
+                                            <x>1</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                        <scaling>
+                                            <x>1</x>
+                                            <y>1</y>
+                                            <z>1</z>
+                                        </scaling>
+                                    </transformation>
+                                    <elements>
+                                        <element uID="predComplexMultiSegmentComponent_section2_element1">
+                                            <name>Element</name>
+                                            <profileUID>fuselageSuperEllipse2</profileUID>
+                                            <transformation />
+                                        </element>
+                                    </elements>
+                                </section>
+                                <section uID="predComplexMultiSegmentComponent_section3">
+                                    <name>Section 3</name>
+                                    <transformation>
+                                        <translation>
+                                            <x>2</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                        <scaling>
+                                            <x>1</x>
+                                            <y>1</y>
+                                            <z>1</z>
+                                        </scaling>
+                                    </transformation>
+                                    <elements>
+                                        <element uID="predComplexMultiSegmentComponent_section3_element1">
+                                            <name>Element</name>
+                                            <profileUID>fuselageSuperEllipse1</profileUID>
+                                            <transformation>
+                                                <translation>
+                                                    <z>0.5</z>
+                                                </translation>
+                                                <scaling>
+                                                    <x>0.2</x>
+                                                    <y>0.2</y>
+                                                    <z>0.2</z>
+                                                </scaling>
+                                            </transformation>
+                                        </element>
+                                    </elements>
+                                </section>
+                            </sections>
+                            <segments>
+                                <segment uID="predComplexMultiSegmentComponent_segment1">
+                                    <name>Segment</name>
+                                    <fromElementUID>predComplexMultiSegmentComponent_section1_element1</fromElementUID>
+                                    <toElementUID>predComplexMultiSegmentComponent_section2_element1</toElementUID>
+                                </segment>
+                                <segment uID="predComplexMultiSegmentComponent_segment2">
+                                    <name>Segment</name>
+                                    <fromElementUID>predComplexMultiSegmentComponent_section2_element1</fromElementUID>
+                                    <toElementUID>predComplexMultiSegmentComponent_section3_element1</toElementUID>
+                                </segment>
+                            </segments>
+                        </multiSegmentShape>
+                    </geometry>
+                    <mass>
+                        <mass>0.5</mass>
                     </mass>
                 </genericComponent>
                 <genericComponent uID="predCombinedComponent">
@@ -780,6 +884,30 @@
                         <y>0.0;1.0;0.0;-1.0;0.0</y>
                         <z>1.0;0.0;-1.0;0.0;1.0</z>
                     </pointList>
+                </fuselageProfile>
+                <fuselageProfile uID="fuselageSuperEllipse1">
+                    <name>Super ellipse</name>
+                    <standardProfile>
+                        <superEllipse>
+                            <lowerHeightFraction>0.3</lowerHeightFraction>
+                            <mLower>3</mLower>
+                            <nLower>3</nLower>
+                            <mUpper>0.5</mUpper>
+                            <nUpper>1.5</nUpper>
+                        </superEllipse>
+                    </standardProfile>
+                </fuselageProfile>
+                <fuselageProfile uID="fuselageSuperEllipse2">
+                    <name>Super ellipse</name>
+                    <standardProfile>
+                        <superEllipse>
+                            <lowerHeightFraction>0.7</lowerHeightFraction>
+                            <mLower>1</mLower>
+                            <nLower>1</nLower>
+                            <mUpper>1</mUpper>
+                            <nUpper>1</nUpper>
+                        </superEllipse>
+                    </standardProfile>
                 </fuselageProfile>
             </fuselageProfiles>
             <guideCurves>

@@ -105,15 +105,6 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
     }
 }
 
-TEST_F(Systems, MultiSegment)
-{
-    auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent");
-    PNamedShape shape        = multiSegment->GetLoft();
-    ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
-
-    const double mass = *multiSegment->GetMass();
-}
-
 TEST_F(Systems, Basics)
 {
     // defaulted UID check
@@ -149,16 +140,16 @@ TEST_F(Systems, SystemMass)
     const double mAll = genericSystem->GetMassAllComponents();
     const double mPos = genericSystem->GetMassPositionedComponents();
 
-    EXPECT_NEAR(mAll, 1.4908386, eps);
-    EXPECT_NEAR(mPos, 1.3674386, eps);
+    EXPECT_NEAR(mAll, 2.5995165, eps);
+    EXPECT_NEAR(mPos, 2.4761165, eps);
 
     // ---- Mass location ----
     const auto cog = genericSystem->GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
-    EXPECT_NEAR(cog->x, 8.968763, eps);
-    EXPECT_NEAR(cog->y, 5.8527, eps);
-    EXPECT_NEAR(cog->z, 2.15364, eps);
+    EXPECT_NEAR(cog->x, 24.6180626, eps);
+    EXPECT_NEAR(cog->y, 8.4998504, eps);
+    EXPECT_NEAR(cog->z, 4.2648416, eps);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -226,9 +217,34 @@ TEST_F(Systems, ComponentsGeometry)
         double xmin, ymin, zmin, xmax, ymax, zmax;
         box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-        EXPECT_NEAR(xmax - xmin, 5.25, eps);
-        EXPECT_NEAR(ymax - ymin, 1.1, eps);
-        EXPECT_NEAR(zmax - zmin, 1.1, eps);
+        EXPECT_NEAR(xmax - xmin, 4.2, eps);
+        EXPECT_NEAR(ymax - ymin, 0.88, eps);
+        EXPECT_NEAR(zmax - zmin, 0.88, eps);
+    }
+
+    // multiSegmentShape
+    {
+        auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent");
+        PNamedShape shape        = multiSegment->GetLoft();
+        ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
+
+        Bnd_Box box;
+        BRepBndLib::Add(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 1.0, eps);
+        EXPECT_NEAR(ymax - ymin, 2.25, eps);
+        EXPECT_NEAR(zmax - zmin, 2.125, eps);
+    }
+
+    // multiSegmentShape with 2 segments and super ellipses
+    {
+        auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent3");
+        PNamedShape shape        = multiSegment->GetLoft();
+        ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
+        EXPECT_EQ(shape->GetFaceCount(), 10u);
     }
 }
 
