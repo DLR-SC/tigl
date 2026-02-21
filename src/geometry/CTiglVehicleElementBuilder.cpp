@@ -50,7 +50,7 @@ CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CTiglRelativelyPosi
     : m_refComponent(&refComponent)
     , m_refConfig(&refConfig)
     , m_geometry(&geometry)
-    , m_transformation(&refComponent.GetTransformationMatrix())
+    , m_transformation(refComponent.GetTransformationMatrix())
     , m_shapeName(shapeName)
     , m_cpacsDocumentPath(cpacsDocumentPath)
 {

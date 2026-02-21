@@ -558,7 +558,7 @@
 				<genericComponent uID="predMultiSegmentComponent">
                     <name>Predefined multi-segment component</name>
                     <geometry>
-						<multiSegmentShape uID="predMultiSegmentComponent_geometry">
+						<multiSegmentShape>
 							<sections>
 								<section uID="predMultiSegmentComponent_section1">
 									<name>Fuselage Section 1</name>

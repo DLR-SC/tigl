@@ -22,6 +22,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
+#include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
 namespace tigl
@@ -50,7 +51,6 @@ namespace generated
 
     CPACSMultiSegmentShape::~CPACSMultiSegmentShape()
     {
-        if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
     const CTiglUIDObject* CPACSMultiSegmentShape::GetNextUIDParent() const
@@ -97,22 +97,6 @@ namespace generated
 
     void CPACSMultiSegmentShape::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read attribute uID
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID.empty()) {
-                LOG(WARNING) << "Required attribute uID is empty at xpath " << xpath;
-            }
-        }
-        else {
-            LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
-        }
-
-        // read attribute symmetry
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-            m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
-        }
-
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
             m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
@@ -129,24 +113,10 @@ namespace generated
             LOG(ERROR) << "Required element segments is missing at xpath " << xpath;
         }
 
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
     void CPACSMultiSegmentShape::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write attribute uID
-        tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-
-        // write attribute symmetry
-        if (m_symmetry) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
-            }
-        }
-
         // write element sections
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
         m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
@@ -155,34 +125,6 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/segments");
         m_segments.WriteCPACS(tixiHandle, xpath + "/segments");
 
-    }
-
-    const std::string& CPACSMultiSegmentShape::GetUID() const
-    {
-        return m_uID;
-    }
-
-    void CPACSMultiSegmentShape::SetUID(const std::string& value)
-    {
-        if (m_uidMgr && value != m_uID) {
-            if (m_uID.empty()) {
-                m_uidMgr->RegisterObject(value, *this);
-            }
-            else {
-                m_uidMgr->UpdateObjectUID(m_uID, value);
-            }
-        }
-        m_uID = value;
-    }
-
-    const boost::optional<TiglSymmetryAxis>& CPACSMultiSegmentShape::GetSymmetry() const
-    {
-        return m_symmetry;
-    }
-
-    void CPACSMultiSegmentShape::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
-    {
-        m_symmetry = value;
     }
 
     const CCPACSFuselageSections& CPACSMultiSegmentShape::GetSections() const

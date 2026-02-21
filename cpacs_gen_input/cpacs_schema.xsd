@@ -36781,8 +36781,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="sections" type="fuselageSectionsType"/>
                     <xsd:element name="segments" type="fuselageSegmentsType"/>
                 </xsd:all>
-                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
-                <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

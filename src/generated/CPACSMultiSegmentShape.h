@@ -17,21 +17,18 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSFuselageSections.h>
 #include <CCPACSFuselageSegments.h>
 #include <string>
-#include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
 #include "CTiglError.h"
-#include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
+class CTiglUIDObject;
 
 namespace generated
 {
@@ -45,7 +42,7 @@ namespace generated
     /// @brief ...
     /// 
     /// 
-    class CPACSMultiSegmentShape : public CTiglReqUIDObject
+    class CPACSMultiSegmentShape
     {
     public:
         TIGL_EXPORT CPACSMultiSegmentShape(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
@@ -88,12 +85,6 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const std::string& value);
-
-        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-
         TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
         TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
 
@@ -106,10 +97,8 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                       m_uID;
-        boost::optional<TiglSymmetryAxis> m_symmetry;
-        CCPACSFuselageSections            m_sections;
-        CCPACSFuselageSegments            m_segments;
+        CCPACSFuselageSections m_sections;
+        CCPACSFuselageSegments m_segments;
 
     private:
         CPACSMultiSegmentShape(const CPACSMultiSegmentShape&) = delete;

@@ -78,7 +78,7 @@ namespace generated
                 return GetParent<CCPACSFuselage>();
             }
             if (IsParent<CPACSMultiSegmentShape>()) {
-                return GetParent<CPACSMultiSegmentShape>();
+                return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSVessel>()) {
                 return GetParent<CCPACSVessel>();
@@ -97,7 +97,7 @@ namespace generated
                 return GetParent<CCPACSFuselage>();
             }
             if (IsParent<CPACSMultiSegmentShape>()) {
-                return GetParent<CPACSMultiSegmentShape>();
+                return GetParent<CPACSMultiSegmentShape>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSVessel>()) {
                 return GetParent<CCPACSVessel>();
