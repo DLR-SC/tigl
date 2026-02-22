@@ -635,18 +635,18 @@
                                 </translation>
                             </transformation>
                             <sections>
-                                <section uID="predComplexMultiSegmentComponent_section1">
+                                <section uID="predCMSC_section1">
                                     <name>Section 1</name>
                                     <transformation />
                                     <elements>
-                                        <element uID="predComplexMultiSegmentComponent_section1_element1">
+                                        <element uID="predCMSC_section1_element1">
                                             <name>Element</name>
                                             <profileUID>fuselageSuperEllipse1</profileUID>
                                             <transformation />
                                         </element>
                                     </elements>
                                 </section>
-                                <section uID="predComplexMultiSegmentComponent_section2">
+                                <section uID="predCMSC_section2">
                                     <name>Section 2</name>
                                     <transformation>
                                         <translation>
@@ -661,14 +661,14 @@
                                         </scaling>
                                     </transformation>
                                     <elements>
-                                        <element uID="predComplexMultiSegmentComponent_section2_element1">
+                                        <element uID="predCMSC_section2_element1">
                                             <name>Element</name>
                                             <profileUID>fuselageSuperEllipse2</profileUID>
                                             <transformation />
                                         </element>
                                     </elements>
                                 </section>
-                                <section uID="predComplexMultiSegmentComponent_section3">
+                                <section uID="predCMSC_section3">
                                     <name>Section 3</name>
                                     <transformation>
                                         <translation>
@@ -683,7 +683,7 @@
                                         </scaling>
                                     </transformation>
                                     <elements>
-                                        <element uID="predComplexMultiSegmentComponent_section3_element1">
+                                        <element uID="predCMSC_section3_element1">
                                             <name>Element</name>
                                             <profileUID>fuselageSuperEllipse1</profileUID>
                                             <transformation>
@@ -701,15 +701,15 @@
                                 </section>
                             </sections>
                             <segments>
-                                <segment uID="predComplexMultiSegmentComponent_segment1">
+                                <segment uID="predCMSC_segment1">
                                     <name>Segment</name>
-                                    <fromElementUID>predComplexMultiSegmentComponent_section1_element1</fromElementUID>
-                                    <toElementUID>predComplexMultiSegmentComponent_section2_element1</toElementUID>
+                                    <fromElementUID>predCMSC_section1_element1</fromElementUID>
+                                    <toElementUID>predCMSC_section2_element1</toElementUID>
                                 </segment>
-                                <segment uID="predComplexMultiSegmentComponent_segment2">
+                                <segment uID="predCMSC_segment2">
                                     <name>Segment</name>
-                                    <fromElementUID>predComplexMultiSegmentComponent_section2_element1</fromElementUID>
-                                    <toElementUID>predComplexMultiSegmentComponent_section3_element1</toElementUID>
+                                    <fromElementUID>predCMSC_section2_element1</fromElementUID>
+                                    <toElementUID>predCMSC_section3_element1</toElementUID>
                                 </segment>
                             </segments>
                         </multiSegmentShape>
