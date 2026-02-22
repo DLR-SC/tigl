@@ -520,6 +520,11 @@
                         <ellipsoid>
                             <radiusX>1.</radiusX>
                             <radiusY>0.5</radiusY>
+                            <transformation>
+                                <rotation>
+                                    <z>90</z>
+                                </rotation>
+                            </transformation>
                         </ellipsoid>
                     </geometry>
                 </genericComponent>

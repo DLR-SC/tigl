@@ -29,6 +29,7 @@
 
 #include "CNamedShape.h"
 #include "CCPACSGenericSystem.h"
+#include "generated/CPACSComponents.h"
 #include "CCPACSComponent.h"
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
@@ -405,6 +406,14 @@ TEST_F(InvalidSystems, VehicleElementBuilderExceptions)
 TEST_F(InvalidSystems, InvalidShapes)
 {
     {
+        const auto& system                = uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem");
+        const tigl::CCPACSComponent& comp = system.GetComponents().GetComponent(12);
+        const auto loft                   = comp.GetLoft();
+        ASSERT_TRUE(loft);
+        EXPECT_EQ(loft->Name(), "predCuboid_1");
+    }
+
+    {
         auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCuboid");
         CheckExceptionMessage(
             [&] { (void)invalidShape->GetLoft(); },
@@ -447,6 +456,11 @@ TEST_F(InvalidSystems, InvalidShapes)
         auto const* face = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroHeightComponent");
         CheckExceptionMessage([&] { (void)face->GetMass(); },
                               "Cannot compute mass properties of component with uid =\"predFace\" (zero volume).");
+    }
+
+    {
+        auto const* mss = &uidMgr.ResolveObject<tigl::CCPACSComponent>("mssWithoutSegments");
+        CheckExceptionMessage([&] { (void)mss->GetLoft(); }, "Cannot build multi-segment shape: no segments defined.");
     }
 }
 

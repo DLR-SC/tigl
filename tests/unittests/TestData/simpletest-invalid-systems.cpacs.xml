@@ -223,7 +223,15 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component> 
+                                </component>
+                                <component>
+                                    <name>Component with no uid</name>
+                                    <systemElementUID>predCuboid_1</systemElementUID>
+                                </component>
+                                <component uID="mssWithoutSegments">
+                                    <name>MSS without data</name>
+                                    <systemElementUID>predMssWithoutSegments</systemElementUID>
+                                </component>
                             </components>
                         </genericSystem>
 						<genericSystem uID="testSystem2">
@@ -385,6 +393,12 @@
 					<mass>
 						<mass>0.0</mass>
 					</mass>
+                </genericComponent>
+                <genericComponent uID="predMssWithoutSegments">
+                    <name>Predefined multi-segment shape without data</name>
+					<geometry>
+                        <multiSegmentShape/>
+                    </geometry>
                 </genericComponent>
             </genericComponents>
         </systemElements>
