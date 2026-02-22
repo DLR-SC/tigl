@@ -39,6 +39,8 @@
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSWingProfile.h"
 #include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
+#include "generated/CPACSMultiSegmentShape.h"
+#include "CCPACSFuselageSegments.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
@@ -141,7 +143,6 @@
 #include "generated/CPACSComponent.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
-#include "generated/CPACSMultiSegmentShape.h"
 %}
 
 %feature("autodoc", "3");
@@ -382,6 +383,9 @@ namespace tigl
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
+%include "generated/CPACSFuselageSegments.h"
+%include "CCPACSFuselageSegments.h"
+%include "generated/CPACSFuselageSections.h"
 %include "CCPACSFuselageSections.h"
 %include "generated/CPACSMultiSegmentShape.h"
 

@@ -57,7 +57,7 @@ class Systems(unittest.TestCase):
         # Access to CPACSComponents:
         components = genSys.get_components()
         self.assertIsNotNone(components)
-        self.assertEqual(components.get_component_count(), 20)
+        self.assertEqual(components.get_component_count(), 23)
 
         # Access to CCPACSComponent:
         component = components.get_component(1)
@@ -102,6 +102,11 @@ class Systems(unittest.TestCase):
         shape = external.get_loft()
         self.assertEqual(shape.get_face_count(), 6)
 
+        # Shape from multiSegmentShape
+        mss = self.uid_mgr.get_geometric_component("multiSegmentComponent3")
+        shape = mss.get_loft()
+        self.assertEqual(shape.get_face_count(), 10)
+
     def test_system_mass(self):
         eps = 1e-6
 
@@ -111,16 +116,16 @@ class Systems(unittest.TestCase):
         m_all = generic.get_mass_all_components()
         m_pos = generic.get_mass_positioned_components()
 
-        self.assertAlmostEqual(m_all, 1.4908386, delta=eps)
-        self.assertAlmostEqual(m_pos, 1.3674386, delta=eps)
+        self.assertAlmostEqual(m_all, 2.5995165, delta=eps)
+        self.assertAlmostEqual(m_pos, 2.4761165, delta=eps)
 
         # ---- Center of gravity ----
         cog = generic.get_center_of_gravity()
         self.assertIsNotNone(cog)
 
-        self.assertAlmostEqual(cog.x, 8.968763, delta=eps)
-        self.assertAlmostEqual(cog.y, 5.8527, delta=eps)
-        self.assertAlmostEqual(cog.z, 2.15364, delta=eps)
+        self.assertAlmostEqual(cog.x, 24.6180626, delta=eps)
+        self.assertAlmostEqual(cog.y, 8.4998504, delta=eps)
+        self.assertAlmostEqual(cog.z, 4.2648416, delta=eps)
 
     def test_component_mass(self):
 
