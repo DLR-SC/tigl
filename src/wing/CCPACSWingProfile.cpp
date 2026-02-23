@@ -27,10 +27,14 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglWingProfilePointList.h"
+#include "CTiglWingProfileNACA.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglWingProfileNACA.h"
 #include "ITiglWingProfileAlgo.h"
+#include "tigl.h"
+#include "tigl_internal.h"
+#include "Cache.h"
 
 
 #include "gp_Pnt2d.hxx"
@@ -59,6 +63,7 @@
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
 #include "CTiglUIDManager.h"
+#include "TopAbs_ShapeEnum.hxx"
 
 
 namespace tigl 
@@ -385,19 +390,10 @@ void CCPACSWingProfile::buildPointListAlgo(std::unique_ptr<CTiglWingProfilePoint
 
 void CCPACSWingProfile::buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const
 {
-    cache.reset(new CTiglWingProfileNACA(*this, *m_naca_choice4));
+    cache.reset(new CTiglWingProfileNACA(*this, *m_nacaProfile_choice4));
 }
 
-    
-    /*
-void CCPACSWingProfile::buildPointListAlgo(CTiglWingProfilePointList& cache) const {
-    cache.reset(new CTiglWingProfilePointList(*this, *m_pointList_choice1));
-}
 
-void CCPACSWingProfile::buildNACAAlgo(CTiglWingProfileNACA& cache) const {
-    cache.reset(new CTiglWingProfileNACA(*this, *m_naca_choice4));
-}
-*/
 ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()
 {
     if (m_pointList_choice1) {
@@ -405,7 +401,7 @@ ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo()
         return &**pointListAlgo;
     } else if (m_cst2D_choice2) {
         return &*m_cst2D_choice2;
-    } else if (m_naca_choice4) {
+    } else if (m_nacaProfile_choice4) {
         return &**NACAAlgo;
     }
      else {

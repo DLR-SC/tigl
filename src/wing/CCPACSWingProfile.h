@@ -36,8 +36,12 @@
 #include "CTiglWingProfilePointList.h"
 #include "Cache.h"
 #include "CTiglWingProfileNACA.h"
+#include "tigl.h"
+#include "tigl_internal.h"
+#include "Cache.h"
 
 #include <gp_Pnt.hxx>
+#include "TopAbs_ShapeEnum.hxx"
 
 #include <Geom2d_TrimmedCurve.hxx>
 
@@ -140,12 +144,6 @@ private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
     Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
     Cache<std::unique_ptr<CTiglWingProfileNACA>, CCPACSWingProfile> NACAAlgo; 
-    //Cache<std::unique_ptr<ITiglWingProfileAlgo>, CCPACSWingProfile> NACAAlgo; //hab ich so geändert, das es durchläuft, macht das sinn?? //wenn man das zurück änder au in der cpp zeile 380 ändern!
-    //Cache<CTiglWingProfilePointList, CCPACSWingProfile> pointListAlgo;
-    //Cache<CTiglWingProfileNACA, CCPACSWingProfile> NACAAlgo;
-
-
-
 }; // class CCPACSWingProfile
 
 } // end namespace tigl

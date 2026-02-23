@@ -14,21 +14,30 @@
 #include <vector>
 #include <TopoDS_Edge.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Geom_Line.hxx>
 
 
 namespace tigl
 {
 // Constructor
 
-CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const std::string& naca_code)
+CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
-    , calculator(naca_code)
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
-{}
+{
+    double te_thickness = nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0;
+    if(auto const& naca4 = nacadef.GetNaca4DigitCode_choice1(); naca4){
+        calculator = NACA4Calculator(*naca4, te_thickness);
+    }
+    else{
+        throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.");
+    }
+
+}
 
 void CTiglWingProfileNACA::Invalidate() const
 {
-  
+    wireCache.clear();
 }
 
 /*
@@ -66,9 +75,36 @@ void CTiglWingProfileNACA::BuildNaca(NacaCache& cache) const //NacaCache?
 */
 void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 {
+
+    auto upper_bspline = calculator.upper_bspline();
+    auto lower_bspline = calculator.lower_bspline()->Reversed();
     //hier edges erstellen aus der upper_bspline vom calculator
-    cache.upperWire = BRepBuilderAPI_MakeEdge(calculator.upper_bspline()); //hier fehln argumente
-    
+    cache.upperWire = BRepBuilderAPI_MakeEdge(upper_bspline); 
+    cache.lowerWire = BRepBuilderAPI_MakeEdge(lower_bspline); 
+
+    gp_Vec2d le_pnt = calculator.upper_curve(0);
+    gp_Vec2d upper_coord = calculator.upper_curve(1);
+    gp_Vec2d lower_coord = calculator.lower_curve(1);
+    gp_Vec2d te_pnt = 0.5*(upper_coord + lower_coord);
+
+    cache.lePoint = gp_Pnt(le_pnt.X(), 0.0, le_pnt.Y());
+    cache.tePoint = gp_Pnt(te_pnt.X(), 0.0, te_pnt.Y());
+
+    // build trailing edge
+    if (HasBluntTE()) {
+
+        double upper_x_coord = upper_coord.X();
+        double lower_x_coord = lower_coord.X();
+        double upper_y_coord = upper_coord.Y();
+        double lower_y_coord = lower_coord.Y();
+
+        gp_Pnt P1(upper_x_coord, 0.0, upper_y_coord);
+        gp_Pnt P2(lower_x_coord, 0.0, lower_y_coord);
+        
+        cache.trailingEdge = BRepBuilderAPI_MakeEdge(P1, P2).Edge();
+    } else {
+        cache.trailingEdge = TopoDS_Edge();
+    }
 }
 
 
@@ -92,13 +128,20 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
+
+    throw CTiglError("Nope.");
+    //hier exception werfen?
     return wireCache->upperLowerEdge;
 }
 
 // get trailing edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetTrailingEdge(TiglShapeModifier mod) const
 {
+
     return wireCache->trailingEdge;
+    //obere und unterekoordinate bei x = 1 und dann dazwischen eine edge erstellen
+    //im constructor die te thickness noch mit übergeben
+    //return wireCache->trailingEdge;
 }
 
 // get leading edge point();
@@ -115,7 +158,7 @@ const gp_Pnt & CTiglWingProfileNACA::GetTEPoint() const
 
 bool CTiglWingProfileNACA::HasBluntTE() const
 {
-    return true; //TODO 
+    return calculator.get_trailing_edge_thickness() > 0.;
 
 }
 }//namespace tigl
