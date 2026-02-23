@@ -8452,7 +8452,7 @@ marko.alder@dlr.de
                             </xsd:annotation>
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:string">
-                                    <xsd:pattern value="[0-9]{4}"/>
+                                    <xsd:pattern value="[0-9]{5}"/>
                                 </xsd:restriction>
                             </xsd:simpleType>
                         </xsd:element>
@@ -22258,7 +22258,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="pointList" type="curvePointListXYZType"/>
                         <xsd:element name="cst2D" type="cst2DType"/>
                         <xsd:element name="standardProfile" type="standardProfileType"/>
-                        <xsd:element name="naca" type="stringBaseType"/>
+                        <xsd:element name="nacaProfile" type="nacaProfileType"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>

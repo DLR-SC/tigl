@@ -18,7 +18,7 @@ namespace tigl{
     class CTiglWingProfileNACA : public ITiglWingProfileAlgo
     {
     public:
-        CTiglWingProfileNACA(const CCPACSWingProfile& profile, const std::string& naca_code);
+        CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef);
         //an cst implementierung orientiern,
         
         // Update of wire points ...
@@ -71,6 +71,7 @@ namespace tigl{
     private:
        std::string profileUID;
        NACA4Calculator calculator;
+       double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
 
 

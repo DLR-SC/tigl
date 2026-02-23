@@ -25,6 +25,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CPACSNacaProfile.h"
 #include "CPACSStandardProfile.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
@@ -146,8 +147,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSStandardProfile>& GetStandardProfile_choice3() const;
         TIGL_EXPORT virtual boost::optional<CPACSStandardProfile>& GetStandardProfile_choice3();
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetNaca_choice4() const;
-        TIGL_EXPORT virtual void SetNaca_choice4(const boost::optional<std::string>& value);
+        TIGL_EXPORT virtual const boost::optional<CPACSNacaProfile>& GetNacaProfile_choice4() const;
+        TIGL_EXPORT virtual boost::optional<CPACSNacaProfile>& GetNacaProfile_choice4();
 
         TIGL_EXPORT virtual CCPACSCurvePointListXYZ& GetPointList_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePointList_choice1();
@@ -157,6 +158,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSStandardProfile& GetStandardProfile_choice3(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStandardProfile_choice3();
+
+        TIGL_EXPORT virtual CPACSNacaProfile& GetNacaProfile_choice4(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveNacaProfile_choice4();
 
     protected:
         void* m_parent;
@@ -180,7 +184,7 @@ namespace generated
 
         boost::optional<CPACSStandardProfile>    m_standardProfile_choice3;
 
-        boost::optional<std::string>             m_naca_choice4;
+        boost::optional<CPACSNacaProfile>        m_nacaProfile_choice4;
 
     private:
         CPACSProfileGeometry(const CPACSProfileGeometry&) = delete;

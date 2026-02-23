@@ -44,9 +44,18 @@ class NACA4Calculator{
      * @param max_camber_position 
      * @param max_profile_thickness 
      */
-        NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness);
 
-        explicit NACA4Calculator(const ::std::string& naca_code);
+
+        NACA4Calculator(double max_camber = 0, double max_camber_position = 0, double max_profile_thickness = 12, double trailing_edge_thickness = 0);
+
+        explicit NACA4Calculator(const ::std::string& naca_code, const double te_thickness);
+
+        /**
+         * @brief getter for the trailing edge thickness
+         * 
+         * @return double 
+         */
+        double get_trailing_edge_thickness() const;
 
         /**
          * @brief Calculate the camberline

@@ -33,6 +33,7 @@ namespace tigl{
          , max_profile_thickness(max_profile_thickness/100)
          , trailing_edge_thickness(trailing_edge_thickness)
         {
+            /* TODO
             if(max_camber !=0 && max_camber !=2 && max_camber !=4 && max_camber !=6 ){
                 throw ::std::logic_error("error in NACA4Calculator: max_camber must be 0; 2; 4 or 6.");
             }
@@ -45,15 +46,21 @@ namespace tigl{
             if(max_profile_thickness != 6 && max_profile_thickness != 9 && max_profile_thickness != 12 && max_profile_thickness != 15 && max_profile_thickness != 18 && max_profile_thickness != 21 && max_profile_thickness != 25){
                 throw ::std::logic_error("error in NACA4Calculator: max_profile_thickness must be 6; 9; 12; 15; 18; 21 or 25.");
             }
+                */
         }
 
 
-        NACA4Calculator::NACA4Calculator(::std::string const& naca_code)
+        NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
             : NACA4Calculator(static_cast<double>(naca_code[0] - '0'),
                               static_cast<double>(naca_code[1] - '0'),
                               static_cast<double>(std::stoi(naca_code.substr(2,2))),
-                              static_cast<double>(std::stoi(naca_code.substr(4,2))))
+                              te_thickness)
         {}
+
+        double NACA4Calculator::get_trailing_edge_thickness() const
+        {
+            return trailing_edge_thickness;
+        }
 
 
         double NACA4Calculator::camberline(double x) const{
@@ -112,6 +119,9 @@ namespace tigl{
             double m = this->max_camber;
             double p = this->max_camber_position;
 
+            if(p == 0){
+                return 0;
+            }
             if(0 <= x && x <= p){
                 return (2*p - 2*x)*m/(p*p);
             }
@@ -141,6 +151,7 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{
+
             NACA4UpperCurve upperCurve(*this);
 
             const double umin = 0.;
@@ -170,7 +181,7 @@ namespace tigl{
         }
 
         NACA4UpperCurve::NACA4UpperCurve( NACA4Calculator const& calculator)
-            : MathFunc3d(), //wurde bei der superellipse so gemacht, brauch ich das hier also auch?
+            : MathFunc3d(), 
             calculator(calculator)
         {}
 
@@ -188,7 +199,7 @@ namespace tigl{
 
 
         NACA4LowerCurve::NACA4LowerCurve( NACA4Calculator const& calculator)
-            : MathFunc3d(), //wurde bei der superellipse so gemacht, brauch ich das hier also auch?
+            : MathFunc3d(), 
             calculator(calculator)
         {}
 

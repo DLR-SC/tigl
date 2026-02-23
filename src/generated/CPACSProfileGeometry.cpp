@@ -176,11 +176,14 @@ namespace generated
             }
         }
 
-        // read element naca
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
-            m_naca_choice4 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/naca");
-            if (m_naca_choice4->empty()) {
-                LOG(WARNING) << "Optional element naca is present but empty at xpath " << xpath;
+        // read element nacaProfile
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacaProfile")) {
+            m_nacaProfile_choice4 = boost::in_place(this);
+            try {
+                m_nacaProfile_choice4->ReadCPACS(tixiHandle, xpath + "/nacaProfile");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read nacaProfile at xpath " << xpath << ": " << e.what();
+                m_nacaProfile_choice4 = boost::none;
             }
         }
 
@@ -192,7 +195,7 @@ namespace generated
 
     void CPACSProfileGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D", "standardProfile", "naca" };
+        const std::vector<std::string> childElemOrder = { "name", "description", "pointList", "cst2D", "standardProfile", "nacaProfile" };
 
         // write attribute symmetry
         if (m_symmetry) {
@@ -255,14 +258,14 @@ namespace generated
             }
         }
 
-        // write element naca
-        if (m_naca_choice4) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/naca", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/naca", *m_naca_choice4);
+        // write element nacaProfile
+        if (m_nacaProfile_choice4) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/nacaProfile", childElemOrder);
+            m_nacaProfile_choice4->WriteCPACS(tixiHandle, xpath + "/nacaProfile");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/naca");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/nacaProfile")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/nacaProfile");
             }
         }
 
@@ -283,7 +286,7 @@ namespace generated
                         ||
                         m_standardProfile_choice3.is_initialized()
                         ||
-                        m_naca_choice4.is_initialized()
+                        m_nacaProfile_choice4.is_initialized()
                     )
                 )
                 +
@@ -297,7 +300,7 @@ namespace generated
                         ||
                         m_standardProfile_choice3.is_initialized()
                         ||
-                        m_naca_choice4.is_initialized()
+                        m_nacaProfile_choice4.is_initialized()
                     )
                 )
                 +
@@ -311,13 +314,13 @@ namespace generated
                         ||
                         m_cst2D_choice2.is_initialized()
                         ||
-                        m_naca_choice4.is_initialized()
+                        m_nacaProfile_choice4.is_initialized()
                     )
                 )
                 +
                 (
                     // mandatory elements of this choice must be there
-                    m_naca_choice4.is_initialized()
+                    m_nacaProfile_choice4.is_initialized()
                     &&
                     // elements of other choices must not be there
                     !(
@@ -412,14 +415,14 @@ namespace generated
         return m_standardProfile_choice3;
     }
 
-    const boost::optional<std::string>& CPACSProfileGeometry::GetNaca_choice4() const
+    const boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNacaProfile_choice4() const
     {
-        return m_naca_choice4;
+        return m_nacaProfile_choice4;
     }
 
-    void CPACSProfileGeometry::SetNaca_choice4(const boost::optional<std::string>& value)
+    boost::optional<CPACSNacaProfile>& CPACSProfileGeometry::GetNacaProfile_choice4()
     {
-        m_naca_choice4 = value;
+        return m_nacaProfile_choice4;
     }
 
     CCPACSCurvePointListXYZ& CPACSProfileGeometry::GetPointList_choice1(CreateIfNotExistsTag)
@@ -456,6 +459,18 @@ namespace generated
     void CPACSProfileGeometry::RemoveStandardProfile_choice3()
     {
         m_standardProfile_choice3 = boost::none;
+    }
+
+    CPACSNacaProfile& CPACSProfileGeometry::GetNacaProfile_choice4(CreateIfNotExistsTag)
+    {
+        if (!m_nacaProfile_choice4)
+            m_nacaProfile_choice4 = boost::in_place(this);
+        return *m_nacaProfile_choice4;
+    }
+
+    void CPACSProfileGeometry::RemoveNacaProfile_choice4()
+    {
+        m_nacaProfile_choice4 = boost::none;
     }
 
 } // namespace generated
