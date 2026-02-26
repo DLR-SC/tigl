@@ -8452,7 +8452,7 @@ marko.alder@dlr.de
                             </xsd:annotation>
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:string">
-                                    <xsd:pattern value="[0-9]{5}"/>
+                                    <xsd:pattern value="[0-9]{4}"/>
                                 </xsd:restriction>
                             </xsd:simpleType>
                         </xsd:element>

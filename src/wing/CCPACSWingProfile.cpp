@@ -387,7 +387,6 @@ void CCPACSWingProfile::buildPointListAlgo(std::unique_ptr<CTiglWingProfilePoint
 }
 
 
-
 void CCPACSWingProfile::buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const
 {
     cache.reset(new CTiglWingProfileNACA(*this, *m_nacaProfile_choice4));

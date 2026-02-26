@@ -37,15 +37,14 @@ namespace tigl{
 class NACA4Calculator{
 
     public:
-    /**
-     * @brief Construct a new NACA4Calculator object
-     * 
-     * @param max_camber 
-     * @param max_camber_position 
-     * @param max_profile_thickness 
-     */
-
-
+    
+        /**
+        * @brief Construct a new NACA4Calculator object
+        * 
+        * @param max_camber 
+        * @param max_camber_position 
+        * @param max_profile_thickness 
+        */
         NACA4Calculator(double max_camber = 0, double max_camber_position = 0, double max_profile_thickness = 12, double trailing_edge_thickness = 0);
 
         explicit NACA4Calculator(const ::std::string& naca_code, const double te_thickness);

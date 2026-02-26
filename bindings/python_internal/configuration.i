@@ -136,6 +136,9 @@
 #include "CTiglSectionElement.h"
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
+#include "CTiglWingProfileNACA.h"
+#include "generated/CPACSNacaProfile.h"
+#include "NACA4Calculator.h"
 
 %}
 
@@ -500,12 +503,14 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingProfileCST.h"
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
+%include "generated/CPACSNacaProfile.h"
 %include "CCPACSFuselageSectionElements.h"
 %include "generated/CPACSCurveParamPointMap.h"
 %include "CCPACSCurveParamPointMap.h"
 %include "generated/CPACSCurvePointListXYZ.h"
 %include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
+%include "NACA4Calculator.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
 %include "CTiglSectionElement.h"
@@ -531,6 +536,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSGuideCurveProfileGeometry.h"
 %include "CCPACSGuideCurveProfile.h"
 %include "generated/CPACSWingSegment.h"
+
 
 %template (WingSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSWingSegment>;
 %apply double &OUTPUT { double& eta, double& xsi };
