@@ -108,7 +108,6 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 }
 
 
-
 const std::vector<CTiglPoint>& CTiglWingProfileNACA::GetSamplePoints() const {
     static std::vector<CTiglPoint> dummy;
     return dummy;
@@ -129,9 +128,8 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
 
-    throw CTiglError("Nope.");
-    //hier exception werfen?
-    return wireCache->upperLowerEdge;
+    throw CTiglError("UpperLower wire is not implemented.");
+    //  return wireCache->upperLowerEdge;
 }
 
 // get trailing edge
@@ -141,7 +139,6 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetTrailingEdge(TiglShapeModifier mod) 
     return wireCache->trailingEdge;
     //obere und unterekoordinate bei x = 1 und dann dazwischen eine edge erstellen
     //im constructor die te thickness noch mit übergeben
-    //return wireCache->trailingEdge;
 }
 
 // get leading edge point();

@@ -31,24 +31,10 @@ namespace tigl{
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
          , max_profile_thickness(max_profile_thickness/100)
-         , trailing_edge_thickness(trailing_edge_thickness)
+         , trailing_edge_thickness(trailing_edge_thickness) //wenn ich die hier durch zwei teil laufend die koordinaten tests nicht mehr durhc
         {
-            /* TODO
-            if(max_camber !=0 && max_camber !=2 && max_camber !=4 && max_camber !=6 ){
-                throw ::std::logic_error("error in NACA4Calculator: max_camber must be 0; 2; 4 or 6.");
-            }
-            if(max_camber == 0 && max_camber_position != 0){
-                throw ::std::logic_error("error in NACA4Calculator: if max_camber is 0 max_camber_position has to be 0 as well");
-            }
-            if(max_camber_position !=0 && max_camber_position !=2 && max_camber_position !=3 && max_camber_position !=4 && max_camber_position !=5 && max_camber_position !=6 && max_camber_position !=7 ){
-                throw ::std::logic_error("error in NACA4Calculator: max_camber_position must be 0; 2; 3; 4; 5; 6 or 7.");
-            }
-            if(max_profile_thickness != 6 && max_profile_thickness != 9 && max_profile_thickness != 12 && max_profile_thickness != 15 && max_profile_thickness != 18 && max_profile_thickness != 21 && max_profile_thickness != 25){
-                throw ::std::logic_error("error in NACA4Calculator: max_profile_thickness must be 6; 9; 12; 15; 18; 21 or 25.");
-            }
-                */
+            
         }
-
 
         NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
             : NACA4Calculator(static_cast<double>(naca_code[0] - '0'),
@@ -61,7 +47,6 @@ namespace tigl{
         {
             return trailing_edge_thickness;
         }
-
 
         double NACA4Calculator::camberline(double x) const{
         
@@ -93,12 +78,7 @@ namespace tigl{
             }
             return point + yt*normal(x);
         }
-        /**
-        * @brief calculates the y-coordinate
-        * 
-        * @param x 
-        * @return gp_Vec2d 
-        */
+        
         gp_Vec2d NACA4Calculator::lower_curve(double x) const{ 
             double yt = profile_thickness(x);
             double yc = camberline(x);
@@ -109,7 +89,7 @@ namespace tigl{
             return point - yt*normal(x);
         }
 
-        double NACA4Calculator::profile_thickness(double x) const{ //wird in upper/lower curve getestet, da gehts leichter, sollt ihcs trzdm hier hins chreibn?
+        double NACA4Calculator::profile_thickness(double x) const{ 
             double t = this->max_profile_thickness; 
             double e = trailing_edge_thickness_function(trailing_edge_thickness);
             return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - e*pow(x,4));
@@ -145,9 +125,9 @@ namespace tigl{
         double NACA4Calculator::trailing_edge_thickness_function(double y) const{ //y ist die dicke bei x = 1 aber wenn ihc fürs gl profil bei x = 0.5 die dicke ausrechnen will brauche ich ja dnn das e
             double t = max_profile_thickness;
             if(y < 0){
-                throw ::std::logic_error("error in NACA4Calculator::trailing_edge_thickness_function: trailing_edge_thickness must be bigger then 0.");
+                throw ::std::logic_error("error in NACA4Calculator::trailing_edge_thickness_function: trailing_edge_thickness must be bigger than 0.");
             }
-            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843);
+            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843); //bekommt man, wenn man in die normale formel für x = 1 einsetzt und nach e auflöst
         }
 
         Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{
@@ -214,53 +194,6 @@ namespace tigl{
             gp_Vec2d vec = calculator.lower_curve(t);
             return vec.Y();
         }
-
-
-        //naca4uppercurve und die soll die upper_curve vom naca4calculator in  mathfunc3d übersetzen (in des value - format), also ich übergebe hier das ergebnis von upper_curve()
-// x vom punkt = value.x
-// y vom punkt = value.z
-// value.y = 0
-
-
-//das gleiche auch noch für lower_curve!
-
-//vgl. superellipse in commonfunctions.cpp
-
-
-/*
-namespace
-{
-    class NACA4UpperCurve : public tigl::MathFunc3d
-    {
-    public:
-        NACA4UpperCurve(NACA4Calculator& calculator)
-            : tigl::MathFunc3d(),
-             {}
-
-        double valueX(double t) override
-        {
-            gp_Vec2d vec = calculator.upper_curve(t);
-            return vec.X();
-        }
-
-        double valueY(double t) override
-        {
-            return 0.0;
-        }
-
-        double valueZ(double t) override
-        {
-            gp_Vec2d vec = calculator.upper_curve(t);
-            return vec.Y();
-        }
-
-    private:
-          
-    };
-
-} //anonymos namespace
- */
-
 
 } //namespace tigl
 
