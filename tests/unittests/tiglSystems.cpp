@@ -371,38 +371,6 @@ TEST_F(InvalidSystems, Exceptions)
     }
 }
 
-TEST_F(InvalidSystems, VehicleElementBuilderExceptions)
-{
-    // Ensures that building a vehicle element fails if no geometry choice is set.
-    {
-        tigl::CCPACSVehicleElementBase* parent = nullptr;
-        tigl::CTiglUIDManager* uidMgr          = nullptr;
-
-        tigl::CCPACSElementGeometry geom(parent, uidMgr);
-        tigl::CTiglTransformation transformation;
-
-        //tigl::CTiglVehicleElementBuilder builder(geom, transformation, "testShapeName", "");
-        //EXPECT_THROW((void)builder.BuildShape(), tigl::CTiglError);
-    }
-
-    // Check get name from NextUIDParent
-    {
-        const std::string uID = "predCuboid_1";
-        auto const* ve        = &uidMgr.ResolveObject<tigl::CCPACSVehicleElementBase>(uID);
-        ASSERT_NE(ve, nullptr);
-
-        const tigl::CCPACSElementGeometry& geom = ve->GetGeometry();
-
-        //tigl::CTiglTransformation transformation;
-        //tigl::CTiglVehicleElementBuilder builder(geom, transformation, "", "");
-
-        //PNamedShape loft = builder.BuildShape();
-        //ASSERT_TRUE(loft != nullptr);
-
-        //EXPECT_EQ(uID, loft->Name());
-    }
-}
-
 TEST_F(InvalidSystems, InvalidShapes)
 {
     {
