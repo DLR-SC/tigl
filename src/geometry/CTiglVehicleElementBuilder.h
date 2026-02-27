@@ -41,7 +41,6 @@ public:
     TIGL_EXPORT PNamedShape BuildShape();
 
 private:
-    std::optional<CTiglTransformation> m_transformation;
     const CCPACSElementGeometry* m_geometry                  = nullptr;
     const CTiglRelativelyPositionedComponent* m_refComponent = nullptr;
     const CCPACSConfiguration* m_refConfig                   = nullptr;

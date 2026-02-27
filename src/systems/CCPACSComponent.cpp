@@ -164,9 +164,15 @@ PNamedShape CCPACSComponent::BuildLoft() const
     }
 
     // Use component UID as shape name
-    std::string compUid = this->GetObjectUID().get_value_or("unnamed");
-    CTiglVehicleElementBuilder builder(*this, this->GetConfiguration(), *geom, compUid, _cpacsDocPath);
-    return builder.BuildShape();
+    std::string compName = this->GetObjectUID().get_value_or("unnamed");
+
+    // The builder works on the generic CTiglRelativelyPositionedComponent, 
+    // therefore CCPACSComponent-specific information (configuration, geometry, uID) is extracted at this level
+    CTiglVehicleElementBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
+    PNamedShape shape = builder.BuildShape();
+
+    // Apply local transformation and return shape
+    return GetTransformationMatrix().Transform(shape);
 }
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
