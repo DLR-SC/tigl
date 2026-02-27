@@ -16,9 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSElementGeometry.h"
+#include "CPACSExternalGeometries.h"
 #include "CPACSExternalGeometry.h"
-#include "CPACSSubElement.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,37 +28,32 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSExternalGeometry::CPACSExternalGeometry(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+    CPACSExternalGeometry::CPACSExternalGeometry(CPACSExternalGeometries* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_linkToFile(this)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometry);
-    }
-
-    CPACSExternalGeometry::CPACSExternalGeometry(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_linkToFile(this)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSExternalGeometry::~CPACSExternalGeometry()
     {
     }
 
+    const CPACSExternalGeometries* CPACSExternalGeometry::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSExternalGeometries* CPACSExternalGeometry::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSExternalGeometry::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }
@@ -67,12 +61,7 @@ namespace generated
     CTiglUIDObject* CPACSExternalGeometry::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }

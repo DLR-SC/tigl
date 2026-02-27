@@ -379,11 +379,13 @@
                 <genericComponent uID="predCuboid_1">
                     <name>Predefined cuboid 1</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                     <mass>
                         <mass>0.1234</mass>
@@ -402,11 +404,13 @@
                 <genericComponent uID="predCuboid_2">
                     <name>Predefined cuboid 2</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>3.</lengthX>
-                            <depthY>0.5</depthY>
-                            <heightZ>0.5</heightZ>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>3.</lengthX>
+                                <depthY>0.5</depthY>
+                                <heightZ>0.5</heightZ>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                     <mass>
                         <density>0.5</density>
@@ -415,154 +419,180 @@
                 <genericComponent uID="predWedge_1">
                     <name>Predefined wedge 1</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.1</upperFaceXmin>
-                            <upperFaceXmax>0.9</upperFaceXmax>
-                            <upperFaceYmin>0.1</upperFaceYmin>
-                            <upperFaceYmax>0.9</upperFaceYmax>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                                <upperFaceXmin>0.1</upperFaceXmin>
+                                <upperFaceXmax>0.9</upperFaceXmax>
+                                <upperFaceYmin>0.1</upperFaceYmin>
+                                <upperFaceYmax>0.9</upperFaceYmax>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predWedge_2">
                     <name>Predefined wedge 2</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.5</upperFaceXmin>
-                            <upperFaceXmax>0.5</upperFaceXmax>
-                            <upperFaceYmin>0.0</upperFaceYmin>
-                            <upperFaceYmax>1.0</upperFaceYmax>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                                <upperFaceXmin>0.5</upperFaceXmin>
+                                <upperFaceXmax>0.5</upperFaceXmax>
+                                <upperFaceYmin>0.0</upperFaceYmin>
+                                <upperFaceYmax>1.0</upperFaceYmax>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predWedge_3">
                     <name>Predefined wedge 3</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.0</upperFaceXmin>
-                            <upperFaceXmax>1.0</upperFaceXmax>
-                            <upperFaceYmin>0.5</upperFaceYmin>
-                            <upperFaceYmax>0.5</upperFaceYmax>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                                <upperFaceXmin>0.0</upperFaceXmin>
+                                <upperFaceXmax>1.0</upperFaceXmax>
+                                <upperFaceYmin>0.5</upperFaceYmin>
+                                <upperFaceYmax>0.5</upperFaceYmax>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predWedge_4">
                     <name>Predefined wedge 4</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                            <upperFaceXmin>0.5</upperFaceXmin>
-                            <upperFaceXmax>0.5</upperFaceXmax>
-                            <upperFaceYmin>0.5</upperFaceYmin>
-                            <upperFaceYmax>0.5</upperFaceYmax>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                                <upperFaceXmin>0.5</upperFaceXmin>
+                                <upperFaceXmax>0.5</upperFaceXmax>
+                                <upperFaceYmin>0.5</upperFaceYmin>
+                                <upperFaceYmax>0.5</upperFaceYmax>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predCylinder_1">
                     <name>Predefined cylinder 1</name>
                     <geometry>
-                        <cylinder>
-                            <radius>0.5</radius>
-                            <height>1.</height>
-                        </cylinder>
+                        <cylinders>
+                            <cylinder>
+                                <radius>0.5</radius>
+                                <height>1.</height>
+                            </cylinder>
+                        </cylinders>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predCone_1">
                     <name>Predefined cone 1</name>
                     <geometry>
-                        <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <upperRadius>0.25</upperRadius>
-                            <height>1.</height>
-                        </cone>
+                        <cones>
+                            <cone>
+                                <lowerRadius>0.5</lowerRadius>
+                                <upperRadius>0.25</upperRadius>
+                                <height>1.</height>
+                            </cone>
+                        </cones>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predCone_2">
                     <name>Predefined cone 2</name>
                     <geometry>
-                        <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <upperRadius>0.74</upperRadius>
-                            <height>1.</height>
-                        </cone>
+                        <cones>
+                            <cone>
+                                <lowerRadius>0.5</lowerRadius>
+                                <upperRadius>0.74</upperRadius>
+                                <height>1.</height>
+                            </cone>
+                        </cones>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predCone_3">
                     <name>Predefined cone 3</name>
                     <geometry>
-                        <cone>
-                            <lowerRadius>0.5</lowerRadius>
-                            <height>1.</height>
-                        </cone>
+                        <cones>
+                            <cone>
+                                <lowerRadius>0.5</lowerRadius>
+                                <height>1.</height>
+                            </cone>
+                        </cones>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predEllipsoid_1">
                     <name>Predefined ellipsoid 1</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predEllipsoid_2">
                     <name>Predefined ellipsoid 2</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                            <transformation>
-                                <rotation>
-                                    <z>90</z>
-                                </rotation>
-                            </transformation>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                                <radiusY>0.5</radiusY>
+                                <transformation>
+                                    <rotation>
+                                        <z>90</z>
+                                    </rotation>
+                                </transformation>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predEllipsoid_3">
                     <name>Predefined ellipsoid 3</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusZ>0.5</radiusZ>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                                <radiusZ>0.5</radiusZ>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predEllipsoid_4">
                     <name>Predefined ellipsoid 4</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                            <radiusZ>0.5</radiusZ>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                                <radiusY>0.5</radiusY>
+                                <radiusZ>0.5</radiusZ>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
                 <genericComponent uID="predExternal">
                     <name>Predefined external element</name>
                     <geometry>
-                        <external>
-                            <linkToFile format="Step">nacelle.stp</linkToFile>
-                            <transformation>
-                                <scaling>
-                                    <x>1.1</x>
-                                    <y>1.1</y>
-                                    <z>1.1</z>
-                                </scaling>
-                                <rotation>
-                                    <z>90.</z>
-                                </rotation>
-                            </transformation>
-                        </external>
+                        <externals>
+                            <external>
+                                <linkToFile format="Step">nacelle.stp</linkToFile>
+                                <transformation>
+                                    <scaling>
+                                        <x>1.1</x>
+                                        <y>1.1</y>
+                                        <z>1.1</z>
+                                    </scaling>
+                                    <rotation>
+                                        <z>90.</z>
+                                    </rotation>
+                                </transformation>
+                            </external>
+                        </externals>
                     </geometry>
                     <mass>
                         <density>0.1</density>
@@ -571,55 +601,59 @@
                 <genericComponent uID="predMultiSegmentComponent">
                     <name>Predefined multi-segment component</name>
                     <geometry>
-                        <multiSegmentShape>
-                            <transformation>
-                                <translation>
-                                    <x>1</x>
-                                </translation>
-                            </transformation>
-                            <sections>
-                                <section uID="predMultiSegmentComponent_section1">
-                                    <name>Section 1</name>
-                                    <transformation />
-                                    <elements>
-                                        <element uID="predMultiSegmentComponent_section1_element1">
-                                            <name>Element</name>
-                                            <profileUID>fuselageCircleProfile</profileUID>
-                                            <transformation />
-                                        </element>
-                                    </elements>
-                                </section>
-                                <section uID="predMultiSegmentComponent_section2">
-                                    <name>Section 2</name>
-                                    <transformation>
-                                        <translation>
-                                            <x>1</x>
-                                            <y>0</y>
-                                            <z>0</z>
-                                        </translation>
-                                        <scaling>
-                                            <x>1</x>
-                                            <y>1</y>
-                                            <z>1</z>
-                                        </scaling>
-                                    </transformation>
-                                    <elements>
-                                        <element uID="predMultiSegmentComponent_section2_element1">
-                                            <name>Element</name>
-                                            <profileUID>fuselageCircleProfile</profileUID>
-                                            <transformation />
-                                        </element>
-                                    </elements>
-                                </section>
-                            </sections>
-                            <segments>
-                                <segment uID="predMultiSegmentComponent_segment">
-                                    <name>Segment</name>
-                                    <fromElementUID>predMultiSegmentComponent_section1_element1</fromElementUID>
-                                    <toElementUID>predMultiSegmentComponent_section2_element1</toElementUID>
-                                </segment>
-                            </segments>
-                        </multiSegmentShape>
+                        <multiSegmentShapes>
+                            <multiSegmentShape>
+                                <transformation>
+                                    <translation>
+                                        <x>1</x>
+                                    </translation>
+                                </transformation>
+                                <sections>
+                                    <section uID="predMultiSegmentComponent_section1">
+                                        <name>Section 1</name>
+                                        <transformation />
+                                        <elements>
+                                            <element
+                                                uID="predMultiSegmentComponent_section1_element1">
+                                                <name>Element</name>
+                                                <profileUID>fuselageCircleProfile</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                    <section uID="predMultiSegmentComponent_section2">
+                                        <name>Section 2</name>
+                                        <transformation>
+                                            <translation>
+                                                <x>1</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>1</y>
+                                                <z>1</z>
+                                            </scaling>
+                                        </transformation>
+                                        <elements>
+                                            <element
+                                                uID="predMultiSegmentComponent_section2_element1">
+                                                <name>Element</name>
+                                                <profileUID>fuselageCircleProfile</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                </sections>
+                                <segments>
+                                    <segment uID="predMultiSegmentComponent_segment">
+                                        <name>Segment</name>
+                                        <fromElementUID>predMultiSegmentComponent_section1_element1</fromElementUID>
+                                        <toElementUID>predMultiSegmentComponent_section2_element1</toElementUID>
+                                    </segment>
+                                </segments>
+                            </multiSegmentShape>
+                        </multiSegmentShapes>
                     </geometry>
                     <mass>
                         <density>0.1</density>
@@ -628,91 +662,93 @@
                 <genericComponent uID="predComplexMultiSegmentComponent">
                     <name>Predefined complex multi-segment component</name>
                     <geometry>
-                        <multiSegmentShape>
-                            <transformation>
-                                <translation>
-                                    <x>1</x>
-                                </translation>
-                            </transformation>
-                            <sections>
-                                <section uID="predCMSC_section1">
-                                    <name>Section 1</name>
-                                    <transformation />
-                                    <elements>
-                                        <element uID="predCMSC_section1_element1">
-                                            <name>Element</name>
-                                            <profileUID>fuselageSuperEllipse1</profileUID>
-                                            <transformation />
-                                        </element>
-                                    </elements>
-                                </section>
-                                <section uID="predCMSC_section2">
-                                    <name>Section 2</name>
-                                    <transformation>
-                                        <translation>
-                                            <x>1</x>
-                                            <y>0</y>
-                                            <z>0</z>
-                                        </translation>
-                                        <scaling>
-                                            <x>1</x>
-                                            <y>1</y>
-                                            <z>1</z>
-                                        </scaling>
-                                    </transformation>
-                                    <elements>
-                                        <element uID="predCMSC_section2_element1">
-                                            <name>Element</name>
-                                            <profileUID>fuselageSuperEllipse2</profileUID>
-                                            <transformation />
-                                        </element>
-                                    </elements>
-                                </section>
-                                <section uID="predCMSC_section3">
-                                    <name>Section 3</name>
-                                    <transformation>
-                                        <translation>
-                                            <x>2</x>
-                                            <y>0</y>
-                                            <z>0</z>
-                                        </translation>
-                                        <scaling>
-                                            <x>1</x>
-                                            <y>1</y>
-                                            <z>1</z>
-                                        </scaling>
-                                    </transformation>
-                                    <elements>
-                                        <element uID="predCMSC_section3_element1">
-                                            <name>Element</name>
-                                            <profileUID>fuselageSuperEllipse1</profileUID>
-                                            <transformation>
-                                                <translation>
-                                                    <z>0.5</z>
-                                                </translation>
-                                                <scaling>
-                                                    <x>0.2</x>
-                                                    <y>0.2</y>
-                                                    <z>0.2</z>
-                                                </scaling>
-                                            </transformation>
-                                        </element>
-                                    </elements>
-                                </section>
-                            </sections>
-                            <segments>
-                                <segment uID="predCMSC_segment1">
-                                    <name>Segment</name>
-                                    <fromElementUID>predCMSC_section1_element1</fromElementUID>
-                                    <toElementUID>predCMSC_section2_element1</toElementUID>
-                                </segment>
-                                <segment uID="predCMSC_segment2">
-                                    <name>Segment</name>
-                                    <fromElementUID>predCMSC_section2_element1</fromElementUID>
-                                    <toElementUID>predCMSC_section3_element1</toElementUID>
-                                </segment>
-                            </segments>
-                        </multiSegmentShape>
+                        <multiSegmentShapes>
+                            <multiSegmentShape>
+                                <transformation>
+                                    <translation>
+                                        <x>1</x>
+                                    </translation>
+                                </transformation>
+                                <sections>
+                                    <section uID="predCMSC_section1">
+                                        <name>Section 1</name>
+                                        <transformation />
+                                        <elements>
+                                            <element uID="predCMSC_section1_element1">
+                                                <name>Element</name>
+                                                <profileUID>fuselageSuperEllipse1</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                    <section uID="predCMSC_section2">
+                                        <name>Section 2</name>
+                                        <transformation>
+                                            <translation>
+                                                <x>1</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>1</y>
+                                                <z>1</z>
+                                            </scaling>
+                                        </transformation>
+                                        <elements>
+                                            <element uID="predCMSC_section2_element1">
+                                                <name>Element</name>
+                                                <profileUID>fuselageSuperEllipse2</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                    <section uID="predCMSC_section3">
+                                        <name>Section 3</name>
+                                        <transformation>
+                                            <translation>
+                                                <x>2</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>1</y>
+                                                <z>1</z>
+                                            </scaling>
+                                        </transformation>
+                                        <elements>
+                                            <element uID="predCMSC_section3_element1">
+                                                <name>Element</name>
+                                                <profileUID>fuselageSuperEllipse1</profileUID>
+                                                <transformation>
+                                                    <translation>
+                                                        <z>0.5</z>
+                                                    </translation>
+                                                    <scaling>
+                                                        <x>0.2</x>
+                                                        <y>0.2</y>
+                                                        <z>0.2</z>
+                                                    </scaling>
+                                                </transformation>
+                                            </element>
+                                        </elements>
+                                    </section>
+                                </sections>
+                                <segments>
+                                    <segment uID="predCMSC_segment1">
+                                        <name>Segment</name>
+                                        <fromElementUID>predCMSC_section1_element1</fromElementUID>
+                                        <toElementUID>predCMSC_section2_element1</toElementUID>
+                                    </segment>
+                                    <segment uID="predCMSC_segment2">
+                                        <name>Segment</name>
+                                        <fromElementUID>predCMSC_section2_element1</fromElementUID>
+                                        <toElementUID>predCMSC_section3_element1</toElementUID>
+                                    </segment>
+                                </segments>
+                            </multiSegmentShape>
+                        </multiSegmentShapes>
                     </geometry>
                     <mass>
                         <mass>0.5</mass>
@@ -721,124 +757,118 @@
                 <genericComponent uID="predCombinedComponent">
                     <name>Predefined element with subelements</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>0.25</radiusX>
-                            <radiusY>1</radiusY>
-                            <radiusZ>0.25</radiusZ>
-                            <diskAngle>3.14159265359</diskAngle>
-                        </ellipsoid>
-                        <subElements>
-                            <subElement>
-                                <cylinder>
-                                    <radius>0.25</radius>
-                                    <height>4.</height>
-                                    <transformation>
-                                        <rotation>
-                                            <x>90</x>
-                                        </rotation>
-                                    </transformation>
-                                </cylinder>
-                            </subElement>
-                            <subElement>
-                                <cone>
-                                    <lowerRadius>0.1</lowerRadius>
-                                    <upperRadius>0.2</upperRadius>
-                                    <height>0.25</height>
-                                    <transformation>
-                                        <translation>
-                                            <y>-4</y>
-                                        </translation>
-                                        <rotation>
-                                            <x>90</x>
-                                            <z>90</z>
-                                        </rotation>
-                                    </transformation>
-                                </cone>
-                            </subElement>
-                            <subElement>
-                                <cuboid>
-                                    <lengthX>0.5</lengthX>
-                                    <depthY>0.05</depthY>
-                                    <heightZ>0.3</heightZ>
-                                    <upperFaceXmin>0.2</upperFaceXmin>
-                                    <upperFaceXmax>0.6</upperFaceXmax>
-                                    <upperFaceYmin>0.015</upperFaceYmin>
-                                    <upperFaceYmax>0.035</upperFaceYmax>
-                                    <transformation>
-                                        <translation>
-                                            <y>-3.5</y>
-                                            <z>0.25</z>
-                                        </translation>
-                                        <rotation>
-                                            <z>-90</z>
-                                        </rotation>
-                                    </transformation>
-                                </cuboid>
-                            </subElement>
-                            <subElement>
-                                <cuboid>
-                                    <lengthX>0.5</lengthX>
-                                    <depthY>0.05</depthY>
-                                    <heightZ>0.3</heightZ>
-                                    <upperFaceXmin>0.2</upperFaceXmin>
-                                    <upperFaceXmax>0.6</upperFaceXmax>
-                                    <upperFaceYmin>0.015</upperFaceYmin>
-                                    <upperFaceYmax>0.035</upperFaceYmax>
-                                    <transformation>
-                                        <translation>
-                                            <x>-0.25</x>
-                                            <y>-3.5</y>
-                                        </translation>
-                                        <rotation>
-                                            <x>90</x>
-                                            <y>-90</y>
-                                        </rotation>
-                                    </transformation>
-                                </cuboid>
-                            </subElement>
-                            <subElement>
-                                <cuboid>
-                                    <lengthX>0.5</lengthX>
-                                    <depthY>0.05</depthY>
-                                    <heightZ>0.3</heightZ>
-                                    <upperFaceXmin>0.2</upperFaceXmin>
-                                    <upperFaceXmax>0.6</upperFaceXmax>
-                                    <upperFaceYmin>0.015</upperFaceYmin>
-                                    <upperFaceYmax>0.035</upperFaceYmax>
-                                    <transformation>
-                                        <translation>
-                                            <y>-3.5</y>
-                                            <z>-0.25</z>
-                                        </translation>
-                                        <rotation>
-                                            <x>180</x>
-                                            <z>90</z>
-                                        </rotation>
-                                    </transformation>
-                                </cuboid>
-                            </subElement>
-                            <subElement>
-                                <cuboid>
-                                    <lengthX>0.5</lengthX>
-                                    <depthY>0.05</depthY>
-                                    <heightZ>0.3</heightZ>
-                                    <upperFaceXmin>0.2</upperFaceXmin>
-                                    <upperFaceXmax>0.6</upperFaceXmax>
-                                    <upperFaceYmin>0.015</upperFaceYmin>
-                                    <upperFaceYmax>0.035</upperFaceYmax>
-                                    <transformation>
-                                        <translation>
-                                            <x>0.25</x>
-                                            <y>-3.5</y>
-                                        </translation>
-                                        <rotation>
-                                            <x>270</x>
-                                            <y>90</y>
-                                        </rotation>
-                                    </transformation>
-                                </cuboid>
-                            </subElement>
-                        </subElements>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>0.25</radiusX>
+                                <radiusY>1</radiusY>
+                                <radiusZ>0.25</radiusZ>
+                                <diskAngle>3.14159265359</diskAngle>
+                            </ellipsoid>
+                        </ellipsoids>
+                        <cylinders>
+                            <cylinder>
+                                <radius>0.25</radius>
+                                <height>4.</height>
+                                <transformation>
+                                    <rotation>
+                                        <x>90</x>
+                                    </rotation>
+                                </transformation>
+                            </cylinder>
+                        </cylinders>
+                        <cones>
+                            <cone>
+                                <lowerRadius>0.1</lowerRadius>
+                                <upperRadius>0.2</upperRadius>
+                                <height>0.25</height>
+                                <transformation>
+                                    <translation>
+                                        <y>-4</y>
+                                    </translation>
+                                    <rotation>
+                                        <x>90</x>
+                                        <z>90</z>
+                                    </rotation>
+                                </transformation>
+                            </cone>
+                        </cones>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>0.5</lengthX>
+                                <depthY>0.05</depthY>
+                                <heightZ>0.3</heightZ>
+                                <upperFaceXmin>0.2</upperFaceXmin>
+                                <upperFaceXmax>0.6</upperFaceXmax>
+                                <upperFaceYmin>0.015</upperFaceYmin>
+                                <upperFaceYmax>0.035</upperFaceYmax>
+                                <transformation>
+                                    <translation>
+                                        <y>-3.5</y>
+                                        <z>0.25</z>
+                                    </translation>
+                                    <rotation>
+                                        <z>-90</z>
+                                    </rotation>
+                                </transformation>
+                            </cuboid>
+                            <cuboid>
+                                <lengthX>0.5</lengthX>
+                                <depthY>0.05</depthY>
+                                <heightZ>0.3</heightZ>
+                                <upperFaceXmin>0.2</upperFaceXmin>
+                                <upperFaceXmax>0.6</upperFaceXmax>
+                                <upperFaceYmin>0.015</upperFaceYmin>
+                                <upperFaceYmax>0.035</upperFaceYmax>
+                                <transformation>
+                                    <translation>
+                                        <x>-0.25</x>
+                                        <y>-3.5</y>
+                                    </translation>
+                                    <rotation>
+                                        <x>90</x>
+                                        <y>-90</y>
+                                    </rotation>
+                                </transformation>
+                            </cuboid>
+                            <cuboid>
+                                <lengthX>0.5</lengthX>
+                                <depthY>0.05</depthY>
+                                <heightZ>0.3</heightZ>
+                                <upperFaceXmin>0.2</upperFaceXmin>
+                                <upperFaceXmax>0.6</upperFaceXmax>
+                                <upperFaceYmin>0.015</upperFaceYmin>
+                                <upperFaceYmax>0.035</upperFaceYmax>
+                                <transformation>
+                                    <translation>
+                                        <y>-3.5</y>
+                                        <z>-0.25</z>
+                                    </translation>
+                                    <rotation>
+                                        <x>180</x>
+                                        <z>90</z>
+                                    </rotation>
+                                </transformation>
+                            </cuboid>
+                            <cuboid>
+                                <lengthX>0.5</lengthX>
+                                <depthY>0.05</depthY>
+                                <heightZ>0.3</heightZ>
+                                <upperFaceXmin>0.2</upperFaceXmin>
+                                <upperFaceXmax>0.6</upperFaceXmax>
+                                <upperFaceYmin>0.015</upperFaceYmin>
+                                <upperFaceYmax>0.035</upperFaceYmax>
+                                <transformation>
+                                    <translation>
+                                        <x>0.25</x>
+                                        <y>-3.5</y>
+                                    </translation>
+                                    <rotation>
+                                        <x>270</x>
+                                        <y>90</y>
+                                    </rotation>
+                                </transformation>
+                            </cuboid>
+                        </cuboids>
                         <transformation>
                             <rotation>
                                 <z>90</z>
@@ -856,11 +886,13 @@
                 <electricMotor uID="predElectricMotor">
                     <name>Predefined electric motor</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                            <radiusY>0.5</radiusY>
-                            <radiusZ>0.5</radiusZ>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                                <radiusY>0.5</radiusY>
+                                <radiusZ>0.5</radiusZ>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                     <mass>
                         <mass>0.123</mass>

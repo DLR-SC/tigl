@@ -36734,31 +36734,134 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>Geometry</ddue:para>
                     </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:content>
-                            <ddue:mediaLink>
-                                <ddue:image xlink:href="geometryBaseTypes"/>
-                            </ddue:mediaLink>
-                        </ddue:content>
-                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="cuboids" minOccurs="0" type="cuboidsType"/>
+                    <xsd:element name="cylinders" minOccurs="0" type="cylindersType"/>
+                    <xsd:element name="cones" minOccurs="0" type="conesType"/>
+                    <xsd:element name="ellipsoids" minOccurs="0" type="ellipsoidsType"/>
+                    <xsd:element name="multiSegmentShapes" minOccurs="0" type="multiSegmentShapesType"/>
+                    <xsd:element name="externals" minOccurs="0" type="externalGeometriesType"/>
+					<xsd:element name="transformation" minOccurs="0" type="transformationType"/>
+            	</xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="cuboidsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Cuboids</ddue:para>
+                    </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:choice>
-                        <xsd:element name="cuboid" type="cuboidType"/>
-                        <xsd:element name="cylinder" type="cylinderType"/>
-                        <xsd:element name="cone" type="coneType"/>
-                        <xsd:element name="ellipsoid" type="ellipsoidType"/>
-                        <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
-                        <xsd:element name="external" type="externalGeometryType"/>
-                    </xsd:choice>
-                    <xsd:element name="subElements" minOccurs="0" type="subElementsType"/>
-                    <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
+                    <xsd:element name="cuboid" maxOccurs="unbounded" type="cuboidType"/>
             	</xsd:sequence>
-                <xsd:attribute name="boundingShape" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="cylindersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Cylinders</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="cylinder" maxOccurs="unbounded" type="cylinderType"/>
+            	</xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="conesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Cones</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="cone" maxOccurs="unbounded" type="coneType"/>
+            	</xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ellipsoidsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Ellipsoids</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="ellipsoid" maxOccurs="unbounded" type="ellipsoidType"/>
+            	</xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="multiSegmentShapesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>MSS</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="multiSegmentShape" maxOccurs="unbounded" type="multiSegmentShapeType"/>
+            	</xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="externalGeometriesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>External Geometries</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="external" maxOccurs="unbounded" type="externalGeometryType"/>
+            	</xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

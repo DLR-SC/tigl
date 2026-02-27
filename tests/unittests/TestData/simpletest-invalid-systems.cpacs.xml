@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+    xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
     <header>
         <name>Invalid fuel tanks test</name>
         <description>Simple fuel tank for unit testing with focus on invalid CPACS and exception handling</description>
@@ -121,7 +121,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="invalidCuboid">
+                                <component uID="invalidCuboid">
                                     <name>Negative Cuboid</name>
                                     <systemElementUID>invalidPredCuboid</systemElementUID>
                                     <transformation>
@@ -132,7 +132,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="invalidCylinder">
+                                <component uID="invalidCylinder">
                                     <name>Negative Cylinder</name>
                                     <systemElementUID>invalidPredCylinder</systemElementUID>
                                     <transformation>
@@ -143,7 +143,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="invalidCone">
+                                <component uID="invalidCone">
                                     <name>Negative Cone</name>
                                     <systemElementUID>invalidPredCone</systemElementUID>
                                     <transformation>
@@ -153,8 +153,8 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component> 
-								<component uID="cylinderCone">
+                                </component>
+                                <component uID="cylinderCone">
                                     <name>Cone which is acutally a cylinder</name>
                                     <systemElementUID>PredCylinderCone</systemElementUID>
                                     <transformation>
@@ -165,7 +165,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="invalidEllipsoid">
+                                <component uID="invalidEllipsoid">
                                     <name>Negative Ellipsolid</name>
                                     <systemElementUID>invalidPredEllipsoid</systemElementUID>
                                     <transformation>
@@ -176,11 +176,11 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="zeroVolumeEllipsoid">
+                                <component uID="zeroVolumeEllipsoid">
                                     <name>Ellipsoid with zero volume</name>
                                     <systemElementUID>predZeroVolumeEllipsoid</systemElementUID>
-                                </component> 
-								<component uID="invalidExternal1">
+                                </component>
+                                <component uID="invalidExternal1">
                                     <name>Invalid external component 1</name>
                                     <systemElementUID>invalidPredExternal1</systemElementUID>
                                     <transformation>
@@ -191,7 +191,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="invalidExternal2">
+                                <component uID="invalidExternal2">
                                     <name>Invalid external component 2</name>
                                     <systemElementUID>invalidPredExternal2</systemElementUID>
                                     <transformation>
@@ -201,8 +201,8 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component> 
-								<component uID="invalidMass">
+                                </component>
+                                <component uID="invalidMass">
                                     <name>Component with invalid mass</name>
                                     <systemElementUID>invalidPredCuboid_2</systemElementUID>
                                     <transformation>
@@ -213,7 +213,7 @@
                                         </translation>
                                     </transformation>
                                 </component>
-								<component uID="zeroHeightComponent">
+                                <component uID="zeroHeightComponent">
                                     <name>Component with zero height</name>
                                     <systemElementUID>predFace</systemElementUID>
                                     <transformation>
@@ -234,8 +234,8 @@
                                 </component>
                             </components>
                         </genericSystem>
-						<genericSystem uID="testSystem2">
-							<name>Corrupt system 2</name>
+                        <genericSystem uID="testSystem2">
+                            <name>Corrupt system 2</name>
                             <components>
                                 <component uID="ellipsoid">
                                     <name>Component with zero mass</name>
@@ -247,11 +247,11 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component> 
-							</components>
-						</genericSystem>
-						<genericSystem uID="testSystem3">
-							<name>Corrupt system 3</name>
+                                </component>
+                            </components>
+                        </genericSystem>
+                        <genericSystem uID="testSystem3">
+                            <name>Corrupt system 3</name>
                             <components>
                                 <component uID="elementWithoutGeometry">
                                     <name>Component without geometry</name>
@@ -263,141 +263,167 @@
                                             <z>0</z>
                                         </translation>
                                     </transformation>
-                                </component> 
-							</components>
-						</genericSystem>
+                                </component>
+                            </components>
+                        </genericSystem>
                     </genericSystems>
                 </systems>
             </model>
         </aircraft>
         <systemElements>
             <genericComponents>
-				<genericComponent uID="predCuboid_1">
+                <genericComponent uID="predCuboid_1">
                     <name>Predefined cuboid 1</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredCuboid">
+                <genericComponent uID="invalidPredCuboid">
                     <name>Predefined cuboid with negative length</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>-1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>-1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredCuboid_2">
+                <genericComponent uID="invalidPredCuboid_2">
                     <name>Predefined cuboid with invalid mass definition</name>
                     <geometry>
-                        <cuboid>
-                            <lengthX>1.</lengthX>
-                            <depthY>1.</depthY>
-                            <heightZ>1.</heightZ>
-                        </cuboid>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.</lengthX>
+                                <depthY>1.</depthY>
+                                <heightZ>1.</heightZ>
+                            </cuboid>
+                        </cuboids>
                     </geometry>
-					<mass/>
+                    <mass />
                 </genericComponent>
-				<genericComponent uID="invalidPredCylinder">
+                <genericComponent uID="invalidPredCylinder">
                     <name>Predefined cylinder with negative radius</name>
                     <geometry>
-                        <cylinder>
-							<radius>-1.</radius>
-							<height>1.</height>
-						</cylinder>
+                        <cylinders>
+                            <cylinder>
+                                <radius>-1.</radius>
+                                <height>1.</height>
+                            </cylinder>
+                        </cylinders>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredCone">
+                <genericComponent uID="invalidPredCone">
                     <name>Predefined cone with negative radius</name>
                     <geometry>
-                        <cone>
-							<lowerRadius>-1.</lowerRadius>
-							<height>1</height>
-						</cone>
+                        <cones>
+                            <cone>
+                                <lowerRadius>-1.</lowerRadius>
+                                <height>1</height>
+                            </cone>
+                        </cones>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="PredCylinderCone">
+                <genericComponent uID="PredCylinderCone">
                     <name>Predefined cone which is actually a cylinder</name>
                     <geometry>
-                        <cone>
-							<lowerRadius>1.</lowerRadius>
-							<upperRadius>1.</upperRadius>
-							<height>1</height>
-						</cone>
+                        <cones>
+                            <cone>
+                                <lowerRadius>1.</lowerRadius>
+                                <upperRadius>1.</upperRadius>
+                                <height>1</height>
+                            </cone>
+                        </cones>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredEllipsoid">
+                <genericComponent uID="invalidPredEllipsoid">
                     <name>Predefined ellipsoid with negative radius</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>-1.</radiusX>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>-1.</radiusX>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="predZeroVolumeEllipsoid">
+                <genericComponent uID="predZeroVolumeEllipsoid">
                     <name>Predefined ellipsoid with zero volume</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-							<diskAngle>0.</diskAngle>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                                <diskAngle>0.</diskAngle>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredExternal1">
+                <genericComponent uID="invalidPredExternal1">
                     <name>External CAD file without file format</name>
-					<geometry>
-						<external>
-							<linkToFile>nacelle.stp</linkToFile>
-							<transformation/>
-						</external>
-					</geometry>
+                    <geometry>
+                        <externals>
+                            <external>
+                                <linkToFile>nacelle.stp</linkToFile>
+                                <transformation />
+                            </external>
+                        </externals>
+                    </geometry>
                 </genericComponent>
-				<genericComponent uID="invalidPredExternal2">
+                <genericComponent uID="invalidPredExternal2">
                     <name>External CAD file with unknown file format</name>
-					<geometry>
-					    <external>
-							<linkToFile format="Stl">nacelle.stp</linkToFile>
-							<transformation/>
-						</external>
-					</geometry>
+                    <geometry>
+                        <externals>
+                            <external>
+                                <linkToFile format="Stl">nacelle.stp</linkToFile>
+                                <transformation />
+                            </external>
+                        </externals>
+                    </geometry>
                 </genericComponent>
-				<genericComponent uID="predFace">
+                <genericComponent uID="predFace">
                     <name>Predefined Face</name>
                     <geometry>
-                        <external>
-							<linkToFile format="step">face.stp</linkToFile>
-                        </external>
+                        <externals>
+                            <external>
+                                <linkToFile format="step">face.stp</linkToFile>
+                            </external>
+                        </externals>
                     </geometry>
-					<mass>
-						<density>0.1</density>
-					</mass>
+                    <mass>
+                        <density>0.1</density>
+                    </mass>
                 </genericComponent>
-				<genericComponent uID="predEllipsoid">
+                <genericComponent uID="predEllipsoid">
                     <name>Predefined ellipsoid with zero mass</name>
                     <geometry>
-                        <ellipsoid>
-                            <radiusX>1.</radiusX>
-                        </ellipsoid>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>1.</radiusX>
+                            </ellipsoid>
+                        </ellipsoids>
                     </geometry>
-					<mass>
-						<mass>0.0</mass>
-					</mass>
+                    <mass>
+                        <mass>0.0</mass>
+                    </mass>
                 </genericComponent>
-				<genericComponent uID="predElementWithoutGeometry">
+                <genericComponent uID="predElementWithoutGeometry">
                     <name>Predefined element without geometry</name>
-					<mass>
-						<mass>0.0</mass>
-					</mass>
+                    <mass>
+                        <mass>0.0</mass>
+                    </mass>
                 </genericComponent>
                 <genericComponent uID="predMssWithoutSegments">
                     <name>Predefined multi-segment shape without data</name>
-					<geometry>
-                        <multiSegmentShape/>
+                    <geometry>
+                        <multiSegmentShapes>
+                            <multiSegmentShape />
+                        </multiSegmentShapes>
                     </geometry>
                 </genericComponent>
             </genericComponents>

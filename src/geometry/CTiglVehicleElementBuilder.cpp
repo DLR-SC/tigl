@@ -33,8 +33,6 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 
-#include <generated/CPACSSubElements.h>
-#include <generated/CPACSSubElement.h>
 #include <CCPACSFuselageSegment.h>
 #include <CCPACSFuselageSegments.h>
 #include "CTiglMakeLoft.h"
@@ -56,50 +54,84 @@ CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CTiglRelativelyPosi
 {
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildSingleShape(const CCPACSElementGeometry& geom)
-{
-    return BuildSingleShapeImpl(geom);
-}
-
-TopoDS_Shape CTiglVehicleElementBuilder::BuildSingleShape(const CCPACSSubElement& geom)
-{
-    return BuildSingleShapeImpl(geom);
-}
-
 PNamedShape CTiglVehicleElementBuilder::BuildShape()
 {
     const auto& geom = *m_geometry;
 
     // Set shape name
-    std::string baseName = "unnamed";
+    std::string shapeName = "unnamed";
     if (!m_shapeName.empty()) {
-        baseName = m_shapeName;
+        shapeName = m_shapeName;
     }
     else if (const auto* parent = geom.GetNextUIDParent()) {
-        baseName = parent->GetObjectUID().get_value_or(baseName);
+        shapeName = parent->GetObjectUID().get_value_or(shapeName);
     }
 
-    // Base shape
-    TopoDS_Shape baseShape = BuildSingleShape(geom);
-
-    // Subelement shapes
+    // Build shapes
     ListPNamedShape shapes;
-    shapes.push_back(PNamedShape(new CNamedShape(baseShape, baseName)));
 
-    // Apply subelement shapes
-    if (geom.GetSubElements()) {
-        const auto& subElements = *geom.GetSubElements();
+    auto addPart = [&](const std::string& type, const TopoDS_Shape& s, size_t idx) {
+        const std::string n = shapeName + "_" + type + "_" + std::to_string(idx);
+        shapes.push_back(PNamedShape(new CNamedShape(s, n)));
+    };
 
-        const auto& elementList = subElements.GetSubElements();
-        for (size_t i = 0; i < elementList.size(); ++i) {
-            const auto& element = *elementList[i];
-
-            TopoDS_Shape elementShape     = BuildSingleShape(element);
-            const std::string elementName = baseName + "_subElement_" + std::to_string(i + 1);
-
-            shapes.push_back(PNamedShape(new CNamedShape(elementShape, elementName)));
+    if (const auto& cuboidsOpt = geom.GetCuboids(); cuboidsOpt) {
+        const auto& cuboids = *cuboidsOpt;
+        for (size_t i = 1; i <= cuboids.GetCuboidCount(); ++i) {
+            const auto& c = cuboids.GetCuboid(i);
+            addPart("cuboid", BuildCuboidShape(c), i);
         }
     }
+
+    if (const auto& cylindersOpt = geom.GetCylinders(); cylindersOpt) {
+        const auto& cylinders = *cylindersOpt;
+        for (size_t i = 1; i <= cylinders.GetCylinderCount(); ++i) {
+            const auto& c = cylinders.GetCylinder(i);
+            addPart("cylinder", BuildCylinderShape(c), i);
+        }
+    }
+
+    if (const auto& conesOpt = geom.GetCones(); conesOpt) {
+        const auto& cones = *conesOpt;
+        for (size_t i = 1; i <= cones.GetConeCount(); ++i) {
+            const auto& c = cones.GetCone(i);
+            addPart("cone", BuildConeShape(c), i);
+        }
+    }
+
+    if (const auto& ellipsoidsOpt = geom.GetEllipsoids(); ellipsoidsOpt) {
+        const auto& ellipsoids = *ellipsoidsOpt;
+        for (size_t i = 1; i <= ellipsoids.GetEllipsoidCount(); ++i) {
+            const auto& e = ellipsoids.GetEllipsoid(i);
+            addPart("ellipsoid", BuildEllipsoidShape(e), i);
+        }
+    }
+
+    if (const auto& mssOpt = geom.GetMultiSegmentShapes(); mssOpt) {
+        const auto& mss = *mssOpt;
+        for (size_t i = 1; i <= mss.GetMultiSegmentShapeCount(); ++i) {
+            const auto& m = mss.GetMultiSegmentShape(i);
+            addPart("multiSegmentShape", BuildMultiSegmentShape(m), i);
+        }
+    }
+
+    if (const auto& externalsOpt = geom.GetExternals(); externalsOpt) {
+        const auto& exts = *externalsOpt;
+        for (size_t i = 1; i <= exts.GetExternalCount(); ++i) {
+            const auto& e = exts.GetExternal(i);
+            addPart("external", BuildExternalShape(e), i);
+        }
+    }
+
+    if (shapes.empty()) {
+        std::string uid = "unknown";
+        if (const auto* parent = geom.GetNextUIDParent()) {
+            uid = parent->GetObjectUID().get_value_or(uid);
+        }
+        throw CTiglError("No geometry primitives defined for uID=\"" + uid + "\"");
+    }
+
+    // build a base/compound shape from all parts
     PNamedShape groupedShape = CGroupShapes(shapes);
 
     // apply transformation from geom

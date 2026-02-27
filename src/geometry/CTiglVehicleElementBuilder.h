@@ -19,8 +19,14 @@
 #pragma once
 
 #include <generated/CPACSElementGeometry.h>
-#include <generated/CPACSSubElement.h>
 #include "tigl_internal.h"
+
+#include "CPACSCone.h"
+#include "CPACSCuboid.h"
+#include "CPACSCylinder.h"
+#include "CPACSEllipsoid.h"
+#include "CPACSExternalGeometry.h"
+#include "CPACSMultiSegmentShape.h"
 
 namespace tigl
 {
@@ -35,28 +41,6 @@ public:
     TIGL_EXPORT PNamedShape BuildShape();
 
 private:
-    template <typename TGeom> TopoDS_Shape BuildSingleShapeImpl(const TGeom& geom)
-    {
-        if (const auto& p = geom.GetCuboid_choice1())
-            return BuildCuboidShape(*p);
-        else if (const auto& c = geom.GetCylinder_choice2())
-            return BuildCylinderShape(*c);
-        else if (const auto& c = geom.GetCone_choice3())
-            return BuildConeShape(*c);
-        else if (const auto& e = geom.GetEllipsoid_choice4())
-            return BuildEllipsoidShape(*e);
-        else if (const auto& m = geom.GetMultiSegmentShape_choice5())
-            return BuildMultiSegmentShape(*m);
-        else if (const auto& e = geom.GetExternal_choice6())
-            return BuildExternalShape(*e);
-
-        std::string uid = "unknown";
-        if (const auto* parent = geom.GetNextUIDParent()) {
-            uid = parent->GetObjectUID().get_value_or(uid);
-        }
-        throw CTiglError("Unsupported geometry for uID=\"" + uid + "\"");
-    }
-
     std::optional<CTiglTransformation> m_transformation;
     const CCPACSElementGeometry* m_geometry                  = nullptr;
     const CTiglRelativelyPositionedComponent* m_refComponent = nullptr;
@@ -71,9 +55,6 @@ private:
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
     TopoDS_Shape BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m);
     TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e);
-
-    TopoDS_Shape BuildSingleShape(const CCPACSElementGeometry& geom);
-    TopoDS_Shape BuildSingleShape(const CCPACSSubElement& geom);
 };
 
 } //namespace tigl

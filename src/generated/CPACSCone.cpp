@@ -17,8 +17,7 @@
 
 #include <cassert>
 #include "CPACSCone.h"
-#include "CPACSElementGeometry.h"
-#include "CPACSSubElement.h"
+#include "CPACSCones.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,39 +28,33 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCone::CPACSCone(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+    CPACSCone::CPACSCone(CPACSCones* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_lowerRadius(0)
         , m_height(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometry);
-    }
-
-    CPACSCone::CPACSCone(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_lowerRadius(0)
-        , m_height(0)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSCone::~CPACSCone()
     {
     }
 
+    const CPACSCones* CPACSCone::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSCones* CPACSCone::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSCone::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }
@@ -69,12 +62,7 @@ namespace generated
     CTiglUIDObject* CPACSCone::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }

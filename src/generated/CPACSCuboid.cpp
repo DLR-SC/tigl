@@ -17,8 +17,7 @@
 
 #include <cassert>
 #include "CPACSCuboid.h"
-#include "CPACSElementGeometry.h"
-#include "CPACSSubElement.h"
+#include "CPACSCuboids.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +28,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCuboid::CPACSCuboid(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
+    CPACSCuboid::CPACSCuboid(CPACSCuboids* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_lengthX(0)
         , m_depthY(0)
@@ -37,33 +36,26 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementGeometry);
-    }
-
-    CPACSCuboid::CPACSCuboid(CPACSSubElement* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_lengthX(0)
-        , m_depthY(0)
-        , m_heightZ(0)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSSubElement);
     }
 
     CPACSCuboid::~CPACSCuboid()
     {
     }
 
+    const CPACSCuboids* CPACSCuboid::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSCuboids* CPACSCuboid::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSCuboid::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }
@@ -71,12 +63,7 @@ namespace generated
     CTiglUIDObject* CPACSCuboid::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSElementGeometry>()) {
-                return GetParent<CPACSElementGeometry>()->GetNextUIDParent();
-            }
-            if (IsParent<CPACSSubElement>()) {
-                return GetParent<CPACSSubElement>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }

@@ -17,14 +17,11 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/utility/in_place_factory.hpp>
-#include <CCPACSTransformation.h>
 #include <string>
 #include <tixi.h>
-#include "CPACSLinkToFile.h"
-#include "CreateIfNotExists.h"
+#include <vector>
 #include "tigl_internal.h"
+#include "UniquePtr.h"
 
 namespace tigl
 {
@@ -33,25 +30,25 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSExternalGeometries;
+    class CPACSExternalGeometry;
+    class CPACSElementGeometry;
 
     // This class is used in:
-    // CPACSExternalGeometries
+    // CPACSElementGeometry
 
-    /// @brief External geometry
+    /// @brief External Geometries
     /// 
     /// 
-    /// 
-    class CPACSExternalGeometry
+    class CPACSExternalGeometries
     {
     public:
-        TIGL_EXPORT CPACSExternalGeometry(CPACSExternalGeometries* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSExternalGeometries(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSExternalGeometry();
+        TIGL_EXPORT virtual ~CPACSExternalGeometries();
 
-        TIGL_EXPORT CPACSExternalGeometries* GetParent();
+        TIGL_EXPORT CPACSElementGeometry* GetParent();
 
-        TIGL_EXPORT const CPACSExternalGeometries* GetParent() const;
+        TIGL_EXPORT const CPACSElementGeometry* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -62,33 +59,35 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSLinkToFile& GetLinkToFile() const;
-        TIGL_EXPORT virtual CPACSLinkToFile& GetLinkToFile();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSExternalGeometry>>& GetExternals() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSExternalGeometry>>& GetExternals();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSTransformation>& GetTransformation() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSTransformation>& GetTransformation();
+        TIGL_EXPORT virtual size_t GetExternalCount() const;
 
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveTransformation();
+        TIGL_EXPORT virtual const CPACSExternalGeometry& GetExternal(size_t index) const;
+        TIGL_EXPORT virtual CPACSExternalGeometry& GetExternal(size_t index);
+
+        TIGL_EXPORT virtual CPACSExternalGeometry& AddExternal();
+        TIGL_EXPORT virtual void RemoveExternal(CPACSExternalGeometry& ref);
 
     protected:
-        CPACSExternalGeometries* m_parent;
+        CPACSElementGeometry* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        CPACSLinkToFile                       m_linkToFile;
-        boost::optional<CCPACSTransformation> m_transformation;
+        std::vector<std::unique_ptr<CPACSExternalGeometry>> m_externals;
 
     private:
-        CPACSExternalGeometry(const CPACSExternalGeometry&) = delete;
-        CPACSExternalGeometry& operator=(const CPACSExternalGeometry&) = delete;
+        CPACSExternalGeometries(const CPACSExternalGeometries&) = delete;
+        CPACSExternalGeometries& operator=(const CPACSExternalGeometries&) = delete;
 
-        CPACSExternalGeometry(CPACSExternalGeometry&&) = delete;
-        CPACSExternalGeometry& operator=(CPACSExternalGeometry&&) = delete;
+        CPACSExternalGeometries(CPACSExternalGeometries&&) = delete;
+        CPACSExternalGeometries& operator=(CPACSExternalGeometries&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSExternalGeometry = generated::CPACSExternalGeometry;
 using CCPACSExternalGeometries = generated::CPACSExternalGeometries;
+using CCPACSExternalGeometry = generated::CPACSExternalGeometry;
+using CCPACSElementGeometry = generated::CPACSElementGeometry;
 } // namespace tigl

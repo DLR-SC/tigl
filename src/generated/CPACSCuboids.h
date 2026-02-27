@@ -30,21 +30,21 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSubElement;
+    class CPACSCuboid;
     class CPACSElementGeometry;
 
     // This class is used in:
     // CPACSElementGeometry
 
-    /// @brief Sub-elements
+    /// @brief Cuboids
     /// 
     /// 
-    class CPACSSubElements
+    class CPACSCuboids
     {
     public:
-        TIGL_EXPORT CPACSSubElements(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCuboids(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSSubElements();
+        TIGL_EXPORT virtual ~CPACSCuboids();
 
         TIGL_EXPORT CPACSElementGeometry* GetParent();
 
@@ -59,35 +59,35 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSubElement>>& GetSubElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSubElement>>& GetSubElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCuboid>>& GetCuboids() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCuboid>>& GetCuboids();
 
-        TIGL_EXPORT virtual size_t GetSubElementCount() const;
+        TIGL_EXPORT virtual size_t GetCuboidCount() const;
 
-        TIGL_EXPORT virtual const CPACSSubElement& GetSubElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSSubElement& GetSubElement(size_t index);
+        TIGL_EXPORT virtual const CPACSCuboid& GetCuboid(size_t index) const;
+        TIGL_EXPORT virtual CPACSCuboid& GetCuboid(size_t index);
 
-        TIGL_EXPORT virtual CPACSSubElement& AddSubElement();
-        TIGL_EXPORT virtual void RemoveSubElement(CPACSSubElement& ref);
+        TIGL_EXPORT virtual CPACSCuboid& AddCuboid();
+        TIGL_EXPORT virtual void RemoveCuboid(CPACSCuboid& ref);
 
     protected:
         CPACSElementGeometry* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSubElement>> m_subElements;
+        std::vector<std::unique_ptr<CPACSCuboid>> m_cuboids;
 
     private:
-        CPACSSubElements(const CPACSSubElements&) = delete;
-        CPACSSubElements& operator=(const CPACSSubElements&) = delete;
+        CPACSCuboids(const CPACSCuboids&) = delete;
+        CPACSCuboids& operator=(const CPACSCuboids&) = delete;
 
-        CPACSSubElements(CPACSSubElements&&) = delete;
-        CPACSSubElements& operator=(CPACSSubElements&&) = delete;
+        CPACSCuboids(CPACSCuboids&&) = delete;
+        CPACSCuboids& operator=(CPACSCuboids&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSSubElements = generated::CPACSSubElements;
-using CCPACSSubElement = generated::CPACSSubElement;
+using CCPACSCuboids = generated::CPACSCuboids;
+using CCPACSCuboid = generated::CPACSCuboid;
 using CCPACSElementGeometry = generated::CPACSElementGeometry;
 } // namespace tigl

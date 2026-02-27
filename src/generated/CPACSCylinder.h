@@ -22,9 +22,7 @@
 #include <CCPACSTransformationSE3.h>
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
 #include "CreateIfNotExists.h"
-#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -34,12 +32,10 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSElementGeometry;
-    class CPACSSubElement;
+    class CPACSCylinders;
 
     // This class is used in:
-    // CPACSElementGeometry
-    // CPACSSubElement
+    // CPACSCylinders
 
     /// @brief Cylinder
     /// 
@@ -48,36 +44,13 @@ namespace generated
     class CPACSCylinder
     {
     public:
-        TIGL_EXPORT CPACSCylinder(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSCylinder(CPACSSubElement* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCylinder(CPACSCylinders* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSCylinder();
 
-        template<typename P>
-        bool IsParent() const
-        {
-            return m_parentType != NULL && *m_parentType == typeid(P);
-        }
+        TIGL_EXPORT CPACSCylinders* GetParent();
 
-        template<typename P>
-        P* GetParent()
-        {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSCylinder");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
-
-        template<typename P>
-        const P* GetParent() const
-        {
-            static_assert(std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CPACSSubElement>::value, "template argument for P is not a parent class of CPACSCylinder");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
+        TIGL_EXPORT const CPACSCylinders* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -101,8 +74,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTransformation();
 
     protected:
-        void* m_parent;
-        const std::type_info* m_parentType;
+        CPACSCylinders* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -125,6 +97,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCylinder = generated::CPACSCylinder;
-using CCPACSElementGeometry = generated::CPACSElementGeometry;
-using CCPACSSubElement = generated::CPACSSubElement;
+using CCPACSCylinders = generated::CPACSCylinders;
 } // namespace tigl

@@ -161,7 +161,7 @@ TEST_F(Systems, ComponentsGeometry)
     {
         PNamedShape shape = cuboid_1->GetLoft();
         ASSERT_NE(shape, nullptr);
-        EXPECT_EQ(shape->Name(), "cuboid_1");
+        EXPECT_EQ(shape->Name(), "cuboid_1_cuboid_1");
 
         unsigned int faces = shape->GetFaceCount();
         EXPECT_EQ(faces, 6u) << "Cuboid should have 6 faces";
@@ -410,7 +410,7 @@ TEST_F(InvalidSystems, InvalidShapes)
         const tigl::CCPACSComponent& comp = system.GetComponents().GetComponent(12);
         const auto loft                   = comp.GetLoft();
         ASSERT_TRUE(loft);
-        EXPECT_EQ(loft->Name(), "predCuboid_1");
+        EXPECT_EQ(loft->Name(), "predCuboid_1_cuboid_1");
     }
 
     {
@@ -499,7 +499,7 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
     {
         auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem3");
         CheckExceptionMessage([&] { (void)sys->GetCenterOfGravity(); },
-                              "Unsupported geometry for uID=\"predElementWithoutGeometry\"");
+                              "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
     }
 }
 
