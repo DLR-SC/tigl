@@ -178,6 +178,7 @@
 %boost_optional(tigl::CCPACSRectangleProfile)
 %boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
+%boost_optional(tigl::generated::CPACSNacaProfile)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
 %boost_optional(tigl::generated::CPACSRotorHub)
@@ -512,7 +513,7 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
 %include "NACA4Calculator.h"
-%include "CPACSNacaProfile.h"
+%include "generated/CPACSNacaProfile.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
 %include "CTiglSectionElement.h"
