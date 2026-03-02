@@ -54,7 +54,7 @@ class NACA4Calculator{
          * 
          * @return double 
          */
-        double get_trailing_edge_thickness() const;
+        double get_trailing_edge_thickness() const; 
 
         /**
          * @brief Calculate the camberline
@@ -62,7 +62,7 @@ class NACA4Calculator{
          * @param x 
          * @return double 
          */
-        double camberline(double x) const;
+        double camberline(double x) const; 
 
 
         /**
@@ -71,7 +71,7 @@ class NACA4Calculator{
          * @param x 
          * @return gp_Vec2d 
          */
-        gp_Vec2d upper_curve(double x) const;
+        gp_Vec2d upper_curve(double x) const; 
 
 
         /**
@@ -80,7 +80,7 @@ class NACA4Calculator{
          * @param x 
          * @return gp_Vec2d 
          */
-        gp_Vec2d lower_curve(double x) const;
+        gp_Vec2d lower_curve(double x) const; 
 
 
         /**
@@ -89,7 +89,7 @@ class NACA4Calculator{
          * @param x 
          * @return double 
          */
-        double profile_thickness(double x) const;
+        double profile_thickness(double x) const; 
 
         /**
          * @brief Construct a new trailing edge thickness object
@@ -97,12 +97,12 @@ class NACA4Calculator{
          * @param y 
          * @return double
          */
-        double trailing_edge_thickness_function(double y) const;
+        double trailing_edge_thickness_function(double y) const; 
 
 
-        Handle(Geom_BSplineCurve) upper_bspline() const;
+        Handle(Geom_BSplineCurve) upper_bspline() const; 
 
-        Handle(Geom_BSplineCurve) lower_bspline() const;
+        Handle(Geom_BSplineCurve) lower_bspline() const; 
 
     private:
 
