@@ -34,6 +34,9 @@ public:
 
     ~TIGLCreatorSettingsDialog() override = default;
 
+signals:
+    void settingsUpdated();
+
 public slots:
     void updateEntries();
 
