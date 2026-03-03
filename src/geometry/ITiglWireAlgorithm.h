@@ -31,6 +31,13 @@
 namespace tigl 
 {
 
+// TODO(bgruber): prefixed _ as these enum values name clash with the one's of enum TiglContinuity
+enum ETiglContinuity
+{
+    _C0,
+    _C1
+};
+
 class ITiglWireAlgorithm
 {
 

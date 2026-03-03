@@ -108,11 +108,22 @@ namespace generated
             }
         }
 
+        // read element approximationSettings
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/approximationSettings")) {
+            m_approximationSettings = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
+            try {
+                m_approximationSettings->ReadCPACS(tixiHandle, xpath + "/approximationSettings");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read approximationSettings at xpath " << xpath << ": " << e.what();
+                m_approximationSettings = boost::none;
+            }
+        }
+
     }
 
     void CPACSCurvePointListXYZ::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "x", "y", "z", "kinkIndices", "parameterMap" };
+        const std::vector<std::string> childElemOrder = { "x", "y", "z", "kinkIndices", "parameterMap", "approximationSettings" };
 
         // write element x
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/x", childElemOrder);
@@ -145,6 +156,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/parameterMap")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/parameterMap");
+            }
+        }
+
+        // write element approximationSettings
+        if (m_approximationSettings) {
+            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/approximationSettings", childElemOrder);
+            m_approximationSettings->WriteCPACS(tixiHandle, xpath + "/approximationSettings");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/approximationSettings")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/approximationSettings");
             }
         }
 
@@ -200,6 +222,16 @@ namespace generated
         return m_parameterMap;
     }
 
+    const boost::optional<CPACSApproximationSettings>& CPACSCurvePointListXYZ::GetApproximationSettings() const
+    {
+        return m_approximationSettings;
+    }
+
+    boost::optional<CPACSApproximationSettings>& CPACSCurvePointListXYZ::GetApproximationSettings()
+    {
+        return m_approximationSettings;
+    }
+
     CCPACSStringVector& CPACSCurvePointListXYZ::GetKinkIndices(CreateIfNotExistsTag)
     {
         if (!m_kinkIndices)
@@ -222,6 +254,18 @@ namespace generated
     void CPACSCurvePointListXYZ::RemoveParameterMap()
     {
         m_parameterMap = boost::none;
+    }
+
+    CPACSApproximationSettings& CPACSCurvePointListXYZ::GetApproximationSettings(CreateIfNotExistsTag)
+    {
+        if (!m_approximationSettings)
+            m_approximationSettings = boost::in_place(reinterpret_cast<CCPACSCurvePointListXYZ*>(this));
+        return *m_approximationSettings;
+    }
+
+    void CPACSCurvePointListXYZ::RemoveApproximationSettings()
+    {
+        m_approximationSettings = boost::none;
     }
 
 } // namespace generated

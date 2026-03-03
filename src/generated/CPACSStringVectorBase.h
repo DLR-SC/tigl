@@ -37,9 +37,11 @@ class CCPACSRotorBladeAttachment;
 
 namespace generated
 {
+    class CPACSApproximationSettings;
     class CPACSTrackJointPosition;
 
     // This class is used in:
+    // CPACSApproximationSettings
     // CPACSCst2D
     // CPACSCurveParamPointMap
     // CPACSCurvePointListXYZ
@@ -72,6 +74,7 @@ namespace generated
     class CPACSStringVectorBase
     {
     public:
+        TIGL_EXPORT CPACSStringVectorBase(CPACSApproximationSettings* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSWingProfileCST* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSCurveParamPointMap* parent);
         TIGL_EXPORT CPACSStringVectorBase(CCPACSCurvePointListXYZ* parent);
@@ -91,7 +94,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
+            static_assert(std::is_same<P, CPACSApproximationSettings>::value || std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -101,7 +104,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
+            static_assert(std::is_same<P, CPACSApproximationSettings>::value || std::is_same<P, CCPACSWingProfileCST>::value || std::is_same<P, CCPACSCurveParamPointMap>::value || std::is_same<P, CCPACSCurvePointListXYZ>::value || std::is_same<P, CCPACSPointListRelXYZVector>::value || std::is_same<P, CCPACSPointListXYVector>::value || std::is_same<P, CCPACSRotorBladeAttachment>::value || std::is_same<P, CPACSTrackJointPosition>::value, "template argument for P is not a parent class of CPACSStringVectorBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -167,5 +170,6 @@ namespace generated
 // CPACSStringVectorBase is customized, use type CCPACSStringVector directly
 
 // Aliases in tigl namespace
+using CCPACSApproximationSettings = generated::CPACSApproximationSettings;
 using CCPACSTrackJointPosition = generated::CPACSTrackJointPosition;
 } // namespace tigl

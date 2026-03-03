@@ -2419,6 +2419,13 @@ marko.alder@dlr.de
                             <xsd:documentation>Map between point index and curve parameter.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="approximationSettings" type="approximationSettingsType" maxOccurs="1" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>If this element is specified, the given point list is approximated instead of interpolated when creating a b-spline representation of the profile.
+                            This has the advantage of more control over the complexity of the resulting b-spline curves, but does not guarantee that the b-spline curve passes through all given points as for the interpolation approach introducing possible imprecisions in the geometrical representation of the profile.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -36424,6 +36431,55 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="approximationSettingsType">
+        <xsd:sequence>
+            <xsd:choice>
+                <xsd:element name="controlPointNumber" default="12">
+                    <xsd:annotation>
+                        <xsd:documentation>Defines the number of control points that should be used for approximating the given points with a b-spline curve.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:simpleType>
+                        <xsd:restriction base="integerBaseType">
+                            <xsd:minInclusive value="3"></xsd:minInclusive>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="maximumError" default="1e-5">
+                    <xsd:annotation>
+                        <xsd:documentation>Instead of specifying the number of control points, the upper bound for the error of the approximation is provided.
+                        The number of control points is increased automatically until the approximation error lies below the given maximum approximation error.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:simpleType>
+                        <xsd:restriction base="doubleBaseType">
+                            <xsd:minExclusive value="0"></xsd:minExclusive>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:choice>
+            <xsd:element name="interpolatedPointsIndices" maxOccurs="1" minOccurs="0" type="stringVectorBaseType">
+                <xsd:annotation>
+                    <xsd:documentation>Index list of points that should still be interpolated. Each index is in the range [1, npoints].
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="errorComputationMethod" default="RMSE">
+            <xsd:annotation>
+                <xsd:documentation>Here, the approximation error's computation method can be chosen. The error is computed between the defined points (A) and their respective projections on the approximated curve (B).
+                By default, this error is computed as the root mean square error of the distances between (A) and (B).
+                In the following, the currently allowed entries are listed together with their meaning (-> respective computation method):
+                    1. RMSE: Root Mean Square Error
+                    2. MaxError: Maximum Error
+                </xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
     </xsd:complexType>
 
 </xsd:schema>
