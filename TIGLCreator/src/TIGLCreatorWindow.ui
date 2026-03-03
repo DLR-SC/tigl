@@ -381,7 +381,7 @@
   </widget>
   <widget class="QDockWidget" name="editorDockWidget">
    <property name="windowTitle">
-    <string>CPACS Editor</string>
+    <string>Editor</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
