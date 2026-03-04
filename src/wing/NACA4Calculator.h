@@ -33,11 +33,9 @@
 namespace tigl{
 
 
-
 class NACA4Calculator{
 
     public:
-    
         /**
         * @brief Construct a new NACA4Calculator object
         * 
@@ -64,7 +62,6 @@ class NACA4Calculator{
          */
         TIGL_EXPORT double camberline(double x) const; 
 
-
         /**
          * @brief Calculate the y coordinate for the upper curve
          * 
@@ -73,7 +70,6 @@ class NACA4Calculator{
          */
         TIGL_EXPORT gp_Vec2d upper_curve(double x) const; 
 
-
         /**
          * @brief Calculate the y coordinate for the lower curve
          * 
@@ -81,7 +77,6 @@ class NACA4Calculator{
          * @return gp_Vec2d 
          */
         TIGL_EXPORT gp_Vec2d lower_curve(double x) const; 
-
 
         /**
          * @brief Calculate the thickness of the profile
@@ -99,15 +94,11 @@ class NACA4Calculator{
          */
         TIGL_EXPORT double trailing_edge_thickness_function(double y) const; 
 
-
         TIGL_EXPORT Handle(Geom_BSplineCurve) upper_bspline() const; 
 
         TIGL_EXPORT Handle(Geom_BSplineCurve) lower_bspline() const; 
 
     private:
-
-     
-
         /**
          * @brief Calculate the derivative of the camberline
          * 
@@ -123,7 +114,6 @@ class NACA4Calculator{
          * @return gp_Vec2d 
          */
         gp_Vec2d normal(double x) const;
-
 
 
     private:
@@ -153,8 +143,4 @@ class NACA4LowerCurve : public MathFunc3d {
     private:
          NACA4Calculator const& calculator;
 };
-
-
-
-
 }

@@ -128,8 +128,13 @@ protected:
     Handle(Geom2d_TrimmedCurve) GetChordLine() const;
 
     void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
-    //void buildPointListAlgo() const;
-    void buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const; //Ctiflwingprofilealgo geht nicht, vorschlage von debugger: itiglwingprofilealgo (davor: ctiglwingprofilenaca)!!!!
+
+    /**
+     * @brief Builds the NACA algorithm for the wing profile.
+     * 
+     * @param cache 
+     */
+    void buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const; 
     
     // Copy constructor
     CCPACSWingProfile(const CCPACSWingProfile& );
