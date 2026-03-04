@@ -56,9 +56,6 @@ protected:
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-
-        
-
     }
 
     void TearDown() override 
@@ -74,15 +71,10 @@ protected:
     
 };
 
-
 /******************************************************************************/
 
-/**
-* Tests if CST B-spline curve intersects the sample points
-*/
 TEST_F(WingNACAProfile, createWing)
 {
-    
     // read configuration
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -94,7 +86,5 @@ TEST_F(WingNACAProfile, createWing)
         //auto wingShape = config.GetWing(1).GetLoft()->Shape();
         BRepTools::Write(upperWire, "upperWire.brep");
         BRepTools::Write(lowerWire, "lowerWire.brep");
-        BRepTools::Write(trailingEdge, "trailingEdge.brep");
-
-        
+        BRepTools::Write(trailingEdge, "trailingEdge.brep");     
 }

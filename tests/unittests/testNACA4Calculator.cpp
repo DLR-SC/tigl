@@ -61,7 +61,7 @@
 
 
 TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
-    tigl::NACA4Calculator  NACA4(2,2,12, 0.00126);
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
@@ -77,7 +77,7 @@ TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
 }
 
 TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
-    tigl::NACA4Calculator  NACA4(2,2,12, 0.00126);
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252); //davor wars 0.00126
     tigl::NACA4LowerCurve lowerCurve(NACA4);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.999937), 1e-6); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
@@ -91,7 +91,7 @@ TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
-    tigl::NACA4Calculator NACA4(0,0,12, 0.00126);
+    tigl::NACA4Calculator NACA4(0,0,12, 0.00252);
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
     EXPECT_NEAR(result1.X(), (0.5), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
@@ -107,7 +107,7 @@ TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
-    tigl::NACA4Calculator NACA4(0,0,9, 0.000945);
+    tigl::NACA4Calculator NACA4(0,0,9, 0.00189);
     gp_Vec2d result1 = NACA4.upper_curve(0.2);
     EXPECT_NEAR(result1.X(), (0.2), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.0430316), 1e-7);
@@ -124,7 +124,7 @@ TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
 }
 
 TEST(NACA4Calculator, Nacacalculatortest4_coordinates){
-    tigl::NACA4Calculator NACA4(6,5,9, 0.000945);
+    tigl::NACA4Calculator NACA4(6,5,9, 0.00189);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00022), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.000918906), 1e-9);
