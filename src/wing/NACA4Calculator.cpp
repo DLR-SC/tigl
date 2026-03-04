@@ -122,12 +122,12 @@ namespace tigl{
             return normal/nrm;
         }
 
-        double NACA4Calculator::trailing_edge_thickness_function(double y) const{ //y ist die dicke bei x = 1 aber wenn ihc fürs gl profil bei x = 0.5 die dicke ausrechnen will brauche ich ja dnn das e
+        double NACA4Calculator::trailing_edge_thickness_function(double y) const{ 
             double t = max_profile_thickness;
             if(y < 0){
                 throw ::std::logic_error("error in NACA4Calculator::trailing_edge_thickness_function: trailing_edge_thickness must be bigger than 0.");
             }
-            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843); //bekommt man, wenn man in die normale formel für x = 1 einsetzt und nach e auflöst
+            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843); 
         }
 
         Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{

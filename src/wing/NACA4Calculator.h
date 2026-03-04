@@ -124,8 +124,27 @@ class NACA4UpperCurve : public MathFunc3d {
     public: 
         TIGL_EXPORT explicit NACA4UpperCurve( NACA4Calculator const& calculator);
 
+        /**
+         * @brief Get the X coordinate of the upper curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueX(double t) override;
+
+        /**
+         * @brief Get the Y coordinate of the upper curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueY(double t) override;
+        /**
+         * @brief Get the Z coordinate of the upper curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueZ(double t) override;
 
     private:
@@ -136,8 +155,28 @@ class NACA4LowerCurve : public MathFunc3d {
     public: 
         TIGL_EXPORT explicit NACA4LowerCurve( NACA4Calculator const& calculator);
 
+        /**
+         * @brief Get the X coordinate of the lower curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueX(double t) override;
+
+        /**
+         * @brief Get the Y coordinate of the lower curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueY(double t) override;
+
+        /**
+         * @brief Get the Z coordinate of the lower curve
+         * 
+         * @param t 
+         * @return double 
+         */
         double valueZ(double t) override;
 
     private:

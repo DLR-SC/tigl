@@ -40,31 +40,76 @@ namespace tigl{
     public:
         CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef);
         
-        // Update of wire points ...
+        /**
+         * @brief Update of wire points
+         * 
+         * @return TIGL_EXPORT 
+         */
         TIGL_EXPORT void Invalidate() const override;
         
-        // Returns the profile points as read from TIXI.
+        /**
+         * @brief Returns the profile points as read from TIXI.
+         * 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const std::vector<CTiglPoint>& GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
 
-        // get upper wing profile wire
+        /**
+         * @brief Get upper wing profile wire
+         * 
+         * @param mod 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         // get lower wing profile wire
+        /**
+         * @brief Get lower wing profile wire
+         * 
+         * @param mod 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         // get trailing edge
+        /**
+         * @brief Get trailing edge
+         * 
+         * @param mod 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         // gets the upper and lower wing profile into on edge
+        /**
+         * @brief Get upper and lower wing profile into one edge
+         * 
+         * @param mod 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         // get leading edge point();
+        /**
+         * @brief Get leading edge point
+         * 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const gp_Pnt & GetLEPoint() const override;
 
         // get trailing edge point();
+        /**
+         * @brief Get trailing edge point
+         * 
+         * @return TIGL_EXPORT const& 
+         */
         TIGL_EXPORT const gp_Pnt & GetTEPoint() const override;
 
-        // CST profiles have always sharp trailing edges
+        /**
+         * @brief Check if the wing profile has a blunt trailing edge
+         * 
+         * @return TIGL_EXPORT 
+         */
         TIGL_EXPORT bool HasBluntTE() const override;
 
 
