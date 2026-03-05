@@ -31,10 +31,10 @@
 namespace tigl
 {
 
-class CTiglVehicleElementBuilder
+class CTiglElementGeometryBuilder
 {
 public:
-    explicit CTiglVehicleElementBuilder(const CTiglRelativelyPositionedComponent& refComponent,
+    explicit CTiglElementGeometryBuilder(const CTiglRelativelyPositionedComponent& refComponent,
                                         const CCPACSConfiguration& refConfig, const CCPACSElementGeometry& geometry,
                                         const std::string& shapeName, const std::string& cpacsDocumentPath);
 

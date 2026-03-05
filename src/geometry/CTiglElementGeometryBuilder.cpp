@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-#include "CTiglVehicleElementBuilder.h"
+#include "CTiglElementGeometryBuilder.h"
 #include "UniquePtr.h"
 #include "CNamedShape.h"
 
@@ -40,7 +40,7 @@
 namespace tigl
 {
 
-CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CTiglRelativelyPositionedComponent& refComponent,
+CTiglElementGeometryBuilder::CTiglElementGeometryBuilder(const CTiglRelativelyPositionedComponent& refComponent,
                                                        const CCPACSConfiguration& refConfig,
                                                        const CCPACSElementGeometry& geometry,
                                                        const std::string& shapeName,
@@ -53,7 +53,7 @@ CTiglVehicleElementBuilder::CTiglVehicleElementBuilder(const CTiglRelativelyPosi
 {
 }
 
-PNamedShape CTiglVehicleElementBuilder::BuildShape()
+PNamedShape CTiglElementGeometryBuilder::BuildShape()
 {
     const auto& geom = *m_geometry;
 
@@ -142,7 +142,7 @@ PNamedShape CTiglVehicleElementBuilder::BuildShape()
     return groupedShape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c)
 {
     const double lengthX = c.GetLengthX();
     const double depthY  = c.GetDepthY();
@@ -182,7 +182,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCuboidShape(const CCPACSCuboid& c)
     return shape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildCylinderShape(const CCPACSCylinder& c)
 {
     const double radius = c.GetRadius();
     const double height = c.GetHeight();
@@ -206,7 +206,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildCylinderShape(const CCPACSCylinder
     return shape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildConeShape(const CCPACSCone& c)
 {
     const double lowerRadius = c.GetLowerRadius();
     const double upperRadius = c.GetUpperRadius().get_value_or(0);
@@ -242,7 +242,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildConeShape(const CCPACSCone& c)
     return shape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
 {
     double radiusX     = e.GetRadiusX();
     double radiusY     = e.GetRadiusY().get_value_or(radiusX);
@@ -275,7 +275,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildEllipsoidShape(const CCPACSEllipso
     return shape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)
 {
     auto const& segments = m.GetSegments();
     segments.SetReferenceParent(m_refComponent);
@@ -318,7 +318,7 @@ TopoDS_Shape CTiglVehicleElementBuilder::BuildMultiSegmentShape(const CCPACSMult
     return shape;
 }
 
-TopoDS_Shape CTiglVehicleElementBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)
 {
     const auto& link = e.GetLinkToFile();
 

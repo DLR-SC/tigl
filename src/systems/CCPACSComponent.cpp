@@ -27,7 +27,7 @@
 #include "CCPACSACSystems.h"
 #include "generated/CPACSComponent.h"
 #include "CTiglUIDManager.h"
-#include "CTiglVehicleElementBuilder.h"
+#include "CTiglElementGeometryBuilder.h"
 #include "tiglcommonfunctions.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSElectricMotor.h"
@@ -168,7 +168,7 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
     // The builder works on the generic CTiglRelativelyPositionedComponent, 
     // therefore CCPACSComponent-specific information (configuration, geometry, uID) is extracted at this level
-    CTiglVehicleElementBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
+    CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
     PNamedShape shape = builder.BuildShape();
 
     // Apply local transformation and return shape

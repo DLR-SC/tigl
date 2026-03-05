@@ -37,7 +37,6 @@
 #include "CTiglPoint.h"
 
 #include "generated/CPACSElementGeometry.h"
-#include "CTiglVehicleElementBuilder.h"
 #include "generated/CPACSVehicleElementBase.h"
 
 class Systems : public ::testing::Test
