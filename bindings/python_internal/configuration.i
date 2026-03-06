@@ -621,10 +621,11 @@ class CCPACSGenericSystem;
 %boost_optional(tigl::CCPACSGenericSystems)
 %boost_optional(tigl::CPACSUIDSequence)
 %boost_optional(tigl::CTiglPoint)
-%boost_optional(tigl::TiglMassInertia)
+%boost_optional(tigl::CTiglMassInertia)
 
 %include "generated/CPACSUIDSequence.h"
 %include "CTiglPoint.h"
+%include "CTiglMassInertia.h"
 %include "generated/CPACSComponent.h"
 %include "CCPACSComponent.h"
 %include "generated/CPACSComponents.h"

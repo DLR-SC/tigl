@@ -28,6 +28,7 @@
 #include "generated/CPACSComponent.h"
 #include "CTiglUIDManager.h"
 #include "CTiglElementGeometryBuilder.h"
+#include "CTiglElementMassBuilder.h"
 #include "tiglcommonfunctions.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSElectricMotor.h"
@@ -143,7 +144,7 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
     return GetTransformationMatrix() * (*cogLocal);
 }
 
-boost::optional<TiglMassInertia> CCPACSComponent::GetMassInertiaLocal() const
+boost::optional<CTiglMassInertia> CCPACSComponent::GetMassInertiaLocal() const
 {
     return m_mass->inertiaLocal;
 }
@@ -166,8 +167,8 @@ PNamedShape CCPACSComponent::BuildLoft() const
     // Use component UID as shape name
     std::string compName = this->GetObjectUID().get_value_or("unnamed");
 
-    // The builder works on the generic CTiglRelativelyPositionedComponent, 
-    // therefore CCPACSComponent-specific information (configuration, geometry, uID) is extracted at this level
+    // The builder works on the generic CTiglRelativelyPositionedComponent,
+    // therefore the CCPACSComponent-specific information (configuration, geometry, uID) needs to be extracted at this level
     CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
     PNamedShape shape = builder.BuildShape();
 
@@ -187,50 +188,12 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    // Evaluate CoG
-    if (const auto& loc = massDef.GetLocation(); loc) {
-        cache.cogLocal = loc->AsPoint();
-    }
-    else {
-        const PNamedShape loft = GetLoft();
-        GProp_GProps props;
-        BRepGProp::VolumeProperties(loft->Shape(), props);
+    CTiglElementMassBuilder builder(massDef, uid, GetLoft()->Shape());
 
-        if (props.Mass() <= 0.0) {
-            throw CTiglError("Cannot compute mass properties of component with uid =\"" + uid + "\" (zero volume).");
-        }
-
-        const gp_Pnt c = props.CentreOfMass();
-        cache.cogLocal = CTiglPoint(c.X(), c.Y(), c.Z());
-    }
-
-    // Get mass inertia
-    if (const auto& mi = massDef.GetMassInertia(); mi) {
-        TiglMassInertia out;
-        out.Jxx            = mi->GetJxx();
-        out.Jyy            = mi->GetJyy();
-        out.Jzz            = mi->GetJzz();
-        out.Jxy            = mi->GetJxy();
-        out.Jxz            = mi->GetJxz();
-        out.Jyz            = mi->GetJyz();
-        cache.inertiaLocal = out;
-    }
-
-    // Evaluate mass
-    if (const auto& m = massDef.GetMass_choice2(); m) {
-        cache.mass = *m;
-        return;
-    }
-
-    if (const auto& rho = massDef.GetDensity_choice1(); rho) {
-        const PNamedShape loft = GetLoft();
-        GProp_GProps props;
-        BRepGProp::VolumeProperties(loft->Shape(), props);
-        cache.mass = (*rho) * props.Mass();
-        return;
-    }
-
-    throw CTiglError("Invalid mass definition (no mass and no density) for uid \"" + uid + "\".");
+    const auto result  = builder.EvaluateMass();
+    cache.mass         = result.mass;
+    cache.cogLocal     = result.cogLocal;
+    cache.inertiaLocal = result.inertiaLocal;
 }
 
 } //namespace tigl

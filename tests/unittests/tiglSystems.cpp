@@ -422,7 +422,7 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         auto const* face = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroHeightComponent");
         CheckExceptionMessage([&] { (void)face->GetMass(); },
-                              "Cannot compute mass properties of component with uid =\"predFace\" (zero volume).");
+                              "Cannot compute mass properties of component with uID \"predFace\" (zero volume).");
     }
 
     {
@@ -450,7 +450,7 @@ TEST_F(InvalidSystems, Masses)
 {
     auto const* cuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidMass");
     CheckExceptionMessage([&] { (void)cuboid->GetMass(); },
-                          "Invalid mass definition (no mass and no density) for uid \"invalidPredCuboid_2\".");
+                          "Invalid mass definition (no mass and no density) for uID \"invalidPredCuboid_2\".");
 }
 
 TEST_F(InvalidSystems, InvalidSystemMassProperties)

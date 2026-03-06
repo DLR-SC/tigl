@@ -22,27 +22,11 @@
 #include "generated/CPACSMassInertia.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglPoint.h"
+#include "CTiglMassInertia.h"
 
 namespace tigl
 {
 class CCPACSConfiguration;
-
-/**
- * @brief Mass inertia tensor components (local coordinates).
- *
- * Value type for mass inertia properties. Cross terms (Jxy, Jxz, Jyz) are optional.
- * 
- * ToDo: This is should become a class similar to CTiglPoint when used more frequently
- */
-struct TiglMassInertia {
-    double Jxx = 0.0;
-    double Jyy = 0.0;
-    double Jzz = 0.0;
-
-    boost::optional<double> Jxy = boost::none;
-    boost::optional<double> Jxz = boost::none;
-    boost::optional<double> Jyz = boost::none;
-};
 
 /**
  * @brief Geometric component representing a CPACS <component> within systems.
@@ -139,7 +123,7 @@ public:
      *
      * @return Local mass inertia components, or boost::none if not defined.
      */
-    TIGL_EXPORT boost::optional<TiglMassInertia> GetMassInertiaLocal() const;
+    TIGL_EXPORT boost::optional<CTiglMassInertia> GetMassInertiaLocal() const;
 
     /**
      * @brief Returns whether this component is explicitly positioned in CPACS.
@@ -158,9 +142,9 @@ private:
     std::string _cpacsDocPath;
 
     struct MassCache {
-        boost::optional<double> mass                  = boost::none;
-        boost::optional<CTiglPoint> cogLocal          = boost::none;
-        boost::optional<TiglMassInertia> inertiaLocal = boost::none;
+        boost::optional<double> mass                   = boost::none;
+        boost::optional<CTiglPoint> cogLocal           = boost::none;
+        boost::optional<CTiglMassInertia> inertiaLocal = boost::none;
     };
 
     void BuildMass(MassCache& cache) const;

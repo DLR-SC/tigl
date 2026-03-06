@@ -41,10 +41,10 @@ namespace tigl
 {
 
 CTiglElementGeometryBuilder::CTiglElementGeometryBuilder(const CTiglRelativelyPositionedComponent& refComponent,
-                                                       const CCPACSConfiguration& refConfig,
-                                                       const CCPACSElementGeometry& geometry,
-                                                       const std::string& shapeName,
-                                                       const std::string& cpacsDocumentPath)
+                                                         const CCPACSConfiguration& refConfig,
+                                                         const CCPACSElementGeometry& geometry,
+                                                         const std::string& shapeName,
+                                                         const std::string& cpacsDocumentPath)
     : m_refComponent(&refComponent)
     , m_refConfig(&refConfig)
     , m_geometry(&geometry)
