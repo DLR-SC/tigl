@@ -45,8 +45,8 @@ public:
 
 private:
     const CCPACSElementMass* m_massDef;
-    std::string m_uid;
-    TopoDS_Shape m_shape;
+    const std::string m_uid;
+    const TopoDS_Shape m_shape;
 };
 
 } //namespace tigl

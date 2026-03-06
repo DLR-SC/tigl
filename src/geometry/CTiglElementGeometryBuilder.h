@@ -38,22 +38,22 @@ public:
                                             const CCPACSConfiguration& refConfig, const CCPACSElementGeometry& geometry,
                                             const std::string& shapeName, const std::string& cpacsDocumentPath);
 
-    TIGL_EXPORT PNamedShape BuildShape();
+    TIGL_EXPORT PNamedShape BuildShape() const;
 
 private:
     const CCPACSElementGeometry* m_geometry                  = nullptr;
     const CTiglRelativelyPositionedComponent* m_refComponent = nullptr;
     const CCPACSConfiguration* m_refConfig                   = nullptr;
 
-    std::string m_shapeName;
-    std::string m_cpacsDocumentPath;
+    const std::string m_shapeName;
+    const std::string m_cpacsDocumentPath;
 
-    TopoDS_Shape BuildCuboidShape(const CCPACSCuboid& c);
-    TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c);
-    TopoDS_Shape BuildConeShape(const CCPACSCone& c);
-    TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e);
-    TopoDS_Shape BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m);
-    TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e);
+    TopoDS_Shape BuildCuboidShape(const CCPACSCuboid& c) const;
+    TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c) const;
+    TopoDS_Shape BuildConeShape(const CCPACSCone& c) const;
+    TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e) const;
+    TopoDS_Shape BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m) const;
+    TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e) const;
 };
 
 } //namespace tigl

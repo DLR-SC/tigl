@@ -135,7 +135,7 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityLocal() const
 
 boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
 {
-    auto cogLocal = m_mass->cogLocal;
+    const auto cogLocal = m_mass->cogLocal;
     if (!IsPositioned()) {
         LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
                      << "\" is only available if <transformation> is defined.";
@@ -156,7 +156,7 @@ bool CCPACSComponent::IsPositioned() const
 
 PNamedShape CCPACSComponent::BuildLoft() const
 {
-    auto systemElementUID             = m_systemElementUID_choice1.get();
+    const auto systemElementUID       = m_systemElementUID_choice1.get();
     const CCPACSElementGeometry* geom = GetGeometry(*m_uidMgr, systemElementUID);
 
     if (!geom) {
@@ -165,12 +165,12 @@ PNamedShape CCPACSComponent::BuildLoft() const
     }
 
     // Use component UID as shape name
-    std::string compName = this->GetObjectUID().get_value_or("unnamed");
+    const std::string compName = this->GetObjectUID().get_value_or("unnamed");
 
     // The builder works on the generic CTiglRelativelyPositionedComponent,
     // therefore the CCPACSComponent-specific information (configuration, geometry, uID) needs to be extracted at this level
     CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
-    PNamedShape shape = builder.BuildShape();
+    const PNamedShape shape = builder.BuildShape();
 
     // Apply local transformation and return shape
     return GetTransformationMatrix().Transform(shape);
@@ -192,7 +192,7 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;
-    cache.cogLocal     = result.cogLocal;
+    cache.cogLocal     = result.cogLocal; //ToDo: is it really local?
     cache.inertiaLocal = result.inertiaLocal;
 }
 

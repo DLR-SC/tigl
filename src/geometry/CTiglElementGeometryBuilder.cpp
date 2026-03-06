@@ -53,7 +53,7 @@ CTiglElementGeometryBuilder::CTiglElementGeometryBuilder(const CTiglRelativelyPo
 {
 }
 
-PNamedShape CTiglElementGeometryBuilder::BuildShape()
+PNamedShape CTiglElementGeometryBuilder::BuildShape() const
 {
     const auto& geom = *m_geometry;
 
@@ -142,15 +142,15 @@ PNamedShape CTiglElementGeometryBuilder::BuildShape()
     return groupedShape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c) const
 {
     const double lengthX = c.GetLengthX();
     const double depthY  = c.GetDepthY();
     const double heightZ = c.GetHeightZ();
 
     if (lengthX <= 0.0 || depthY <= 0.0 || heightZ <= 0.0) {
-        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
-        std::string errorMsg =
+        const auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        const std::string errorMsg =
             "Invalid cuboid parameters for uID=\"" + uID + "\": lengthX, depthY and heightZ must be positive.";
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
@@ -160,10 +160,10 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c
     const double ymin = c.GetUpperFaceYmin().get_value_or(0);
     const double ymax = c.GetUpperFaceYmax().get_value_or(depthY);
 
-    TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, heightZ, depthY, xmin, ymin, xmax, ymax).Shape();
+    const TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, heightZ, depthY, xmin, ymin, xmax, ymax).Shape();
 
     // Rotate and translate from OCC to CPACS convention:
-    gp_Ax1 xAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
+    const gp_Ax1 xAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
     gp_Trsf rot;
     gp_Trsf trl;
     rot.SetRotation(xAxis, M_PI / 2.0);
@@ -182,14 +182,14 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c
     return shape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildCylinderShape(const CCPACSCylinder& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildCylinderShape(const CCPACSCylinder& c) const
 {
     const double radius = c.GetRadius();
     const double height = c.GetHeight();
 
     if (radius <= 0.0 || height <= 0.0) {
-        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
-        std::string errorMsg =
+        const auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        const std::string errorMsg =
             "Invalid cylinder parameters for uID=\"" + uID + "\": Radius and height must be positive.";
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
@@ -206,24 +206,24 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildCylinderShape(const CCPACSCylinde
     return shape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildConeShape(const CCPACSCone& c)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildConeShape(const CCPACSCone& c) const
 {
     const double lowerRadius = c.GetLowerRadius();
     const double upperRadius = c.GetUpperRadius().get_value_or(0);
     const double height      = c.GetHeight();
 
     if (lowerRadius < 0.0 || upperRadius < 0.0 || height <= 0.0 || (lowerRadius == 0.0 && upperRadius == 0.0)) {
-        auto uID             = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
-        std::string errorMsg = "Invalid cone parameters for uID=\"" + uID +
-                               "\": At least one radius must be positive and height must be positive.";
+        const auto uID             = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        const std::string errorMsg = "Invalid cone parameters for uID=\"" + uID +
+                                     "\": At least one radius must be positive and height must be positive.";
         throw tigl::CTiglError(errorMsg, TIGL_INVALID_VALUE);
     }
 
     TopoDS_Shape shape;
 
     if (std::abs(lowerRadius - upperRadius) < 1e-8) {
-        shape    = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
-        auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        shape          = BRepPrimAPI_MakeCylinder(lowerRadius, height).Shape();
+        const auto uID = c.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
         LOG(WARNING) << "Element with uID=\"" << uID
                      << "\" defines a cylinder via the cone definition! It is strongly recommended to use the cylinder "
                         "definition instead.";
@@ -242,12 +242,12 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildConeShape(const CCPACSCone& c)
     return shape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllipsoid& e) const
 {
-    double radiusX     = e.GetRadiusX();
-    double radiusY     = e.GetRadiusY().get_value_or(radiusX);
-    double radiusZ     = e.GetRadiusZ().get_value_or(radiusX);
-    const double angle = e.GetDiskAngle().get_value_or(2.0 * M_PI);
+    const double radiusX = e.GetRadiusX();
+    const double radiusY = e.GetRadiusY().get_value_or(radiusX);
+    const double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
+    const double angle   = e.GetDiskAngle().get_value_or(2.0 * M_PI);
 
     if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
         throw tigl::CTiglError("Invalid ellipsoid parameters: All radii must be positive.", TIGL_INVALID_VALUE);
@@ -257,7 +257,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
         throw tigl::CTiglError("Invalid ellipsoid diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0, angle).Shape();
+    const TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0, angle).Shape();
 
     gp_Mat M(radiusX, 0.0, 0.0, 0.0, radiusY, 0.0, 0.0, 0.0, radiusZ);
     gp_GTrsf gtrsf(M, gp_XYZ(0.0, 0.0, 0.0));
@@ -275,7 +275,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
     return shape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m) const
 {
     auto const& segments = m.GetSegments();
     segments.SetReferenceParent(m_refComponent);
@@ -318,7 +318,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMul
     return shape;
 }
 
-TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExternalGeometry& e)
+TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExternalGeometry& e) const
 {
     const auto& link = e.GetLinkToFile();
 
@@ -337,12 +337,12 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExterna
     if (!m_cpacsDocumentPath.empty()) {
         filePath = evaluatePathRelativeToApp(m_cpacsDocumentPath, filePath);
     }
-    ListPNamedShape shapes = importer->Read(filePath);
+    const ListPNamedShape shapes = importer->Read(filePath);
 
     // ToDo: Transformation should be slightly different from the one used in relatively positioned components:
     //       as there is no parent, there should not be a refType attribute.
     //       This change in XSD would affect CCPACSTransformation and CTiglTransformation.
-    PNamedShape shapeGroup = CGroupShapes(shapes);
+    const PNamedShape shapeGroup = CGroupShapes(shapes);
 
     TopoDS_Shape shape = shapeGroup->Shape();
 
