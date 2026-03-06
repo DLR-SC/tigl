@@ -38,10 +38,6 @@ CTiglElementMassBuilder::CTiglElementMassBuilder(const CCPACSElementMass& massDe
 
 CTiglElementMassBuilder::Result CTiglElementMassBuilder::EvaluateMass() const
 {
-    if (!m_massDef) {
-        throw CTiglError("Invalid mass builder for uID \"" + m_uid + "\"!");
-    }
-
     Result result;
 
     // read inertia values from CPACS
