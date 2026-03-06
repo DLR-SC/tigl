@@ -34,9 +34,9 @@ namespace tigl
 class CTiglElementGeometryBuilder
 {
 public:
-    explicit CTiglElementGeometryBuilder(const CTiglRelativelyPositionedComponent& refComponent,
-                                        const CCPACSConfiguration& refConfig, const CCPACSElementGeometry& geometry,
-                                        const std::string& shapeName, const std::string& cpacsDocumentPath);
+    TIGL_EXPORT CTiglElementGeometryBuilder(const CTiglRelativelyPositionedComponent& refComponent,
+                                            const CCPACSConfiguration& refConfig, const CCPACSElementGeometry& geometry,
+                                            const std::string& shapeName, const std::string& cpacsDocumentPath);
 
     TIGL_EXPORT PNamedShape BuildShape();
 
