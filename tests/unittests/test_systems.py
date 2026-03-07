@@ -21,7 +21,6 @@ import unittest
 from tigl3.tigl3wrapper import *
 from tixi3.tixi3wrapper import *
 from tigl3 import configuration
-import tigl3
 
 from OCC.Core.Bnd import Bnd_Box
 from OCC.Core.BRepBndLib import brepbndlib_Add

@@ -45,16 +45,8 @@ protected:
     static void SetUpTestCase()
     {
         const char* filename = "TestData/simpletest-systems.cpacs.xml";
-        ReturnCode tixiRet;
-        TiglReturnCode tiglRet;
-
-        tiglHandle = -1;
-        tixiHandle = -1;
-
-        tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE(tixiRet == SUCCESS);
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle);
-        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
     }
 
     static void TearDownTestCase()
@@ -65,33 +57,29 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() override
+    const tigl::CTiglUIDManager& GetUIDManager() const
     {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     }
-    void TearDown() override
+
+    const tigl::CCPACSGenericSystem& GetSystem(const std::string& uid) const
     {
+        return GetUIDManager().ResolveObject<tigl::CCPACSGenericSystem>(uid);
+    }
+
+    const tigl::CCPACSComponent& GetComponent(const std::string& uid) const
+    {
+        return GetUIDManager().ResolveObject<tigl::CCPACSComponent>(uid);
     }
 
     static TixiDocumentHandle tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
-
-    tigl::CTiglUIDManager& uidMgr =
-        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(Systems::tiglHandle).GetUIDManager();
-
-    tigl::CCPACSGenericSystem const* genericSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("genSys_1");
-    tigl::CCPACSComponent const* cuboid_1          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_1");
-    tigl::CCPACSComponent const* wedge_1           = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
-    tigl::CCPACSComponent const* cylinder_1        = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinder_1");
-    tigl::CCPACSComponent const* cone_1            = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cone_1");
-    tigl::CCPACSComponent const* external          = &uidMgr.ResolveObject<tigl::CCPACSComponent>("external");
-
-    tigl::CCPACSComponent const* eMotor = &uidMgr.ResolveObject<tigl::CCPACSComponent>("electricMotor");
 };
 
 TixiDocumentHandle Systems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle Systems::tiglHandle = 0;
 
-void CheckExceptionMessage(std::function<void()> func, const char* expectedMessage)
+void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
 {
     try {
         func();
@@ -107,44 +95,50 @@ void CheckExceptionMessage(std::function<void()> func, const char* expectedMessa
 
 TEST_F(Systems, Basics)
 {
+    const auto& system    = GetSystem("genSys_1");
+    const auto& component = GetComponent("cuboid_1");
+
     // defaulted UID check
-    EXPECT_EQ(genericSystem->GetDefaultedUID(), "genSys_1");
-    EXPECT_EQ(cuboid_1->GetDefaultedUID(), "cuboid_1");
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
+    EXPECT_EQ(component.GetDefaultedUID(), "cuboid_1");
 
     // check components' type and intent
-    EXPECT_EQ(cuboid_1->GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
-    EXPECT_EQ(cuboid_1->GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+    EXPECT_EQ(component.GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
+    EXPECT_EQ(component.GetComponentIntent(), TIGL_INTENT_PHYSICAL);
 
     // available in configuration
-    EXPECT_EQ(genericSystem->GetConfiguration().GetUID(), "testAircraft");
+    EXPECT_EQ(system.GetConfiguration().GetUID(), "testAircraft");
 }
 
 TEST_F(Systems, SystemsGeometry)
 {
-    PNamedShape shape = genericSystem->GetLoft();
-    ASSERT_NE(shape, nullptr);
+    const auto& system = GetSystem("genSys_1");
+
+    const PNamedShape shape = system.GetLoft();
+    ASSERT_TRUE(shape);
 
     // all component shapes should be included in grouped system shape
     unsigned shapeCount = 0;
     for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
         ++shapeCount;
     }
-    EXPECT_EQ(shapeCount, genericSystem->GetComponents().GetComponents().size());
+    EXPECT_EQ(shapeCount, system.GetComponents().GetComponents().size());
 }
 
 TEST_F(Systems, SystemMass)
 {
-    const double eps = 1e-6;
+    const auto& system = GetSystem("genSys_1");
+    const double eps   = 1e-6;
 
     // ---- Mass values ----
-    const double mAll = genericSystem->GetMassAllComponents();
-    const double mPos = genericSystem->GetMassPositionedComponents();
+    const double mAll = system.GetMassAllComponents();
+    const double mPos = system.GetMassPositionedComponents();
 
     EXPECT_NEAR(mAll, 2.5995165, eps);
     EXPECT_NEAR(mPos, 2.4761165, eps);
 
     // ---- Mass location ----
-    const auto cog = genericSystem->GetCenterOfGravity();
+    const auto cog = system.GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
     EXPECT_NEAR(cog->x, 24.6180626, eps);
@@ -158,8 +152,9 @@ TEST_F(Systems, ComponentsGeometry)
 
     // cuboid_1 -> predefined cuboid 1x1x1 => expect extents ~1.0 in x,y,z
     {
-        PNamedShape shape = cuboid_1->GetLoft();
-        ASSERT_NE(shape, nullptr);
+        const auto& component = GetComponent("cuboid_1");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->Name(), "cuboid_1_cuboid_1");
 
         unsigned int faces = shape->GetFaceCount();
@@ -177,8 +172,9 @@ TEST_F(Systems, ComponentsGeometry)
 
     // wedge_1 -> must have 6 faces and bounding box extents ~1.0 in x,y,z
     {
-        PNamedShape shape = wedge_1->GetLoft();
-        ASSERT_NE(shape, nullptr) << "wedge_1 produced a null shape";
+        const auto& component = GetComponent("wedge_1");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->GetFaceCount(), 6u);
 
         Bnd_Box box;
@@ -193,23 +189,25 @@ TEST_F(Systems, ComponentsGeometry)
 
     // electric motor (specialized element) -> ensure builder supports it
     {
-        PNamedShape shape = eMotor->GetLoft();
-        ASSERT_NE(shape, nullptr) << "electricMotor produced a null shape";
+        const auto& component = GetComponent("electricMotor");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->GetFaceCount(), 1u);
     }
 
     // external geometry (STEP) -> ensure import happened
     {
-        PNamedShape shape = external->GetLoft();
-        ASSERT_NE(shape, nullptr) << "external produced a null shape (STEP import failed)";
+        const auto& component = GetComponent("external");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_GT(shape->GetFaceCount(), 0u);
     }
 
     // combined element -> ensure all subelements are built by evaluating the bounding box
     {
-        auto const* combined = &uidMgr.ResolveObject<tigl::CCPACSComponent>("combinedComponent");
-        PNamedShape shape    = combined->GetLoft();
-        ASSERT_NE(shape, nullptr) << "combinedComponent produced a null shape";
+        const auto& combined = GetComponent("combinedComponent");
+        PNamedShape shape    = combined.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->GetFaceCount(), 33u);
 
         Bnd_Box box;
@@ -224,9 +222,9 @@ TEST_F(Systems, ComponentsGeometry)
 
     // multiSegmentShape
     {
-        auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent");
-        PNamedShape shape        = multiSegment->GetLoft();
-        ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
+        const auto& multiSegment = GetComponent("multiSegmentComponent");
+        PNamedShape shape        = multiSegment.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->GetFaceCount(), 3u);
 
         Bnd_Box box;
@@ -241,9 +239,9 @@ TEST_F(Systems, ComponentsGeometry)
 
     // multiSegmentShape with 2 segments and super ellipses
     {
-        auto const* multiSegment = &uidMgr.ResolveObject<tigl::CCPACSComponent>("multiSegmentComponent3");
-        PNamedShape shape        = multiSegment->GetLoft();
-        ASSERT_NE(shape, nullptr) << "multiSegmentShape produced a null shape";
+        const auto& multiSegment = GetComponent("multiSegmentComponent3");
+        PNamedShape shape        = multiSegment.GetLoft();
+        ASSERT_TRUE(shape);
         EXPECT_EQ(shape->GetFaceCount(), 10u);
     }
 }
@@ -252,20 +250,23 @@ TEST_F(Systems, Representation)
 {
     // cuboid_1 is explicitly set to "physical"
     {
-        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_1");
-        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+        const auto& component = GetComponent("cuboid_1");
+        EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+        EXPECT_EQ(component.GetComponentRepresentationAsString(), "physical");
     }
 
     // cuboid_2 is explicitly set to "envelope"
     {
-        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_2");
-        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_ENVELOPE);
+        const auto& component = GetComponent("cuboid_2");
+        EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_ENVELOPE);
+        EXPECT_EQ(component.GetComponentRepresentationAsString(), "envelope");
     }
 
     // wedge_1 has no attribute "representation", so it must default to "physical"
     {
-        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
-        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+        const auto& component = GetComponent("wedge_1");
+        EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+        EXPECT_EQ(component.GetComponentRepresentationAsString(), "physical");
     }
 }
 
@@ -275,60 +276,66 @@ TEST_F(Systems, ComponentMasses)
 
     // ---- Mass values ----
     {
-        const auto m = cuboid_1->GetMass();
+        const auto& component = GetComponent("cuboid_1");
+        const auto m          = component.GetMass();
         ASSERT_TRUE(m);
         EXPECT_NEAR(*m, 0.1234, eps);
     }
 
-    auto const* cuboid_2 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_2");
-    auto const* cuboid_3 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_3");
+    const auto& cuboid_2 = GetComponent("cuboid_2");
+    const auto& cuboid_3 = GetComponent("cuboid_3");
 
-    const auto m2 = cuboid_2->GetMass();
-    const auto m3 = cuboid_3->GetMass();
+    const auto m2 = cuboid_2.GetMass();
+    const auto m3 = cuboid_3.GetMass();
     ASSERT_TRUE(m2);
     ASSERT_TRUE(m3);
     EXPECT_NEAR(*m2, 0.375, eps);
     EXPECT_NEAR(*m2, *m3, eps);
 
     {
-        const auto m = wedge_1->GetMass();
+        const auto& component = GetComponent("wedge_1");
+        const auto m          = component.GetMass();
         EXPECT_FALSE(m);
     }
 
     {
-        const auto m = external->GetMass();
+        const auto& component = GetComponent("external");
+        const auto m          = component.GetMass();
         ASSERT_TRUE(m);
         EXPECT_NEAR(*m, 0.2476386, eps);
     }
 
     {
-        const auto m = eMotor->GetMass();
+        const auto& component = GetComponent("electricMotor");
+        const auto m          = component.GetMass();
         ASSERT_TRUE(m);
         EXPECT_NEAR(*m, 0.123, eps);
     }
 
     // ---- Mass location ----
-    auto const* cuboid_4 = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_4");
+    const auto& cuboid_4 = GetComponent("cuboid_4");
 
-    const boost::optional<tigl::CTiglPoint> cogLocal = cuboid_4->GetCenterOfGravityLocal();
+    const auto cogLocal = cuboid_4.GetCenterOfGravityLocal();
+    ASSERT_TRUE(cogLocal);
     EXPECT_NEAR(cogLocal->x, 0.3, eps);
     EXPECT_NEAR(cogLocal->y, 0.25, eps);
     EXPECT_NEAR(cogLocal->z, 0.4, eps);
 
-    const boost::optional<tigl::CTiglPoint> cogGlobal = cuboid_4->GetCenterOfGravityGlobal();
-    EXPECT_TRUE(cuboid_4->IsPositioned());
+    const auto cogGlobal = cuboid_4.GetCenterOfGravityGlobal();
+    EXPECT_TRUE(cuboid_4.IsPositioned());
     ASSERT_TRUE(cogGlobal);
     EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
     EXPECT_NEAR(cogGlobal->y, 15.25, eps);
     EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
 
-    auto const* unpositionedCuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("unpositionedCuboid");
-    EXPECT_FALSE(unpositionedCuboid->IsPositioned());
-    EXPECT_FALSE(unpositionedCuboid->GetCenterOfGravityGlobal());
+    const auto& unpositionedCuboid = GetComponent("unpositionedCuboid");
+    EXPECT_FALSE(unpositionedCuboid.IsPositioned());
+    EXPECT_FALSE(unpositionedCuboid.GetCenterOfGravityGlobal());
 
     // ---- Mass inertia ----
     {
-        const auto mi = cuboid_1->GetMassInertiaLocal();
+        const auto& component = GetComponent("cuboid_1");
+        const auto mi         = component.GetMassInertiaLocal();
         ASSERT_TRUE(mi);
         EXPECT_EQ(mi->Jxx, 1);
         EXPECT_EQ(mi->Jyy, 2);
@@ -339,7 +346,8 @@ TEST_F(Systems, ComponentMasses)
     }
 
     {
-        const auto mi = cuboid_2->GetMassInertiaLocal();
+        const auto& component = GetComponent("cuboid_2");
+        const auto mi         = component.GetMassInertiaLocal();
         EXPECT_FALSE(mi);
     }
 }
@@ -362,115 +370,114 @@ protected:
         tixiHandle = -1;
     }
 
-    void SetUp() override
+    const tigl::CTiglUIDManager& GetUIDManager() const
     {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     }
-    void TearDown() override
+
+    const tigl::CCPACSGenericSystem& GetSystem(const std::string& uid) const
     {
+        return GetUIDManager().ResolveObject<tigl::CCPACSGenericSystem>(uid);
+    }
+
+    const tigl::CCPACSComponent& GetComponent(const std::string& uid) const
+    {
+        return GetUIDManager().ResolveObject<tigl::CCPACSComponent>(uid);
     }
 
     static TixiDocumentHandle tixiHandle;
     static TiglCPACSConfigurationHandle tiglHandle;
-
-    tigl::CTiglUIDManager& uidMgr =
-        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(InvalidSystems::tiglHandle).GetUIDManager();
-
-    tigl::CCPACSGenericSystem const* testSystem = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem");
 };
 
 TEST_F(InvalidSystems, Exceptions)
 {
-
     // Exception for wrong UID reference
-    {
-        auto const* wrongReference = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wrongUIDReference");
-        ASSERT_NE(wrongReference, nullptr);
+    const auto& wrongReference = GetComponent("wrongUIDReference");
 
-        CheckExceptionMessage([&] { (void)wrongReference->GetLoft(); },
-                              "Unsupported system element for uID \"NACA0009\".");
-    }
+    CheckExceptionMessage([&] { (void)wrongReference.GetLoft(); }, "Unsupported system element for uID \"NACA0009\".");
 }
 
 TEST_F(InvalidSystems, InvalidShapes)
 {
     {
-        const auto& system                = uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem");
-        const tigl::CCPACSComponent& comp = system.GetComponents().GetComponent(12);
-        const auto loft                   = comp.GetLoft();
+        const auto& system = GetSystem("testSystem");
+        const auto& comp   = system.GetComponents().GetComponent(12);
+        const auto loft    = comp.GetLoft();
         ASSERT_TRUE(loft);
         EXPECT_EQ(loft->Name(), "predCuboid_1_cuboid_1");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCuboid");
+        const auto& invalidShape = GetComponent("invalidCuboid");
         CheckExceptionMessage(
-            [&] { (void)invalidShape->GetLoft(); },
+            [&] { (void)invalidShape.GetLoft(); },
             "Invalid cuboid parameters for uID=\"invalidPredCuboid\": lengthX, depthY and heightZ must be positive.");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCylinder");
+        const auto& invalidShape = GetComponent("invalidCylinder");
         CheckExceptionMessage(
-            [&] { (void)invalidShape->GetLoft(); },
+            [&] { (void)invalidShape.GetLoft(); },
             "Invalid cylinder parameters for uID=\"invalidPredCylinder\": Radius and height must be positive.");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidCone");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+        const auto& invalidShape = GetComponent("invalidCone");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
                               "Invalid cone parameters for uID=\"invalidPredCone\": At least one radius must be "
                               "positive and height must be positive.");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidEllipsoid");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+        const auto& invalidShape = GetComponent("invalidEllipsoid");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
                               "Invalid ellipsoid parameters: All radii must be positive.");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroVolumeEllipsoid");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+        const auto& invalidShape = GetComponent("zeroVolumeEllipsoid");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
                               "Invalid ellipsoid diskAngle: must be in range (0, 2*pi].");
     }
 
     // It's ok to build a cone as cylinder (ToDo: checking the warning would be nice)
     {
-        auto const* cylinder = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cylinderCone");
-        ASSERT_NE(cylinder->GetLoft(), nullptr);
+        const auto& cylinder = GetComponent("cylinderCone");
+        ASSERT_TRUE(cylinder.GetLoft());
     }
 
     {
-        auto const* face = &uidMgr.ResolveObject<tigl::CCPACSComponent>("zeroHeightComponent");
-        CheckExceptionMessage([&] { (void)face->GetMass(); },
+        const auto& face = GetComponent("zeroHeightComponent");
+        CheckExceptionMessage([&] { (void)face.GetMass(); },
                               "Cannot compute mass properties of component with uID \"predFace\" (zero volume).");
     }
 
     {
-        auto const* mss = &uidMgr.ResolveObject<tigl::CCPACSComponent>("mssWithoutSegments");
-        CheckExceptionMessage([&] { (void)mss->GetLoft(); }, "Cannot build multi-segment shape: no segments defined.");
+        const auto& mss = GetComponent("mssWithoutSegments");
+        CheckExceptionMessage([&] { (void)mss.GetLoft(); }, "Cannot build multi-segment shape: no segments defined.");
     }
 }
 
 TEST_F(InvalidSystems, InvalidFileHandling)
 {
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidExternal1");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+        const auto& invalidShape = GetComponent("invalidExternal1");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
                               "Cannot open external file. No file format specified.");
     }
 
     {
-        auto const* invalidShape = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidExternal2");
-        CheckExceptionMessage([&] { (void)invalidShape->GetLoft(); },
+        const auto& invalidShape = GetComponent("invalidExternal2");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
                               "Cannot open external element. Unknown file format: Stl");
     }
 }
 
 TEST_F(InvalidSystems, Masses)
 {
-    auto const* cuboid = &uidMgr.ResolveObject<tigl::CCPACSComponent>("invalidMass");
-    CheckExceptionMessage([&] { (void)cuboid->GetMass(); },
+    const auto& cuboid = GetComponent("invalidMass");
+
+    CheckExceptionMessage([&] { (void)cuboid.GetMass(); },
                           "Invalid mass definition (no mass and no density) for uID \"invalidPredCuboid_2\".");
 }
 
@@ -478,15 +485,15 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
 {
     // Systems with zero mass should not return a center of gravity
     {
-        auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem2");
-        const auto cog  = sys->GetCenterOfGravity();
+        const auto& sys = GetSystem("testSystem2");
+        const auto cog  = sys.GetCenterOfGravity();
         ASSERT_FALSE(cog);
     }
 
     // System referring to an element without geometry
     {
-        auto const* sys = &uidMgr.ResolveObject<tigl::CCPACSGenericSystem>("testSystem3");
-        CheckExceptionMessage([&] { (void)sys->GetCenterOfGravity(); },
+        const auto& sys = GetSystem("testSystem3");
+        CheckExceptionMessage([&] { (void)sys.GetCenterOfGravity(); },
                               "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
     }
 }
