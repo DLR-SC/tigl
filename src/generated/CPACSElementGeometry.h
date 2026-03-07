@@ -28,6 +28,7 @@
 #include "CPACSCylinders.h"
 #include "CPACSEllipsoids.h"
 #include "CPACSExternalGeometries.h"
+#include "CPACSGeometryRepresentation.h"
 #include "CPACSMultiSegmentShapes.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
@@ -111,6 +112,9 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const boost::optional<CPACSGeometryRepresentation>& GetRepresentation() const;
+        TIGL_EXPORT virtual void SetRepresentation(const boost::optional<CPACSGeometryRepresentation>& value);
+
         TIGL_EXPORT virtual const boost::optional<CPACSCuboids>& GetCuboids() const;
         TIGL_EXPORT virtual boost::optional<CPACSCuboids>& GetCuboids();
 
@@ -159,13 +163,23 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSCuboids>            m_cuboids;
-        boost::optional<CPACSCylinders>          m_cylinders;
-        boost::optional<CPACSCones>              m_cones;
-        boost::optional<CPACSEllipsoids>         m_ellipsoids;
-        boost::optional<CPACSMultiSegmentShapes> m_multiSegmentShapes;
-        boost::optional<CPACSExternalGeometries> m_externals;
-        boost::optional<CCPACSTransformation>    m_transformation;
+        /// Specifies whether the provided geometry is the physical representation
+        /// of the element or an enclosing envelope representation.
+        boost::optional<CPACSGeometryRepresentation> m_representation;
+
+        boost::optional<CPACSCuboids>                m_cuboids;
+
+        boost::optional<CPACSCylinders>              m_cylinders;
+
+        boost::optional<CPACSCones>                  m_cones;
+
+        boost::optional<CPACSEllipsoids>             m_ellipsoids;
+
+        boost::optional<CPACSMultiSegmentShapes>     m_multiSegmentShapes;
+
+        boost::optional<CPACSExternalGeometries>     m_externals;
+
+        boost::optional<CCPACSTransformation>        m_transformation;
 
     private:
         CPACSElementGeometry(const CPACSElementGeometry&) = delete;

@@ -79,6 +79,32 @@ public:
     }
 
     /**
+     * @brief Returns the geometric representation type of the referenced system element.
+     *
+     * The representation is obtained from the referenced element geometry definition.
+     * It is returned as one of the TiGL constants
+     * @c TIGL_GEOMREP_PHYSICAL (1) or @c TIGL_GEOMREP_ENVELOPE (2).
+     * If no explicit representation is given in CPACS,
+     * @c TIGL_GEOMREP_PHYSICAL (1) is returned.
+     *
+     * @return Geometry representation type of the component.
+     */
+    TIGL_EXPORT TiglGeometryRepresentation GetComponentRepresentation() const;
+
+    /**
+     * @brief Returns the geometry representation of the referenced system element as string.
+     *
+     * Possible return values are:
+     * - @c "physical"
+     * - @c "envelope"
+     *
+     * If no explicit representation is given in CPACS, @c "physical" is returned.
+     *
+     * @return Geometry representation as human-readable string.
+     */
+    TIGL_EXPORT std::string GetComponentRepresentationAsString() const;
+
+    /**
      * @brief Returns the component mass.
      *
      * The mass is obtained from the referenced system element:
@@ -146,6 +172,8 @@ private:
         boost::optional<CTiglPoint> cogLocal           = boost::none;
         boost::optional<CTiglMassInertia> inertiaLocal = boost::none;
     };
+
+    const CCPACSElementGeometry& GetElementGeometry() const;
 
     void BuildMass(MassCache& cache) const;
     Cache<MassCache, CCPACSComponent> m_mass;

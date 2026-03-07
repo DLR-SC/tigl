@@ -254,6 +254,16 @@ typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags
 
 typedef unsigned long TiglGeometricComponentIntent;
 
+enum TiglGeometryRepresentationFlags
+{
+    TIGL_GEOMREP_PHYSICAL = 1,    /**< The geometry represents the intended physical shape and may be used for physical evaluations */
+    TIGL_GEOMREP_ENVELOPE = 2     /**< The geometry represents an enclosing envelope for installation space or packaging considerations */
+};
+
+typedef enum TiglGeometryRepresentationFlags TiglGeometryRepresentationFlags;
+
+typedef unsigned long TiglGeometryRepresentation;
+
 enum TiglStructureType 
 {
     UPPER_SHELL = 0,

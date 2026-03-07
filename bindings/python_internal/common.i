@@ -116,6 +116,28 @@ enum TiglImportExportFormat
     TIGL_IMPORTEXPORT_VTK  = 3             /**< Use VTK (XML/VTP) format for geometry import/export */
 };
 
+enum TiglGeometricComponentIntentFlags
+{
+    TIGL_INTENT_PHYSICAL           = 1,   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+    TIGL_INTENT_LOGICAL            = 2,   /**< A logical component, like a wing segment */
+    TIGL_INTENT_INNER_STRUCTURE    = 4,   /**< Part of  the aircrafts structure geometry */
+    TIGL_INTENT_OUTER_AERO_SURFACE = 8    /**< Part of the outer aircraft (wing, fuselage, nacelle)  */
+};
+
+typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags;
+
+typedef unsigned long TiglGeometricComponentIntent;
+
+enum TiglGeometryRepresentationFlags
+{
+    TIGL_GEOMREP_PHYSICAL = 1,   /**< The geometry represents the intended physical shape of the component */
+    TIGL_GEOMREP_ENVELOPE = 2    /**< The geometry represents an enclosing envelope of the component */
+};
+
+typedef enum TiglGeometryRepresentationFlags TiglGeometryRepresentationFlags;
+
+typedef unsigned long TiglGeometryRepresentation;
+
 enum TiglCoordinateSystem
 {
     GLOBAL_COORDINATE_SYSTEM   = 0,

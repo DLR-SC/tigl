@@ -36726,6 +36726,34 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+	
+	<xsd:simpleType name="geometryRepresentationType">
+        <xsd:annotation>
+			<xsd:documentation>
+				Specifies the semantic meaning of the provided geometry representation.
+			</xsd:documentation>
+		</xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="physical">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The geometry represents the intended physical shape of the system element.
+                        It may be used for visualization and, if applicable, for the evaluation of
+                        geometric properties such as volume, mass, or center of gravity.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="envelope">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The geometry represents an enclosing or simplified outer envelope of the
+                        system element rather than its detailed physical shape. It is primarily
+                        intended for installation space, packaging, and clearance considerations.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
 
     <xsd:complexType name="elementGeometryType">
         <xsd:annotation>
@@ -36748,6 +36776,14 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="externals" minOccurs="0" type="externalGeometriesType"/>
 					<xsd:element name="transformation" minOccurs="0" type="transformationType"/>
             	</xsd:all>
+                <xsd:attribute name="representation" use="optional" type="geometryRepresentationType" default="physical">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Specifies whether the provided geometry is the physical representation
+                            of the element or an enclosing envelope representation.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

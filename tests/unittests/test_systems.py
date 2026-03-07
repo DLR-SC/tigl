@@ -21,6 +21,7 @@ import unittest
 from tigl3.tigl3wrapper import *
 from tixi3.tixi3wrapper import *
 from tigl3 import configuration
+import tigl3
 
 from OCC.Core.Bnd import Bnd_Box
 from OCC.Core.BRepBndLib import brepbndlib_Add
@@ -192,6 +193,29 @@ class Systems(unittest.TestCase):
         cuboid2 = self.uid_mgr.get_geometric_component("cuboid_2")
         mi = cuboid2.get_mass_inertia_local()
         self.assertIsNone(mi)
+
+    def test_component_representation(self):
+
+        # explicitly physical
+        cuboid1 = self.uid_mgr.get_geometric_component("cuboid_1")
+        self.assertEqual(cuboid1.get_component_representation(), 1)
+        self.assertEqual(cuboid1.get_component_representation_as_string(), "physical")
+
+        # explicitly envelope
+        cuboid2 = self.uid_mgr.get_geometric_component("cuboid_2")
+        self.assertEqual(cuboid2.get_component_representation(), 2)
+        self.assertEqual(cuboid2.get_component_representation_as_string(), "envelope")
+
+        # missing attribute -> default must be physical
+        wedge1 = self.uid_mgr.get_geometric_component("wedge_1")
+        self.assertEqual(wedge1.get_component_representation(), 1)
+        self.assertEqual(wedge1.get_component_representation_as_string(), "physical")
+
+    def test_component_intent(self):
+
+        # The intent of system components is always physical
+        cuboid1 = self.uid_mgr.get_geometric_component("cuboid_1")
+        self.assertEqual(cuboid1.get_component_intent(), 1)
 
 
 if __name__ == "__main__":

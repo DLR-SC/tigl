@@ -113,6 +113,35 @@ CCPACSConfiguration const& CCPACSComponent::GetConfiguration() const
     return m_parent->GetParent()->GetParent()->GetConfiguration();
 }
 
+TiglGeometryRepresentation CCPACSComponent::GetComponentRepresentation() const
+{
+    using CPACSGeomRep        = generated::CPACSGeometryRepresentation;
+    const auto representation = GetElementGeometry().GetRepresentation().get_value_or(CPACSGeomRep::physical);
+
+    if (representation == CPACSGeomRep::physical) {
+        return TIGL_GEOMREP_PHYSICAL;
+    }
+    if (representation == CPACSGeomRep::envelope) {
+        return TIGL_GEOMREP_ENVELOPE;
+    }
+
+    throw CTiglError("Invalid geometry representation for component with uID \"" +
+                     GetObjectUID().get_value_or("unnamed") + "\".");
+}
+
+std::string CCPACSComponent::GetComponentRepresentationAsString() const
+{
+    switch (GetComponentRepresentation()) {
+    case TIGL_GEOMREP_PHYSICAL:
+        return "physical";
+    case TIGL_GEOMREP_ENVELOPE:
+        return "envelope";
+    default:
+        throw CTiglError("Invalid geometry representation for component with uID \"" +
+                         GetObjectUID().get_value_or("unnamed") + "\".");
+    }
+}
+
 void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
 {
     Reset();
@@ -154,22 +183,28 @@ bool CCPACSComponent::IsPositioned() const
     return GetTransformation().is_initialized();
 }
 
-PNamedShape CCPACSComponent::BuildLoft() const
+const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
 {
-    const auto systemElementUID       = m_systemElementUID_choice1.get();
-    const CCPACSElementGeometry* geom = GetGeometry(*m_uidMgr, systemElementUID);
+    const std::string systemElementUID      = m_systemElementUID_choice1.get();
+    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, systemElementUID);
 
     if (!geom) {
-        throw CTiglError("Unsupported system element for uid \"" + systemElementUID +
-                         "\" in CCPACSComponent::BuildLoft");
+        throw CTiglError("Unsupported system element for uID \"" + systemElementUID + "\".");
     }
+
+    return *geom;
+}
+
+PNamedShape CCPACSComponent::BuildLoft() const
+{
+    const CCPACSElementGeometry& geom = GetElementGeometry();
 
     // Use component UID as shape name
     const std::string compName = this->GetObjectUID().get_value_or("unnamed");
 
     // The builder works on the generic CTiglRelativelyPositionedComponent,
     // therefore the CCPACSComponent-specific information (configuration, geometry, uID) needs to be extracted at this level
-    CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), *geom, compName, _cpacsDocPath);
+    CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), geom, compName, _cpacsDocPath);
     const PNamedShape shape = builder.BuildShape();
 
     // Apply local transformation and return shape

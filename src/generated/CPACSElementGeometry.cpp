@@ -183,6 +183,11 @@ namespace generated
 
     void CPACSElementGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute representation
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "representation")) {
+            m_representation = stringToCPACSGeometryRepresentation(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "representation"));
+        }
+
         // read element cuboids
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cuboids")) {
             m_cuboids = boost::in_place(this, m_uidMgr);
@@ -264,6 +269,16 @@ namespace generated
 
     void CPACSElementGeometry::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute representation
+        if (m_representation) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "representation", CPACSGeometryRepresentationToString(*m_representation));
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "representation")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "representation");
+            }
+        }
+
         // write element cuboids
         if (m_cuboids) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cuboids");
@@ -341,6 +356,16 @@ namespace generated
             }
         }
 
+    }
+
+    const boost::optional<CPACSGeometryRepresentation>& CPACSElementGeometry::GetRepresentation() const
+    {
+        return m_representation;
+    }
+
+    void CPACSElementGeometry::SetRepresentation(const boost::optional<CPACSGeometryRepresentation>& value)
+    {
+        m_representation = value;
     }
 
     const boost::optional<CPACSCuboids>& CPACSElementGeometry::GetCuboids() const

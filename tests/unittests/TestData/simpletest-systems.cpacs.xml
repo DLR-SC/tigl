@@ -378,7 +378,7 @@
             <genericComponents>
                 <genericComponent uID="predCuboid_1">
                     <name>Predefined cuboid 1</name>
-                    <geometry>
+                    <geometry representation="physical">
                         <cuboids>
                             <cuboid>
                                 <lengthX>1.</lengthX>
@@ -403,7 +403,7 @@
                 </genericComponent>
                 <genericComponent uID="predCuboid_2">
                     <name>Predefined cuboid 2</name>
-                    <geometry>
+                    <geometry representation="envelope">
                         <cuboids>
                             <cuboid>
                                 <lengthX>3.</lengthX>

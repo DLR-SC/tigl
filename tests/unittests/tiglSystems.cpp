@@ -248,6 +248,27 @@ TEST_F(Systems, ComponentsGeometry)
     }
 }
 
+TEST_F(Systems, Representation)
+{
+    // cuboid_1 is explicitly set to "physical"
+    {
+        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_1");
+        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+    }
+
+    // cuboid_2 is explicitly set to "envelope"
+    {
+        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("cuboid_2");
+        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_ENVELOPE);
+    }
+
+    // wedge_1 has no attribute "representation", so it must default to "physical"
+    {
+        const auto* component = &uidMgr.ResolveObject<tigl::CCPACSComponent>("wedge_1");
+        ASSERT_EQ(component->GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
+    }
+}
+
 TEST_F(Systems, ComponentMasses)
 {
     const double eps = 1e-6;
@@ -366,7 +387,7 @@ TEST_F(InvalidSystems, Exceptions)
         ASSERT_NE(wrongReference, nullptr);
 
         CheckExceptionMessage([&] { (void)wrongReference->GetLoft(); },
-                              "Unsupported system element for uid \"NACA0009\" in CCPACSComponent::BuildLoft");
+                              "Unsupported system element for uID \"NACA0009\".");
     }
 }
 
