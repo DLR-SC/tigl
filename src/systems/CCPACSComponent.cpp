@@ -136,9 +136,6 @@ std::string CCPACSComponent::GetComponentRepresentationAsString() const
         return "physical";
     case TIGL_GEOMREP_ENVELOPE:
         return "envelope";
-    default:
-        throw CTiglError("Invalid geometry representation for component with uID \"" +
-                         GetObjectUID().get_value_or("unnamed") + "\".");
     }
 }
 
@@ -185,7 +182,7 @@ bool CCPACSComponent::IsPositioned() const
 
 const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
 {
-    const std::string systemElementUID      = m_systemElementUID_choice1.get();
+    const std::string systemElementUID      = m_systemElementUID;
     const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, systemElementUID);
 
     if (!geom) {
@@ -213,7 +210,7 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
-    const std::string uid = m_systemElementUID_choice1.get();
+    const std::string uid = m_systemElementUID;
 
     const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
     if (!massPtr || !*massPtr) {
