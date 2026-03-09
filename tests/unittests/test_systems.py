@@ -210,11 +210,17 @@ class Systems(unittest.TestCase):
         self.assertEqual(wedge1.get_component_representation(), 1)
         self.assertEqual(wedge1.get_component_representation_as_string(), "physical")
 
-    def test_component_intent(self):
+    def test_enums(self):
 
-        # The intent of system components is always physical
-        cuboid1 = self.uid_mgr.get_geometric_component("cuboid_1")
-        self.assertEqual(cuboid1.get_component_intent(), 1)
+        # Systems
+        system = self.uid_mgr.get_geometric_component("genSys_1")
+        self.assertEqual(system.get_component_intent(), 1)
+        self.assertEqual(system.get_component_type(), 12)
+
+        # Components
+        component = self.uid_mgr.get_geometric_component("cuboid_1")
+        self.assertEqual(component.get_component_intent(), 1)
+        self.assertEqual(component.get_component_type(), 29)
 
 
 if __name__ == "__main__":

@@ -102,9 +102,17 @@ TEST_F(Systems, Basics)
     EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
     EXPECT_EQ(component.GetDefaultedUID(), "cuboid_1");
 
+    // check system's type and intent
+    EXPECT_EQ(system.GetComponentType(), TIGL_COMPONENT_GENERICSYSTEM);
+    EXPECT_EQ(system.GetComponentType(), 12);
+    EXPECT_EQ(system.GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+    EXPECT_EQ(system.GetComponentIntent(), 1);
+
     // check components' type and intent
     EXPECT_EQ(component.GetComponentType(), TIGL_COMPONENT_SYSTEM_COMPONENT);
+    EXPECT_EQ(component.GetComponentType(), 29);
     EXPECT_EQ(component.GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+    EXPECT_EQ(component.GetComponentIntent(), 1);
 
     // available in configuration
     EXPECT_EQ(system.GetConfiguration().GetUID(), "testAircraft");
