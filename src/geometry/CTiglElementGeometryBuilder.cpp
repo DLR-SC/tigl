@@ -287,9 +287,6 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMul
         throw CTiglError("Cannot build multi-segment shape: no segments defined.", TIGL_INVALID_VALUE);
     }
 
-    const TiglContinuity cont     = segments.GetSegment(1).GetContinuity();
-    const Standard_Boolean smooth = (cont != ::C0);
-
     CTiglMakeLoft lofter;
 
     // profiles: start wire of each segment
@@ -305,7 +302,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMul
 
     // loft options
     lofter.setMakeSolid(true);
-    lofter.setMakeSmooth(smooth);
+    lofter.setMakeSmooth(m.GetSmooth().get_value_or(true));
 
     TopoDS_Shape shape = lofter.Shape();
 

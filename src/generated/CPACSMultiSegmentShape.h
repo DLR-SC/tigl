@@ -62,6 +62,9 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const boost::optional<bool>& GetSmooth() const;
+        TIGL_EXPORT virtual void SetSmooth(const boost::optional<bool>& value);
+
         TIGL_EXPORT virtual const CCPACSFuselageSections& GetSections() const;
         TIGL_EXPORT virtual CCPACSFuselageSections& GetSections();
 
@@ -79,6 +82,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        boost::optional<bool>                    m_smooth;
         CCPACSFuselageSections                   m_sections;
         CCPACSFuselageSegments                   m_segments;
         boost::optional<CCPACSTransformationSE3> m_transformation;

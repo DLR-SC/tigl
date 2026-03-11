@@ -364,6 +364,17 @@
                                         </translation>
                                     </transformation>
                                 </component>
+                                <component uID="wing">
+                                    <name>Multi-segment wing-like componenk</name>
+                                    <systemElementUID>predWing</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>25</x>
+                                            <y>15</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                                 <component uID="unpositionedCuboid">
                                     <name>Unpositioned Cuboid</name>
                                     <systemElementUID>predCuboid_1</systemElementUID>
@@ -754,6 +765,92 @@
                         <mass>0.5</mass>
                     </mass>
                 </genericComponent>
+                <genericComponent uID="predWing">
+                    <name>Predefined wing-like multi-segment shape</name>
+                    <geometry>
+                        <multiSegmentShapes>
+                            <multiSegmentShape smooth="false">
+                                <transformation>
+                                    <rotation>
+                                        <z>-90</z>
+                                    </rotation>
+                                </transformation>
+                                <sections>
+                                    <section uID="predWing_section1">
+                                        <name>Section 1</name>
+                                        <transformation />
+                                        <elements>
+                                            <element uID="predWing_section1_element1">
+                                                <name>Element</name>
+                                                <profileUID>NACA0009_fuselage</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                    <section uID="predWing_section2">
+                                        <name>Section 2</name>
+                                        <transformation>
+                                            <translation>
+                                                <x>1</x>
+                                                <y>0</y>
+                                                <z>0</z>
+                                            </translation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>1</y>
+                                                <z>1</z>
+                                            </scaling>
+                                        </transformation>
+                                        <elements>
+                                            <element uID="predWing_section2_element1">
+                                                <name>Element</name>
+                                                <profileUID>NACA0009_fuselage</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                    <section uID="predWing_section3">
+                                        <name>Section 3</name>
+                                        <transformation>
+                                            <translation>
+                                                <x>1.5</x>
+                                                <y>0.5</y>
+                                                <z>0</z>
+                                            </translation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>0.5</y>
+                                                <z>0.5</z>
+                                            </scaling>
+                                        </transformation>
+                                        <elements>
+                                            <element uID="predWing_section3_element1">
+                                                <name>Element</name>
+                                                <profileUID>NACA0009_fuselage</profileUID>
+                                                <transformation />
+                                            </element>
+                                        </elements>
+                                    </section>
+                                </sections>
+                                <segments>
+                                    <segment uID="predWing_segment1">
+                                        <name>Segment 1</name>
+                                        <fromElementUID>predWing_section1_element1</fromElementUID>
+                                        <toElementUID>predWing_section2_element1</toElementUID>
+                                    </segment>
+                                    <segment uID="predWing_segment2">
+                                        <name>Segment 2</name>
+                                        <fromElementUID>predWing_section2_element1</fromElementUID>
+                                        <toElementUID>predWing_section3_element1</toElementUID>
+                                    </segment>
+                                </segments>
+                            </multiSegmentShape>
+                        </multiSegmentShapes>
+                    </geometry>
+                    <mass>
+                        <mass>0.3</mass>
+                    </mass>
+                </genericComponent>
                 <genericComponent uID="predCombinedComponent">
                     <name>Predefined element with subelements</name>
                     <geometry>
@@ -945,6 +1042,15 @@
                             <nUpper>1</nUpper>
                         </superEllipse>
                     </standardProfile>
+                </fuselageProfile>
+                <fuselageProfile uID="NACA0009_fuselage">
+                    <name>NACA0009 Airfoil</name>
+                    <description>NACA 4-digit symmetrical airfoil with a thickness of 9percent</description>
+                    <pointList>
+                        <x>0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x>
+                        <y>1.0;0.99572;0.98296;0.96194;0.93301;0.89668;0.85355;0.80438;0.75;0.69134;0.62941;0.56526;0.5;0.43474;0.37059;0.33928;0.30866;0.27886;0.25;0.22221;0.19562;0.17033;0.14645;0.12408;0.10332;0.08427;0.06699;0.05156;0.03806;0.02653;0.01704;0.00961;0.00428;0.00107;0.0;0.00107;0.00428;0.00961;0.01704;0.02653;0.03806;0.05156;0.06699;0.08427;0.10332;0.12408;0.14645;0.17033;0.19562;0.22221;0.25;0.27886;0.30866;0.33928;0.37059;0.43474;0.5;0.56526;0.62941;0.69134;0.75;0.80438;0.85355;0.89668;0.93301;0.96194;0.98296;0.99572;1.0</y>
+                        <z>0.0;0.00057;0.00218;0.00463;0.0077;0.01127;0.01522;0.01945;0.02384;0.02823;0.03247;0.03638;0.03978;0.04248;0.04431;0.04484;0.04509;0.04504;0.04466;0.04397;0.04295;0.04161;0.03994;0.03795;0.03564;0.03305;0.03023;0.0272;0.02395;0.02039;0.01646;0.01214;0.00767;0.00349;0.0;-0.00349;-0.00767;-0.01214;-0.01646;-0.02039;-0.02395;-0.0272;-0.03023;-0.03305;-0.03564;-0.03795;-0.03994;-0.04161;-0.04295;-0.04397;-0.04466;-0.04504;-0.04509;-0.04484;-0.04431;-0.04248;-0.03978;-0.03638;-0.03247;-0.02823;-0.02384;-0.01945;-0.01522;-0.01127;-0.0077;-0.00463;-0.00218;-0.00057;-0.0</z>
+                    </pointList>
                 </fuselageProfile>
             </fuselageProfiles>
             <guideCurves>

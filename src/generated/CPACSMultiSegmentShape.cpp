@@ -85,6 +85,11 @@ namespace generated
 
     void CPACSMultiSegmentShape::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute smooth
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "smooth")) {
+            m_smooth = tixi::TixiGetAttribute<bool>(tixiHandle, xpath, "smooth");
+        }
+
         // read element sections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sections")) {
             m_sections.ReadCPACS(tixiHandle, xpath + "/sections");
@@ -116,6 +121,16 @@ namespace generated
 
     void CPACSMultiSegmentShape::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute smooth
+        if (m_smooth) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "smooth", *m_smooth);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "smooth")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "smooth");
+            }
+        }
+
         // write element sections
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sections");
         m_sections.WriteCPACS(tixiHandle, xpath + "/sections");
@@ -135,6 +150,16 @@ namespace generated
             }
         }
 
+    }
+
+    const boost::optional<bool>& CPACSMultiSegmentShape::GetSmooth() const
+    {
+        return m_smooth;
+    }
+
+    void CPACSMultiSegmentShape::SetSmooth(const boost::optional<bool>& value)
+    {
+        m_smooth = value;
     }
 
     const CCPACSFuselageSections& CPACSMultiSegmentShape::GetSections() const

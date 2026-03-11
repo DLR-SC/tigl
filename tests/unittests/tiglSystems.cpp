@@ -142,16 +142,16 @@ TEST_F(Systems, SystemMass)
     const double mAll = system.GetMassAllComponents();
     const double mPos = system.GetMassPositionedComponents();
 
-    EXPECT_NEAR(mAll, 2.5995165, eps);
-    EXPECT_NEAR(mPos, 2.4761165, eps);
+    EXPECT_NEAR(mAll, 2.8995165, eps);
+    EXPECT_NEAR(mPos, 2.7761165, eps);
 
     // ---- Mass location ----
     const auto cog = system.GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
-    EXPECT_NEAR(cog->x, 24.6180626, eps);
-    EXPECT_NEAR(cog->y, 8.4998504, eps);
-    EXPECT_NEAR(cog->z, 4.2648416, eps);
+    EXPECT_NEAR(cog->x, 27.4124525, eps);
+    EXPECT_NEAR(cog->y, 10.7533060, eps);
+    EXPECT_NEAR(cog->z, 3.8039630, eps);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -243,6 +243,23 @@ TEST_F(Systems, ComponentsGeometry)
         EXPECT_NEAR(xmax - xmin, 1.0, eps);
         EXPECT_NEAR(ymax - ymin, 2.25, eps);
         EXPECT_NEAR(zmax - zmin, 2.125, eps);
+    }
+
+    // wing-like multiSegmentShape
+    {
+        const auto& multiSegment = GetComponent("wing");
+        PNamedShape shape        = multiSegment.GetLoft();
+        ASSERT_TRUE(shape);
+        EXPECT_EQ(shape->GetFaceCount(), 4u);
+
+        Bnd_Box box;
+        BRepBndLib::Add(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 1.0027087, eps);
+        EXPECT_NEAR(ymax - ymin, 1.5, eps);
+        EXPECT_NEAR(zmax - zmin, 0.0903533, eps);
     }
 
     // multiSegmentShape with 2 segments and super ellipses

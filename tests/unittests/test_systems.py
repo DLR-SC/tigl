@@ -57,7 +57,7 @@ class Systems(unittest.TestCase):
         # Access to CPACSComponents:
         components = genSys.get_components()
         self.assertIsNotNone(components)
-        self.assertEqual(components.get_component_count(), 23)
+        self.assertEqual(components.get_component_count(), 24)
 
         # Access to CCPACSComponent:
         component = components.get_component(1)
@@ -116,16 +116,16 @@ class Systems(unittest.TestCase):
         m_all = generic.get_mass_all_components()
         m_pos = generic.get_mass_positioned_components()
 
-        self.assertAlmostEqual(m_all, 2.5995165, delta=eps)
-        self.assertAlmostEqual(m_pos, 2.4761165, delta=eps)
+        self.assertAlmostEqual(m_all, 2.8995165, delta=eps)
+        self.assertAlmostEqual(m_pos, 2.7761165, delta=eps)
 
         # ---- Center of gravity ----
         cog = generic.get_center_of_gravity()
         self.assertIsNotNone(cog)
 
-        self.assertAlmostEqual(cog.x, 24.6180626, delta=eps)
-        self.assertAlmostEqual(cog.y, 8.4998504, delta=eps)
-        self.assertAlmostEqual(cog.z, 4.2648416, delta=eps)
+        self.assertAlmostEqual(cog.x, 27.4124525, delta=eps)
+        self.assertAlmostEqual(cog.y, 10.7533060, delta=eps)
+        self.assertAlmostEqual(cog.z, 3.8039630, delta=eps)
 
     def test_component_mass(self):
 
