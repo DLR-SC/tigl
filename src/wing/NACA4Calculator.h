@@ -22,13 +22,10 @@
 
 #pragma once
 
-//class gp_Vec2d; //schaun warum des nd geht
 #include <gp_Vec2d.hxx>
 #include <math/tiglmathfunctions.h>
-//#include "MathFunc3d"
 #include "CFunctionToBspline.h"
 
-//docstrings dazu (richtiges format) (nur im header file), extension?
 
 namespace tigl{
 

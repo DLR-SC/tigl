@@ -140,7 +140,6 @@ namespace tigl{
             double tolerance=1e-5;
             int maxDepth = 10;
 
-
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
         }
@@ -153,7 +152,6 @@ namespace tigl{
             int degree = 3;
             double tolerance=1e-5;
             int maxDepth = 10;
-
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
