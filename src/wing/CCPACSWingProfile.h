@@ -32,10 +32,16 @@
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
-#include "PTiglWingProfileAlgo.h"
+#include "ITiglWingProfileAlgo.h"
+#include "CTiglWingProfilePointList.h"
+#include "Cache.h"
+#include "CTiglWingProfileNACA.h"
+#include "tigl.h"
+#include "tigl_internal.h"
 #include "Cache.h"
 
 #include <gp_Pnt.hxx>
+#include "TopAbs_ShapeEnum.hxx"
 
 #include <Geom2d_TrimmedCurve.hxx>
 
@@ -105,6 +111,8 @@ public:
     // Checks, whether the trailing edge is blunt or not
     TIGL_EXPORT bool HasBluntTE() const;
 
+    //std::unique_ptr<CTiglWingProfilePointList> buildPointListAlgo() const;
+
 protected:
     // Cleanup routine
     void Cleanup();
@@ -121,7 +129,13 @@ protected:
 
     void buildPointListAlgo(std::unique_ptr<CTiglWingProfilePointList>& cache) const;
 
-private:
+    /**
+     * @brief Builds the NACA algorithm for the wing profile.
+     * 
+     * @param cache 
+     */
+    void buildNACAAlgo(std::unique_ptr<CTiglWingProfileNACA>& cache) const; 
+    
     // Copy constructor
     CCPACSWingProfile(const CCPACSWingProfile& );
 
@@ -134,7 +148,7 @@ private:
 private:
     bool                                  isRotorProfile; /**< Indicates if this profile is a rotor profile */
     Cache<std::unique_ptr<CTiglWingProfilePointList>, CCPACSWingProfile> pointListAlgo;  // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
-
+    Cache<std::unique_ptr<CTiglWingProfileNACA>, CCPACSWingProfile> NACAAlgo; 
 }; // class CCPACSWingProfile
 
 } // end namespace tigl
