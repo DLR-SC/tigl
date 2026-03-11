@@ -506,9 +506,9 @@
          <wingAirfoil uID="NACA0012">
           <name>NACA0.00.00.12</name>
           <description>NACA 4 Series Profile</description> 
-            <nacaProfileType >
+            <nacaProfile>
                 <naca4DigitCode>0012</naca4DigitCode>
-            </nacaProfileType>
+            </nacaProfile>
          </wingAirfoil>  
       </wingAirfoils>
       <fuselageProfiles>
