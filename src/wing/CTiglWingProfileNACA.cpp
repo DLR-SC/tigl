@@ -99,12 +99,13 @@ const std::vector<CTiglPoint>& CTiglWingProfileNACA::GetSamplePoints() const {
     return dummy;
 }
 
-
+// get upper wing profile wire
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperWire(TiglShapeModifier mod) const
 {
     return wireCache->upperWire;
 }
 
+// get lower wing profile wire
 const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) const
 {
     return wireCache->lowerWire;
@@ -123,8 +124,6 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetTrailingEdge(TiglShapeModifier mod) 
 {
 
     return wireCache->trailingEdge;
-    //obere und unterekoordinate bei x = 1 und dann dazwischen eine edge erstellen
-    //im constructor die te thickness noch mit übergeben
 }
 
 // get leading edge point();

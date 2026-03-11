@@ -22,7 +22,6 @@
 
 
 #include "CPACSProfileGeometry.h"
-//#include "generated/CPACSNacaProfile.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
@@ -62,7 +61,6 @@ namespace tigl{
          */
         TIGL_EXPORT const TopoDS_Edge& GetUpperWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
-        // get lower wing profile wire
         /**
          * @brief Get lower wing profile wire
          * 
@@ -71,7 +69,6 @@ namespace tigl{
          */
         TIGL_EXPORT const TopoDS_Edge& GetLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
-        // get trailing edge
         /**
          * @brief Get trailing edge
          * 
@@ -80,7 +77,6 @@ namespace tigl{
          */
         TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
-        // gets the upper and lower wing profile into on edge
         /**
          * @brief Get upper and lower wing profile into one edge
          * 
@@ -89,7 +85,6 @@ namespace tigl{
          */
         TIGL_EXPORT const TopoDS_Edge& GetUpperLowerWire(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
-        // get leading edge point();
         /**
          * @brief Get leading edge point
          * 
@@ -97,7 +92,6 @@ namespace tigl{
          */
         TIGL_EXPORT const gp_Pnt & GetLEPoint() const override;
 
-        // get trailing edge point();
         /**
          * @brief Get trailing edge point
          * 
