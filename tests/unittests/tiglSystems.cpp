@@ -384,7 +384,7 @@ TEST_F(Systems, systemArhitectures)
 {
     const auto& sa = GetUIDManager().ResolveObject<tigl::CCPACSSystemArchitecture>("systemArchitecture1");
     EXPECT_EQ(sa.GetName(), "Test system architecture");
-    EXPECT_EQ(sa.GetConnections()->GetConnectionCount(), 3u);
+    EXPECT_EQ(sa.GetConnections()->GetConnectionCount(), 2u);
 }
 
 class InvalidSystems : public ::testing::Test

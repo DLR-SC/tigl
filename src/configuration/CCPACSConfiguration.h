@@ -115,7 +115,7 @@ public:
     TIGL_EXPORT size_t GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration
-    TIGL_EXPORT size_t GetGenericSystemCount();
+    TIGL_EXPORT size_t GetGenericSystemCount() const;
 
     // Returns the generic system for a given index.
     TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(size_t index) const;
@@ -126,7 +126,7 @@ public:
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
 
     // Returns the total count of system architectures in a configuration
-    TIGL_EXPORT size_t GetSystemArchitecturesCount();
+    TIGL_EXPORT size_t GetSystemArchitecturesCount() const;
 
     // Returns the system architecture for a given index.
     TIGL_EXPORT const CCPACSSystemArchitecture& GetSystemArchitecture(size_t index) const;

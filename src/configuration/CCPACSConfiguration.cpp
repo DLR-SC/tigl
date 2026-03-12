@@ -404,65 +404,50 @@ size_t CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 }
 
 // Returns the total count of generic systems in a configuration
-size_t CCPACSConfiguration::GetGenericSystemCount()
+size_t CCPACSConfiguration::GetGenericSystemCount() const
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystemCount();
     }
-    else {
-        return 0;
-    }
+
+    return 0;
 }
 
 // Returns the generic system for a given index.
 const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index) const
 {
-    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystem(index);
     }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+
+    throw CTiglError("No generic system loaded");
 }
 
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index)
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems && acSystems->GetGenericSystems()) {
-        return acSystems->GetGenericSystems()->GetGenericSystem(index);
-    }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+    return const_cast<CCPACSGenericSystem&>(std::as_const(*this).GetGenericSystem(index));
 }
 
 // Returns the generic system for a given UID.
 const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID) const
 {
-    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystem(UID);
     }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+
+    throw CTiglError("No generic system loaded");
 }
 
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems && acSystems->GetGenericSystems()) {
-        return acSystems->GetGenericSystems()->GetGenericSystem(UID);
-    }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+    return const_cast<CCPACSGenericSystem&>(std::as_const(*this).GetGenericSystem(UID));
 }
 
 // Returns the total count of system architectures in a configuration
-size_t CCPACSConfiguration::GetSystemArchitecturesCount()
+size_t CCPACSConfiguration::GetSystemArchitecturesCount() const
 {
     if (aircraftModel) {
         const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
