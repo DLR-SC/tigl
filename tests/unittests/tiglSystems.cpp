@@ -65,6 +65,16 @@ protected:
         return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
     }
 
+    const tigl::CCPACSConfiguration& GetConfig() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
+    tigl::CCPACSConfiguration& GetConfig()
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
     const tigl::CCPACSGenericSystem& GetSystem(const std::string& uid) const
     {
         return GetUIDManager().ResolveObject<tigl::CCPACSGenericSystem>(uid);
@@ -380,11 +390,51 @@ TEST_F(Systems, ComponentMasses)
     }
 }
 
-TEST_F(Systems, systemArhitectures)
+TEST_F(Systems, ConfigurationAccess)
 {
-    const auto& sa = GetUIDManager().ResolveObject<tigl::CCPACSSystemArchitecture>("systemArchitecture1");
+    const auto& config = GetConfig();
+
+    // genericSystem
+    EXPECT_EQ(config.GetGenericSystemCount(), 1u);
+
+    const auto& system = config.GetGenericSystem(1);
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
+    EXPECT_EQ(system.GetName(), "Generic System 1");
+
+    const auto& systemByUid = config.GetGenericSystem("genSys_1");
+    EXPECT_EQ(systemByUid.GetDefaultedUID(), "genSys_1");
+    EXPECT_EQ(systemByUid.GetName(), "Generic System 1");
+    EXPECT_EQ(&system, &systemByUid);
+
+    // systemArchitecture
+    EXPECT_EQ(config.GetSystemArchitecturesCount(), 1u);
+
+    const auto& sa = config.GetSystemArchitecture(1);
     EXPECT_EQ(sa.GetName(), "Test system architecture");
-    EXPECT_EQ(sa.GetConnections()->GetConnectionCount(), 2u);
+
+    const auto& connections = sa.GetConnections();
+    ASSERT_TRUE(connections);
+    EXPECT_EQ(connections->GetConnectionCount(), 2u);
+
+    const auto& saByUid = config.GetSystemArchitecture("systemArchitecture1");
+    EXPECT_EQ(saByUid.GetName(), "Test system architecture");
+
+    const auto& connectionsByUid = saByUid.GetConnections();
+    ASSERT_TRUE(connectionsByUid);
+    EXPECT_EQ(connectionsByUid->GetConnectionCount(), 2u);
+
+    EXPECT_EQ(&sa, &saByUid);
+}
+
+TEST_F(Systems, ConfigurationAccessNonConst)
+{
+    auto& config = GetConfig();
+
+    auto& system = config.GetGenericSystem(1);
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
+
+    auto& sa = config.GetSystemArchitecture(1);
+    EXPECT_EQ(sa.GetName(), "Test system architecture");
 }
 
 class InvalidSystems : public ::testing::Test
