@@ -36,6 +36,9 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglPoint.h"
 
+#include "generated/CPACSSystemArchitectures.h"
+#include "generated/CPACSSystemArchitecture.h"
+
 #include "generated/CPACSElementGeometry.h"
 #include "generated/CPACSVehicleElementBase.h"
 
@@ -375,6 +378,13 @@ TEST_F(Systems, ComponentMasses)
         const auto mi         = component.GetMassInertiaLocal();
         EXPECT_FALSE(mi);
     }
+}
+
+TEST_F(Systems, systemArhitectures)
+{
+    const auto& sa = GetUIDManager().ResolveObject<tigl::CCPACSSystemArchitecture>("systemArchitecture1");
+    EXPECT_EQ(sa.GetName(), "Test system architecture");
+    EXPECT_EQ(sa.GetConnections()->GetConnectionCount(), 3u);
 }
 
 class InvalidSystems : public ::testing::Test

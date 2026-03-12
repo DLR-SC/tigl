@@ -143,6 +143,11 @@
 #include "generated/CPACSComponent.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
+#include "generated/CPACSSystemArchitectures.h"
+#include "generated/CPACSSystemArchitecture.h"
+#include "generated/CPACSSystemControlDevices.h"
+#include "generated/CPACSSystemState.h"
+#include "generated/CPACSSystemConnections.h"
 %}
 
 %feature("autodoc", "3");
@@ -625,6 +630,14 @@ class CCPACSGenericSystem;
 
 %ignore tigl::generated::CPACSComponents::GetComponents;
 
+%boost_optional(tigl::CCPACSSystemArchitectures)
+%boost_optional(tigl::CCPACSSystemConnections)
+%boost_optional(tigl::CCPACSSystemControlDevices)
+
+%include "generated/CPACSSystemConnections.h"
+%include "generated/CPACSSystemState.h"
+%include "generated/CPACSSystemControlDevices.h"
+
 %include "generated/CPACSUIDSequence.h"
 %include "CTiglPoint.h"
 %include "CTiglMassInertia.h"
@@ -638,6 +651,8 @@ class CCPACSGenericSystem;
 %include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
 %include "CCPACSSystemElements.h"
+%include "generated/CPACSSystemArchitectures.h"
+%include "generated/CPACSSystemArchitecture.h"
 
 //  ---------------- Ducts ------------------ //
 
@@ -678,7 +693,8 @@ class CCPACSGenericSystem;
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,
          tigl::CCPACSVessel,
-         tigl::CCPACSComponent
+         tigl::CCPACSComponent,
+         tigl::CCPACSSystemArchitecture
 );
 
 namespace tigl

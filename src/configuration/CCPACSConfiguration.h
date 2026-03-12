@@ -125,6 +125,17 @@ public:
     TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
 
+    // Returns the total count of system architectures in a configuration
+    TIGL_EXPORT size_t GetSystemArchitecturesCount();
+
+    // Returns the system architecture for a given index.
+    TIGL_EXPORT const CCPACSSystemArchitecture& GetSystemArchitecture(size_t index) const;
+    TIGL_EXPORT CCPACSSystemArchitecture& GetSystemArchitecture(size_t index);
+
+    // Returns the system architecture for a given UID.
+    TIGL_EXPORT const CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID) const;
+    TIGL_EXPORT CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID);
+
     // Returns the total count of rotors in a configuration
     TIGL_EXPORT size_t GetRotorCount() const;
 

@@ -222,6 +222,11 @@ class Systems(unittest.TestCase):
         self.assertEqual(component.get_component_intent(), 1)
         self.assertEqual(component.get_component_type(), 29)
 
+    def test_systemArchitectures(self):
+        self.assertEqual(self.config.get_system_architectures_count(), 1)
+        sa = self.config.get_system_architecture(1)
+        self.assertEqual(sa.get_name(), "Test system architecture")
+
 
 if __name__ == "__main__":
     unittest.main()

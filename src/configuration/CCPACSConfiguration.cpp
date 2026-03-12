@@ -461,6 +461,71 @@ CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UI
     }
 }
 
+// Returns the total count of system architectures in a configuration
+size_t CCPACSConfiguration::GetSystemArchitecturesCount()
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
+    }
+
+    if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
+    }
+
+    return 0;
+}
+
+// Returns the system architecture for a given index.
+const CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(size_t index) const
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(index);
+        }
+    }
+    else if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(index);
+        }
+    }
+
+    throw CTiglError("No system architecture loaded");
+}
+
+CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(size_t index)
+{
+    return const_cast<CCPACSSystemArchitecture&>(std::as_const(*this).GetSystemArchitecture(index));
+}
+
+// Returns the system architecture for a given UID.
+const CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(const std::string& UID) const
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(UID);
+        }
+    }
+    else if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(UID);
+        }
+    }
+
+    throw CTiglError("No system architecture loaded");
+}
+
+CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(const std::string& UID)
+{
+    return const_cast<CCPACSSystemArchitecture&>(std::as_const(*this).GetSystemArchitecture(UID));
+}
+
+
 // Returns the total count of rotors in a configuration
 size_t CCPACSConfiguration::GetRotorCount() const
 {

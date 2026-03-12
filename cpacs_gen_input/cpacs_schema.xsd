@@ -3244,6 +3244,7 @@ marko.alder@dlr.de
                     <xsd:element minOccurs="0" name="analyses" type="aircraftAnalysesType"/>
                     <xsd:element minOccurs="0" name="performanceRequirements" type="performanceRequirementsType"/>
                     <xsd:element minOccurs="0" name="configurations" type="vehicleConfigurationsType"/>
+                    <xsd:element name="systemArchitectures" minOccurs="0" type="systemArchitecturesType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>
@@ -23908,6 +23909,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element minOccurs="0" name="systems" type="systemsType"/>
                     <xsd:element minOccurs="0" name="global" type="rotorcraftGlobalType"/>
                     <xsd:element minOccurs="0" name="analyses" type="rotorcraftAnalysesType"/>
+                    <xsd:element name="systemArchitectures" minOccurs="0" type="systemArchitecturesType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>
@@ -37349,5 +37351,329 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+
+    <xsd:complexType name="systemArchitecturesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>System architectures</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="systemArchitecture" maxOccurs="unbounded" type="systemArchitectureType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="systemArchitectureType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>System architecture</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <!-- xsd:element name="systemType" type="systemTypeType">
+                        <xsd:annotation>
+                            <xsd:documentation>ATA Chapter | generic</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element -->
+                    <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType"/>
+                    <xsd:element name="connections" minOccurs="0" type="systemConnectionsType"/>
+                </xsd:all>
+                <xsd:attribute name="uID" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="systemControlDevicesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Control devices</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="state" type="systemStateType">
+                        <xsd:annotation>
+                            <xsd:documentation>Control function indicating the activation state</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="systemStateType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Control parameter definition for System or Connection state</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="controlParameterActive" type="integerBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Control parameter indicating active state</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="controlParameterInactive" type="integerBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Control parameter indicating inactive state</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="systemConnectionsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Connections</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="connection" maxOccurs="unbounded" type="systemConnectionType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="systemConnectionType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Connection</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="name" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Name</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Description</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="connectionType" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>Type of the connection.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                            <xsd:complexType>
+                            <xsd:simpleContent>
+                                <xsd:restriction base="stringBaseType">
+                                    <xsd:enumeration value="electric"/>
+                                    <xsd:enumeration value="pneumatic"/>
+                                    <xsd:enumeration value="hydraulic"/>
+                                    <xsd:enumeration value="mechanical"/>
+                                    <xsd:enumeration value="data"/>
+                                </xsd:restriction>
+                            </xsd:simpleContent>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType"/>
+                    <xsd:element name="source" type="sourceTargetType"/>
+                    <xsd:element name="target" type="sourceTargetType"/>
+                </xsd:all>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sourceTargetType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Source / Target</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:choice>
+                    <xsd:sequence>
+                        <xsd:element name="componentUID" type="stringUIDBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>UID of a component defined under aircraft(rotorcraft)/model
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="subComponentUID" minOccurs="0" maxOccurs="unbounded" type="stringUIDBaseType">
+                            <xsd:annotation>
+                                <xsd:documentation>UID of a sub-component
+                                </xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:element name="externalElement">
+                        <xsd:annotation>
+                            <xsd:documentation>External element (ambient | passengers), which is not explicitly defined in CPACS.
+                                External elements indicate that this is an element relevant to modeling the system, but is not itself contained in the system.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                            <xsd:complexType>
+                            <xsd:simpleContent>
+                                <xsd:restriction base="stringBaseType">
+                                    <xsd:enumeration value="ambient"/>
+                                    <xsd:enumeration value="passengers"/>
+                                </xsd:restriction>
+                            </xsd:simpleContent>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="ataChapter" type="ataChapterListType">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Source / target system according to ATA chapter
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="systemArchitectureUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>UID of another systemArchitecture
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="ataChapterListType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Category (ATA chapters)</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ata21">
+                <xsd:annotation>
+                    <xsd:documentation>Environmental control</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata22">
+                <xsd:annotation>
+                    <xsd:documentation>Auto flight</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata23">
+                <xsd:annotation>
+                    <xsd:documentation>Communications</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata24">
+                <xsd:annotation>
+                    <xsd:documentation>Electrical power</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata25">
+                <xsd:annotation>
+                    <xsd:documentation>Equipment/furnishings</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata26">
+                <xsd:annotation>
+                    <xsd:documentation>Fire protection</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata27">
+                <xsd:annotation>
+                    <xsd:documentation>Flight controls</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata28">
+                <xsd:annotation>
+                    <xsd:documentation>Fuel</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata29">
+                <xsd:annotation>
+                    <xsd:documentation>Hydraulic power</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata30">
+                <xsd:annotation>
+                    <xsd:documentation>Ice and rain protection</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata32">
+                <xsd:annotation>
+                    <xsd:documentation>Landing gear</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata33">
+                <xsd:annotation>
+                    <xsd:documentation>Lights</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata38">
+                <xsd:annotation>
+                    <xsd:documentation>Water/waste</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata44">
+                <xsd:annotation>
+                    <xsd:documentation>Cabin system</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="ata50">
+                <xsd:annotation>
+                    <xsd:documentation>Cargo and accessory compartment</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
 
 </xsd:schema>

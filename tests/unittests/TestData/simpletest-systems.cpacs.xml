@@ -383,6 +383,33 @@
                         </genericSystem>
                     </genericSystems>
                 </systems>
+                <systemArchitectures>
+                    <systemArchitecture uID="systemArchitecture1">
+                        <name>Test system architecture</name>
+                        <connections>
+                            <connection uID="sa1_c1">
+                                <name>Connection 1</name>
+                                <description>Connection from cuboid 1 to 2</description>
+                                <source>
+                                    <componentUID>cuboid_1</componentUID>
+                                </source>
+                                <target>
+                                    <componentUID>cuboid_2</componentUID>
+                                </target>
+                            </connection>
+                            <connection uID="sa1_c2">
+                                <name>Connection 2</name>
+                                <description>Connection from cuboid 1 to 3</description>
+                                <source>
+                                    <componentUID>cuboid_1</componentUID>
+                                </source>
+                                <target>
+                                    <componentUID>cuboid_3</componentUID>
+                                </target>
+                            </connection>
+                        </connections>
+                    </systemArchitecture>
+                </systemArchitectures>
             </model>
         </aircraft>
         <systemElements>
