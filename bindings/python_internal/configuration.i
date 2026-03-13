@@ -148,6 +148,13 @@
 #include "generated/CPACSSystemControlDevices.h"
 #include "generated/CPACSSystemState.h"
 #include "generated/CPACSSystemConnections.h"
+#include "generated/CPACSSystemConnection.h"
+#include "CCPACSSystemConnection.h"
+#include "generated/CPACSSystemConnection_connectionType.h"
+#include "generated/CPACSSystemControlDevices.h"
+#include "generated/CPACSSourceTarget.h"
+#include "generated/CPACSSourceTarget_externalElement.h"
+#include "generated/CPACSAtaChapterList.h"
 %}
 
 %feature("autodoc", "3");
@@ -627,22 +634,32 @@ class CCPACSGenericSystem;
 %boost_optional(tigl::CPACSUIDSequence)
 %boost_optional(tigl::CTiglPoint)
 %boost_optional(tigl::CTiglMassInertia)
+%boost_optional(tigl::CCPACSComponent)
 
 %ignore tigl::generated::CPACSComponents::GetComponents;
 
 %boost_optional(tigl::CCPACSSystemArchitectures)
 %boost_optional(tigl::CCPACSSystemConnections)
 %boost_optional(tigl::CCPACSSystemControlDevices)
+%boost_optional_enum(tigl::ECPACSSourceTarget_externalElement)
 
-%include "generated/CPACSSystemConnections.h"
-%include "generated/CPACSSystemState.h"
-%include "generated/CPACSSystemControlDevices.h"
-
-%include "generated/CPACSUIDSequence.h"
-%include "CTiglPoint.h"
 %include "CTiglMassInertia.h"
+%include "generated/CPACSUIDSequence.h"
 %include "generated/CPACSComponent.h"
 %include "CCPACSComponent.h"
+
+%include "generated/CPACSAtaChapterList.h"
+%include "generated/CPACSSourceTarget_externalElement.h"
+%include "generated/CPACSSourceTarget.h"
+%include "generated/CPACSSystemState.h"
+%include "generated/CPACSSystemControlDevices.h"
+%include "generated/CPACSSystemConnection_connectionType.h"
+%include "generated/CPACSSystemConnection.h"
+%include "CCPACSSystemConnection.h"
+%include "generated/CPACSSystemConnections.h"
+%include "generated/CPACSSystemControlDevices.h"
+
+%include "CTiglPoint.h"
 %include "generated/CPACSComponents.h"
 %include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"

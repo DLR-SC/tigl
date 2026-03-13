@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSSystemConnection.h>
 #include "CPACSSystemArchitecture.h"
-#include "CPACSSystemConnection.h"
 #include "CPACSSystemConnections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -104,12 +104,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSystemConnection>>& CPACSSystemConnections::GetConnections() const
+    const std::vector<std::unique_ptr<CCPACSSystemConnection>>& CPACSSystemConnections::GetConnections() const
     {
         return m_connections;
     }
 
-    std::vector<std::unique_ptr<CPACSSystemConnection>>& CPACSSystemConnections::GetConnections()
+    std::vector<std::unique_ptr<CCPACSSystemConnection>>& CPACSSystemConnections::GetConnections()
     {
         return m_connections;
     }
@@ -130,25 +130,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSystemConnections::GetConnectionIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSystemConnection& CPACSSystemConnections::GetConnection(size_t index)
+    CCPACSSystemConnection& CPACSSystemConnections::GetConnection(size_t index)
     {
         if (index < 1 || index > GetConnectionCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSystemConnection>>::GetConnection", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSystemConnection>>::GetConnection", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_connections[index];
     }
 
-    const CPACSSystemConnection& CPACSSystemConnections::GetConnection(size_t index) const
+    const CCPACSSystemConnection& CPACSSystemConnections::GetConnection(size_t index) const
     {
         if (index < 1 || index > GetConnectionCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSystemConnection>>::GetConnection", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSystemConnection>>::GetConnection", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_connections[index];
     }
 
-    CPACSSystemConnection& CPACSSystemConnections::GetConnection(const std::string& UID)
+    CCPACSSystemConnection& CPACSSystemConnections::GetConnection(const std::string& UID)
     {
         for (auto& elem : m_connections ) {
             if (elem->GetUID() == UID)
@@ -157,7 +157,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSystemConnections::GetConnection. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSystemConnection& CPACSSystemConnections::GetConnection(const std::string& UID) const
+    const CCPACSSystemConnection& CPACSSystemConnections::GetConnection(const std::string& UID) const
     {
         for (auto& elem : m_connections ) {
             if (elem->GetUID() == UID)
@@ -167,13 +167,13 @@ namespace generated
     }
 
 
-    CPACSSystemConnection& CPACSSystemConnections::AddConnection()
+    CCPACSSystemConnection& CPACSSystemConnections::AddConnection()
     {
-        m_connections.push_back(make_unique<CPACSSystemConnection>(this, m_uidMgr));
+        m_connections.push_back(make_unique<CCPACSSystemConnection>(this, m_uidMgr));
         return *m_connections.back();
     }
 
-    void CPACSSystemConnections::RemoveConnection(CPACSSystemConnection& ref)
+    void CPACSSystemConnections::RemoveConnection(CCPACSSystemConnection& ref)
     {
         for (std::size_t i = 0; i < m_connections.size(); i++) {
             if (m_connections[i].get() == &ref) {

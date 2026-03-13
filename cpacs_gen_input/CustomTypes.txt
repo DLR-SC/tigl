@@ -38,6 +38,7 @@ CPACSSystems                       CCPACSACSystems
 CPACSGenericSystems                CCPACSGenericSystems
 CPACSGenericSystem                 CCPACSGenericSystem
 CPACSComponent                     CCPACSComponent
+CPACSSystemConnection              CCPACSSystemConnection
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages

@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSSystemConnection.h"
 #include "CPACSSystemArchitecture.h"
-#include "CPACSSystemConnection.h"
 #include "CPACSSystemControlDevices.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -37,13 +37,13 @@ namespace generated
         m_parentType = &typeid(CPACSSystemArchitecture);
     }
 
-    CPACSSystemControlDevices::CPACSSystemControlDevices(CPACSSystemConnection* parent, CTiglUIDManager* uidMgr)
+    CPACSSystemControlDevices::CPACSSystemControlDevices(CCPACSSystemConnection* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_state(this)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSSystemConnection);
+        m_parentType = &typeid(CCPACSSystemConnection);
     }
 
     CPACSSystemControlDevices::~CPACSSystemControlDevices()
@@ -60,8 +60,8 @@ namespace generated
                 else
                     return GetParent<CPACSSystemArchitecture>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSSystemConnection>()) {
-                return GetParent<CPACSSystemConnection>();
+            if (IsParent<CCPACSSystemConnection>()) {
+                return GetParent<CCPACSSystemConnection>();
             }
         }
         return nullptr;
@@ -76,8 +76,8 @@ namespace generated
                 else
                     return GetParent<CPACSSystemArchitecture>()->GetNextUIDParent();
             }
-            if (IsParent<CPACSSystemConnection>()) {
-                return GetParent<CPACSSystemConnection>();
+            if (IsParent<CCPACSSystemConnection>()) {
+                return GetParent<CCPACSSystemConnection>();
             }
         }
         return nullptr;

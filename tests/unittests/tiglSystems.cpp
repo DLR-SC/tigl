@@ -38,6 +38,8 @@
 
 #include "generated/CPACSSystemArchitectures.h"
 #include "generated/CPACSSystemArchitecture.h"
+#include "CCPACSSystemConnection.h"
+#include "generated/CPACSSourceTarget_externalElement.h"
 
 #include "generated/CPACSElementGeometry.h"
 #include "generated/CPACSVehicleElementBase.h"
@@ -412,17 +414,8 @@ TEST_F(Systems, ConfigurationAccess)
     const auto& sa = config.GetSystemArchitecture(1);
     EXPECT_EQ(sa.GetName(), "Test system architecture");
 
-    const auto& connections = sa.GetConnections();
-    ASSERT_TRUE(connections);
-    EXPECT_EQ(connections->GetConnectionCount(), 2u);
-
     const auto& saByUid = config.GetSystemArchitecture("systemArchitecture1");
     EXPECT_EQ(saByUid.GetName(), "Test system architecture");
-
-    const auto& connectionsByUid = saByUid.GetConnections();
-    ASSERT_TRUE(connectionsByUid);
-    EXPECT_EQ(connectionsByUid->GetConnectionCount(), 2u);
-
     EXPECT_EQ(&sa, &saByUid);
 }
 
@@ -435,6 +428,51 @@ TEST_F(Systems, ConfigurationAccessNonConst)
 
     auto& sa = config.GetSystemArchitecture(1);
     EXPECT_EQ(sa.GetName(), "Test system architecture");
+}
+
+TEST_F(Systems, SystemArchitectureConnections)
+{
+    const auto& config = GetConfig();
+    const auto& sa     = config.GetSystemArchitecture(1);
+
+    const auto& connections = sa.GetConnections();
+    ASSERT_TRUE(connections);
+
+    ASSERT_EQ(connections->GetConnectionCount(), 4u);
+
+    {
+        const auto& c     = connections->GetConnection(1);
+        const auto source = c.GetSourceComponent();
+        const auto target = c.GetTargetComponent();
+        ASSERT_TRUE(source);
+        ASSERT_TRUE(target);
+
+        EXPECT_EQ(source->GetDefaultedUID(), "cuboid_1");
+        EXPECT_EQ(target->GetDefaultedUID(), "cuboid_2");
+    }
+
+    {
+        const auto& c     = connections->GetConnection(3);
+        const auto source = c.GetSourceComponent();
+        const auto target = c.GetTargetComponent();
+        ASSERT_TRUE(source);
+
+        // target is a fuselage, not a CCPACSComponent
+        EXPECT_FALSE(target);
+        const auto& targetUid = c.GetTarget().GetComponentUID_choice4();
+        ASSERT_TRUE(targetUid);
+        EXPECT_EQ(*targetUid, "SimpleFuselage");
+    }
+
+    {
+        const auto& c     = connections->GetConnection(4);
+        const auto targetComponent = c.GetTargetComponent();
+        EXPECT_FALSE(targetComponent);
+
+        const auto& targetExternalElement = c.GetTarget().GetExternalElement_choice1();
+        ASSERT_TRUE(targetExternalElement);
+        EXPECT_EQ(*targetExternalElement, tigl::ECPACSSourceTarget_externalElement::ambient);
+    }
 }
 
 class InvalidSystems : public ::testing::Test

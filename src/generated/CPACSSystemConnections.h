@@ -27,10 +27,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSSystemConnection;
 
 namespace generated
 {
-    class CPACSSystemConnection;
     class CPACSSystemArchitecture;
 
     // This class is used in:
@@ -59,27 +59,27 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSystemConnection>>& GetConnections() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSystemConnection>>& GetConnections();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSystemConnection>>& GetConnections() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSystemConnection>>& GetConnections();
 
         TIGL_EXPORT virtual size_t GetConnectionCount() const;
         TIGL_EXPORT virtual size_t GetConnectionIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSystemConnection& GetConnection(size_t index) const;
-        TIGL_EXPORT virtual CPACSSystemConnection& GetConnection(size_t index);
+        TIGL_EXPORT virtual const CCPACSSystemConnection& GetConnection(size_t index) const;
+        TIGL_EXPORT virtual CCPACSSystemConnection& GetConnection(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSystemConnection& GetConnection(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSystemConnection& GetConnection(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSSystemConnection& GetConnection(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSSystemConnection& GetConnection(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSystemConnection& AddConnection();
-        TIGL_EXPORT virtual void RemoveConnection(CPACSSystemConnection& ref);
+        TIGL_EXPORT virtual CCPACSSystemConnection& AddConnection();
+        TIGL_EXPORT virtual void RemoveConnection(CCPACSSystemConnection& ref);
 
     protected:
         CPACSSystemArchitecture* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSystemConnection>> m_connections;
+        std::vector<std::unique_ptr<CCPACSSystemConnection>> m_connections;
 
     private:
         CPACSSystemConnections(const CPACSSystemConnections&) = delete;
@@ -92,6 +92,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSystemConnections = generated::CPACSSystemConnections;
-using CCPACSSystemConnection = generated::CPACSSystemConnection;
 using CCPACSSystemArchitecture = generated::CPACSSystemArchitecture;
 } // namespace tigl

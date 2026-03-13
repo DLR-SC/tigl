@@ -224,8 +224,46 @@ class Systems(unittest.TestCase):
 
     def test_systemArchitectures(self):
         self.assertEqual(self.config.get_system_architectures_count(), 1)
+
         sa = self.config.get_system_architecture(1)
         self.assertEqual(sa.get_name(), "Test system architecture")
+
+        # Connections container
+        connections = sa.get_connections()
+        self.assertIsNotNone(connections)
+        self.assertEqual(connections.get_connection_count(), 4)
+
+        # Connection 1: component -> component
+        c1 = connections.get_connection(1)
+        source1 = c1.get_source_component()
+        target1 = c1.get_target_component()
+
+        self.assertIsNotNone(source1)
+        self.assertIsNotNone(target1)
+        self.assertIsInstance(source1, configuration.CCPACSComponent)
+        self.assertIsInstance(target1, configuration.CCPACSComponent)
+        self.assertEqual(source1.get_defaulted_uid(), "cuboid_1")
+        self.assertEqual(target1.get_defaulted_uid(), "cuboid_2")
+
+        # Connection 3: component -> fuselage
+        c3 = connections.get_connection(3)
+        source3 = c3.get_source_component()
+        target3 = c3.get_target_component()
+
+        self.assertIsNotNone(source3)
+        self.assertIsNone(target3)
+        self.assertEqual(source3.get_defaulted_uid(), "cuboid_1")
+        self.assertEqual(c3.get_target().get_component_uid_choice4(), "SimpleFuselage")
+
+        # Connection 4: fuselage -> externalElement
+        c4 = connections.get_connection(4)
+        source4 = c4.get_source_component()
+        target4 = c4.get_target_component()
+
+        self.assertIsNone(source4)
+        self.assertIsNone(target4)
+        self.assertEqual(c4.get_source().get_component_uid_choice4(), "SimpleFuselage")
+        self.assertEqual(c4.get_target().get_external_element_choice1(), 0)
 
 
 if __name__ == "__main__":

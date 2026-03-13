@@ -117,7 +117,8 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSSystemConnection is customized, use type CCPACSSystemConnection directly
+
 // Aliases in tigl namespace
-using CCPACSSystemConnection = generated::CPACSSystemConnection;
 using CCPACSSystemConnections = generated::CPACSSystemConnections;
 } // namespace tigl

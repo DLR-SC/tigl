@@ -407,6 +407,26 @@
                                     <componentUID>cuboid_3</componentUID>
                                 </target>
                             </connection>
+                            <connection uID="sa1_fus">
+                                <name>Connection 3</name>
+                                <description>Connection from cuboid 1 to fuselage</description>
+                                <source>
+                                    <componentUID>cuboid_1</componentUID>
+                                </source>
+                                <target>
+                                    <componentUID>SimpleFuselage</componentUID>
+                                </target>
+                            </connection>
+                            <connection uID="fus1_ambient">
+                                <name>Connection 4</name>
+                                <description>Connection from fuselage to outer flow</description>
+                                <source>
+                                    <componentUID>SimpleFuselage</componentUID>
+                                </source>
+                                <target>
+                                    <externalElement>ambient</externalElement>
+                                </target>
+                            </connection>
                         </connections>
                     </systemArchitecture>
                 </systemArchitectures>

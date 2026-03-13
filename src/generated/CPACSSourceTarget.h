@@ -31,11 +31,10 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSSystemConnection;
 
 namespace generated
 {
-    class CPACSSystemConnection;
-
     // This class is used in:
     // CPACSSystemConnection
 
@@ -45,13 +44,13 @@ namespace generated
     class CPACSSourceTarget : public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSSourceTarget(CPACSSystemConnection* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSourceTarget(CCPACSSystemConnection* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSourceTarget();
 
-        TIGL_EXPORT CPACSSystemConnection* GetParent();
+        TIGL_EXPORT CCPACSSystemConnection* GetParent();
 
-        TIGL_EXPORT const CPACSSystemConnection* GetParent() const;
+        TIGL_EXPORT const CCPACSSystemConnection* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -81,7 +80,7 @@ namespace generated
         TIGL_EXPORT virtual bool RemoveFromSubComponentUIDs_choice4(const std::string& value);
 
     protected:
-        CPACSSystemConnection* m_parent;
+        CCPACSSystemConnection* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -115,5 +114,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSourceTarget = generated::CPACSSourceTarget;
-using CCPACSSystemConnection = generated::CPACSSystemConnection;
 } // namespace tigl
