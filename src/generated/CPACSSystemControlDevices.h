@@ -28,12 +28,11 @@
 namespace tigl
 {
 class CTiglUIDManager;
+class CCPACSSystemArchitecture;
 class CCPACSSystemConnection;
 
 namespace generated
 {
-    class CPACSSystemArchitecture;
-
     // This class is used in:
     // CPACSSystemArchitecture
     // CPACSSystemConnection
@@ -44,7 +43,7 @@ namespace generated
     class CPACSSystemControlDevices : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSSystemControlDevices(CPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSystemControlDevices(CCPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSSystemControlDevices(CCPACSSystemConnection* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSystemControlDevices();
@@ -58,7 +57,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSSystemArchitecture>::value || std::is_same<P, CCPACSSystemConnection>::value, "template argument for P is not a parent class of CPACSSystemControlDevices");
+            static_assert(std::is_same<P, CCPACSSystemArchitecture>::value || std::is_same<P, CCPACSSystemConnection>::value, "template argument for P is not a parent class of CPACSSystemControlDevices");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -68,7 +67,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSSystemArchitecture>::value || std::is_same<P, CCPACSSystemConnection>::value, "template argument for P is not a parent class of CPACSSystemControlDevices");
+            static_assert(std::is_same<P, CCPACSSystemArchitecture>::value || std::is_same<P, CCPACSSystemConnection>::value, "template argument for P is not a parent class of CPACSSystemControlDevices");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -112,5 +111,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSystemControlDevices = generated::CPACSSystemControlDevices;
-using CCPACSSystemArchitecture = generated::CPACSSystemArchitecture;
 } // namespace tigl

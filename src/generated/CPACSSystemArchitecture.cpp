@@ -112,7 +112,7 @@ namespace generated
 
         // read element controlDevices
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlDevices")) {
-            m_controlDevices = boost::in_place(this, m_uidMgr);
+            m_controlDevices = boost::in_place(reinterpret_cast<CCPACSSystemArchitecture*>(this), m_uidMgr);
             try {
                 m_controlDevices->ReadCPACS(tixiHandle, xpath + "/controlDevices");
             } catch(const std::exception& e) {
@@ -123,7 +123,7 @@ namespace generated
 
         // read element connections
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/connections")) {
-            m_connections = boost::in_place(this, m_uidMgr);
+            m_connections = boost::in_place(reinterpret_cast<CCPACSSystemArchitecture*>(this), m_uidMgr);
             try {
                 m_connections->ReadCPACS(tixiHandle, xpath + "/connections");
             } catch(const std::exception& e) {
@@ -250,7 +250,7 @@ namespace generated
     CPACSSystemControlDevices& CPACSSystemArchitecture::GetControlDevices(CreateIfNotExistsTag)
     {
         if (!m_controlDevices)
-            m_controlDevices = boost::in_place(this, m_uidMgr);
+            m_controlDevices = boost::in_place(reinterpret_cast<CCPACSSystemArchitecture*>(this), m_uidMgr);
         return *m_controlDevices;
     }
 
@@ -262,7 +262,7 @@ namespace generated
     CPACSSystemConnections& CPACSSystemArchitecture::GetConnections(CreateIfNotExistsTag)
     {
         if (!m_connections)
-            m_connections = boost::in_place(this, m_uidMgr);
+            m_connections = boost::in_place(reinterpret_cast<CCPACSSystemArchitecture*>(this), m_uidMgr);
         return *m_connections;
     }
 

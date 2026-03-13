@@ -37,7 +37,7 @@
 #include "CTiglPoint.h"
 
 #include "generated/CPACSSystemArchitectures.h"
-#include "generated/CPACSSystemArchitecture.h"
+#include "CCPACSSystemArchitecture.h"
 #include "CCPACSSystemConnection.h"
 #include "generated/CPACSSourceTarget_externalElement.h"
 
@@ -473,6 +473,20 @@ TEST_F(Systems, SystemArchitectureConnections)
         ASSERT_TRUE(targetExternalElement);
         EXPECT_EQ(*targetExternalElement, tigl::ECPACSSourceTarget_externalElement::ambient);
     }
+}
+
+TEST_F(Systems, SystemArchitectureComponentList)
+{
+    const auto& config = GetConfig();
+    const auto& sa     = config.GetSystemArchitecture(1);
+
+    const auto components = sa.GetGenericSystemComponents();
+
+    ASSERT_EQ(components.size(), 3u);
+
+    EXPECT_EQ(components[0]->GetDefaultedUID(), "cuboid_1");
+    EXPECT_EQ(components[1]->GetDefaultedUID(), "cuboid_2");
+    EXPECT_EQ(components[2]->GetDefaultedUID(), "cuboid_3");
 }
 
 class InvalidSystems : public ::testing::Test

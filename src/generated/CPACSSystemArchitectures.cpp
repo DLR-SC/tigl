@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSSystemArchitecture.h>
 #include "CCPACSAircraftModel.h"
 #include "CCPACSRotorcraftModel.h"
-#include "CPACSSystemArchitecture.h"
 #include "CPACSSystemArchitectures.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -108,12 +108,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSystemArchitecture>>& CPACSSystemArchitectures::GetSystemArchitectures() const
+    const std::vector<std::unique_ptr<CCPACSSystemArchitecture>>& CPACSSystemArchitectures::GetSystemArchitectures() const
     {
         return m_systemArchitectures;
     }
 
-    std::vector<std::unique_ptr<CPACSSystemArchitecture>>& CPACSSystemArchitectures::GetSystemArchitectures()
+    std::vector<std::unique_ptr<CCPACSSystemArchitecture>>& CPACSSystemArchitectures::GetSystemArchitectures()
     {
         return m_systemArchitectures;
     }
@@ -134,25 +134,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSystemArchitectures::GetSystemArchitectureIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(size_t index)
+    CCPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(size_t index)
     {
         if (index < 1 || index > GetSystemArchitectureCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSystemArchitecture>>::GetSystemArchitecture", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSystemArchitecture>>::GetSystemArchitecture", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_systemArchitectures[index];
     }
 
-    const CPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(size_t index) const
+    const CCPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(size_t index) const
     {
         if (index < 1 || index > GetSystemArchitectureCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSystemArchitecture>>::GetSystemArchitecture", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSSystemArchitecture>>::GetSystemArchitecture", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_systemArchitectures[index];
     }
 
-    CPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(const std::string& UID)
+    CCPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(const std::string& UID)
     {
         for (auto& elem : m_systemArchitectures ) {
             if (elem->GetUID() == UID)
@@ -161,7 +161,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSystemArchitectures::GetSystemArchitecture. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(const std::string& UID) const
+    const CCPACSSystemArchitecture& CPACSSystemArchitectures::GetSystemArchitecture(const std::string& UID) const
     {
         for (auto& elem : m_systemArchitectures ) {
             if (elem->GetUID() == UID)
@@ -171,13 +171,13 @@ namespace generated
     }
 
 
-    CPACSSystemArchitecture& CPACSSystemArchitectures::AddSystemArchitecture()
+    CCPACSSystemArchitecture& CPACSSystemArchitectures::AddSystemArchitecture()
     {
-        m_systemArchitectures.push_back(make_unique<CPACSSystemArchitecture>(this, m_uidMgr));
+        m_systemArchitectures.push_back(make_unique<CCPACSSystemArchitecture>(this, m_uidMgr));
         return *m_systemArchitectures.back();
     }
 
-    void CPACSSystemArchitectures::RemoveSystemArchitecture(CPACSSystemArchitecture& ref)
+    void CPACSSystemArchitectures::RemoveSystemArchitecture(CCPACSSystemArchitecture& ref)
     {
         for (std::size_t i = 0; i < m_systemArchitectures.size(); i++) {
             if (m_systemArchitectures[i].get() == &ref) {

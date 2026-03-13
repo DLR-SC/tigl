@@ -222,16 +222,20 @@ class Systems(unittest.TestCase):
         self.assertEqual(component.get_component_intent(), 1)
         self.assertEqual(component.get_component_type(), 29)
 
-    def test_systemArchitectures(self):
+    def test_systemArchitecture_access(self):
         self.assertEqual(self.config.get_system_architectures_count(), 1)
 
         sa = self.config.get_system_architecture(1)
         self.assertEqual(sa.get_name(), "Test system architecture")
 
-        # Connections container
         connections = sa.get_connections()
         self.assertIsNotNone(connections)
         self.assertEqual(connections.get_connection_count(), 4)
+
+    def test_systemArchitecture_connections(self):
+        sa = self.config.get_system_architecture(1)
+        connections = sa.get_connections()
+        self.assertIsNotNone(connections)
 
         # Connection 1: component -> component
         c1 = connections.get_connection(1)
@@ -245,6 +249,18 @@ class Systems(unittest.TestCase):
         self.assertEqual(source1.get_defaulted_uid(), "cuboid_1")
         self.assertEqual(target1.get_defaulted_uid(), "cuboid_2")
 
+        # Connection 2: component -> component
+        c2 = connections.get_connection(2)
+        source2 = c2.get_source_component()
+        target2 = c2.get_target_component()
+
+        self.assertIsNotNone(source2)
+        self.assertIsNotNone(target2)
+        self.assertIsInstance(source2, configuration.CCPACSComponent)
+        self.assertIsInstance(target2, configuration.CCPACSComponent)
+        self.assertEqual(source2.get_defaulted_uid(), "cuboid_1")
+        self.assertEqual(target2.get_defaulted_uid(), "cuboid_3")
+
         # Connection 3: component -> fuselage
         c3 = connections.get_connection(3)
         source3 = c3.get_source_component()
@@ -252,6 +268,7 @@ class Systems(unittest.TestCase):
 
         self.assertIsNotNone(source3)
         self.assertIsNone(target3)
+        self.assertIsInstance(source3, configuration.CCPACSComponent)
         self.assertEqual(source3.get_defaulted_uid(), "cuboid_1")
         self.assertEqual(c3.get_target().get_component_uid_choice4(), "SimpleFuselage")
 
@@ -263,7 +280,32 @@ class Systems(unittest.TestCase):
         self.assertIsNone(source4)
         self.assertIsNone(target4)
         self.assertEqual(c4.get_source().get_component_uid_choice4(), "SimpleFuselage")
-        self.assertEqual(c4.get_target().get_external_element_choice1(), 0)
+
+    def test_systemArchitecture_externalElement(self):
+        sa = self.config.get_system_architecture(1)
+        connections = sa.get_connections()
+        self.assertIsNotNone(connections)
+
+        c4 = connections.get_connection(4)
+        external = c4.get_target().get_external_element_choice1()
+
+        self.assertIsNotNone(external)
+        # ambient == 0 in CPACSSourceTarget_externalElement
+        self.assertEqual(external, 0)
+
+    def test_systemArchitecture_genericSystemComponents(self):
+        sa = self.config.get_system_architecture(1)
+
+        components = sa.get_generic_system_components()
+        self.assertEqual(len(components), 3)
+
+        self.assertIsInstance(components[0], configuration.CCPACSComponent)
+        self.assertIsInstance(components[1], configuration.CCPACSComponent)
+        self.assertIsInstance(components[2], configuration.CCPACSComponent)
+
+        self.assertEqual(components[0].get_defaulted_uid(), "cuboid_1")
+        self.assertEqual(components[1].get_defaulted_uid(), "cuboid_2")
+        self.assertEqual(components[2].get_defaulted_uid(), "cuboid_3")
 
 
 if __name__ == "__main__":

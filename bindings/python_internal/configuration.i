@@ -140,15 +140,13 @@
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
 #include "CCPACSSystemElements.h"
-#include "generated/CPACSComponent.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
 #include "generated/CPACSSystemArchitectures.h"
-#include "generated/CPACSSystemArchitecture.h"
+#include "CCPACSSystemArchitecture.h"
 #include "generated/CPACSSystemControlDevices.h"
 #include "generated/CPACSSystemState.h"
 #include "generated/CPACSSystemConnections.h"
-#include "generated/CPACSSystemConnection.h"
 #include "CCPACSSystemConnection.h"
 #include "generated/CPACSSystemConnection_connectionType.h"
 #include "generated/CPACSSystemControlDevices.h"
@@ -648,6 +646,8 @@ class CCPACSGenericSystem;
 %include "generated/CPACSComponent.h"
 %include "CCPACSComponent.h"
 
+%template(CCPACSComponentConstPtrVector) std::vector<const tigl::CCPACSComponent*>;
+
 %include "generated/CPACSAtaChapterList.h"
 %include "generated/CPACSSourceTarget_externalElement.h"
 %include "generated/CPACSSourceTarget.h"
@@ -657,7 +657,6 @@ class CCPACSGenericSystem;
 %include "generated/CPACSSystemConnection.h"
 %include "CCPACSSystemConnection.h"
 %include "generated/CPACSSystemConnections.h"
-%include "generated/CPACSSystemControlDevices.h"
 
 %include "CTiglPoint.h"
 %include "generated/CPACSComponents.h"
@@ -668,8 +667,9 @@ class CCPACSGenericSystem;
 %include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
 %include "CCPACSSystemElements.h"
-%include "generated/CPACSSystemArchitectures.h"
 %include "generated/CPACSSystemArchitecture.h"
+%include "CCPACSSystemArchitecture.h"
+%include "generated/CPACSSystemArchitectures.h"
 
 //  ---------------- Ducts ------------------ //
 
@@ -710,8 +710,7 @@ class CCPACSGenericSystem;
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,
          tigl::CCPACSVessel,
-         tigl::CCPACSComponent,
-         tigl::CCPACSSystemArchitecture
+         tigl::CCPACSComponent
 );
 
 namespace tigl

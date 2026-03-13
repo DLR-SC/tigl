@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSSystemArchitecture.h"
 #include "CCPACSSystemConnection.h"
-#include "CPACSSystemArchitecture.h"
 #include "CPACSSystemControlDevices.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,13 +28,13 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSystemControlDevices::CPACSSystemControlDevices(CPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr)
+    CPACSSystemControlDevices::CPACSSystemControlDevices(CCPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_state(this)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSSystemArchitecture);
+        m_parentType = &typeid(CCPACSSystemArchitecture);
     }
 
     CPACSSystemControlDevices::CPACSSystemControlDevices(CCPACSSystemConnection* parent, CTiglUIDManager* uidMgr)
@@ -54,11 +54,11 @@ namespace generated
     const CTiglUIDObject* CPACSSystemControlDevices::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSSystemArchitecture>()) {
-                if (GetParent<CPACSSystemArchitecture>()->GetUID())
-                    return GetParent<CPACSSystemArchitecture>();
+            if (IsParent<CCPACSSystemArchitecture>()) {
+                if (GetParent<CCPACSSystemArchitecture>()->GetUID())
+                    return GetParent<CCPACSSystemArchitecture>();
                 else
-                    return GetParent<CPACSSystemArchitecture>()->GetNextUIDParent();
+                    return GetParent<CCPACSSystemArchitecture>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSSystemConnection>()) {
                 return GetParent<CCPACSSystemConnection>();
@@ -70,11 +70,11 @@ namespace generated
     CTiglUIDObject* CPACSSystemControlDevices::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSSystemArchitecture>()) {
-                if (GetParent<CPACSSystemArchitecture>()->GetUID())
-                    return GetParent<CPACSSystemArchitecture>();
+            if (IsParent<CCPACSSystemArchitecture>()) {
+                if (GetParent<CCPACSSystemArchitecture>()->GetUID())
+                    return GetParent<CCPACSSystemArchitecture>();
                 else
-                    return GetParent<CPACSSystemArchitecture>()->GetNextUIDParent();
+                    return GetParent<CCPACSSystemArchitecture>()->GetNextUIDParent();
             }
             if (IsParent<CCPACSSystemConnection>()) {
                 return GetParent<CCPACSSystemConnection>();

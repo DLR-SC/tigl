@@ -108,7 +108,8 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSSystemArchitecture is customized, use type CCPACSSystemArchitecture directly
+
 // Aliases in tigl namespace
-using CCPACSSystemArchitecture = generated::CPACSSystemArchitecture;
 using CCPACSSystemArchitectures = generated::CPACSSystemArchitectures;
 } // namespace tigl

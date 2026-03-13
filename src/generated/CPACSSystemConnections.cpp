@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSSystemConnection.h>
-#include "CPACSSystemArchitecture.h"
+#include "CCPACSSystemArchitecture.h"
 #include "CPACSSystemConnections.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSystemConnections::CPACSSystemConnections(CPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr)
+    CPACSSystemConnections::CPACSSystemConnections(CCPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemArchitecture* CPACSSystemConnections::GetParent() const
+    const CCPACSSystemArchitecture* CPACSSystemConnections::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemArchitecture* CPACSSystemConnections::GetParent()
+    CCPACSSystemArchitecture* CPACSSystemConnections::GetParent()
     {
         return m_parent;
     }

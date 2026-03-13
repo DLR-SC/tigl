@@ -28,11 +28,10 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSSystemConnection;
+class CCPACSSystemArchitecture;
 
 namespace generated
 {
-    class CPACSSystemArchitecture;
-
     // This class is used in:
     // CPACSSystemArchitecture
 
@@ -42,13 +41,13 @@ namespace generated
     class CPACSSystemConnections
     {
     public:
-        TIGL_EXPORT CPACSSystemConnections(CPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSystemConnections(CCPACSSystemArchitecture* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSystemConnections();
 
-        TIGL_EXPORT CPACSSystemArchitecture* GetParent();
+        TIGL_EXPORT CCPACSSystemArchitecture* GetParent();
 
-        TIGL_EXPORT const CPACSSystemArchitecture* GetParent() const;
+        TIGL_EXPORT const CCPACSSystemArchitecture* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -75,7 +74,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveConnection(CCPACSSystemConnection& ref);
 
     protected:
-        CPACSSystemArchitecture* m_parent;
+        CCPACSSystemArchitecture* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -92,5 +91,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSystemConnections = generated::CPACSSystemConnections;
-using CCPACSSystemArchitecture = generated::CPACSSystemArchitecture;
 } // namespace tigl

@@ -29,13 +29,12 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSSystemArchitecture;
 class CCPACSAircraftModel;
 class CCPACSRotorcraftModel;
 
 namespace generated
 {
-    class CPACSSystemArchitecture;
-
     // This class is used in:
     // CPACSAircraftModel
     // CPACSRotorcraftModel
@@ -86,20 +85,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSystemArchitecture>>& GetSystemArchitectures() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSystemArchitecture>>& GetSystemArchitectures();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSSystemArchitecture>>& GetSystemArchitectures() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSSystemArchitecture>>& GetSystemArchitectures();
 
         TIGL_EXPORT virtual size_t GetSystemArchitectureCount() const;
         TIGL_EXPORT virtual size_t GetSystemArchitectureIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSystemArchitecture& GetSystemArchitecture(size_t index) const;
-        TIGL_EXPORT virtual CPACSSystemArchitecture& GetSystemArchitecture(size_t index);
+        TIGL_EXPORT virtual const CCPACSSystemArchitecture& GetSystemArchitecture(size_t index) const;
+        TIGL_EXPORT virtual CCPACSSystemArchitecture& GetSystemArchitecture(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSystemArchitecture& AddSystemArchitecture();
-        TIGL_EXPORT virtual void RemoveSystemArchitecture(CPACSSystemArchitecture& ref);
+        TIGL_EXPORT virtual CCPACSSystemArchitecture& AddSystemArchitecture();
+        TIGL_EXPORT virtual void RemoveSystemArchitecture(CCPACSSystemArchitecture& ref);
 
     protected:
         void* m_parent;
@@ -107,7 +106,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSystemArchitecture>> m_systemArchitectures;
+        std::vector<std::unique_ptr<CCPACSSystemArchitecture>> m_systemArchitectures;
 
     private:
         CPACSSystemArchitectures(const CPACSSystemArchitectures&) = delete;
@@ -120,5 +119,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSystemArchitectures = generated::CPACSSystemArchitectures;
-using CCPACSSystemArchitecture = generated::CPACSSystemArchitecture;
 } // namespace tigl
