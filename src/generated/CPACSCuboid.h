@@ -37,9 +37,14 @@ namespace generated
     // This class is used in:
     // CPACSCuboids
 
-    /// @brief Polyeder
+    /// @brief Cuboid
     /// 
-    /// ...
+    /// The local component coordinate system of the cuboid has its origin at one corner of the lower face.
+    /// The lower face spans from x = 0 to x = lengthX and from y = 0 to y = depthY at z = 0.
+    /// The upper face lies at z = heightZ. If no upperFace* values are defined, the upper face
+    /// equals the lower face and the geometry is a regular cuboid. The optional upperFaceXmin,
+    /// upperFaceXmax, upperFaceYmin and upperFaceYmax values define the extent of the upper face,
+    /// allowing tapered or skewed cuboids.
     /// 
     class CPACSCuboid
     {
@@ -93,25 +98,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Length x-direction [m]
+        /// Length in x-direction of the lower face [m]
         double                                   m_lengthX;
 
-        /// Depth in y-direction [m]
+        /// Depth in y-direction of the lower face [m]
         double                                   m_depthY;
 
-        /// Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]
+        /// Height in z-direction [m]
         double                                   m_heightZ;
 
-        /// ...
+        /// Minimum x-coordinate where the the upper face starts [m] (if not defined: equals 0)
         boost::optional<double>                  m_upperFaceXmin;
 
-        /// ...
+        /// Maximum x-coordinate where the upper face ends [m] (if not defined: equals lengthX)
         boost::optional<double>                  m_upperFaceXmax;
 
-        /// ...
+        /// Minimum y-coordinate where the upper face starts [m] (if not defined: equals 0)
         boost::optional<double>                  m_upperFaceYmin;
 
-        /// ...
+        /// Maximum y-coordinate where the upper face ends [m] (if not defined: equals depthY)
         boost::optional<double>                  m_upperFaceYmax;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;

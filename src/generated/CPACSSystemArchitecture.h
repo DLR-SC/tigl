@@ -40,6 +40,15 @@ namespace generated
 
     /// @brief System architecture
     /// 
+    /// A system architecture represents the logical and functional view of an aircraft system.
+    /// It complements the physical and geometric description provided by genericSystems by defining
+    /// the connections between instantiated components and their interfaces to other systems.
+    /// In accordance with the CPACS top-down approach, a system architecture may initially be specified
+    /// only by its systemType .
+    /// The systemType can be used to classify the architecture by a predefined ATA chapter or by the keyword generic.
+    /// The optional controlDevices can be used to describe operating states by assigning abstract control parameters.
+    /// The optional connections define the source and target of interactions within the architecture.
+    /// These references may point to components or sub-components, or alternatively to external elements ( ambient | passengers ), ATA chapters, or other system architectures.
     /// 
     class CPACSSystemArchitecture : public CTiglOptUIDObject
     {

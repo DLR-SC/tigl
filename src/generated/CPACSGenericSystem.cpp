@@ -95,11 +95,6 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
-        // read attribute symmetry
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-            m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
-        }
-
         // read element name
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
@@ -134,16 +129,6 @@ namespace generated
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-
-        // write attribute symmetry
-        if (m_symmetry) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
-            }
-        }
 
         // write element name
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -182,16 +167,6 @@ namespace generated
             }
         }
         m_uID = value;
-    }
-
-    const boost::optional<TiglSymmetryAxis>& CPACSGenericSystem::GetSymmetry() const
-    {
-        return m_symmetry;
-    }
-
-    void CPACSGenericSystem::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
-    {
-        m_symmetry = value;
     }
 
     const std::string& CPACSGenericSystem::GetName() const

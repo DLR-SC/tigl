@@ -39,7 +39,9 @@ namespace generated
 
     /// @brief Cylinder
     /// 
-    /// The component coordinate system of the cylinder is centered on the center of its lower circular face.
+    /// The local component coordinate system of the cylinder is centered on the center of its lower circular face.
+    /// The cylinder axis coincides with the local z-axis.
+    /// The lower circular face lies in the plane z = 0 and the upper circular face lies in the plane z = height.
     /// 
     class CPACSCylinder
     {
@@ -78,10 +80,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Radius [m]
+        /// Radius of the circular faces [m]
         double                                   m_radius;
 
-        /// Height [m]
+        /// Height in z-direction [m]
         double                                   m_height;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;

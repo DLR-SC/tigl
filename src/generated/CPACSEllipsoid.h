@@ -39,8 +39,13 @@ namespace generated
 
     /// @brief Ellipsoid
     /// 
-    /// The local component coordinate system of the ellipsoid lies in its center.
-    /// From there, the "radius" extends to the edge of the ellipsoid.
+    /// The local component coordinate system of the ellipsoid is centered at its geometric center.
+    /// The principal axes of the ellipsoid coincide with the local x-, y- and z-axes.
+    /// The semi-axis lengths are defined by radiusX, radiusY and radiusZ.
+    /// The radii in y- and z-direction are optional.
+    /// If not specified, they default to radiusX.
+    /// The optional diskAngle defines the opening angle of the ellipsoid segment.
+    /// If not specified, it defaults to 2*pi, resulting in a full ellipsoid.
     /// 
     class CPACSEllipsoid
     {
@@ -85,16 +90,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Radius in x-direction [m]
+        /// Semi-axis length in x-direction [m]
         double                                   m_radiusX;
 
-        /// Radius in y-direction [m] (if not defined: equals radiusX)
+        /// Semi-axis length in y-direction [m] (if not defined: equals radiusX)
         boost::optional<double>                  m_radiusY;
 
-        /// Radius in z-direction [m] (if not defined: equals radiusX)
+        /// Semi-axis length in z-direction [m] (if not defined: equals radiusX)
         boost::optional<double>                  m_radiusZ;
 
-        /// Angle between the radii lying within the bounding semidisks [rad]
+        /// Opening angle of the ellipsoid segment [rad] (if not defined: equals 2*pi)
         boost::optional<double>                  m_diskAngle;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;

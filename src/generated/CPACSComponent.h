@@ -41,6 +41,14 @@ namespace generated
 
     /// @brief Component
     /// 
+    /// A component represents a physically existing instance of a predefined system element within a generic system.
+    /// It references the corresponding element definition via systemElementUID , from which its geometry,
+    /// geometry representation, and mass-related properties are derived.
+    /// A component may be explicitly positioned by a transformation and, optionally, by a parent reference.
+    /// If no transformation is defined, the component is considered unpositioned.
+    /// In that case, local geometry and local mass properties may still be available, but the global center of gravity cannot be evaluated.
+    /// The referenced system element may define either a physical or an envelope representation.
+    /// Mass properties are taken from the referenced element definition if available; otherwise they may be derived from density and geometry.
     /// 
     class CPACSComponent : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -102,11 +110,13 @@ namespace generated
         /// Description
         boost::optional<std::string>             m_description;
 
-        /// Link to pre-defined system element uID
+        /// UID reference to the predefined system element defining the component geometry and mass properties
         std::string                              m_systemElementUID;
 
+        /// Optional UID reference to the parent object used for relative positioning
         boost::optional<std::string>             m_parentUID;
 
+        /// Optional rigid transformation defining the component position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
         /// UIDs of the structural mounts as defined in the fuselages or wings (see structuralMountType for further details).

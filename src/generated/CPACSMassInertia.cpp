@@ -59,10 +59,7 @@ namespace generated
                 return GetParent<CPACSDeckElementMass>();
             }
             if (IsParent<CPACSElementMass>()) {
-                if (GetParent<CPACSElementMass>()->GetUID())
-                    return GetParent<CPACSElementMass>();
-                else
-                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+                return GetParent<CPACSElementMass>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -75,10 +72,7 @@ namespace generated
                 return GetParent<CPACSDeckElementMass>();
             }
             if (IsParent<CPACSElementMass>()) {
-                if (GetParent<CPACSElementMass>()->GetUID())
-                    return GetParent<CPACSElementMass>();
-                else
-                    return GetParent<CPACSElementMass>()->GetNextUIDParent();
+                return GetParent<CPACSElementMass>()->GetNextUIDParent();
             }
         }
         return nullptr;

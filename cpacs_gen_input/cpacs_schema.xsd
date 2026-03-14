@@ -13367,18 +13367,20 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Generic system type containing describing the basic dimensions of a system component using simple geometric shapes</ddue:para>
+                        <ddue:para>Generic system</ddue:para>
                     </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:content>
-                            <ddue:para>The generic base types must be one of the following cone|sphere|cube|cylinder. The origin of the shapes is at the center of volume for cube, sphere and cylinder. Since the cone is constructued from a cylindric shape, its origin is at the same location as the origin of the basic cylinder, although not any longer the center of volume due to scaling of one side. While cube and sphere are symmetrical in all three axis, cylinder and cone are standing upright in the direction of cpacs z-axis. The tip of the cone is located in direction of the positive z-axis. The figure below illustrates the default position and orientation of the different shapes. Note that the cube, cylinder and sphere were moved along the x-axis for demonstration by 2, 4 and 6 meters respectively.</ddue:para>
-                            <ddue:para>For spheres the default diameter is 1m. Cubes have a length of 1m in all three dimensions. Cylinders have a length of 1m and a diameter of 1m for the circular cross section. The cone is a cylinder with the top face scaled down to zero.
+                    <ddue:content>
+                        <ddue:remarks>
+                            <ddue:para>A generic system represents aircraft systems from a geometric and mass perspective.
+                                It consists of physically existing components of the aircraft and can therefore be used to derive system-level weight and balance properties.
                             </ddue:para>
-                            <ddue:mediaLink>
-                                <ddue:image xlink:href="geometricBaseType"/>
-                            </ddue:mediaLink>
-                        </ddue:content>
-                    </ddue:remarks>
+                            <ddue:para>
+                                Each component references a predefined system element or, alternatively, a rotor element.
+                                Components do not need to be fully positioned.
+                                If no transformation element is defined, the component is considered unpositioned and is not taken into account when evaluating the global center of gravity.
+                            </ddue:para>
+                        </ddue:remarks>
+                </ddue:content>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -13387,18 +13389,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:all>
                     <xsd:element name="name" type="stringBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Name of the system component.</xsd:documentation>
+                            <xsd:documentation>Name</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element minOccurs="0" name="description" type="stringBaseType">
+                    <xsd:element name="description" minOccurs="0" type="stringBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Description of the system component.</xsd:documentation>
+                            <xsd:documentation>Description</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="components" type="componentsType"/>
                 </xsd:all>
-                <xsd:attribute name="uID" type="xsd:ID" use="required"/>
-                <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
+                <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -36422,6 +36423,28 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>System elements</ddue:para>
                     </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>
+                                This node provides a library of predefined explicit system elements at vehicle level. 
+                                It contains a selected set of dedicated element classes such as
+                                <ddue:codeInline>electricMotors</ddue:codeInline> or <ddue:codeInline>heatExchangers</ddue:codeInline>.
+                            </ddue:para>
+                            <ddue:para>
+                                All predefined elements follow the same basic principle: they are based on common base definitions
+                                describing geometry and mass properties. This includes, for example, a geometric representation by simple
+                                primitive shapes or external CAD-based geometry, as well as mass-related information such as mass,
+                                center of gravity, inertia, density, or geometry representation. On top of these common base definitions,
+                                each explicit element type may introduce dedicated extension nodes for component-specific data, such as
+                                performance maps, electrical or thermodynamic properties, or further physical characteristics.
+                            </ddue:para>
+                            <ddue:para>
+                                The elements defined here are only predefined.
+                                They become physically instantiated only when they are referenced, for example via <ddue:codeInline>systemElementUID</ddue:codeInline>, 
+                                by components in an aircraft or rotorcraft <ddue:codeInline>genericSystem</ddue:codeInline> definition.
+                            </ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -36871,7 +36894,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>MSS</ddue:para>
+                        <ddue:para>Multi-segment shapes</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36909,8 +36932,15 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>...</ddue:para>
+                        <ddue:para>Multi-segment shape</ddue:para>
                     </ddue:summary>
+                    <ddue:content>
+                        <ddue:remarks>
+                            <ddue:para>A multi-segment shape is generated as a solid loft based on the provided sections and segments.
+                                The sections define the profile stations, while the segments define their connectivity and guide curves.
+                            </ddue:para>
+                        </ddue:remarks>
+                    </ddue:content>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -36921,7 +36951,11 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="segments" type="fuselageSegmentsType"/>
                     <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
                 </xsd:all>
-                <xsd:attribute name="smooth" use="optional" type="xsd:boolean" default="true"/>
+                <xsd:attribute name="smooth" default="true" use="optional" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>Specifies whether the loft between the segments is generated smoothly (default: true)</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -36933,10 +36967,23 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>Mass</ddue:para>
                     </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>Description of mass, center of gravity and inertia. Density should only be specified in combination with a valid geometry.
-                        </ddue:para>
-                    </ddue:remarks>
+                    <ddue:content>
+                        <ddue:remarks>
+                            <ddue:para>
+                                Description of the local mass properties of a predefined system element.
+                                It defines the mass value either explicitly by <ddue:codeInline>mass</ddue:codeInline> or indirectly by
+                                <ddue:codeInline>density</ddue:codeInline> together with a valid geometric volume.
+                            </ddue:para>
+                            <ddue:para>
+                                The optional <ddue:codeInline>location</ddue:codeInline> defines the local center of gravity.
+                                If no <ddue:codeInline>location</ddue:codeInline> is specified, the center of gravity is derived from the geometric centroid of the element volume.
+                                The optional <ddue:codeInline>massInertia</ddue:codeInline> specifies the local inertia tensor components.
+                            </ddue:para>
+                            <ddue:para>
+                                If <ddue:codeInline>density</ddue:codeInline> is used, a valid non-zero-volume geometry must be available in order to evaluate the mass properties.
+                            </ddue:para>
+                        </ddue:remarks>
+                    </ddue:content>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -36962,22 +37009,27 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                     <xsd:element name="massInertia" minOccurs="0" type="massInertiaType"/>
                 </xsd:sequence>
-                <xsd:attribute name="uID" type="xsd:ID"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
-	
-	<xsd:complexType name="sphereType">
-        <xsd:annotation>
+
+	<xsd:complexType name="cuboidType">
+         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Sphere (DEPRECATED)</ddue:para>
+                        <ddue:para>Cuboid</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>The local component coordinate system of the sphere lies in its center.
-                            From there, the "radius" extends to the edge of the sphere.
-                        </ddue:para>
+                        <ddue:content>
+                            <ddue:para>The local component coordinate system of the cuboid has its origin at one corner of the lower face.
+                                The lower face spans from x = 0 to x = lengthX and from y = 0 to y = depthY at z = 0.
+                                The upper face lies at z = heightZ. If no upperFace* values are defined, the upper face
+                                equals the lower face and the geometry is a regular cuboid. The optional upperFaceXmin,
+                                upperFaceXmax, upperFaceYmin and upperFaceYmax values define the extent of the upper face,
+                                allowing tapered or skewed cuboids.
+                            </ddue:para>
+                        </ddue:content>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36985,66 +37037,39 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:all>
-                    <xsd:element name="radius" type="doubleBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Radius [m]</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                </xsd:all>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-	<xsd:complexType name="cuboidType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Polyeder</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para>...
-						</ddue:para>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-         <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
                     <xsd:element name="lengthX" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Length x-direction [m]</xsd:documentation>
+                            <xsd:documentation>Length in x-direction of the lower face [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="depthY" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Depth in y-direction [m]</xsd:documentation>
+                            <xsd:documentation>Depth in y-direction of the lower face [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="heightZ" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Height in z-direction (if cuboid, then c equals the total height in z-direction) [m]</xsd:documentation>
+                            <xsd:documentation>Height in z-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="upperFaceXmin" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>...</xsd:documentation>
+                            <xsd:documentation>Minimum x-coordinate where the the upper face starts [m] (if not defined: equals 0)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="upperFaceXmax" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>...</xsd:documentation>
+                            <xsd:documentation>Maximum x-coordinate where the upper face ends [m] (if not defined: equals lengthX)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="upperFaceYmin" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>...</xsd:documentation>
+                            <xsd:documentation>Minimum y-coordinate where the upper face starts [m] (if not defined: equals 0)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="upperFaceYmax" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>...</xsd:documentation>
+                            <xsd:documentation>Maximum y-coordinate where the upper face ends [m] (if not defined: equals depthY)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
@@ -37061,8 +37086,9 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <ddue:para>Cylinder</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>
-                            The component coordinate system of the cylinder is centered on the center of its lower circular face.
+                        <ddue:para>The local component coordinate system of the cylinder is centered on the center of its lower circular face.
+                            The cylinder axis coincides with the local z-axis.
+                            The lower circular face lies in the plane z = 0 and the upper circular face lies in the plane z = height.
                         </ddue:para>
                     </ddue:remarks>
                 </sd:schemaDoc>
@@ -37073,12 +37099,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:all>
                     <xsd:element name="radius" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Radius [m]</xsd:documentation>
+                            <xsd:documentation>Radius of the circular faces [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="height" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Height [m]</xsd:documentation>
+                            <xsd:documentation>Height in z-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
@@ -37095,14 +37121,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <ddue:para>Cone</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>
-                            The component coordinate system of the cone is centered on the center of its geometrically defining variables,
-                            which is half the height and center of the lower and upper circular faces.
-                        </ddue:para>
-                        <ddue:para>
-                            The upper radius is optional.
-                            If not specified, it defaults to the lower radius, resulting in a cylinder.
-                        </ddue:para>
+                        <ddue:content>
+                            <ddue:para>The local component coordinate system of the cone is centered on the center of its lower circular face.
+                                The cone axis coincides with the local z-axis.
+                                The lower circular face lies in the plane z = 0 and the upper circular face lies in the plane z = height.
+                            </ddue:para>
+                            <ddue:para>
+                                The upper radius is optional.
+                                If not specified, it defaults to 0, resulting in a pointed cone.
+                                If lowerRadius and upperRadius are equal, the geometry is cylindrical.
+                            </ddue:para>
+                        </ddue:content>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -37112,17 +37141,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:all>
                     <xsd:element name="lowerRadius" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Lower radius [m]</xsd:documentation>
+                            <xsd:documentation>Radius of the lower circular face [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="upperRadius" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Upper radius [m] (if not defined: equals 0)</xsd:documentation>
+                            <xsd:documentation>Radius of the upper circular face [m] (if not defined: equals 0)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="height" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Height [m]</xsd:documentation>
+                            <xsd:documentation>Height in z-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
@@ -37139,9 +37168,18 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <ddue:para>Ellipsoid</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para>The local component coordinate system of the ellipsoid lies in its center.
-                            From there, the "radius" extends to the edge of the ellipsoid.
-                        </ddue:para>
+                        <ddue:content>
+                            <ddue:para>The local component coordinate system of the ellipsoid is centered at its geometric center.
+                                The principal axes of the ellipsoid coincide with the local x-, y- and z-axes.
+                                The semi-axis lengths are defined by radiusX, radiusY and radiusZ.
+                            </ddue:para>
+                            <ddue:para>
+                                The radii in y- and z-direction are optional.
+                                If not specified, they default to radiusX.
+                                The optional diskAngle defines the opening angle of the ellipsoid segment.
+                                If not specified, it defaults to 2*pi, resulting in a full ellipsoid.
+                            </ddue:para>
+                        </ddue:content>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -37151,22 +37189,22 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:all>
                     <xsd:element name="radiusX" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Radius in x-direction [m]</xsd:documentation>
+                            <xsd:documentation>Semi-axis length in x-direction [m]</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="radiusY" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Radius in y-direction [m] (if not defined: equals radiusX)</xsd:documentation>
+                            <xsd:documentation>Semi-axis length in y-direction [m] (if not defined: equals radiusX)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="radiusZ" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>Radius in z-direction [m] (if not defined: equals radiusX)</xsd:documentation>
+                            <xsd:documentation>Semi-axis length in z-direction [m] (if not defined: equals radiusX)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-					<xsd:element name="diskAngle" minOccurs="0" type="doubleBaseType">
+                    <xsd:element name="diskAngle" minOccurs="0" type="doubleBaseType">
                         <xsd:annotation>
-                            <xsd:documentation>	Angle between the radii lying within the bounding semidisks [rad]</xsd:documentation>
+                            <xsd:documentation>Opening angle of the ellipsoid segment [rad] (if not defined: equals 2*pi)</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
@@ -37183,7 +37221,16 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <ddue:para>External geometry</ddue:para>
                     </ddue:summary>
                     <ddue:remarks>
-                        <ddue:para/>
+                        <ddue:content>
+                            <ddue:para>An external geometry references a geometry definition stored in an external CAD file.
+                                The file format must be specified in linkToFile.
+                                If the file path is given as a relative path, it is resolved relative to the CPACS document location.
+                            </ddue:para>
+                            <ddue:para>
+                                The imported file may contain one or more shapes, which are combined into a single grouped geometry.
+                                The optional transformation is applied to the imported geometry after loading.
+                            </ddue:para>
+                        </ddue:content>
                     </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -37191,7 +37238,11 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:all>
-                    <xsd:element name="linkToFile" type="linkToFileType"/>
+                    <xsd:element name="linkToFile" type="linkToFileType">
+                        <xsd:annotation>
+                            <xsd:documentation>Reference to the external geometry file including its format specification</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                     <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
                 </xsd:all>
             </xsd:extension>
@@ -37224,6 +37275,23 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>Component</ddue:para>
                     </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>A component represents a physically existing instance of a predefined system element within a generic system.
+                                It references the corresponding element definition via <ddue:codeInline>systemElementUID</ddue:codeInline>, from which its geometry,
+                                geometry representation, and mass-related properties are derived. 
+                            </ddue:para>
+                            <ddue:para>
+                                A component may be explicitly positioned by a transformation and, optionally, by a parent reference.
+                                If no transformation is defined, the component is considered unpositioned.
+                                In that case, local geometry and local mass properties may still be available, but the global center of gravity cannot be evaluated. 
+                            </ddue:para>
+                            <ddue:para>
+                                The referenced system element may define either a physical or an envelope representation.
+                                Mass properties are taken from the referenced element definition if available; otherwise they may be derived from density and geometry. 
+                            </ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -37247,12 +37315,20 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="systemElementUID" type="stringUIDBaseType">
                         <xsd:annotation>
                             <xsd:documentation>
-                                Link to pre-defined system element uID
+                                UID reference to the predefined system element defining the component geometry and mass properties
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="parentUID" minOccurs="0" type="stringUIDBaseType"/>
-                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
+                    <xsd:element name="parentUID" minOccurs="0" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Optional UID reference to the parent object used for relative positioning</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type">
+                        <xsd:annotation>
+                            <xsd:documentation>Optional rigid transformation defining the component position and orientation</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                     <xsd:element name="structuralMountUIDs" minOccurs="0" type="uIDSequenceType">
                         <xsd:annotation>
                             <xsd:documentation>UIDs of the structural mounts as defined in the fuselages or wings (see structuralMountType for further details).</xsd:documentation>
@@ -37308,49 +37384,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
-	
-	<xsd:complexType name="subElementsType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Sub-elements</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:element name="subElement" maxOccurs="unbounded" type="subElementType"/>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-	
-	<xsd:complexType name="subElementType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Sub-element</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:choice>
-                    <xsd:element name="cuboid" type="cuboidType"/>
-                    <xsd:element name="cylinder" type="cylinderType"/>
-                    <xsd:element name="cone" type="coneType"/>
-                    <xsd:element name="ellipsoid" type="ellipsoidType"/>
-                    <xsd:element name="multiSegmentShape" type="multiSegmentShapeType"/>
-                    <xsd:element name="external" type="externalGeometryType"/>
-                </xsd:choice>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
 
     <xsd:complexType name="systemArchitecturesType">
         <xsd:annotation>
@@ -37378,6 +37411,24 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>System architecture</ddue:para>
                     </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>A system architecture represents the logical and functional view of an aircraft system.
+                                It complements the physical and geometric description provided by <ddue:codeInline>genericSystems</ddue:codeInline> by defining
+                                the connections between instantiated components and their interfaces to other systems.
+                            </ddue:para>
+                            <ddue:para>
+                                In accordance with the CPACS top-down approach, a system architecture may initially be specified
+                                only by its <ddue:codeInline>systemType</ddue:codeInline>. 
+                                The <ddue:codeInline>systemType</ddue:codeInline> can be used to classify the architecture by a predefined ATA chapter or by the keyword generic.
+                            </ddue:para>
+                            <ddue:para>
+                                The optional <ddue:codeInline>controlDevices</ddue:codeInline> can be used to describe operating states by assigning abstract control parameters.
+                                The optional <ddue:codeInline>connections</ddue:codeInline> define the source and target of interactions within the architecture.
+                                These references may point to components or sub-components, or alternatively to external elements (<ddue:codeInline>ambient</ddue:codeInline> | <ddue:codeInline>passengers</ddue:codeInline>), ATA chapters, or other system architectures.
+                            </ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -37485,6 +37536,19 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <ddue:summary>
                         <ddue:para>Connection</ddue:para>
                     </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>A connection represents a directed logical relation between a <ddue:codeInline>source</ddue:codeInline> and a <ddue:codeInline>target</ddue:codeInline> within a system architecture.
+                                It can be used to describe interactions, transfer paths, or dependencies between system components and their interfaces to other systems.
+                            </ddue:para>
+                            <ddue:para>
+                                Depending on the selected modeling fidelity, source and target may reference components (or their sub-components) via <ddue:codeInline>uID</ddue:codeInline>.
+                                Alternatively, they may refer to external entities (such as <ddue:codeInline>ambient</ddue:codeInline> or <ddue:codeInline>passengers</ddue:codeInline>), ATA chapters, or other system architectures.
+                                Optional <ddue:codeInline>controlDevices</ddue:codeInline> can be used to describe connection-specific operating states.
+                                The optional <ddue:codeInline>connectionType</ddue:codeInline> can be used to classify the connection, for example as electric, pneumatic, hydraulic, mechanical, or data.
+                            </ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
                 </sd:schemaDoc>
             </xsd:appinfo>
         </xsd:annotation>
@@ -37503,10 +37567,9 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                     <xsd:element name="connectionType" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Type of the connection.
-                            </xsd:documentation>
+                            <xsd:documentation>Optional classification of the connection type</xsd:documentation>
                         </xsd:annotation>
-                            <xsd:complexType>
+                        <xsd:complexType>
                             <xsd:simpleContent>
                                 <xsd:restriction base="stringBaseType">
                                     <xsd:enumeration value="electric"/>
@@ -37518,9 +37581,21 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             </xsd:simpleContent>
                         </xsd:complexType>
                     </xsd:element>
-                    <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType"/>
-                    <xsd:element name="source" type="sourceTargetType"/>
-                    <xsd:element name="target" type="sourceTargetType"/>
+                    <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType">
+                        <xsd:annotation>
+                            <xsd:documentation>Optional control devices defining connection-specific operating states</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="source" type="sourceTargetType">
+                        <xsd:annotation>
+                            <xsd:documentation>Definition of the source of the connection</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="target" type="sourceTargetType">
+                        <xsd:annotation>
+                            <xsd:documentation>Definition of the target of the connection</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                 </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>

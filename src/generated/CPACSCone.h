@@ -39,10 +39,12 @@ namespace generated
 
     /// @brief Cone
     /// 
-    /// The component coordinate system of the cone is centered on the center of its geometrically defining variables,
-    /// which is half the height and center of the lower and upper circular faces.
+    /// The local component coordinate system of the cone is centered on the center of its lower circular face.
+    /// The cone axis coincides with the local z-axis.
+    /// The lower circular face lies in the plane z = 0 and the upper circular face lies in the plane z = height.
     /// The upper radius is optional.
-    /// If not specified, it defaults to the lower radius, resulting in a cylinder.
+    /// If not specified, it defaults to 0, resulting in a pointed cone.
+    /// If lowerRadius and upperRadius are equal, the geometry is cylindrical.
     /// 
     class CPACSCone
     {
@@ -84,13 +86,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Lower radius [m]
+        /// Radius of the lower circular face [m]
         double                                   m_lowerRadius;
 
-        /// Upper radius [m] (if not defined: equals 0)
+        /// Radius of the upper circular face [m] (if not defined: equals 0)
         boost::optional<double>                  m_upperRadius;
 
-        /// Height [m]
+        /// Height in z-direction [m]
         double                                   m_height;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;

@@ -28,6 +28,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
+#include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
 namespace tigl
@@ -100,7 +101,6 @@ namespace generated
 
     CPACSElementMass::~CPACSElementMass()
     {
-        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CTiglUIDObject* CPACSElementMass::GetNextUIDParent() const
@@ -183,14 +183,6 @@ namespace generated
 
     void CPACSElementMass::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read attribute uID
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
-            if (m_uID->empty()) {
-                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
-            }
-        }
-
         // read element density
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/density")) {
             m_density_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/density");
@@ -223,7 +215,6 @@ namespace generated
             }
         }
 
-        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
         }
@@ -232,16 +223,6 @@ namespace generated
     void CPACSElementMass::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         const std::vector<std::string> childElemOrder = { "density", "mass", "location", "massInertia" };
-
-        // write attribute uID
-        if (m_uID) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
-            }
-        }
 
         // write element density
         if (m_density_choice1) {
@@ -317,27 +298,6 @@ namespace generated
             )
         )
         ;
-    }
-
-    const boost::optional<std::string>& CPACSElementMass::GetUID() const
-    {
-        return m_uID;
-    }
-
-    void CPACSElementMass::SetUID(const boost::optional<std::string>& value)
-    {
-        if (m_uidMgr && value != m_uID) {
-            if (!m_uID && value) {
-                m_uidMgr->RegisterObject(*value, *this);
-            }
-            else if (m_uID && !value) {
-                m_uidMgr->TryUnregisterObject(*m_uID);
-            }
-            else if (m_uID && value) {
-                m_uidMgr->UpdateObjectUID(*m_uID, *value);
-            }
-        }
-        m_uID = value;
     }
 
     const boost::optional<double>& CPACSElementMass::GetDensity_choice1() const

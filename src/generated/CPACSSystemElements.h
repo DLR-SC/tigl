@@ -46,6 +46,17 @@ namespace generated
 
     /// @brief System elements
     /// 
+    /// This node provides a library of predefined explicit system elements at vehicle level.
+    /// It contains a selected set of dedicated element classes such as electricMotors or heatExchangers .
+    /// All predefined elements follow the same basic principle: they are based on common base definitions
+    /// describing geometry and mass properties. This includes, for example, a geometric representation by simple
+    /// primitive shapes or external CAD-based geometry, as well as mass-related information such as mass,
+    /// center of gravity, inertia, density, or geometry representation. On top of these common base definitions,
+    /// each explicit element type may introduce dedicated extension nodes for component-specific data, such as
+    /// performance maps, electrical or thermodynamic properties, or further physical characteristics.
+    /// The elements defined here are only predefined.
+    /// They become physically instantiated only when they are referenced, for example via systemElementUID ,
+    /// by components in an aircraft or rotorcraft genericSystem definition.
     /// 
     class CPACSSystemElements
     {

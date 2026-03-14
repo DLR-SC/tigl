@@ -26,12 +26,12 @@
 #include "CPACSMassInertia.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
-#include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
+class CTiglUIDObject;
 
 namespace generated
 {
@@ -58,7 +58,7 @@ namespace generated
     /// 
     /// Description of mass, center of gravity and inertia. Density should only be specified in combination with a valid geometry.
     /// 
-    class CPACSElementMass : public CTiglOptUIDObject
+    class CPACSElementMass
     {
     public:
         TIGL_EXPORT CPACSElementMass(CPACSBattery* parent, CTiglUIDManager* uidMgr);
@@ -109,9 +109,6 @@ namespace generated
 
         TIGL_EXPORT bool ValidateChoices() const;
 
-        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
-        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
-
         TIGL_EXPORT virtual const boost::optional<double>& GetDensity_choice1() const;
         TIGL_EXPORT virtual void SetDensity_choice1(const boost::optional<double>& value);
 
@@ -135,8 +132,6 @@ namespace generated
         const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
-
-        boost::optional<std::string>      m_uID;
 
         /// Density
         boost::optional<double>           m_density_choice1;

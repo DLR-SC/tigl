@@ -743,7 +743,7 @@ TEST_F(RCSystems, SystemsAccess)
     EXPECT_EQ(&system, &systemByUid);
 
     // systemArchitecture
-    EXPECT_EQ(config.GetSystemArchitecturesCount(), 1u);
+    EXPECT_EQ(config.GetSystemArchitecturesCount(), 2u);
 
     const auto& sa = config.GetSystemArchitecture(1);
     EXPECT_EQ(sa.GetName(), "Rotorcraft system architecture");
@@ -751,6 +751,17 @@ TEST_F(RCSystems, SystemsAccess)
     const auto& saByUid = config.GetSystemArchitecture("rcSysArc");
     EXPECT_EQ(saByUid.GetName(), "Rotorcraft system architecture");
     EXPECT_EQ(&sa, &saByUid);
+}
+
+
+TEST_F(RCSystems, EmptySystemArchitecture)
+{
+    const auto& config = GetConfig();
+    const auto& sa     = config.GetSystemArchitecture(2);
+
+    const auto components = sa.GetGenericSystemComponents();
+
+    ASSERT_EQ(components.size(), 0u);
 }
 
 TixiDocumentHandle RCSystems::tixiHandle           = 0;

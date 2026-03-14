@@ -40,7 +40,11 @@ namespace generated
 
     /// @brief External geometry
     /// 
-    /// 
+    /// An external geometry references a geometry definition stored in an external CAD file.
+    /// The file format must be specified in linkToFile.
+    /// If the file path is given as a relative path, it is resolved relative to the CPACS document location.
+    /// The imported file may contain one or more shapes, which are combined into a single grouped geometry.
+    /// The optional transformation is applied to the imported geometry after loading.
     /// 
     class CPACSExternalGeometry
     {
@@ -76,7 +80,9 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to the external geometry file including its format specification
         CPACSLinkToFile                       m_linkToFile;
+
         boost::optional<CCPACSTransformation> m_transformation;
 
     private:

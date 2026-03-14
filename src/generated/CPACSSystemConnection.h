@@ -41,6 +41,12 @@ namespace generated
 
     /// @brief Connection
     /// 
+    /// A connection represents a directed logical relation between a source and a target within a system architecture.
+    /// It can be used to describe interactions, transfer paths, or dependencies between system components and their interfaces to other systems.
+    /// Depending on the selected modeling fidelity, source and target may reference components (or their sub-components) via uID .
+    /// Alternatively, they may refer to external entities (such as ambient or passengers ), ATA chapters, or other system architectures.
+    /// Optional controlDevices can be used to describe connection-specific operating states.
+    /// The optional connectionType can be used to classify the connection, for example as electric, pneumatic, hydraulic, mechanical, or data.
     /// 
     class CPACSSystemConnection : public CTiglReqUIDObject
     {
@@ -99,13 +105,16 @@ namespace generated
         /// Description
         boost::optional<std::string>                          m_description;
 
-        /// Type of the connection.
+        /// Optional classification of the connection type
         boost::optional<CPACSSystemConnection_connectionType> m_connectionType;
 
+        /// Optional control devices defining connection-specific operating states
         boost::optional<CPACSSystemControlDevices>            m_controlDevices;
 
+        /// Definition of the source of the connection
         CPACSSourceTarget                                     m_source;
 
+        /// Definition of the target of the connection
         CPACSSourceTarget                                     m_target;
 
     private:

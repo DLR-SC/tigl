@@ -39,8 +39,10 @@ namespace generated
     // This class is used in:
     // CPACSMultiSegmentShapes
 
-    /// @brief ...
+    /// @brief Multi-segment shape
     /// 
+    /// A multi-segment shape is generated as a solid loft based on the provided sections and segments.
+    /// The sections define the profile stations, while the segments define their connectivity and guide curves.
     /// 
     class CPACSMultiSegmentShape
     {
@@ -82,9 +84,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Specifies whether the loft between the segments is generated smoothly (default: true)
         boost::optional<bool>                    m_smooth;
+
         CCPACSFuselageSections                   m_sections;
+
         CCPACSFuselageSegments                   m_segments;
+
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

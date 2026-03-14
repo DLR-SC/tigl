@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSElementGeometry
 
-    /// @brief MSS
+    /// @brief Multi-segment shapes
     /// 
     /// 
     class CPACSMultiSegmentShapes
