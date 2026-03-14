@@ -230,7 +230,7 @@ class Systems(unittest.TestCase):
 
         connections = sa.get_connections()
         self.assertIsNotNone(connections)
-        self.assertEqual(connections.get_connection_count(), 4)
+        self.assertEqual(connections.get_connection_count(), 5)
 
     def test_systemArchitecture_connections(self):
         sa = self.config.get_system_architecture(1)

@@ -441,7 +441,7 @@ TEST_F(Systems, SystemArchitectureConnections)
     const auto& connections = sa.GetConnections();
     ASSERT_TRUE(connections);
 
-    ASSERT_EQ(connections->GetConnectionCount(), 4u);
+    ASSERT_EQ(connections->GetConnectionCount(), 5u);
 
     {
         const auto& c     = connections->GetConnection(1);
@@ -475,6 +475,16 @@ TEST_F(Systems, SystemArchitectureConnections)
         const auto& targetExternalElement = c.GetTarget().GetExternalElement_choice1();
         ASSERT_TRUE(targetExternalElement);
         EXPECT_EQ(*targetExternalElement, tigl::ECPACSSourceTarget_externalElement::ambient);
+    }
+
+    {
+        const auto& c             = connections->GetConnection(5);
+        const auto sourceComonent = c.GetSourceComponent();
+        EXPECT_FALSE(sourceComonent);
+
+        const auto& targetSourceElement = c.GetSource().GetExternalElement_choice1();
+        ASSERT_TRUE(targetSourceElement);
+        EXPECT_EQ(*targetSourceElement, tigl::ECPACSSourceTarget_externalElement::ambient);
     }
 }
 

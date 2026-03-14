@@ -427,6 +427,16 @@
                                     <externalElement>ambient</externalElement>
                                 </target>
                             </connection>
+                            <connection uID="ambient_c3">
+                                <name>Connection 5</name>
+                                <description>Connection from outer flow to cuboid 3</description>
+                                <source>
+                                    <externalElement>ambient</externalElement>
+                                </source>
+                                <target>
+                                    <componentUID>cuboid_3</componentUID>
+                                </target>
+                            </connection>
                         </connections>
                     </systemArchitecture>
                 </systemArchitectures>
