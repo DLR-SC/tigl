@@ -454,12 +454,12 @@ size_t CCPACSConfiguration::GetSystemArchitecturesCount() const
         return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
     }
 
-    if (rotorcraftModel) {
+    else if (rotorcraftModel) {
         const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
         return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
     }
 
-    return 0;
+    throw CTiglError("No configuration loaded");
 }
 
 // Returns the system architecture for a given index.

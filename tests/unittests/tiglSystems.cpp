@@ -426,8 +426,11 @@ TEST_F(Systems, ConfigurationAccessNonConst)
     auto& system = config.GetGenericSystem(1);
     EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
 
-    auto& sa = config.GetSystemArchitecture(1);
-    EXPECT_EQ(sa.GetName(), "Test system architecture");
+    auto& saByIndex = config.GetSystemArchitecture(1);
+    EXPECT_EQ(saByIndex.GetName(), "Test system architecture");
+
+    auto& saByUID = config.GetSystemArchitecture("systemArchitecture1");
+    EXPECT_EQ(saByUID.GetName(), "Test system architecture");
 }
 
 TEST_F(Systems, SystemArchitectureConnections)
@@ -635,6 +638,9 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
     }
 }
 
+TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
+TiglCPACSConfigurationHandle InvalidSystems::tiglHandle = 0;
+
 class EmptyACSystems : public ::testing::Test
 {
 protected:
@@ -683,6 +689,63 @@ TEST_F(EmptyACSystems, EmptySystemArchitectures)
     CheckExceptionMessage([&] { (void)config.GetSystemArchitecture(1); }, "No system architecture loaded");
 }
 
+class RCSystems : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-systems.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testRotorcraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    const tigl::CCPACSConfiguration& GetConfig() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TEST_F(RCSystems, SystemsAccess)
+{
+    const auto& config = GetConfig();
+
+    // genericSystem
+    EXPECT_EQ(config.GetGenericSystemCount(), 1u);
+
+    const auto& system = config.GetGenericSystem(1);
+    EXPECT_EQ(system.GetDefaultedUID(), "genRCSystem");
+    EXPECT_EQ(system.GetName(), "Generic rotorcraft system");
+
+    const auto& systemByUid = config.GetGenericSystem("genRCSystem");
+    EXPECT_EQ(systemByUid.GetDefaultedUID(), "genRCSystem");
+    EXPECT_EQ(systemByUid.GetName(), "Generic rotorcraft system");
+    EXPECT_EQ(&system, &systemByUid);
+
+    // systemArchitecture
+    EXPECT_EQ(config.GetSystemArchitecturesCount(), 1u);
+
+    const auto& sa = config.GetSystemArchitecture(1);
+    EXPECT_EQ(sa.GetName(), "Rotorcraft system architecture");
+
+    const auto& saByUid = config.GetSystemArchitecture("rcSysArc");
+    EXPECT_EQ(saByUid.GetName(), "Rotorcraft system architecture");
+    EXPECT_EQ(&sa, &saByUid);
+}
+
+TixiDocumentHandle RCSystems::tixiHandle           = 0;
+TiglCPACSConfigurationHandle RCSystems::tiglHandle = 0;
+
 class EmptyRCSystems : public ::testing::Test
 {
 protected:
@@ -730,6 +793,3 @@ TEST_F(EmptyRCSystems, EmptySystemArchitectures)
     CheckExceptionMessage([&] { (void)config.GetSystemArchitecture("doesNotExist"); }, "No system architecture loaded");
     CheckExceptionMessage([&] { (void)config.GetSystemArchitecture(1); }, "No system architecture loaded");
 }
-
-TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
-TiglCPACSConfigurationHandle InvalidSystems::tiglHandle = 0;
