@@ -21,6 +21,8 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -30,9 +32,11 @@ class CTiglUIDObject;
 namespace generated
 {
     class CPACSDeckElementMass;
+    class CPACSElementMass;
 
     // This class is used in:
     // CPACSDeckElementMass
+    // CPACSElementMass
 
     /// @brief Mass intertia
     /// 
@@ -42,12 +46,35 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSMassInertia(CPACSDeckElementMass* parent);
+        TIGL_EXPORT CPACSMassInertia(CPACSElementMass* parent);
 
         TIGL_EXPORT virtual ~CPACSMassInertia();
 
-        TIGL_EXPORT CPACSDeckElementMass* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CPACSDeckElementMass* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSDeckElementMass>::value || std::is_same<P, CPACSElementMass>::value, "template argument for P is not a parent class of CPACSMassInertia");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSDeckElementMass>::value || std::is_same<P, CPACSElementMass>::value, "template argument for P is not a parent class of CPACSMassInertia");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -74,7 +101,8 @@ namespace generated
         TIGL_EXPORT virtual void SetJyz(const boost::optional<double>& value);
 
     protected:
-        CPACSDeckElementMass* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         double                  m_Jxx;
         double                  m_Jyy;
@@ -95,4 +123,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSMassInertia = generated::CPACSMassInertia;
 using CCPACSDeckElementMass = generated::CPACSDeckElementMass;
+using CCPACSElementMass = generated::CPACSElementMass;
 } // namespace tigl

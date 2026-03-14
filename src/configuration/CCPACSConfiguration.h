@@ -43,7 +43,7 @@
 #include "CSharedPtr.h"
 #include "generated/CPACSProfiles.h"
 #include "generated/CPACSEngines.h"
-
+#include "CCPACSSystemElements.h"
 
 namespace tigl
 {
@@ -115,7 +115,7 @@ public:
     TIGL_EXPORT size_t GetWingIndex(const std::string& UID) const;
 
     // Returns the total count of generic systems in a configuration
-    TIGL_EXPORT size_t GetGenericSystemCount();
+    TIGL_EXPORT size_t GetGenericSystemCount() const;
 
     // Returns the generic system for a given index.
     TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(size_t index) const;
@@ -124,6 +124,17 @@ public:
     // Returns the generic system for a given UID.
     TIGL_EXPORT const CCPACSGenericSystem& GetGenericSystem(const std::string& UID) const;
     TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
+
+    // Returns the total count of system architectures in a configuration
+    TIGL_EXPORT size_t GetSystemArchitecturesCount() const;
+
+    // Returns the system architecture for a given index.
+    TIGL_EXPORT const CCPACSSystemArchitecture& GetSystemArchitecture(size_t index) const;
+    TIGL_EXPORT CCPACSSystemArchitecture& GetSystemArchitecture(size_t index);
+
+    // Returns the system architecture for a given UID.
+    TIGL_EXPORT const CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID) const;
+    TIGL_EXPORT CCPACSSystemArchitecture& GetSystemArchitecture(const std::string& UID);
 
     // Returns the total count of rotors in a configuration
     TIGL_EXPORT size_t GetRotorCount() const;
@@ -269,6 +280,7 @@ private:
     boost::optional<CCPACSRotorcraftModel> rotorcraftModel;
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
     boost::optional<CCPACSEngines>         engines;              /**< Engines under vehicle node */
+    boost::optional<CCPACSSystemElements>  systemElements;       /**< System elements under vehicle node */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
     CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */

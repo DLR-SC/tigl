@@ -223,6 +223,17 @@ namespace generated
             }
         }
 
+        // read element systemArchitectures
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectures")) {
+            m_systemArchitectures = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_systemArchitectures->ReadCPACS(tixiHandle, xpath + "/systemArchitectures");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read systemArchitectures at xpath " << xpath << ": " << e.what();
+                m_systemArchitectures = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -353,6 +364,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/configurations");
+            }
+        }
+
+        // write element systemArchitectures
+        if (m_systemArchitectures) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systemArchitectures");
+            m_systemArchitectures->WriteCPACS(tixiHandle, xpath + "/systemArchitectures");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectures")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/systemArchitectures");
             }
         }
 
@@ -496,6 +518,16 @@ namespace generated
         return m_configurations;
     }
 
+    const boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures() const
+    {
+        return m_systemArchitectures;
+    }
+
+    boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures()
+    {
+        return m_systemArchitectures;
+    }
+
     CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
     {
         if (!m_ducts)
@@ -614,6 +646,18 @@ namespace generated
     void CPACSAircraftModel::RemoveConfigurations()
     {
         m_configurations = boost::none;
+    }
+
+    CPACSSystemArchitectures& CPACSAircraftModel::GetSystemArchitectures(CreateIfNotExistsTag)
+    {
+        if (!m_systemArchitectures)
+            m_systemArchitectures = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_systemArchitectures;
+    }
+
+    void CPACSAircraftModel::RemoveSystemArchitectures()
+    {
+        m_systemArchitectures = boost::none;
     }
 
 } // namespace generated

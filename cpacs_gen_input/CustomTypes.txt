@@ -20,6 +20,7 @@ CPACSPositionings                  CCPACSPositionings
 CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
+CPACSTransformationSE3             CCPACSTransformationSE3
 CPACSStringVectorBase              CCPACSStringVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector
@@ -32,9 +33,13 @@ CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
 CPACSCurvePoint                    CCPACSCurvePoint
 CPACSCurveParamPointMap            CCPACSCurveParamPointMap
 CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
+CPACSSystemElements                CCPACSSystemElements
 CPACSSystems                       CCPACSACSystems
 CPACSGenericSystems                CCPACSGenericSystems
 CPACSGenericSystem                 CCPACSGenericSystem
+CPACSComponent                     CCPACSComponent
+CPACSSystemConnection              CCPACSSystemConnection
+CPACSSystemArchitecture            CCPACSSystemArchitecture
 
 CPACSFuselage                      CCPACSFuselage
 CPACSFuselages                     CCPACSFuselages

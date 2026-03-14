@@ -31,6 +31,8 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSVessel.h"
+#include "CCPACSComponent.h"
+#include "generated/CPACSMultiSegmentShape.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -68,6 +70,12 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDMan
     , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
 {}
 
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{
+}
+
 CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
 {
     if (IsParent<CCPACSFuselage>()) {
@@ -78,6 +86,9 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
     }
     else if (IsParent<CCPACSVessel>()) {
         return GetParent<CCPACSVessel>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSMultiSegmentShape>()) {
+        return *m_refParentCfg;
     }
     else
     {
@@ -105,6 +116,9 @@ CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentCompo
     }
     else if (IsParent<CCPACSVessel>()) {
         return GetParent<CCPACSVessel>();
+    }
+    else if (IsParent<CCPACSMultiSegmentShape>()) {
+        return m_refParentPtr;
     }
     else {
         throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
