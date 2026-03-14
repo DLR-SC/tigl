@@ -431,7 +431,15 @@
                     </systemArchitecture>
                 </systemArchitectures>
             </model>
+            <model uID="emptyAircraft">
+                <name>Empty aircraft</name>
+            </model>
         </aircraft>
+        <rotorcraft>
+            <model uID="emptyRotorcraft">
+                <name>Empty rotorcraft</name>
+            </model>
+        </rotorcraft>
         <systemElements>
             <genericComponents>
                 <genericComponent uID="predCuboid_1">

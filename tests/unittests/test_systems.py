@@ -32,7 +32,7 @@ class Systems(unittest.TestCase):
         self.tixi = Tixi3()
         self.tigl = Tigl3()
         self.assertIsNone(self.tixi.open("TestData/simpletest-systems.cpacs.xml"))
-        self.assertIsNone(self.tigl.open(self.tixi, ""))
+        self.assertIsNone(self.tigl.open(self.tixi, "testAircraft"))
 
         mgr = configuration.CCPACSConfigurationManager.get_instance()
         self.config = mgr.get_configuration(self.tigl._handle.value)

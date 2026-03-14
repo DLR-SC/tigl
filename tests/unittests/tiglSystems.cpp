@@ -465,7 +465,7 @@ TEST_F(Systems, SystemArchitectureConnections)
     }
 
     {
-        const auto& c     = connections->GetConnection(4);
+        const auto& c              = connections->GetConnection(4);
         const auto targetComponent = c.GetTargetComponent();
         EXPECT_FALSE(targetComponent);
 
@@ -633,6 +633,102 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
         CheckExceptionMessage([&] { (void)sys.GetCenterOfGravity(); },
                               "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
     }
+}
+
+class EmptyACSystems : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-systems.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "emptyAircraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    const tigl::CCPACSConfiguration& GetConfig() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle EmptyACSystems::tixiHandle           = 0;
+TiglCPACSConfigurationHandle EmptyACSystems::tiglHandle = 0;
+
+TEST_F(EmptyACSystems, EmptyGenericSystems)
+{
+    const auto& config = GetConfig();
+
+    EXPECT_EQ(config.GetGenericSystemCount(), 0u);
+    CheckExceptionMessage([&] { (void)config.GetGenericSystem("doesNotExist"); }, "No generic system loaded");
+    CheckExceptionMessage([&] { (void)config.GetGenericSystem(1); }, "No generic system loaded");
+}
+
+TEST_F(EmptyACSystems, EmptySystemArchitectures)
+{
+    const auto& config = GetConfig();
+
+    EXPECT_EQ(config.GetSystemArchitecturesCount(), 0u);
+    CheckExceptionMessage([&] { (void)config.GetSystemArchitecture("doesNotExist"); }, "No system architecture loaded");
+    CheckExceptionMessage([&] { (void)config.GetSystemArchitecture(1); }, "No system architecture loaded");
+}
+
+class EmptyRCSystems : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-systems.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "emptyRotorcraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    const tigl::CCPACSConfiguration& GetConfig() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle EmptyRCSystems::tixiHandle           = 0;
+TiglCPACSConfigurationHandle EmptyRCSystems::tiglHandle = 0;
+
+TEST_F(EmptyRCSystems, EmptyGenericSystems)
+{
+    const auto& config = GetConfig();
+
+    EXPECT_EQ(config.GetGenericSystemCount(), 0u);
+    CheckExceptionMessage([&] { (void)config.GetGenericSystem("doesNotExist"); }, "No generic system loaded");
+    CheckExceptionMessage([&] { (void)config.GetGenericSystem(1); }, "No generic system loaded");
+}
+
+TEST_F(EmptyRCSystems, EmptySystemArchitectures)
+{
+    const auto& config = GetConfig();
+
+    EXPECT_EQ(config.GetSystemArchitecturesCount(), 0u);
+    CheckExceptionMessage([&] { (void)config.GetSystemArchitecture("doesNotExist"); }, "No system architecture loaded");
+    CheckExceptionMessage([&] { (void)config.GetSystemArchitecture(1); }, "No system architecture loaded");
 }
 
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
