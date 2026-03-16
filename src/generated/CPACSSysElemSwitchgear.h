@@ -33,24 +33,24 @@ class CTiglUIDManager;
 
 namespace generated
 {
-    class CPACSSysElemGenericComponents;
+    class CPACSSysElemSwitchgearContainer;
 
     // This class is used in:
-    // CPACSSysElemGenericComponents
+    // CPACSSysElemSwitchgearContainer
 
-    /// @brief System element
+    /// @brief Switchgear
     /// 
     /// 
-    class CPACSVehicleElementBase : public CTiglReqUIDObject
+    class CPACSSysElemSwitchgear : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericComponents* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemSwitchgear(CPACSSysElemSwitchgearContainer* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSVehicleElementBase();
+        TIGL_EXPORT virtual ~CPACSSysElemSwitchgear();
 
-        TIGL_EXPORT CPACSSysElemGenericComponents* GetParent();
+        TIGL_EXPORT CPACSSysElemSwitchgearContainer* GetParent();
 
-        TIGL_EXPORT const CPACSSysElemGenericComponents* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemSwitchgearContainer* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -80,7 +80,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveMass();
 
     protected:
-        CPACSSysElemGenericComponents* m_parent;
+        CPACSSysElemSwitchgearContainer* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -97,15 +97,15 @@ namespace generated
         boost::optional<CPACSElementMass> m_mass;
 
     private:
-        CPACSVehicleElementBase(const CPACSVehicleElementBase&) = delete;
-        CPACSVehicleElementBase& operator=(const CPACSVehicleElementBase&) = delete;
+        CPACSSysElemSwitchgear(const CPACSSysElemSwitchgear&) = delete;
+        CPACSSysElemSwitchgear& operator=(const CPACSSysElemSwitchgear&) = delete;
 
-        CPACSVehicleElementBase(CPACSVehicleElementBase&&) = delete;
-        CPACSVehicleElementBase& operator=(CPACSVehicleElementBase&&) = delete;
+        CPACSSysElemSwitchgear(CPACSSysElemSwitchgear&&) = delete;
+        CPACSSysElemSwitchgear& operator=(CPACSSysElemSwitchgear&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
-using CCPACSSysElemGenericComponents = generated::CPACSSysElemGenericComponents;
+using CCPACSSysElemSwitchgear = generated::CPACSSysElemSwitchgear;
+using CCPACSSysElemSwitchgearContainer = generated::CPACSSysElemSwitchgearContainer;
 } // namespace tigl

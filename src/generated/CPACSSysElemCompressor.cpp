@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemGenericComponents.h"
-#include "CPACSVehicleElementBase.h"
+#include "CPACSSysElemCompressor.h"
+#include "CPACSSysElemCompressors.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSSysElemGenericComponents* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemCompressor::CPACSSysElemCompressor(CPACSSysElemCompressors* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_geometry(this, m_uidMgr)
     {
@@ -35,22 +35,22 @@ namespace generated
         m_parent = parent;
     }
 
-    CPACSVehicleElementBase::~CPACSVehicleElementBase()
+    CPACSSysElemCompressor::~CPACSSysElemCompressor()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSSysElemGenericComponents* CPACSVehicleElementBase::GetParent() const
+    const CPACSSysElemCompressors* CPACSSysElemCompressor::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSysElemGenericComponents* CPACSVehicleElementBase::GetParent()
+    CPACSSysElemCompressors* CPACSSysElemCompressor::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSVehicleElementBase::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSSysElemCompressor::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -58,7 +58,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSVehicleElementBase::GetNextUIDParent()
+    CTiglUIDObject* CPACSSysElemCompressor::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -66,7 +66,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSVehicleElementBase::GetUIDManager()
+    CTiglUIDManager& CPACSSysElemCompressor::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -74,7 +74,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSVehicleElementBase::GetUIDManager() const
+    const CTiglUIDManager& CPACSSysElemCompressor::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -82,7 +82,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSVehicleElementBase::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSSysElemCompressor::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -136,20 +136,18 @@ namespace generated
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
-    void CPACSVehicleElementBase::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSSysElemCompressor::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "geometry", "mass" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -159,12 +157,12 @@ namespace generated
         }
 
         // write element geometry
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/geometry", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/geometry");
         m_geometry.WriteCPACS(tixiHandle, xpath + "/geometry");
 
         // write element mass
         if (m_mass) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/mass", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/mass");
             m_mass->WriteCPACS(tixiHandle, xpath + "/mass");
         }
         else {
@@ -175,12 +173,12 @@ namespace generated
 
     }
 
-    const std::string& CPACSVehicleElementBase::GetUID() const
+    const std::string& CPACSSysElemCompressor::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSVehicleElementBase::SetUID(const std::string& value)
+    void CPACSSysElemCompressor::SetUID(const std::string& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (m_uID.empty()) {
@@ -193,54 +191,54 @@ namespace generated
         m_uID = value;
     }
 
-    const std::string& CPACSVehicleElementBase::GetName() const
+    const std::string& CPACSSysElemCompressor::GetName() const
     {
         return m_name;
     }
 
-    void CPACSVehicleElementBase::SetName(const std::string& value)
+    void CPACSSysElemCompressor::SetName(const std::string& value)
     {
         m_name = value;
     }
 
-    const boost::optional<std::string>& CPACSVehicleElementBase::GetDescription() const
+    const boost::optional<std::string>& CPACSSysElemCompressor::GetDescription() const
     {
         return m_description;
     }
 
-    void CPACSVehicleElementBase::SetDescription(const boost::optional<std::string>& value)
+    void CPACSSysElemCompressor::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
     }
 
-    const CPACSElementGeometry& CPACSVehicleElementBase::GetGeometry() const
+    const CPACSElementGeometry& CPACSSysElemCompressor::GetGeometry() const
     {
         return m_geometry;
     }
 
-    CPACSElementGeometry& CPACSVehicleElementBase::GetGeometry()
+    CPACSElementGeometry& CPACSSysElemCompressor::GetGeometry()
     {
         return m_geometry;
     }
 
-    const boost::optional<CPACSElementMass>& CPACSVehicleElementBase::GetMass() const
+    const boost::optional<CPACSElementMass>& CPACSSysElemCompressor::GetMass() const
     {
         return m_mass;
     }
 
-    boost::optional<CPACSElementMass>& CPACSVehicleElementBase::GetMass()
+    boost::optional<CPACSElementMass>& CPACSSysElemCompressor::GetMass()
     {
         return m_mass;
     }
 
-    CPACSElementMass& CPACSVehicleElementBase::GetMass(CreateIfNotExistsTag)
+    CPACSElementMass& CPACSSysElemCompressor::GetMass(CreateIfNotExistsTag)
     {
         if (!m_mass)
             m_mass = boost::in_place(this, m_uidMgr);
         return *m_mass;
     }
 
-    void CPACSVehicleElementBase::RemoveMass()
+    void CPACSSysElemCompressor::RemoveMass()
     {
         m_mass = boost::none;
     }

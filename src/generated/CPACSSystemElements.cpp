@@ -83,39 +83,6 @@ namespace generated
 
     void CPACSSystemElements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element electricMotors
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMotors")) {
-            m_electricMotors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-            try {
-                m_electricMotors->ReadCPACS(tixiHandle, xpath + "/electricMotors");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read electricMotors at xpath " << xpath << ": " << e.what();
-                m_electricMotors = boost::none;
-            }
-        }
-
-        // read element turboGenerators
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/turboGenerators")) {
-            m_turboGenerators = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-            try {
-                m_turboGenerators->ReadCPACS(tixiHandle, xpath + "/turboGenerators");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read turboGenerators at xpath " << xpath << ": " << e.what();
-                m_turboGenerators = boost::none;
-            }
-        }
-
-        // read element heatExchangers
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/heatExchangers")) {
-            m_heatExchangers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-            try {
-                m_heatExchangers->ReadCPACS(tixiHandle, xpath + "/heatExchangers");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read heatExchangers at xpath " << xpath << ": " << e.what();
-                m_heatExchangers = boost::none;
-            }
-        }
-
         // read element batteries
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/batteries")) {
             m_batteries = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
@@ -127,14 +94,80 @@ namespace generated
             }
         }
 
-        // read element gasTurbines
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/gasTurbines")) {
-            m_gasTurbines = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        // read element cables
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cables")) {
+            m_cables = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
             try {
-                m_gasTurbines->ReadCPACS(tixiHandle, xpath + "/gasTurbines");
+                m_cables->ReadCPACS(tixiHandle, xpath + "/cables");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read gasTurbines at xpath " << xpath << ": " << e.what();
-                m_gasTurbines = boost::none;
+                LOG(ERROR) << "Failed to read cables at xpath " << xpath << ": " << e.what();
+                m_cables = boost::none;
+            }
+        }
+
+        // read element compressors
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compressors")) {
+            m_compressors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_compressors->ReadCPACS(tixiHandle, xpath + "/compressors");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read compressors at xpath " << xpath << ": " << e.what();
+                m_compressors = boost::none;
+            }
+        }
+
+        // read element converters
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/converters")) {
+            m_converters = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_converters->ReadCPACS(tixiHandle, xpath + "/converters");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read converters at xpath " << xpath << ": " << e.what();
+                m_converters = boost::none;
+            }
+        }
+
+        // read element dcdcConverters
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dcdcConverters")) {
+            m_dcdcConverters = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_dcdcConverters->ReadCPACS(tixiHandle, xpath + "/dcdcConverters");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read dcdcConverters at xpath " << xpath << ": " << e.what();
+                m_dcdcConverters = boost::none;
+            }
+        }
+
+        // read element electricMachines
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMachines")) {
+            m_electricMachines = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_electricMachines->ReadCPACS(tixiHandle, xpath + "/electricMachines");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read electricMachines at xpath " << xpath << ": " << e.what();
+                m_electricMachines = boost::none;
+            }
+        }
+
+        // read element electricMotors
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMotors")) {
+            m_electricMotors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_electricMotors->ReadCPACS(tixiHandle, xpath + "/electricMotors");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read electricMotors at xpath " << xpath << ": " << e.what();
+                m_electricMotors = boost::none;
+            }
+        }
+
+        // read element fuelCells
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelCells")) {
+            m_fuelCells = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_fuelCells->ReadCPACS(tixiHandle, xpath + "/fuelCells");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuelCells at xpath " << xpath << ": " << e.what();
+                m_fuelCells = boost::none;
             }
         }
 
@@ -171,43 +204,109 @@ namespace generated
             }
         }
 
+        // read element heatExchangers
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/heatExchangers")) {
+            m_heatExchangers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_heatExchangers->ReadCPACS(tixiHandle, xpath + "/heatExchangers");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read heatExchangers at xpath " << xpath << ": " << e.what();
+                m_heatExchangers = boost::none;
+            }
+        }
+
+        // read element inverteres
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/inverteres")) {
+            m_inverteres = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_inverteres->ReadCPACS(tixiHandle, xpath + "/inverteres");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read inverteres at xpath " << xpath << ": " << e.what();
+                m_inverteres = boost::none;
+            }
+        }
+
+        // read element powerDistributionUnits
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/powerDistributionUnits")) {
+            m_powerDistributionUnits = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_powerDistributionUnits->ReadCPACS(tixiHandle, xpath + "/powerDistributionUnits");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read powerDistributionUnits at xpath " << xpath << ": " << e.what();
+                m_powerDistributionUnits = boost::none;
+            }
+        }
+
+        // read element powerElectronics
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/powerElectronics")) {
+            m_powerElectronics = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_powerElectronics->ReadCPACS(tixiHandle, xpath + "/powerElectronics");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read powerElectronics at xpath " << xpath << ": " << e.what();
+                m_powerElectronics = boost::none;
+            }
+        }
+
+        // read element pumps
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pumps")) {
+            m_pumps = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_pumps->ReadCPACS(tixiHandle, xpath + "/pumps");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read pumps at xpath " << xpath << ": " << e.what();
+                m_pumps = boost::none;
+            }
+        }
+
+        // read element rectifiers
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rectifiers")) {
+            m_rectifiers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_rectifiers->ReadCPACS(tixiHandle, xpath + "/rectifiers");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read rectifiers at xpath " << xpath << ": " << e.what();
+                m_rectifiers = boost::none;
+            }
+        }
+
+        // read element reservoirs
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/reservoirs")) {
+            m_reservoirs = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_reservoirs->ReadCPACS(tixiHandle, xpath + "/reservoirs");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read reservoirs at xpath " << xpath << ": " << e.what();
+                m_reservoirs = boost::none;
+            }
+        }
+
+        // read element switchgear
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/switchgear")) {
+            m_switchgear = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_switchgear->ReadCPACS(tixiHandle, xpath + "/switchgear");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read switchgear at xpath " << xpath << ": " << e.what();
+                m_switchgear = boost::none;
+            }
+        }
+
+        // read element turboGenerators
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/turboGenerators")) {
+            m_turboGenerators = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+            try {
+                m_turboGenerators->ReadCPACS(tixiHandle, xpath + "/turboGenerators");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read turboGenerators at xpath " << xpath << ": " << e.what();
+                m_turboGenerators = boost::none;
+            }
+        }
+
     }
 
     void CPACSSystemElements::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element electricMotors
-        if (m_electricMotors) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/electricMotors");
-            m_electricMotors->WriteCPACS(tixiHandle, xpath + "/electricMotors");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMotors")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/electricMotors");
-            }
-        }
-
-        // write element turboGenerators
-        if (m_turboGenerators) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/turboGenerators");
-            m_turboGenerators->WriteCPACS(tixiHandle, xpath + "/turboGenerators");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/turboGenerators")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/turboGenerators");
-            }
-        }
-
-        // write element heatExchangers
-        if (m_heatExchangers) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/heatExchangers");
-            m_heatExchangers->WriteCPACS(tixiHandle, xpath + "/heatExchangers");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/heatExchangers")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/heatExchangers");
-            }
-        }
-
         // write element batteries
         if (m_batteries) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/batteries");
@@ -219,14 +318,80 @@ namespace generated
             }
         }
 
-        // write element gasTurbines
-        if (m_gasTurbines) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/gasTurbines");
-            m_gasTurbines->WriteCPACS(tixiHandle, xpath + "/gasTurbines");
+        // write element cables
+        if (m_cables) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/cables");
+            m_cables->WriteCPACS(tixiHandle, xpath + "/cables");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/gasTurbines")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/gasTurbines");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/cables")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/cables");
+            }
+        }
+
+        // write element compressors
+        if (m_compressors) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/compressors");
+            m_compressors->WriteCPACS(tixiHandle, xpath + "/compressors");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/compressors")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/compressors");
+            }
+        }
+
+        // write element converters
+        if (m_converters) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/converters");
+            m_converters->WriteCPACS(tixiHandle, xpath + "/converters");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/converters")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/converters");
+            }
+        }
+
+        // write element dcdcConverters
+        if (m_dcdcConverters) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/dcdcConverters");
+            m_dcdcConverters->WriteCPACS(tixiHandle, xpath + "/dcdcConverters");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/dcdcConverters")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/dcdcConverters");
+            }
+        }
+
+        // write element electricMachines
+        if (m_electricMachines) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/electricMachines");
+            m_electricMachines->WriteCPACS(tixiHandle, xpath + "/electricMachines");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMachines")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/electricMachines");
+            }
+        }
+
+        // write element electricMotors
+        if (m_electricMotors) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/electricMotors");
+            m_electricMotors->WriteCPACS(tixiHandle, xpath + "/electricMotors");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/electricMotors")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/electricMotors");
+            }
+        }
+
+        // write element fuelCells
+        if (m_fuelCells) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuelCells");
+            m_fuelCells->WriteCPACS(tixiHandle, xpath + "/fuelCells");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelCells")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuelCells");
             }
         }
 
@@ -263,125 +428,308 @@ namespace generated
             }
         }
 
+        // write element heatExchangers
+        if (m_heatExchangers) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/heatExchangers");
+            m_heatExchangers->WriteCPACS(tixiHandle, xpath + "/heatExchangers");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/heatExchangers")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/heatExchangers");
+            }
+        }
+
+        // write element inverteres
+        if (m_inverteres) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/inverteres");
+            m_inverteres->WriteCPACS(tixiHandle, xpath + "/inverteres");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/inverteres")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/inverteres");
+            }
+        }
+
+        // write element powerDistributionUnits
+        if (m_powerDistributionUnits) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/powerDistributionUnits");
+            m_powerDistributionUnits->WriteCPACS(tixiHandle, xpath + "/powerDistributionUnits");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/powerDistributionUnits")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/powerDistributionUnits");
+            }
+        }
+
+        // write element powerElectronics
+        if (m_powerElectronics) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/powerElectronics");
+            m_powerElectronics->WriteCPACS(tixiHandle, xpath + "/powerElectronics");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/powerElectronics")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/powerElectronics");
+            }
+        }
+
+        // write element pumps
+        if (m_pumps) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/pumps");
+            m_pumps->WriteCPACS(tixiHandle, xpath + "/pumps");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/pumps")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/pumps");
+            }
+        }
+
+        // write element rectifiers
+        if (m_rectifiers) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rectifiers");
+            m_rectifiers->WriteCPACS(tixiHandle, xpath + "/rectifiers");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rectifiers")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/rectifiers");
+            }
+        }
+
+        // write element reservoirs
+        if (m_reservoirs) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/reservoirs");
+            m_reservoirs->WriteCPACS(tixiHandle, xpath + "/reservoirs");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/reservoirs")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/reservoirs");
+            }
+        }
+
+        // write element switchgear
+        if (m_switchgear) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/switchgear");
+            m_switchgear->WriteCPACS(tixiHandle, xpath + "/switchgear");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/switchgear")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/switchgear");
+            }
+        }
+
+        // write element turboGenerators
+        if (m_turboGenerators) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/turboGenerators");
+            m_turboGenerators->WriteCPACS(tixiHandle, xpath + "/turboGenerators");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/turboGenerators")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/turboGenerators");
+            }
+        }
+
     }
 
-    const boost::optional<CPACSElectricMotors>& CPACSSystemElements::GetElectricMotors() const
-    {
-        return m_electricMotors;
-    }
-
-    boost::optional<CPACSElectricMotors>& CPACSSystemElements::GetElectricMotors()
-    {
-        return m_electricMotors;
-    }
-
-    const boost::optional<CPACSTurboGenerators>& CPACSSystemElements::GetTurboGenerators() const
-    {
-        return m_turboGenerators;
-    }
-
-    boost::optional<CPACSTurboGenerators>& CPACSSystemElements::GetTurboGenerators()
-    {
-        return m_turboGenerators;
-    }
-
-    const boost::optional<CPACSHeatExchangers>& CPACSSystemElements::GetHeatExchangers() const
-    {
-        return m_heatExchangers;
-    }
-
-    boost::optional<CPACSHeatExchangers>& CPACSSystemElements::GetHeatExchangers()
-    {
-        return m_heatExchangers;
-    }
-
-    const boost::optional<CPACSBatteries>& CPACSSystemElements::GetBatteries() const
+    const boost::optional<CPACSSysElemBatteries>& CPACSSystemElements::GetBatteries() const
     {
         return m_batteries;
     }
 
-    boost::optional<CPACSBatteries>& CPACSSystemElements::GetBatteries()
+    boost::optional<CPACSSysElemBatteries>& CPACSSystemElements::GetBatteries()
     {
         return m_batteries;
     }
 
-    const boost::optional<CPACSGasTurbines>& CPACSSystemElements::GetGasTurbines() const
+    const boost::optional<CPACSSysElemCables>& CPACSSystemElements::GetCables() const
     {
-        return m_gasTurbines;
+        return m_cables;
     }
 
-    boost::optional<CPACSGasTurbines>& CPACSSystemElements::GetGasTurbines()
+    boost::optional<CPACSSysElemCables>& CPACSSystemElements::GetCables()
     {
-        return m_gasTurbines;
+        return m_cables;
     }
 
-    const boost::optional<CPACSGearBoxes>& CPACSSystemElements::GetGearBoxes() const
+    const boost::optional<CPACSSysElemCompressors>& CPACSSystemElements::GetCompressors() const
+    {
+        return m_compressors;
+    }
+
+    boost::optional<CPACSSysElemCompressors>& CPACSSystemElements::GetCompressors()
+    {
+        return m_compressors;
+    }
+
+    const boost::optional<CPACSSysElemConverters>& CPACSSystemElements::GetConverters() const
+    {
+        return m_converters;
+    }
+
+    boost::optional<CPACSSysElemConverters>& CPACSSystemElements::GetConverters()
+    {
+        return m_converters;
+    }
+
+    const boost::optional<CPACSSysElemDCDCConverters>& CPACSSystemElements::GetDcdcConverters() const
+    {
+        return m_dcdcConverters;
+    }
+
+    boost::optional<CPACSSysElemDCDCConverters>& CPACSSystemElements::GetDcdcConverters()
+    {
+        return m_dcdcConverters;
+    }
+
+    const boost::optional<CPACSSysElemElectricMachines>& CPACSSystemElements::GetElectricMachines() const
+    {
+        return m_electricMachines;
+    }
+
+    boost::optional<CPACSSysElemElectricMachines>& CPACSSystemElements::GetElectricMachines()
+    {
+        return m_electricMachines;
+    }
+
+    const boost::optional<CPACSSysElemElectricMotors>& CPACSSystemElements::GetElectricMotors() const
+    {
+        return m_electricMotors;
+    }
+
+    boost::optional<CPACSSysElemElectricMotors>& CPACSSystemElements::GetElectricMotors()
+    {
+        return m_electricMotors;
+    }
+
+    const boost::optional<CPACSSysElemFuelCells>& CPACSSystemElements::GetFuelCells() const
+    {
+        return m_fuelCells;
+    }
+
+    boost::optional<CPACSSysElemFuelCells>& CPACSSystemElements::GetFuelCells()
+    {
+        return m_fuelCells;
+    }
+
+    const boost::optional<CPACSSysElemGearBoxes>& CPACSSystemElements::GetGearBoxes() const
     {
         return m_gearBoxes;
     }
 
-    boost::optional<CPACSGearBoxes>& CPACSSystemElements::GetGearBoxes()
+    boost::optional<CPACSSysElemGearBoxes>& CPACSSystemElements::GetGearBoxes()
     {
         return m_gearBoxes;
     }
 
-    const boost::optional<CPACSGenerators>& CPACSSystemElements::GetGenerators() const
+    const boost::optional<CPACSSysElemGenerators>& CPACSSystemElements::GetGenerators() const
     {
         return m_generators;
     }
 
-    boost::optional<CPACSGenerators>& CPACSSystemElements::GetGenerators()
+    boost::optional<CPACSSysElemGenerators>& CPACSSystemElements::GetGenerators()
     {
         return m_generators;
     }
 
-    const boost::optional<CPACSGenericComponents>& CPACSSystemElements::GetGenericComponents() const
+    const boost::optional<CPACSSysElemGenericComponents>& CPACSSystemElements::GetGenericComponents() const
     {
         return m_genericComponents;
     }
 
-    boost::optional<CPACSGenericComponents>& CPACSSystemElements::GetGenericComponents()
+    boost::optional<CPACSSysElemGenericComponents>& CPACSSystemElements::GetGenericComponents()
     {
         return m_genericComponents;
     }
 
-    CPACSElectricMotors& CPACSSystemElements::GetElectricMotors(CreateIfNotExistsTag)
+    const boost::optional<CPACSSysElemHeatExchangers>& CPACSSystemElements::GetHeatExchangers() const
     {
-        if (!m_electricMotors)
-            m_electricMotors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-        return *m_electricMotors;
+        return m_heatExchangers;
     }
 
-    void CPACSSystemElements::RemoveElectricMotors()
+    boost::optional<CPACSSysElemHeatExchangers>& CPACSSystemElements::GetHeatExchangers()
     {
-        m_electricMotors = boost::none;
+        return m_heatExchangers;
     }
 
-    CPACSTurboGenerators& CPACSSystemElements::GetTurboGenerators(CreateIfNotExistsTag)
+    const boost::optional<CPACSSysElemInverters>& CPACSSystemElements::GetInverteres() const
     {
-        if (!m_turboGenerators)
-            m_turboGenerators = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-        return *m_turboGenerators;
+        return m_inverteres;
     }
 
-    void CPACSSystemElements::RemoveTurboGenerators()
+    boost::optional<CPACSSysElemInverters>& CPACSSystemElements::GetInverteres()
     {
-        m_turboGenerators = boost::none;
+        return m_inverteres;
     }
 
-    CPACSHeatExchangers& CPACSSystemElements::GetHeatExchangers(CreateIfNotExistsTag)
+    const boost::optional<CPACSSysElemPowerDistributionUnits>& CPACSSystemElements::GetPowerDistributionUnits() const
     {
-        if (!m_heatExchangers)
-            m_heatExchangers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-        return *m_heatExchangers;
+        return m_powerDistributionUnits;
     }
 
-    void CPACSSystemElements::RemoveHeatExchangers()
+    boost::optional<CPACSSysElemPowerDistributionUnits>& CPACSSystemElements::GetPowerDistributionUnits()
     {
-        m_heatExchangers = boost::none;
+        return m_powerDistributionUnits;
     }
 
-    CPACSBatteries& CPACSSystemElements::GetBatteries(CreateIfNotExistsTag)
+    const boost::optional<CPACSSysElemPowerElectronics>& CPACSSystemElements::GetPowerElectronics() const
+    {
+        return m_powerElectronics;
+    }
+
+    boost::optional<CPACSSysElemPowerElectronics>& CPACSSystemElements::GetPowerElectronics()
+    {
+        return m_powerElectronics;
+    }
+
+    const boost::optional<CPACSSysElemPumps>& CPACSSystemElements::GetPumps() const
+    {
+        return m_pumps;
+    }
+
+    boost::optional<CPACSSysElemPumps>& CPACSSystemElements::GetPumps()
+    {
+        return m_pumps;
+    }
+
+    const boost::optional<CPACSSysElemRectifiers>& CPACSSystemElements::GetRectifiers() const
+    {
+        return m_rectifiers;
+    }
+
+    boost::optional<CPACSSysElemRectifiers>& CPACSSystemElements::GetRectifiers()
+    {
+        return m_rectifiers;
+    }
+
+    const boost::optional<CPACSSysElemReservoirs>& CPACSSystemElements::GetReservoirs() const
+    {
+        return m_reservoirs;
+    }
+
+    boost::optional<CPACSSysElemReservoirs>& CPACSSystemElements::GetReservoirs()
+    {
+        return m_reservoirs;
+    }
+
+    const boost::optional<CPACSSysElemSwitchgearContainer>& CPACSSystemElements::GetSwitchgear() const
+    {
+        return m_switchgear;
+    }
+
+    boost::optional<CPACSSysElemSwitchgearContainer>& CPACSSystemElements::GetSwitchgear()
+    {
+        return m_switchgear;
+    }
+
+    const boost::optional<CPACSSysElemTurboGenerators>& CPACSSystemElements::GetTurboGenerators() const
+    {
+        return m_turboGenerators;
+    }
+
+    boost::optional<CPACSSysElemTurboGenerators>& CPACSSystemElements::GetTurboGenerators()
+    {
+        return m_turboGenerators;
+    }
+
+    CPACSSysElemBatteries& CPACSSystemElements::GetBatteries(CreateIfNotExistsTag)
     {
         if (!m_batteries)
             m_batteries = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
@@ -393,19 +741,91 @@ namespace generated
         m_batteries = boost::none;
     }
 
-    CPACSGasTurbines& CPACSSystemElements::GetGasTurbines(CreateIfNotExistsTag)
+    CPACSSysElemCables& CPACSSystemElements::GetCables(CreateIfNotExistsTag)
     {
-        if (!m_gasTurbines)
-            m_gasTurbines = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
-        return *m_gasTurbines;
+        if (!m_cables)
+            m_cables = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_cables;
     }
 
-    void CPACSSystemElements::RemoveGasTurbines()
+    void CPACSSystemElements::RemoveCables()
     {
-        m_gasTurbines = boost::none;
+        m_cables = boost::none;
     }
 
-    CPACSGearBoxes& CPACSSystemElements::GetGearBoxes(CreateIfNotExistsTag)
+    CPACSSysElemCompressors& CPACSSystemElements::GetCompressors(CreateIfNotExistsTag)
+    {
+        if (!m_compressors)
+            m_compressors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_compressors;
+    }
+
+    void CPACSSystemElements::RemoveCompressors()
+    {
+        m_compressors = boost::none;
+    }
+
+    CPACSSysElemConverters& CPACSSystemElements::GetConverters(CreateIfNotExistsTag)
+    {
+        if (!m_converters)
+            m_converters = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_converters;
+    }
+
+    void CPACSSystemElements::RemoveConverters()
+    {
+        m_converters = boost::none;
+    }
+
+    CPACSSysElemDCDCConverters& CPACSSystemElements::GetDcdcConverters(CreateIfNotExistsTag)
+    {
+        if (!m_dcdcConverters)
+            m_dcdcConverters = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_dcdcConverters;
+    }
+
+    void CPACSSystemElements::RemoveDcdcConverters()
+    {
+        m_dcdcConverters = boost::none;
+    }
+
+    CPACSSysElemElectricMachines& CPACSSystemElements::GetElectricMachines(CreateIfNotExistsTag)
+    {
+        if (!m_electricMachines)
+            m_electricMachines = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_electricMachines;
+    }
+
+    void CPACSSystemElements::RemoveElectricMachines()
+    {
+        m_electricMachines = boost::none;
+    }
+
+    CPACSSysElemElectricMotors& CPACSSystemElements::GetElectricMotors(CreateIfNotExistsTag)
+    {
+        if (!m_electricMotors)
+            m_electricMotors = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_electricMotors;
+    }
+
+    void CPACSSystemElements::RemoveElectricMotors()
+    {
+        m_electricMotors = boost::none;
+    }
+
+    CPACSSysElemFuelCells& CPACSSystemElements::GetFuelCells(CreateIfNotExistsTag)
+    {
+        if (!m_fuelCells)
+            m_fuelCells = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_fuelCells;
+    }
+
+    void CPACSSystemElements::RemoveFuelCells()
+    {
+        m_fuelCells = boost::none;
+    }
+
+    CPACSSysElemGearBoxes& CPACSSystemElements::GetGearBoxes(CreateIfNotExistsTag)
     {
         if (!m_gearBoxes)
             m_gearBoxes = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
@@ -417,7 +837,7 @@ namespace generated
         m_gearBoxes = boost::none;
     }
 
-    CPACSGenerators& CPACSSystemElements::GetGenerators(CreateIfNotExistsTag)
+    CPACSSysElemGenerators& CPACSSystemElements::GetGenerators(CreateIfNotExistsTag)
     {
         if (!m_generators)
             m_generators = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
@@ -429,7 +849,7 @@ namespace generated
         m_generators = boost::none;
     }
 
-    CPACSGenericComponents& CPACSSystemElements::GetGenericComponents(CreateIfNotExistsTag)
+    CPACSSysElemGenericComponents& CPACSSystemElements::GetGenericComponents(CreateIfNotExistsTag)
     {
         if (!m_genericComponents)
             m_genericComponents = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
@@ -439,6 +859,114 @@ namespace generated
     void CPACSSystemElements::RemoveGenericComponents()
     {
         m_genericComponents = boost::none;
+    }
+
+    CPACSSysElemHeatExchangers& CPACSSystemElements::GetHeatExchangers(CreateIfNotExistsTag)
+    {
+        if (!m_heatExchangers)
+            m_heatExchangers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_heatExchangers;
+    }
+
+    void CPACSSystemElements::RemoveHeatExchangers()
+    {
+        m_heatExchangers = boost::none;
+    }
+
+    CPACSSysElemInverters& CPACSSystemElements::GetInverteres(CreateIfNotExistsTag)
+    {
+        if (!m_inverteres)
+            m_inverteres = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_inverteres;
+    }
+
+    void CPACSSystemElements::RemoveInverteres()
+    {
+        m_inverteres = boost::none;
+    }
+
+    CPACSSysElemPowerDistributionUnits& CPACSSystemElements::GetPowerDistributionUnits(CreateIfNotExistsTag)
+    {
+        if (!m_powerDistributionUnits)
+            m_powerDistributionUnits = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_powerDistributionUnits;
+    }
+
+    void CPACSSystemElements::RemovePowerDistributionUnits()
+    {
+        m_powerDistributionUnits = boost::none;
+    }
+
+    CPACSSysElemPowerElectronics& CPACSSystemElements::GetPowerElectronics(CreateIfNotExistsTag)
+    {
+        if (!m_powerElectronics)
+            m_powerElectronics = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_powerElectronics;
+    }
+
+    void CPACSSystemElements::RemovePowerElectronics()
+    {
+        m_powerElectronics = boost::none;
+    }
+
+    CPACSSysElemPumps& CPACSSystemElements::GetPumps(CreateIfNotExistsTag)
+    {
+        if (!m_pumps)
+            m_pumps = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_pumps;
+    }
+
+    void CPACSSystemElements::RemovePumps()
+    {
+        m_pumps = boost::none;
+    }
+
+    CPACSSysElemRectifiers& CPACSSystemElements::GetRectifiers(CreateIfNotExistsTag)
+    {
+        if (!m_rectifiers)
+            m_rectifiers = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_rectifiers;
+    }
+
+    void CPACSSystemElements::RemoveRectifiers()
+    {
+        m_rectifiers = boost::none;
+    }
+
+    CPACSSysElemReservoirs& CPACSSystemElements::GetReservoirs(CreateIfNotExistsTag)
+    {
+        if (!m_reservoirs)
+            m_reservoirs = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_reservoirs;
+    }
+
+    void CPACSSystemElements::RemoveReservoirs()
+    {
+        m_reservoirs = boost::none;
+    }
+
+    CPACSSysElemSwitchgearContainer& CPACSSystemElements::GetSwitchgear(CreateIfNotExistsTag)
+    {
+        if (!m_switchgear)
+            m_switchgear = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_switchgear;
+    }
+
+    void CPACSSystemElements::RemoveSwitchgear()
+    {
+        m_switchgear = boost::none;
+    }
+
+    CPACSSysElemTurboGenerators& CPACSSystemElements::GetTurboGenerators(CreateIfNotExistsTag)
+    {
+        if (!m_turboGenerators)
+            m_turboGenerators = boost::in_place(reinterpret_cast<CCPACSSystemElements*>(this), m_uidMgr);
+        return *m_turboGenerators;
+    }
+
+    void CPACSSystemElements::RemoveTurboGenerators()
+    {
+        m_turboGenerators = boost::none;
     }
 
 } // namespace generated

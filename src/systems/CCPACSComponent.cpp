@@ -30,14 +30,26 @@
 #include "CTiglElementGeometryBuilder.h"
 #include "CTiglElementMassBuilder.h"
 #include "tiglcommonfunctions.h"
-#include "generated/CPACSVehicleElementBase.h"
-#include "generated/CPACSElectricMotor.h"
-#include "generated/CPACSBattery.h"
-#include "generated/CPACSGearBox.h"
-#include "generated/CPACSGasTurbine.h"
-#include "generated/CPACSGenerator.h"
-#include "generated/CPACSTurboGenerator.h"
-#include "generated/CPACSHeatExchanger.h"
+#include "CPACSSysElemBattery.h"
+#include "CPACSSysElemCable.h"
+#include "CPACSSysElemCompressor.h"
+#include "CPACSSysElemConverter.h"
+#include "CPACSSysElemDCDCConverter.h"
+#include "CPACSSysElemElectricMachine.h"
+#include "CPACSSysElemElectricMotor.h"
+#include "CPACSSysElemFuelCell.h"
+#include "CPACSSysElemGearBox.h"
+#include "CPACSSysElemGenerator.h"
+#include "CPACSSysElemHeatExchanger.h"
+#include "CPACSSysElemInverter.h"
+#include "CPACSSysElemPowerDistributionUnit.h"
+#include "CPACSSysElemPowerElectronic.h"
+#include "CPACSSysElemPump.h"
+#include "CPACSSysElemRectifier.h"
+#include "CPACSSysElemReservoir.h"
+#include "CPACSSysElemSwitchgear.h"
+#include "CPACSSysElemTurboGenerator.h"
+#include "CPACSVehicleElementBase.h"
 #include "CPACSElementGeometry.h"
 #include "CPACSElementMass.h"
 
@@ -65,9 +77,15 @@ static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, co
 
 static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
 {
-    return GetGeomFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor, generated::CPACSBattery,
-                            generated::CPACSGearBox, generated::CPACSGasTurbine, generated::CPACSGenerator,
-                            generated::CPACSTurboGenerator, generated::CPACSHeatExchanger>(uidMgr, uid);
+    return GetGeomFromTypes<
+        generated::CPACSSysElemBattery, generated::CPACSSysElemCable, generated::CPACSSysElemCompressor,
+        generated::CPACSSysElemConverter, generated::CPACSSysElemDCDCConverter, generated::CPACSSysElemElectricMachine,
+        generated::CPACSSysElemElectricMotor, generated::CPACSSysElemFuelCell, generated::CPACSSysElemGearBox,
+        generated::CPACSSysElemGenerator, generated::CPACSSysElemHeatExchanger, generated::CPACSSysElemInverter,
+        generated::CPACSSysElemPowerDistributionUnit, generated::CPACSSysElemPowerElectronic,
+        generated::CPACSSysElemPump, generated::CPACSSysElemRectifier, generated::CPACSSysElemReservoir,
+        generated::CPACSSysElemSwitchgear, generated::CPACSSysElemTurboGenerator, generated::CPACSVehicleElementBase>(
+        uidMgr, uid);
 }
 
 template <typename T>
@@ -90,10 +108,15 @@ static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTi
 
 static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
 {
-    return GetMassDescriptionFromTypes<generated::CPACSVehicleElementBase, generated::CPACSElectricMotor,
-                                       generated::CPACSBattery, generated::CPACSGearBox, generated::CPACSGasTurbine,
-                                       generated::CPACSGenerator, generated::CPACSTurboGenerator,
-                                       generated::CPACSHeatExchanger>(uidMgr, uid);
+    return GetMassDescriptionFromTypes<
+        generated::CPACSSysElemBattery, generated::CPACSSysElemCable, generated::CPACSSysElemCompressor,
+        generated::CPACSSysElemConverter, generated::CPACSSysElemDCDCConverter, generated::CPACSSysElemElectricMachine,
+        generated::CPACSSysElemElectricMotor, generated::CPACSSysElemFuelCell, generated::CPACSSysElemGearBox,
+        generated::CPACSSysElemGenerator, generated::CPACSSysElemHeatExchanger, generated::CPACSSysElemInverter,
+        generated::CPACSSysElemPowerDistributionUnit, generated::CPACSSysElemPowerElectronic,
+        generated::CPACSSysElemPump, generated::CPACSSysElemRectifier, generated::CPACSSysElemReservoir,
+        generated::CPACSSysElemSwitchgear, generated::CPACSSysElemTurboGenerator, generated::CPACSVehicleElementBase>(
+        uidMgr, uid);
 }
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)

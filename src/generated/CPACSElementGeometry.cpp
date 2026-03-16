@@ -16,14 +16,26 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSBattery.h"
-#include "CPACSElectricMotor.h"
 #include "CPACSElementGeometry.h"
-#include "CPACSGasTurbine.h"
-#include "CPACSGearBox.h"
-#include "CPACSGenerator.h"
-#include "CPACSHeatExchanger.h"
-#include "CPACSTurboGenerator.h"
+#include "CPACSSysElemBattery.h"
+#include "CPACSSysElemCable.h"
+#include "CPACSSysElemCompressor.h"
+#include "CPACSSysElemConverter.h"
+#include "CPACSSysElemDCDCConverter.h"
+#include "CPACSSysElemElectricMachine.h"
+#include "CPACSSysElemElectricMotor.h"
+#include "CPACSSysElemFuelCell.h"
+#include "CPACSSysElemGearBox.h"
+#include "CPACSSysElemGenerator.h"
+#include "CPACSSysElemHeatExchanger.h"
+#include "CPACSSysElemInverter.h"
+#include "CPACSSysElemPowerDistributionUnit.h"
+#include "CPACSSysElemPowerElectronic.h"
+#include "CPACSSysElemPump.h"
+#include "CPACSSysElemRectifier.h"
+#include "CPACSSysElemReservoir.h"
+#include "CPACSSysElemSwitchgear.h"
+#include "CPACSSysElemTurboGenerator.h"
 #include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -35,60 +47,156 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSElementGeometry::CPACSElementGeometry(CPACSBattery* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemBattery* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSBattery);
+        m_parentType = &typeid(CPACSSysElemBattery);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSElectricMotor* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemCable* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElectricMotor);
+        m_parentType = &typeid(CPACSSysElemCable);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSGasTurbine* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemCompressor* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSGasTurbine);
+        m_parentType = &typeid(CPACSSysElemCompressor);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSGearBox* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemConverter* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSGearBox);
+        m_parentType = &typeid(CPACSSysElemConverter);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSGenerator* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemDCDCConverter* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSGenerator);
+        m_parentType = &typeid(CPACSSysElemDCDCConverter);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSHeatExchanger* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemElectricMachine* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSHeatExchanger);
+        m_parentType = &typeid(CPACSSysElemElectricMachine);
     }
 
-    CPACSElementGeometry::CPACSElementGeometry(CPACSTurboGenerator* parent, CTiglUIDManager* uidMgr)
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemElectricMotor* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSTurboGenerator);
+        m_parentType = &typeid(CPACSSysElemElectricMotor);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemFuelCell* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemFuelCell);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemGearBox* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemGearBox);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemGenerator* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemGenerator);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemHeatExchanger* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemHeatExchanger);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemInverter* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemInverter);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemPowerDistributionUnit* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemPowerDistributionUnit);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemPowerElectronic* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemPowerElectronic);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemPump* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemPump);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemRectifier* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemRectifier);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemReservoir* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemReservoir);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemSwitchgear* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemSwitchgear);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemTurboGenerator* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemTurboGenerator);
     }
 
     CPACSElementGeometry::CPACSElementGeometry(CPACSVehicleElementBase* parent, CTiglUIDManager* uidMgr)
@@ -106,26 +214,62 @@ namespace generated
     const CTiglUIDObject* CPACSElementGeometry::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSBattery>()) {
-                return GetParent<CPACSBattery>();
+            if (IsParent<CPACSSysElemBattery>()) {
+                return GetParent<CPACSSysElemBattery>();
             }
-            if (IsParent<CPACSElectricMotor>()) {
-                return GetParent<CPACSElectricMotor>();
+            if (IsParent<CPACSSysElemCable>()) {
+                return GetParent<CPACSSysElemCable>();
             }
-            if (IsParent<CPACSGasTurbine>()) {
-                return GetParent<CPACSGasTurbine>();
+            if (IsParent<CPACSSysElemCompressor>()) {
+                return GetParent<CPACSSysElemCompressor>();
             }
-            if (IsParent<CPACSGearBox>()) {
-                return GetParent<CPACSGearBox>();
+            if (IsParent<CPACSSysElemConverter>()) {
+                return GetParent<CPACSSysElemConverter>();
             }
-            if (IsParent<CPACSGenerator>()) {
-                return GetParent<CPACSGenerator>();
+            if (IsParent<CPACSSysElemDCDCConverter>()) {
+                return GetParent<CPACSSysElemDCDCConverter>();
             }
-            if (IsParent<CPACSHeatExchanger>()) {
-                return GetParent<CPACSHeatExchanger>();
+            if (IsParent<CPACSSysElemElectricMachine>()) {
+                return GetParent<CPACSSysElemElectricMachine>();
             }
-            if (IsParent<CPACSTurboGenerator>()) {
-                return GetParent<CPACSTurboGenerator>();
+            if (IsParent<CPACSSysElemElectricMotor>()) {
+                return GetParent<CPACSSysElemElectricMotor>();
+            }
+            if (IsParent<CPACSSysElemFuelCell>()) {
+                return GetParent<CPACSSysElemFuelCell>();
+            }
+            if (IsParent<CPACSSysElemGearBox>()) {
+                return GetParent<CPACSSysElemGearBox>();
+            }
+            if (IsParent<CPACSSysElemGenerator>()) {
+                return GetParent<CPACSSysElemGenerator>();
+            }
+            if (IsParent<CPACSSysElemHeatExchanger>()) {
+                return GetParent<CPACSSysElemHeatExchanger>();
+            }
+            if (IsParent<CPACSSysElemInverter>()) {
+                return GetParent<CPACSSysElemInverter>();
+            }
+            if (IsParent<CPACSSysElemPowerDistributionUnit>()) {
+                return GetParent<CPACSSysElemPowerDistributionUnit>();
+            }
+            if (IsParent<CPACSSysElemPowerElectronic>()) {
+                return GetParent<CPACSSysElemPowerElectronic>();
+            }
+            if (IsParent<CPACSSysElemPump>()) {
+                return GetParent<CPACSSysElemPump>();
+            }
+            if (IsParent<CPACSSysElemRectifier>()) {
+                return GetParent<CPACSSysElemRectifier>();
+            }
+            if (IsParent<CPACSSysElemReservoir>()) {
+                return GetParent<CPACSSysElemReservoir>();
+            }
+            if (IsParent<CPACSSysElemSwitchgear>()) {
+                return GetParent<CPACSSysElemSwitchgear>();
+            }
+            if (IsParent<CPACSSysElemTurboGenerator>()) {
+                return GetParent<CPACSSysElemTurboGenerator>();
             }
             if (IsParent<CPACSVehicleElementBase>()) {
                 return GetParent<CPACSVehicleElementBase>();
@@ -137,26 +281,62 @@ namespace generated
     CTiglUIDObject* CPACSElementGeometry::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSBattery>()) {
-                return GetParent<CPACSBattery>();
+            if (IsParent<CPACSSysElemBattery>()) {
+                return GetParent<CPACSSysElemBattery>();
             }
-            if (IsParent<CPACSElectricMotor>()) {
-                return GetParent<CPACSElectricMotor>();
+            if (IsParent<CPACSSysElemCable>()) {
+                return GetParent<CPACSSysElemCable>();
             }
-            if (IsParent<CPACSGasTurbine>()) {
-                return GetParent<CPACSGasTurbine>();
+            if (IsParent<CPACSSysElemCompressor>()) {
+                return GetParent<CPACSSysElemCompressor>();
             }
-            if (IsParent<CPACSGearBox>()) {
-                return GetParent<CPACSGearBox>();
+            if (IsParent<CPACSSysElemConverter>()) {
+                return GetParent<CPACSSysElemConverter>();
             }
-            if (IsParent<CPACSGenerator>()) {
-                return GetParent<CPACSGenerator>();
+            if (IsParent<CPACSSysElemDCDCConverter>()) {
+                return GetParent<CPACSSysElemDCDCConverter>();
             }
-            if (IsParent<CPACSHeatExchanger>()) {
-                return GetParent<CPACSHeatExchanger>();
+            if (IsParent<CPACSSysElemElectricMachine>()) {
+                return GetParent<CPACSSysElemElectricMachine>();
             }
-            if (IsParent<CPACSTurboGenerator>()) {
-                return GetParent<CPACSTurboGenerator>();
+            if (IsParent<CPACSSysElemElectricMotor>()) {
+                return GetParent<CPACSSysElemElectricMotor>();
+            }
+            if (IsParent<CPACSSysElemFuelCell>()) {
+                return GetParent<CPACSSysElemFuelCell>();
+            }
+            if (IsParent<CPACSSysElemGearBox>()) {
+                return GetParent<CPACSSysElemGearBox>();
+            }
+            if (IsParent<CPACSSysElemGenerator>()) {
+                return GetParent<CPACSSysElemGenerator>();
+            }
+            if (IsParent<CPACSSysElemHeatExchanger>()) {
+                return GetParent<CPACSSysElemHeatExchanger>();
+            }
+            if (IsParent<CPACSSysElemInverter>()) {
+                return GetParent<CPACSSysElemInverter>();
+            }
+            if (IsParent<CPACSSysElemPowerDistributionUnit>()) {
+                return GetParent<CPACSSysElemPowerDistributionUnit>();
+            }
+            if (IsParent<CPACSSysElemPowerElectronic>()) {
+                return GetParent<CPACSSysElemPowerElectronic>();
+            }
+            if (IsParent<CPACSSysElemPump>()) {
+                return GetParent<CPACSSysElemPump>();
+            }
+            if (IsParent<CPACSSysElemRectifier>()) {
+                return GetParent<CPACSSysElemRectifier>();
+            }
+            if (IsParent<CPACSSysElemReservoir>()) {
+                return GetParent<CPACSSysElemReservoir>();
+            }
+            if (IsParent<CPACSSysElemSwitchgear>()) {
+                return GetParent<CPACSSysElemSwitchgear>();
+            }
+            if (IsParent<CPACSSysElemTurboGenerator>()) {
+                return GetParent<CPACSSysElemTurboGenerator>();
             }
             if (IsParent<CPACSVehicleElementBase>()) {
                 return GetParent<CPACSVehicleElementBase>();
