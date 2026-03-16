@@ -115,7 +115,6 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod
 {
 
     throw CTiglError("UpperLower wire is not implemented.");
-    //  return wireCache->upperLowerEdge;
 }
 
 // get trailing edge
