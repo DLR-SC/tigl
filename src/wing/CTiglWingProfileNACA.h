@@ -113,7 +113,6 @@ namespace tigl{
     struct WireCache {
         TopoDS_Edge               upperWire;      /**< wire of the upper wing profile */
         TopoDS_Edge               lowerWire;      /**< wire of the lower wing profile */
-        // TopoDS_Edge               upperLowerEdge; /**< edge consisting of upper and lower wing profile */
         TopoDS_Edge               trailingEdge; 
         gp_Pnt                    lePoint;              /**< Leading edge point */
         gp_Pnt                    tePoint;              /**< Trailing edge point */
