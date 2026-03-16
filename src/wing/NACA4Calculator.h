@@ -105,7 +105,7 @@ class NACA4Calculator{
         double camberline_derivative(double x) const;
 
         /**
-         * @brief Calculate the normal by using the norm
+         * @brief Evaluate the camberline normal at parameter x, where x can take values between 0 and 1.
          * 
          * @param x 
          * @return gp_Vec2d 
