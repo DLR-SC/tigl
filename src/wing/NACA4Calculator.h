@@ -114,7 +114,7 @@ class NACA4Calculator{
 
 
     private:
-        double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness;
+        double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness_half;
 };
 
 class NACA4UpperCurve : public MathFunc3d {
