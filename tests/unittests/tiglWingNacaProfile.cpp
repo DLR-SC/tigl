@@ -21,22 +21,21 @@
 */
 
 #include "test.h" // Brings in the GTest framework
-#include "testUtils.h"
+//#include "testUtils.h"
 #include "tigl.h"
-#include "math/tiglmathfunctions.h"
+//#include "math/tiglmathfunctions.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWingProfile.h"
-#include "CNamedShape.h"
+//#include "CNamedShape.h"
 #include "BRep_Tool.hxx"
-#include "BRepTools_WireExplorer.hxx"
-#include "BRepBuilderAPI_MakeEdge.hxx"
+//#include "BRepTools_WireExplorer.hxx"
+//#include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepTools.hxx"
 #include "Geom_Curve.hxx"
-#include "gp_Pnt.hxx"
-#include "gp_Pnt.hxx"
-#include "GeomAPI_ProjectPointOnCurve.hxx"
-#include "Geom_BSplineCurve.hxx"
-#include "CCSTCurveBuilder.h"
+//#include "gp_Pnt.hxx"
+//#include "GeomAPI_ProjectPointOnCurve.hxx"
+//#include "Geom_BSplineCurve.hxx"
+
 
 /******************************************************************************/
 
@@ -73,7 +72,7 @@ protected:
 
 /******************************************************************************/
 
-TEST_F(WingNACAProfile, nacacreateWing)
+TEST_F(WingNACAProfile, naca0012_generateBreps)
 {
     // read configuration
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -89,7 +88,7 @@ TEST_F(WingNACAProfile, nacacreateWing)
         BRepTools::Write(trailingEdge, "trailingEdge.brep");     
 }
 
-TEST_F(WingNACAProfile, Nacacalculatortest23){
+TEST_F(WingNACAProfile, naca0012_generate_edges_upper){
 
         // read configuration
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -104,7 +103,7 @@ TEST_F(WingNACAProfile, Nacacalculatortest23){
         ASSERT_TRUE(!upperCurve.IsNull());
 }
 
-TEST_F(WingNACAProfile, Nacacalculatortest24)
+TEST_F(WingNACAProfile, naca0012_generate_edges_lower)
 {
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -112,8 +111,8 @@ TEST_F(WingNACAProfile, Nacacalculatortest24)
 
       Standard_Real u1, u2;
     tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA0012");
-    TopoDS_Edge upperWire = profile.GetUpperWire();
-        EXPECT_TRUE(!upperWire.IsNull());
-        Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
-        ASSERT_TRUE(!upperCurve.IsNull());
+    TopoDS_Edge lowerWire = profile.GetLowerWire();
+        EXPECT_TRUE(!lowerWire.IsNull());
+        Handle(Geom_Curve) lowerCurve = BRep_Tool::Curve(lowerWire, u1, u2);
+        ASSERT_TRUE(!lowerCurve.IsNull());
 }
