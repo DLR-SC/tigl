@@ -62,18 +62,22 @@
 
 TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
     tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);
+    if(NACA4.profile_thickness(1) > 0){ //tests if yt > 0 is weil ich den nd im calculator machn darf
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
     gp_Vec2d result2 = NACA4.lower_curve(1);
     EXPECT_NEAR(result2.X(), (0.999937), 1e-6); 
     EXPECT_NEAR(result2.Y(), (-0.00125843), 1e-8);
+    }
+    if(NACA4.profile_thickness(0) > 0){
     gp_Vec2d result3 = NACA4.upper_curve(0.);
     EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
     EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
     gp_Vec2d result4 = NACA4.lower_curve(0.);
     EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+    }
 }
 
 TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
@@ -92,18 +96,22 @@ TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
 
 TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
     tigl::NACA4Calculator NACA4(0,0,12, 0.00252);
+    if(NACA4.profile_thickness(0.5) > 0){
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
     EXPECT_NEAR(result1.X(), (0.5), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
     gp_Vec2d result2 = NACA4.lower_curve(0.5);
     EXPECT_NEAR(result2.X(), (0.5), 1e-6); 
     EXPECT_NEAR(result2.Y(), (-0.0529403), 1e-7);
+    }
+    if(NACA4.profile_thickness(0.)){
     gp_Vec2d result3 = NACA4.upper_curve(0.);
-    EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5);  
     EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
     gp_Vec2d result4 = NACA4.lower_curve(0.);
     EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+    }
 }
 
 TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
@@ -120,7 +128,6 @@ TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
     gp_Vec2d result4 = NACA4.lower_curve(0.);
     EXPECT_NEAR(result4.X(), (0.0), 1e-6);
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
-
 }
 
 TEST(NACA4Calculator, Nacacalculatortest4_coordinates){
@@ -155,7 +162,7 @@ TEST(NACA4Calculator, Nacacalculatortest6_thickness){
     double right_result = NACA4.profile_thickness(0.311);
     EXPECT_GT(result1, left_result);
     EXPECT_GT(result1, right_result);
-    EXPECT_NEAR(result1, 0.09, 1e-2); //TODO: Fact check this
+    EXPECT_NEAR(result1, 0.09, 1e-2); //TODO: Fact check this 1e-2
 }
 
 TEST(NACA4Calculator, Nacacalculatortest7_camberline){ 

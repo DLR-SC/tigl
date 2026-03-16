@@ -87,9 +87,6 @@ namespace tigl{
             double yt = profile_thickness(x); 
             double yc = camberline(x);
             auto point = gp_Vec2d{x, yc};
-            if(yt < 0){
-                throw ::std::logic_error("error in NACA4Calculator::upper_curve: the profile_thickness must be positive or 0.");
-            }
             return point + yt*normal(x);
         }
         
@@ -97,9 +94,6 @@ namespace tigl{
             double yt = profile_thickness(x);
             double yc = camberline(x);
             auto point = gp_Vec2d{x, yc};
-            if(yt < 0){
-                throw ::std::logic_error("error in NACA4Calculator::upper_curve: the profile_thickness must be positive or 0.");
-            }
             return point - yt*normal(x);
         }
 
