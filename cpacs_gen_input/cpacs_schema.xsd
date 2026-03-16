@@ -36451,122 +36451,32 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:all>
-                    <xsd:element name="electricMotors" minOccurs="0" type="electricMotorsType"/>
-                    <xsd:element name="turboGenerators" minOccurs="0" type="turboGeneratorsType"/>
-                    <xsd:element name="heatExchangers" minOccurs="0" type="heatExchangersType"/>
-                    <xsd:element name="batteries" minOccurs="0" type="batteriesType"/>
-                    <xsd:element name="gasTurbines" minOccurs="0" type="gasTurbinesType"/>
-                    <xsd:element name="gearBoxes" minOccurs="0" type="gearBoxesType"/>
-                    <xsd:element name="generators" minOccurs="0" type="generatorsType"/>
-                    <xsd:element name="genericComponents" minOccurs="0" type="genericComponentsType"/>
+                    <xsd:element name="batteries" minOccurs="0" type="sysElemBatteriesType"/>
+                    <xsd:element name="cables" minOccurs="0" type="sysElemCablesType"/>
+                    <xsd:element name="compressors" minOccurs="0" type="sysElemCompressorsType"/>
+                    <xsd:element name="converters" minOccurs="0" type="sysElemConvertersType"/>
+                    <xsd:element name="dcdcConverters" minOccurs="0" type="sysElemDCDCConvertersType"/>
+                    <xsd:element name="electricMachines" minOccurs="0" type="sysElemElectricMachinesType"/>
+                    <xsd:element name="electricMotors" minOccurs="0" type="sysElemElectricMotorsType"/>
+                    <xsd:element name="fuelCells" minOccurs="0" type="sysElemFuelCellsType"/>
+                    <xsd:element name="gearBoxes" minOccurs="0" type="sysElemGearBoxesType"/>
+                    <xsd:element name="generators" minOccurs="0" type="sysElemGeneratorsType"/>
+                    <xsd:element name="genericComponents" minOccurs="0" type="sysElemGenericComponentsType"/>
+                    <xsd:element name="heatExchangers" minOccurs="0" type="sysElemHeatExchangersType"/>
+                    <xsd:element name="inverteres" minOccurs="0" type="sysElemInvertersType"/>
+                    <xsd:element name="powerDistributionUnits" minOccurs="0" type="sysElemPowerDistributionUnitsType"/>
+                    <xsd:element name="powerElectronics" minOccurs="0" type="sysElemPowerElectronicsType"/>
+                    <xsd:element name="pumps" minOccurs="0" type="sysElemPumpsType"/>
+                    <xsd:element name="rectifiers" minOccurs="0" type="sysElemRectifiersType"/>
+                    <xsd:element name="reservoirs" minOccurs="0" type="sysElemReservoirsType"/>
+                    <xsd:element name="switchgear" minOccurs="0" type="sysElemSwitchgearContainerType"/>
+                    <xsd:element name="turboGenerators" minOccurs="0" type="sysElemTurboGeneratorsType"/>  
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="electricMotorsType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Electric motors</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:element name="electricMotor" maxOccurs="unbounded" type="electricMotorType"/>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="electricMotorType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Electric motor</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="vehicleElementBaseType"/>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="turboGeneratorsType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Turbo generators</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:element name="turboGenerator" maxOccurs="unbounded" type="turboGeneratorType"/>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="turboGeneratorType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Turbo generator</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="vehicleElementBaseType"/>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="heatExchangersType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Heat exchangers</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:sequence>
-                    <xsd:element name="heatExchanger" maxOccurs="unbounded" type="heatExchangerType"/>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="heatExchangerType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Heat exchanger</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="vehicleElementBaseType"/>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="batteriesType">
+    <xsd:complexType name="sysElemBatteriesType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36579,13 +36489,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="battery" maxOccurs="unbounded" type="batteryType"/>
+                    <xsd:element name="battery" maxOccurs="unbounded" type="sysElemBatteryType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="batteryType">
+    <xsd:complexType name="sysElemBatteryType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36600,12 +36510,12 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="gasTurbinesType">
+    <xsd:complexType name="sysElemCablesType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>Gas turbines</ddue:para>
+                        <ddue:para>Cables</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36613,18 +36523,18 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="gasTurbine" maxOccurs="unbounded" type="gasTurbineType"/>
+                    <xsd:element name="cables" maxOccurs="unbounded" type="sysElemCableType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="gasTurbineType">
+    <xsd:complexType name="sysElemCableType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
                     <ddue:summary>
-                        <ddue:para>GasTurbine</ddue:para>
+                        <ddue:para>Cables (single entity of a set of cables)</ddue:para>
                     </ddue:summary>
                 </sd:schemaDoc>
             </xsd:appinfo>
@@ -36634,7 +36544,216 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="gearBoxesType">
+    <xsd:complexType name="sysElemCompressorsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Compressors</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="compressor" maxOccurs="unbounded" type="sysElemCompressorType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemCompressorType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Compressor</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemConvertersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Converters</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="converter" maxOccurs="unbounded" type="sysElemConverterType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemConverterType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Converter</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemDCDCConvertersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>DC-DC converters</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="dcdcConverter" maxOccurs="unbounded" type="sysElemDCDCConverterType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemDCDCConverterType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>DC-DC converter</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemElectricMachinesType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Electric machines</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>This element can be used when electric machines are to be specified in general terms, without the exact breakdown into <ddue:codeInline>electricMotors</ddue:codeInline> or <ddue:codeInline>generators</ddue:codeInline> being known.
+                            Otherwise, for a more detailed level of modeling, the elements <ddue:codeInline>electricMotors</ddue:codeInline> and <ddue:codeInline>generators</ddue:codeInline> can be used directly instead of <ddue:codeInline>electricMachines</ddue:codeInline>.
+                        </ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="electricMachine" maxOccurs="unbounded" type="sysElemElectricMachineType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemElectricMachineType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Power electronics</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemElectricMotorsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Electric motors</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="electricMotor" maxOccurs="unbounded" type="sysElemElectricMotorType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemElectricMotorType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Electric motor</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemFuelCellsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Fuel cells</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="fuelCell" maxOccurs="unbounded" type="sysElemFuelCellType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemFuelCellType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Fuel cell</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemGearBoxesType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36647,13 +36766,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="gearBox" maxOccurs="unbounded" type="gearBoxType"/>
+                    <xsd:element name="gearBox" maxOccurs="unbounded" type="sysElemGearBoxType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="gearBoxType">
+    <xsd:complexType name="sysElemGearBoxType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36668,7 +36787,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="generatorsType">
+    <xsd:complexType name="sysElemGeneratorsType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36681,13 +36800,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element name="generator" maxOccurs="unbounded" type="generatorType"/>
+                    <xsd:element name="generator" maxOccurs="unbounded" type="sysElemGeneratorType"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="generatorType">
+    <xsd:complexType name="sysElemGeneratorType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36702,7 +36821,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="genericComponentsType">
+    <xsd:complexType name="sysElemGenericComponentsType">
         <xsd:annotation>
             <xsd:appinfo>
                 <sd:schemaDoc>
@@ -36718,6 +36837,317 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     <xsd:element name="genericComponent" maxOccurs="unbounded" type="vehicleElementBaseType"/>
                 </xsd:sequence>
             </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemHeatExchangersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Heat exchangers</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="heatExchanger" maxOccurs="unbounded" type="sysElemHeatExchangerType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemHeatExchangerType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Heat exchanger</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemInvertersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Inverters</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="inverter" maxOccurs="unbounded" type="sysElemInverterType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemInverterType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Inverter</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPowerDistributionUnitsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Power-distribution units</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="powerDistributionUnit" maxOccurs="unbounded" type="sysElemPowerDistributionUnitType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPowerDistributionUnitType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Power-distribution unit</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPowerElectronicsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Power electronics</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para>This element can be used when power electronics are to be specified in general terms, without the exact breakdown into, for example, <ddue:codeInline>rectifiers</ddue:codeInline> or <ddue:codeInline>inverters</ddue:codeInline> being known.
+                            Otherwise, for a more detailed level of modeling, the elements <ddue:codeInline>rectifiers</ddue:codeInline> or <ddue:codeInline>inverters</ddue:codeInline> can be used directly instead of <ddue:codeInline>powerElectronics</ddue:codeInline>.
+                        </ddue:para>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="powerElectronics" maxOccurs="unbounded" type="sysElemPowerElectronicType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPowerElectronicType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Power electronics (single entity of power electronics)</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPumpsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Pumps</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="pump" maxOccurs="unbounded" type="sysElemPumpType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemPumpType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Pump</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemRectifiersType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Rectifiers</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="rectifier" maxOccurs="unbounded" type="sysElemRectifierType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemRectifierType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Rectifier</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemReservoirsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Reservoirs</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="reservoir" maxOccurs="unbounded" type="sysElemReservoirType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemReservoirType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Reservoir</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemSwitchgearContainerType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Switchgear</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="switchgear" maxOccurs="unbounded" type="sysElemSwitchgearType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemSwitchgearType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Switchgear</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemTurboGeneratorsType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Turbo generators</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="turboGenerator" maxOccurs="unbounded" type="sysElemTurboGeneratorType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="sysElemTurboGeneratorType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Turbo generator</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="vehicleElementBaseType"/>
         </xsd:complexContent>
     </xsd:complexType>
 
