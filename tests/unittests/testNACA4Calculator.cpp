@@ -27,36 +27,23 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWingProfile.h"
 #include "gp_Pnt.hxx"
-#include "gp_Pnt.hxx"
 #include "NACA4Calculator.h"
 #include "generated/CPACSNacaProfile.h"
 #include "CTiglUIDManager.h"
-#include "Debugging.h"
-#include "Cache.h"
+#include "Debugging.h" 
 #include <BRepCheck_Analyzer.hxx>
 #include <gp_Vec2d.hxx>
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopExp.hxx>          // für TopExp::Vertices(...)
-#include <TopoDS.hxx>          // TopoDS::Edge / TopoDS::Vertex helpers
-#include <TopoDS_Vertex.hxx>   // falls du explizit TopoDS_Vertex benutzt
+#include <TopExp.hxx> 
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <BRep_Tool.hxx> 
-#include "testUtils.h"
-#include "tigl.h"
-#include "math/tiglmathfunctions.h"
-#include "CCPACSConfigurationManager.h"
-#include "CCPACSWingProfile.h"
-#include "BRep_Tool.hxx"
-#include "BRepTools_WireExplorer.hxx"
-#include "BRepBuilderAPI_MakeEdge.hxx"
-#include "BRepTools.hxx"
 #include "Geom_Curve.hxx"
-#include "gp_Pnt.hxx"
-#include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "Geom_BSplineCurve.hxx"
-#include "CCSTCurveBuilder.h"
+
 
 
 
