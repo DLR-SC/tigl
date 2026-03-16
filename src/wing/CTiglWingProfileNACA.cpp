@@ -22,7 +22,6 @@
 
 
 #include "CPACSProfileGeometry.h"
-//#include "CPACSNacaProfile.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
