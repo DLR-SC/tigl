@@ -419,7 +419,7 @@ TEST(NACA4Calculator, Nacacalculatortest22){
 
 
 TEST(NACA4Calculator, Nacacalculatortest23){
-    const char* filename = "TestData/hilfe_ohne_build.cpacs.xml";
+    const char* filename = "TestData/naca_test.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -450,7 +450,7 @@ TEST(NACA4Calculator, Nacacalculatortest23){
 
 TEST(NACA4Calculator, Nacacalculatortest24)
 {
-    TiglHandleWrapper tiglHandle("TestData/hilfe_ohne_build.cpacs.xml", "");
+    TiglHandleWrapper tiglHandle("TestData/naca_test.cpacs.xml", "");
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);

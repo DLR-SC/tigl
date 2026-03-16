@@ -56,8 +56,6 @@ namespace tigl{
                 throw std::invalid_argument("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
             }
 
-            
-
         }
 
         double NACA4Calculator::get_trailing_edge_thickness() const
