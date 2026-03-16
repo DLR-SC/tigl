@@ -81,9 +81,6 @@ namespace tigl{
             else{
                 throw ::std::logic_error("error in NACA4Calculator::camberline: x must be between 0 and 1.");
             }
-            if(::std::isnan(x)){
-                throw ::std::logic_error("error in NACA4Calculator::camberline: x must be a number between 0 and 1.");
-            }
         }
 
         gp_Vec2d NACA4Calculator::upper_curve(double x) const{
