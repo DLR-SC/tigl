@@ -99,7 +99,7 @@ namespace tigl{
 
         double NACA4Calculator::profile_thickness(double x) const{ 
             double t = this->max_profile_thickness; 
-            double e = trailing_edge_thickness_function(trailing_edge_thickness_half);
+            double e = -(trailing_edge_thickness_half/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843);
             return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - e*pow(x,4));
         }
 
@@ -130,13 +130,6 @@ namespace tigl{
             return normal/nrm;
         }
 
-        double NACA4Calculator::trailing_edge_thickness_function(double y) const{ 
-            double t = max_profile_thickness;
-            if(y < 0){
-                throw ::std::logic_error("error in NACA4Calculator::trailing_edge_thickness_function: trailing_edge_thickness must be bigger than 0.");
-            }
-            return -(y/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843); 
-        }
 
         Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{
 

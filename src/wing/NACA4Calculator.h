@@ -83,14 +83,6 @@ class NACA4Calculator{
          */
         TIGL_EXPORT double profile_thickness(double x) const; 
 
-        /**
-         * @brief Construct a new trailing edge thickness object
-         * 
-         * @param y 
-         * @return double
-         */
-        TIGL_EXPORT double trailing_edge_thickness_function(double y) const; 
-
         TIGL_EXPORT Handle(Geom_BSplineCurve) upper_bspline() const; 
 
         TIGL_EXPORT Handle(Geom_BSplineCurve) lower_bspline() const; 
