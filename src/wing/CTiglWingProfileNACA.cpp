@@ -63,7 +63,7 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 {
 
     auto upper_bspline = calculator.upper_bspline();
-    auto lower_bspline = calculator.lower_bspline()->Reversed();
+    auto lower_bspline = calculator.lower_bspline();
     cache.upperWire = BRepBuilderAPI_MakeEdge(upper_bspline); 
     cache.lowerWire = BRepBuilderAPI_MakeEdge(lower_bspline); 
 
