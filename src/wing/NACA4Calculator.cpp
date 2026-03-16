@@ -37,11 +37,28 @@ namespace tigl{
         }
 
         NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
-            : NACA4Calculator(static_cast<double>(naca_code[0] - '0'),
-                              static_cast<double>(naca_code[1] - '0'),
-                              static_cast<double>(std::stoi(naca_code.substr(2,2))),
+            : NACA4Calculator(0.0,
+                              0.0,
+                              0.0,
                               te_thickness)
-        {}
+        {
+            if (naca_code.size() != 4){
+                throw std::invalid_argument("error in NACA4Calculator: naca_code is not four digits long");
+            }
+            try{
+                double m = static_cast<double>(naca_code[0] - '0');
+                double p = static_cast<double>(naca_code[1] - '0');
+                double t = static_cast<double>(std::stoi(naca_code.substr(2,2)));
+
+                *this = NACA4Calculator(m, p, t, te_thickness);
+            }
+            catch(...){
+                throw std::invalid_argument("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
+            }
+
+            
+
+        }
 
         double NACA4Calculator::get_trailing_edge_thickness() const
         {
