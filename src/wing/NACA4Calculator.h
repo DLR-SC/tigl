@@ -76,7 +76,7 @@ class NACA4Calculator{
         TIGL_EXPORT gp_Vec2d lower_curve(double x) const; 
 
         /**
-         * @brief Calculate the thickness of the profile
+         * @brief Calculate the local thickness of the profile given a parameter x with values between 0 and 1.
          * 
          * @param x 
          * @return double 
