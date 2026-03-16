@@ -31,9 +31,9 @@ namespace tigl{
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
          , max_profile_thickness(max_profile_thickness/100)
-         , trailing_edge_thickness(trailing_edge_thickness/2) 
+         , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
-            
+
         }
 
         NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
@@ -45,7 +45,7 @@ namespace tigl{
 
         double NACA4Calculator::get_trailing_edge_thickness() const
         {
-            return trailing_edge_thickness;
+            return trailing_edge_thickness_half;
         }
 
         double NACA4Calculator::camberline(double x) const{
@@ -91,7 +91,7 @@ namespace tigl{
 
         double NACA4Calculator::profile_thickness(double x) const{ 
             double t = this->max_profile_thickness; 
-            double e = trailing_edge_thickness_function(trailing_edge_thickness);
+            double e = trailing_edge_thickness_function(trailing_edge_thickness_half);
             return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - e*pow(x,4));
         }
 
