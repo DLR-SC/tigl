@@ -52,7 +52,7 @@ class NACA4Calculator{
         TIGL_EXPORT double get_trailing_edge_thickness() const; 
 
         /**
-         * @brief Calculate the camberline
+         * @brief Evaluate the camberline at parameter x, where x is between 0 and 1
          * 
          * @param x 
          * @return double 
