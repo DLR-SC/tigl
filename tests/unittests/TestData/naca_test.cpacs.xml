@@ -509,6 +509,48 @@
             <nacaProfile>
                 <naca4DigitCode>0012</naca4DigitCode>
             </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA0009">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>0009</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>  
+         <wingAirfoil uID="NACA0015">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>0015</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA0021">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>0021</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA0023">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>0023</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA2212">
+          <name>NACA0.00.22.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>2212</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>
+         <wingAirfoil uID="NACA2215">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>2215</naca4DigitCode>
+            </nacaProfile>
          </wingAirfoil>  
       </wingAirfoils>
       <fuselageProfiles>

@@ -74,18 +74,24 @@ protected:
 
 TEST_F(WingNACAProfile, naca0012_generateBreps)
 {
-    // read configuration
-        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-        // get profile curves of 1st airfoil
-        tigl::CCPACSWingProfile & profile = config.GetWingProfile("NACA0012");
+
+    const std::vector<std::string> nacaCodes = {
+         "NACA0009", "NACA0012", "NACA0015", "NACA0021", "NACA0023",  "NACA2215"
+    };
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    // get profile curves of 1st airfoil
+    for(const auto &code : nacaCodes){
+        tigl::CCPACSWingProfile & profile = config.GetWingProfile(code.c_str());
         TopoDS_Edge upperWire = profile.GetUpperWire();
         TopoDS_Edge lowerWire = profile.GetLowerWire();
         TopoDS_Edge trailingEdge = profile.GetTrailingEdge();
-        //auto wingShape = config.GetWing(1).GetLoft()->Shape();
-        BRepTools::Write(upperWire, "upperWire.brep");
-        BRepTools::Write(lowerWire, "lowerWire.brep");
-        BRepTools::Write(trailingEdge, "trailingEdge.brep");     
+        
+        std::string base = "brep_" + code;
+        BRepTools::Write(upperWire, (base + "_upperWire.brep").c_str());
+        BRepTools::Write(lowerWire, (base + "_lowerWire.brep").c_str());
+        BRepTools::Write(trailingEdge, (base +"_trailingEdge.brep").c_str());  
+    }   
 }
 
 TEST_F(WingNACAProfile, naca0012_generate_edges_upper){
