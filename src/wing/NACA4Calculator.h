@@ -60,7 +60,7 @@ class NACA4Calculator{
         TIGL_EXPORT double camberline(double x) const; 
 
         /**
-         * @brief Calculate the y coordinate for the upper curve
+         * @brief Evaluate the upper curve given a parameter x between 0 and 1.
          * 
          * @param x 
          * @return gp_Vec2d 
