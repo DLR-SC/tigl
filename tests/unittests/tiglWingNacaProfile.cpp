@@ -45,7 +45,7 @@ class WingNACAProfile : public ::testing::Test
 protected:
     void SetUp() override 
     {
-        const char* filename = "TestData/hilfe.cpacs.xml";
+        const char* filename = "TestData/naca_test.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -73,7 +73,7 @@ protected:
 
 /******************************************************************************/
 
-TEST_F(WingNACAProfile, createWing)
+TEST_F(WingNACAProfile, nacacreateWing)
 {
     // read configuration
         tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -87,4 +87,33 @@ TEST_F(WingNACAProfile, createWing)
         BRepTools::Write(upperWire, "upperWire.brep");
         BRepTools::Write(lowerWire, "lowerWire.brep");
         BRepTools::Write(trailingEdge, "trailingEdge.brep");     
+}
+
+TEST_F(WingNACAProfile, Nacacalculatortest23){
+
+        // read configuration
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+        Standard_Real u1, u2;
+
+        // get profile curves of airfoil
+        tigl::CCPACSWingProfile & profile = config.GetWingProfile("NACA0012");
+        TopoDS_Edge upperWire = profile.GetUpperWire();
+        EXPECT_TRUE(!upperWire.IsNull());
+        Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
+        ASSERT_TRUE(!upperCurve.IsNull());
+}
+
+TEST_F(WingNACAProfile, Nacacalculatortest24)
+{
+
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+
+      Standard_Real u1, u2;
+    tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA0012");
+    TopoDS_Edge upperWire = profile.GetUpperWire();
+        EXPECT_TRUE(!upperWire.IsNull());
+        Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
+        ASSERT_TRUE(!upperCurve.IsNull());
 }

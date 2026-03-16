@@ -47,9 +47,9 @@
 
 
 
-TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
+TEST(NACA4Calculator, naca2212_le_and_te_points){
     tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);
-    if(NACA4.profile_thickness(1) > 0){ //tests if yt > 0 is weil ich den nd im calculator machn darf
+    if(NACA4.profile_thickness(1) > 0){ 
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
@@ -67,8 +67,8 @@ TEST(NACA4Calculator, Nacacalculatortest1_coordinates){
     }
 }
 
-TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
-    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252); //davor wars 0.00126
+TEST(NACA4Calculator, naca2212_le_and_te_points_with_class_lowerCurve){
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252); 
     tigl::NACA4LowerCurve lowerCurve(NACA4);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.999937), 1e-6); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
@@ -81,7 +81,7 @@ TEST(NACA4Calculator, Nacacalculatortestnaca4lowercurve_coordinates){
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
+TEST(NACA4Calculator, naca0012_random_point){
     tigl::NACA4Calculator NACA4(0,0,12, 0.00252);
     if(NACA4.profile_thickness(0.5) > 0){
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
@@ -101,7 +101,7 @@ TEST(NACA4Calculator, Nacacalculatortest2_coordinates){
     }
 }
 
-TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
+TEST(NACA4Calculator, naca0009_random_point_and_le_point){
     tigl::NACA4Calculator NACA4(0,0,9, 0.00189);
     gp_Vec2d result1 = NACA4.upper_curve(0.2);
     EXPECT_NEAR(result1.X(), (0.2), 1e-5); 
@@ -117,7 +117,7 @@ TEST(NACA4Calculator, Nacacalculatortest3_coordinates){
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest4_coordinates){
+TEST(NACA4Calculator, Nnaca6509_le_and_te_points){
     tigl::NACA4Calculator NACA4(6,5,9, 0.00189);
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00022), 1e-5); 
@@ -133,7 +133,7 @@ TEST(NACA4Calculator, Nacacalculatortest4_coordinates){
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest5_thickness){ 
+TEST(NACA4Calculator, naca0012_max_profile_thickness){ 
     tigl::NACA4Calculator NACA4(0,0,12, 0.00126);
     double result1 = NACA4.profile_thickness(0.3); 
     double left_result = NACA4.profile_thickness(0.299); 
@@ -142,7 +142,7 @@ TEST(NACA4Calculator, Nacacalculatortest5_thickness){
     EXPECT_GT(result1, right_result);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest6_thickness){ 
+TEST(NACA4Calculator, naca0018_max_profile_thickness){ 
     tigl::NACA4Calculator NACA4(0,0,18, 0.00189);
     double result1 = NACA4.profile_thickness(0.3); 
     double left_result = NACA4.profile_thickness(0.299); 
@@ -152,7 +152,7 @@ TEST(NACA4Calculator, Nacacalculatortest6_thickness){
     EXPECT_NEAR(result1, 0.09, 1e-2); //TODO: Fact check this 1e-2
 }
 
-TEST(NACA4Calculator, Nacacalculatortest7_camberline){ 
+TEST(NACA4Calculator, naca2212_camberline_at_te_and_le){ 
     tigl::NACA4Calculator NACA4(2,2,12, 0.00126);
     double result1 = NACA4.camberline(0.0); 
     EXPECT_NEAR(result1, 0, 1e-14);
@@ -160,7 +160,7 @@ TEST(NACA4Calculator, Nacacalculatortest7_camberline){
     EXPECT_NEAR(result1, 0, 1e-14);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest8_camberline){ 
+TEST(NACA4Calculator, naca4509_camberline_at_te_and_le){ 
     tigl::NACA4Calculator NACA4(4,5,9, 0.000945);
     double result1 = NACA4.camberline(0.0); 
     EXPECT_NEAR(result1, 0, 1e-14);
@@ -168,7 +168,7 @@ TEST(NACA4Calculator, Nacacalculatortest8_camberline){
     EXPECT_NEAR(result1, 0, 1e-14);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest9_camberline){ 
+TEST(NACA4Calculator, naca0015_camberline_at_te_and_le){ 
     tigl::NACA4Calculator NACA4(0,0,15, 0.001575);
     double result1 = NACA4.camberline(0.0); 
     EXPECT_NEAR(result1, 0, 1e-14);
@@ -204,7 +204,7 @@ TEST(NACA4Calculator, Nacacalculatortest13_trailingedge){
 }
     */
 
-TEST(NACA4Calculator, Nacacalculatortest14){
+TEST(NACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     tigl::NACA4Calculator NACA4(2,2,12, 15);
     tigl::NACA4UpperCurve upperCurve(NACA4);
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
@@ -215,7 +215,7 @@ TEST(NACA4Calculator, Nacacalculatortest14){
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
 
-TEST(NACA4Calculator, Nacacalculatortest15){
+TEST(NACA4Calculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoord){
     tigl::NACA4Calculator NACA4(2,2,12, 15);
     tigl::NACA4LowerCurve lowerCurve(NACA4);
     
@@ -228,7 +228,7 @@ TEST(NACA4Calculator, Nacacalculatortest15){
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
 
-TEST(NACA4Calculator, Nacacalculatortest16)
+TEST(NACA4Calculator, naca2212_bspline_vs_lower_curve_coord)
 {
     tigl::NACA4Calculator NACA4(2,2,12, 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
@@ -240,7 +240,7 @@ TEST(NACA4Calculator, Nacacalculatortest16)
     ASSERT_NEAR(pnt2.Z(), pnt.Y(), 1e-4);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest17){
+TEST(NACA4Calculator, naca2212_export_bsplines){
     tigl::NACA4Calculator NACA4(2,2,12, .15);
     Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
     Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
@@ -255,7 +255,7 @@ TEST(NACA4Calculator, Nacacalculatortest17){
     BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest.brep");
 }
 
-TEST(NACA4Calculator, Nacacalculatortest18){
+TEST(NACA4Calculator, naca0012_export_bsplines){
     tigl::NACA4Calculator NACA4(0,0,12, .015);
     Handle(Geom_BSplineCurve) upperCurvesym = NACA4.upper_bspline(); 
     Handle(Geom_BSplineCurve) lowerCurvesym = NACA4.lower_bspline(); 
@@ -339,7 +339,7 @@ TEST(NACA4Calculator, Nacacalculatortest20_LePoint_TePoint){
 }
 
 
-TEST(NACA4Calculator, Nacacalculatortest21_trailingEdge_absent_when_zero_thickness){
+TEST(NACA4Calculator, naca0012_trailingEdge_absent_when_zero_thickness){
     tigl::CTiglUIDManager uidMgr;
     tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
     tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
@@ -405,51 +405,6 @@ TEST(NACA4Calculator, Nacacalculatortest22){
 }
 
 
-TEST(NACA4Calculator, Nacacalculatortest23){
-    const char* filename = "TestData/naca_test.cpacs.xml";
-        ReturnCode tixiRet;
-        TiglReturnCode tiglRet;
 
-        TixiDocumentHandle           tixiHandle;
-        TiglCPACSConfigurationHandle tiglHandle;
-
-        tiglHandle = -1;
-        tixiHandle = -1;
-        
-        tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE (tixiRet == SUCCESS);
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
-        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-
-        // read configuration
-        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-        Standard_Real u1, u2;
-
-        // get profile curves of airfoil
-        tigl::CCPACSWingProfile & profile = config.GetWingProfile("NACA0012");
-        TopoDS_Edge upperWire = profile.GetUpperWire();
-        EXPECT_TRUE(!upperWire.IsNull());
-        Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
-        ASSERT_TRUE(!upperCurve.IsNull());
-        //dumpshape dazufügen
-}
-
-TEST(NACA4Calculator, Nacacalculatortest24)
-{
-    TiglHandleWrapper tiglHandle("TestData/naca_test.cpacs.xml", "");
-
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-
-      Standard_Real u1, u2;
-    tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA0012");
-    TopoDS_Edge upperWire = profile.GetUpperWire();
-        EXPECT_TRUE(!upperWire.IsNull());
-        Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
-        ASSERT_TRUE(!upperCurve.IsNull());
-}
-
-//negative werte mögl?
 
 
