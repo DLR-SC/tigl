@@ -234,7 +234,6 @@ TEST(NACA4Calculator, Nacacalculatortest15){
 TEST(NACA4Calculator, Nacacalculatortest16)
 {
     tigl::NACA4Calculator NACA4(2,2,12, 15);
-    //tigl::NACA4LowerCurve lowerCurve(NACA4);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
     gp_Vec2d pnt = NACA4.lower_curve(0.5);
