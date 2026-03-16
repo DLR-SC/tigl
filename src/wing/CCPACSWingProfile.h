@@ -111,8 +111,6 @@ public:
     // Checks, whether the trailing edge is blunt or not
     TIGL_EXPORT bool HasBluntTE() const;
 
-    //std::unique_ptr<CTiglWingProfilePointList> buildPointListAlgo() const;
-
 protected:
     // Cleanup routine
     void Cleanup();
