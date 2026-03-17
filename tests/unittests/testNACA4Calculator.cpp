@@ -192,10 +192,13 @@ TEST(NACA4Calculator, naca03250_assertion_throw_normalization){
 TEST(NACA4Calculator, naca0015_trailingedge_length){
     tigl::NACA4Calculator NACA4(0,0,15, 0.12);
     gp_Vec2d result1 = NACA4.upper_curve(1);
-    double half_thickness1 = result1.Y();
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
     gp_Vec2d result2 = NACA4.lower_curve(1);
-    double half_thickness2 = -result2.Y();
-    double thickness = half_thickness1 + half_thickness2;
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
+
 
     EXPECT_NEAR(thickness, 0.12, 1e-14);
 }
@@ -203,10 +206,12 @@ TEST(NACA4Calculator, naca0015_trailingedge_length){
 TEST(NACA4Calculator, naca001515_trailingedge_length){
     tigl::NACA4Calculator NACA4(0,0,15, 0.15);
     gp_Vec2d result1 = NACA4.upper_curve(1);
-    double half_thickness1 = result1.Y();
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
     gp_Vec2d result2 = NACA4.lower_curve(1);
-    double half_thickness2 = -result2.Y();
-    double thickness = half_thickness1 + half_thickness2;
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
 
     EXPECT_NEAR(thickness, 0.15, 1e-14);
 }
@@ -214,23 +219,29 @@ TEST(NACA4Calculator, naca001515_trailingedge_length){
 TEST(NACA4Calculator, naca2215_trailingedge_length){
     tigl::NACA4Calculator NACA4(2,2,15, 0.20);
     gp_Vec2d result1 = NACA4.upper_curve(1);
-    double half_thickness1 = result1.Y();
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
     gp_Vec2d result2 = NACA4.lower_curve(1);
-    double half_thickness2 = -result2.Y();
-    double thickness = half_thickness1 + half_thickness2;
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
 
-    EXPECT_NEAR(thickness, 0.20, 1e-3);
+
+    EXPECT_NEAR(thickness, 0.20, 1e-14);
 }
 
 TEST(NACA4Calculator, naca6415_trailingedge_length){
     tigl::NACA4Calculator NACA4(6,4,15, 0.13);
     gp_Vec2d result1 = NACA4.upper_curve(1);
-    double half_thickness1 = result1.Y();
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
     gp_Vec2d result2 = NACA4.lower_curve(1);
-    double half_thickness2 = -result2.Y();
-    double thickness = half_thickness1 + half_thickness2;
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
 
-    EXPECT_NEAR(thickness, 0.13, 1e-2);
+
+    EXPECT_NEAR(thickness, 0.13, 1e-14);
 }
 
 TEST(NACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
