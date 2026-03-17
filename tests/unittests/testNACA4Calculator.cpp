@@ -44,9 +44,6 @@
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
 
-
-
-
 TEST(NACA4Calculator, naca2212_le_and_te_points){
     tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);
     if(NACA4.profile_thickness(1) > 0){ 
@@ -176,6 +173,20 @@ TEST(NACA4Calculator, naca0015_camberline_at_te_and_le){
     EXPECT_NEAR(result1, 0, 1e-14);
 }   
 
+TEST(NACA4Calculator, naca15030105_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(150,30,105, 0.001575), std::logic_error);
+}
+
+TEST(NACA4Calculator, naca03010_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,30,10, 0.001575), std::logic_error);
+}
+
+TEST(NACA4Calculator, naca03250_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,3,250, 0.001575), std::logic_error);
+}
 
 /*
 TEST(NACA4Calculator, Nacacalculatortest10_trailingedge){
@@ -338,7 +349,6 @@ TEST(NACA4Calculator, naca0012_LePoint_TePoint){
 
 }
 
-
 TEST(NACA4Calculator, naca0012_trailingEdge_absent_when_zero_thickness){
     tigl::CTiglUIDManager uidMgr;
     tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
@@ -403,8 +413,3 @@ TEST(NACA4Calculator, naca2412_edge_counter){
         EXPECT_EQ(edgeCount, 3);
     }
 }
-
-
-
-
-
