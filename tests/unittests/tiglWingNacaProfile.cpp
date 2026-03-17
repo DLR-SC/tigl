@@ -76,7 +76,7 @@ TEST_F(WingNACAProfile, naca0012_generateBreps)
 {
 
     const std::vector<std::string> nacaCodes = {
-         "NACA0009", "NACA0012", "NACA0015", "NACA0021", "NACA0023",  "NACA2215"
+         "NACA0009", "NACA0012", "NACA0015", "NACA0021", "NACA0023",  "NACA2215", "NACA6418", "NACA4521", "NACA6712", "NACA4309", "NACA2509", "NACA6306", "NACA2212"
     };
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);

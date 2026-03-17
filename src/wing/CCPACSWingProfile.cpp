@@ -109,8 +109,6 @@ CCPACSWingProfile::CCPACSWingProfile(CCPACSWingProfiles* parent, CTiglUIDManager
 {
 }
 
-
-
 CCPACSWingProfile::CCPACSWingProfile(CCPACSRotorProfiles* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSProfileGeometry(parent, uidMgr)
     , isRotorProfile(false)

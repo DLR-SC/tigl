@@ -123,14 +123,10 @@ namespace tigl{
     // Builds the wing profile wires.
     void BuildWires(WireCache& cache) const;
 
-
-
     private:
        std::string profileUID;
        NACA4Calculator calculator;
        double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
-
-
     };
 }

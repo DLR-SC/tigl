@@ -552,6 +552,55 @@
                 <naca4DigitCode>2215</naca4DigitCode>
             </nacaProfile>
          </wingAirfoil>  
+         <wingAirfoil uID="NACA6418">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>6418</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA4521">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>4521</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA6712">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>6712</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil> 
+         <wingAirfoil uID="NACA4309">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>4309</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>
+         <wingAirfoil uID="NACA2509">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>2509</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>
+         <wingAirfoil uID="NACA6306">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>6306</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>
+         <wingAirfoil uID="NACA2212">
+          <name>NACA0.00.00.12</name>
+          <description>NACA 4 Series Profile</description> 
+            <nacaProfile>
+                <naca4DigitCode>2212</naca4DigitCode>
+            </nacaProfile>
+         </wingAirfoil>
       </wingAirfoils>
       <fuselageProfiles>
         <fuselageProfile uID="fuselageCircleProfileuID">

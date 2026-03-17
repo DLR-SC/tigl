@@ -188,32 +188,50 @@ TEST(NACA4Calculator, naca03250_assertion_throw_normalization){
     EXPECT_THROW(tigl::NACA4Calculator NACA4(0,3,250, 0.001575), std::logic_error);
 }
 
-/*
-TEST(NACA4Calculator, Nacacalculatortest10_trailingedge){
-    tigl::NACA4Calculator NACA4(0,0,15, 9e-05);
-    double result1 = NACA4.trailing_edge_thickness_function(9e-05);
-    EXPECT_NEAR(result1, 0.10348, 1e-14);
+
+TEST(NACA4Calculator, naca0015_trailingedge_length){
+    tigl::NACA4Calculator NACA4(0,0,15, 0.12);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1 = result1.Y();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2 = -result2.Y();
+    double thickness = half_thickness1 + half_thickness2;
+
+    EXPECT_NEAR(thickness, 0.12, 1e-14);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest11_trailingedge_thickness){
-    tigl::NACA4Calculator NACA4(6,4,21, 0.000945);
-    double result1 = NACA4.trailing_edge_thickness_function(0.000945);
-    EXPECT_NEAR(result1, 0.1027, 1e-14);
+TEST(NACA4Calculator, naca001515_trailingedge_length){
+    tigl::NACA4Calculator NACA4(0,0,15, 0.15);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1 = result1.Y();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2 = -result2.Y();
+    double thickness = half_thickness1 + half_thickness2;
+
+    EXPECT_NEAR(thickness, 0.15, 1e-14);
 }
 
-TEST(NACA4Calculator, Nacacalculatortest12_trailingedge){
-    tigl::NACA4Calculator NACA4(0,0,15, 5);
-    double result1 = NACA4.trailing_edge_thickness_function(5);
-    EXPECT_NEAR(result1, -6.5630666666666668, 1e-14);
+TEST(NACA4Calculator, naca2215_trailingedge_length){
+    tigl::NACA4Calculator NACA4(2,2,15, 0.20);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1 = result1.Y();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2 = -result2.Y();
+    double thickness = half_thickness1 + half_thickness2;
+
+    EXPECT_NEAR(thickness, 0.20, 1e-3);
 }
 
+TEST(NACA4Calculator, naca6415_trailingedge_length){
+    tigl::NACA4Calculator NACA4(6,4,15, 0.13);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1 = result1.Y();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2 = -result2.Y();
+    double thickness = half_thickness1 + half_thickness2;
 
-TEST(NACA4Calculator, Nacacalculatortest13_trailingedge){
-    tigl::NACA4Calculator NACA4(2,2,12, 15);
-    double result1 = NACA4.trailing_edge_thickness_function(15);
-    EXPECT_NEAR(result1, -24.8964, 1e-14);
+    EXPECT_NEAR(thickness, 0.13, 1e-2);
 }
-    */
 
 TEST(NACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     tigl::NACA4Calculator NACA4(2,2,12, 15);
