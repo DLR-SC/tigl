@@ -16,11 +16,6 @@
 * limitations under the License.
 */
 
-/**
-* @file
-* @brief  Implementation of CPACS wing handling routines.
-*/
-
 #include <iostream>
 #include <algorithm>
 
