@@ -270,7 +270,7 @@ TEST(NACA4Calculator, naca0012_export_bsplines){
     BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest_symetric.brep");
 }
 
-TEST(NACA4Calculator, Nacacalculatortest19_LePoint_TePoint){
+TEST(NACA4Calculator, naca2412_LePoint_TePoint){
 
     // Create a UID manager and use it for the profile. Parent container is not needed for this unit test.
     tigl::CTiglUIDManager uidMgr;
@@ -304,7 +304,7 @@ TEST(NACA4Calculator, Nacacalculatortest19_LePoint_TePoint){
 
 }
 
-TEST(NACA4Calculator, Nacacalculatortest20_LePoint_TePoint){
+TEST(NACA4Calculator, naca0012_LePoint_TePoint){
 
     // Create a UID manager and use it for the profile. Parent container is not needed for this unit test.
     tigl::CTiglUIDManager uidMgr;
@@ -353,7 +353,7 @@ TEST(NACA4Calculator, naca0012_trailingEdge_absent_when_zero_thickness){
     EXPECT_TRUE(te.IsNull());
 }
 
-TEST(NACA4Calculator, Nacacalculatortest22){
+TEST(NACA4Calculator, naca2412_edge_counter){
 
     tigl::CTiglUIDManager uidMgr;
     tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
