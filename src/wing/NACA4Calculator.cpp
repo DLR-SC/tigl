@@ -33,7 +33,15 @@ namespace tigl{
          , max_profile_thickness(max_profile_thickness/100)
          , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
-
+            if(this->max_camber > 1 || this->max_camber < 0){
+                throw ::std::logic_error("error in NACA4Calculator max_camber after normalization must be between 0 and 1.");
+            }
+            if(this->max_camber_position > 1 || this->max_camber_position < 0){
+                throw ::std::logic_error("error in NACA4Calculator max_camber_position after normalization must be between 0 and 1.");
+            }
+            if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
+                throw ::std::logic_error("error in NACA4Calculator max_profile_thickness after normalization must be between 0 and 1.");
+            }
         }
 
         NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
@@ -126,8 +134,8 @@ namespace tigl{
                 return gp_Vec2d{0,1};
             }
             return normal/nrm;
-        }
 
+        }
 
         Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{
 
