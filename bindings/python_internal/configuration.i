@@ -178,7 +178,7 @@
 %boost_optional(tigl::CCPACSRectangleProfile)
 %boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
-%boost_optional(tigl::generated::CPACSNacaProfile)
+%boost_optional(tigl::CPACSNacaProfile)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
 %boost_optional(tigl::generated::CPACSRotorHub)
