@@ -78,14 +78,12 @@ static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, co
 static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
 {
     return GetGeomFromTypes<
-        generated::CPACSSysElemBattery, generated::CPACSSysElemCable, generated::CPACSSysElemCompressor,
-        generated::CPACSSysElemConverter, generated::CPACSSysElemDCDCConverter, generated::CPACSSysElemElectricMachine,
-        generated::CPACSSysElemElectricMotor, generated::CPACSSysElemFuelCell, generated::CPACSSysElemGearBox,
-        generated::CPACSSysElemGenerator, generated::CPACSSysElemHeatExchanger, generated::CPACSSysElemInverter,
-        generated::CPACSSysElemPowerDistributionUnit, generated::CPACSSysElemPowerElectronic,
-        generated::CPACSSysElemPump, generated::CPACSSysElemRectifier, generated::CPACSSysElemReservoir,
-        generated::CPACSSysElemSwitchgear, generated::CPACSSysElemTurboGenerator, generated::CPACSVehicleElementBase>(
-        uidMgr, uid);
+        CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
+        CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
+        CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
+        CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
+        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
+                                                                                                                uid);
 }
 
 template <typename T>
@@ -109,14 +107,12 @@ static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTi
 static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
 {
     return GetMassDescriptionFromTypes<
-        generated::CPACSSysElemBattery, generated::CPACSSysElemCable, generated::CPACSSysElemCompressor,
-        generated::CPACSSysElemConverter, generated::CPACSSysElemDCDCConverter, generated::CPACSSysElemElectricMachine,
-        generated::CPACSSysElemElectricMotor, generated::CPACSSysElemFuelCell, generated::CPACSSysElemGearBox,
-        generated::CPACSSysElemGenerator, generated::CPACSSysElemHeatExchanger, generated::CPACSSysElemInverter,
-        generated::CPACSSysElemPowerDistributionUnit, generated::CPACSSysElemPowerElectronic,
-        generated::CPACSSysElemPump, generated::CPACSSysElemRectifier, generated::CPACSSysElemReservoir,
-        generated::CPACSSysElemSwitchgear, generated::CPACSSysElemTurboGenerator, generated::CPACSVehicleElementBase>(
-        uidMgr, uid);
+        CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
+        CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
+        CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
+        CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
+        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
+                                                                                                                uid);
 }
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
@@ -247,7 +243,7 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;
-    cache.cogLocal     = result.cogLocal; //ToDo: is it really local?
+    cache.cogLocal     = result.cogLocal;
     cache.inertiaLocal = result.inertiaLocal;
 }
 

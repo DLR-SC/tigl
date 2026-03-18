@@ -15,13 +15,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-/**
-* @file
-* @brief  Implementation of CPACS wing handling routines.
-*/
 
-#ifndef CCPACSGENERICSYSTEM_H
-#define CCPACSGENERICSYSTEM_H
+#pragma once
 
 #include "generated/CPACSGenericSystem.h"
 #include "CTiglRelativelyPositionedComponent.h"
@@ -43,13 +38,17 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override {return TIGL_COMPONENT_GENERICSYSTEM;}
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override {return TIGL_INTENT_PHYSICAL;}
-
-    // Evaluate system mass properties
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
+    {
+        return TIGL_COMPONENT_GENERICSYSTEM;
+    }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
+    {
+        return TIGL_INTENT_PHYSICAL;
+    }
 
     /**
      * @brief Returns the total mass of all components in the system.
@@ -103,5 +102,3 @@ private:
 };
 
 } // end namespace tigl
-
-#endif // CCPACSGENERICSYSTEM_H
