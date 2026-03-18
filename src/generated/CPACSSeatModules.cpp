@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDeck.h"
 #include "CPACSDeckComponent2DBase.h"
 #include "CPACSSeatModules.h"
-#include "CPACSStructuralElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSeatModules::CPACSSeatModules(CPACSStructuralElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSeatModules::CPACSSeatModules(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,30 +40,24 @@ namespace generated
     {
     }
 
-    const CPACSStructuralElements* CPACSSeatModules::GetParent() const
+    const CCPACSDeck* CPACSSeatModules::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSStructuralElements* CPACSSeatModules::GetParent()
+    CCPACSDeck* CPACSSeatModules::GetParent()
     {
         return m_parent;
     }
 
     const CTiglUIDObject* CPACSSeatModules::GetNextUIDParent() const
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDObject* CPACSSeatModules::GetNextUIDParent()
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSSeatModules::GetUIDManager()

@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
 #include "CPACSGenericFloorElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSGenericFloorElements::GetGenericFloorElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSGenericFloorElements::GetGenericFloorElements() const
     {
         return m_genericFloorElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSGenericFloorElements::GetGenericFloorElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSGenericFloorElements::GetGenericFloorElements()
     {
         return m_genericFloorElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSGenericFloorElements::GetGenericFloorElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index)
+    CPACSVehicleElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index)
     {
         if (index < 1 || index > GetGenericFloorElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_genericFloorElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSGenericFloorElements::GetGenericFloorElement(size_t index) const
     {
         if (index < 1 || index > GetGenericFloorElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenericFloorElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_genericFloorElements[index];
     }
 
-    CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID)
     {
         for (auto& elem : m_genericFloorElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSGenericFloorElements::GetGenericFloorElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSGenericFloorElements::GetGenericFloorElement(const std::string& UID) const
     {
         for (auto& elem : m_genericFloorElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSGenericFloorElements::AddGenericFloorElement()
+    CPACSVehicleElementBase& CPACSGenericFloorElements::AddGenericFloorElement()
     {
-        m_genericFloorElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_genericFloorElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_genericFloorElements.back();
     }
 
-    void CPACSGenericFloorElements::RemoveGenericFloorElement(CPACSDeckElementBase& ref)
+    void CPACSGenericFloorElements::RemoveGenericFloorElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_genericFloorElements.size(); i++) {
             if (m_genericFloorElements[i].get() == &ref) {

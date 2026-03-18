@@ -16,6 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDeck.h"
+#include "CCPACSDeckComponentBase.h"
 #include "CCPACSDuct.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSEnginePosition.h"
@@ -34,7 +36,6 @@
 #include "CCPACSWingSectionElement.h"
 #include "CPACSElementGeometry.h"
 #include "CPACSExternalGeometry.h"
-#include "CPACSGenericGeometryComponent.h"
 #include "CPACSLandingGearBase.h"
 #include "CPACSTransformation.h"
 #include "CTiglError.h"
@@ -46,6 +47,22 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSTransformation::CPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDeck);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDeckComponentBase);
+    }
+
     CPACSTransformation::CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -134,14 +151,6 @@ namespace generated
         m_parentType = &typeid(CCPACSExternalObject);
     }
 
-    CPACSTransformation::CPACSTransformation(CPACSGenericGeometryComponent* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSGenericGeometryComponent);
-    }
-
     CPACSTransformation::CPACSTransformation(CPACSLandingGearBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -214,6 +223,12 @@ namespace generated
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSDeck>()) {
+                return GetParent<CCPACSDeck>();
+            }
+            if (IsParent<CCPACSDeckComponentBase>()) {
+                return GetParent<CCPACSDeckComponentBase>();
+            }
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();
             }
@@ -246,9 +261,6 @@ namespace generated
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
-            }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
             }
             if (IsParent<CPACSLandingGearBase>()) {
                 return GetParent<CPACSLandingGearBase>();
@@ -281,6 +293,12 @@ namespace generated
     CTiglUIDObject* CPACSTransformation::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSDeck>()) {
+                return GetParent<CCPACSDeck>();
+            }
+            if (IsParent<CCPACSDeckComponentBase>()) {
+                return GetParent<CCPACSDeckComponentBase>();
+            }
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();
             }
@@ -313,9 +331,6 @@ namespace generated
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
-            }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
             }
             if (IsParent<CPACSLandingGearBase>()) {
                 return GetParent<CPACSLandingGearBase>();

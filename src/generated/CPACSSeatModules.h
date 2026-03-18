@@ -27,14 +27,14 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeck;
 
 namespace generated
 {
     class CPACSDeckComponent2DBase;
-    class CPACSStructuralElements;
 
     // This class is used in:
-    // CPACSStructuralElements
+    // CPACSDeck
 
     /// @brief Seat modules
     /// 
@@ -43,13 +43,13 @@ namespace generated
     class CPACSSeatModules
     {
     public:
-        TIGL_EXPORT CPACSSeatModules(CPACSStructuralElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSeatModules(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSeatModules();
 
-        TIGL_EXPORT CPACSStructuralElements* GetParent();
+        TIGL_EXPORT CCPACSDeck* GetParent();
 
-        TIGL_EXPORT const CPACSStructuralElements* GetParent() const;
+        TIGL_EXPORT const CCPACSDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -76,7 +76,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSeatModule(CPACSDeckComponent2DBase& ref);
 
     protected:
-        CPACSStructuralElements* m_parent;
+        CCPACSDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -95,5 +95,4 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSSeatModules = generated::CPACSSeatModules;
 using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
-using CCPACSStructuralElements = generated::CPACSStructuralElements;
 } // namespace tigl

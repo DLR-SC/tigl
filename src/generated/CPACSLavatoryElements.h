@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLavatoryElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLavatoryElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetLavatoryElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetLavatoryElements();
 
         TIGL_EXPORT virtual size_t GetLavatoryElementCount() const;
         TIGL_EXPORT virtual size_t GetLavatoryElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLavatoryElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetLavatoryElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetLavatoryElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetLavatoryElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLavatoryElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetLavatoryElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetLavatoryElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetLavatoryElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddLavatoryElement();
-        TIGL_EXPORT virtual void RemoveLavatoryElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddLavatoryElement();
+        TIGL_EXPORT virtual void RemoveLavatoryElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Lavatory element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_lavatoryElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_lavatoryElements;
 
     private:
         CPACSLavatoryElements(const CPACSLavatoryElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSLavatoryElements = generated::CPACSLavatoryElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

@@ -16,6 +16,13 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CPACSCargoContainerElements.h"
+#include "CPACSCeilingPanelElements.h"
+#include "CPACSClassDividerElements.h"
+#include "CPACSGenericFloorElements.h"
+#include "CPACSLavatoryElements.h"
+#include "CPACSLuggageCompartmentElements.h"
+#include "CPACSSidewallPanelElements.h"
 #include "CPACSSysElemGenericComponents.h"
 #include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
@@ -27,12 +34,76 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSCargoContainerElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCargoContainerElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSCeilingPanelElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCeilingPanelElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSClassDividerElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSClassDividerElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSGenericFloorElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGenericFloorElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSLavatoryElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLavatoryElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSLuggageCompartmentElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLuggageCompartmentElements);
+    }
+
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSSidewallPanelElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSidewallPanelElements);
+    }
+
     CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSSysElemGenericComponents* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_geometry(this, m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemGenericComponents);
     }
 
     CPACSVehicleElementBase::~CPACSVehicleElementBase()
@@ -40,20 +111,33 @@ namespace generated
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSSysElemGenericComponents* CPACSVehicleElementBase::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSSysElemGenericComponents* CPACSVehicleElementBase::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSVehicleElementBase::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSCargoContainerElements>()) {
+                return GetParent<CPACSCargoContainerElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCeilingPanelElements>()) {
+                return GetParent<CPACSCeilingPanelElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSClassDividerElements>()) {
+                return GetParent<CPACSClassDividerElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorElements>()) {
+                return GetParent<CPACSGenericFloorElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatoryElements>()) {
+                return GetParent<CPACSLavatoryElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLuggageCompartmentElements>()) {
+                return GetParent<CPACSLuggageCompartmentElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSidewallPanelElements>()) {
+                return GetParent<CPACSSidewallPanelElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemGenericComponents>()) {
+                return GetParent<CPACSSysElemGenericComponents>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +145,30 @@ namespace generated
     CTiglUIDObject* CPACSVehicleElementBase::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSCargoContainerElements>()) {
+                return GetParent<CPACSCargoContainerElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSCeilingPanelElements>()) {
+                return GetParent<CPACSCeilingPanelElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSClassDividerElements>()) {
+                return GetParent<CPACSClassDividerElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorElements>()) {
+                return GetParent<CPACSGenericFloorElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatoryElements>()) {
+                return GetParent<CPACSLavatoryElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLuggageCompartmentElements>()) {
+                return GetParent<CPACSLuggageCompartmentElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSidewallPanelElements>()) {
+                return GetParent<CPACSSidewallPanelElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemGenericComponents>()) {
+                return GetParent<CPACSSysElemGenericComponents>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

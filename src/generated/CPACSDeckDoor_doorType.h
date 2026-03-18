@@ -28,31 +28,37 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSCargoContainerElement
+    // CPACSDeckDoor
 
-    enum CPACSCargoContainerElement_contour
+    enum CPACSDeckDoor_doorType
     {
-        single,
-        _double
+        boarding,
+        CPACSDeckDoor_doorType_cargo,
+        evacuation,
+        CPACSDeckDoor_doorType_service
     };
 
-    inline std::string CPACSCargoContainerElement_contourToString(const CPACSCargoContainerElement_contour& value)
+    inline std::string CPACSDeckDoor_doorTypeToString(const CPACSDeckDoor_doorType& value)
     {
         switch(value) {
-        case single: return "single";
-        case _double: return "double";
-        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSCargoContainerElement_contour");
+        case boarding: return "boarding";
+        case CPACSDeckDoor_doorType_cargo: return "cargo";
+        case evacuation: return "evacuation";
+        case CPACSDeckDoor_doorType_service: return "service";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSDeckDoor_doorType");
         }
     }
-    inline CPACSCargoContainerElement_contour stringToCPACSCargoContainerElement_contour(const std::string& value)
+    inline CPACSDeckDoor_doorType stringToCPACSDeckDoor_doorType(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "single") { return single; }
-        if (toLower(value) == "double") { return _double; }
-        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSCargoContainerElement_contour");
+        if (toLower(value) == "boarding") { return boarding; }
+        if (toLower(value) == "cargo") { return CPACSDeckDoor_doorType_cargo; }
+        if (toLower(value) == "evacuation") { return evacuation; }
+        if (toLower(value) == "service") { return CPACSDeckDoor_doorType_service; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSDeckDoor_doorType");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-using ECPACSCargoContainerElement_contour = generated::CPACSCargoContainerElement_contour;
+using ECPACSDeckDoor_doorType = generated::CPACSDeckDoor_doorType;
 } // namespace tigl

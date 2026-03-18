@@ -21,9 +21,11 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSElementGeometry.h"
 #include "CPACSElementMass.h"
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -33,9 +35,23 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSCargoContainerElements;
+    class CPACSCeilingPanelElements;
+    class CPACSClassDividerElements;
+    class CPACSGenericFloorElements;
+    class CPACSLavatoryElements;
+    class CPACSLuggageCompartmentElements;
+    class CPACSSidewallPanelElements;
     class CPACSSysElemGenericComponents;
 
     // This class is used in:
+    // CPACSCargoContainerElements
+    // CPACSCeilingPanelElements
+    // CPACSClassDividerElements
+    // CPACSGenericFloorElements
+    // CPACSLavatoryElements
+    // CPACSLuggageCompartmentElements
+    // CPACSSidewallPanelElements
     // CPACSSysElemGenericComponents
 
     /// @brief System element
@@ -44,13 +60,42 @@ namespace generated
     class CPACSVehicleElementBase : public CTiglReqUIDObject
     {
     public:
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSCargoContainerElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSCeilingPanelElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSClassDividerElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSGenericFloorElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSLavatoryElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSLuggageCompartmentElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSidewallPanelElements* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericComponents* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSVehicleElementBase();
 
-        TIGL_EXPORT CPACSSysElemGenericComponents* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CPACSSysElemGenericComponents* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemGenericComponents>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemGenericComponents>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -80,7 +125,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveMass();
 
     protected:
-        CPACSSysElemGenericComponents* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -107,5 +153,12 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSCargoContainerElements = generated::CPACSCargoContainerElements;
+using CCPACSCeilingPanelElements = generated::CPACSCeilingPanelElements;
+using CCPACSClassDividerElements = generated::CPACSClassDividerElements;
+using CCPACSGenericFloorElements = generated::CPACSGenericFloorElements;
+using CCPACSLavatoryElements = generated::CPACSLavatoryElements;
+using CCPACSLuggageCompartmentElements = generated::CPACSLuggageCompartmentElements;
+using CCPACSSidewallPanelElements = generated::CPACSSidewallPanelElements;
 using CCPACSSysElemGenericComponents = generated::CPACSSysElemGenericComponents;
 } // namespace tigl

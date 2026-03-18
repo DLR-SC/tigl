@@ -51,6 +51,9 @@ CPACSFuselageSections              CCPACSFuselageSections
 CPACSFuselageElement               CCPACSFuselageSectionElement
 CPACSFuselageElements              CCPACSFuselageSectionElements
 
+CPACSDeck                          CCPACSDeck
+CPACSDeckComponentBase             CCPACSDeckComponentBase
+
 CPACSComponentSegment              CCPACSWingComponentSegment
 CPACSComponentSegments             CCPACSWingComponentSegments
 CPACSWing                          CCPACSWing

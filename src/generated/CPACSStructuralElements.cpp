@@ -160,17 +160,6 @@ namespace generated
             }
         }
 
-        // read element seatModules
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/seatModules")) {
-            m_seatModules = boost::in_place(this, m_uidMgr);
-            try {
-                m_seatModules->ReadCPACS(tixiHandle, xpath + "/seatModules");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read seatModules at xpath " << xpath << ": " << e.what();
-                m_seatModules = boost::none;
-            }
-        }
-
         // read element rivets
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rivets")) {
             m_rivets = boost::in_place(this, m_uidMgr);
@@ -263,17 +252,6 @@ namespace generated
             }
         }
 
-        // write element seatModules
-        if (m_seatModules) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/seatModules");
-            m_seatModules->WriteCPACS(tixiHandle, xpath + "/seatModules");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/seatModules")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/seatModules");
-            }
-        }
-
         // write element rivets
         if (m_rivets) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/rivets");
@@ -355,16 +333,6 @@ namespace generated
     boost::optional<CPACSDoorSurroundStructuresAssembly>& CPACSStructuralElements::GetDoorSurroundStructures()
     {
         return m_doorSurroundStructures;
-    }
-
-    const boost::optional<CPACSSeatModules>& CPACSStructuralElements::GetSeatModules() const
-    {
-        return m_seatModules;
-    }
-
-    boost::optional<CPACSSeatModules>& CPACSStructuralElements::GetSeatModules()
-    {
-        return m_seatModules;
     }
 
     const boost::optional<CPACSRivets>& CPACSStructuralElements::GetRivets() const
@@ -459,18 +427,6 @@ namespace generated
     void CPACSStructuralElements::RemoveDoorSurroundStructures()
     {
         m_doorSurroundStructures = boost::none;
-    }
-
-    CPACSSeatModules& CPACSStructuralElements::GetSeatModules(CreateIfNotExistsTag)
-    {
-        if (!m_seatModules)
-            m_seatModules = boost::in_place(this, m_uidMgr);
-        return *m_seatModules;
-    }
-
-    void CPACSStructuralElements::RemoveSeatModules()
-    {
-        m_seatModules = boost::none;
     }
 
     CPACSRivets& CPACSStructuralElements::GetRivets(CreateIfNotExistsTag)

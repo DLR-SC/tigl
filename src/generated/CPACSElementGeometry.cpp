@@ -17,6 +17,8 @@
 
 #include <cassert>
 #include "CPACSElementGeometry.h"
+#include "CPACSGalleyElement.h"
+#include "CPACSSeatElement.h"
 #include "CPACSSysElemBattery.h"
 #include "CPACSSysElemCable.h"
 #include "CPACSSysElemCompressor.h"
@@ -47,6 +49,22 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSElementGeometry::CPACSElementGeometry(CPACSGalleyElement* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGalleyElement);
+    }
+
+    CPACSElementGeometry::CPACSElementGeometry(CPACSSeatElement* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSeatElement);
+    }
+
     CPACSElementGeometry::CPACSElementGeometry(CPACSSysElemBattery* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -214,6 +232,12 @@ namespace generated
     const CTiglUIDObject* CPACSElementGeometry::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSGalleyElement>()) {
+                return GetParent<CPACSGalleyElement>();
+            }
+            if (IsParent<CPACSSeatElement>()) {
+                return GetParent<CPACSSeatElement>();
+            }
             if (IsParent<CPACSSysElemBattery>()) {
                 return GetParent<CPACSSysElemBattery>();
             }
@@ -281,6 +305,12 @@ namespace generated
     CTiglUIDObject* CPACSElementGeometry::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSGalleyElement>()) {
+                return GetParent<CPACSGalleyElement>();
+            }
+            if (IsParent<CPACSSeatElement>()) {
+                return GetParent<CPACSSeatElement>();
+            }
             if (IsParent<CPACSSysElemBattery>()) {
                 return GetParent<CPACSSysElemBattery>();
             }

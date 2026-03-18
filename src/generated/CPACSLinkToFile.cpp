@@ -18,7 +18,6 @@
 #include <cassert>
 #include "CCPACSExternalObject.h"
 #include "CPACSExternalGeometry.h"
-#include "CPACSGenericGeometryComponent.h"
 #include "CPACSLinkToFile.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -43,13 +42,6 @@ namespace generated
         m_parentType = &typeid(CCPACSExternalObject);
     }
 
-    CPACSLinkToFile::CPACSLinkToFile(CPACSGenericGeometryComponent* parent)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSGenericGeometryComponent);
-    }
-
     CPACSLinkToFile::~CPACSLinkToFile()
     {
     }
@@ -63,9 +55,6 @@ namespace generated
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
             }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
-            }
         }
         return nullptr;
     }
@@ -78,9 +67,6 @@ namespace generated
             }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
-            }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
             }
         }
         return nullptr;

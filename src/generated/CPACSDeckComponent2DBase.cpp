@@ -16,7 +16,11 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CPACSClassDividers.h"
 #include "CPACSDeckComponent2DBase.h"
+#include "CPACSGalleys.h"
+#include "CPACSGenericFloorModules.h"
+#include "CPACSLavatories.h"
 #include "CPACSSeatModules.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,11 +31,44 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSDeckComponent2DBase::CPACSDeckComponent2DBase(CPACSClassDividers* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSClassDividers);
+    }
+
+    CPACSDeckComponent2DBase::CPACSDeckComponent2DBase(CPACSGalleys* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGalleys);
+    }
+
+    CPACSDeckComponent2DBase::CPACSDeckComponent2DBase(CPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGenericFloorModules);
+    }
+
+    CPACSDeckComponent2DBase::CPACSDeckComponent2DBase(CPACSLavatories* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLavatories);
+    }
+
     CPACSDeckComponent2DBase::CPACSDeckComponent2DBase(CPACSSeatModules* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSSeatModules);
     }
 
     CPACSDeckComponent2DBase::~CPACSDeckComponent2DBase()
@@ -42,20 +79,24 @@ namespace generated
         }
     }
 
-    const CPACSSeatModules* CPACSDeckComponent2DBase::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSSeatModules* CPACSDeckComponent2DBase::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSDeckComponent2DBase::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSClassDividers>()) {
+                return GetParent<CPACSClassDividers>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGalleys>()) {
+                return GetParent<CPACSGalleys>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorModules>()) {
+                return GetParent<CPACSGenericFloorModules>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatories>()) {
+                return GetParent<CPACSLavatories>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModules>()) {
+                return GetParent<CPACSSeatModules>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -63,7 +104,21 @@ namespace generated
     CTiglUIDObject* CPACSDeckComponent2DBase::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSClassDividers>()) {
+                return GetParent<CPACSClassDividers>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGalleys>()) {
+                return GetParent<CPACSGalleys>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorModules>()) {
+                return GetParent<CPACSGenericFloorModules>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatories>()) {
+                return GetParent<CPACSLavatories>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModules>()) {
+                return GetParent<CPACSSeatModules>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

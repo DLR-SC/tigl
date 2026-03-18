@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
 #include "CPACSSidewallPanelElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSSidewallPanelElements::GetSidewallPanelElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSidewallPanelElements::GetSidewallPanelElements() const
     {
         return m_sidewallPanelElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSSidewallPanelElements::GetSidewallPanelElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSidewallPanelElements::GetSidewallPanelElements()
     {
         return m_sidewallPanelElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index)
+    CPACSVehicleElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index)
     {
         if (index < 1 || index > GetSidewallPanelElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_sidewallPanelElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(size_t index) const
     {
         if (index < 1 || index > GetSidewallPanelElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetSidewallPanelElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_sidewallPanelElements[index];
     }
 
-    CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID)
     {
         for (auto& elem : m_sidewallPanelElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSidewallPanelElements::GetSidewallPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSidewallPanelElements::GetSidewallPanelElement(const std::string& UID) const
     {
         for (auto& elem : m_sidewallPanelElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSSidewallPanelElements::AddSidewallPanelElement()
+    CPACSVehicleElementBase& CPACSSidewallPanelElements::AddSidewallPanelElement()
     {
-        m_sidewallPanelElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_sidewallPanelElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_sidewallPanelElements.back();
     }
 
-    void CPACSSidewallPanelElements::RemoveSidewallPanelElement(CPACSDeckElementBase& ref)
+    void CPACSSidewallPanelElements::RemoveSidewallPanelElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_sidewallPanelElements.size(); i++) {
             if (m_sidewallPanelElements[i].get() == &ref) {

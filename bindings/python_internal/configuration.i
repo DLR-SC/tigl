@@ -153,6 +153,8 @@
 #include "generated/CPACSSourceTarget.h"
 #include "generated/CPACSSourceTarget_externalElement.h"
 #include "generated/CPACSAtaChapterList.h"
+#include "CCPACSDeck.h"
+#include "generated/CPACSDecks.h"
 %}
 
 %feature("autodoc", "3");
@@ -405,6 +407,14 @@ namespace tigl
 %include "CTiglRelativelyPositionedComponent.h"
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
+
+
+//  ---------------- Decks ------------------ //
+
+%boost_optional(tigl::CCPACSDecks)
+
+%include "generated/CPACSDecks.h"
+%include "CCPACSDeck.h"
 
 // --------------- Fuselage tanks -----------------//
 %boost_optional(tigl::generated::CPACSVessels)

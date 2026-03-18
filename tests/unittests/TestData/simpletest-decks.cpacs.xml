@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+    <header>
+        <name>Decks test</name>
+        <description>Simple decks definitions for unit testing</description>
+        <version>1.0.0</version>
+        <versionInfos>
+            <versionInfo version="1.0.0">
+                <description>First test set</description>
+                <creator>Marko Alder</creator>
+                <timestamp>2026-01-18T12:00:00</timestamp>
+                <cpacsVersion>3.5</cpacsVersion>
+            </versionInfo>
+        </versionInfos>
+    </header>
+    <vehicles>
+        <aircraft>
+            <model uID="testAircraft">
+                <name>Test aircraft</name>
+                <fuselages>
+                    <fuselage uID="SimpleFuselage">
+                        <name>Simple fuselage</name>
+                        <transformation>
+                            <translation>
+                                <x>0.5</x>
+                            </translation>
+                            <scaling>
+                                <x>1.0</x>
+                                <y>2.0</y>
+                                <z>2.0</z>
+                            </scaling>
+                        </transformation>
+                        <sections>
+                            <section uID="fuselage_Section1">
+                                <name>Fuselage Section 1</name>
+                                <transformation />
+                                <elements>
+                                    <element uID="fuselage_section1_element1">
+                                        <name>Fuselage Section 1</name>
+                                        <profileUID>fuselageCircleProfile</profileUID>
+                                        <transformation />
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID="fuselage_section2">
+                                <name>Fuselage Section 2</name>
+                                <transformation />
+                                <elements>
+                                    <element uID="fuselage_section2_element1">
+                                        <name>Fuselage Section 2</name>
+                                        <profileUID>fuselageCircleProfile</profileUID>
+                                        <transformation />
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID="fuselage_section3">
+                                <name>Fuselage Section 3</name>
+                                <transformation />
+                                <elements>
+                                    <element uID="fuselage_section3_element1">
+                                        <name>Fuselage Section 3</name>
+                                        <profileUID>fuselageCircleProfile</profileUID>
+                                        <transformation />
+                                    </element>
+                                </elements>
+                            </section>
+                        </sections>
+                        <positionings>
+                            <positioning uID="fuselage_positioning1">
+                                <name>Fuselage Positioning 1</name>
+                                <length>0.</length>
+                                <sweepAngle>90</sweepAngle>
+                                <dihedralAngle>0</dihedralAngle>
+                                <toSectionUID>fuselage_Section1</toSectionUID>
+                            </positioning>
+                            <positioning uID="fuselage_positioning2">
+                                <name>Fuselage Positioning 2</name>
+                                <length>2.</length>
+                                <sweepAngle>90</sweepAngle>
+                                <dihedralAngle>0</dihedralAngle>
+                                <fromSectionUID>fuselage_Section1</fromSectionUID>
+                                <toSectionUID>fuselage_section2</toSectionUID>
+                            </positioning>
+                            <positioning uID="fuselage_positioning3">
+                                <name>Fuselage Positioning 3</name>
+                                <length>15.</length>
+                                <sweepAngle>90</sweepAngle>
+                                <dihedralAngle>0</dihedralAngle>
+                                <fromSectionUID>fuselage_section2</fromSectionUID>
+                                <toSectionUID>fuselage_section3</toSectionUID>
+                            </positioning>
+                        </positionings>
+                        <segments>
+                            <segment uID="fuselage_segment2">
+                                <name>Fuselage Segment 2</name>
+                                <fromElementUID>fuselage_section1_element1</fromElementUID>
+                                <toElementUID>fuselage_section2_element1</toElementUID>
+                            </segment>
+                            <segment uID="fuselage_segment3">
+                                <name>Fuselage Segment 3</name>
+                                <fromElementUID>fuselage_section2_element1</fromElementUID>
+                                <toElementUID>fuselage_section3_element1</toElementUID>
+                            </segment>
+                        </segments>
+                        <decks>
+                            <deck uID="deck1">
+                                <name>Deck 1</name>
+                                <transformation/>
+                                <deckType>passenger</deckType>
+                                <ceilingPanels>
+                                    <ceilingPanel uID="ceilingPanel1">
+                                        <name>Ceiling Panel</name>
+                                        <deckElementUID>predCeilingPanel</deckElementUID>
+                                    </ceilingPanel>
+                                </ceilingPanels>
+                            </deck>
+                        </decks>
+                    </fuselage>
+                </fuselages>
+            </model>
+        </aircraft>
+        <profiles>
+            <fuselageProfiles>
+                <fuselageProfile uID="fuselageCircleProfile">
+                    <name>Circle</name>
+                    <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+                    <standardProfile>
+                        <superEllipse>
+                            <lowerHeightFraction>0.5</lowerHeightFraction>
+                            <mLower>2</mLower>
+                            <nLower>2</nLower>
+                            <mUpper>2</mUpper>
+                            <nUpper>2</nUpper>
+                        </superEllipse>
+                    </standardProfile>
+                </fuselageProfile>
+            </fuselageProfiles>
+        </profiles>
+        <deckElements>
+            <ceilingPanelElements>
+                <ceilingPanelElement uID="predCeilingPanel">
+                    <name>Predefined ceiling panel</name>
+                    <geometry>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1.5</lengthX>
+                                <depthY>0.5</depthY>
+                                <heightZ>2.0</heightZ>
+                            </cuboid>
+                        </cuboids>
+                    </geometry>
+                </ceilingPanelElement>
+            </ceilingPanelElements>
+        </deckElements>
+    </vehicles>
+</cpacs>

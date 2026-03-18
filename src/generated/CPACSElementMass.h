@@ -35,6 +35,8 @@ class CTiglUIDObject;
 
 namespace generated
 {
+    class CPACSGalleyElement;
+    class CPACSSeatElement;
     class CPACSSysElemBattery;
     class CPACSSysElemCable;
     class CPACSSysElemCompressor;
@@ -57,6 +59,8 @@ namespace generated
     class CPACSVehicleElementBase;
 
     // This class is used in:
+    // CPACSGalleyElement
+    // CPACSSeatElement
     // CPACSSysElemBattery
     // CPACSSysElemCable
     // CPACSSysElemCompressor
@@ -90,6 +94,8 @@ namespace generated
     class CPACSElementMass
     {
     public:
+        TIGL_EXPORT CPACSElementMass(CPACSGalleyElement* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSElementMass(CPACSSeatElement* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSElementMass(CPACSSysElemBattery* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSElementMass(CPACSSysElemCable* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSElementMass(CPACSSysElemCompressor* parent, CTiglUIDManager* uidMgr);
@@ -122,7 +128,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSSysElemBattery>::value || std::is_same<P, CPACSSysElemCable>::value || std::is_same<P, CPACSSysElemCompressor>::value || std::is_same<P, CPACSSysElemConverter>::value || std::is_same<P, CPACSSysElemDCDCConverter>::value || std::is_same<P, CPACSSysElemElectricMachine>::value || std::is_same<P, CPACSSysElemElectricMotor>::value || std::is_same<P, CPACSSysElemFuelCell>::value || std::is_same<P, CPACSSysElemGearBox>::value || std::is_same<P, CPACSSysElemGenerator>::value || std::is_same<P, CPACSSysElemHeatExchanger>::value || std::is_same<P, CPACSSysElemInverter>::value || std::is_same<P, CPACSSysElemPowerDistributionUnit>::value || std::is_same<P, CPACSSysElemPowerElectronic>::value || std::is_same<P, CPACSSysElemPump>::value || std::is_same<P, CPACSSysElemRectifier>::value || std::is_same<P, CPACSSysElemReservoir>::value || std::is_same<P, CPACSSysElemSwitchgear>::value || std::is_same<P, CPACSSysElemTurboGenerator>::value || std::is_same<P, CPACSVehicleElementBase>::value, "template argument for P is not a parent class of CPACSElementMass");
+            static_assert(std::is_same<P, CPACSGalleyElement>::value || std::is_same<P, CPACSSeatElement>::value || std::is_same<P, CPACSSysElemBattery>::value || std::is_same<P, CPACSSysElemCable>::value || std::is_same<P, CPACSSysElemCompressor>::value || std::is_same<P, CPACSSysElemConverter>::value || std::is_same<P, CPACSSysElemDCDCConverter>::value || std::is_same<P, CPACSSysElemElectricMachine>::value || std::is_same<P, CPACSSysElemElectricMotor>::value || std::is_same<P, CPACSSysElemFuelCell>::value || std::is_same<P, CPACSSysElemGearBox>::value || std::is_same<P, CPACSSysElemGenerator>::value || std::is_same<P, CPACSSysElemHeatExchanger>::value || std::is_same<P, CPACSSysElemInverter>::value || std::is_same<P, CPACSSysElemPowerDistributionUnit>::value || std::is_same<P, CPACSSysElemPowerElectronic>::value || std::is_same<P, CPACSSysElemPump>::value || std::is_same<P, CPACSSysElemRectifier>::value || std::is_same<P, CPACSSysElemReservoir>::value || std::is_same<P, CPACSSysElemSwitchgear>::value || std::is_same<P, CPACSSysElemTurboGenerator>::value || std::is_same<P, CPACSVehicleElementBase>::value, "template argument for P is not a parent class of CPACSElementMass");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -132,7 +138,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSSysElemBattery>::value || std::is_same<P, CPACSSysElemCable>::value || std::is_same<P, CPACSSysElemCompressor>::value || std::is_same<P, CPACSSysElemConverter>::value || std::is_same<P, CPACSSysElemDCDCConverter>::value || std::is_same<P, CPACSSysElemElectricMachine>::value || std::is_same<P, CPACSSysElemElectricMotor>::value || std::is_same<P, CPACSSysElemFuelCell>::value || std::is_same<P, CPACSSysElemGearBox>::value || std::is_same<P, CPACSSysElemGenerator>::value || std::is_same<P, CPACSSysElemHeatExchanger>::value || std::is_same<P, CPACSSysElemInverter>::value || std::is_same<P, CPACSSysElemPowerDistributionUnit>::value || std::is_same<P, CPACSSysElemPowerElectronic>::value || std::is_same<P, CPACSSysElemPump>::value || std::is_same<P, CPACSSysElemRectifier>::value || std::is_same<P, CPACSSysElemReservoir>::value || std::is_same<P, CPACSSysElemSwitchgear>::value || std::is_same<P, CPACSSysElemTurboGenerator>::value || std::is_same<P, CPACSVehicleElementBase>::value, "template argument for P is not a parent class of CPACSElementMass");
+            static_assert(std::is_same<P, CPACSGalleyElement>::value || std::is_same<P, CPACSSeatElement>::value || std::is_same<P, CPACSSysElemBattery>::value || std::is_same<P, CPACSSysElemCable>::value || std::is_same<P, CPACSSysElemCompressor>::value || std::is_same<P, CPACSSysElemConverter>::value || std::is_same<P, CPACSSysElemDCDCConverter>::value || std::is_same<P, CPACSSysElemElectricMachine>::value || std::is_same<P, CPACSSysElemElectricMotor>::value || std::is_same<P, CPACSSysElemFuelCell>::value || std::is_same<P, CPACSSysElemGearBox>::value || std::is_same<P, CPACSSysElemGenerator>::value || std::is_same<P, CPACSSysElemHeatExchanger>::value || std::is_same<P, CPACSSysElemInverter>::value || std::is_same<P, CPACSSysElemPowerDistributionUnit>::value || std::is_same<P, CPACSSysElemPowerElectronic>::value || std::is_same<P, CPACSSysElemPump>::value || std::is_same<P, CPACSSysElemRectifier>::value || std::is_same<P, CPACSSysElemReservoir>::value || std::is_same<P, CPACSSysElemSwitchgear>::value || std::is_same<P, CPACSSysElemTurboGenerator>::value || std::is_same<P, CPACSVehicleElementBase>::value, "template argument for P is not a parent class of CPACSElementMass");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -196,6 +202,8 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSElementMass = generated::CPACSElementMass;
+using CCPACSGalleyElement = generated::CPACSGalleyElement;
+using CCPACSSeatElement = generated::CPACSSeatElement;
 using CCPACSSysElemBattery = generated::CPACSSysElemBattery;
 using CCPACSSysElemCable = generated::CPACSSysElemCable;
 using CCPACSSysElemCompressor = generated::CPACSSysElemCompressor;

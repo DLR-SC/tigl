@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDeckComponentBase.h"
 #include "CPACSDeckComponent2DBase.h"
 #include "CPACSDeckStructuralMount.h"
 #include "CPACSDeckStructuralMounts.h"
@@ -34,30 +35,45 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSDeckComponent2DBase);
+    }
+
+    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDeckComponentBase);
     }
 
     CPACSDeckStructuralMounts::~CPACSDeckStructuralMounts()
     {
     }
 
-    const CPACSDeckComponent2DBase* CPACSDeckStructuralMounts::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSDeckComponent2DBase* CPACSDeckStructuralMounts::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckComponent2DBase>()) {
+                return GetParent<CPACSDeckComponent2DBase>();
+            }
+            if (IsParent<CCPACSDeckComponentBase>()) {
+                return GetParent<CCPACSDeckComponentBase>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CPACSDeckComponent2DBase>()) {
+                return GetParent<CPACSDeckComponent2DBase>();
+            }
+            if (IsParent<CCPACSDeckComponentBase>()) {
+                return GetParent<CCPACSDeckComponentBase>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSDeckStructuralMounts::GetUIDManager()

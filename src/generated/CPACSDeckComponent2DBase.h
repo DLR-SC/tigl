@@ -21,9 +21,11 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include "CPACSDeckStructuralMounts.h"
 #include "CPACSTransformation2D.h"
 #include "CreateIfNotExists.h"
+#include "CTiglError.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
@@ -34,9 +36,17 @@ class CTiglUIDManager;
 
 namespace generated
 {
+    class CPACSClassDividers;
+    class CPACSGalleys;
+    class CPACSGenericFloorModules;
+    class CPACSLavatories;
     class CPACSSeatModules;
 
     // This class is used in:
+    // CPACSClassDividers
+    // CPACSGalleys
+    // CPACSGenericFloorModules
+    // CPACSLavatories
     // CPACSSeatModules
 
     /// @brief Deck component
@@ -45,13 +55,39 @@ namespace generated
     class CPACSDeckComponent2DBase : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
+        TIGL_EXPORT CPACSDeckComponent2DBase(CPACSClassDividers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponent2DBase(CPACSGalleys* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponent2DBase(CPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponent2DBase(CPACSLavatories* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSDeckComponent2DBase(CPACSSeatModules* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckComponent2DBase();
 
-        TIGL_EXPORT CPACSSeatModules* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CPACSSeatModules* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSClassDividers>::value || std::is_same<P, CPACSGalleys>::value || std::is_same<P, CPACSGenericFloorModules>::value || std::is_same<P, CPACSLavatories>::value || std::is_same<P, CPACSSeatModules>::value, "template argument for P is not a parent class of CPACSDeckComponent2DBase");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSClassDividers>::value || std::is_same<P, CPACSGalleys>::value || std::is_same<P, CPACSGenericFloorModules>::value || std::is_same<P, CPACSLavatories>::value || std::is_same<P, CPACSSeatModules>::value, "template argument for P is not a parent class of CPACSDeckComponent2DBase");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -87,7 +123,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTransformation();
 
     protected:
-        CPACSSeatModules* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -120,5 +157,9 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
+using CCPACSClassDividers = generated::CPACSClassDividers;
+using CCPACSGalleys = generated::CPACSGalleys;
+using CCPACSGenericFloorModules = generated::CPACSGenericFloorModules;
+using CCPACSLavatories = generated::CPACSLavatories;
 using CCPACSSeatModules = generated::CPACSSeatModules;
 } // namespace tigl
