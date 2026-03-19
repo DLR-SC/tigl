@@ -44,6 +44,7 @@
 #include "generated/CPACSProfiles.h"
 #include "generated/CPACSEngines.h"
 #include "CCPACSSystemElements.h"
+#include "generated/CPACSDeckElements.h"
 
 namespace tigl
 {
@@ -281,6 +282,7 @@ private:
     boost::optional<CCPACSProfiles>        profiles;             /**< Wing airfoils, fuselage profiles, rotor airfoils, guide curve profiles */
     boost::optional<CCPACSEngines>         engines;              /**< Engines under vehicle node */
     boost::optional<CCPACSSystemElements>  systemElements;       /**< System elements under vehicle node */
+    boost::optional<CCPACSDeckElements>    deckElements;         /**< Deck elements under vehicle node */
     TixiDocumentHandle                     tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                           header;               /**< Configuration header element */
     CCPACSFarField                         farField;             /**< Far field configuration for CFD tools */

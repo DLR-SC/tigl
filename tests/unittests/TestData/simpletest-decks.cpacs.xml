@@ -106,12 +106,21 @@
                         <decks>
                             <deck uID="deck1">
                                 <name>Deck 1</name>
-                                <transformation/>
+                                <transformation>
+                                    <translation>
+                                        <x>2.0</x>
+                                    </translation>
+                                </transformation>
                                 <deckType>passenger</deckType>
                                 <ceilingPanels>
                                     <ceilingPanel uID="ceilingPanel1">
                                         <name>Ceiling Panel</name>
                                         <deckElementUID>predCeilingPanel</deckElementUID>
+                                        <transformation>
+                                            <rotation>
+                                                <z>45.</z>
+                                            </rotation>
+                                        </transformation>
                                     </ceilingPanel>
                                 </ceilingPanels>
                             </deck>

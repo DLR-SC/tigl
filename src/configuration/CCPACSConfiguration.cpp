@@ -82,6 +82,7 @@ namespace {
     const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
     const std::string enginesXPath = "/cpacs/vehicles/engines";
     const std::string systemElementsXPath = "/cpacs/vehicles/systemElements";
+    const std::string deckElementsXPath = "/cpacs/vehicles/deckElements";
 }
 
 // Build up memory structure for whole CPACS file
@@ -110,6 +111,10 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     if (tixi::TixiCheckElement(tixiDocumentHandle, systemElementsXPath)) {
         systemElements = boost::in_place(nullptr, &uidManager);
         systemElements->ReadCPACS(tixiDocumentHandle, systemElementsXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, deckElementsXPath)) {
+        deckElements = boost::in_place(nullptr, &uidManager);
+        deckElements->ReadCPACS(tixiDocumentHandle, deckElementsXPath);
     }
 
     // create new root component for CTiglUIDManager
