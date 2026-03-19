@@ -152,11 +152,12 @@ PNamedShape CCPACSDeckComponentBase::BuildLoft() const
     const std::string compName = this->GetObjectUID().get_value_or("unnamed");
 
     // The builder works on the generic CTiglRelativelyPositionedComponent,
-    // therefore the CCPACSComponent-specific information (configuration, geometry, uID) needs to be extracted at this level
+    // therefore the CCPACSDeckComponentBase-specific information (configuration, geometry, uID) needs to be determined here
     CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), geom, compName, _cpacsDocPath);
     const PNamedShape shape = builder.BuildShape();
 
-    // Apply local transformation and return shape
+    // If no component-local transformation is defined, apply the parent deck transformation.
+    // Otherwise, use the full component transformation, which already includes the parent chain.
     if (!IsPositioned()) {
         return m_parentDeck->GetTransformationMatrix().Transform(shape);
     }
