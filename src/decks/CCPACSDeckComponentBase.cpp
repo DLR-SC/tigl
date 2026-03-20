@@ -156,12 +156,7 @@ PNamedShape CCPACSDeckComponentBase::BuildLoft() const
     CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), geom, compName, _cpacsDocPath);
     const PNamedShape shape = builder.BuildShape();
 
-    // If no component-local transformation is defined, apply the parent deck transformation.
-    // Otherwise, use the full component transformation, which already includes the parent chain.
-    if (!IsPositioned()) {
-        return m_parentDeck->GetTransformationMatrix().Transform(shape);
-    }
-
+    // Apply the resolved component transformation to the generated shape and return
     return GetTransformationMatrix().Transform(shape);
 }
 

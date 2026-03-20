@@ -180,16 +180,20 @@ ECPACSTranslationType CTiglRelativelyPositionedComponent::GetRotationType() cons
 {
     if (GetTransformSE3())
         return GetTransformSE3()->getRotationType();
-    else
+    else if (GetTransform())
         return GetTransform()->getRotationType();
+    else
+        return ABS_GLOBAL;
 }
 
 ECPACSTranslationType CTiglRelativelyPositionedComponent::GetScalingType() const
 {
     if (GetTransformSE3())
         return ABS_GLOBAL;
+    else if (GetTransform())
+        return GetTransform()->getScalingType();
     else
-        return GetTransform()->getScalingType();      
+        return ABS_GLOBAL;
 }
 
 // Returns a pointer to the list of children of a component.
