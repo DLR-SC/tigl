@@ -37,6 +37,18 @@ CCPACSDeck::~CCPACSDeck()
 {
 }
 
+void CCPACSDeck::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    Reset();
+    generated::CPACSDeck::ReadCPACS(tixiHandle, xpath);
+
+    // Default parent: if no explicit parentUID is given, place the deck
+    // relative to the surrounding fuselage.
+    if ((!m_parentUID || m_parentUID->empty()) && m_parent && m_parent->GetParent()) {
+        generated::CPACSDeck::SetParentUID(boost::optional<std::string>(m_parent->GetParent()->GetUID()));
+    }
+}
+
 std::string CCPACSDeck::GetDefaultedUID() const
 {
     return GetUID();

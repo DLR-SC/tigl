@@ -35,6 +35,8 @@ public:
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSDeck();
 
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
+
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns the parent configuration
