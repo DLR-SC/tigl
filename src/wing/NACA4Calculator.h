@@ -26,9 +26,7 @@
 #include <math/tiglmathfunctions.h>
 #include "CFunctionToBspline.h"
 
-
 namespace tigl{
-
 
 class NACA4Calculator{
 
