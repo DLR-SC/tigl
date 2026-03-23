@@ -42,15 +42,9 @@ namespace tigl
 
 CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
+    , calculator(nacadef.GetNaca4DigitCode_choice1() ? NACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.") )
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
 {
-    double te_thickness = nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0;
-    if(auto const& naca4 = nacadef.GetNaca4DigitCode_choice1(); naca4){
-        calculator = NACA4Calculator(*naca4, te_thickness);
-    }
-    else{
-        throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.");
-    }
 
 }
 

@@ -40,7 +40,7 @@ class NACA4Calculator{
         * @param max_camber_position 
         * @param max_profile_thickness 
         */
-        TIGL_EXPORT NACA4Calculator(double max_camber=0, double max_camber_position=0, double max_profile_thickness=12, double trailing_edge_thickness = 0);
+        TIGL_EXPORT NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
 
         explicit TIGL_EXPORT NACA4Calculator(const ::std::string& naca_code, const double te_thickness);
 
