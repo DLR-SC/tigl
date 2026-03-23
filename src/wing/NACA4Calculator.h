@@ -39,6 +39,7 @@ class NACA4Calculator{
         * @param max_profile_thickness 
         */
         TIGL_EXPORT NACA4Calculator(double max_camber=0, double max_camber_position=0, double max_profile_thickness=12, double trailing_edge_thickness = 0);
+        TIGL_EXPORT NACA4Calculator(double max_camber=0, double max_camber_position=0, double reflex = 0, double max_profile_thickness=12, double trailing_edge_thickness = 0);
 
         explicit TIGL_EXPORT NACA4Calculator(const ::std::string& naca_code, const double te_thickness);
 
@@ -80,6 +81,8 @@ class NACA4Calculator{
          * @return double 
          */
         TIGL_EXPORT double profile_thickness(double x) const; 
+        TIGL_EXPORT double m(double max_camber, double max_camber_position, double reflex) const;
+        TIGL_EXPORT double k1(double max_camber, double max_camber_position, double reflex) const;
 
         TIGL_EXPORT Handle(Geom_BSplineCurve) upper_bspline() const; 
 
@@ -104,7 +107,9 @@ class NACA4Calculator{
 
 
     private:
-        double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness_half;
+        double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness_half, reflex;
+        enum class Series {Unknown, NACA4, NACA5};
+        Series series_ = Series::Unknown;
 };
 
 class NACA4UpperCurve : public MathFunc3d {
