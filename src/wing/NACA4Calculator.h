@@ -105,6 +105,8 @@ class NACA4Calculator{
          */
         gp_Vec2d normal(double x) const;
 
+        
+
 
     private:
         double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness_half, reflex;

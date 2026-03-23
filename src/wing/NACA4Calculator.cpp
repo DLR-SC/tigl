@@ -26,6 +26,8 @@
 #include "CFunctionToBspline.h"
 
 namespace tigl{
+
+        
         
         NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : series_(Series::NACA4)
