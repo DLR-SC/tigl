@@ -101,66 +101,88 @@ namespace tigl{
             return trailing_edge_thickness_half;
         }
 
-        double NACA4Calculator::k1(double max_camber, double max_camber_position, double reflex) const{
+        double NACA4Calculator::k1_const(double max_camber, double max_camber_position, double reflex) const{
             int max_camber_cl_whole = static_cast<int>(max_camber*100);
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
-            int reflex = static_cast<int>(reflex);
+            int reflex_int = static_cast<int>(reflex);
             double k1;
             //alles von chapter 8 table 8-6
-            meanline_designation = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex);
+            std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
+            int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
-                case "210":
+                case 210:
                      k1 =361.400;
-                case "220":
+                     break;
+                case 220:
                      k1 =51.640;
-                case "230":
+                     break;
+                case 230:
                      k1 = 15.957;
-                case "240":
+                     break;
+                case 240:
                     k1 = 6.643;
-                case "250":
+                    break;
+                case 250:
                     k1 = 3.230;
-                case "211":
+                    break;
+                case 211:
                     throw ::std::logic_error("error in NACA4Calculator::k1: this profile does not provide a constant for k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
-                case "221":
+                    break;
+                case 221:
                     k1 = 51.99;
-                case "231":
+                    break;
+                case 231:
                     k1 = 15.793;
-                case "241":
+                    break;
+                case 241:
                     k1 = 6.520;
-                case "251":
+                    break;
+                case 251:
                     k1 = 3.191;
+                    break;
                 }
             return k1; 
         }
 
-        double NACA4Calculator::m(double max_camber, double max_camber_position, double reflex) const{
+        double NACA4Calculator::m_const(double max_camber, double max_camber_position, double reflex) const{
             int max_camber_cl_whole = static_cast<int>(max_camber*100);
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
-            int reflex = static_cast<int>(reflex);
+            int reflex_int = static_cast<int>(reflex);
             double m;
             //alles von chapter 8 table 8-6
-            meanline_designation = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex);
+            std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
+            int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
-                case "210":
+                case 210:
                      m = 0.0580;
-                case "220":
+                     break;
+                case 220:
                      m = 0.1260;
-                case "230":
+                     break;
+                case 230:
                      m = 0.2025;
-                case "240":
+                     break;
+                case 240:
                     m = 0.2900;
-                case "250":
+                    break;
+                case 250:
                     m = 0.3910;
-                case "211":
+                    break;
+                case 211:
                     throw ::std::logic_error("error in NACA4Calculator::m: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
-                case "221":
+                    break;
+                case 221:
                     m = 0.1300;
-                case "231":
+                    break;
+                case 231:
                     m = 0.2170;
-                case "241":
+                    break;
+                case 241:
                     m = 0.3180;
-                case "251":
+                    break;
+                case 251:
                     m = 0.4410;
+                    break;
                 }
             return m; 
         }
@@ -168,7 +190,7 @@ namespace tigl{
 
         double NACA4Calculator::camberline(double x) const{
         
-            if(series_ = Series::NACA4){
+            if(series_ == Series::NACA4){
                 double m = this->max_camber;
                 double p = this->max_camber_position;
                 if(p == 0){
@@ -184,22 +206,24 @@ namespace tigl{
                     return (1 - 2*p + 2*p*x - x*x)*m/((1-p)*(1-p));;
                 }
             }
-            else if(series_ = Series::NACA5){
-                double s = this->max_camber_cl;
+            else if(series_ == Series::NACA5){
+                double s = this->max_camber;
                 double p = this->max_camber_position;
                 double q = this->reflex;
-                double k1 = k1(s, p, q)
-                double m = m(s, p, q)
-                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m))
+                double k1 = k1_const(s, p, q);
+                double m = m_const(s, p, q);
+                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m));
                 if(q = 0){
                 if(p == 0){
                     return 0;
                 }
                 if(0 <= x && x <= p){
-                    return (k1/6)(x*x*x-3*m*x*x+m*m*(3-m)*x); 
+                    double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
+                    return result;
                 }
                 else if(x > p){ 
-                    return ((k1*m*m*m)/6)*(1-x);
+                    double result3 = ((k1*m*m*m)/6)*(1-x);
+                    return result3;
                 }
                 }
                 else if(q == 1){
@@ -207,10 +231,12 @@ namespace tigl{
                     return 0;
                 }
                 if(0 <= x && x <= p){
-                    return (k1/6)(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- (m*m*m*x+m*m*m)); 
+                    double result1 = (k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- (m*m*m*x+m*m*m)); 
+                    return result1;
                 }
                 else if(x > p){ 
-                    return (k1/6)((frack1k2)*(x-m)*(x-m)*(x-m)-(frack1k2)*(1-m)*(1-m)*(1-m)*x-m*m*m*x+m*m*m);
+                    double result2 = (k1/6)*((frack1k2)*(x-m)*(x-m)*(x-m)-(frack1k2)*(1-m)*(1-m)*(1-m)*x-m*m*m*x+m*m*m);
+                    return result2;
                 }
                 }
                 else{
@@ -242,7 +268,7 @@ namespace tigl{
 
         double NACA4Calculator::camberline_derivative(double x) const{ //c'(x)
 
-            if(series_ = Series::NACA4){
+            if(series_ == Series::NACA4){
                 double m = this->max_camber;
                 double p = this->max_camber_position;
 
@@ -259,19 +285,19 @@ namespace tigl{
                     throw ::std::logic_error("error in NACA4Calculator::camberline_derivative: x must be between 0 and 1.");
                 }
             }
-            else if(series_ = Series::NACA5){
-                double s = this->max_camber_cl;
+            else if(series_ == Series::NACA5){
+                double s = this->max_camber;
                 double p = this->max_camber_position;
                 double q = this->reflex;
-                double k1 = k1(s, p, q)
-                double m = m(s, p, q)
-                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m))
+                double k1 = k1_const(s, p, q);
+                double m = m_const(s, p, q);
+                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m));
                 if(p == 0){
                     return 0;
                 }
                 if(q == 0){
                     if(0 <= x && x <= p){
-                        return (k1/6)(3*x*x-6*m*x+m*m*(3-m));
+                        return (k1/6)*(3*x*x-6*m*x+m*m*(3-m));
                     }
                     else if(x > p){
                         return -((k1*m*m*m)/6);
@@ -282,7 +308,7 @@ namespace tigl{
                         return (k1/6)*(3*(x-m)*(x-m)-frack1k2*(1-m)*(1-m)*(1-m)-m*m*m);
                     }
                     else if(x > p){
-                        return (k1/6)(3*frack1k2*(x-m)*(x-m)-frack1k2*(1-m)*(1-m)*(1-m)-m*m*m);
+                        return (k1/6)*(3*frack1k2*(x-m)*(x-m)-frack1k2*(1-m)*(1-m)*(1-m)-m*m*m);
                     }
                 }
                 else{
