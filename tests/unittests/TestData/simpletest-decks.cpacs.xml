@@ -124,15 +124,64 @@
                                     </ceilingPanel>
                                 </ceilingPanels>
                                 <seatModules>
-                                    <seatModule uID="seatModule">
-                                        <name>Seat module</name>
+                                    <seatModule uID="seatModule1_rh">
+                                        <name>Seat module 1 LH</name>
                                         <deckElementUID>predSeatElement</deckElementUID>
                                         <transformation>
-                                            <scaling>
-                                                <x>1</x>
-                                                <y>2</y>
-                                                <z>1.5</z>
-                                            </scaling>
+                                            <translation>
+                                                <x>0.5</x>
+                                                <y>0.2</y>
+                                            </translation>
+                                        </transformation>
+                                    </seatModule>
+                                    <seatModule uID="seatModule2_rh">
+                                        <name>Seat module 2 LH</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>1.5</x>
+                                                <y>0.2</y>
+                                            </translation>
+                                        </transformation>
+                                    </seatModule>
+                                    <seatModule uID="seatModule3_rh">
+                                        <name>Seat module 3 LH</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>2.5</x>
+                                                <y>0.2</y>
+                                            </translation>
+                                        </transformation>
+                                    </seatModule>
+                                    <seatModule uID="seatModule1_lh">
+                                        <name>Seat module 1 LH</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>0.5</x>
+                                                <y>-2.2</y>
+                                            </translation>
+                                        </transformation>
+                                    </seatModule>
+                                    <seatModule uID="seatModule2_lh">
+                                        <name>Seat module 2 LH</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>1.5</x>
+                                                <y>-2.2</y>
+                                            </translation>
+                                        </transformation>
+                                    </seatModule>
+                                    <seatModule uID="seatModule3_lh">
+                                        <name>Seat module 3 LH</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>2.5</x>
+                                                <y>-2.2</y>
+                                            </translation>
                                         </transformation>
                                     </seatModule>
                                 </seatModules>
@@ -303,8 +352,8 @@
                     <geometry representation="envelope">
                         <cuboids>
                             <cuboid>
-                                <lengthX>1</lengthX>
-                                <depthY>1</depthY>
+                                <lengthX>0.8</lengthX>
+                                <depthY>2.0</depthY>
                                 <heightZ>1</heightZ>
                             </cuboid>
                         </cuboids>
