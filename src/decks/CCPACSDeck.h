@@ -55,6 +55,10 @@ public:
 protected:
     // Build the shape of the system
     PNamedShape BuildLoft() const override;
+
+private:
+    // get short name for loft
+    std::string GetShortShapeName() const;
 };
 
 } // end namespace tigl

@@ -19,6 +19,12 @@
 #include "CCPACSDeck.h"
 #include "generated/CPACSDecks.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSDeckComponentBase.h"
+#include "CCPACSDeckComponent2DBase.h"
+
+#include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
+#include "CGroupShapes.h"
 
 namespace tigl
 {
@@ -63,10 +69,68 @@ CCPACSConfiguration& CCPACSDeck::GetConfiguration() const
 // build loft
 PNamedShape CCPACSDeck::BuildLoft() const
 {
-    // ToDo: implement get shapes
-    PNamedShape groupedShape;
+    ListPNamedShape shapes;
+
+    auto appendLofts = [&shapes](const auto& components) {
+        for (const auto& component : components) {
+            if (component) {
+                shapes.push_back(component->GetLoft());
+            }
+        }
+    };
+
+    if (GetSeatModules()) {
+        appendLofts(GetSeatModules()->GetSeatModules());
+    }
+
+    if (GetSidewallPanels()) {
+        appendLofts(GetSidewallPanels()->GetSidewallPanels());
+    }
+
+    if (GetLuggageCompartments()) {
+        appendLofts(GetLuggageCompartments()->GetLuggageCompartments());
+    }
+
+    if (GetCeilingPanels()) {
+        appendLofts(GetCeilingPanels()->GetCeilingPanels());
+    }
+
+    if (GetGalleys()) {
+        appendLofts(GetGalleys()->GetGalleys());
+    }
+
+    if (GetGenericFloorModules()) {
+        appendLofts(GetGenericFloorModules()->GetGenericFloorModules());
+    }
+
+    if (GetLavatories()) {
+        appendLofts(GetLavatories()->GetLavatorys());
+    }
+
+    if (GetClassDividers()) {
+        appendLofts(GetClassDividers()->GetClassDividers());
+    }
+
+    PNamedShape groupedShape = CGroupShapes(shapes);
+    groupedShape->SetName(GetUID().c_str());
+    groupedShape->SetShortName(GetShortShapeName().c_str());
 
     return groupedShape;
+}
+
+// get short name for loft
+std::string CCPACSDeck::GetShortShapeName() const
+{
+    unsigned int i = 0;
+
+    for (const auto& d : GetParent()->GetDecks()) {
+        ++i;
+        if (GetUID() == d->GetUID()) {
+            return "D" + std::to_string(i);
+        }
+    }
+
+    return "D";
 }
 
 } // end namespace tigl
