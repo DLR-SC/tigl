@@ -197,7 +197,7 @@ namespace tigl{
                     return 0;
                 }
                 if(x < 0 || x > 1){
-                    throw ::std::logic_error("error in NACA4Calculator::camberline: x must be between 0 and 1.");
+                    throw ::std::logic_error("error in NACA4Calculator::camberline::NACA4: x must be between 0 and 1.");
                 }
                 else if(0 <= x && x <= p){
                     return (2*p*x - x*x)*m/(p*p);; 
@@ -213,7 +213,7 @@ namespace tigl{
                 double k1 = k1_const(s, p, q);
                 double m = m_const(s, p, q);
                 double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m));
-                if(q = 0){
+                if(q == 0){
                 if(p == 0){
                     return 0;
                 }
@@ -240,7 +240,7 @@ namespace tigl{
                 }
                 }
                 else{
-                    throw ::std::logic_error("error in NACA4Calculator::camberline: x must be between 0 and 1.");
+                    throw ::std::logic_error("error in NACA4Calculator::camberline::NACA5: x must be between 0 and 1.");
                 }
             }
         }
