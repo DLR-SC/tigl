@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSDeckComponent2DBase.h>
 #include "CCPACSDeck.h"
-#include "CPACSDeckComponent2DBase.h"
 #include "CPACSGalleys.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -92,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSGalleys::GetGalleys() const
+    const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSGalleys::GetGalleys() const
     {
         return m_galleys;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSGalleys::GetGalleys()
+    std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSGalleys::GetGalleys()
     {
         return m_galleys;
     }
@@ -118,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSGalleys::GetGalleyIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckComponent2DBase& CPACSGalleys::GetGalley(size_t index)
+    CCPACSDeckComponent2DBase& CPACSGalleys::GetGalley(size_t index)
     {
         if (index < 1 || index > GetGalleyCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetGalley", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetGalley", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_galleys[index];
     }
 
-    const CPACSDeckComponent2DBase& CPACSGalleys::GetGalley(size_t index) const
+    const CCPACSDeckComponent2DBase& CPACSGalleys::GetGalley(size_t index) const
     {
         if (index < 1 || index > GetGalleyCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetGalley", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetGalley", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_galleys[index];
     }
 
-    CPACSDeckComponent2DBase& CPACSGalleys::GetGalley(const std::string& UID)
+    CCPACSDeckComponent2DBase& CPACSGalleys::GetGalley(const std::string& UID)
     {
         for (auto& elem : m_galleys ) {
             if (elem->GetUID() == UID)
@@ -145,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSGalleys::GetGalley. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckComponent2DBase& CPACSGalleys::GetGalley(const std::string& UID) const
+    const CCPACSDeckComponent2DBase& CPACSGalleys::GetGalley(const std::string& UID) const
     {
         for (auto& elem : m_galleys ) {
             if (elem->GetUID() == UID)
@@ -155,13 +155,13 @@ namespace generated
     }
 
 
-    CPACSDeckComponent2DBase& CPACSGalleys::AddGalley()
+    CCPACSDeckComponent2DBase& CPACSGalleys::AddGalley()
     {
-        m_galleys.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
+        m_galleys.push_back(make_unique<CCPACSDeckComponent2DBase>(this, m_uidMgr));
         return *m_galleys.back();
     }
 
-    void CPACSGalleys::RemoveGalley(CPACSDeckComponent2DBase& ref)
+    void CPACSGalleys::RemoveGalley(CCPACSDeckComponent2DBase& ref)
     {
         for (std::size_t i = 0; i < m_galleys.size(); i++) {
             if (m_galleys[i].get() == &ref) {

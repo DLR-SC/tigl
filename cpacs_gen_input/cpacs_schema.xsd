@@ -1831,6 +1831,46 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
+    <xsd:complexType name="transformationPlanarType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Planar transformation</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:para/>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element minOccurs="0" name="scaling" type="pointXYZType">
+                        <xsd:annotation>
+                            <xsd:documentation>Scaling of the structural profile
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="rotation" type="pointZType">
+                        <xsd:annotation>
+                            <xsd:documentation>rotation around z-axis of profile definition
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="translation" type="pointXYType">
+                        <xsd:annotation>
+                            <xsd:documentation>translation of profile definition
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:all>
+                <xsd:attribute name="uID" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
     <xsd:complexType name="pointType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -35587,7 +35627,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="structuralMounts" minOccurs="0" type="deckStructuralMountsType" />
-                    <xsd:element name="transformation" minOccurs="0" type="transformation2DType" />
+                    <xsd:element name="transformation" minOccurs="0" type="transformationPlanarType" />
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>

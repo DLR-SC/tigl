@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSTransformationPlanar.h"
 #include "CPACSPointZ.h"
 #include "CPACSTransformation2D.h"
 #include "CTiglError.h"
@@ -33,6 +34,16 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSTransformation2D);
+    }
+
+    CPACSPointZ::CPACSPointZ(CCPACSTransformationPlanar* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_z(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSTransformationPlanar);
     }
 
     CPACSPointZ::~CPACSPointZ()
@@ -40,23 +51,21 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
-    const CPACSTransformation2D* CPACSPointZ::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSTransformation2D* CPACSPointZ::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSPointZ::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (m_parent->GetUID())
-                return m_parent;
-            else
-                return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSTransformation2D>()) {
+                if (GetParent<CPACSTransformation2D>()->GetUID())
+                    return GetParent<CPACSTransformation2D>();
+                else
+                    return GetParent<CPACSTransformation2D>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSTransformationPlanar>()) {
+                if (GetParent<CCPACSTransformationPlanar>()->GetUID())
+                    return GetParent<CCPACSTransformationPlanar>();
+                else
+                    return GetParent<CCPACSTransformationPlanar>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -64,10 +73,18 @@ namespace generated
     CTiglUIDObject* CPACSPointZ::GetNextUIDParent()
     {
         if (m_parent) {
-            if (m_parent->GetUID())
-                return m_parent;
-            else
-                return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSTransformation2D>()) {
+                if (GetParent<CPACSTransformation2D>()->GetUID())
+                    return GetParent<CPACSTransformation2D>();
+                else
+                    return GetParent<CPACSTransformation2D>()->GetNextUIDParent();
+            }
+            if (IsParent<CCPACSTransformationPlanar>()) {
+                if (GetParent<CCPACSTransformationPlanar>()->GetUID())
+                    return GetParent<CCPACSTransformationPlanar>();
+                else
+                    return GetParent<CCPACSTransformationPlanar>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }

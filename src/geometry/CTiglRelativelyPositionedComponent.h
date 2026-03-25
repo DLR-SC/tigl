@@ -33,6 +33,7 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "CCPACSTransformation.h"
 #include "CCPACSTransformationSE3.h"
+#include "CCPACSTransformationPlanar.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 #include "ECPACSTranslationType.h"
@@ -124,6 +125,8 @@ public:
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(MaybeOptionalPtr<std::string> parentUid, MaybeOptionalPtr<CCPACSTransformationSE3> trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans);
     TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent *parent, MaybeOptionalPtr<CCPACSTransformation> trans, boost::optional<TiglSymmetryAxis>* symmetryAxis);
+    TIGL_EXPORT explicit CTiglRelativelyPositionedComponent(tigl::CTiglRelativelyPositionedComponent* parent,
+                                                            MaybeOptionalPtr<CCPACSTransformationPlanar> trans);
 
     TIGL_EXPORT void Reset() const;
 
@@ -155,6 +158,7 @@ private:
 
     TIGL_EXPORT boost::optional<const CCPACSTransformation&> GetTransform() const;
     TIGL_EXPORT boost::optional<const CCPACSTransformationSE3&> GetTransformSE3() const;
+    TIGL_EXPORT boost::optional<const CCPACSTransformationPlanar&> GetTransformPlanar() const;
     TIGL_EXPORT void SetParent(CTiglRelativelyPositionedComponent& parent);
     TIGL_EXPORT void AddChild(CTiglRelativelyPositionedComponent& child);
     TIGL_EXPORT void ClearChildren();
@@ -166,6 +170,7 @@ private:
 
     MaybeOptionalPtr<CCPACSTransformation> _transformation;            // references down to the transformation of the derived class (may be empty in case derived class does not have transformation)
     MaybeOptionalPtr<CCPACSTransformationSE3> _transformationSE3;
+    MaybeOptionalPtr<CCPACSTransformationPlanar> _transformationPlanar;
     boost::optional<TiglSymmetryAxis>* _symmetryAxis;   // references down to the symmetryAxis of the derived class (may be empty in case derived class does not have symmetry)
 };
 

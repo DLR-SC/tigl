@@ -19,11 +19,11 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSTransformationPlanar.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
 #include "CPACSDeckStructuralMounts.h"
-#include "CPACSTransformation2D.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "CTiglUIDObject.h"
@@ -113,13 +113,13 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSDeckStructuralMounts>& GetStructuralMounts() const;
         TIGL_EXPORT virtual boost::optional<CPACSDeckStructuralMounts>& GetStructuralMounts();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSTransformation2D>& GetTransformation() const;
-        TIGL_EXPORT virtual boost::optional<CPACSTransformation2D>& GetTransformation();
+        TIGL_EXPORT virtual const boost::optional<CCPACSTransformationPlanar>& GetTransformation() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSTransformationPlanar>& GetTransformation();
 
         TIGL_EXPORT virtual CPACSDeckStructuralMounts& GetStructuralMounts(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveStructuralMounts();
 
-        TIGL_EXPORT virtual CPACSTransformation2D& GetTransformation(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CCPACSTransformationPlanar& GetTransformation(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveTransformation();
 
     protected:
@@ -128,20 +128,20 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                m_uID;
+        std::string                                 m_uID;
 
         /// Name
-        std::string                                m_name;
+        std::string                                 m_name;
 
         /// Description
-        boost::optional<std::string>               m_description;
+        boost::optional<std::string>                m_description;
 
         /// UID of the corresponding element in the cpacs/vehicles/deckElemets node
-        std::string                                m_deckElementUID;
+        std::string                                 m_deckElementUID;
 
-        boost::optional<CPACSDeckStructuralMounts> m_structuralMounts;
+        boost::optional<CPACSDeckStructuralMounts>  m_structuralMounts;
 
-        boost::optional<CPACSTransformation2D>     m_transformation;
+        boost::optional<CCPACSTransformationPlanar> m_transformation;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
@@ -155,8 +155,9 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSDeckComponent2DBase is customized, use type CCPACSDeckComponent2DBase directly
+
 // Aliases in tigl namespace
-using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 using CCPACSClassDividers = generated::CPACSClassDividers;
 using CCPACSGalleys = generated::CPACSGalleys;
 using CCPACSGenericFloorModules = generated::CPACSGenericFloorModules;

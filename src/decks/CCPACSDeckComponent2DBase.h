@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "generated/CPACSDeckComponentBase.h"
+#include "generated/CPACSDeckComponent2DBase.h"
 #include "generated/CPACSMassInertia.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CTiglPoint.h"
@@ -44,7 +44,7 @@ class CCPACSConfiguration;
  * - Global CoG is only available if the component is explicitly positioned via a
  *   CPACS @c <transformation> element (see IsPositioned()).
  */
-class CCPACSDeckComponentBase : public generated::CPACSDeckComponentBase, public CTiglRelativelyPositionedComponent
+class CCPACSDeckComponent2DBase : public generated::CPACSDeckComponent2DBase, public CTiglRelativelyPositionedComponent
 {
 public:
     /**
@@ -52,11 +52,11 @@ public:
      * @param parent Parent CPACS container owning this component.
      * @param uidMgr UID manager for resolving referenced deck elements.
      */
-    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSCeilingPanels* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSLuggageCompartments* parent, CTiglUIDManager* uidMgr);
-
-    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSSidewallPanels* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDeckComponent2DBase(CCPACSClassDividers* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDeckComponent2DBase(CCPACSGalleys* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDeckComponent2DBase(CCPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDeckComponent2DBase(CCPACSLavatories* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDeckComponent2DBase(CCPACSSeatModules* parent, CTiglUIDManager* uidMgr);
 
     /**
      * @brief Returns the component UID (defaulted if required).
@@ -180,7 +180,7 @@ private:
     const CCPACSElementGeometry& GetElementGeometry() const;
 
     void BuildMass(MassCache& cache) const;
-    Cache<MassCache, CCPACSDeckComponentBase> m_mass;
+    Cache<MassCache, CCPACSDeckComponent2DBase> m_mass;
 
     const CCPACSDeck* m_parentDeck;
 };

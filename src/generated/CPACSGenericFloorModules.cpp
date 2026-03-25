@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSDeckComponent2DBase.h>
 #include "CCPACSDeck.h"
-#include "CPACSDeckComponent2DBase.h"
 #include "CPACSGenericFloorModules.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -92,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSGenericFloorModules::GetGenericFloorModules() const
+    const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSGenericFloorModules::GetGenericFloorModules() const
     {
         return m_genericFloorModules;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSGenericFloorModules::GetGenericFloorModules()
+    std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSGenericFloorModules::GetGenericFloorModules()
     {
         return m_genericFloorModules;
     }
@@ -118,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSGenericFloorModules::GetGenericFloorModuleIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(size_t index)
+    CCPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(size_t index)
     {
         if (index < 1 || index > GetGenericFloorModuleCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetGenericFloorModule", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetGenericFloorModule", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_genericFloorModules[index];
     }
 
-    const CPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(size_t index) const
+    const CCPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(size_t index) const
     {
         if (index < 1 || index > GetGenericFloorModuleCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetGenericFloorModule", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetGenericFloorModule", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_genericFloorModules[index];
     }
 
-    CPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(const std::string& UID)
+    CCPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(const std::string& UID)
     {
         for (auto& elem : m_genericFloorModules ) {
             if (elem->GetUID() == UID)
@@ -145,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSGenericFloorModules::GetGenericFloorModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(const std::string& UID) const
+    const CCPACSDeckComponent2DBase& CPACSGenericFloorModules::GetGenericFloorModule(const std::string& UID) const
     {
         for (auto& elem : m_genericFloorModules ) {
             if (elem->GetUID() == UID)
@@ -155,13 +155,13 @@ namespace generated
     }
 
 
-    CPACSDeckComponent2DBase& CPACSGenericFloorModules::AddGenericFloorModule()
+    CCPACSDeckComponent2DBase& CPACSGenericFloorModules::AddGenericFloorModule()
     {
-        m_genericFloorModules.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
+        m_genericFloorModules.push_back(make_unique<CCPACSDeckComponent2DBase>(this, m_uidMgr));
         return *m_genericFloorModules.back();
     }
 
-    void CPACSGenericFloorModules::RemoveGenericFloorModule(CPACSDeckComponent2DBase& ref)
+    void CPACSGenericFloorModules::RemoveGenericFloorModule(CCPACSDeckComponent2DBase& ref)
     {
         for (std::size_t i = 0; i < m_genericFloorModules.size(); i++) {
             if (m_genericFloorModules[i].get() == &ref) {

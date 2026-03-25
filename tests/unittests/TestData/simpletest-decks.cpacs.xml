@@ -123,6 +123,19 @@
                                         </transformation>
                                     </ceilingPanel>
                                 </ceilingPanels>
+                                <seatModules>
+                                    <seatModule uID="seatModule">
+                                        <name>Seat module</name>
+                                        <deckElementUID>predSeatElement</deckElementUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>1</x>
+                                                <y>2</y>
+                                                <z>1.5</z>
+                                            </scaling>
+                                        </transformation>
+                                    </seatModule>
+                                </seatModules>
                             </deck>
                         </decks>
                     </fuselage>
@@ -284,6 +297,20 @@
                     </geometry>
                 </ceilingPanelElement>
             </ceilingPanelElements>
+            <seatElements>
+                <seatElement uID="predSeatElement">
+                    <name>Predefined seat element</name>
+                    <geometry representation="envelope">
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1</lengthX>
+                                <depthY>1</depthY>
+                                <heightZ>1</heightZ>
+                            </cuboid>
+                        </cuboids>
+                    </geometry>
+                </seatElement>
+            </seatElements>
         </deckElements>
     </vehicles>
 </cpacs>

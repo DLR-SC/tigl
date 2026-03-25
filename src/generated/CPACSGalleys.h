@@ -27,12 +27,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeckComponent2DBase;
 class CCPACSDeck;
 
 namespace generated
 {
-    class CPACSDeckComponent2DBase;
-
     // This class is used in:
     // CPACSDeck
 
@@ -60,20 +59,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetGalleys() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetGalleys();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetGalleys() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetGalleys();
 
         TIGL_EXPORT virtual size_t GetGalleyCount() const;
         TIGL_EXPORT virtual size_t GetGalleyIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetGalley(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetGalley(size_t index);
+        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetGalley(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetGalley(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetGalley(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetGalley(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetGalley(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetGalley(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& AddGalley();
-        TIGL_EXPORT virtual void RemoveGalley(CPACSDeckComponent2DBase& ref);
+        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& AddGalley();
+        TIGL_EXPORT virtual void RemoveGalley(CCPACSDeckComponent2DBase& ref);
 
     protected:
         CCPACSDeck* m_parent;
@@ -81,7 +80,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Galley
-        std::vector<std::unique_ptr<CPACSDeckComponent2DBase>> m_galleys;
+        std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>> m_galleys;
 
     private:
         CPACSGalleys(const CPACSGalleys&) = delete;
@@ -94,5 +93,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSGalleys = generated::CPACSGalleys;
-using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 } // namespace tigl

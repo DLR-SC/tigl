@@ -185,7 +185,7 @@ namespace generated
 
         // read element structuralMounts
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralMounts")) {
-            m_structuralMounts = boost::in_place(this, m_uidMgr);
+            m_structuralMounts = boost::in_place(reinterpret_cast<CCPACSDeckComponent2DBase*>(this), m_uidMgr);
             try {
                 m_structuralMounts->ReadCPACS(tixiHandle, xpath + "/structuralMounts");
             } catch(const std::exception& e) {
@@ -196,7 +196,7 @@ namespace generated
 
         // read element transformation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation = boost::in_place(this, m_uidMgr);
+            m_transformation = boost::in_place(reinterpret_cast<CCPACSDeckComponent2DBase*>(this), m_uidMgr);
             try {
                 m_transformation->ReadCPACS(tixiHandle, xpath + "/transformation");
             } catch(const std::exception& e) {
@@ -318,12 +318,12 @@ namespace generated
         return m_structuralMounts;
     }
 
-    const boost::optional<CPACSTransformation2D>& CPACSDeckComponent2DBase::GetTransformation() const
+    const boost::optional<CCPACSTransformationPlanar>& CPACSDeckComponent2DBase::GetTransformation() const
     {
         return m_transformation;
     }
 
-    boost::optional<CPACSTransformation2D>& CPACSDeckComponent2DBase::GetTransformation()
+    boost::optional<CCPACSTransformationPlanar>& CPACSDeckComponent2DBase::GetTransformation()
     {
         return m_transformation;
     }
@@ -331,7 +331,7 @@ namespace generated
     CPACSDeckStructuralMounts& CPACSDeckComponent2DBase::GetStructuralMounts(CreateIfNotExistsTag)
     {
         if (!m_structuralMounts)
-            m_structuralMounts = boost::in_place(this, m_uidMgr);
+            m_structuralMounts = boost::in_place(reinterpret_cast<CCPACSDeckComponent2DBase*>(this), m_uidMgr);
         return *m_structuralMounts;
     }
 
@@ -340,10 +340,10 @@ namespace generated
         m_structuralMounts = boost::none;
     }
 
-    CPACSTransformation2D& CPACSDeckComponent2DBase::GetTransformation(CreateIfNotExistsTag)
+    CCPACSTransformationPlanar& CPACSDeckComponent2DBase::GetTransformation(CreateIfNotExistsTag)
     {
         if (!m_transformation)
-            m_transformation = boost::in_place(this, m_uidMgr);
+            m_transformation = boost::in_place(reinterpret_cast<CCPACSDeckComponent2DBase*>(this), m_uidMgr);
         return *m_transformation;
     }
 

@@ -22,6 +22,7 @@
 #include <CCPACSPointXY.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSPointXYZ.h"
 #include "CPACSPointZ.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
@@ -30,27 +31,27 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSProfileBasedStructuralElement;
+class CCPACSDeckComponent2DBase;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSProfileBasedStructuralElement
+    // CPACSDeckComponent2DBase
 
-    /// @brief 2D transformation
+    /// @brief Planar transformation
     /// 
     /// 
     /// 
-    class CPACSTransformation2D : public CTiglOptUIDObject
+    class CPACSTransformationPlanar : public CTiglOptUIDObject
     {
     public:
-        TIGL_EXPORT CPACSTransformation2D(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformationPlanar(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSTransformation2D();
+        TIGL_EXPORT virtual ~CPACSTransformationPlanar();
 
-        TIGL_EXPORT CCPACSProfileBasedStructuralElement* GetParent();
+        TIGL_EXPORT CCPACSDeckComponent2DBase* GetParent();
 
-        TIGL_EXPORT const CCPACSProfileBasedStructuralElement* GetParent() const;
+        TIGL_EXPORT const CCPACSDeckComponent2DBase* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -64,8 +65,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSPointXY>& GetScaling() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSPointXY>& GetScaling();
+        TIGL_EXPORT virtual const boost::optional<CPACSPointXYZ>& GetScaling() const;
+        TIGL_EXPORT virtual boost::optional<CPACSPointXYZ>& GetScaling();
 
         TIGL_EXPORT virtual const boost::optional<CPACSPointZ>& GetRotation() const;
         TIGL_EXPORT virtual boost::optional<CPACSPointZ>& GetRotation();
@@ -73,7 +74,7 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSPointXY>& GetTranslation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSPointXY>& GetTranslation();
 
-        TIGL_EXPORT virtual CCPACSPointXY& GetScaling(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSPointXYZ& GetScaling(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveScaling();
 
         TIGL_EXPORT virtual CPACSPointZ& GetRotation(CreateIfNotExistsTag);
@@ -83,14 +84,14 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTranslation();
 
     protected:
-        CCPACSProfileBasedStructuralElement* m_parent;
+        CCPACSDeckComponent2DBase* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<std::string>   m_uID;
 
         /// Scaling of the structural profile
-        boost::optional<CCPACSPointXY> m_scaling;
+        boost::optional<CPACSPointXYZ> m_scaling;
 
         /// rotation around z-axis of profile definition
         boost::optional<CPACSPointZ>   m_rotation;
@@ -99,14 +100,13 @@ namespace generated
         boost::optional<CCPACSPointXY> m_translation;
 
     private:
-        CPACSTransformation2D(const CPACSTransformation2D&) = delete;
-        CPACSTransformation2D& operator=(const CPACSTransformation2D&) = delete;
+        CPACSTransformationPlanar(const CPACSTransformationPlanar&) = delete;
+        CPACSTransformationPlanar& operator=(const CPACSTransformationPlanar&) = delete;
 
-        CPACSTransformation2D(CPACSTransformation2D&&) = delete;
-        CPACSTransformation2D& operator=(CPACSTransformation2D&&) = delete;
+        CPACSTransformationPlanar(CPACSTransformationPlanar&&) = delete;
+        CPACSTransformationPlanar& operator=(CPACSTransformationPlanar&&) = delete;
     };
 } // namespace generated
 
-// Aliases in tigl namespace
-using CCPACSTransformation2D = generated::CPACSTransformation2D;
+// CPACSTransformationPlanar is customized, use type CCPACSTransformationPlanar directly
 } // namespace tigl

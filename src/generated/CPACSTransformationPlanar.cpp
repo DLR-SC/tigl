@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSProfileBasedStructuralElement.h"
-#include "CPACSTransformation2D.h"
+#include "CCPACSDeckComponent2DBase.h"
+#include "CPACSTransformationPlanar.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,39 +27,39 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSTransformation2D::CPACSTransformation2D(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr)
+    CPACSTransformationPlanar::CPACSTransformationPlanar(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSTransformation2D::~CPACSTransformation2D()
+    CPACSTransformationPlanar::~CPACSTransformationPlanar()
     {
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
-    const CCPACSProfileBasedStructuralElement* CPACSTransformation2D::GetParent() const
+    const CCPACSDeckComponent2DBase* CPACSTransformationPlanar::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSProfileBasedStructuralElement* CPACSTransformation2D::GetParent()
+    CCPACSDeckComponent2DBase* CPACSTransformationPlanar::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSTransformation2D::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSTransformationPlanar::GetNextUIDParent() const
     {
         return m_parent;
     }
 
-    CTiglUIDObject* CPACSTransformation2D::GetNextUIDParent()
+    CTiglUIDObject* CPACSTransformationPlanar::GetNextUIDParent()
     {
         return m_parent;
     }
 
-    CTiglUIDManager& CPACSTransformation2D::GetUIDManager()
+    CTiglUIDManager& CPACSTransformationPlanar::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -67,7 +67,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSTransformation2D::GetUIDManager() const
+    const CTiglUIDManager& CPACSTransformationPlanar::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -75,7 +75,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSTransformation2D::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSTransformationPlanar::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -87,7 +87,7 @@ namespace generated
 
         // read element scaling
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/scaling")) {
-            m_scaling = boost::in_place(this, m_uidMgr);
+            m_scaling = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
             try {
                 m_scaling->ReadCPACS(tixiHandle, xpath + "/scaling");
             } catch(const std::exception& e) {
@@ -98,7 +98,7 @@ namespace generated
 
         // read element rotation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
-            m_rotation = boost::in_place(this, m_uidMgr);
+            m_rotation = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
             try {
                 m_rotation->ReadCPACS(tixiHandle, xpath + "/rotation");
             } catch(const std::exception& e) {
@@ -109,7 +109,7 @@ namespace generated
 
         // read element translation
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/translation")) {
-            m_translation = boost::in_place(this, m_uidMgr);
+            m_translation = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
             try {
                 m_translation->ReadCPACS(tixiHandle, xpath + "/translation");
             } catch(const std::exception& e) {
@@ -121,7 +121,7 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
-    void CPACSTransformation2D::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSTransformationPlanar::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
         if (m_uID) {
@@ -168,12 +168,12 @@ namespace generated
 
     }
 
-    const boost::optional<std::string>& CPACSTransformation2D::GetUID() const
+    const boost::optional<std::string>& CPACSTransformationPlanar::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSTransformation2D::SetUID(const boost::optional<std::string>& value)
+    void CPACSTransformationPlanar::SetUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (!m_uID && value) {
@@ -189,68 +189,68 @@ namespace generated
         m_uID = value;
     }
 
-    const boost::optional<CCPACSPointXY>& CPACSTransformation2D::GetScaling() const
+    const boost::optional<CPACSPointXYZ>& CPACSTransformationPlanar::GetScaling() const
     {
         return m_scaling;
     }
 
-    boost::optional<CCPACSPointXY>& CPACSTransformation2D::GetScaling()
+    boost::optional<CPACSPointXYZ>& CPACSTransformationPlanar::GetScaling()
     {
         return m_scaling;
     }
 
-    const boost::optional<CPACSPointZ>& CPACSTransformation2D::GetRotation() const
+    const boost::optional<CPACSPointZ>& CPACSTransformationPlanar::GetRotation() const
     {
         return m_rotation;
     }
 
-    boost::optional<CPACSPointZ>& CPACSTransformation2D::GetRotation()
+    boost::optional<CPACSPointZ>& CPACSTransformationPlanar::GetRotation()
     {
         return m_rotation;
     }
 
-    const boost::optional<CCPACSPointXY>& CPACSTransformation2D::GetTranslation() const
+    const boost::optional<CCPACSPointXY>& CPACSTransformationPlanar::GetTranslation() const
     {
         return m_translation;
     }
 
-    boost::optional<CCPACSPointXY>& CPACSTransformation2D::GetTranslation()
+    boost::optional<CCPACSPointXY>& CPACSTransformationPlanar::GetTranslation()
     {
         return m_translation;
     }
 
-    CCPACSPointXY& CPACSTransformation2D::GetScaling(CreateIfNotExistsTag)
+    CPACSPointXYZ& CPACSTransformationPlanar::GetScaling(CreateIfNotExistsTag)
     {
         if (!m_scaling)
-            m_scaling = boost::in_place(this, m_uidMgr);
+            m_scaling = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
         return *m_scaling;
     }
 
-    void CPACSTransformation2D::RemoveScaling()
+    void CPACSTransformationPlanar::RemoveScaling()
     {
         m_scaling = boost::none;
     }
 
-    CPACSPointZ& CPACSTransformation2D::GetRotation(CreateIfNotExistsTag)
+    CPACSPointZ& CPACSTransformationPlanar::GetRotation(CreateIfNotExistsTag)
     {
         if (!m_rotation)
-            m_rotation = boost::in_place(this, m_uidMgr);
+            m_rotation = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
         return *m_rotation;
     }
 
-    void CPACSTransformation2D::RemoveRotation()
+    void CPACSTransformationPlanar::RemoveRotation()
     {
         m_rotation = boost::none;
     }
 
-    CCPACSPointXY& CPACSTransformation2D::GetTranslation(CreateIfNotExistsTag)
+    CCPACSPointXY& CPACSTransformationPlanar::GetTranslation(CreateIfNotExistsTag)
     {
         if (!m_translation)
-            m_translation = boost::in_place(this, m_uidMgr);
+            m_translation = boost::in_place(reinterpret_cast<CCPACSTransformationPlanar*>(this), m_uidMgr);
         return *m_translation;
     }
 
-    void CPACSTransformation2D::RemoveTranslation()
+    void CPACSTransformationPlanar::RemoveTranslation()
     {
         m_translation = boost::none;
     }

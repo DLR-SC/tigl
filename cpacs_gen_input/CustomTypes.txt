@@ -21,6 +21,7 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSTransformationSE3             CCPACSTransformationSE3
+CPACSTransformationPlanar          CCPACSTransformationPlanar
 CPACSStringVectorBase              CCPACSStringVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector
@@ -53,6 +54,7 @@ CPACSFuselageElements              CCPACSFuselageSectionElements
 
 CPACSDeck                          CCPACSDeck
 CPACSDeckComponentBase             CCPACSDeckComponentBase
+CPACSDeckComponent2DBase           CCPACSDeckComponent2DBase
 
 CPACSComponentSegment              CCPACSWingComponentSegment
 CPACSComponentSegments             CCPACSWingComponentSegments

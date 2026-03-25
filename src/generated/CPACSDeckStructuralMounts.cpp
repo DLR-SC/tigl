@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSDeckComponent2DBase.h"
 #include "CCPACSDeckComponentBase.h"
-#include "CPACSDeckComponent2DBase.h"
 #include "CPACSDeckStructuralMount.h"
 #include "CPACSDeckStructuralMounts.h"
 #include "CTiglError.h"
@@ -30,12 +30,12 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
+    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSDeckComponent2DBase);
+        m_parentType = &typeid(CCPACSDeckComponent2DBase);
     }
 
     CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
@@ -53,8 +53,8 @@ namespace generated
     const CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSDeckComponent2DBase>()) {
-                return GetParent<CPACSDeckComponent2DBase>();
+            if (IsParent<CCPACSDeckComponent2DBase>()) {
+                return GetParent<CCPACSDeckComponent2DBase>();
             }
             if (IsParent<CCPACSDeckComponentBase>()) {
                 return GetParent<CCPACSDeckComponentBase>();
@@ -66,8 +66,8 @@ namespace generated
     CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSDeckComponent2DBase>()) {
-                return GetParent<CPACSDeckComponent2DBase>();
+            if (IsParent<CCPACSDeckComponent2DBase>()) {
+                return GetParent<CCPACSDeckComponent2DBase>();
             }
             if (IsParent<CCPACSDeckComponentBase>()) {
                 return GetParent<CCPACSDeckComponentBase>();

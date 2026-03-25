@@ -29,12 +29,12 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeckComponent2DBase;
 class CCPACSDeckComponentBase;
 
 namespace generated
 {
     class CPACSDeckStructuralMount;
-    class CPACSDeckComponent2DBase;
 
     // This class is used in:
     // CPACSDeckComponent2DBase
@@ -47,7 +47,7 @@ namespace generated
     class CPACSDeckStructuralMounts
     {
     public:
-        TIGL_EXPORT CPACSDeckStructuralMounts(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckStructuralMounts(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckStructuralMounts();
@@ -61,7 +61,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
+            static_assert(std::is_same<P, CCPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -71,7 +71,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
+            static_assert(std::is_same<P, CCPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -122,5 +122,4 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSDeckStructuralMounts = generated::CPACSDeckStructuralMounts;
 using CCPACSDeckStructuralMount = generated::CPACSDeckStructuralMount;
-using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 } // namespace tigl
