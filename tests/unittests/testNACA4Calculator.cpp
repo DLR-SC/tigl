@@ -432,8 +432,6 @@ TEST(NACA4Calculator, naca2412_edge_counter){
     TopoDS_Wire wire = closedWireBuilder.Wire();
     ASSERT_TRUE(BRepCheck_Analyzer(wire).IsValid());
 
-    tigl::dumpShape(wire, "TestData/export", "naca_profile1_wire", 0);
-
     int edgeCount = 0;
     for (TopExp_Explorer ex(wire, TopAbs_EDGE); ex.More(); ex.Next()) ++edgeCount;
     if (te.IsNull()) {
