@@ -594,13 +594,6 @@
                 <naca4DigitCode>6306</naca4DigitCode>
             </nacaProfile>
          </wingAirfoil>
-         <wingAirfoil uID="NACA2212">
-          <name>NACA0.00.00.12</name>
-          <description>NACA 4 Series Profile</description> 
-            <nacaProfile>
-                <naca4DigitCode>2212</naca4DigitCode>
-            </nacaProfile>
-         </wingAirfoil>
       </wingAirfoils>
       <fuselageProfiles>
         <fuselageProfile uID="fuselageCircleProfileuID">
