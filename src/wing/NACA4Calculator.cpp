@@ -81,10 +81,10 @@ namespace tigl{
             if(x < 0 || x > 1){
                 throw ::std::logic_error("error in NACA4Calculator::camberline: x must be between 0 and 1.");
             }
-            else if(0 <= x && x <= p){
+            if (x <= p) {
                 return (2*p*x - x*x)*m/(p*p);; 
             }
-            else if(x > p){ 
+            else { 
                 return (1 - 2*p + 2*p*x - x*x)*m/((1-p)*(1-p));;
             }
         }
