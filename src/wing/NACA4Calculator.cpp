@@ -40,7 +40,7 @@ namespace tigl{
                 throw ::std::logic_error("error in NACA4Calculator The argument max_camber_position must be between 0 and 9.");
             }
             if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
-                throw ::std::logic_error("error in NACA4Calculator max_profile_thickness after normalization must be between 0 and 1.");
+                throw ::std::logic_error("error in NACA4Calculator max_profile_thicknessmust be between 0 and 99.");
             }
         }
 
