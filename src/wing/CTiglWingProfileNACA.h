@@ -78,7 +78,7 @@ namespace tigl{
         TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         /**
-         * @brief Get upper and lower wing profile into one edge
+         * @brief Get upper and lower wing profile into one edge, this function thros an error since it is not implemented for the NACA profile definition.
          * 
          * @param mod 
          * @return TIGL_EXPORT const& 
