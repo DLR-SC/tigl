@@ -123,7 +123,7 @@ namespace tigl{
                 return ( 2*p - 2*x)*m/((1-p)*(1-p));;
             }
             else{
-                throw ::std::logic_error("error in NACA4Calculator::camberline_derivative: x must be between 0 and 1.");
+                throw CTiglError("error in NACA4Calculator::camberline_derivative: x must be between 0 and 1.");
             }
         }
 
