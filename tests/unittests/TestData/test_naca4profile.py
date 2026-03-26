@@ -22,7 +22,6 @@ class TestNACA(unittest.TestCase):
         profiles = self.aircraft_config.get_wing_profiles()
         self.wing_profile = profiles.get_profile("NACA0012")
         choice = self.wing_profile.get_naca_profile_choice4()
-        help(choice)
         assert isinstance(self.wing_profile.get_naca_profile_choice4(), tigl3.configuration.CPACSNacaProfile)
         upper_wire = self.wing_profile.get_upper_wire()
         lower_wire = self.wing_profile.get_lower_wire()
