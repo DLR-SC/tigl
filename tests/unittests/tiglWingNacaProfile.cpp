@@ -115,10 +115,10 @@ TEST_F(WingNACAProfile, naca0012_generate_edges_lower)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
 
-      Standard_Real u1, u2;
+    Standard_Real u1, u2;
     tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA0012");
     TopoDS_Edge lowerWire = profile.GetLowerWire();
-        EXPECT_TRUE(!lowerWire.IsNull());
-        Handle(Geom_Curve) lowerCurve = BRep_Tool::Curve(lowerWire, u1, u2);
-        ASSERT_TRUE(!lowerCurve.IsNull());
+    EXPECT_FALSE(lowerWire.IsNull());
+    Handle(Geom_Curve) lowerCurve = BRep_Tool::Curve(lowerWire, u1, u2);
+    ASSERT_FALSE(lowerCurve.IsNull());
 }
