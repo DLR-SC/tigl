@@ -138,6 +138,7 @@ TEST(NACA4Calculator, naca0012_max_profile_thickness){
     double right_result = NACA4.profile_thickness(0.311);
     EXPECT_GT(result1, left_result);
     EXPECT_GT(result1, right_result);
+    EXPECT_NEAR(result1, 0.06001216339, 1e-11); 
 }
 
 TEST(NACA4Calculator, naca0018_max_profile_thickness){ 
@@ -147,7 +148,7 @@ TEST(NACA4Calculator, naca0018_max_profile_thickness){
     double right_result = NACA4.profile_thickness(0.311);
     EXPECT_GT(result1, left_result);
     EXPECT_GT(result1, right_result);
-    EXPECT_NEAR(result1, 0.09, 1e-2); //TODO: Fact check this 1e-2
+    EXPECT_NEAR(result1, 0.09001824509, 1e-12); 
 }
 
 TEST(NACA4Calculator, naca2212_camberline_at_te_and_le){ 
