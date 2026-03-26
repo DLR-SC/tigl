@@ -61,7 +61,7 @@ namespace tigl{
                 *this = NACA4Calculator(m, p, t, te_thickness);
             }
             catch(...){
-                throw std::invalid_argument("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
+                throw CTiglError("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
             }
 
         }
