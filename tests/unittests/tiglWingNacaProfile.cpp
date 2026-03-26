@@ -21,20 +21,13 @@
 */
 
 #include "test.h" // Brings in the GTest framework
-//#include "testUtils.h"
 #include "tigl.h"
-//#include "math/tiglmathfunctions.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWingProfile.h"
-//#include "CNamedShape.h"
 #include "BRep_Tool.hxx"
-//#include "BRepTools_WireExplorer.hxx"
-//#include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepTools.hxx"
 #include "Geom_Curve.hxx"
-//#include "gp_Pnt.hxx"
-//#include "GeomAPI_ProjectPointOnCurve.hxx"
-//#include "Geom_BSplineCurve.hxx"
+
 
 
 /******************************************************************************/
@@ -87,10 +80,13 @@ TEST_F(WingNACAProfile, naca0012_generateBreps)
         TopoDS_Edge lowerWire = profile.GetLowerWire();
         TopoDS_Edge trailingEdge = profile.GetTrailingEdge();
         
-        std::string base = "brep_" + code;
-        BRepTools::Write(upperWire, (base + "_upperWire.brep").c_str());
-        BRepTools::Write(lowerWire, (base + "_lowerWire.brep").c_str());
-        BRepTools::Write(trailingEdge, (base +"_trailingEdge.brep").c_str());  
+        EXPECT_NO_THROW(upperWire);
+        EXPECT_NO_THROW(lowerWire);
+        EXPECT_NO_THROW(trailingEdge);
+
+        EXPECT_FALSE(upperWire.IsNull());
+        EXPECT_FALSE(lowerWire.IsNull());
+
     }   
 }
 
