@@ -177,17 +177,17 @@ TEST(NACA4Calculator, naca0015_camberline_at_te_and_le){
 
 TEST(NACA4Calculator, naca15030105_assertion_throw_normalization){
     
-    EXPECT_THROW(tigl::NACA4Calculator NACA4(150,30,105, 0.001575), CTiglError);
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(150,30,105, 0.001575), tigl::CTiglError);
 }
 
 TEST(NACA4Calculator, naca03010_assertion_throw_normalization){
     
-    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,30,10, 0.001575), CTiglError);
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,30,10, 0.001575), tigl::CTiglError);
 }
 
 TEST(NACA4Calculator, naca03250_assertion_throw_normalization){
     
-    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,3,250, 0.001575), CTiglError);
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,3,250, 0.001575), tigl::CTiglError);
 }
 
 
