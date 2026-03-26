@@ -34,7 +34,7 @@ namespace tigl{
          , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
             if(this->max_camber > 1 || this->max_camber < 0){
-                throw ::std::logic_error("error in NACA4Calculator max_camber after normalization must be between 0 and 1.");
+                throw ::std::logic_error("error in NACA4Calculator The argument max_camber must be between 0 and 9.");
             }
             if(this->max_camber_position > 1 || this->max_camber_position < 0){
                 throw ::std::logic_error("error in NACA4Calculator max_camber_position after normalization must be between 0 and 1.");
