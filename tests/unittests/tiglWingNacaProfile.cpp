@@ -104,9 +104,9 @@ TEST_F(WingNACAProfile, naca0012_generate_edges_upper){
         // get profile curves of airfoil
         tigl::CCPACSWingProfile & profile = config.GetWingProfile("NACA0012");
         TopoDS_Edge upperWire = profile.GetUpperWire();
-        EXPECT_TRUE(!upperWire.IsNull());
+        EXPECT_FALSE(upperWire.IsNull());
         Handle(Geom_Curve) upperCurve = BRep_Tool::Curve(upperWire, u1, u2);
-        ASSERT_TRUE(!upperCurve.IsNull());
+        ASSERT_FALSE(upperCurve.IsNull());
 }
 
 TEST_F(WingNACAProfile, naca0012_generate_edges_lower)
