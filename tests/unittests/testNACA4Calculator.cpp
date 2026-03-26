@@ -43,6 +43,7 @@
 #include <BRep_Tool.hxx> 
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
+#include "CTiglError.h"
 
 TEST(NACA4Calculator, naca2212_le_and_te_points){
     tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);

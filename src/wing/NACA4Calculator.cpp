@@ -24,6 +24,7 @@
 #include "tiglmathfunctions.h"
 #include "NACA4Calculator.h"
 #include "CFunctionToBspline.h"
+#include "CTiglError.h"
 
 namespace tigl{
         
