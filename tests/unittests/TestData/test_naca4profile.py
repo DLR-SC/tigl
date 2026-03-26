@@ -8,7 +8,7 @@ class TestNACA(unittest.TestCase):
     def setUp(self):
         self.tixi_h = Tixi3()
         self.tigl_h = Tigl3()
-        self.assertIsNone(self.tixi_h.open("hilfe_ohne_build_in_pixi.cpacs.xml"))
+        self.assertIsNone(self.tixi_h.open("naca_test.cpacs.xml"))
         self.assertIsNone(self.tigl_h.open(self.tixi_h, ""))
         mgr = tigl3.configuration.CCPACSConfigurationManager_get_instance()
         self.aircraft_config = mgr.get_configuration(self.tigl_h._handle.value)
