@@ -120,6 +120,13 @@ void TIGLCreatorSettingsDialog::onSettingsAccepted()
 
     _settings.setTemplateDir(templateLineEdit->text());
     _settings.setProfilesDBPath(profilesDBLineEdit->text());
+
+    _settings.setGridOriginX(grid_origin_X_spinbox->value());
+    _settings.setGridOriginX(grid_origin_Y_spinbox->value());
+    _settings.setGridSize(grid_size_spinbox->value());
+    _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
+
+    emit settingsUpdated();
 }
 
 void TIGLCreatorSettingsDialog::updateEntries()
@@ -161,6 +168,11 @@ void TIGLCreatorSettingsDialog::updateEntries()
     templateLineEdit->setText(_settings.templateDir().absolutePath());
     profilesDBLineEdit->setText(_settings.profilesDBPath());
     cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
+
+    grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+    grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+    grid_size_spinbox->setValue(_settings.gridSize());
+    grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
 
     auto i(tiglMaterials::materialMap.begin());
     QStringList items;
