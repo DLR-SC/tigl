@@ -81,9 +81,9 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft() const
     PNamedShape mirroredShape = trafo.Transform(GetLoft());
 
     std::string mirrorName = mirroredShape->Name();
-    mirrorName += "M";
+    mirrorName += ":mirrored";
     std::string mirrorShortName = mirroredShape->ShortName();
-    mirrorShortName += "M";
+    mirrorShortName += ":mirrored";
     mirroredShape->SetName(mirrorName.c_str());
     mirroredShape->SetShortName(mirrorShortName.c_str());
     return mirroredShape;
