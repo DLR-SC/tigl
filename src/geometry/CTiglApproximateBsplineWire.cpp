@@ -23,6 +23,7 @@
 */
 
 #include "CTiglApproximateBsplineWire.h"
+#include "CTiglBSplineApproxInterp.h"
 #include "CTiglError.h"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
@@ -32,25 +33,43 @@
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAbs_Shape.hxx"
 #include "Precision.hxx"
+#include "CTiglLogging.h"
             
 namespace tigl 
 {
 
 // Constructor
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire()
-{
-}
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+    : continuity(_C0)
+    , m_approximationSettings(nrControlPoints)
+    , m_profileUID(&profileUID)
+    , m_isWingProfile(isWingProfile)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+{}
+
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+    : continuity(_C0)
+    , m_approximationSettings(tolerance)
+    , m_profileUID(&profileUID)
+    , m_isWingProfile(isWingProfile)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+{}
 
 // Destructor
 CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire()
 {
 }
 
+
 // Builds the wire from the given points
 TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
 {
+    bool endTangency = (continuity == _C1);
+
     if (points.size() < 2) {
-        throw CTiglError("To less points to build a wire in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
+        throw CTiglError("Too few points to build a curve in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
     // If first and last point are identical always force wire closure independently of given forceClosed flag.
@@ -58,23 +77,92 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         forceClosed = true;
     }
 
-    TColgp_Array1OfPnt pointsArray(1, static_cast<Standard_Integer>(points.size()));
-    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
-        pointsArray.SetValue(static_cast<Standard_Integer>(i + 1), points[i]);
+    // Remove points which are too close to each other.
+    gp_Pnt prevPnt = points[0];
+    CPointContainer usedPoints;
+    usedPoints.push_back(prevPnt);
+    for (CPointContainer::size_type i = 1; i < points.size(); i++) {
+        gp_Pnt nextPnt = points[i];
+        if (prevPnt.Distance(nextPnt) <= Precision::Confusion()) {
+            continue;
+        }
+        usedPoints.push_back(nextPnt);
+        prevPnt = nextPnt;
     }
 
-    Handle(Geom_BSplineCurve) hcurve = GeomAPI_PointsToBSpline(
-        pointsArray, 
-        Geom_BSplineCurve::MaxDegree() - 6, 
-        Geom_BSplineCurve::MaxDegree(), 
-        GeomAbs_C2, 
-        Precision::Confusion()).Curve();
 
-    // This one works around a bug in OpenCascade if a curve is closed and
-    // periodic. After calling this method, the curve is still closed but
-    // no longer periodic, which leads to errors when creating the 3d-lofts
-    // from the curves.
-    hcurve->SetNotPeriodic();
+    // Test if we have to build a closed bspline curve from the remaining
+    // points. This is true if the start and end point are very close to each other.
+    int pointCount  = static_cast<Standard_Integer>(usedPoints.size());
+    gp_Pnt startPnt = usedPoints[0];
+    gp_Pnt endPnt   = usedPoints[pointCount - 1];
+
+    if (forceClosed  && startPnt.Distance(endPnt) > Precision::Confusion()) {
+        // due to compatibility, tangency is only allowed if start and endpoint are specified the same
+        endTangency = false;
+    }
+
+    if (pointCount < 2) {
+        throw CTiglError("Too few points to build a curve in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
+    }
+
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
+    for (int j = 0; j < pointCount; j++) {
+        hpoints->SetValue(j + 1, usedPoints[j]);
+    }
+
+    // Define root mean square error as the default approximation error computation method
+    CalcPointVecErrorFct approxErrFct = calcPointVecErrorRMSE;
+    std::string approxErrStrLong = "root mean square error";
+    if (m_approxErrStr == "MaxError") {
+        approxErrFct = calcPointVecErrorMax;
+        approxErrStrLong = "maximum error";
+    }
+    else if (m_approxErrStr != "RMSE"){
+        throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
+    }
+
+    Handle(Geom_BSplineCurve) hcurve;
+    if (std::holds_alternative<int>(m_approximationSettings)) {
+        int nrControlPoints = std::get<int>(m_approximationSettings);
+        double errApproxCalc = -1.;
+
+        if (nrControlPoints < 3) {
+            throw CTiglError("CTiglApproximateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
+        }
+
+        CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
+
+        if (m_isWingProfile) {
+            // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+            approx.InterpolatePoint(0, false);
+            approx.InterpolatePoint(hpoints->Length()-1, false);
+        }
+
+        // Account for optional defined indices whose points should be interpolated
+        for(auto idx: m_interpolatedPointsIndices) {
+            int idxInt = (int) idx;
+            if ( idxInt < 1 || points.size() < idxInt) {
+                throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Index " + std::to_string(idxInt) + " in interpolatedPointsIndices must be in range of [1, npoints]");
+            }
+            // User input it 1-based, internal vectors are 0-based
+            approx.InterpolatePoint(idxInt-1, false);
+        }
+
+        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), approxErrFct);
+
+        hcurve = approxResult.curve;
+        errApproxCalc = approxResult.error;
+
+        LOG(WARNING) << "The profile '" << *m_profileUID << "' is created by approximating the point list using " << hcurve->NbPoles() << " poles. This leads to a " << approxErrStrLong << " of " << errApproxCalc << "." << std::endl;
+    }
+    else if (std::holds_alternative<double>(m_approximationSettings)) {
+        double maxErrorApprox = std::get<double>(m_approximationSettings);
+        throw CTiglError("CTiglApproximateBsplineWire::BuildWire: 'Max Error' open for implementation");
+    }
+    else {
+        throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Invalid defintion of approximationSettings");
+    }
 
     TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
     BRepBuilderAPI_MakeWire wireBuilder(edge);
@@ -85,12 +173,6 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
     TopoDS_Wire wire = wireBuilder.Wire();
 
     if (forceClosed && !hcurve->IsClosed()) {
-        gp_Pnt startPnt = hcurve->StartPoint();
-        gp_Pnt endPnt   = hcurve->EndPoint();
-        if (startPnt.Distance(endPnt) <= Precision::Confusion()) {
-            throw CTiglError("Can't find a valid start and end point for wire closing in"
-                             "CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
-        }
         edge = BRepBuilderAPI_MakeEdge(endPnt, startPnt);
         wire = BRepBuilderAPI_MakeWire(wire, edge).Wire();
         if (!wire.Closed()) {
@@ -111,7 +193,7 @@ TiglAlgorithmCode CTiglApproximateBsplineWire::GetAlgorithmCode() const
 gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinX(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglApproximateBsplineWire::GetPointWithMinX", TIGL_ERROR);
     }
 
     gp_Pnt minXPnt = points[0];
@@ -127,7 +209,7 @@ gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinX(const CPointContainer& poin
 gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxX(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglApproximateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
     }
 
     gp_Pnt maxXPnt = points[0];
@@ -143,7 +225,7 @@ gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxX(const CPointContainer& poin
 gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglApproximateBsplineWire::GetPointWithMinY", TIGL_ERROR);
     }
 
     gp_Pnt minYPnt = points[0];
@@ -159,7 +241,7 @@ gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinY(const CPointContainer& poin
 gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglApproximateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
     }
 
     gp_Pnt maxYPnt = points[0];

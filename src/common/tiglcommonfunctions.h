@@ -499,5 +499,25 @@ void ReplaceAdjacentWithMerged(ArrayType& list, BinaryPredicate is_adjacent, Bin
 
 TIGL_EXPORT tigl::CTiglPoint TiglAxisToCTiglPoint(TiglAxis axis);
 
+// Define functions to compute the error between two vectors of gp_Pnt type in different ways
+// Can be used e.g. for computing the error of approximating a curve based on a point list
+using CalcPointVecErrorFct = double(*)(std::vector<gp_Pnt>, std::vector<gp_Pnt>);
+
+/**
+ * @brief calcPointVecErrorMax Calculates the maximum error between to lists of gp_Pnt vectors.
+ * @param pntsRef           gp_Pnt vector of the exact points
+ * @param pntsCmp           gp_Pnt vector of the points to compare
+ * @return the maximum error
+ */
+TIGL_EXPORT double calcPointVecErrorMax(std::vector<gp_Pnt> pntsRef, std::vector<gp_Pnt> pntsCmp);
+
+/**
+ * @brief calcPointVecErrorRMSE Calculates the root mean square error between to lists of gp_Pnt vectors.
+ * @param pntsRef           gp_Pnt vector of the exact points
+ * @param pntsCmp           gp_Pnt vector of the points to compare
+ * @return the root mean square error
+ */
+TIGL_EXPORT double calcPointVecErrorRMSE(std::vector<gp_Pnt> pntsRef, std::vector<gp_Pnt> pntsCmp);
+
 
 #endif // TIGLCOMMONFUNCTIONS_H
