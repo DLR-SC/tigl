@@ -682,7 +682,22 @@ void TIGLCreatorWidget::setTransparency()
     dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
 
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    dialog->setIntValue(0); // TODO: Include this value within the Geometry Nodes and set value to current and not a hard-wired default
+    int initTransparency;
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Standard_Real t = drawer->Transparency();
+                    initTransparency = static_cast<int>(std::round(t * 100.0));
+                }
+            }
+        }
+    }
+    dialog->setIntValue(initTransparency);
     dialog->setIntRange(0, 100);
 
     dialog->show();
@@ -696,7 +711,23 @@ void TIGLCreatorWidget::setTransparency(int transparency)
 
 void TIGLCreatorWidget::setObjectsColor()
 {
-    QColor color = QColorDialog::getColor(Qt::green, this);
+    QColor initial;
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Quantity_Color qc = drawer->Color();
+                    initial = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
+                }
+            }
+        }
+    }
+
+    QColor color = QColorDialog::getColor(initial, this);
     viewerContext->setObjectsColor(color);
 }
 
@@ -710,7 +741,8 @@ void TIGLCreatorWidget::setObjectsMaterial()
         items << i->first;
         i++;
     }
-    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+    int defaultIndex = 0;
+    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, defaultIndex, false, &ok);
 
     if (ok && !item.isEmpty()) {
         Graphic3d_NameOfMaterial material = tiglMaterials::materialMap[item];
