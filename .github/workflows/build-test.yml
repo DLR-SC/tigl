@@ -116,7 +116,7 @@ jobs:
 
       - name: Create MacOS package
         if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
-        uses: nick-fields/retry@v3  # see https://github.com/actions/runner-images/issues/7522
+        uses: nick-fields/retry@v4  # see https://github.com/actions/runner-images/issues/7522
         with:
           max_attempts: 5
           timeout_minutes: 10
