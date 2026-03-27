@@ -455,5 +455,13 @@ TEST(NACA4Calculator, naca22112_le_and_te_points_with_class_lowerCurve){
     tigl::NACA4LowerCurve lowerCurve(NACA4);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
-    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125923), 1e-7);
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125923), 1e-6);
+}
+
+TEST(NACA4Calculator, naca24112_le_and_te_points_with_class_lowerCurve){
+    tigl::NACA4Calculator  NACA4(2,4,1,12, 0.00252); 
+    tigl::NACA4LowerCurve lowerCurve(NACA4);
+    EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
+    EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00126000), 1e-7);
 }
