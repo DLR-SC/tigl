@@ -1,0 +1,456 @@
+/* 
+* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
+*
+* Created: 2026-01-14 Hannah Gedler <hannah.gedler@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+/**
+* @file
+* @brief Tests for NACA wing profiles
+*/
+
+#include "test.h" // Brings in the GTest framework
+#include "testUtils.h"
+#include "tigl.h"
+#include "math/tiglmathfunctions.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSWingProfile.h"
+#include "gp_Pnt.hxx"
+#include "NACA4Calculator.h"
+#include "generated/CPACSNacaProfile.h"
+#include "CTiglUIDManager.h"
+#include "Debugging.h" 
+#include <BRepCheck_Analyzer.hxx>
+#include <gp_Vec2d.hxx>
+#include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopExp.hxx> 
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <BRep_Tool.hxx> 
+#include "Geom_Curve.hxx"
+#include "Geom_BSplineCurve.hxx"
+#include "CTiglError.h"
+
+TEST(NACA4Calculator, naca2212_le_and_te_points){
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252);
+    if(NACA4.profile_thickness(1) >= 0){ 
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    EXPECT_NEAR(result1.X(), (1.00006), 1e-5); 
+    EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    EXPECT_NEAR(result2.X(), (0.999937), 1e-6); 
+    EXPECT_NEAR(result2.Y(), (-0.00125843), 1e-8);
+    }
+    else{
+        throw tigl::CTiglError("error in testNACA4Calculator::naca2212_le_and_te_points 1 the profile_thickness must be positive or 0.");
+    }
+    if(NACA4.profile_thickness(0) >= 0){
+    gp_Vec2d result3 = NACA4.upper_curve(0.);
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
+    EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
+    gp_Vec2d result4 = NACA4.lower_curve(0.);
+    EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
+    EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+    }
+    else{
+        throw tigl::CTiglError("error in testNACA4Calculator::naca2212_le_and_te_points the profile_thickness must be positive or 0.");
+    }
+}
+
+TEST(NACA4Calculator, naca2212_le_and_te_points_with_class_lowerCurve){
+    tigl::NACA4Calculator  NACA4(2,2,12, 0.00252); 
+    tigl::NACA4LowerCurve lowerCurve(NACA4);
+    EXPECT_NEAR(lowerCurve.valueX(1), (0.999937), 1e-6); 
+    EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125843), 1e-8);
+    gp_Vec2d result3 = NACA4.upper_curve(0.);
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
+    EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
+    gp_Vec2d result4 = NACA4.lower_curve(0.);
+    EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
+    EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+}
+
+TEST(NACA4Calculator, naca0012_random_point){
+    tigl::NACA4Calculator NACA4(0,0,12, 0.00252);
+    if(NACA4.profile_thickness(0.5) >= 0){
+    gp_Vec2d result1 = NACA4.upper_curve(0.5);
+    EXPECT_NEAR(result1.X(), (0.5), 1e-5); 
+    EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
+    gp_Vec2d result2 = NACA4.lower_curve(0.5);
+    EXPECT_NEAR(result2.X(), (0.5), 1e-6); 
+    EXPECT_NEAR(result2.Y(), (-0.0529403), 1e-7);
+    }
+    else{
+        throw tigl::CTiglError("error in testNACA4Calculator::naca0012_random_point 1 the profile_thickness must be positive or 0.");
+    }
+    if(NACA4.profile_thickness(0.) >= 0){
+    gp_Vec2d result3 = NACA4.upper_curve(0.);
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5);  
+    EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
+    gp_Vec2d result4 = NACA4.lower_curve(0.);
+    EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
+    EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+    }
+    else{
+        throw tigl::CTiglError("error in testNACA4Calculator::naca0012_random_point the profile_thickness must be positive or 0.");
+    }
+}
+
+TEST(NACA4Calculator, naca0009_random_point_and_le_point){
+    tigl::NACA4Calculator NACA4(0,0,9, 0.00189);
+    gp_Vec2d result1 = NACA4.upper_curve(0.2);
+    EXPECT_NEAR(result1.X(), (0.2), 1e-5); 
+    EXPECT_NEAR(result1.Y(), (0.0430316), 1e-7);
+    gp_Vec2d result2 = NACA4.lower_curve(0.2);
+    EXPECT_NEAR(result2.X(), (0.2), 1e-6); 
+    EXPECT_NEAR(result2.Y(), (-0.0430316), 1e-7);
+    gp_Vec2d result3 = NACA4.upper_curve(0.);
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
+    EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
+    gp_Vec2d result4 = NACA4.lower_curve(0.);
+    EXPECT_NEAR(result4.X(), (0.0), 1e-6);
+    EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+}
+
+TEST(NACA4Calculator, Nnaca6509_le_and_te_points){
+    tigl::NACA4Calculator NACA4(6,5,9, 0.00189);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    EXPECT_NEAR(result1.X(), (1.00022), 1e-5); 
+    EXPECT_NEAR(result1.Y(), (0.000918906), 1e-9);
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    EXPECT_NEAR(result2.X(), (0.999779), 1e-6); 
+    EXPECT_NEAR(result2.Y(), (-0.000918906), 1e-9);
+    gp_Vec2d result3 = NACA4.upper_curve(0.);
+    EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
+    EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
+    gp_Vec2d result4 = NACA4.lower_curve(0.);
+    EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
+    EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
+}
+
+TEST(NACA4Calculator, naca0012_max_profile_thickness){ 
+    tigl::NACA4Calculator NACA4(0,0,12, 0.00126);
+    double result1 = NACA4.profile_thickness(0.3); 
+    double left_result = NACA4.profile_thickness(0.299); 
+    double right_result = NACA4.profile_thickness(0.311);
+    EXPECT_GT(result1, left_result);
+    EXPECT_GT(result1, right_result);
+    EXPECT_NEAR(result1, 0.06001216339, 1e-11); 
+}
+
+TEST(NACA4Calculator, naca0018_max_profile_thickness){ 
+    tigl::NACA4Calculator NACA4(0,0,18, 0.00189);
+    double result1 = NACA4.profile_thickness(0.3); 
+    double left_result = NACA4.profile_thickness(0.299); 
+    double right_result = NACA4.profile_thickness(0.311);
+    EXPECT_GT(result1, left_result);
+    EXPECT_GT(result1, right_result);
+    EXPECT_NEAR(result1, 0.09001824509, 1e-12); 
+}
+
+TEST(NACA4Calculator, naca2212_camberline_at_te_and_le){ 
+    tigl::NACA4Calculator NACA4(2,2,12, 0.00126);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}
+
+TEST(NACA4Calculator, naca4509_camberline_at_te_and_le){ 
+    tigl::NACA4Calculator NACA4(4,5,9, 0.000945);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}
+
+TEST(NACA4Calculator, naca0015_camberline_at_te_and_le){ 
+    tigl::NACA4Calculator NACA4(0,0,15, 0.001575);
+    double result1 = NACA4.camberline(0.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+    double result2 = NACA4.camberline(1.0); 
+    EXPECT_NEAR(result1, 0, 1e-14);
+}   
+
+TEST(NACA4Calculator, naca15030105_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(150,30,105, 0.001575), tigl::CTiglError);
+}
+
+TEST(NACA4Calculator, naca03010_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,30,10, 0.001575), tigl::CTiglError);
+}
+
+TEST(NACA4Calculator, naca03250_assertion_throw_normalization){
+    
+    EXPECT_THROW(tigl::NACA4Calculator NACA4(0,3,250, 0.001575), tigl::CTiglError);
+}
+
+
+TEST(NACA4Calculator, naca0015_trailingedge_length){
+    tigl::NACA4Calculator NACA4(0,0,15, 0.12);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
+
+
+    EXPECT_NEAR(thickness, 0.12, 1e-14);
+}
+
+TEST(NACA4Calculator, naca001515_trailingedge_length){
+    tigl::NACA4Calculator NACA4(0,0,15, 0.15);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
+
+    EXPECT_NEAR(thickness, 0.15, 1e-14);
+}
+
+TEST(NACA4Calculator, naca2215_trailingedge_length){
+    tigl::NACA4Calculator NACA4(2,2,15, 0.20);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
+
+
+    EXPECT_NEAR(thickness, 0.20, 1e-14);
+}
+
+TEST(NACA4Calculator, naca6415_trailingedge_length){
+    tigl::NACA4Calculator NACA4(6,4,15, 0.13);
+    gp_Vec2d result1 = NACA4.upper_curve(1);
+    double half_thickness1_y = result1.Y();
+    double half_thickness1_x = result1.X();
+    gp_Vec2d result2 = NACA4.lower_curve(1);
+    double half_thickness2_y = result2.Y();
+    double half_thickness2_x = result2.X();
+    double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
+
+
+    EXPECT_NEAR(thickness, 0.13, 1e-14);
+}
+
+TEST(NACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    tigl::NACA4UpperCurve upperCurve(NACA4);
+    ASSERT_EQ(upperCurve.valueY(0.), 0.);
+    ASSERT_EQ(upperCurve.valueY(0.5), 0.);
+    ASSERT_EQ(upperCurve.valueY(1.), 0.);
+    gp_Vec2d pnt = NACA4.upper_curve(0.5);
+    ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
+    ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
+}
+
+TEST(NACA4Calculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoord){
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    tigl::NACA4LowerCurve lowerCurve(NACA4);
+    
+    ASSERT_EQ(lowerCurve.valueY(0.), 0.);
+    ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
+    ASSERT_EQ(lowerCurve.valueY(1.), 0.);
+
+    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
+    ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
+}
+
+TEST(NACA4Calculator, naca2212_bspline_vs_lower_curve_coord)
+{
+    tigl::NACA4Calculator NACA4(2,2,12, 15);
+    Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
+
+    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    gp_Pnt pnt2;
+    lower_spline->D0(0.5, pnt2);
+    ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-4);
+    ASSERT_NEAR(pnt2.Z(), pnt.Y(), 1e-4);
+}
+
+TEST(NACA4Calculator, naca2212_export_bsplines){
+    tigl::NACA4Calculator NACA4(2,2,12, .15);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest.brep");
+}
+
+TEST(NACA4Calculator, naca0012_export_bsplines){
+    tigl::NACA4Calculator NACA4(0,0,12, .015);
+    Handle(Geom_BSplineCurve) upperCurvesym = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurvesym = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurvesym.IsNull());
+    ASSERT_FALSE(lowerCurvesym.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurvesym).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest_symetric.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurvesym).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest_symetric.brep");
+}
+
+TEST(NACA4Calculator, naca2412_LePoint_TePoint){
+
+    // Create a UID manager and use it for the profile. Parent container is not needed for this unit test.
+    tigl::CTiglUIDManager uidMgr;
+    // disambiguate nullptr for overloaded constructors by casting to the intended parent type
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(std::string("2412")));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(0.15));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    TopoDS_Edge upper = profile.GetUpperWire();
+    TopoDS_Edge lower = profile.GetLowerWire();
+    TopoDS_Edge te    = profile.GetTrailingEdge();
+    gp_Pnt lePoint = profile.GetLEPoint();
+    gp_Pnt tePoint = profile.GetTEPoint();
+
+    tigl::NACA4Calculator NACA4(2,4,12, 0.15);
+    gp_Pnt result1 = profile.GetLEPoint();
+    double result2 = NACA4.camberline(0.0); 
+    gp_Vec2d result3 = NACA4.upper_curve(0.0);
+    gp_Vec2d result4 = NACA4.lower_curve(0.0);
+    EXPECT_EQ(result2, result1.Z());    
+    EXPECT_EQ(result1.Z(), result3.Y());
+    EXPECT_EQ(result1.Z(), result4.Y());
+
+    EXPECT_FALSE(upper.IsNull());
+    EXPECT_FALSE(lower.IsNull());
+    EXPECT_FALSE(te.IsNull());
+
+}
+
+TEST(NACA4Calculator, naca0012_LePoint_TePoint){
+
+    // Create a UID manager and use it for the profile. Parent container is not needed for this unit test.
+    tigl::CTiglUIDManager uidMgr;
+    // disambiguate nullptr for overloaded constructors by casting to the intended parent type
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(std::string("0012")));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(0.015));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    TopoDS_Edge upper = profile.GetUpperWire();
+    TopoDS_Edge lower = profile.GetLowerWire();
+    TopoDS_Edge te    = profile.GetTrailingEdge();
+    gp_Pnt lePoint = profile.GetLEPoint();
+    gp_Pnt tePoint = profile.GetTEPoint();
+
+    tigl::NACA4Calculator NACA4(0,0,12, 0.015);
+    gp_Pnt result1 = profile.GetLEPoint();
+    double result2 = NACA4.camberline(0.0); 
+    gp_Vec2d result3 = NACA4.upper_curve(0.0);
+    gp_Vec2d result4 = NACA4.lower_curve(0.0);
+    EXPECT_EQ(result2, result1.Z());    
+    EXPECT_EQ(result1.Z(), result3.Y());
+    EXPECT_EQ(result1.Z(), result4.Y());
+
+    EXPECT_FALSE(upper.IsNull());
+    EXPECT_FALSE(lower.IsNull());
+    EXPECT_FALSE(te.IsNull());
+
+}
+
+TEST(NACA4Calculator, naca0012_trailingEdge_absent_when_zero_thickness){
+    tigl::CTiglUIDManager uidMgr;
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+    const std::string code = "0012";
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(code));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(0.0));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    TopoDS_Edge te = profile.GetTrailingEdge();
+    EXPECT_TRUE(te.IsNull());
+}
+
+TEST(NACA4Calculator, naca2412_edge_counter){
+
+    tigl::CTiglUIDManager uidMgr;
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+    const std::string code = "2412";
+    const double te_thickness = 0.15;
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(code));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(te_thickness));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    
+    TopoDS_Edge upper = profile.GetUpperWire();
+    TopoDS_Edge lower = profile.GetLowerWire();
+    TopoDS_Edge te    = profile.GetTrailingEdge();
+
+
+    ASSERT_TRUE(BRepCheck_Analyzer(upper).IsValid());
+    ASSERT_TRUE(BRepCheck_Analyzer(lower).IsValid());
+
+
+    tigl::NACA4Calculator calc(code, te_thickness);
+    EXPECT_EQ(profile.HasBluntTE(), calc.get_trailing_edge_thickness() > 0.0);
+
+    if (!te.IsNull()) {
+        ASSERT_TRUE(BRepCheck_Analyzer(te).IsValid());
+    }
+   
+    BRepBuilderAPI_MakeWire closedWireBuilder;
+    closedWireBuilder.Add(lower);
+    closedWireBuilder.Add(upper);
+    if (!te.IsNull()) {
+        closedWireBuilder.Add(te);
+    }
+    closedWireBuilder.Build();
+    ASSERT_TRUE(closedWireBuilder.IsDone());
+    TopoDS_Wire wire = closedWireBuilder.Wire();
+    ASSERT_TRUE(BRepCheck_Analyzer(wire).IsValid());
+
+    int edgeCount = 0;
+    for (TopExp_Explorer ex(wire, TopAbs_EDGE); ex.More(); ex.Next()) ++edgeCount;
+    if (te.IsNull()) {
+        EXPECT_EQ(edgeCount, 2);
+    } else {
+        EXPECT_EQ(edgeCount, 3);
+    }
+}

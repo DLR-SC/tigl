@@ -8,6 +8,7 @@ Changes since last release
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
+  - Add an alternative wing airfoil parametrization that allows the specification of NACA4 codes directly in CPACS (with the trailing edge thickness). This makes a preprocessing step of writing sampled NACA profiles as point lists obsolete and improves the overall surface quality by internally generating B-Splines with a fine-tuned number of control points. [#1293](https://github.com/DLR-SC/tigl/pull/1293)
 
 - Fixes
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))
