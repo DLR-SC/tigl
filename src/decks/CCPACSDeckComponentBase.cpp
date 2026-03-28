@@ -252,11 +252,9 @@ PNamedShape CCPACSDeckComponentBase::BuildLoft() const
 
 void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
 {
-    const std::string uid = m_deckElementUID;
-
-    const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
+    const auto* massPtr = GetMassDescription(*m_uidMgr, m_deckElementUID);
     if (!massPtr || !*massPtr) {
-        LOG(WARNING) << "No mass definition for uID \"" + uid + "\"!";
+        LOG(WARNING) << "No mass definition for uID \"" + m_deckElementUID + "\"!";
         return;
     }
 
