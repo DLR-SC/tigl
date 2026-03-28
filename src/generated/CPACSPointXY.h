@@ -30,7 +30,6 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CCPACSPointListXY;
-class CCPACSTransformationPlanar;
 
 namespace generated
 {
@@ -43,7 +42,6 @@ namespace generated
     // CPACSPointListXY
     // CPACSSheet
     // CPACSTransformation2D
-    // CPACSTransformationPlanar
 
     /// @brief Point: x,y
     /// 
@@ -56,7 +54,6 @@ namespace generated
         TIGL_EXPORT CPACSPointXY(CCPACSPointListXY* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPointXY(CPACSSheet* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSPointXY(CPACSTransformation2D* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSPointXY(CCPACSTransformationPlanar* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPointXY();
 
@@ -69,7 +66,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value || std::is_same<P, CCPACSTransformationPlanar>::value, "template argument for P is not a parent class of CPACSPointXY");
+            static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value, "template argument for P is not a parent class of CPACSPointXY");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -79,7 +76,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value || std::is_same<P, CCPACSTransformationPlanar>::value, "template argument for P is not a parent class of CPACSPointXY");
+            static_assert(std::is_same<P, CPACSGlobalBeamProperties>::value || std::is_same<P, CCPACSPointListXY>::value || std::is_same<P, CPACSSheet>::value || std::is_same<P, CPACSTransformation2D>::value, "template argument for P is not a parent class of CPACSPointXY");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

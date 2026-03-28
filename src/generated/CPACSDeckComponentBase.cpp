@@ -17,8 +17,13 @@
 
 #include <cassert>
 #include "CPACSCeilingPanels.h"
+#include "CPACSClassDividers.h"
 #include "CPACSDeckComponentBase.h"
+#include "CPACSGalleys.h"
+#include "CPACSGenericFloorModules.h"
+#include "CPACSLavatories.h"
 #include "CPACSLuggageCompartments.h"
+#include "CPACSSeatModules.h"
 #include "CPACSSidewallPanels.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -37,12 +42,52 @@ namespace generated
         m_parentType = &typeid(CPACSCeilingPanels);
     }
 
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSClassDividers* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSClassDividers);
+    }
+
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSGalleys* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGalleys);
+    }
+
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSGenericFloorModules);
+    }
+
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSLavatories* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSLavatories);
+    }
+
     CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSLuggageCompartments* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CPACSLuggageCompartments);
+    }
+
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSSeatModules* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSeatModules);
     }
 
     CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSSidewallPanels* parent, CTiglUIDManager* uidMgr)
@@ -67,8 +112,23 @@ namespace generated
             if (IsParent<CPACSCeilingPanels>()) {
                 return GetParent<CPACSCeilingPanels>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSClassDividers>()) {
+                return GetParent<CPACSClassDividers>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGalleys>()) {
+                return GetParent<CPACSGalleys>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorModules>()) {
+                return GetParent<CPACSGenericFloorModules>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatories>()) {
+                return GetParent<CPACSLavatories>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSLuggageCompartments>()) {
                 return GetParent<CPACSLuggageCompartments>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModules>()) {
+                return GetParent<CPACSSeatModules>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSidewallPanels>()) {
                 return GetParent<CPACSSidewallPanels>()->GetNextUIDParent();
@@ -83,8 +143,23 @@ namespace generated
             if (IsParent<CPACSCeilingPanels>()) {
                 return GetParent<CPACSCeilingPanels>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSClassDividers>()) {
+                return GetParent<CPACSClassDividers>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGalleys>()) {
+                return GetParent<CPACSGalleys>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSGenericFloorModules>()) {
+                return GetParent<CPACSGenericFloorModules>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSLavatories>()) {
+                return GetParent<CPACSLavatories>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSLuggageCompartments>()) {
                 return GetParent<CPACSLuggageCompartments>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSeatModules>()) {
+                return GetParent<CPACSSeatModules>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSidewallPanels>()) {
                 return GetParent<CPACSSidewallPanels>()->GetNextUIDParent();

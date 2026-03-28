@@ -1831,46 +1831,6 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="transformationPlanarType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Planar transformation</ddue:para>
-                    </ddue:summary>
-                    <ddue:remarks>
-                        <ddue:para/>
-                    </ddue:remarks>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element minOccurs="0" name="scaling" type="pointXYZType">
-                        <xsd:annotation>
-                            <xsd:documentation>Scaling of the structural profile
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="rotation" type="pointZType">
-                        <xsd:annotation>
-                            <xsd:documentation>rotation around z-axis of profile definition
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="translation" type="pointXYType">
-                        <xsd:annotation>
-                            <xsd:documentation>translation of profile definition
-                            </xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                </xsd:all>
-                <xsd:attribute name="uID" type="xsd:ID"/>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
     <xsd:complexType name="pointType">
         <xsd:annotation>
             <xsd:appinfo>
@@ -34962,7 +34922,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="seatModule" type="deckComponent2DBaseType">
+                    <xsd:element maxOccurs="unbounded" name="seatModule" type="deckComponentBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Seat module</xsd:documentation>
                         </xsd:annotation>
@@ -34988,7 +34948,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="galley" type="deckComponent2DBaseType">
+                    <xsd:element maxOccurs="unbounded" name="galley" type="deckComponentBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Galley</xsd:documentation>
                         </xsd:annotation>
@@ -35014,7 +34974,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="genericFloorModule" type="deckComponent2DBaseType">
+                    <xsd:element maxOccurs="unbounded" name="genericFloorModule" type="deckComponentBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Generic floor module</xsd:documentation>
                         </xsd:annotation>
@@ -35040,7 +35000,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="lavatory" type="deckComponent2DBaseType">
+                    <xsd:element maxOccurs="unbounded" name="lavatory" type="deckComponentBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Lavatory</xsd:documentation>
                         </xsd:annotation>
@@ -35066,7 +35026,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" name="classDivider" type="deckComponent2DBaseType">
+                    <xsd:element maxOccurs="unbounded" name="classDivider" type="deckComponentBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Class divider
                             </xsd:documentation>
@@ -35592,42 +35552,6 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:element>
                     <xsd:element name="structuralMounts" minOccurs="0" type="deckStructuralMountsType" />
                     <xsd:element name="transformation" minOccurs="0" type="transformationType" />
-                </xsd:all>
-                <xsd:attribute name="uID" type="xsd:ID" use="required"/>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="deckComponent2DBaseType">
-        <xsd:annotation>
-            <xsd:appinfo>
-                <sd:schemaDoc>
-                    <ddue:summary>
-                        <ddue:para>Deck component</ddue:para>
-                    </ddue:summary>
-                </sd:schemaDoc>
-            </xsd:appinfo>
-        </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="complexBaseType">
-                <xsd:all>
-                    <xsd:element name="name"  type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Name</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element minOccurs="0" name="description"  type="stringBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>Description</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="deckElementUID" type="stringUIDBaseType">
-                        <xsd:annotation>
-                            <xsd:documentation>UID of the corresponding element in the cpacs/vehicles/deckElemets node</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                    <xsd:element name="structuralMounts" minOccurs="0" type="deckStructuralMountsType" />
-                    <xsd:element name="transformation" minOccurs="0" type="transformationPlanarType" />
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>

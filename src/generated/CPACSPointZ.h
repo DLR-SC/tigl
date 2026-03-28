@@ -21,15 +21,12 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
-#include "CTiglError.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSTransformationPlanar;
 
 namespace generated
 {
@@ -37,7 +34,6 @@ namespace generated
 
     // This class is used in:
     // CPACSTransformation2D
-    // CPACSTransformationPlanar
 
     /// @brief Point: z
     /// 
@@ -47,35 +43,12 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSPointZ(CPACSTransformation2D* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSPointZ(CCPACSTransformationPlanar* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSPointZ();
 
-        template<typename P>
-        bool IsParent() const
-        {
-            return m_parentType != NULL && *m_parentType == typeid(P);
-        }
+        TIGL_EXPORT CPACSTransformation2D* GetParent();
 
-        template<typename P>
-        P* GetParent()
-        {
-            static_assert(std::is_same<P, CPACSTransformation2D>::value || std::is_same<P, CCPACSTransformationPlanar>::value, "template argument for P is not a parent class of CPACSPointZ");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
-
-        template<typename P>
-        const P* GetParent() const
-        {
-            static_assert(std::is_same<P, CPACSTransformation2D>::value || std::is_same<P, CCPACSTransformationPlanar>::value, "template argument for P is not a parent class of CPACSPointZ");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
+        TIGL_EXPORT const CPACSTransformation2D* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -93,8 +66,7 @@ namespace generated
         TIGL_EXPORT virtual void SetZ(const double& value);
 
     protected:
-        void* m_parent;
-        const std::type_info* m_parentType;
+        CPACSTransformation2D* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 

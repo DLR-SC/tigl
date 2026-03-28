@@ -40,11 +40,6 @@ CCPACSPointXY::CCPACSPointXY(CCPACSTransformation2D* parent, CTiglUIDManager* ui
 {
 }
 
-CCPACSPointXY::CCPACSPointXY(CCPACSTransformationPlanar* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPointXY(parent, uidMgr)
-{
-}
-
 gp_Pnt2d CCPACSPointXY::As_gp_Pnt() const
 {
     return gp_Pnt2d(m_x, m_y);

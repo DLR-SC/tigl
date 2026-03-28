@@ -21,7 +21,6 @@ CPACSPoint                         CCPACSPoint
 CPACSPointAbsRel                   CCPACSPointAbsRel
 CPACSTransformation                CCPACSTransformation
 CPACSTransformationSE3             CCPACSTransformationSE3
-CPACSTransformationPlanar          CCPACSTransformationPlanar
 CPACSStringVectorBase              CCPACSStringVector
 CPACSPointListRelXYZVector         CCPACSPointListRelXYZVector
 CPACSPointListXYVector			   CCPACSPointListXYVector

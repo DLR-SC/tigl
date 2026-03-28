@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDeckComponent2DBase.h"
 #include "CCPACSDeckComponentBase.h"
 #include "CPACSDeckStructuralMount.h"
 #include "CPACSDeckStructuralMounts.h"
@@ -30,50 +29,35 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CCPACSDeckComponent2DBase);
-    }
-
     CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSDeckComponentBase);
     }
 
     CPACSDeckStructuralMounts::~CPACSDeckStructuralMounts()
     {
     }
 
+    const CCPACSDeckComponentBase* CPACSDeckStructuralMounts::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSDeckComponentBase* CPACSDeckStructuralMounts::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent() const
     {
-        if (m_parent) {
-            if (IsParent<CCPACSDeckComponent2DBase>()) {
-                return GetParent<CCPACSDeckComponent2DBase>();
-            }
-            if (IsParent<CCPACSDeckComponentBase>()) {
-                return GetParent<CCPACSDeckComponentBase>();
-            }
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDObject* CPACSDeckStructuralMounts::GetNextUIDParent()
     {
-        if (m_parent) {
-            if (IsParent<CCPACSDeckComponent2DBase>()) {
-                return GetParent<CCPACSDeckComponent2DBase>();
-            }
-            if (IsParent<CCPACSDeckComponentBase>()) {
-                return GetParent<CCPACSDeckComponentBase>();
-            }
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSDeckStructuralMounts::GetUIDManager()

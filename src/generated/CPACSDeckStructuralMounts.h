@@ -19,9 +19,7 @@
 
 #include <string>
 #include <tixi.h>
-#include <typeinfo>
 #include <vector>
-#include "CTiglError.h"
 #include "tigl_internal.h"
 #include "UniquePtr.h"
 
@@ -29,7 +27,6 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeckComponent2DBase;
 class CCPACSDeckComponentBase;
 
 namespace generated
@@ -37,7 +34,6 @@ namespace generated
     class CPACSDeckStructuralMount;
 
     // This class is used in:
-    // CPACSDeckComponent2DBase
     // CPACSDeckComponentBase
 
     /// @brief Structural mounts
@@ -47,36 +43,13 @@ namespace generated
     class CPACSDeckStructuralMounts
     {
     public:
-        TIGL_EXPORT CPACSDeckStructuralMounts(CCPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckStructuralMounts();
 
-        template<typename P>
-        bool IsParent() const
-        {
-            return m_parentType != NULL && *m_parentType == typeid(P);
-        }
+        TIGL_EXPORT CCPACSDeckComponentBase* GetParent();
 
-        template<typename P>
-        P* GetParent()
-        {
-            static_assert(std::is_same<P, CCPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
-
-        template<typename P>
-        const P* GetParent() const
-        {
-            static_assert(std::is_same<P, CCPACSDeckComponent2DBase>::value || std::is_same<P, CCPACSDeckComponentBase>::value, "template argument for P is not a parent class of CPACSDeckStructuralMounts");
-            if (!IsParent<P>()) {
-                throw CTiglError("bad parent");
-            }
-            return static_cast<P*>(m_parent);
-        }
+        TIGL_EXPORT const CCPACSDeckComponentBase* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -103,8 +76,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveStructuralMount(CPACSDeckStructuralMount& ref);
 
     protected:
-        void* m_parent;
-        const std::type_info* m_parentType;
+        CCPACSDeckComponentBase* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 

@@ -54,7 +54,17 @@ public:
      */
     TIGL_EXPORT CCPACSDeckComponentBase(CCPACSCeilingPanels* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSClassDividers* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSGalleys* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSLavatories* parent, CTiglUIDManager* uidMgr);
+
     TIGL_EXPORT CCPACSDeckComponentBase(CCPACSLuggageCompartments* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSSeatModules* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT CCPACSDeckComponentBase(CCPACSSidewallPanels* parent, CTiglUIDManager* uidMgr);
 

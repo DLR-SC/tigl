@@ -27,7 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeckComponent2DBase;
+class CCPACSDeckComponentBase;
 class CCPACSDeck;
 
 namespace generated
@@ -59,20 +59,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetLavatorys() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetLavatorys();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetLavatorys() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetLavatorys();
 
         TIGL_EXPORT virtual size_t GetLavatoryCount() const;
         TIGL_EXPORT virtual size_t GetLavatoryIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetLavatory(size_t index) const;
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetLavatory(size_t index);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetLavatory(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetLavatory(size_t index);
 
-        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetLavatory(const std::string& UID) const;
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetLavatory(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetLavatory(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetLavatory(const std::string& UID);
 
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& AddLavatory();
-        TIGL_EXPORT virtual void RemoveLavatory(CCPACSDeckComponent2DBase& ref);
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& AddLavatory();
+        TIGL_EXPORT virtual void RemoveLavatory(CCPACSDeckComponentBase& ref);
 
     protected:
         CCPACSDeck* m_parent;
@@ -80,7 +80,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Lavatory
-        std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>> m_lavatorys;
+        std::vector<std::unique_ptr<CCPACSDeckComponentBase>> m_lavatorys;
 
     private:
         CPACSLavatories(const CPACSLavatories&) = delete;

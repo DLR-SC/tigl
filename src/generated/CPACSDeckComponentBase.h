@@ -37,12 +37,22 @@ class CTiglUIDManager;
 namespace generated
 {
     class CPACSCeilingPanels;
+    class CPACSClassDividers;
+    class CPACSGalleys;
+    class CPACSGenericFloorModules;
+    class CPACSLavatories;
     class CPACSLuggageCompartments;
+    class CPACSSeatModules;
     class CPACSSidewallPanels;
 
     // This class is used in:
     // CPACSCeilingPanels
+    // CPACSClassDividers
+    // CPACSGalleys
+    // CPACSGenericFloorModules
+    // CPACSLavatories
     // CPACSLuggageCompartments
+    // CPACSSeatModules
     // CPACSSidewallPanels
 
     /// @brief Deck component
@@ -52,7 +62,12 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSDeckComponentBase(CPACSCeilingPanels* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponentBase(CPACSClassDividers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponentBase(CPACSGalleys* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponentBase(CPACSGenericFloorModules* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponentBase(CPACSLavatories* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSDeckComponentBase(CPACSLuggageCompartments* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckComponentBase(CPACSSeatModules* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSDeckComponentBase(CPACSSidewallPanels* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckComponentBase();
@@ -66,7 +81,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSCeilingPanels>::value || std::is_same<P, CPACSLuggageCompartments>::value || std::is_same<P, CPACSSidewallPanels>::value, "template argument for P is not a parent class of CPACSDeckComponentBase");
+            static_assert(std::is_same<P, CPACSCeilingPanels>::value || std::is_same<P, CPACSClassDividers>::value || std::is_same<P, CPACSGalleys>::value || std::is_same<P, CPACSGenericFloorModules>::value || std::is_same<P, CPACSLavatories>::value || std::is_same<P, CPACSLuggageCompartments>::value || std::is_same<P, CPACSSeatModules>::value || std::is_same<P, CPACSSidewallPanels>::value, "template argument for P is not a parent class of CPACSDeckComponentBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -76,7 +91,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSCeilingPanels>::value || std::is_same<P, CPACSLuggageCompartments>::value || std::is_same<P, CPACSSidewallPanels>::value, "template argument for P is not a parent class of CPACSDeckComponentBase");
+            static_assert(std::is_same<P, CPACSCeilingPanels>::value || std::is_same<P, CPACSClassDividers>::value || std::is_same<P, CPACSGalleys>::value || std::is_same<P, CPACSGenericFloorModules>::value || std::is_same<P, CPACSLavatories>::value || std::is_same<P, CPACSLuggageCompartments>::value || std::is_same<P, CPACSSeatModules>::value || std::is_same<P, CPACSSidewallPanels>::value, "template argument for P is not a parent class of CPACSDeckComponentBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -153,6 +168,11 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCeilingPanels = generated::CPACSCeilingPanels;
+using CCPACSClassDividers = generated::CPACSClassDividers;
+using CCPACSGalleys = generated::CPACSGalleys;
+using CCPACSGenericFloorModules = generated::CPACSGenericFloorModules;
+using CCPACSLavatories = generated::CPACSLavatories;
 using CCPACSLuggageCompartments = generated::CPACSLuggageCompartments;
+using CCPACSSeatModules = generated::CPACSSeatModules;
 using CCPACSSidewallPanels = generated::CPACSSidewallPanels;
 } // namespace tigl

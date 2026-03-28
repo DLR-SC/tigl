@@ -27,7 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeckComponent2DBase;
+class CCPACSDeckComponentBase;
 class CCPACSDeck;
 
 namespace generated
@@ -59,20 +59,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetGenericFloorModules() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& GetGenericFloorModules();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetGenericFloorModules() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetGenericFloorModules();
 
         TIGL_EXPORT virtual size_t GetGenericFloorModuleCount() const;
         TIGL_EXPORT virtual size_t GetGenericFloorModuleIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetGenericFloorModule(size_t index) const;
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetGenericFloorModule(size_t index);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetGenericFloorModule(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetGenericFloorModule(size_t index);
 
-        TIGL_EXPORT virtual const CCPACSDeckComponent2DBase& GetGenericFloorModule(const std::string& UID) const;
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& GetGenericFloorModule(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetGenericFloorModule(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetGenericFloorModule(const std::string& UID);
 
-        TIGL_EXPORT virtual CCPACSDeckComponent2DBase& AddGenericFloorModule();
-        TIGL_EXPORT virtual void RemoveGenericFloorModule(CCPACSDeckComponent2DBase& ref);
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& AddGenericFloorModule();
+        TIGL_EXPORT virtual void RemoveGenericFloorModule(CCPACSDeckComponentBase& ref);
 
     protected:
         CCPACSDeck* m_parent;
@@ -80,7 +80,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Generic floor module
-        std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>> m_genericFloorModules;
+        std::vector<std::unique_ptr<CCPACSDeckComponentBase>> m_genericFloorModules;
 
     private:
         CPACSGenericFloorModules(const CPACSGenericFloorModules&) = delete;

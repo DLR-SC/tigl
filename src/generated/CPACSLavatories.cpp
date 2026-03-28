@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSDeckComponent2DBase.h>
+#include <CCPACSDeckComponentBase.h>
 #include "CCPACSDeck.h"
 #include "CPACSLavatories.h"
 #include "CTiglError.h"
@@ -92,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSLavatories::GetLavatorys() const
+    const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSLavatories::GetLavatorys() const
     {
         return m_lavatorys;
     }
 
-    std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>& CPACSLavatories::GetLavatorys()
+    std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSLavatories::GetLavatorys()
     {
         return m_lavatorys;
     }
@@ -118,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSLavatories::GetLavatoryIndex", TIGL_UID_ERROR);
     }
 
-    CCPACSDeckComponent2DBase& CPACSLavatories::GetLavatory(size_t index)
+    CCPACSDeckComponentBase& CPACSLavatories::GetLavatory(size_t index)
     {
         if (index < 1 || index > GetLavatoryCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetLavatory", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetLavatory", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_lavatorys[index];
     }
 
-    const CCPACSDeckComponent2DBase& CPACSLavatories::GetLavatory(size_t index) const
+    const CCPACSDeckComponentBase& CPACSLavatories::GetLavatory(size_t index) const
     {
         if (index < 1 || index > GetLavatoryCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponent2DBase>>::GetLavatory", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetLavatory", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_lavatorys[index];
     }
 
-    CCPACSDeckComponent2DBase& CPACSLavatories::GetLavatory(const std::string& UID)
+    CCPACSDeckComponentBase& CPACSLavatories::GetLavatory(const std::string& UID)
     {
         for (auto& elem : m_lavatorys ) {
             if (elem->GetUID() == UID)
@@ -145,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSLavatories::GetLavatory. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CCPACSDeckComponent2DBase& CPACSLavatories::GetLavatory(const std::string& UID) const
+    const CCPACSDeckComponentBase& CPACSLavatories::GetLavatory(const std::string& UID) const
     {
         for (auto& elem : m_lavatorys ) {
             if (elem->GetUID() == UID)
@@ -155,13 +155,13 @@ namespace generated
     }
 
 
-    CCPACSDeckComponent2DBase& CPACSLavatories::AddLavatory()
+    CCPACSDeckComponentBase& CPACSLavatories::AddLavatory()
     {
-        m_lavatorys.push_back(make_unique<CCPACSDeckComponent2DBase>(this, m_uidMgr));
+        m_lavatorys.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_lavatorys.back();
     }
 
-    void CPACSLavatories::RemoveLavatory(CCPACSDeckComponent2DBase& ref)
+    void CPACSLavatories::RemoveLavatory(CCPACSDeckComponentBase& ref)
     {
         for (std::size_t i = 0; i < m_lavatorys.size(); i++) {
             if (m_lavatorys[i].get() == &ref) {

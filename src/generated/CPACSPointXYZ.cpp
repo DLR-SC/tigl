@@ -17,7 +17,6 @@
 
 #include <cassert>
 #include "CCPACSGuideCurve.h"
-#include "CCPACSTransformationPlanar.h"
 #include "CPACSPointXYZ.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -36,18 +35,6 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CCPACSGuideCurve);
-    }
-
-    CPACSPointXYZ::CPACSPointXYZ(CCPACSTransformationPlanar* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-        , m_x(0)
-        , m_y(0)
-        , m_z(0)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CCPACSTransformationPlanar);
     }
 
     CPACSPointXYZ::~CPACSPointXYZ()
@@ -55,36 +42,24 @@ namespace generated
         if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
+    const CCPACSGuideCurve* CPACSPointXYZ::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CCPACSGuideCurve* CPACSPointXYZ::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSPointXYZ::GetNextUIDParent() const
     {
-        if (m_parent) {
-            if (IsParent<CCPACSGuideCurve>()) {
-                return GetParent<CCPACSGuideCurve>();
-            }
-            if (IsParent<CCPACSTransformationPlanar>()) {
-                if (GetParent<CCPACSTransformationPlanar>()->GetUID())
-                    return GetParent<CCPACSTransformationPlanar>();
-                else
-                    return GetParent<CCPACSTransformationPlanar>()->GetNextUIDParent();
-            }
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDObject* CPACSPointXYZ::GetNextUIDParent()
     {
-        if (m_parent) {
-            if (IsParent<CCPACSGuideCurve>()) {
-                return GetParent<CCPACSGuideCurve>();
-            }
-            if (IsParent<CCPACSTransformationPlanar>()) {
-                if (GetParent<CCPACSTransformationPlanar>()->GetUID())
-                    return GetParent<CCPACSTransformationPlanar>();
-                else
-                    return GetParent<CCPACSTransformationPlanar>()->GetNextUIDParent();
-            }
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSPointXYZ::GetUIDManager()

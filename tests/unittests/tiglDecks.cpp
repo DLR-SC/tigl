@@ -57,7 +57,7 @@ TiglCPACSConfigurationHandle Decks::tiglHandle = 0;
 
 TEST_F(Decks, Basics)
 {
-    const auto& cp = GetUIDManager().ResolveObject<tigl::CCPACSDeckComponentBase>("ceilingPanel1");
+    const auto& cp = GetUIDManager().ResolveObject<tigl::CCPACSDeckComponentBase>("seatModule1_rh");
     const PNamedShape shape = cp.GetLoft();
     ASSERT_TRUE(shape);
 }

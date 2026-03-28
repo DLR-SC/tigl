@@ -20,7 +20,6 @@
 #include "generated/CPACSDecks.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDeckComponentBase.h"
-#include "CCPACSDeckComponent2DBase.h"
 
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
