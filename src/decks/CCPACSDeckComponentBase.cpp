@@ -225,9 +225,13 @@ bool CCPACSDeckComponentBase::IsPositioned() const
 
 const CCPACSElementGeometry& CCPACSDeckComponentBase::GetElementGeometry() const
 {
-    const auto& deckElement = m_uidMgr->ResolveObject<CCPACSVehicleElementBase>(m_deckElementUID);
-    const auto& geom        = deckElement.GetGeometry();
-    return geom;
+    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, m_deckElementUID);
+
+    if (!geom) {
+        throw CTiglError("Unsupported system element for uID \"" + m_deckElementUID + "\".");
+    }
+
+    return *geom;
 }
 
 PNamedShape CCPACSDeckComponentBase::BuildLoft() const
