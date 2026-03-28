@@ -201,11 +201,10 @@ bool CCPACSComponent::IsPositioned() const
 
 const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
 {
-    const std::string systemElementUID      = m_systemElementUID;
-    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, systemElementUID);
+    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, m_systemElementUID);
 
     if (!geom) {
-        throw CTiglError("Unsupported system element for uID \"" + systemElementUID + "\".");
+        throw CTiglError("Unsupported system element for uID \"" + m_systemElementUID + "\".");
     }
 
     return *geom;
@@ -229,17 +228,15 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
-    const std::string uid = m_systemElementUID;
-
-    const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
+    const auto* massPtr = GetMassDescription(*m_uidMgr, m_systemElementUID);
     if (!massPtr || !*massPtr) {
-        LOG(WARNING) << "No mass definition for uid \"" + uid + "\"!";
+        LOG(WARNING) << "No mass definition for uid \"" + m_systemElementUID + "\"!";
         return;
     }
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    CTiglElementMassBuilder builder(massDef, uid, GetLoft()->Shape());
+    CTiglElementMassBuilder builder(massDef, m_systemElementUID, GetLoft()->Shape());
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;
