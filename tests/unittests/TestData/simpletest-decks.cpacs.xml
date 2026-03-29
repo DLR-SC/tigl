@@ -582,8 +582,8 @@
                                 <lengthX>2</lengthX>
                                 <depthY>1</depthY>
                                 <heightZ>0.7</heightZ>
-                                <upperFaceYmin>-0.5</upperFaceYmin>
-                                <upperFaceYmax>1</upperFaceYmax>
+                                <upperFaceYmin>0</upperFaceYmin>
+                                <upperFaceYmax>1.5</upperFaceYmax>
                             </cuboid>
                             <cuboid>
                                 <lengthX>2</lengthX>
