@@ -206,7 +206,7 @@ TEST_F(Systems, ComponentsGeometry)
         box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
         EXPECT_NEAR(xmax - xmin, 1.0, eps);
-        EXPECT_NEAR(ymax - ymin, 1.0, eps);
+        EXPECT_NEAR(ymax - ymin, 1.2, eps);
         EXPECT_NEAR(zmax - zmin, 1.0, eps);
     }
 

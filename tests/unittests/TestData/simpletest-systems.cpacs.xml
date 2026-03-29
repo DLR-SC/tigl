@@ -544,8 +544,8 @@
                                 <heightZ>1.</heightZ>
                                 <upperFaceXmin>0.1</upperFaceXmin>
                                 <upperFaceXmax>0.9</upperFaceXmax>
-                                <upperFaceYmin>0.1</upperFaceYmin>
-                                <upperFaceYmax>0.9</upperFaceYmax>
+                                <upperFaceYmin>0.4</upperFaceYmin>
+                                <upperFaceYmax>1.2</upperFaceYmax>
                             </cuboid>
                         </cuboids>
                     </geometry>

@@ -160,7 +160,8 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildCuboidShape(const CCPACSCuboid& c
     const double ymin = c.GetUpperFaceYmin().get_value_or(0);
     const double ymax = c.GetUpperFaceYmax().get_value_or(depthY);
 
-    const TopoDS_Shape wedge = BRepPrimAPI_MakeWedge(lengthX, heightZ, depthY, xmin, ymin, xmax, ymax).Shape();
+    const TopoDS_Shape wedge =
+        BRepPrimAPI_MakeWedge(lengthX, heightZ, depthY, xmin, depthY - ymax, xmax, depthY - ymin).Shape();
 
     // Rotate and translate from OCC to CPACS convention:
     const gp_Ax1 xAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
