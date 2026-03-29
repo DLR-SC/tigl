@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
+#include <CCPACSDeckComponentBase.h>
 #include "CCPACSDeck.h"
-#include "CPACSCargoContainer.h"
 #include "CPACSCargoContainers.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -92,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSCargoContainer>>& CPACSCargoContainers::GetCargoContainers() const
+    const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSCargoContainers::GetCargoContainers() const
     {
         return m_cargoContainers;
     }
 
-    std::vector<std::unique_ptr<CPACSCargoContainer>>& CPACSCargoContainers::GetCargoContainers()
+    std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSCargoContainers::GetCargoContainers()
     {
         return m_cargoContainers;
     }
@@ -118,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSCargoContainers::GetCargoContainerIndex", TIGL_UID_ERROR);
     }
 
-    CPACSCargoContainer& CPACSCargoContainers::GetCargoContainer(size_t index)
+    CCPACSDeckComponentBase& CPACSCargoContainers::GetCargoContainer(size_t index)
     {
         if (index < 1 || index > GetCargoContainerCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCargoContainer>>::GetCargoContainer", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetCargoContainer", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cargoContainers[index];
     }
 
-    const CPACSCargoContainer& CPACSCargoContainers::GetCargoContainer(size_t index) const
+    const CCPACSDeckComponentBase& CPACSCargoContainers::GetCargoContainer(size_t index) const
     {
         if (index < 1 || index > GetCargoContainerCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCargoContainer>>::GetCargoContainer", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetCargoContainer", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cargoContainers[index];
     }
 
-    CPACSCargoContainer& CPACSCargoContainers::GetCargoContainer(const std::string& UID)
+    CCPACSDeckComponentBase& CPACSCargoContainers::GetCargoContainer(const std::string& UID)
     {
         for (auto& elem : m_cargoContainers ) {
             if (elem->GetUID() == UID)
@@ -145,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSCargoContainers::GetCargoContainer. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSCargoContainer& CPACSCargoContainers::GetCargoContainer(const std::string& UID) const
+    const CCPACSDeckComponentBase& CPACSCargoContainers::GetCargoContainer(const std::string& UID) const
     {
         for (auto& elem : m_cargoContainers ) {
             if (elem->GetUID() == UID)
@@ -155,13 +155,13 @@ namespace generated
     }
 
 
-    CPACSCargoContainer& CPACSCargoContainers::AddCargoContainer()
+    CCPACSDeckComponentBase& CPACSCargoContainers::AddCargoContainer()
     {
-        m_cargoContainers.push_back(make_unique<CPACSCargoContainer>(this, m_uidMgr));
+        m_cargoContainers.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_cargoContainers.back();
     }
 
-    void CPACSCargoContainers::RemoveCargoContainer(CPACSCargoContainer& ref)
+    void CPACSCargoContainers::RemoveCargoContainer(CCPACSDeckComponentBase& ref)
     {
         for (std::size_t i = 0; i < m_cargoContainers.size(); i++) {
             if (m_cargoContainers[i].get() == &ref) {

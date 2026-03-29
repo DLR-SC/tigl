@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CPACSCargoContainers.h"
 #include "CPACSCeilingPanels.h"
 #include "CPACSClassDividers.h"
 #include "CPACSDeckComponentBase.h"
@@ -34,6 +35,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSCargoContainers* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSCargoContainers);
+    }
+
     CPACSDeckComponentBase::CPACSDeckComponentBase(CPACSCeilingPanels* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -109,6 +118,9 @@ namespace generated
     const CTiglUIDObject* CPACSDeckComponentBase::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSCargoContainers>()) {
+                return GetParent<CPACSCargoContainers>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSCeilingPanels>()) {
                 return GetParent<CPACSCeilingPanels>()->GetNextUIDParent();
             }
@@ -140,6 +152,9 @@ namespace generated
     CTiglUIDObject* CPACSDeckComponentBase::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSCargoContainers>()) {
+                return GetParent<CPACSCargoContainers>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSCeilingPanels>()) {
                 return GetParent<CPACSCeilingPanels>()->GetNextUIDParent();
             }

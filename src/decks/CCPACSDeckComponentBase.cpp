@@ -23,6 +23,7 @@
 #include "CCPACSDeck.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSSeatElement.h"
+#include "generated/CPACSGalleyElement.h"
 
 #include "CCPACSConfiguration.h"
 #include "CTiglUIDManager.h"
@@ -56,7 +57,7 @@ static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, co
 
 static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
 {
-    return GetGeomFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement>(uidMgr, uid);
+    return GetGeomFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement, CCPACSGalleyElement>(uidMgr, uid);
 }
 
 template <typename T>
@@ -79,7 +80,7 @@ static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTi
 
 static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
 {
-    return GetMassDescriptionFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement>(uidMgr, uid);
+    return GetMassDescriptionFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement, CCPACSGalleyElement>(uidMgr, uid);
 }
 
 CCPACSDeckComponentBase::CCPACSDeckComponentBase(CCPACSCeilingPanels* parent, CTiglUIDManager* uidMgr)
@@ -139,6 +140,14 @@ CCPACSDeckComponentBase::CCPACSDeckComponentBase(CCPACSSeatModules* parent, CTig
 }
 
 CCPACSDeckComponentBase::CCPACSDeckComponentBase(CCPACSSidewallPanels* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSDeckComponentBase(parent, uidMgr)
+    , CTiglRelativelyPositionedComponent(parent->GetParent(), &m_transformation)
+    , m_mass(*this, &CCPACSDeckComponentBase::BuildMass)
+    , m_parentDeck(parent->GetParent())
+{
+}
+
+CCPACSDeckComponentBase::CCPACSDeckComponentBase(CCPACSCargoContainers* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDeckComponentBase(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(parent->GetParent(), &m_transformation)
     , m_mass(*this, &CCPACSDeckComponentBase::BuildMass)

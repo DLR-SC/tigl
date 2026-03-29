@@ -68,6 +68,8 @@ public:
 
     TIGL_EXPORT CCPACSDeckComponentBase(CCPACSSidewallPanels* parent, CTiglUIDManager* uidMgr);
 
+    TIGL_EXPORT CCPACSDeckComponentBase(CCPACSCargoContainers* parent, CTiglUIDManager* uidMgr);
+
     /**
      * @brief Returns the component UID (defaulted if required).
      */

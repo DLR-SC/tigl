@@ -110,6 +110,10 @@ PNamedShape CCPACSDeck::BuildLoft() const
         appendLofts(GetClassDividers()->GetClassDividers());
     }
 
+    if (GetCargoContainers()) {
+        appendLofts(GetCargoContainers()->GetCargoContainers());
+    }
+
     PNamedShape groupedShape = CGroupShapes(shapes);
     groupedShape->SetName(GetUID().c_str());
     groupedShape->SetShortName(GetShortShapeName().c_str());

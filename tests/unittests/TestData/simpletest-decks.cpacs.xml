@@ -112,17 +112,6 @@
                                     </translation>
                                 </transformation>
                                 <deckType>passenger</deckType>
-                                <ceilingPanels>
-                                    <ceilingPanel uID="ceilingPanel1">
-                                        <name>Ceiling Panel</name>
-                                        <deckElementUID>predCeilingPanel</deckElementUID>
-                                        <transformation>
-                                            <rotation>
-                                                <z>45.</z>
-                                            </rotation>
-                                        </transformation>
-                                    </ceilingPanel>
-                                </ceilingPanels>
                                 <seatModules>
                                     <seatModule uID="seatModule1_rh">
                                         <name>Seat module 1 LH</name>
@@ -130,26 +119,6 @@
                                         <transformation>
                                             <translation>
                                                 <x>0.5</x>
-                                                <y>0.2</y>
-                                            </translation>
-                                        </transformation>
-                                    </seatModule>
-                                    <seatModule uID="seatModule2_rh">
-                                        <name>Seat module 2 LH</name>
-                                        <deckElementUID>predSeatElement</deckElementUID>
-                                        <transformation>
-                                            <translation>
-                                                <x>1.5</x>
-                                                <y>0.2</y>
-                                            </translation>
-                                        </transformation>
-                                    </seatModule>
-                                    <seatModule uID="seatModule3_rh">
-                                        <name>Seat module 3 LH</name>
-                                        <deckElementUID>predSeatElement</deckElementUID>
-                                        <transformation>
-                                            <translation>
-                                                <x>2.5</x>
                                                 <y>0.2</y>
                                             </translation>
                                         </transformation>
@@ -164,27 +133,115 @@
                                             </translation>
                                         </transformation>
                                     </seatModule>
-                                    <seatModule uID="seatModule2_lh">
-                                        <name>Seat module 2 LH</name>
-                                        <deckElementUID>predSeatElement</deckElementUID>
-                                        <transformation>
-                                            <translation>
-                                                <x>1.5</x>
-                                                <y>-2.2</y>
-                                            </translation>
-                                        </transformation>
-                                    </seatModule>
-                                    <seatModule uID="seatModule3_lh">
-                                        <name>Seat module 3 LH</name>
-                                        <deckElementUID>predSeatElement</deckElementUID>
-                                        <transformation>
-                                            <translation>
-                                                <x>2.5</x>
-                                                <y>-2.2</y>
-                                            </translation>
-                                        </transformation>
-                                    </seatModule>
                                 </seatModules>
+                                <ceilingPanels>
+                                    <ceilingPanel uID="ceilingPanel1">
+                                        <name>Ceiling panel</name>
+                                        <deckElementUID>predCeilingPanel</deckElementUID>
+                                        <transformation>
+                                            <rotation>
+                                                <x>75.</x>
+                                            </rotation>
+                                            <translation>
+                                                <y>2.5</y>
+                                                <z>1.5</z>
+                                            </translation>
+                                        </transformation>
+                                    </ceilingPanel>
+                                </ceilingPanels>
+                                <sidewallPanels>
+                                    <sidewallPanel uID="sidewallPanel">
+                                        <name>Sidewall panel</name>
+                                        <deckElementUID>predSidewallPanel</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <y>2.7</y>
+                                                <z>0.3</z>
+                                            </translation>
+                                        </transformation>
+                                    </sidewallPanel>
+                                </sidewallPanels>
+                                <luggageCompartments>
+                                    <luggageCompartment uID="luggageCompartment">
+                                        <name>Luggage compartment</name>
+                                        <deckElementUID>predLuggageCompartment</deckElementUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>0.5</x>
+                                                <y>1.3</y>
+                                                <z>1</z>
+                                            </scaling>
+                                            <translation>
+                                                <x>5</x>
+                                                <y>1</y>
+                                                <z>0.5</z>
+                                            </translation>
+                                        </transformation>
+                                    </luggageCompartment>
+                                </luggageCompartments>
+                                <classDividers>
+                                    <classDivider uID="classDivider">
+                                        <name>Class divider</name>
+                                        <deckElementUID>predClassDivider</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>8</x>
+                                                <y>0</y>
+                                                <z>1</z>
+                                            </translation>
+                                        </transformation>
+                                    </classDivider>
+                                </classDividers>
+                                <galleys>
+                                    <galley uID="galley">
+                                        <name>Galley</name>
+                                        <deckElementUID>predGalleyElement</deckElementUID>
+                                        <transformation>
+                                            <rotation>
+                                                <z>-90</z>
+                                            </rotation>
+                                            <translation>
+                                                <x>5</x>
+                                                <y>-2</y>
+                                            </translation>
+                                        </transformation>
+                                    </galley>
+                                </galleys>
+                                <lavatories>
+                                    <lavatory uID="lavatory">
+                                        <name>Lavatory</name>
+                                        <deckElementUID>predLavatoryElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>10</x>
+                                                <y>-2</y>
+                                            </translation>
+                                        </transformation>
+                                    </lavatory>
+                                </lavatories>
+                                <genericFloorModules>
+                                    <genericFloorModule uID="floorModule">
+                                        <name>Generic floor module</name>
+                                        <deckElementUID>predGenericFloorElement</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>10</x>
+                                                <y>2</y>
+                                            </translation>
+                                        </transformation>
+                                    </genericFloorModule>
+                                </genericFloorModules>
+                                <cargoContainers>
+                                    <cargoContainer uID="cargoContainer">
+                                        <name>Cargo container</name>
+                                        <deckElementUID>predCargoContainer</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <z>-2</z>
+                                            </translation>
+                                        </transformation>
+                                    </cargoContainer>
+                                </cargoContainers>
                             </deck>
                         </decks>
                     </fuselage>
@@ -329,6 +386,18 @@
                         </superEllipse>
                     </standardProfile>
                 </fuselageProfile>
+                <fuselageProfile uID="luggageCompartmentProfile">
+                    <name>Luggage compartment profile</name>
+                    <standardProfile>
+                        <superEllipse>
+                            <lowerHeightFraction>0.5</lowerHeightFraction>
+                            <mLower>1.5</mLower>
+                            <nLower>1.5</nLower>
+                            <mUpper>0.5</mUpper>
+                            <nUpper>0.5</nUpper>
+                        </superEllipse>
+                    </standardProfile>
+                </fuselageProfile>
             </fuselageProfiles>
         </profiles>
         <deckElements>
@@ -338,14 +407,30 @@
                     <geometry>
                         <cuboids>
                             <cuboid>
-                                <lengthX>1.5</lengthX>
-                                <depthY>0.5</depthY>
+                                <lengthX>3</lengthX>
+                                <depthY>0.2</depthY>
                                 <heightZ>2.0</heightZ>
                             </cuboid>
                         </cuboids>
                     </geometry>
                 </ceilingPanelElement>
             </ceilingPanelElements>
+            <sidewallPanelElements>
+                <sidewallPanelElement uID="predSidewallPanel">
+                    <name>Predefined sidewall panel</name>
+                    <geometry>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>5</lengthX>
+                                <depthY>0.1</depthY>
+                                <heightZ>1.5</heightZ>
+                                <upperFaceXmin>0.1</upperFaceXmin>
+                                <upperFaceXmax>4.9</upperFaceXmax>
+                            </cuboid>
+                        </cuboids>
+                    </geometry>
+                </sidewallPanelElement>
+            </sidewallPanelElements>
             <seatElements>
                 <seatElement uID="predSeatElement">
                     <name>Predefined seat element</name>
@@ -360,6 +445,160 @@
                     </geometry>
                 </seatElement>
             </seatElements>
+            <luggageCompartmentElements>
+                <luggageCompartmentElement uID="predLuggageCompartment">
+                    <name>Predefined luggage compartment</name>
+                    <geometry>
+                        <cylinders>
+                            <cylinder>
+                                <radius>0.8</radius>
+                                <height>2</height>
+                            </cylinder>
+                        </cylinders>
+                    </geometry>
+                </luggageCompartmentElement>
+            </luggageCompartmentElements>
+            <classDividerElements>
+                <classDividerElement uID="predClassDivider">
+                    <name>Predefined class devider</name>
+                    <geometry>
+                        <ellipsoids>
+                            <ellipsoid>
+                                <radiusX>0.2</radiusX>
+                                <radiusY>2.5</radiusY>
+                                <radiusZ>1.0</radiusZ>
+                            </ellipsoid>
+                        </ellipsoids>
+                    </geometry>
+                </classDividerElement>
+            </classDividerElements>
+            <galleyElements>
+                <galleyElement uID="predGalleyElement">
+                    <name>Predefined galley element</name>
+                    <geometry>
+                        <transformation>
+                            <rotation>
+                                <y>-90</y>
+                            </rotation>
+                        </transformation>
+                        <multiSegmentShapes>
+                            <multiSegmentShape>
+                                <sections>
+                                    <section uID="predGE_sec1">
+                                        <name>Section 1</name>
+                                        <elements>
+                                            <element uID="predGE_el1">
+                                                <name>Element 1</name>
+                                                <profileUID>luggageCompartmentProfile</profileUID>
+                                                <transformation>
+                                                    <scaling>
+                                                        <x>0</x>
+                                                        <y>1</y>
+                                                        <z>1</z>
+                                                    </scaling>
+                                                </transformation>
+                                            </element>
+                                        </elements>
+                                        <transformation />
+                                    </section>
+                                    <section uID="predGE_sec2">
+                                        <name>Section 2</name>
+                                        <elements>
+                                            <element uID="predGE_el2">
+                                                <name>Element 2</name>
+                                                <profileUID>luggageCompartmentProfile</profileUID>
+                                                <transformation>
+                                                    <scaling>
+                                                        <x>0</x>
+                                                        <y>1</y>
+                                                        <z>1</z>
+                                                    </scaling>
+                                                </transformation>
+                                            </element>
+                                        </elements>
+                                        <transformation>
+                                            <translation>
+                                                <x>1.5</x>
+                                            </translation>
+                                        </transformation>
+                                    </section>
+                                </sections>
+                                <segments>
+                                    <segment uID="predGE_seg1">
+                                        <name>Segment 1</name>
+                                        <fromElementUID>predGE_el1</fromElementUID>
+                                        <toElementUID>predGE_el2</toElementUID>
+                                    </segment>
+                                </segments>
+                            </multiSegmentShape>
+                        </multiSegmentShapes>
+                    </geometry>
+                </galleyElement>
+            </galleyElements>
+            <lavatoryElements>
+                <lavatoryElement uID="predLavatoryElement">
+                    <name>Predefined lavatory Element</name>
+                    <geometry>
+                        <externals>
+                            <external>
+                                <linkToFile format="Step">nacelle.stp</linkToFile>
+                                <transformation>
+                                    <scaling>
+                                        <x>0.3</x>
+                                        <y>0.9</y>
+                                        <z>0.9</z>
+                                    </scaling>
+                                    <rotation>
+                                        <y>90.</y>
+                                    </rotation>
+                                    <translation>
+                                        <z>0.77</z>
+                                    </translation>
+                                </transformation>
+                            </external>
+                        </externals>
+                    </geometry>
+                </lavatoryElement>
+            </lavatoryElements>
+            <genericFloorElements>
+                <genericFloorElement uID="predGenericFloorElement">
+                    <name>Predefined floor element</name>
+                    <geometry>
+                        <cones>
+                            <cone>
+                                <lowerRadius>0.5</lowerRadius>
+                                <height>1.2</height>
+                            </cone>
+                        </cones>
+                    </geometry>
+                </genericFloorElement>
+            </genericFloorElements>
+            <cargoContainerElements>
+                <cargoContainerElement uID="predCargoContainer">
+                    <name>Predefined cargo container</name>
+                    <geometry>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>2</lengthX>
+                                <depthY>1</depthY>
+                                <heightZ>0.7</heightZ>
+                                <upperFaceYmin>-0.5</upperFaceYmin>
+                                <upperFaceYmax>1</upperFaceYmax>
+                            </cuboid>
+                            <cuboid>
+                                <lengthX>2</lengthX>
+                                <depthY>1.5</depthY>
+                                <heightZ>0.7</heightZ>
+                                <transformation>
+                                    <translation>
+                                        <z>0.7</z>
+                                    </translation>
+                                </transformation>
+                            </cuboid>
+                        </cuboids>
+                    </geometry>
+                </cargoContainerElement>
+            </cargoContainerElements>
         </deckElements>
     </vehicles>
 </cpacs>
