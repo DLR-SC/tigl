@@ -41,8 +41,6 @@ class CCPACSConfiguration;
  *
  * Coordinate frames:
  * - Local values (mass, CoG local) are expressed in the component's local coordinate system.
- * - Global CoG is only available if the component is explicitly positioned via a
- *   CPACS @c <transformation> element (see IsPositioned()).
  */
 class CCPACSDeckComponentBase : public generated::CPACSDeckComponentBase, public CTiglRelativelyPositionedComponent
 {
@@ -149,8 +147,6 @@ public:
      * @brief Returns the center of gravity in the global coordinate system.
      *
      * The global CoG is obtained by applying the component transformation to the local CoG.
-     * This value is only available if the component is explicitly positioned
-     * (see IsPositioned()) and a local CoG exists.
      *
      * @return Global CoG, or boost::none if unavailable.
      */
@@ -166,16 +162,6 @@ public:
      * @return Local mass inertia components, or boost::none if not defined.
      */
     TIGL_EXPORT boost::optional<CTiglMassInertia> GetMassInertiaLocal() const;
-
-    /**
-     * @brief Returns whether this component is explicitly positioned in CPACS.
-     *
-     * This checks for the presence of the optional CPACS @c <transformation> element
-     * under the component.
-     *
-     * @return true if an explicit transformation is present, false otherwise.
-     */
-    TIGL_EXPORT bool IsPositioned() const;
 
 protected:
     virtual PNamedShape BuildLoft() const override;

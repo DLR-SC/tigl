@@ -196,8 +196,6 @@ TEST_F(Decks, ComponentMass_DensityBased)
     const auto& seat = GetComponent("seatModule1_rh");
     const double eps = 1e-6;
 
-    EXPECT_TRUE(seat.IsPositioned());
-
     const auto mass = seat.GetMass();
     ASSERT_TRUE(mass);
 

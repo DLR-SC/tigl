@@ -214,22 +214,12 @@ boost::optional<CTiglPoint> CCPACSDeckComponentBase::GetCenterOfGravityLocal() c
 boost::optional<CTiglPoint> CCPACSDeckComponentBase::GetCenterOfGravityGlobal() const
 {
     const auto cogLocal = m_mass->cogLocal;
-    if (!IsPositioned()) {
-        LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
-                     << "\" is only available if <transformation> is defined.";
-        return boost::none;
-    }
     return GetTransformationMatrix() * (*cogLocal);
 }
 
 boost::optional<CTiglMassInertia> CCPACSDeckComponentBase::GetMassInertiaLocal() const
 {
     return m_mass->inertiaLocal;
-}
-
-bool CCPACSDeckComponentBase::IsPositioned() const
-{
-    return GetTransformation().is_initialized();
 }
 
 const CCPACSElementGeometry& CCPACSDeckComponentBase::GetElementGeometry() const

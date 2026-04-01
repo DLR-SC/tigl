@@ -116,19 +116,12 @@
                                     <seatModule uID="seatModule1_rh">
                                         <name>Seat module 1 LH</name>
                                         <deckElementUID>predSeatElement</deckElementUID>
-                                        <transformation>
-                                            <translation>
-                                                <x>0.5</x>
-                                                <y>0.2</y>
-                                            </translation>
-                                        </transformation>
                                     </seatModule>
                                     <seatModule uID="seatModule1_lh">
                                         <name>Seat module 1 LH</name>
                                         <deckElementUID>predSeatElement</deckElementUID>
                                         <transformation>
                                             <translation>
-                                                <x>0.5</x>
                                                 <y>-2.2</y>
                                             </translation>
                                         </transformation>
