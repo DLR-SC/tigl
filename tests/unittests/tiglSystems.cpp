@@ -164,9 +164,9 @@ TEST_F(Systems, SystemMass)
     const auto cog = system.GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
-    EXPECT_NEAR(cog->x, 27.4124525, eps);
-    EXPECT_NEAR(cog->y, 10.7533060, eps);
-    EXPECT_NEAR(cog->z, 3.8039630, eps);
+    EXPECT_NEAR(cog->x, 16.4246386, eps);
+    EXPECT_NEAR(cog->y, 7.0952247, eps);
+    EXPECT_NEAR(cog->z, 0.2864855, eps);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -353,20 +353,39 @@ TEST_F(Systems, ComponentMasses)
     }
 
     // ---- Mass location ----
-    const auto& cuboid_4 = GetComponent("cuboid_4");
+    {
+        const auto& cuboid_2 = GetComponent("cuboid_2");
+        const auto cogLocal  = cuboid_2.GetCenterOfGravityLocal();
+        ASSERT_TRUE(cogLocal);
+        EXPECT_NEAR(cogLocal->x, 1.5, eps);
+        EXPECT_NEAR(cogLocal->y, 0.25, eps);
+        EXPECT_NEAR(cogLocal->z, 0.25, eps);
 
-    const auto cogLocal = cuboid_4.GetCenterOfGravityLocal();
-    ASSERT_TRUE(cogLocal);
-    EXPECT_NEAR(cogLocal->x, 0.3, eps);
-    EXPECT_NEAR(cogLocal->y, 0.25, eps);
-    EXPECT_NEAR(cogLocal->z, 0.4, eps);
+        const auto cogGlobal = cuboid_2.GetCenterOfGravityGlobal();
+        EXPECT_TRUE(cuboid_2.IsPositioned());
+        ASSERT_TRUE(cogGlobal);
+        EXPECT_NEAR(cogGlobal->x, 1.5, eps);
+        EXPECT_NEAR(cogGlobal->y, 5.25, eps);
+        EXPECT_NEAR(cogGlobal->z, 0.25, eps);
+    }
+    
+    {
+        const auto& cuboid_4 = GetComponent("cuboid_4");
 
-    const auto cogGlobal = cuboid_4.GetCenterOfGravityGlobal();
-    EXPECT_TRUE(cuboid_4.IsPositioned());
-    ASSERT_TRUE(cogGlobal);
-    EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
-    EXPECT_NEAR(cogGlobal->y, 15.25, eps);
-    EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
+        const auto cogLocal = cuboid_4.GetCenterOfGravityLocal();
+        ASSERT_TRUE(cogLocal);
+        EXPECT_NEAR(cogLocal->x, 0.3, eps);
+        EXPECT_NEAR(cogLocal->y, 0.25, eps);
+        EXPECT_NEAR(cogLocal->z, 0.4, eps);
+
+        const auto cogGlobal = cuboid_4.GetCenterOfGravityGlobal();
+        EXPECT_TRUE(cuboid_4.IsPositioned());
+        ASSERT_TRUE(cogGlobal);
+        EXPECT_NEAR(cogGlobal->x, -0.0707107, eps);
+        EXPECT_NEAR(cogGlobal->y, 15.25, eps);
+        EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
+    }
+    
 
     const auto& unpositionedCuboid = GetComponent("unpositionedCuboid");
     EXPECT_FALSE(unpositionedCuboid.IsPositioned());
