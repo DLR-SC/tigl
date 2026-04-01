@@ -443,6 +443,9 @@
                             </cuboid>
                         </cuboids>
                     </geometry>
+                    <mass>
+                        <density>12</density>
+                    </mass>
                 </seatElement>
             </seatElements>
             <luggageCompartmentElements>
@@ -456,6 +459,14 @@
                             </cylinder>
                         </cylinders>
                     </geometry>
+                    <mass>
+                        <mass>123.</mass>
+                        <location>
+                            <x>0.2</x>
+                            <y>0.3</y>
+                            <z>0.4</z>
+                        </location>
+                    </mass>
                 </luggageCompartmentElement>
             </luggageCompartmentElements>
             <classDividerElements>
@@ -470,6 +481,14 @@
                             </ellipsoid>
                         </ellipsoids>
                     </geometry>
+                    <mass>
+                        <mass>123.</mass>
+                        <massInertia>
+                            <Jxx>1</Jxx>
+                            <Jyy>2</Jyy>
+                            <Jzz>3</Jzz>
+                        </massInertia>
+                    </mass>
                 </classDividerElement>
             </classDividerElements>
             <galleyElements>
