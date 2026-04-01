@@ -210,33 +210,31 @@ const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
     return *geom;
 }
 
-PNamedShape CCPACSComponent::BuildLoft() const
+PNamedShape CCPACSComponent::BuildLocalLoft() const
 {
     const CCPACSElementGeometry& geom = GetElementGeometry();
+    const std::string compName        = GetObjectUID().get_value_or("unnamed");
 
-    // Use component UID as shape name
-    const std::string compName = this->GetObjectUID().get_value_or("unnamed");
+    CTiglElementGeometryBuilder builder(*this, GetConfiguration(), geom, compName, _cpacsDocPath);
+    return builder.BuildShape();
+}
 
-    // The builder works on the generic CTiglRelativelyPositionedComponent,
-    // therefore the CCPACSComponent-specific information (configuration, geometry, uID) needs to be extracted at this level
-    CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), geom, compName, _cpacsDocPath);
-    const PNamedShape shape = builder.BuildShape();
-
-    // Apply local transformation and return shape
-    return GetTransformationMatrix().Transform(shape);
+PNamedShape CCPACSComponent::BuildLoft() const
+{
+    return GetTransformationMatrix().Transform(BuildLocalLoft());
 }
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
     const auto* massPtr = GetMassDescription(*m_uidMgr, m_systemElementUID);
     if (!massPtr || !*massPtr) {
-        LOG(WARNING) << "No mass definition for uid \"" + m_systemElementUID + "\"!";
+        LOG(WARNING) << "No mass definition for uID \"" + m_systemElementUID + "\"!";
         return;
     }
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    CTiglElementMassBuilder builder(massDef, m_systemElementUID, GetLoft()->Shape());
+    CTiglElementMassBuilder builder(massDef, m_systemElementUID, BuildLocalLoft()->Shape());
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;

@@ -123,9 +123,9 @@ class Systems(unittest.TestCase):
         cog = generic.get_center_of_gravity()
         self.assertIsNotNone(cog)
 
-        self.assertAlmostEqual(cog.x, 27.4124525, delta=eps)
-        self.assertAlmostEqual(cog.y, 10.7533060, delta=eps)
-        self.assertAlmostEqual(cog.z, 3.8039630, delta=eps)
+        self.assertAlmostEqual(cog.x, 16.4246386, delta=eps)
+        self.assertAlmostEqual(cog.y, 7.0952247, delta=eps)
+        self.assertAlmostEqual(cog.z, 0.2864855, delta=eps)
 
     def test_component_mass(self):
 
