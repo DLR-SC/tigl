@@ -233,20 +233,18 @@ const CCPACSElementGeometry& CCPACSDeckComponentBase::GetElementGeometry() const
     return *geom;
 }
 
-PNamedShape CCPACSDeckComponentBase::BuildLoft() const
+PNamedShape CCPACSDeckComponentBase::BuildLocalLoft() const
 {
     const CCPACSElementGeometry& geom = GetElementGeometry();
+    const std::string compName        = GetObjectUID().get_value_or("unnamed");
 
-    // Use component UID as shape name
-    const std::string compName = this->GetObjectUID().get_value_or("unnamed");
+    CTiglElementGeometryBuilder builder(*this, GetConfiguration(), geom, compName, _cpacsDocPath);
+    return builder.BuildShape();
+}
 
-    // The builder works on the generic CTiglRelativelyPositionedComponent,
-    // therefore the CCPACSDeckComponentBase-specific information (configuration, geometry, uID) needs to be determined here
-    CTiglElementGeometryBuilder builder(*this, this->GetConfiguration(), geom, compName, _cpacsDocPath);
-    const PNamedShape shape = builder.BuildShape();
-
-    // Apply the resolved component transformation to the generated shape and return
-    return GetTransformationMatrix().Transform(shape);
+PNamedShape CCPACSDeckComponentBase::BuildLoft() const
+{
+    return GetTransformationMatrix().Transform(BuildLocalLoft());
 }
 
 void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
@@ -259,11 +257,11 @@ void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    CTiglElementMassBuilder builder(massDef, m_deckElementUID, GetLoft()->Shape());
+    CTiglElementMassBuilder builder(massDef, m_deckElementUID, BuildLocalLoft()->Shape());
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;
-    cache.cogLocal     = result.cogLocal; //ToDo: is it really local?
+    cache.cogLocal     = result.cogLocal;
     cache.inertiaLocal = result.inertiaLocal;
 }
 

@@ -198,8 +198,20 @@ TEST_F(Decks, ComponentMass_DensityBased)
 
     const auto mass = seat.GetMass();
     ASSERT_TRUE(mass);
-
     EXPECT_NEAR(*mass, 19.2, eps);
+
+    const auto cogLocal = seat.GetCenterOfGravityLocal();
+    ASSERT_TRUE(cogLocal);
+    // 0.4 geometric center + 0.2 local cuboid translation + 0.3 local geometry translation
+    EXPECT_NEAR(cogLocal->x, 0.9, eps);
+    EXPECT_NEAR(cogLocal->y, 1.0, eps);
+    EXPECT_NEAR(cogLocal->z, 0.5, eps);
+
+    const auto cogGlobal = seat.GetCenterOfGravityGlobal();
+    ASSERT_TRUE(cogGlobal);
+    EXPECT_NEAR(cogGlobal->x, 3.4, eps); // 0.9 local + 2.5 global translation
+    EXPECT_NEAR(cogGlobal->y, 1.0, eps);
+    EXPECT_NEAR(cogGlobal->z, 0.5, eps);
 }
 
 TEST_F(Decks, ComponentMass_ExplicitMassAndLocation)

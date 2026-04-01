@@ -433,8 +433,18 @@
                                 <lengthX>0.8</lengthX>
                                 <depthY>2.0</depthY>
                                 <heightZ>1</heightZ>
+                                <transformation>
+                                    <translation>
+                                        <x>0.2</x>
+                                    </translation>
+                                </transformation>
                             </cuboid>
                         </cuboids>
+                        <transformation>
+                            <translation>
+                                <x>0.3</x>
+                            </translation>
+                        </transformation>
                     </geometry>
                     <mass>
                         <density>12</density>

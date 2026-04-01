@@ -167,6 +167,8 @@ protected:
     virtual PNamedShape BuildLoft() const override;
 
 private:
+    PNamedShape BuildLocalLoft() const;
+
     std::string _cpacsDocPath;
 
     struct MassCache {
