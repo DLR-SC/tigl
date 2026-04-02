@@ -215,6 +215,7 @@
 %boost_optional(tigl::CCPACSCurveParamPointMap)
 %boost_optional(tigl::CCPACSCurvePointListXYZ)
 %boost_optional(tigl::CTiglMassInertia)
+%boost_optional(tigl::CTiglPoint)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
@@ -236,6 +237,7 @@
 %include "generated/CPACSCap.h"
 
 %include "CTiglMassInertia.h"
+%include "CTiglPoint.h"
 
 %include "generated/CPACSDoubleVectorBase.h"
 
@@ -439,6 +441,19 @@ namespace tigl
 %include "generated/CPACSCabinGeometryContours.h"
 %include "generated/CPACSCabinGeometry.h"
 %include "generated/CPACSDeck_deckType.h"
+
+%ignore tigl::generated::CPACSSeatModules::GetSeatModules;
+%ignore tigl::generated::CPACSCabinAisles::GetCabinAisles;
+%ignore tigl::generated::CPACSCabinSpaces::GetCabinSpaces;
+%ignore tigl::generated::CPACSSidewallPanels::GetSidewallPanels;
+%ignore tigl::generated::CPACSLuggageCompartments::GetLuggageCompartments;
+%ignore tigl::generated::CPACSCeilingPanels::GetCeilingPanels;
+%ignore tigl::generated::CPACSGalleys::GetGalleys;
+%ignore tigl::generated::CPACSGenericFloorModules::GetGenericFloorModules;
+%ignore tigl::generated::CPACSLavatories::GetLavatorys;
+%ignore tigl::generated::CPACSClassDividers::GetClassDividers;
+%ignore tigl::generated::CPACSCargoContainers::GetCargoContainers;
+%ignore tigl::generated::CPACSDeckDoors::GetDeckDoors;
 
 %include "generated/CPACSSeatModules.h"
 %include "generated/CPACSCabinAisles.h"
@@ -681,7 +696,6 @@ class CCPACSGenericSystem;
 %boost_optional(tigl::CCPACSSystemElements)
 %boost_optional(tigl::CCPACSGenericSystems)
 %boost_optional(tigl::CPACSUIDSequence)
-%boost_optional(tigl::CTiglPoint)
 %boost_optional(tigl::CCPACSComponent)
 
 %ignore tigl::generated::CPACSComponents::GetComponents;
@@ -707,7 +721,6 @@ class CCPACSGenericSystem;
 %include "CCPACSSystemConnection.h"
 %include "generated/CPACSSystemConnections.h"
 
-%include "CTiglPoint.h"
 %include "generated/CPACSComponents.h"
 %include "generated/CPACSGenericSystem.h"
 %include "CCPACSGenericSystem.h"
@@ -760,7 +773,8 @@ class CCPACSGenericSystem;
          tigl::CCPACSFuelTank,
          tigl::CCPACSVessel,
          tigl::CCPACSComponent,
-         tigl::CCPACSDeck
+         tigl::CCPACSDeck,
+         tigl::CCPACSDeckComponentBase
 );
 
 namespace tigl

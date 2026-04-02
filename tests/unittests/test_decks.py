@@ -46,7 +46,7 @@ class Decks(unittest.TestCase):
         cls.tigl.close()
         cls.tixi.close()
 
-    def test_accessibility(self):
+    def test_deck(self):
 
         deck = self.uid_mgr.get_geometric_component("deck1")
         self.assertIsInstance(deck, geometry.ITiglGeometricComponent)
@@ -99,9 +99,7 @@ class Decks(unittest.TestCase):
             configuration.CCPACSDeckComponentBase,
         )
 
-        self.assertIsInstance(
-            deck.get_galleys(), configuration.CPACSGalleys
-        )
+        self.assertIsInstance(deck.get_galleys(), configuration.CPACSGalleys)
         self.assertIsInstance(
             deck.get_galleys().get_galley(1),
             configuration.CCPACSDeckComponentBase,
@@ -115,9 +113,7 @@ class Decks(unittest.TestCase):
             configuration.CCPACSDeckComponentBase,
         )
 
-        self.assertIsInstance(
-            deck.get_lavatories(), configuration.CPACSLavatories
-        )
+        self.assertIsInstance(deck.get_lavatories(), configuration.CPACSLavatories)
         self.assertIsInstance(
             deck.get_lavatories().get_lavatory(1),
             configuration.CCPACSDeckComponentBase,
@@ -138,6 +134,55 @@ class Decks(unittest.TestCase):
             deck.get_cargo_containers().get_cargo_container(1),
             configuration.CCPACSDeckComponentBase,
         )
+
+        with self.assertRaises(AttributeError):
+            deck.get_seat_modules().get_seat_modules()
+        with self.assertRaises(AttributeError):
+            deck.get_sidewall_panels().get_sidewall_panels()
+        with self.assertRaises(AttributeError):
+            deck.get_luggage_compartments().get_luggage_compartments()
+        with self.assertRaises(AttributeError):
+            deck.get_ceiling_panels().get_ceiling_panels()
+        with self.assertRaises(AttributeError):
+            deck.get_galleys().get_galleys()
+        with self.assertRaises(AttributeError):
+            deck.get_generic_floor_modules().get_generic_floor_modules()
+        with self.assertRaises(AttributeError):
+            deck.get_lavatories().get_lavatorys()
+        with self.assertRaises(AttributeError):
+            deck.get_class_dividers().get_class_dividers()
+        with self.assertRaises(AttributeError):
+            deck.get_cargo_containers().get_cargo_containers()
+
+    def test_deckComponentBase(self):
+
+        component = self.uid_mgr.get_geometric_component("classDivider")
+        self.assertIsInstance(
+            component,
+            configuration.CCPACSDeckComponentBase,
+        )
+
+        self.assertIsInstance(component.get_mass(), float)
+        self.assertIsInstance(
+            component.get_center_of_gravity_global(), geometry.CTiglPoint
+        )
+        self.assertIsInstance(
+            component.get_center_of_gravity_local(), geometry.CTiglPoint
+        )
+        self.assertIsInstance(
+            component.get_mass_inertia_local(), configuration.CTiglMassInertia
+        )
+
+        self.assertIsInstance(component.get_component_intent(), int)
+        self.assertIsInstance(component.get_component_representation(), int)
+        self.assertIsInstance(component.get_component_representation_as_string(), str)
+        self.assertIsInstance(component.get_component_type(), int)
+
+        self.assertIsInstance(
+            component.get_configuration(), configuration.CCPACSConfiguration
+        )
+
+        self.assertIsInstance(component.get_defaulted_uid(), str)
 
 
 if __name__ == "__main__":
