@@ -70,6 +70,8 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT bool ValidateChoices() const;
+
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
@@ -79,8 +81,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const std::string& GetSystemElementUID() const;
-        TIGL_EXPORT virtual void SetSystemElementUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetSystemElementUID_choice1() const;
+        TIGL_EXPORT virtual void SetSystemElementUID_choice1(const boost::optional<std::string>& value);
+
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetRotorElementUID_choice2() const;
+        TIGL_EXPORT virtual void SetRotorElementUID_choice2(const boost::optional<std::string>& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetParentUID() const;
         TIGL_EXPORT virtual void SetParentUID(const boost::optional<std::string>& value);
@@ -110,8 +115,11 @@ namespace generated
         /// Description
         boost::optional<std::string>             m_description;
 
-        /// UID reference to the predefined system element defining the component geometry and mass properties
-        std::string                              m_systemElementUID;
+        /// UID reference to the predefined system element
+        boost::optional<std::string>             m_systemElementUID_choice1;
+
+        /// UID reference to the predefined rotor element
+        boost::optional<std::string>             m_rotorElementUID_choice2;
 
         /// Optional UID reference to the parent object used for relative positioning
         boost::optional<std::string>             m_parentUID;
