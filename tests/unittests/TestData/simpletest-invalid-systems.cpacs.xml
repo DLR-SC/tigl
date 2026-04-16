@@ -232,6 +232,10 @@
                                     <name>MSS without data</name>
                                     <systemElementUID>predMssWithoutSegments</systemElementUID>
                                 </component>
+                                <component uID="rotor">
+                                    <name>Rotor</name>
+                                    <rotorElementUID>predRotor</rotorElementUID>
+                                </component>
                             </components>
                         </genericSystem>
                         <genericSystem uID="testSystem2">

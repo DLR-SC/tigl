@@ -368,7 +368,7 @@ TEST_F(Systems, ComponentMasses)
         EXPECT_NEAR(cogGlobal->y, 5.25, eps);
         EXPECT_NEAR(cogGlobal->z, 0.25, eps);
     }
-    
+
     {
         const auto& cuboid_4 = GetComponent("cuboid_4");
 
@@ -385,7 +385,6 @@ TEST_F(Systems, ComponentMasses)
         EXPECT_NEAR(cogGlobal->y, 15.25, eps);
         EXPECT_NEAR(cogGlobal->z, 0.49497475, eps);
     }
-    
 
     const auto& unpositionedCuboid = GetComponent("unpositionedCuboid");
     EXPECT_FALSE(unpositionedCuboid.IsPositioned());
@@ -667,6 +666,15 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
     }
 }
 
+TEST_F(InvalidSystems, RotorElements)
+{
+    const auto& comp = GetComponent("rotor");
+    CheckExceptionMessage([&] { (void)comp.GetLoft(); }, "rotorElementUID is currently not supported. Component with "
+                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
+    CheckExceptionMessage([&] { (void)comp.GetMass(); }, "rotorElementUID is currently not supported. Component with "
+                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
+}
+
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle InvalidSystems::tiglHandle = 0;
 
@@ -771,7 +779,6 @@ TEST_F(RCSystems, SystemsAccess)
     EXPECT_EQ(saByUid.GetName(), "Rotorcraft system architecture");
     EXPECT_EQ(&sa, &saByUid);
 }
-
 
 TEST_F(RCSystems, EmptySystemArchitecture)
 {
