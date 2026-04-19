@@ -263,6 +263,10 @@ void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
     cache.mass         = result.mass;
     cache.cogLocal     = result.cogLocal;
     cache.inertiaLocal = result.inertiaLocal;
+
+    if (cache.mass) {
+        *cache.mass *= GetTransformationMatrix().GetVolumeScaleFactor();
+    }
 }
 
 } //namespace tigl

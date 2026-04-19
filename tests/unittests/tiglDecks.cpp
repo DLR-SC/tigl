@@ -100,7 +100,7 @@ TEST_F(Decks, DeckGeometry)
     for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
         ++shapeCount;
     }
-    EXPECT_EQ(shapeCount, 10u);
+    EXPECT_EQ(shapeCount, 11u);
 }
 
 TEST_F(Decks, ComponentRepresentation)
@@ -221,7 +221,7 @@ TEST_F(Decks, ComponentMass_ExplicitMassAndLocation)
 
     const auto mass = luggage.GetMass();
     ASSERT_TRUE(mass);
-    EXPECT_NEAR(*mass, 123.0, eps);
+    EXPECT_NEAR(*mass, 79.95, eps);
 
     const auto cogLocal = luggage.GetCenterOfGravityLocal();
     ASSERT_TRUE(cogLocal);
@@ -255,4 +255,27 @@ TEST_F(Decks, ComponentMass_ExplicitMassInertia)
     EXPECT_FALSE(inertia->Jxy);
     EXPECT_FALSE(inertia->Jxz);
     EXPECT_FALSE(inertia->Jyz);
+}
+
+// This test serves an intuitive testing of the scaling effect on mass properties at deck level
+TEST_F(Decks, MassProperties_ScalingOfDeckInstance)
+{
+    const auto& comp = GetComponent("seatModule_massScaleTest");
+    const double eps = 1e-6;
+
+    const auto mass = comp.GetMass();
+    ASSERT_TRUE(mass);
+    EXPECT_NEAR(*mass, 2.6666666, eps);
+
+    const auto cogLocal  = comp.GetCenterOfGravityLocal();
+    ASSERT_TRUE(cogLocal);
+    EXPECT_NEAR(cogLocal->x, 0.5, eps);
+    EXPECT_NEAR(cogLocal->y, 0.5, eps);
+    EXPECT_NEAR(cogLocal->z, 0, eps);
+
+    const auto cogGlobal = comp.GetCenterOfGravityGlobal();
+    ASSERT_TRUE(cogGlobal);
+    EXPECT_NEAR(cogGlobal->x, 2, eps);
+    EXPECT_NEAR(cogGlobal->y, 0.0, eps);
+    EXPECT_NEAR(cogGlobal->z, 0.0, eps);
 }

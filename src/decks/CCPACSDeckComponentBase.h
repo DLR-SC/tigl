@@ -31,16 +31,17 @@ class CCPACSConfiguration;
 /**
  * @brief Representing a CPACS <deck> element.
  *
- * A CCPACSDeckComponent2DBase references a deck element via @c deckElementUID and provides
- * geometric and mass properties derived from that referenced element.
- *
  * Mass properties:
- * - The mass can be given explicitly or computed from a density and the component volume.
+ * - The referenced element may define either an explicit mass or a density.
+ * - The mass returned represents the mass of the transformed component instance.
+ *   If the component is subject to scaling when instantiated at deck level, the returned mass is scaled
+ *   by the corresponding volume scale factor.
  * - The center of gravity (CoG) can be given explicitly via CPACS @c location.
  *   If not provided, it is derived from the geometric centroid of the component.
  *
  * Coordinate frames:
- * - Local values (mass, CoG local) are expressed in the component's local coordinate system.
+ * - The local center of gravity and local mass inertia are expressed in the component's
+ *   local coordinate system.
  */
 class CCPACSDeckComponentBase : public generated::CPACSDeckComponentBase, public CTiglRelativelyPositionedComponent
 {
@@ -121,9 +122,12 @@ public:
     /**
      * @brief Returns the component mass.
      *
-     * The mass is obtained from the referenced system element:
-     * - If an explicit mass is provided in CPACS, it is returned.
-     * - Otherwise, if a density is provided, the mass is computed as density * volume.
+     * The mass is obtained from the predefined deck element and represents the mass of the
+     * transformed component instance at deck level:
+     * - If an explicit mass is provided in CPACS, it is used as the reference mass.
+     * - Otherwise, if a density is provided, the reference mass is computed from the local
+     *   component geometry volume.
+     * - The resulting reference mass is scaled by the transformation at deck level.
      * - If neither mass nor density is available, no mass value is returned.
      *
      * @return Component mass, or boost::none if the mass cannot be determined.
@@ -134,7 +138,7 @@ public:
      * @brief Returns the center of gravity in the component's local coordinate system.
      *
      * If a CPACS @c location is provided, that value is used.
-     * Otherwise, the geometric centroid of the component volume is computed.
+     * Otherwise, the geometric centroid of the untransformed local component volume is computed.
      *
      * If the center of gravity cannot be determined (e.g., missing mass definition or
      * zero-volume geometry), boost::none is returned.
@@ -146,7 +150,8 @@ public:
     /**
      * @brief Returns the center of gravity in the global coordinate system.
      *
-     * The global CoG is obtained by applying the component transformation to the local CoG.
+     * The global CoG is obtained by applying the component transformation hierarchy
+     * to the local CoG.
      *
      * @return Global CoG, or boost::none if unavailable.
      */

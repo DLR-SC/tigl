@@ -136,6 +136,25 @@
                                             </translation>
                                         </transformation>
                                     </seatModule>
+                                    <seatModule uID="seatModule_massScaleTest">
+                                        <name>Seat module 1 LH</name>
+                                        <deckElementUID>predSeatElement2</deckElementUID>
+                                        <transformation>
+                                            <scaling>
+                                                <x>2</x>
+                                                <y>2</y>
+                                                <z>2</z>
+                                            </scaling>
+                                            <translation>
+                                                <x>-0.5</x>
+                                                <y>-1</y>
+                                                <z>-1</z>
+                                            </translation>
+                                            <rotation>
+                                                <y>-90</y>
+                                            </rotation>
+                                        </transformation>
+                                    </seatModule>
                                 </seatModules>
                                 <ceilingPanels>
                                     <ceilingPanel uID="ceilingPanel1">
@@ -458,6 +477,30 @@
                     </geometry>
                     <mass>
                         <density>12</density>
+                    </mass>
+                </seatElement>
+                <seatElement uID="predSeatElement2">
+                    <name>Predefined element used to test scaling at deck level</name>
+                    <geometry>
+                        <cuboids>
+                            <cuboid>
+                                <lengthX>1</lengthX>
+                                <depthY>1</depthY>
+                                <heightZ>1</heightZ>
+                                <upperFaceXmin>0.5</upperFaceXmin>
+                                <upperFaceXmax>0.5</upperFaceXmax>
+                                <upperFaceYmin>0.5</upperFaceYmin>
+                                <upperFaceYmax>0.5</upperFaceYmax>
+                            </cuboid>
+                        </cuboids>
+                    </geometry>
+                    <mass>
+                        <density>1</density>
+                        <location>
+                            <x>0.5</x>
+                            <y>0.5</y>
+                            <z>0</z>
+                        </location>
                     </mass>
                 </seatElement>
             </seatElements>
