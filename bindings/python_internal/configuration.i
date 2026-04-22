@@ -39,6 +39,8 @@
 #include "CCPACSFuselageProfiles.h"
 #include "CCPACSWingProfile.h"
 #include "generated/CPACSStandardProfile.h" //TODO: Replace with CCPACSStandardProfile, once it exists.
+#include "generated/CPACSMultiSegmentShape.h"
+#include "CCPACSFuselageSegments.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSExternalObject.h"
@@ -53,9 +55,10 @@
 #include "CTiglFuselageConnection.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterialDefinition.h"
-#include "generated/CPACSGenericSystem_geometricBaseType.h"
 #include "CCPACSACSystems.h"
+#include "generated/CPACSGenericSystem.h"
 #include "CCPACSGenericSystem.h"
+#include "generated/CPACSGenericSystems.h"
 #include "CCPACSGenericSystems.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "generated/CPACSWingElement.h"
@@ -136,7 +139,24 @@
 #include "CTiglSectionElement.h"
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
-
+#include "CCPACSSystemElements.h"
+#include "CCPACSComponent.h"
+#include "generated/CPACSComponents.h"
+#include "generated/CPACSSystemArchitectures.h"
+#include "CCPACSSystemArchitecture.h"
+#include "generated/CPACSSystemControlDevices.h"
+#include "generated/CPACSSystemState.h"
+#include "generated/CPACSSystemConnections.h"
+#include "CCPACSSystemConnection.h"
+#include "generated/CPACSSystemConnection_connectionType.h"
+#include "generated/CPACSSystemControlDevices.h"
+#include "generated/CPACSSourceTarget.h"
+#include "generated/CPACSSourceTarget_externalElement.h"
+#include "generated/CPACSAtaChapterList.h"
+#include "CCPACSDeck.h"
+#include "generated/CPACSDecks.h"
+#include "generated/CPACSCabinGeometryContour.h"
+#include "CCPACSDeckComponentBase.h"
 %}
 
 %feature("autodoc", "3");
@@ -194,6 +214,8 @@
 %boost_optional(tigl::CCPACSRotorProfiles)
 %boost_optional(tigl::CCPACSCurveParamPointMap)
 %boost_optional(tigl::CCPACSCurvePointListXYZ)
+%boost_optional(tigl::CTiglMassInertia)
+%boost_optional(tigl::CTiglPoint)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
@@ -213,6 +235,11 @@
 %include "generated/CPACSMaterialDefinition.h"
 %include "CCPACSMaterialDefinition.h"
 %include "generated/CPACSCap.h"
+
+%include "CTiglMassInertia.h"
+%include "CTiglPoint.h"
+
+%include "generated/CPACSDoubleVectorBase.h"
 
 // -------------- Fuselage Walls, Compartments -------------//
 %boost_optional(tigl::generated::CPACSCompartments)
@@ -377,7 +404,11 @@ namespace tigl
 %include "generated/CPACSSkin.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
+%include "generated/CPACSFuselageSegments.h"
+%include "CCPACSFuselageSegments.h"
+%include "generated/CPACSFuselageSections.h"
 %include "CCPACSFuselageSections.h"
+%include "generated/CPACSMultiSegmentShape.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
@@ -385,6 +416,61 @@ namespace tigl
 %include "CTiglRelativelyPositionedComponent.h"
 %include "CTiglAttachedRotorBlade.h"
 %include "CPACSRotorHubHinge_type.h"
+
+
+//  ---------------- Decks ------------------ //
+
+%boost_optional(tigl::CCPACSDecks)
+%boost_optional(tigl::CCPACSCabinGeometry)
+%boost_optional(tigl::CCPACSSeatModules)
+%boost_optional(tigl::CCPACSCabinAisles)
+%boost_optional(tigl::CCPACSCabinSpaces)
+%boost_optional(tigl::CCPACSSidewallPanels)
+%boost_optional(tigl::CCPACSLuggageCompartments)
+%boost_optional(tigl::CCPACSCeilingPanels)
+%boost_optional(tigl::CCPACSGalleys)
+%boost_optional(tigl::CCPACSGenericFloorModules)
+%boost_optional(tigl::CCPACSLavatories)
+%boost_optional(tigl::CCPACSClassDividers)
+%boost_optional(tigl::CCPACSCargoContainers)
+%boost_optional(tigl::CCPACSDeckDoors)
+
+%include "generated/CPACSDecks.h"
+
+%include "generated/CPACSCabinGeometryContour.h"
+%include "generated/CPACSCabinGeometryContours.h"
+%include "generated/CPACSCabinGeometry.h"
+%include "generated/CPACSDeck_deckType.h"
+
+%ignore tigl::generated::CPACSSeatModules::GetSeatModules;
+%ignore tigl::generated::CPACSCabinAisles::GetCabinAisles;
+%ignore tigl::generated::CPACSCabinSpaces::GetCabinSpaces;
+%ignore tigl::generated::CPACSSidewallPanels::GetSidewallPanels;
+%ignore tigl::generated::CPACSLuggageCompartments::GetLuggageCompartments;
+%ignore tigl::generated::CPACSCeilingPanels::GetCeilingPanels;
+%ignore tigl::generated::CPACSGalleys::GetGalleys;
+%ignore tigl::generated::CPACSGenericFloorModules::GetGenericFloorModules;
+%ignore tigl::generated::CPACSLavatories::GetLavatorys;
+%ignore tigl::generated::CPACSClassDividers::GetClassDividers;
+%ignore tigl::generated::CPACSCargoContainers::GetCargoContainers;
+%ignore tigl::generated::CPACSDeckDoors::GetDeckDoors;
+
+%include "generated/CPACSSeatModules.h"
+%include "generated/CPACSCabinAisles.h"
+%include "generated/CPACSCabinSpaces.h"
+%include "generated/CPACSSidewallPanels.h"
+%include "generated/CPACSLuggageCompartments.h"
+%include "generated/CPACSCeilingPanels.h"
+%include "generated/CPACSGalleys.h"
+%include "generated/CPACSGenericFloorModules.h"
+%include "generated/CPACSLavatories.h"
+%include "generated/CPACSClassDividers.h"
+%include "generated/CPACSCargoContainers.h"
+%include "generated/CPACSDeckDoors.h"
+%include "CCPACSDeckComponentBase.h"
+
+%include "generated/CPACSDeck.h"
+%include "CCPACSDeck.h"
 
 // --------------- Fuselage tanks -----------------//
 %boost_optional(tigl::generated::CPACSVessels)
@@ -602,6 +688,51 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSEnginePylon.h"
 %include "generated/CPACSEnginePylons.h"
 
+//  ---------------- Systems ------------------ //
+namespace tigl {
+class CCPACSGenericSystem;
+}
+
+%boost_optional(tigl::CCPACSSystemElements)
+%boost_optional(tigl::CCPACSGenericSystems)
+%boost_optional(tigl::CPACSUIDSequence)
+%boost_optional(tigl::CCPACSComponent)
+
+%ignore tigl::generated::CPACSComponents::GetComponents;
+
+%boost_optional(tigl::CCPACSSystemArchitectures)
+%boost_optional(tigl::CCPACSSystemConnections)
+%boost_optional(tigl::CCPACSSystemControlDevices)
+%boost_optional_enum(tigl::ECPACSSourceTarget_externalElement)
+
+%include "generated/CPACSUIDSequence.h"
+%include "generated/CPACSComponent.h"
+%include "CCPACSComponent.h"
+
+%template(CCPACSComponentConstPtrVector) std::vector<const tigl::CCPACSComponent*>;
+
+%include "generated/CPACSAtaChapterList.h"
+%include "generated/CPACSSourceTarget_externalElement.h"
+%include "generated/CPACSSourceTarget.h"
+%include "generated/CPACSSystemState.h"
+%include "generated/CPACSSystemControlDevices.h"
+%include "generated/CPACSSystemConnection_connectionType.h"
+%include "generated/CPACSSystemConnection.h"
+%include "CCPACSSystemConnection.h"
+%include "generated/CPACSSystemConnections.h"
+
+%include "generated/CPACSComponents.h"
+%include "generated/CPACSGenericSystem.h"
+%include "CCPACSGenericSystem.h"
+%include "generated/CPACSGenericSystems.h"
+%include "CCPACSGenericSystems.h"
+%include "generated/CPACSSystems.h"
+%include "CCPACSACSystems.h"
+%include "CCPACSSystemElements.h"
+%include "generated/CPACSSystemArchitecture.h"
+%include "CCPACSSystemArchitecture.h"
+%include "generated/CPACSSystemArchitectures.h"
+
 //  ---------------- Ducts ------------------ //
 
 %boost_optional(tigl::CCPACSTransformation)
@@ -640,7 +771,10 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSDuct,
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,
-         tigl::CCPACSVessel
+         tigl::CCPACSVessel,
+         tigl::CCPACSComponent,
+         tigl::CCPACSDeck,
+         tigl::CCPACSDeckComponentBase
 );
 
 namespace tigl
@@ -666,13 +800,6 @@ public:
 } // namespace tigl
 
 %include "CTiglShapeCache.h"
-%include "generated/CPACSGenericSystem_geometricBaseType.h"
-%include "generated/CPACSGenericSystem.h"
-%include "CCPACSGenericSystem.h"
-%include "generated/CPACSGenericSystems.h"
-%include "CCPACSGenericSystems.h"
-%include "generated/CPACSSystems.h"
-%include "CCPACSACSystems.h"
 %include "generated/CPACSRotorAirfoils.h"
 %include "CCPACSRotorProfiles.h"
 %include "CCPACSConfiguration.h"

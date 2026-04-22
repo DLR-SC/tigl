@@ -95,6 +95,17 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
+        // read element name
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+            m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
+            if (m_name.empty()) {
+                LOG(WARNING) << "Required element name is empty at xpath " << xpath;
+            }
+        }
+        else {
+            LOG(ERROR) << "Required element name is missing at xpath " << xpath;
+        }
+
         // read element description
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
@@ -140,6 +151,10 @@ namespace generated
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
+
+        // write element name
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
@@ -198,6 +213,16 @@ namespace generated
         m_uID = value;
     }
 
+    const std::string& CPACSSeatElement::GetName() const
+    {
+        return m_name;
+    }
+
+    void CPACSSeatElement::SetName(const std::string& value)
+    {
+        m_name = value;
+    }
+
     const boost::optional<std::string>& CPACSSeatElement::GetDescription() const
     {
         return m_description;
@@ -208,22 +233,22 @@ namespace generated
         m_description = value;
     }
 
-    const CPACSDeckElementGeometry& CPACSSeatElement::GetGeometry() const
+    const CPACSElementGeometry& CPACSSeatElement::GetGeometry() const
     {
         return m_geometry;
     }
 
-    CPACSDeckElementGeometry& CPACSSeatElement::GetGeometry()
+    CPACSElementGeometry& CPACSSeatElement::GetGeometry()
     {
         return m_geometry;
     }
 
-    const boost::optional<CPACSDeckElementMass>& CPACSSeatElement::GetMass() const
+    const boost::optional<CPACSElementMass>& CPACSSeatElement::GetMass() const
     {
         return m_mass;
     }
 
-    boost::optional<CPACSDeckElementMass>& CPACSSeatElement::GetMass()
+    boost::optional<CPACSElementMass>& CPACSSeatElement::GetMass()
     {
         return m_mass;
     }
@@ -238,7 +263,7 @@ namespace generated
         return m_numberOfSeats;
     }
 
-    CPACSDeckElementMass& CPACSSeatElement::GetMass(CreateIfNotExistsTag)
+    CPACSElementMass& CPACSSeatElement::GetMass(CreateIfNotExistsTag)
     {
         if (!m_mass)
             m_mass = boost::in_place(this, m_uidMgr);

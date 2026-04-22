@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckComponent2DBase.h"
+#include <CCPACSDeckComponentBase.h>
+#include "CCPACSDeck.h"
 #include "CPACSSeatModules.h"
-#include "CPACSStructuralElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSeatModules::CPACSSeatModules(CPACSStructuralElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSeatModules::CPACSSeatModules(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,30 +40,24 @@ namespace generated
     {
     }
 
-    const CPACSStructuralElements* CPACSSeatModules::GetParent() const
+    const CCPACSDeck* CPACSSeatModules::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSStructuralElements* CPACSSeatModules::GetParent()
+    CCPACSDeck* CPACSSeatModules::GetParent()
     {
         return m_parent;
     }
 
     const CTiglUIDObject* CPACSSeatModules::GetNextUIDParent() const
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDObject* CPACSSeatModules::GetNextUIDParent()
     {
-        if (m_parent) {
-            return m_parent->GetNextUIDParent();
-        }
-        return nullptr;
+        return m_parent;
     }
 
     CTiglUIDManager& CPACSSeatModules::GetUIDManager()
@@ -98,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSSeatModules::GetSeatModules() const
+    const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSSeatModules::GetSeatModules() const
     {
         return m_seatModules;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& CPACSSeatModules::GetSeatModules()
+    std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& CPACSSeatModules::GetSeatModules()
     {
         return m_seatModules;
     }
@@ -124,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModuleIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(size_t index)
+    CCPACSDeckComponentBase& CPACSSeatModules::GetSeatModule(size_t index)
     {
         if (index < 1 || index > GetSeatModuleCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetSeatModule", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetSeatModule", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_seatModules[index];
     }
 
-    const CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(size_t index) const
+    const CCPACSDeckComponentBase& CPACSSeatModules::GetSeatModule(size_t index) const
     {
         if (index < 1 || index > GetSeatModuleCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>::GetSeatModule", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeckComponentBase>>::GetSeatModule", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_seatModules[index];
     }
 
-    CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(const std::string& UID)
+    CCPACSDeckComponentBase& CPACSSeatModules::GetSeatModule(const std::string& UID)
     {
         for (auto& elem : m_seatModules ) {
             if (elem->GetUID() == UID)
@@ -151,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSeatModules::GetSeatModule. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckComponent2DBase& CPACSSeatModules::GetSeatModule(const std::string& UID) const
+    const CCPACSDeckComponentBase& CPACSSeatModules::GetSeatModule(const std::string& UID) const
     {
         for (auto& elem : m_seatModules ) {
             if (elem->GetUID() == UID)
@@ -161,13 +155,13 @@ namespace generated
     }
 
 
-    CPACSDeckComponent2DBase& CPACSSeatModules::AddSeatModule()
+    CCPACSDeckComponentBase& CPACSSeatModules::AddSeatModule()
     {
-        m_seatModules.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
+        m_seatModules.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_seatModules.back();
     }
 
-    void CPACSSeatModules::RemoveSeatModule(CPACSDeckComponent2DBase& ref)
+    void CPACSSeatModules::RemoveSeatModule(CCPACSDeckComponentBase& ref)
     {
         for (std::size_t i = 0; i < m_seatModules.size(); i++) {
             if (m_seatModules[i].get() == &ref) {

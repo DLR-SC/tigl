@@ -21,8 +21,8 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "CPACSDeckElementGeometry.h"
-#include "CPACSDeckElementMass.h"
+#include "CPACSElementGeometry.h"
+#include "CPACSElementMass.h"
 #include "CPACSPosExcl0IntBase.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
@@ -66,19 +66,22 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
+        TIGL_EXPORT virtual const std::string& GetName() const;
+        TIGL_EXPORT virtual void SetName(const std::string& value);
+
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CPACSDeckElementGeometry& GetGeometry() const;
-        TIGL_EXPORT virtual CPACSDeckElementGeometry& GetGeometry();
+        TIGL_EXPORT virtual const CPACSElementGeometry& GetGeometry() const;
+        TIGL_EXPORT virtual CPACSElementGeometry& GetGeometry();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSDeckElementMass>& GetMass() const;
-        TIGL_EXPORT virtual boost::optional<CPACSDeckElementMass>& GetMass();
+        TIGL_EXPORT virtual const boost::optional<CPACSElementMass>& GetMass() const;
+        TIGL_EXPORT virtual boost::optional<CPACSElementMass>& GetMass();
 
         TIGL_EXPORT virtual const boost::optional<CPACSPosExcl0IntBase>& GetNumberOfSeats() const;
         TIGL_EXPORT virtual boost::optional<CPACSPosExcl0IntBase>& GetNumberOfSeats();
 
-        TIGL_EXPORT virtual CPACSDeckElementMass& GetMass(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSElementMass& GetMass(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveMass();
 
         TIGL_EXPORT virtual CPACSPosExcl0IntBase& GetNumberOfSeats(CreateIfNotExistsTag);
@@ -91,12 +94,15 @@ namespace generated
 
         std::string                           m_uID;
 
+        /// Name
+        std::string                           m_name;
+
         /// Description
         boost::optional<std::string>          m_description;
 
-        CPACSDeckElementGeometry              m_geometry;
+        CPACSElementGeometry                  m_geometry;
 
-        boost::optional<CPACSDeckElementMass> m_mass;
+        boost::optional<CPACSElementMass>     m_mass;
 
         /// Number of seats
         boost::optional<CPACSPosExcl0IntBase> m_numberOfSeats;

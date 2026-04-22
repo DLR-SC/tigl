@@ -29,10 +29,10 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementMass;
+    class CPACSElementMass;
 
     // This class is used in:
-    // CPACSDeckElementMass
+    // CPACSElementMass
 
     /// @brief Mass intertia
     /// 
@@ -41,13 +41,13 @@ namespace generated
     class CPACSMassInertia
     {
     public:
-        TIGL_EXPORT CPACSMassInertia(CPACSDeckElementMass* parent);
+        TIGL_EXPORT CPACSMassInertia(CPACSElementMass* parent);
 
         TIGL_EXPORT virtual ~CPACSMassInertia();
 
-        TIGL_EXPORT CPACSDeckElementMass* GetParent();
+        TIGL_EXPORT CPACSElementMass* GetParent();
 
-        TIGL_EXPORT const CPACSDeckElementMass* GetParent() const;
+        TIGL_EXPORT const CPACSElementMass* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -74,7 +74,7 @@ namespace generated
         TIGL_EXPORT virtual void SetJyz(const boost::optional<double>& value);
 
     protected:
-        CPACSDeckElementMass* m_parent;
+        CPACSElementMass* m_parent;
 
         double                  m_Jxx;
         double                  m_Jyy;
@@ -94,5 +94,5 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSMassInertia = generated::CPACSMassInertia;
-using CCPACSDeckElementMass = generated::CPACSDeckElementMass;
+using CCPACSElementMass = generated::CPACSElementMass;
 } // namespace tigl

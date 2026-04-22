@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSCargoContainerElement.h"
 #include "CPACSCargoContainerElements.h"
 #include "CPACSDeckElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSCargoContainerElement>>& CPACSCargoContainerElements::GetCargoContainerElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSCargoContainerElements::GetCargoContainerElements() const
     {
         return m_cargoContainerElements;
     }
 
-    std::vector<std::unique_ptr<CPACSCargoContainerElement>>& CPACSCargoContainerElements::GetCargoContainerElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSCargoContainerElements::GetCargoContainerElements()
     {
         return m_cargoContainerElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSCargoContainerElements::GetCargoContainerElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(size_t index)
+    CPACSVehicleElementBase& CPACSCargoContainerElements::GetCargoContainerElement(size_t index)
     {
         if (index < 1 || index > GetCargoContainerElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCargoContainerElement>>::GetCargoContainerElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCargoContainerElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cargoContainerElements[index];
     }
 
-    const CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSCargoContainerElements::GetCargoContainerElement(size_t index) const
     {
         if (index < 1 || index > GetCargoContainerElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSCargoContainerElement>>::GetCargoContainerElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCargoContainerElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cargoContainerElements[index];
     }
 
-    CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSCargoContainerElements::GetCargoContainerElement(const std::string& UID)
     {
         for (auto& elem : m_cargoContainerElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSCargoContainerElements::GetCargoContainerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSCargoContainerElement& CPACSCargoContainerElements::GetCargoContainerElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSCargoContainerElements::GetCargoContainerElement(const std::string& UID) const
     {
         for (auto& elem : m_cargoContainerElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSCargoContainerElement& CPACSCargoContainerElements::AddCargoContainerElement()
+    CPACSVehicleElementBase& CPACSCargoContainerElements::AddCargoContainerElement()
     {
-        m_cargoContainerElements.push_back(make_unique<CPACSCargoContainerElement>(this, m_uidMgr));
+        m_cargoContainerElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_cargoContainerElements.back();
     }
 
-    void CPACSCargoContainerElements::RemoveCargoContainerElement(CPACSCargoContainerElement& ref)
+    void CPACSCargoContainerElements::RemoveCargoContainerElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_cargoContainerElements.size(); i++) {
             if (m_cargoContainerElements[i].get() == &ref) {

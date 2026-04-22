@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include "CPACSClassDividerElements.h"
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSClassDividerElements::GetClassDividerElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSClassDividerElements::GetClassDividerElements() const
     {
         return m_classDividerElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSClassDividerElements::GetClassDividerElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSClassDividerElements::GetClassDividerElements()
     {
         return m_classDividerElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index)
+    CPACSVehicleElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index)
     {
         if (index < 1 || index > GetClassDividerElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_classDividerElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSClassDividerElements::GetClassDividerElement(size_t index) const
     {
         if (index < 1 || index > GetClassDividerElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetClassDividerElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_classDividerElements[index];
     }
 
-    CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID)
     {
         for (auto& elem : m_classDividerElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSClassDividerElements::GetClassDividerElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSClassDividerElements::GetClassDividerElement(const std::string& UID) const
     {
         for (auto& elem : m_classDividerElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSClassDividerElements::AddClassDividerElement()
+    CPACSVehicleElementBase& CPACSClassDividerElements::AddClassDividerElement()
     {
-        m_classDividerElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_classDividerElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_classDividerElements.back();
     }
 
-    void CPACSClassDividerElements::RemoveClassDividerElement(CPACSDeckElementBase& ref)
+    void CPACSClassDividerElements::RemoveClassDividerElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_classDividerElements.size(); i++) {
             if (m_classDividerElements[i].get() == &ref) {

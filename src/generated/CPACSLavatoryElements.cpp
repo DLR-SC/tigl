@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
 #include "CPACSLavatoryElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSLavatoryElements::GetLavatoryElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSLavatoryElements::GetLavatoryElements() const
     {
         return m_lavatoryElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSLavatoryElements::GetLavatoryElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSLavatoryElements::GetLavatoryElements()
     {
         return m_lavatoryElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index)
+    CPACSVehicleElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index)
     {
         if (index < 1 || index > GetLavatoryElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_lavatoryElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSLavatoryElements::GetLavatoryElement(size_t index) const
     {
         if (index < 1 || index > GetLavatoryElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetLavatoryElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_lavatoryElements[index];
     }
 
-    CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID)
     {
         for (auto& elem : m_lavatoryElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSLavatoryElements::GetLavatoryElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSLavatoryElements::GetLavatoryElement(const std::string& UID) const
     {
         for (auto& elem : m_lavatoryElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSLavatoryElements::AddLavatoryElement()
+    CPACSVehicleElementBase& CPACSLavatoryElements::AddLavatoryElement()
     {
-        m_lavatoryElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_lavatoryElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_lavatoryElements.back();
     }
 
-    void CPACSLavatoryElements::RemoveLavatoryElement(CPACSDeckElementBase& ref)
+    void CPACSLavatoryElements::RemoveLavatoryElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_lavatoryElements.size(); i++) {
             if (m_lavatoryElements[i].get() == &ref) {

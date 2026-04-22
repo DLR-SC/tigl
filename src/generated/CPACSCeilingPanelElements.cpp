@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include "CPACSCeilingPanelElements.h"
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSCeilingPanelElements::GetCeilingPanelElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSCeilingPanelElements::GetCeilingPanelElements() const
     {
         return m_ceilingPanelElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSCeilingPanelElements::GetCeilingPanelElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSCeilingPanelElements::GetCeilingPanelElements()
     {
         return m_ceilingPanelElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSCeilingPanelElements::GetCeilingPanelElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(size_t index)
+    CPACSVehicleElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(size_t index)
     {
         if (index < 1 || index > GetCeilingPanelElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetCeilingPanelElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCeilingPanelElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_ceilingPanelElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(size_t index) const
     {
         if (index < 1 || index > GetCeilingPanelElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetCeilingPanelElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCeilingPanelElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_ceilingPanelElements[index];
     }
 
-    CPACSDeckElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(const std::string& UID)
     {
         for (auto& elem : m_ceilingPanelElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSCeilingPanelElements::GetCeilingPanelElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSCeilingPanelElements::GetCeilingPanelElement(const std::string& UID) const
     {
         for (auto& elem : m_ceilingPanelElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSCeilingPanelElements::AddCeilingPanelElement()
+    CPACSVehicleElementBase& CPACSCeilingPanelElements::AddCeilingPanelElement()
     {
-        m_ceilingPanelElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_ceilingPanelElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_ceilingPanelElements.back();
     }
 
-    void CPACSCeilingPanelElements::RemoveCeilingPanelElement(CPACSDeckElementBase& ref)
+    void CPACSCeilingPanelElements::RemoveCeilingPanelElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_ceilingPanelElements.size(); i++) {
             if (m_ceilingPanelElements[i].get() == &ref) {

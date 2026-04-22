@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetCeilingPanelElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetCeilingPanelElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCeilingPanelElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCeilingPanelElements();
 
         TIGL_EXPORT virtual size_t GetCeilingPanelElementCount() const;
         TIGL_EXPORT virtual size_t GetCeilingPanelElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetCeilingPanelElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetCeilingPanelElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCeilingPanelElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCeilingPanelElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetCeilingPanelElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetCeilingPanelElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCeilingPanelElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCeilingPanelElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddCeilingPanelElement();
-        TIGL_EXPORT virtual void RemoveCeilingPanelElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddCeilingPanelElement();
+        TIGL_EXPORT virtual void RemoveCeilingPanelElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Ceiling panel element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_ceilingPanelElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_ceilingPanelElements;
 
     private:
         CPACSCeilingPanelElements(const CPACSCeilingPanelElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCeilingPanelElements = generated::CPACSCeilingPanelElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

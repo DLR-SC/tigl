@@ -30,6 +30,7 @@
 #include "CPACSEnginePylons.h"
 #include "CPACSFuelTanks.h"
 #include "CPACSLandingGears.h"
+#include "CPACSSystemArchitectures.h"
 #include "CPACSVehicleConfigurations.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
@@ -115,6 +116,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSVehicleConfigurations>& GetConfigurations() const;
         TIGL_EXPORT virtual boost::optional<CPACSVehicleConfigurations>& GetConfigurations();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures();
+
         TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDucts();
 
@@ -144,6 +148,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSVehicleConfigurations& GetConfigurations(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveConfigurations();
+
+        TIGL_EXPORT virtual CPACSSystemArchitectures& GetSystemArchitectures(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSystemArchitectures();
 
     protected:
         CPACSAircraft* m_parent;
@@ -177,6 +184,8 @@ namespace generated
         boost::optional<CCPACSExternalObjects>      m_genericGeometryComponents;
 
         boost::optional<CPACSVehicleConfigurations> m_configurations;
+
+        boost::optional<CPACSSystemArchitectures>   m_systemArchitectures;
 
     private:
         CPACSAircraftModel(const CPACSAircraftModel&) = delete;

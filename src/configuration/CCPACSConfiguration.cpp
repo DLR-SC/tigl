@@ -81,6 +81,8 @@ namespace {
     const std::string profilesXPath = "/cpacs/vehicles/profiles";
     const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
     const std::string enginesXPath = "/cpacs/vehicles/engines";
+    const std::string systemElementsXPath = "/cpacs/vehicles/systemElements";
+    const std::string deckElementsXPath = "/cpacs/vehicles/deckElements";
 }
 
 // Build up memory structure for whole CPACS file
@@ -105,6 +107,14 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     }
     if (tixi::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, systemElementsXPath)) {
+        systemElements = boost::in_place(nullptr, &uidManager);
+        systemElements->ReadCPACS(tixiDocumentHandle, systemElementsXPath);
+    }
+    if (tixi::TixiCheckElement(tixiDocumentHandle, deckElementsXPath)) {
+        deckElements = boost::in_place(nullptr, &uidManager);
+        deckElements->ReadCPACS(tixiDocumentHandle, deckElementsXPath);
     }
 
     // create new root component for CTiglUIDManager
@@ -399,62 +409,112 @@ size_t CCPACSConfiguration::GetWingIndex(const std::string& UID) const
 }
 
 // Returns the total count of generic systems in a configuration
-size_t CCPACSConfiguration::GetGenericSystemCount()
+size_t CCPACSConfiguration::GetGenericSystemCount() const
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystemCount();
     }
-    else {
-        return 0;
-    }
+
+    return 0;
 }
 
 // Returns the generic system for a given index.
 const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index) const
 {
-    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystem(index);
     }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+
+    throw CTiglError("No generic system loaded");
 }
 
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(size_t index)
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems && acSystems->GetGenericSystems()) {
-        return acSystems->GetGenericSystems()->GetGenericSystem(index);
-    }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+    return const_cast<CCPACSGenericSystem&>(std::as_const(*this).GetGenericSystem(index));
 }
 
 // Returns the generic system for a given UID.
 const CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID) const
 {
-    boost::optional<const CCPACSACSystems&> acSystems = GetACSystems();
+    const auto acSystems = GetACSystems();
     if (acSystems && acSystems->GetGenericSystems()) {
         return acSystems->GetGenericSystems()->GetGenericSystem(UID);
     }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+
+    throw CTiglError("No generic system loaded");
 }
 
 CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
 {
-    boost::optional<CCPACSACSystems&> acSystems = GetACSystems();
-    if (acSystems && acSystems->GetGenericSystems()) {
-        return acSystems->GetGenericSystems()->GetGenericSystem(UID);
-    }
-    else {
-        throw CTiglError("No generic system loaded");
-    }
+    return const_cast<CCPACSGenericSystem&>(std::as_const(*this).GetGenericSystem(UID));
 }
+
+// Returns the total count of system architectures in a configuration
+size_t CCPACSConfiguration::GetSystemArchitecturesCount() const
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
+    }
+
+    else if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        return systemArchitectures ? systemArchitectures->GetSystemArchitectureCount() : 0;
+    }
+
+    throw CTiglError("No configuration loaded");
+}
+
+// Returns the system architecture for a given index.
+const CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(size_t index) const
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(index);
+        }
+    }
+    else if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(index);
+        }
+    }
+
+    throw CTiglError("No system architecture loaded");
+}
+
+CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(size_t index)
+{
+    return const_cast<CCPACSSystemArchitecture&>(std::as_const(*this).GetSystemArchitecture(index));
+}
+
+// Returns the system architecture for a given UID.
+const CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(const std::string& UID) const
+{
+    if (aircraftModel) {
+        const auto& systemArchitectures = aircraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(UID);
+        }
+    }
+    else if (rotorcraftModel) {
+        const auto& systemArchitectures = rotorcraftModel->GetSystemArchitectures();
+        if (systemArchitectures) {
+            return systemArchitectures->GetSystemArchitecture(UID);
+        }
+    }
+
+    throw CTiglError("No system architecture loaded");
+}
+
+CCPACSSystemArchitecture& CCPACSConfiguration::GetSystemArchitecture(const std::string& UID)
+{
+    return const_cast<CCPACSSystemArchitecture&>(std::as_const(*this).GetSystemArchitecture(UID));
+}
+
 
 // Returns the total count of rotors in a configuration
 size_t CCPACSConfiguration::GetRotorCount() const

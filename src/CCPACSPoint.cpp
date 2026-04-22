@@ -36,21 +36,20 @@ CCPACSPoint::CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-CCPACSPoint::CCPACSPoint(CCPACSBoundingBox* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPoint(parent, uidMgr)
-{
-}
-
-CCPACSPoint::CCPACSPoint(CCPACSDeckElementMass* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPoint(parent, uidMgr)
-{
-}
-
 CCPACSPoint::CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {
 }
 
+CCPACSPoint::CCPACSPoint(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+CCPACSPoint::CCPACSPoint(CCPACSElementMass* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
 
 CCPACSPoint::CCPACSPoint(const CCPACSPoint &p)
     : generated::CPACSPoint((CCPACSTransformation*)nullptr, p.m_uidMgr)

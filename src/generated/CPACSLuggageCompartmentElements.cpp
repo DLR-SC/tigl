@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementBase.h"
 #include "CPACSDeckElements.h"
 #include "CPACSLuggageCompartmentElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSLuggageCompartmentElements::GetLuggageCompartmentElements() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSLuggageCompartmentElements::GetLuggageCompartmentElements() const
     {
         return m_luggageCompartmentElements;
     }
 
-    std::vector<std::unique_ptr<CPACSDeckElementBase>>& CPACSLuggageCompartmentElements::GetLuggageCompartmentElements()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSLuggageCompartmentElements::GetLuggageCompartmentElements()
     {
         return m_luggageCompartmentElements;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSLuggageCompartmentElements::GetLuggageCompartmentElementIndex", TIGL_UID_ERROR);
     }
 
-    CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(size_t index)
+    CPACSVehicleElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(size_t index)
     {
         if (index < 1 || index > GetLuggageCompartmentElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLuggageCompartmentElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetLuggageCompartmentElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_luggageCompartmentElements[index];
     }
 
-    const CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(size_t index) const
+    const CPACSVehicleElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(size_t index) const
     {
         if (index < 1 || index > GetLuggageCompartmentElementCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSDeckElementBase>>::GetLuggageCompartmentElement", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetLuggageCompartmentElement", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_luggageCompartmentElements[index];
     }
 
-    CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(const std::string& UID)
+    CPACSVehicleElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(const std::string& UID)
     {
         for (auto& elem : m_luggageCompartmentElements ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSLuggageCompartmentElements::GetLuggageCompartmentElement. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSDeckElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSLuggageCompartmentElements::GetLuggageCompartmentElement(const std::string& UID) const
     {
         for (auto& elem : m_luggageCompartmentElements ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSDeckElementBase& CPACSLuggageCompartmentElements::AddLuggageCompartmentElement()
+    CPACSVehicleElementBase& CPACSLuggageCompartmentElements::AddLuggageCompartmentElement()
     {
-        m_luggageCompartmentElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_luggageCompartmentElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_luggageCompartmentElements.back();
     }
 
-    void CPACSLuggageCompartmentElements::RemoveLuggageCompartmentElement(CPACSDeckElementBase& ref)
+    void CPACSLuggageCompartmentElements::RemoveLuggageCompartmentElement(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_luggageCompartmentElements.size(); i++) {
             if (m_luggageCompartmentElements[i].get() == &ref) {

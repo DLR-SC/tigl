@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementMass.h"
+#include "CPACSElementMass.h"
 #include "CPACSMassInertia.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSMassInertia::CPACSMassInertia(CPACSDeckElementMass* parent)
+    CPACSMassInertia::CPACSMassInertia(CPACSElementMass* parent)
         : m_Jxx(0)
         , m_Jyy(0)
         , m_Jzz(0)
@@ -40,24 +40,30 @@ namespace generated
     {
     }
 
-    const CPACSDeckElementMass* CPACSMassInertia::GetParent() const
+    const CPACSElementMass* CPACSMassInertia::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDeckElementMass* CPACSMassInertia::GetParent()
+    CPACSElementMass* CPACSMassInertia::GetParent()
     {
         return m_parent;
     }
 
     const CTiglUIDObject* CPACSMassInertia::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSMassInertia::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            return m_parent->GetNextUIDParent();
+        }
+        return nullptr;
     }
 
     void CPACSMassInertia::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
