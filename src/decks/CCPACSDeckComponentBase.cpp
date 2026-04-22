@@ -227,7 +227,7 @@ const CCPACSElementGeometry& CCPACSDeckComponentBase::GetElementGeometry() const
     const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, m_deckElementUID);
 
     if (!geom) {
-        throw CTiglError("Unsupported system element for uID \"" + m_deckElementUID + "\".");
+        throw CTiglError("Unsupported deck element for uID \"" + m_deckElementUID + "\".");
     }
 
     return *geom;

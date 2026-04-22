@@ -257,6 +257,13 @@ TEST_F(Decks, ComponentMass_ExplicitMassInertia)
     EXPECT_FALSE(inertia->Jyz);
 }
 
+TEST_F(Decks, NoMass)
+{
+    // Deck component without mass definition (which is ok)
+    const auto& comp = GetComponent("galley");
+    ASSERT_FALSE(comp.GetMass());
+}
+
 // This test serves an intuitive testing of the scaling effect on mass properties at deck level
 TEST_F(Decks, MassProperties_ScalingOfDeckInstance)
 {
@@ -267,7 +274,7 @@ TEST_F(Decks, MassProperties_ScalingOfDeckInstance)
     ASSERT_TRUE(mass);
     EXPECT_NEAR(*mass, 2.6666666, eps);
 
-    const auto cogLocal  = comp.GetCenterOfGravityLocal();
+    const auto cogLocal = comp.GetCenterOfGravityLocal();
     ASSERT_TRUE(cogLocal);
     EXPECT_NEAR(cogLocal->x, 0.5, eps);
     EXPECT_NEAR(cogLocal->y, 0.5, eps);
@@ -278,4 +285,60 @@ TEST_F(Decks, MassProperties_ScalingOfDeckInstance)
     EXPECT_NEAR(cogGlobal->x, 2, eps);
     EXPECT_NEAR(cogGlobal->y, 0.0, eps);
     EXPECT_NEAR(cogGlobal->z, 0.0, eps);
+}
+
+class InvalidDecks : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-invalid-decks.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    const tigl::CTiglUIDManager& GetUIDManager() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    }
+
+    const tigl::CCPACSDeckComponentBase& GetComponent(const std::string& uid) const
+    {
+        return GetUIDManager().ResolveObject<tigl::CCPACSDeckComponentBase>(uid);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle InvalidDecks::tixiHandle           = 0;
+TiglCPACSConfigurationHandle InvalidDecks::tiglHandle = 0;
+
+static void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
+{
+    try {
+        func();
+        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
+    }
+    catch (const tigl::CTiglError& e) {
+        EXPECT_STREQ(e.what(), expectedMessage);
+    }
+    catch (...) {
+        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
+    }
+}
+
+TEST_F(InvalidDecks, UnsupportedReferences)
+{
+    // Deck component references a profile UID
+    const auto& comp = GetComponent("seatModule");
+    CheckExceptionMessage([&] { (void)comp.GetLoft(); }, "Unsupported deck element for uID \"fuselageCircleProfile\".");
 }
