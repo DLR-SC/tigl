@@ -105,6 +105,29 @@ public:
     TIGL_EXPORT std::string GetComponentRepresentationAsString() const;
 
     /**
+     * @brief Returns the geometric centroid of the component in the local coordinate system.
+     *
+     * The centroid is computed purely from the component's volume geometry and is
+     * independent of any mass or density definition.
+     *
+     * @throw CTiglError if the component has no valid, non-zero volume geometry.
+     * @return Local geometric centroid (x, y, z).
+     */
+    TIGL_EXPORT CTiglPoint GetCentroidLocal() const;
+
+    /**
+     * @brief Returns the geometric centroid of the component in the global coordinate system.
+     *
+     * The global centroid is obtained by applying the component transformation to
+     * the local centroid. This value is only available if the component is explicitly
+     * positioned (see IsPositioned()).
+     *
+     * @throw CTiglError if the component has no valid, non-zero volume geometry.
+     * @return Global geometric centroid, or boost::none if the component is not positioned.
+     */
+    TIGL_EXPORT boost::optional<CTiglPoint> GetCentroidGlobal() const;
+
+    /**
      * @brief Returns the component mass.
      *
      * The mass is obtained from the referenced system element:

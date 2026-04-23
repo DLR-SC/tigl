@@ -168,6 +168,32 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
 }
 
+CTiglPoint CCPACSComponent::GetCentroidLocal() const
+{
+    const TopoDS_Shape shape = BuildLocalLoft()->Shape();
+
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(shape, props);
+
+    if (props.Mass() <= 0.0) {
+        throw CTiglError("Cannot compute geometric centroid of component with uID=\"" +
+                         GetObjectUID().get_value_or("unnamed") + "\" (zero volume).");
+    }
+
+    const gp_Pnt c = props.CentreOfMass();
+    return CTiglPoint(c.X(), c.Y(), c.Z());
+}
+
+boost::optional<CTiglPoint> CCPACSComponent::GetCentroidGlobal() const
+{
+    if (!IsPositioned()) {
+        LOG(WARNING) << "Global centroid of component with uID=\"" << GetObjectUID().get_value_or("unnamed")
+                     << "\" is only available if <transformation> is defined.";
+        return boost::none;
+    }
+    return GetTransformationMatrix() * GetCentroidLocal();
+}
+
 boost::optional<double> CCPACSComponent::GetMass() const
 {
     return m_mass->mass;
@@ -182,7 +208,7 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
 {
     const auto cogLocal = m_mass->cogLocal;
     if (!IsPositioned()) {
-        LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
+        LOG(WARNING) << "Global center of gravity of component with uID=\"" << GetObjectUID().get_value_or("unnamed")
                      << "\" is only available if <transformation> is defined.";
         return boost::none;
     }

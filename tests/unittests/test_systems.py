@@ -88,6 +88,9 @@ class SystemsBindings(unittest.TestCase):
             component.get_center_of_gravity_global(), geometry.CTiglPoint
         )
 
+        self.assertIsInstance(component.get_centroid_local(), geometry.CTiglPoint)
+        self.assertIsInstance(component.get_centroid_global(), geometry.CTiglPoint)
+
         # optional mass inertia -> None in Python
         self.assertIsNone(component.get_mass_inertia_local())
 

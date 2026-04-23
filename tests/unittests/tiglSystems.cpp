@@ -410,6 +410,24 @@ TEST_F(Systems, ComponentMasses)
     }
 }
 
+TEST_F(Systems, ComponentCentroid)
+{
+    const double eps = 1e-6;
+
+    const auto& component = GetComponent("cuboid_2");
+
+    const auto centroidLocal = component.GetCentroidLocal();
+    EXPECT_NEAR(centroidLocal.x, 1.5, eps);
+    EXPECT_NEAR(centroidLocal.y, 0.25, eps);
+    EXPECT_NEAR(centroidLocal.z, 0.25, eps);
+
+    const auto centroidGlobal = component.GetCentroidGlobal();
+    ASSERT_TRUE(centroidGlobal);
+    EXPECT_NEAR(centroidGlobal->x, 1.5, eps);
+    EXPECT_NEAR(centroidGlobal->y, 5.25, eps);
+    EXPECT_NEAR(centroidGlobal->z, 0.25, eps);
+}
+
 TEST_F(Systems, ConfigurationAccess)
 {
     const auto& config = GetConfig();
@@ -623,6 +641,26 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         const auto& mss = GetComponent("mssWithoutSegments");
         CheckExceptionMessage([&] { (void)mss.GetLoft(); }, "Cannot build multi-segment shape: no segments defined.");
+    }
+}
+
+TEST_F(InvalidSystems, InvalidComponentCentroid)
+{
+    {
+        const auto& comp = GetComponent("zeroHeightComponent");
+        CheckExceptionMessage(
+            [&] { (void)comp.GetCentroidLocal(); },
+            "Cannot compute geometric centroid of component with uID=\"zeroHeightComponent\" (zero volume).");
+
+        CheckExceptionMessage(
+            [&] { (void)comp.GetCentroidGlobal(); },
+            "Cannot compute geometric centroid of component with uID=\"zeroHeightComponent\" (zero volume).");
+    }
+
+    {
+        const auto& comp = GetComponent("elementWithoutGeometry");
+        CheckExceptionMessage([&] { (void)comp.GetCentroidLocal(); },
+                              "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
     }
 }
 
