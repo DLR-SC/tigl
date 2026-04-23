@@ -201,22 +201,13 @@ bool CCPACSComponent::IsPositioned() const
 
 const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
 {
-    if (const auto& systemElementUID = GetSystemElementUID_choice1()) {
-        const std::string& uid                  = *systemElementUID;
-        const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, uid);
+    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, GetSystemElementUID());
 
-        if (!geom) {
-            throw CTiglError("Unsupported system element for uID \"" + uid + "\".");
-        }
-
-        return *geom;
+    if (!geom) {
+        throw CTiglError("Unsupported system element for uID \"" + GetSystemElementUID() + "\".");
     }
 
-    if (const auto& rotorElementUID = GetRotorElementUID_choice2()) {
-        throw CTiglError("rotorElementUID is currently not supported. Component with uID \"" +
-                         GetObjectUID().get_value_or("unnamed") + "\" referenced rotor element uID: \"" +
-                         *rotorElementUID + "\".");
-    }
+    return *geom;
 }
 
 PNamedShape CCPACSComponent::BuildLocalLoft() const
@@ -235,31 +226,21 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
-    if (const auto& systemElementUID = GetSystemElementUID_choice1()) {
-        const std::string& uid = *systemElementUID;
-
-        const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
-        if (!massPtr || !*massPtr) {
-            LOG(WARNING) << "No mass definition for uID \"" + uid + "\"!";
-            return;
-        }
-
-        const CCPACSElementMass& massDef = massPtr->get();
-
-        CTiglElementMassBuilder builder(massDef, uid, BuildLocalLoft()->Shape());
-
-        const auto result  = builder.EvaluateMass();
-        cache.mass         = result.mass;
-        cache.cogLocal     = result.cogLocal;
-        cache.inertiaLocal = result.inertiaLocal;
+    const auto* massPtr = GetMassDescription(*m_uidMgr, GetSystemElementUID());
+    if (!massPtr || !*massPtr) {
+        LOG(WARNING) << "No mass definition for uID \"" + GetSystemElementUID() + "\"!";
         return;
     }
 
-    if (const auto& rotorElementUID = GetRotorElementUID_choice2()) {
-        throw CTiglError("rotorElementUID is currently not supported. Component with uID \"" +
-                         GetObjectUID().get_value_or("unnamed") + "\" referenced rotor element uID: \"" +
-                         *rotorElementUID + "\".");
-    }
+    const CCPACSElementMass& massDef = massPtr->get();
+
+    CTiglElementMassBuilder builder(massDef, GetSystemElementUID(), BuildLocalLoft()->Shape());
+
+    const auto result  = builder.EvaluateMass();
+    cache.mass         = result.mass;
+    cache.cogLocal     = result.cogLocal;
+    cache.inertiaLocal = result.inertiaLocal;
+    return;
 }
 
 } //namespace tigl

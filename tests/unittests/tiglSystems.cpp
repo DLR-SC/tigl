@@ -666,15 +666,6 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
     }
 }
 
-TEST_F(InvalidSystems, RotorElements)
-{
-    const auto& comp = GetComponent("rotor");
-    CheckExceptionMessage([&] { (void)comp.GetLoft(); }, "rotorElementUID is currently not supported. Component with "
-                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
-    CheckExceptionMessage([&] { (void)comp.GetMass(); }, "rotorElementUID is currently not supported. Component with "
-                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
-}
-
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle InvalidSystems::tiglHandle = 0;
 
