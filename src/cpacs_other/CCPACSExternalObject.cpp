@@ -17,6 +17,7 @@
 */
 
 #include "CCPACSExternalObject.h"
+#include "tiglexternalfilehelpers.h"
 
 #include "CCPACSConfiguration.h"
 #include "CTiglImporterFactory.h"
@@ -26,38 +27,6 @@
 
 namespace tigl
 {
-
-namespace external_object_private
-{
-    TIGL_EXPORT std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath)
-    {
-        if (IsPathRelative(linkedFilePath)) {
-            // the path is relative to the xml file
-            // we need the path relative or absolute to the
-            // executable that opened the cpacs file
-
-            size_t pos = cpacsPath.find_last_of("/\\");
-            if (pos == std::string::npos) {
-                // no separator found, current directory
-                return linkedFilePath;
-            }
-            std::string dirPath = cpacsPath.substr(0,pos);
-
-            // create path of file
-            return dirPath + "/" + linkedFilePath;
-        }
-        else {
-            return linkedFilePath;
-        }
-    }
-
-    /// Returns true, if the fileType is supported by the component loader
-    TIGL_EXPORT bool fileTypeSupported(const std::string& fileType)
-    {
-        return CTiglImporterFactory::Instance().ImporterSupported(fileType);
-    }
-}
-using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSExternalObjects* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSGenericGeometricComponent(parent, uidMgr)
@@ -77,13 +46,7 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
-    _filePath = getPathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
-
-    // test if file can be read
-    if (!IsFileReadable(_filePath)) {
-        if (m_uidMgr && !m_uID.empty()) m_uidMgr->UnregisterObject(m_uID);
-        throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
-    }
+    _filePath = evaluatePathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
 }
 
 void CCPACSExternalObject::InvalidateImpl(const boost::optional<std::string>& source) const

@@ -19,11 +19,9 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSTransformation.h>
 #include <string>
-#include <TiglSymmetryAxis.h>
 #include <tixi.h>
-#include "CPACSGenericSystem_geometricBaseType.h"
+#include "CPACSComponents.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -37,11 +35,13 @@ namespace generated
     // This class is used in:
     // CPACSGenericSystems
 
-    /// @brief Generic system type containing describing the basic dimensions of a system component using simple geometric shapes
+    /// @brief Generic system
     /// 
-    /// The generic base types must be one of the following cone|sphere|cube|cylinder. The origin of the shapes is at the center of volume for cube, sphere and cylinder. Since the cone is constructued from a cylindric shape, its origin is at the same location as the origin of the basic cylinder, although not any longer the center of volume due to scaling of one side. While cube and sphere are symmetrical in all three axis, cylinder and cone are standing upright in the direction of cpacs z-axis. The tip of the cone is located in direction of the positive z-axis. The figure below illustrates the default position and orientation of the different shapes. Note that the cube, cylinder and sphere were moved along the x-axis for demonstration by 2, 4 and 6 meters respectively.
-    /// For spheres the default diameter is 1m. Cubes have a length of 1m in all three dimensions. Cylinders have a length of 1m and a diameter of 1m for the circular cross section. The cone is a cylinder with the top face scaled down to zero.
-    /// @see geometricBaseType
+    /// A generic system represents aircraft systems from a geometric and mass perspective.
+    /// It consists of physically existing components of the aircraft and can therefore be used to derive system-level weight and balance properties.
+    /// Each component references a predefined system element or, alternatively, a rotor element.
+    /// Components do not need to be fully positioned.
+    /// If no transformation element is defined, the component is considered unpositioned and is not taken into account when evaluating the global center of gravity.
     /// 
     class CPACSGenericSystem : public CTiglReqUIDObject
     {
@@ -66,41 +66,29 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetUID() const;
         TIGL_EXPORT virtual void SetUID(const std::string& value);
 
-        TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
-        TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
-
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const boost::optional<CPACSGenericSystem_geometricBaseType>& GetGeometricBaseType() const;
-        TIGL_EXPORT virtual void SetGeometricBaseType(const boost::optional<CPACSGenericSystem_geometricBaseType>& value);
-
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        TIGL_EXPORT virtual const CPACSComponents& GetComponents() const;
+        TIGL_EXPORT virtual CPACSComponents& GetComponents();
 
     protected:
         CCPACSGenericSystems* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                           m_uID;
+        std::string                  m_uID;
 
-        boost::optional<TiglSymmetryAxis>                     m_symmetry;
+        /// Name
+        std::string                  m_name;
 
-        /// Name of the system component.
-        std::string                                           m_name;
+        /// Description
+        boost::optional<std::string> m_description;
 
-        /// Description of the system component.
-        boost::optional<std::string>                          m_description;
-
-        /// Enum for selecting the basic shape of the
-        /// component
-        boost::optional<CPACSGenericSystem_geometricBaseType> m_geometricBaseType;
-
-        CCPACSTransformation                                  m_transformation;
+        CPACSComponents              m_components;
 
     private:
         CPACSGenericSystem(const CPACSGenericSystem&) = delete;

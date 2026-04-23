@@ -41,7 +41,6 @@ class CCPACSFuselage;
 class CCPACSFuselageSectionElement;
 class CCPACSFuselageSection;
 class CCPACSExternalObject;
-class CCPACSGenericSystem;
 class CCPACSNacelleSection;
 class CCPACSRotor;
 class CCPACSRotorHinge;
@@ -52,21 +51,24 @@ class CCPACSWingSection;
 
 namespace generated
 {
+    class CPACSElementGeometry;
+    class CPACSExternalGeometry;
     class CPACSGenericGeometryComponent;
     class CPACSLandingGearBase;
 
     // This class is used in:
     // CPACSDuct
     // CPACSDuctAssembly
+    // CPACSElementGeometry
     // CPACSEnginePosition
     // CPACSEnginePylon
+    // CPACSExternalGeometry
     // CPACSFuelTank
     // CPACSFuselage
     // CPACSFuselageElement
     // CPACSFuselageSection
     // CPACSGenericGeometricComponent
     // CPACSGenericGeometryComponent
-    // CPACSGenericSystem
     // CPACSLandingGearBase
     // CPACSNacelleSection
     // CPACSRotor
@@ -94,15 +96,16 @@ namespace generated
     public:
         TIGL_EXPORT CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformation(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSEnginePosition* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSEnginePylon* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformation(CPACSExternalGeometry* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSFuselageSectionElement* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSFuselageSection* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CPACSGenericGeometryComponent* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CPACSLandingGearBase* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
@@ -123,7 +126,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value || std::is_same<P, CCPACSGenericSystem>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -133,7 +136,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value || std::is_same<P, CCPACSGenericSystem>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSGenericGeometryComponent>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -207,6 +210,8 @@ namespace generated
 // CPACSTransformation is customized, use type CCPACSTransformation directly
 
 // Aliases in tigl namespace
+using CCPACSElementGeometry = generated::CPACSElementGeometry;
+using CCPACSExternalGeometry = generated::CPACSExternalGeometry;
 using CCPACSGenericGeometryComponent = generated::CPACSGenericGeometryComponent;
 using CCPACSLandingGearBase = generated::CPACSLandingGearBase;
 } // namespace tigl
