@@ -1,5 +1,7 @@
+#include "CCPACSWingSection.h"
 #include "test.h"
 #include "tigl.h"
+#include "tiglcommonfunctions.h"
 #include "tixi.h"
 
 #include "CCPACSConfigurationManager.h"
@@ -16,6 +18,7 @@
 #include <TopoDS.hxx>
 #include <GeomConvert.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopExp.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include "CCPACSCurvePointListXYZ.h"
@@ -29,13 +32,14 @@ TEST(WingLoftRoundingDistance, makeShape)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     //get wing from file
     tigl::CCPACSWing& wing = config.GetWing("Wing");
-    int numberOfProfiles = wing.getSectionCount();
+    int numberOfProfiles = wing.GetSectionCount();
 
     //access profile curves via wingSectionElement and fill temporary storage for profiles as TopoDS_Shape 
     std::vector<TopoDS_Wire> profiles;
 
     for(int i=0; i<numberOfProfiles; i++){
-       profiles.push_back(wing.GetSectionElement(i).GetCTiglSectionElement().GetWire());
+        auto &section = wing.GetSection(i).GetSectionElement(0);
+        profiles.push_back(section.GetCTiglSectionElement()->GetWire());
     }
 
     // check number of edges are all same
@@ -64,7 +68,7 @@ TEST(WingLoftRoundingDistance, makeShape)
     for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
 
         // get the curves per edge
-        std::vector<Handle(Geom_Curve)> profileCurves;
+        std::vector<Handle(Geom_BSplineCurve)> profileCurves;
         profileCurves.reserve(profiles.size());
         for (unsigned iP=0; iP<profiles.size(); ++iP ) {
 
@@ -98,19 +102,20 @@ TEST(WingLoftRoundingDistance, makeShape)
         //datatype for poles and 'support vectors' is  gp_Pnt storage is 'TColgp_Array1OfPnt &', needs to be const?
         //datatype for knots is 'double/Standard_Real', stored in  'TColStd_Array1OfReal &', needs to be const?
         //dummy values, will be input params later
-        double innerRd =0.2; 
-        double outerRd =0.3;
+        double inner_rd =0.2;
+        double outer_rd =0.3;
+        size_t nb_dummies =3;
         //iterate through profile curves poles (Geom_Curve) "profileCurves" for each edge
-        std::vector<std::vector<gp_Pnt>> pole_matrix(i,std::vector<gp_pnt>(j,nullptr)); //i rows, j columns
+        std::vector<std::vector<gp_Pnt>> pole_matrix(profileCurves.size(), std::vector<gp_Pnt>(profileCurves[profileCurves.size()]->NbPoles())); //i rows, j columns
         for (int i=0; i< profileCurves.size(); i++){
-            for( int j=0; j< profileCurves[i].size(); j++){
+            for( int j=0; j< profileCurves[i]->NbPoles(); j++){
                 //retrieve a pole
-                gp_Pnt inner_originalCurve_pnt = profileCurves[i].Pole(j);
-                gp_Pnt outer_originalCurve_pnt = profileCurves[i+1].Pole(j);
+                gp_Pnt inner_originalCurve_pnt = profileCurves[i]->Pole(j);
+                gp_Pnt outer_originalCurve_pnt = profileCurves[i+1]->Pole(j);
                 //calculate Vector between both profile poles and normalize it
                 //distance between both points is length of this vector
-                gp_Vec(inner_originalCurve pnt, outer_originalCurve_pnt) vector_in_v_direction;
-                gp_Vec normalized_vector_in_v_direction(normalized_vector_in_v_direction); 
+                gp_Vec vector_in_v_direction(inner_originalCurve_pnt, outer_originalCurve_pnt);
+                gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
                 normalized_vector_in_v_direction.Normalize();
                 //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]): 
                 //(inner)-> profile[i] | dummy_inner1 dummy_inner2 dummy_inner3 | dummy_outer1 dummy_outer2 dummy_outer3 profile[i+1] | <-(outer)
@@ -121,7 +126,8 @@ TEST(WingLoftRoundingDistance, makeShape)
                 for (int k=0; k < nb_dummies; k++){
                     //calculate distance between k-th inner dummy-pole in v-direction and profile
                     double inner_distance = inner_rd* (k+1)/nb_dummies;
-                    gp_Vec inner_vec = normalized_vector_in_v_direction.Scale(inner_distance);
+                    gp_Vec inner_vec(normalized_vector_in_v_direction);
+                    inner_vec.Scale(inner_distance); //Stimmt das????
                     gp_Pnt new_pole_inner(inner_vec.XYZ());
                     //save new poles in a vector for each inner dummy profile
                     current_row +=k;
@@ -131,7 +137,10 @@ TEST(WingLoftRoundingDistance, makeShape)
                 for (int k=0; k < nb_dummies; k++){
                     //calculate distance between k-th outer dummy-pole in v-direction and profile
                     double outer_distance = outer_rd* (nb_dummies-(k+1))/nb_dummies;
-                    gp_Vec outer_vec = vector_in_v_direction.Substract(normalized_vector_in_v_direction.Scale(outer_distance));
+                    gp_Vec outer_vec(vector_in_v_direction);
+                    gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
+                    outer_normalized_vec.Scale(outer_distance);
+                    outer_vec.Subtract(outer_normalized_vec);
                     gp_Pnt new_pole_outer(outer_vec.XYZ());
                     //save new poles in a vector for each outer dummy profile
                     current_row+= nb_dummies+k;
@@ -148,16 +157,16 @@ TEST(WingLoftRoundingDistance, makeShape)
         //create knots in v-direction
         //create knot-matrix in v-direction: 
         //Assume that knots are locateted where poles are (which is by implementation: intersections between Profiles/Dummy-Profiles and Curves in v-direction)
-        std::vector<std::vector<double>> v_knots(pole_matrix.size(),pole_matrix[0].size());
+        std::vector<std::vector<double>> v_knots(pole_matrix.size(), std::vector<double>(pole_matrix[0].size()));
         //iterate through pole_matrix columns and calculate distances between pole-vectors
         //since the knots are represented by a value relative to total value of curve_length = 1
         //divide these distances by total length of the curve in v-direction to create a parameter for the knot vector
-        num_v_knots = pole_matrix[0].size();
+        size_t num_v_knots = pole_matrix[0].size();
 
         for(int j=0; j < num_v_knots; j++){
-            auto curve_length = fabs(pole_matrix[num_v_knots][j] - pole_matrix[0][j]); //CHECK:included math.h?
-            for(int i= o; i < pole_matrix.size(); i++){
-                v_knots[i][j] = pole_matrix[i][j]-pole_matrix[0][j]/curve_length;
+            auto curve_length = (pole_matrix[num_v_knots][j]).Distance(pole_matrix[0][j]);
+            for(int i= 0; i < pole_matrix.size(); i++){
+                v_knots[i][j] = (pole_matrix[i][j].Distance(pole_matrix[0][j]))/curve_length;
             }
         }
 
@@ -184,4 +193,4 @@ TEST(WingLoftRoundingDistance, makeShape)
         // first and last knot are repeated degree + 1 times
     }
 
-}
+
