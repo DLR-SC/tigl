@@ -67,7 +67,7 @@ jobs:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
       - name: Setup sccache
         if: startsWith(inputs.os, 'windows')
-        uses: mozilla-actions/sccache-action@v0.0.9
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Setup pixi
         uses: prefix-dev/setup-pixi@v0.9.4
