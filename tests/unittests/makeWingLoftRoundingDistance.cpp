@@ -1,4 +1,5 @@
 #include "CCPACSWingSection.h"
+#include "Debugging.h"
 #include "test.h"
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
@@ -11,6 +12,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -105,10 +107,17 @@ TEST(WingLoftRoundingDistance, makeShape)
         double inner_rd =0.2;
         double outer_rd =0.3;
         size_t nb_dummies =3;
+        Standard_Integer u_degree = 3;
+        Standard_Integer v_degree = 3;
+
         //iterate through profile curves poles (Geom_Curve) "profileCurves" for each edge
-        std::vector<std::vector<gp_Pnt>> pole_matrix(profileCurves.size(), std::vector<gp_Pnt>(profileCurves[profileCurves.size()]->NbPoles())); //i rows, j columns
-        for (int i=0; i< profileCurves.size(); i++){
-            for( int j=0; j< profileCurves[i]->NbPoles(); j++){
+
+        //DELETEMEstd::vector<std::vector<gp_Pnt>> pole_matrix(profileCurves.size(), std::vector<gp_Pnt>(profileCurves[profileCurves.size()]->NbPoles()));
+        //i rows, j columns (OCC indizes start with 1)
+        //note: for-loop indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
+        TColgp_HArray2OfPnt pole_matrix(1,profileCurves.size(),1,(profileCurves[profileCurves.size()]->NbPoles()));
+        for (int i=1; i< profileCurves.size()+1; i++){
+            for( int j=1; j< profileCurves[i]->NbPoles()+1; j++){
                 //retrieve a pole
                 gp_Pnt inner_originalCurve_pnt = profileCurves[i]->Pole(j);
                 gp_Pnt outer_originalCurve_pnt = profileCurves[i+1]->Pole(j);
@@ -121,7 +130,8 @@ TEST(WingLoftRoundingDistance, makeShape)
                 //(inner)-> profile[i] | dummy_inner1 dummy_inner2 dummy_inner3 | dummy_outer1 dummy_outer2 dummy_outer3 profile[i+1] | <-(outer)
                 //add first
                 int current_row = i+2*nb_dummies*(profileCurves.size()-1);
-                pole_matrix[current_row][j]= inner_originalCurve_pnt;
+                //DELETEMEpole_matrix[current_row][j]= inner_originalCurve_pnt;
+                pole_matrix.SetValue(current_row,j, inner_originalCurve_pnt);
                 //calculate new poles for inner dummy profiles (from inner to outer)
                 for (int k=0; k < nb_dummies; k++){
                     //calculate distance between k-th inner dummy-pole in v-direction and profile
@@ -131,7 +141,8 @@ TEST(WingLoftRoundingDistance, makeShape)
                     gp_Pnt new_pole_inner(inner_vec.XYZ());
                     //save new poles in a vector for each inner dummy profile
                     current_row +=k;
-                    pole_matrix[current_row][j] = new_pole_inner;
+                    //DELETEMEpole_matrix[current_row][j] = new_pole_inner;
+                    pole_matrix.SetValue(current_row,j, new_pole_inner);
                 }
                 //calculate new poles for outer dummy profiles (calculate also from inner to outer -> nb_dummies -(k+1)/nb_dummies)
                 for (int k=0; k < nb_dummies; k++){
@@ -144,40 +155,69 @@ TEST(WingLoftRoundingDistance, makeShape)
                     gp_Pnt new_pole_outer(outer_vec.XYZ());
                     //save new poles in a vector for each outer dummy profile
                     current_row+= nb_dummies+k;
-                    pole_matrix[current_row][j] = new_pole_outer;
+                    pole_matrix.SetValue(current_row,j, new_pole_outer);
                 }
                 //add profile curve from outer section only if it is last section
-                if(i==(profileCurves.size()-1)){
+                if (i==(profileCurves.size())){
                     current_row+= 1;
-                    pole_matrix[current_row][j] = outer_originalCurve_pnt;
+                    pole_matrix.SetValue(current_row, j, outer_originalCurve_pnt);
                 }
             }
         }
+
+        //TODO CHECK: is this information given anywhere later, so these lines can be deleted again?
+        //create knots in u-direction
+        size_t num_u_knots = pole_matrix.RowLength();
+        TColStd_Array1OfReal u_knots(1, pole_matrix.RowLength());
+        auto u_curve_length = (pole_matrix.Value(1,1).Distance(pole_matrix.Value(num_u_knots,1)));
+        for(int i=1; i < num_u_knots+1; i++){
+            u_knots.SetValue(i,(pole_matrix.Value(1,1).Distance(pole_matrix.Value(i,1))/u_curve_length));
+        }
+        //define multiplicities in u-direction
+        TColStd_HArray1OfInteger u_multiplicities(1,num_u_knots+1);
+        for(int i=1; i < num_u_knots+1; i++){
+            u_multiplicities[i] = 1;
+        }
+        //END TODO CHECK
 
         //create knots in v-direction
         //create knot-matrix in v-direction: 
         //Assume that knots are locateted where poles are (which is by implementation: intersections between Profiles/Dummy-Profiles and Curves in v-direction)
-        std::vector<std::vector<double>> v_knots(pole_matrix.size(), std::vector<double>(pole_matrix[0].size()));
+        //DELETEMEstd::vector<std::vector<double>> v_knots(pole_matrix.size(), std::vector<double>(pole_matrix[0].size()));
+        TColStd_Array1OfReal v_knots(1, pole_matrix.ColLength());
         //iterate through pole_matrix columns and calculate distances between pole-vectors
         //since the knots are represented by a value relative to total value of curve_length = 1
         //divide these distances by total length of the curve in v-direction to create a parameter for the knot vector
-        size_t num_v_knots = pole_matrix[0].size();
+        size_t num_v_knots = pole_matrix.ColLength();
 
-        for(int j=0; j < num_v_knots; j++){
-            auto curve_length = (pole_matrix[num_v_knots][j]).Distance(pole_matrix[0][j]);
-            for(int i= 0; i < pole_matrix.size(); i++){
-                v_knots[i][j] = (pole_matrix[i][j].Distance(pole_matrix[0][j]))/curve_length;
-            }
+        auto v_curve_length = (pole_matrix.Value(1,1).Distance(pole_matrix.Value(1,num_v_knots)));
+        for(int j=1; j < num_v_knots+1; j++){
+            v_knots.SetValue(j,(pole_matrix.Value(1,1).Distance(pole_matrix.Value(1,j))/v_curve_length));
         }
 
-        std::vector<unsigned> multiplicities(num_v_knots);
+
+        TColStd_Array1OfInteger v_multiplicities(1,num_v_knots+1);
         //define multiplicities for all the curves in v-direction
-        for(int i=0; i < num_v_knots; i++){
-            //first knot degree+1 times (degree=3?)
-            //+ k*2 knots
+        v_multiplicities[1] = v_degree +1;
+        for(int j=1; j < num_v_knots; j++){
+            v_multiplicities[j] = 1; //assume 1 for a start, to be extended for modification-options
         }
+        v_multiplicities[num_v_knots+1] = v_degree+1;
          
-        //interpolate curves in v-direction? TO SPECIFY: how to create Geom B-Spline Surface from poles
+        //create Geom B-Spline Surface from poles, knots and multiplicities, degree
+
+        //Poles : TColpg_array2OfPnt & (pole_matrix)
+        //UKnots : TColStd_array1OfReal & (u_params?)
+        //VKnots : TColStd_array1OfReal & (v_kntos = v_params?)
+        //UMults : TColStd_array1OfInteger &
+        //VMults : TColStd_array1OfInteger (multiplicities)
+        //Udegree :
+        //Vdegree : v_degree
+
+        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree);
+        Handle(Geom_Surface) handle_surface = surface;
+        TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
+        tigl::dumpShape(surf, "", "Surface",1);
     }
         
         // // knots for each dummy profile: uparams ? 
