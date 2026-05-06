@@ -28,6 +28,9 @@
 
 TEST(WingLoftRoundingDistance, makeShape)
 {
+
+    //BEGIN_LoadInformation This code is only for testing purposes
+    // loaded information will be replaced by tigl-information that is accessible during runtime
     TiglHandleWrapper tiglHandle("TestData/simpletest.cpacs.xml", "");
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -39,11 +42,13 @@ TEST(WingLoftRoundingDistance, makeShape)
     //access profile curves via wingSectionElement and fill temporary storage for profiles as TopoDS_Shape 
     std::vector<TopoDS_Wire> profiles;
 
-    for(int i=0; i<numberOfProfiles; i++){
-        auto &section = wing.GetSection(i).GetSectionElement(0);
+    for(int i=1; i<numberOfProfiles+1; i++){
+        auto &section = wing.GetSection(i).GetSectionElement(1);
         profiles.push_back(section.GetCTiglSectionElement()->GetWire());
     }
+    //END_LoadInformation
 
+    //BEGIN_CopyCode from CTiglMakeLoft
     // check number of edges are all same
     std::vector<unsigned int> edgeCountPerProfile;
     for (const auto& profile : profiles) {
@@ -53,24 +58,20 @@ TEST(WingLoftRoundingDistance, makeShape)
         throw tigl::CTiglError("Number of edges not equal in CTiglMakeLoft");
     }
 
-    TopoDS_Shell faces;
-    BRep_Builder builder;
-    builder.MakeShell(faces);
-
     // get number of edges per profile wire
     // --> should be the same for all profiles
     TopTools_IndexedMapOfShape firstProfileMap;
     TopExp::MapShapes(profiles[0], TopAbs_EDGE, firstProfileMap);
     int const nEdgesPerProfile = firstProfileMap.Extent();
 
-    // skin the surface edge by adge
+    // skin the surface edge by edge
     // CAUTION: Here it is assumed that the edges are ordered
     // in the same way along each profile (e.g. lower edge,
     // upper edge, trailing edge for a wing)
     for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
 
-        // get the curves per edge
         std::vector<Handle(Geom_BSplineCurve)> profileCurves;
+        // get the curves per edge
         profileCurves.reserve(profiles.size());
         for (unsigned iP=0; iP<profiles.size(); ++iP ) {
 
@@ -79,11 +80,14 @@ TEST(WingLoftRoundingDistance, makeShape)
             assert( profileMap.Extent() >= iE );
 
             TopoDS_Edge edge = TopoDS::Edge(profileMap(iE));
+            tigl::dumpShape(edge,"makeLoftWing","edge",iP); //DELETEME
             profileCurves.push_back(GetBSplineCurve(edge));
         }
+
+    //END Copy_code
         
         //skin the curves ('profileCurves'): new code for curvesToSurface 
-        // //(input are curves, make 1. Geom_BSplineSurface -> build the Shape from this somehow ->output is TopoDS_Shape)
+        // //(input are curves, make Geom_BSplineSurface -> build the TopoDS_Shape from this (-> output is TopoDS_Shape))
         /*
         New code for skinning a wing surface:
         Goal: Create a surface, implement rounded sections
@@ -115,34 +119,45 @@ TEST(WingLoftRoundingDistance, makeShape)
         //DELETEMEstd::vector<std::vector<gp_Pnt>> pole_matrix(profileCurves.size(), std::vector<gp_Pnt>(profileCurves[profileCurves.size()]->NbPoles()));
         //i rows, j columns (OCC indizes start with 1)
         //note: for-loop indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
-        TColgp_HArray2OfPnt pole_matrix(1,profileCurves.size(),1,(profileCurves[profileCurves.size()]->NbPoles()));
-        for (int i=1; i< profileCurves.size()+1; i++){
-            for( int j=1; j< profileCurves[i]->NbPoles()+1; j++){
-                //retrieve a pole
-                gp_Pnt inner_originalCurve_pnt = profileCurves[i]->Pole(j);
-                gp_Pnt outer_originalCurve_pnt = profileCurves[i+1]->Pole(j);
+        Standard_Integer m = (profileCurves.size()+1)+profileCurves.size()*2*nb_dummies*(profileCurves.size()-1);
+        Standard_Integer n = profileCurves[0]->NbPoles()+1;
+        //check if NbPoles is same in all profileCurves
+        for(int i=0; n<profileCurves.size()-1; i++){
+            if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
+                throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
+            }
+        }
+        TColgp_HArray2OfPnt pole_matrix(1,m,1,n);
+        //iterate through profiles(rows)
+        for (int i=0; i< profileCurves.size(); i++){
+            //iterate through columns to create Dummy Profiles to each pair of profiles
+            for( int j=0; j< profileCurves[i]->NbPoles(); j++){
+                //retrieve a pole to each profile
+                gp_Pnt inner_originalCurve_pnt, outer_originalCurve_pnt;
+                if(i<profileCurves.size()-2){
+                    inner_originalCurve_pnt = profileCurves[i]->Pole(j+1);
+                    outer_originalCurve_pnt = profileCurves[i+1]->Pole(j+1);
+                }
                 //calculate Vector between both profile poles and normalize it
                 //distance between both points is length of this vector
                 gp_Vec vector_in_v_direction(inner_originalCurve_pnt, outer_originalCurve_pnt);
                 gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
                 normalized_vector_in_v_direction.Normalize();
-                //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]): 
+                //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
                 //(inner)-> profile[i] | dummy_inner1 dummy_inner2 dummy_inner3 | dummy_outer1 dummy_outer2 dummy_outer3 profile[i+1] | <-(outer)
-                //add first
-                int current_row = i+2*nb_dummies*(profileCurves.size()-1);
-                //DELETEMEpole_matrix[current_row][j]= inner_originalCurve_pnt;
-                pole_matrix.SetValue(current_row,j, inner_originalCurve_pnt);
+                //add profile first
+                int current_row = i+i*2*nb_dummies*(profileCurves.size()-1)+1;
+                pole_matrix.SetValue(current_row,j+1, inner_originalCurve_pnt);
                 //calculate new poles for inner dummy profiles (from inner to outer)
                 for (int k=0; k < nb_dummies; k++){
                     //calculate distance between k-th inner dummy-pole in v-direction and profile
                     double inner_distance = inner_rd* (k+1)/nb_dummies;
-                    gp_Vec inner_vec(normalized_vector_in_v_direction);
-                    inner_vec.Scale(inner_distance); //Stimmt das????
-                    gp_Pnt new_pole_inner(inner_vec.XYZ());
                     //save new poles in a vector for each inner dummy profile
-                    current_row +=k;
-                    //DELETEMEpole_matrix[current_row][j] = new_pole_inner;
-                    pole_matrix.SetValue(current_row,j, new_pole_inner);
+                    gp_Vec inner_vec(normalized_vector_in_v_direction);
+                    inner_vec.Scale(inner_distance);
+                    gp_Pnt new_pole_inner(inner_vec.XYZ());
+                    current_row +=1;
+                    pole_matrix.SetValue(current_row,j+1, new_pole_inner);
                 }
                 //calculate new poles for outer dummy profiles (calculate also from inner to outer -> nb_dummies -(k+1)/nb_dummies)
                 for (int k=0; k < nb_dummies; k++){
@@ -154,13 +169,13 @@ TEST(WingLoftRoundingDistance, makeShape)
                     outer_vec.Subtract(outer_normalized_vec);
                     gp_Pnt new_pole_outer(outer_vec.XYZ());
                     //save new poles in a vector for each outer dummy profile
-                    current_row+= nb_dummies+k;
-                    pole_matrix.SetValue(current_row,j, new_pole_outer);
+                    current_row+=1;
+                    pole_matrix.SetValue(current_row,j+1, new_pole_outer);
                 }
                 //add profile curve from outer section only if it is last section
                 if (i==(profileCurves.size())){
                     current_row+= 1;
-                    pole_matrix.SetValue(current_row, j, outer_originalCurve_pnt);
+                    pole_matrix.SetValue(current_row, j+1, outer_originalCurve_pnt);
                 }
             }
         }
@@ -169,13 +184,19 @@ TEST(WingLoftRoundingDistance, makeShape)
         //create knots in u-direction
         size_t num_u_knots = pole_matrix.RowLength();
         TColStd_Array1OfReal u_knots(1, pole_matrix.RowLength());
-        auto u_curve_length = (pole_matrix.Value(1,1).Distance(pole_matrix.Value(num_u_knots,1)));
-        for(int i=1; i < num_u_knots+1; i++){
-            u_knots.SetValue(i,(pole_matrix.Value(1,1).Distance(pole_matrix.Value(i,1))/u_curve_length));
+        auto u_curve_length = (pole_matrix.Value(1,1).Distance(pole_matrix.Value(1,num_u_knots)));
+        if (u_curve_length< 0e-15){
+            throw tigl::CTiglError("Curve Length Zero");
+        }
+        for(int i=2; i < num_u_knots+1; i++){
+            auto val1 = pole_matrix.Value(1,1);
+            auto val2 = pole_matrix.Value(1,i);
+            auto distance = val1.Distance(val2)/u_curve_length;
+            u_knots.SetValue(i,distance);
         }
         //define multiplicities in u-direction
-        TColStd_HArray1OfInteger u_multiplicities(1,num_u_knots+1);
-        for(int i=1; i < num_u_knots+1; i++){
+        TColStd_HArray1OfInteger u_multiplicities(1,num_u_knots);
+        for(int i=1; i < num_u_knots; i++){
             u_multiplicities[i] = 1;
         }
         //END TODO CHECK
@@ -196,13 +217,13 @@ TEST(WingLoftRoundingDistance, makeShape)
         }
 
 
-        TColStd_Array1OfInteger v_multiplicities(1,num_v_knots+1);
+        TColStd_Array1OfInteger v_multiplicities(1,num_v_knots);
         //define multiplicities for all the curves in v-direction
         v_multiplicities[1] = v_degree +1;
-        for(int j=1; j < num_v_knots; j++){
+        for(int j=1; j < num_v_knots-1; j++){
             v_multiplicities[j] = 1; //assume 1 for a start, to be extended for modification-options
         }
-        v_multiplicities[num_v_knots+1] = v_degree+1;
+        v_multiplicities[num_v_knots] = v_degree+1;
          
         //create Geom B-Spline Surface from poles, knots and multiplicities, degree
 
@@ -213,6 +234,33 @@ TEST(WingLoftRoundingDistance, makeShape)
         //VMults : TColStd_array1OfInteger (multiplicities)
         //Udegree :
         //Vdegree : v_degree
+        /**
+         * OCC Geom_BSplineSurface():
+         * Creates a non-rational b-spline surface (weights default value is 1.).
+         * The following conditions must be verified. 0 < UDegree <= MaxDegree.
+         * UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree
+         * On a non uperiodic surface the first and last umultiplicities may be UDegree+1
+         * (this is even recommended if you want the curve to start and finish on the first and last pole).
+         * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.
+         * ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i))
+         * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+         */
+        if(!(u_knots.Length()==u_multiplicities.Length())){
+            throw tigl::CTiglError("u_knots and mults number mismatch:("+std::to_string(u_knots.Length())+","+std::to_string(u_multiplicities.Length())+")");
+        }
+        if(!(v_knots.Length()==v_multiplicities.Length())){
+            throw tigl::CTiglError("v_knots and mults number mismatch:("+std::to_string(v_knots.Length())+","+std::to_string(v_multiplicities.Length())+")");
+        }
+        for(int i = 1; i< u_knots.Length()-1;i++){
+            if (!(u_knots.Value(i) < u_knots.Value(i+1))){
+                throw tigl::CTiglError(""+std::to_string(u_knots.Value(i))+"i:"+std::to_string(i)+" check knots"+std::to_string(u_knots.Value(i+1)));
+            }
+        }
+        for(int i = 1; i< v_knots.Length()-1;i++){
+            if (!(v_knots.Value(i) < v_knots.Value(i+1))){
+                throw tigl::CTiglError("check knots");
+            }
+        }
 
         auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree);
         Handle(Geom_Surface) handle_surface = surface;
