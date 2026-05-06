@@ -142,6 +142,11 @@ TEST(WingLoftRoundingDistance, makeShape)
                 //distance between both points is length of this vector
                 gp_Vec vector_in_v_direction(inner_originalCurve_pnt, outer_originalCurve_pnt);
                 gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
+                if(inner_originalCurve_pnt.IsEqual(outer_originalCurve_pnt, 0e-35)){
+                    throw tigl::CTiglError(std::to_string(inner_originalCurve_pnt.Coord().X())+"x"+
+                                           std::to_string(inner_originalCurve_pnt.Coord().Y())+"y"+
+                                           std::to_string(inner_originalCurve_pnt.Coord().Y())+"Z");
+                }
                 normalized_vector_in_v_direction.Normalize();
                 //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
                 //(inner)-> profile[i] | dummy_inner1 dummy_inner2 dummy_inner3 | dummy_outer1 dummy_outer2 dummy_outer3 profile[i+1] | <-(outer)
