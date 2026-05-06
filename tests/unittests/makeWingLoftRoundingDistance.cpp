@@ -129,11 +129,11 @@ TEST(WingLoftRoundingDistance, makeShape)
         }
         TColgp_HArray2OfPnt pole_matrix(1,m,1,n);
         //iterate through profiles(rows)
+        gp_Pnt inner_originalCurve_pnt, outer_originalCurve_pnt;
         for (int i=0; i< profileCurves.size(); i++){
             //iterate through columns to create Dummy Profiles to each pair of profiles
             for( int j=0; j< profileCurves[i]->NbPoles(); j++){
                 //retrieve a pole to each profile
-                gp_Pnt inner_originalCurve_pnt, outer_originalCurve_pnt;
                 if(i<profileCurves.size()-2){
                     inner_originalCurve_pnt = profileCurves[i]->Pole(j+1);
                     outer_originalCurve_pnt = profileCurves[i+1]->Pole(j+1);
@@ -145,7 +145,10 @@ TEST(WingLoftRoundingDistance, makeShape)
                 if(inner_originalCurve_pnt.IsEqual(outer_originalCurve_pnt, 0e-35)){
                     throw tigl::CTiglError(std::to_string(inner_originalCurve_pnt.Coord().X())+"x"+
                                            std::to_string(inner_originalCurve_pnt.Coord().Y())+"y"+
-                                           std::to_string(inner_originalCurve_pnt.Coord().Y())+"Z");
+                                           std::to_string(inner_originalCurve_pnt.Coord().Y())+"Z"+
+                                           std::to_string(outer_originalCurve_pnt.Coord().X())+"x"+
+                                           std::to_string(outer_originalCurve_pnt.Coord().Y())+"y"+
+                                           std::to_string(outer_originalCurve_pnt.Coord().Y())+"Z");
                 }
                 normalized_vector_in_v_direction.Normalize();
                 //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
@@ -187,17 +190,14 @@ TEST(WingLoftRoundingDistance, makeShape)
 
         //TODO CHECK: is this information given anywhere later, so these lines can be deleted again?
         //create knots in u-direction
-        size_t num_u_knots = pole_matrix.RowLength();
-        TColStd_Array1OfReal u_knots(1, pole_matrix.RowLength());
+        size_t num_u_knots = profileCurves[0]->NbKnots();
+        TColStd_Array1OfReal u_knots(1, num_u_knots);
         auto u_curve_length = (pole_matrix.Value(1,1).Distance(pole_matrix.Value(1,num_u_knots)));
         if (u_curve_length< 0e-15){
             throw tigl::CTiglError("Curve Length Zero");
         }
-        for(int i=2; i < num_u_knots+1; i++){
-            auto val1 = pole_matrix.Value(1,1);
-            auto val2 = pole_matrix.Value(1,i);
-            auto distance = val1.Distance(val2)/u_curve_length;
-            u_knots.SetValue(i,distance);
+        for(int i=1; i < num_u_knots+1; i++){
+            u_knots.SetValue(i,profileCurves[0]->Knot(i));
         }
         //define multiplicities in u-direction
         TColStd_HArray1OfInteger u_multiplicities(1,num_u_knots);
