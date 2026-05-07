@@ -110,19 +110,18 @@ TEST(WingLoftRoundingDistance, makeShape)
         //dummy values, will be input params later
         double inner_rd =0.2;
         double outer_rd =0.3;
-        size_t nb_dummies =3;
+        size_t nb_dummies =3; //Rows per rounding distance
         Standard_Integer u_degree = 3;
         Standard_Integer v_degree = 3;
 
         //iterate through profile curves poles (Geom_Curve) "profileCurves" for each edge
 
-        //DELETEMEstd::vector<std::vector<gp_Pnt>> pole_matrix(profileCurves.size(), std::vector<gp_Pnt>(profileCurves[profileCurves.size()]->NbPoles()));
-        //i rows, j columns (OCC indizes start with 1)
-        //note: for-loop indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
-        Standard_Integer m = (profileCurves.size()+1)+profileCurves.size()*2*nb_dummies*(profileCurves.size()-1);
-        Standard_Integer n = profileCurves[0]->NbPoles()+1;
+        //i rows, j columns (OCC indizes start with 1, loops start with one when iterating through OCC datatypes)
+        //note: loop-indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
+        Standard_Integer m = profileCurves.size()+(profileCurves.size()-2)*2*nb_dummies;
+        Standard_Integer n = profileCurves[0]->NbPoles();
         //check if NbPoles is same in all profileCurves
-        for(int i=0; n<profileCurves.size()-1; i++){
+        for(int i=0; i<profileCurves.size()-1; i++){
             if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
                 throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
             }
@@ -132,9 +131,9 @@ TEST(WingLoftRoundingDistance, makeShape)
         gp_Pnt inner_originalCurve_pnt, outer_originalCurve_pnt;
         for (int i=0; i< profileCurves.size(); i++){
             //iterate through columns to create Dummy Profiles to each pair of profiles
-            for( int j=0; j< profileCurves[i]->NbPoles(); j++){
+            for( int j=0; j< n; j++){
                 //retrieve a pole to each profile
-                if(i<profileCurves.size()-2){
+                if(i<profileCurves.size()-1){
                     inner_originalCurve_pnt = profileCurves[i]->Pole(j+1);
                     outer_originalCurve_pnt = profileCurves[i+1]->Pole(j+1);
                 }
@@ -156,19 +155,23 @@ TEST(WingLoftRoundingDistance, makeShape)
                 //add profile first
                 int current_row = i+i*2*nb_dummies*(profileCurves.size()-1)+1;
                 pole_matrix.SetValue(current_row,j+1, inner_originalCurve_pnt);
-                //calculate new poles for inner dummy profiles (from inner to outer)
-                for (int k=0; k < nb_dummies; k++){
-                    //calculate distance between k-th inner dummy-pole in v-direction and profile
-                    double inner_distance = inner_rd* (k+1)/nb_dummies;
-                    //save new poles in a vector for each inner dummy profile
-                    gp_Vec inner_vec(normalized_vector_in_v_direction);
-                    inner_vec.Scale(inner_distance);
-                    gp_Pnt new_pole_inner(inner_vec.XYZ());
-                    current_row +=1;
-                    pole_matrix.SetValue(current_row,j+1, new_pole_inner);
+                //calculate new poles for inner dummy profiles (from inner to outer) except 1st (i=0) section
+                if(i>0){
+                    for (int k=0; k < nb_dummies; k++){
+                        //calculate distance between k-th inner dummy-pole in v-direction and profile
+                        double inner_distance = inner_rd* (k+1)/nb_dummies;
+                        //save new poles in a vector for each inner dummy profile
+                        gp_Vec inner_vec(normalized_vector_in_v_direction);
+                        inner_vec.Scale(inner_distance);
+                        gp_Pnt new_pole_inner(inner_vec.XYZ());
+                        current_row +=1;
+                        pole_matrix.SetValue(current_row,j+1, new_pole_inner);
+                    }
                 }
                 //calculate new poles for outer dummy profiles (calculate also from inner to outer -> nb_dummies -(k+1)/nb_dummies)
-                for (int k=0; k < nb_dummies; k++){
+                //except last section
+                if(i<profileCurves.size()-1){
+                    for (int k=0; k < nb_dummies; k++){
                     //calculate distance between k-th outer dummy-pole in v-direction and profile
                     double outer_distance = outer_rd* (nb_dummies-(k+1))/nb_dummies;
                     gp_Vec outer_vec(vector_in_v_direction);
@@ -180,8 +183,9 @@ TEST(WingLoftRoundingDistance, makeShape)
                     current_row+=1;
                     pole_matrix.SetValue(current_row,j+1, new_pole_outer);
                 }
+                }
                 //add profile curve from outer section only if it is last section
-                if (i==(profileCurves.size())){
+                if (i==(profileCurves.size()-1)){
                     current_row+= 1;
                     pole_matrix.SetValue(current_row, j+1, outer_originalCurve_pnt);
                 }
@@ -265,6 +269,14 @@ TEST(WingLoftRoundingDistance, makeShape)
             if (!(v_knots.Value(i) < v_knots.Value(i+1))){
                 throw tigl::CTiglError("check knots");
             }
+        }
+     //   if(!(profileCurves[0]->NbPoles()==(num_u_knots-u_degree-1))){
+     //           throw tigl::CTiglError("poles != knots- u_degree-1 Poles:"+std::to_string(profileCurves[0]->NbPoles())+"Knots:"+
+     //                                   std::to_string(num_u_knots)+"u_degree:"+std::to_string(u_degree));
+     //   }
+        if(!(pole_matrix.RowLength()==(num_v_knots-u_degree-1))){
+                throw tigl::CTiglError("poles != knots- v_degree-1 Poles:"+std::to_string(num_v_knots)+"Knots:"
+                                        +std::to_string(pole_matrix.ColLength())+"v_degree:"+std::to_string(v_degree));
         }
 
         auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree);
