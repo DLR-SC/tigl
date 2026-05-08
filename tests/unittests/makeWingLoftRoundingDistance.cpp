@@ -141,7 +141,7 @@ TEST(WingLoftRoundingDistance, makeShape)
                 //distance between both points is length of this vector
                 gp_Vec vector_in_v_direction(inner_originalCurve_pnt, outer_originalCurve_pnt);
                 gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
-                if(inner_originalCurve_pnt.IsEqual(outer_originalCurve_pnt, 0e-35)){
+                if(inner_originalCurve_pnt.IsEqual(outer_originalCurve_pnt, 1e-14)){
                     throw tigl::CTiglError(std::to_string(inner_originalCurve_pnt.Coord().X())+"x"+
                                            std::to_string(inner_originalCurve_pnt.Coord().Y())+"y"+
                                            std::to_string(inner_originalCurve_pnt.Coord().Y())+"Z"+
@@ -151,10 +151,15 @@ TEST(WingLoftRoundingDistance, makeShape)
                 }
                 normalized_vector_in_v_direction.Normalize();
                 //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
-                //(inner)-> profile[i] | dummy_inner1 dummy_inner2 dummy_inner3 | dummy_outer1 dummy_outer2 dummy_outer3 profile[i+1] | <-(outer)
+                //(inner)-> profile[0] | ------ dummy_outer1 | dummy_outer2 | dummy_outer3 | profile[i] | dummy_inner1 | dummy_inner2 | dummy_inner3 | ----  profile[i+1] |<-(outer)
                 //add profile first
-                int current_row = i+i*2*nb_dummies*(profileCurves.size()-1)+1;
-                pole_matrix.SetValue(current_row,j+1, inner_originalCurve_pnt);
+                int current_row = i+i*2*nb_dummies*(profileCurves.size()-2)+1;
+                //insert first profile pole
+                if(current_row==1){
+                    std::cerr << "Insert First Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+                    pole_matrix.SetValue(current_row,j+1, inner_originalCurve_pnt);
+                    current_row+=1;
+                }
                 //calculate new poles for inner dummy profiles (from inner to outer) except 1st (i=0) section
                 if(i>0){
                     for (int k=0; k < nb_dummies; k++){
@@ -164,31 +169,31 @@ TEST(WingLoftRoundingDistance, makeShape)
                         gp_Vec inner_vec(normalized_vector_in_v_direction);
                         inner_vec.Scale(inner_distance);
                         gp_Pnt new_pole_inner(inner_vec.XYZ());
-                        current_row +=1;
+                        std::cerr << "Insert inner " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
                         pole_matrix.SetValue(current_row,j+1, new_pole_inner);
+                        current_row +=1;
                     }
                 }
                 //calculate new poles for outer dummy profiles (calculate also from inner to outer -> nb_dummies -(k+1)/nb_dummies)
                 //except last section
-                if(i<profileCurves.size()-1){
+                if(i<(profileCurves.size()-1)){
                     for (int k=0; k < nb_dummies; k++){
-                    //calculate distance between k-th outer dummy-pole in v-direction and profile
-                    double outer_distance = outer_rd* (nb_dummies-(k+1))/nb_dummies;
-                    gp_Vec outer_vec(vector_in_v_direction);
-                    gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
-                    outer_normalized_vec.Scale(outer_distance);
-                    outer_vec.Subtract(outer_normalized_vec);
-                    gp_Pnt new_pole_outer(outer_vec.XYZ());
-                    //save new poles in a vector for each outer dummy profile
-                    current_row+=1;
-                    pole_matrix.SetValue(current_row,j+1, new_pole_outer);
+                        //calculate distance between k-th outer dummy-pole in v-direction and profile
+                        double outer_distance = outer_rd* (nb_dummies-(k+1))/nb_dummies;
+                        gp_Vec outer_vec(vector_in_v_direction);
+                        gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
+                        outer_normalized_vec.Scale(outer_distance);
+                        outer_vec.Subtract(outer_normalized_vec);
+                        gp_Pnt new_pole_outer(outer_vec.XYZ());
+                        std::cerr << "Insert outer " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+                        //save new poles in a vector for each outer dummy profile
+                        pole_matrix.SetValue(current_row,j+1, new_pole_outer);
+                        current_row+=1;
+                    }
                 }
-                }
-                //add profile curve from outer section only if it is last section
-                if (i==(profileCurves.size()-1)){
-                    current_row+= 1;
-                    pole_matrix.SetValue(current_row, j+1, outer_originalCurve_pnt);
-                }
+                //insert actual profile pole
+                std::cerr << "Last Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+                pole_matrix.SetValue(current_row, j+1, outer_originalCurve_pnt);
             }
         }
 
