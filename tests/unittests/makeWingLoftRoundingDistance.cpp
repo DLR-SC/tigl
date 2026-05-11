@@ -86,7 +86,13 @@ TEST(WingLoftRoundingDistance, makeShape)
 
     //END Copy_code
         
-        //skin the curves ('profileCurves'): new code for curvesToSurface 
+        //check if NbPoles is same in all profileCurves
+        for(int i=0; i<profileCurves.size()-1; i++){
+            if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
+                throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
+            }
+        }
+        //skin the curves ('profileCurves'): new code for curvesToSurface
         // //(input are curves, make Geom_BSplineSurface -> build the TopoDS_Shape from this (-> output is TopoDS_Shape))
         /*
         New code for skinning a wing surface:
@@ -104,31 +110,27 @@ TEST(WingLoftRoundingDistance, makeShape)
         
         ////determine distance between both vectors
         //Standard_Real distance_inner_outer = originalCurve_inner.Distance(originalCurve_outer);
-        //determine new location for pole relative to inner profile and inner rounding distance 
+        //determine new location for pole relative to inner profile and inner rounding distance
         //datatype for poles and 'support vectors' is  gp_Pnt storage is 'TColgp_Array1OfPnt &', needs to be const?
         //datatype for knots is 'double/Standard_Real', stored in  'TColStd_Array1OfReal &', needs to be const?
         //dummy values, will be input params later
         double inner_rd =0.2;
         double outer_rd =0.3;
         size_t nb_dummies =3; //Rows per rounding distance
-        Standard_Integer u_degree = 3;
+        Standard_Integer u_degree = profileCurves[0]->Degree();
         Standard_Integer v_degree = 3;
 
-        //iterate through profile curves poles (Geom_Curve) "profileCurves" for each edge
-
-        //i rows, j columns (OCC indizes start with 1, loops start with one when iterating through OCC datatypes)
-        //note: loop-indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
         Standard_Integer m = profileCurves.size()+(profileCurves.size()-2)*2*nb_dummies;
         Standard_Integer n = profileCurves[0]->NbPoles();
-        //check if NbPoles is same in all profileCurves
-        for(int i=0; i<profileCurves.size()-1; i++){
-            if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
-                throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
-            }
-        }
+
+        //1. loop: iterate through profiles(rows) (index starts with 0 since std::vector
+        //2. loop: iterate through profile curves poles(colums) (Geom_Curve) "profileCurves" for each edge
+        //i rows, j columns (OCC indizes start with 1, loops start with 1 when iterating through OCC datatypes)
+        //note: loop-indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
+
         TColgp_HArray2OfPnt pole_matrix(1,m,1,n);
-        //iterate through profiles(rows)
         gp_Pnt inner_originalCurve_pnt, outer_originalCurve_pnt;
+
         for (int i=0; i< profileCurves.size(); i++){
             //iterate through columns to create Dummy Profiles to each pair of profiles
             for( int j=0; j< n; j++){
@@ -187,7 +189,7 @@ TEST(WingLoftRoundingDistance, makeShape)
                 if(i<(profileCurves.size()-2)){
                     for (int k=0; k < nb_dummies; k++){
                         //calculate distance between k-th outer dummy-pole in v-direction and profile
-                        double outer_distance = outer_rd/nb_dummies * (nb_dummies-(k+1));
+                        double outer_distance = outer_rd/nb_dummies * (nb_dummies-k);
                         gp_Vec outer_vec(outer_originalCurve_pnt.Coord().X(),outer_originalCurve_pnt.Coord().Y(),outer_originalCurve_pnt.Coord().Z());
                         gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
                         outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
@@ -304,14 +306,25 @@ TEST(WingLoftRoundingDistance, makeShape)
             TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
             tigl::dumpShape(edge,"makeLoftWing", "Edge",col);
         }
+        for(int row=1; row<m+1; row++){
+            NCollection_Array1< gp_Pnt > i_poles(1,n);
+            std::cerr<< "Row:" << row << std::endl;
+            for(int i=1; i < n+1; i++){
+                i_poles.SetValue(i,(pole_matrix.Value(row,i)));
+                std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
+            }
+            auto spline = new Geom_BSplineCurve(i_poles, u_knots, u_multiplicities, u_degree);
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
+            tigl::dumpShape(edge,"makeLoftWing", "Row",row);
+        }
 
-        for(int i=0; i<v_knots.Size(); i++){
-            std::cerr <<"knot[" <<(i+1) <<"]:" << v_knots[i+1] << std::endl;
+        for(int i=0; i<u_knots.Size(); i++){
+            std::cerr <<"knot[" <<(i+1) <<"]:" << u_knots[i+1] << std::endl;
         }
-        for(int i=0; i<v_multiplicities.Size(); i++){
-            std::cerr <<"mult[" <<(i+1) <<"]:" << v_multiplicities[i+1] << std::endl;
+        for(int i=0; i<u_multiplicities.Size(); i++){
+            std::cerr <<"mult[" <<(i+1) <<"]:" << u_multiplicities[i+1] << std::endl;
         }
-        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree, true, false);
+        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree, false, false);
         Handle(Geom_Surface) handle_surface = surface;
         TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
         tigl::dumpShape(surf, "", "Surface",1);
