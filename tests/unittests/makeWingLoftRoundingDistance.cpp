@@ -176,6 +176,7 @@ TEST(WingLoftRoundingDistance, makeShape)
                         inner_vec.Scale(inner_distance); //scaled normalized vector in v-direction
                         inner_vec.Add(inner_originalCurve_vec); //vector to new k-th pole
                         gp_Pnt new_pole_inner(inner_vec.XYZ());
+                        std::cout << "InnerDistance:" << inner_distance << " k:" << k <<std::endl;
                         std::cerr << "Insert inner " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
                         pole_matrix.SetValue(current_row,j+1, new_pole_inner);
                         current_row +=1;
@@ -192,6 +193,7 @@ TEST(WingLoftRoundingDistance, makeShape)
                         outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
                         outer_vec.Subtract(outer_normalized_vec);
                         gp_Pnt new_pole_outer(outer_vec.XYZ());
+                        std::cout << "OuterDistance:" << outer_distance << " k:" << k << std::endl;
                         std::cerr << "Insert outer " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
                         //save new poles in a vector for each outer dummy profile
                         pole_matrix.SetValue(current_row,j+1, new_pole_outer);
@@ -206,6 +208,10 @@ TEST(WingLoftRoundingDistance, makeShape)
                 }
             }
         }
+  //      //repeat first column to make surface periodic
+  //      for(int i= 0; i<m; i++){
+  //          pole_matrix.SetValue(i+1,n+1, pole_matrix.Value(i+1,1));
+  //      }
 
         std::cerr << "Rows: " << pole_matrix.ColLength() << "m: " << m << "Columns: " << pole_matrix.RowLength() << "n: " << n << std::endl;
 
@@ -289,6 +295,7 @@ TEST(WingLoftRoundingDistance, makeShape)
 
         for(int col=1; col<n+1; col++){
             NCollection_Array1< gp_Pnt > i_poles(1,m);
+            std::cerr<< "Column:" << col << std::endl;
             for(int i=1; i < m+1; i++){
                 i_poles.SetValue(i,(pole_matrix.Value(i,col)));
                 std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
@@ -304,7 +311,7 @@ TEST(WingLoftRoundingDistance, makeShape)
         for(int i=0; i<v_multiplicities.Size(); i++){
             std::cerr <<"mult[" <<(i+1) <<"]:" << v_multiplicities[i+1] << std::endl;
         }
-        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree);
+        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_multiplicities, v_multiplicities, u_degree, v_degree, true, false);
         Handle(Geom_Surface) handle_surface = surface;
         TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
         tigl::dumpShape(surf, "", "Surface",1);
