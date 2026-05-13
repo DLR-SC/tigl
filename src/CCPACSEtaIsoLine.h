@@ -26,6 +26,7 @@ public:
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSWingCellPositionSpanwise* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceAirfoil* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceBorderTrailingEdge* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceBorderLeadingEdge* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceSkinCutOutBorder* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSControlSurfaceTrackType* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSEtaIsoLine(CCPACSCutOutProfile* parent, CTiglUIDManager* uidMgr);

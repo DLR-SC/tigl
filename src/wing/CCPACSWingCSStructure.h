@@ -36,6 +36,7 @@ class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructu
 public:
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSWingCSStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSWingCSStructure(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
     // Returns number of spar segments
     TIGL_EXPORT int GetSparSegmentCount() const;

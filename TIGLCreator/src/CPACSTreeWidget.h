@@ -75,6 +75,7 @@ private slots:
     void setNewSearch(const QString newText);
 
     void setExpertView();
+    void setgeometryNodes();
 
 public:
     explicit CPACSTreeWidget(QWidget* parent = nullptr);

@@ -88,8 +88,9 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSControlSurfaceSteps is customized, use type CCPACSControlSurfaceSteps directly
+
 // Aliases in tigl namespace
-using CCPACSControlSurfaceSteps = generated::CPACSControlSurfaceSteps;
 using CCPACSControlSurfaceStep = generated::CPACSControlSurfaceStep;
 using CCPACSControlSurfacePath = generated::CPACSControlSurfacePath;
 } // namespace tigl

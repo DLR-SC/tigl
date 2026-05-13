@@ -21,6 +21,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include <AIS_InteractiveObject.hxx>
+#include <AIS_InteractiveContext.hxx>
 
 #include <algorithm>
 
@@ -64,9 +65,9 @@ PNamedShape InteractiveShapeManager::GetShapeFromIObject(const
 }
 
 std::vector<Handle(AIS_InteractiveObject)>
-InteractiveShapeManager::GetIObjectsFromShapeName(const std::string& name)
+InteractiveShapeManager::GetIObjectsFromShapeName(const std::string& name) const
 {
-    ShapeIterator shapeIt = _shapeEntries.find(name);
+    auto shapeIt = _shapeEntries.find(name);
 
     if (shapeIt == _shapeEntries.end())
     {
@@ -87,6 +88,41 @@ ShapeEntry& InteractiveShapeManager::GetShapeEntry(const std::string& name)
     }
 
     return shapeIt->second;
+}
+
+bool InteractiveShapeManager::HasShapeEntry(const std::string& name) const
+{
+    auto shapeIt = _shapeEntries.find(name);
+
+    return (shapeIt != _shapeEntries.end());
+}
+
+bool InteractiveShapeManager::GetVisibility(const std::string& name) const
+{
+    auto shapeIt = _shapeEntries.find(name);
+
+    if (shapeIt == _shapeEntries.end())
+    {
+        return false;
+    }
+
+    const IObjectList& objects = shapeIt->second.aisObjects;
+
+    if (objects.empty()) {
+        return false;
+    }
+
+    const Handle(AIS_InteractiveObject)& obj = objects[0];
+    if (obj.IsNull()) {
+        return false;
+    }
+
+    Handle(AIS_InteractiveContext) context = obj->InteractiveContext();
+    if (context.IsNull()) {
+        return false;
+    }
+
+    return context->IsDisplayed(obj);
 }
 
 void InteractiveShapeManager::removeObject(const std::string& name)
@@ -147,6 +183,12 @@ void InteractiveShapeManager::removeObject(Handle(AIS_InteractiveObject) obj)
     }
 }
 
+void InteractiveShapeManager::clear()
+{
+    _shapeEntries.clear();
+    _names.clear();
+}
+
 void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_InteractiveObject) iObject)
 {
     std::string name = shape->Name();
@@ -156,9 +198,11 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
 
     if (shapeIt != _shapeEntries.end())
     {
-        // add iObject to shape
-        ShapeEntry& entry = shapeIt->second;
+    // add iObject to shape if not already present
+    ShapeEntry& entry = shapeIt->second;
+    if (std::find(entry.aisObjects.begin(), entry.aisObjects.end(), iObject) == entry.aisObjects.end()) {
         entry.aisObjects.push_back(iObject);
+    }
 
 #ifdef DEBUG
         DLOG(INFO) << "added shape " << name;
@@ -181,6 +225,38 @@ void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Interactiv
     _names[iObject] = name;
 }
 
+void InteractiveShapeManager::addObject(std::string uid, Handle(AIS_InteractiveObject) iObject)
+{
+    ShapeIterator shapeIt = _shapeEntries.find(uid);
+
+    if (shapeIt != _shapeEntries.end())
+    {
+        // add iObject to shape if not already present
+        ShapeEntry& entry = shapeIt->second;
+        if (std::find(entry.aisObjects.begin(), entry.aisObjects.end(), iObject) == entry.aisObjects.end()) {
+            entry.aisObjects.push_back(iObject);
+        }
+#ifdef DEBUG
+        DLOG(INFO) << "added shape " << uid;
+#endif
+    }
+    else
+    {
+        // Create a new shape entry and add it to map
+        ShapeEntry entry;
+        entry.aisObjects.push_back(iObject);
+        _shapeEntries.insert(shapeIt, ShapeMap::value_type(uid, entry));
+
+#ifdef DEBUG
+        DLOG(INFO) << "Created new shape " << uid;
+#endif
+    }
+
+    // add also to interactive objects list
+    _names[iObject] = uid;
+}
+
+
 std::vector<PNamedShape> InteractiveShapeManager::GetAllShapes() const
 {
     std::vector<PNamedShape> list;
@@ -194,3 +270,32 @@ std::vector<PNamedShape> InteractiveShapeManager::GetAllShapes() const
 
     return list;
 }
+
+std::vector<std::string> InteractiveShapeManager::GetDisplayedShapeNames() const
+{
+    std::vector<std::string> list;
+    list.reserve(_shapeEntries.size());
+
+    for (const auto& kv : _shapeEntries) {
+        const std::string& name = kv.first;
+        const ShapeEntry& entry = kv.second;
+
+        // If any registered AIS object for this shape is displayed, record the name
+        for (const auto& obj : entry.aisObjects) {
+            if (obj.IsNull())  {
+                continue;
+            }
+            Handle(AIS_InteractiveContext) context = obj->InteractiveContext();
+            if (context.IsNull()) {
+                continue;
+            }
+            if (context->IsDisplayed(obj)) {
+                list.push_back(name);
+                break; // move to next shape name
+            }
+        }
+    }
+
+    return list;
+}
+

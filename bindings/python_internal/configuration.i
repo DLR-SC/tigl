@@ -76,16 +76,23 @@
 #include "CCPACSLongFloorBeamPosition.h"
 #include "CCPACSPressureBulkheadAssemblyPosition.h"
 #include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
+#include "generated/CPACSControlSurfaceOuterShapeLeadingEdge.h"
 #include "generated/CPACSControlSurfacePath.h"
+#include "CCPACSControlSurfaceSteps.h"
+#include "generated/CPACSControlSurfaceSteps.h"
 #include "generated/CPACSCutOutControlPoints.h"
 #include "generated/CPACSControlSurfaceWingCutOut.h"
 #include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
 #include "generated/CPACSControlSurfaceTracks.h"
 #include "generated/CPACSControlSurfaceTrackType.h"
 #include "generated/CPACSTrailingEdgeDevice.h"
+#include "generated/CPACSLeadingEdgeDevice.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
+#include "ControlSurfaceDeviceHelper.h"
 #include "generated/CPACSTrailingEdgeDevices.h"
+#include "generated/CPACSLeadingEdgeDevices.h"
 #include "CCPACSEnginePylon.h"
 #include "CCPACSEnginePosition.h"
 #include "generated/CPACSLateralCap_placement.h"
@@ -278,6 +285,7 @@ namespace tigl {
 %boost_optional(tigl::generated::CPACSCutOutControlPoints)
 %boost_optional(tigl::generated::CPACSControlSurfaceSkinCutOutBorder)
 %boost_optional(tigl::generated::CPACSTrailingEdgeDevices)
+%boost_optional(tigl::generated::CPACSLeadingEdgeDevices)
 %boost_optional(tigl::CCPACSControlSurfaces)
 %boost_optional(tigl::CPACSControlSurfaceWingCutOut)
 %boost_optional(tigl::generated::CPACSControlSurfaceTracks)
@@ -305,6 +313,7 @@ namespace tigl
 %include "generated/CPACSLeadingEdgeHollow.h"
 %include "generated/CPACSCutOutControlPoint.h"
 %include "generated/CPACSCutOutControlPoints.h"
+%include "CCPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceSteps.h"
 %include "generated/CPACSControlSurfaceHingePoint.h"
 %include "generated/CPACSControlSurfaceSkinCutOutBorder.h"
@@ -313,19 +322,29 @@ namespace tigl
 %include "CTiglControlSurfaceTransformation.h"
 %include "CTiglControlSurfaceBorderCoordinateSystem.h"
 %ignore ComponentSegment(const CCPACSControlSurfaceBorderTrailingEdge&);
+%ignore ComponentSegment(const CCPACSControlSurfaceBorderLeadingEdge&);
 %include "generated/CPACSControlSurfaceBorderTrailingEdge.h"
+%include "generated/CPACSControlSurfaceBorderLeadingEdge.h"
 %include "CCPACSControlSurfaceBorderTrailingEdge.h"
+%include "CCPACSControlSurfaceBorderLeadingEdge.h"
 %include "generated/CPACSControlSurfaceOuterShapeTrailingEdge.h"
+%include "generated/CPACSControlSurfaceOuterShapeLeadingEdge.h"
 %include "generated/CPACSControlSurfacePath.h"
 %include "generated/CPACSControlSurfaceTracks.h"
 %include "CPACSControlSurfaceWingCutOut.h"
 %include "generated/CPACSTrailingEdgeDevice.h"
+%include "generated/CPACSLeadingEdgeDevice.h"
 %ignore ComponentSegment(const CCPACSTrailingEdgeDevice&);
+%ignore ComponentSegment(const CCPACSLeadingEdgeDevice&);
 %ignore ComponentSegment(CCPACSTrailingEdgeDevice&);
+%ignore ComponentSegment(CCPACSLeadingEdgeDevice&);
 %include "CCPACSTrailingEdgeDevice.h"
+%include "CCPACSLeadingEdgeDevice.h"
 %include "generated/CPACSTrailingEdgeDevices.h"
+%include "generated/CPACSLeadingEdgeDevices.h"
 %include "generated/CPACSControlSurfaces.h"
 %include "CCPACSControlSurfaces.h"
+%include "ControlSurfaceDeviceHelper.h"
 
 // --------------- Fuselage structure -----------------//
 
@@ -617,6 +636,7 @@ class CCPACSWingRibsPositioning;
          tigl::CCPACSWingSparSegment,
          tigl::CCPACSEnginePylon,
          tigl::CCPACSTrailingEdgeDevice,
+         tigl::CCPACSLeadingEdgeDevice,
          tigl::CCPACSDuct,
          tigl::CCPACSDuctAssembly,
          tigl::CCPACSFuelTank,

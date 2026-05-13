@@ -21,6 +21,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSLeadingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
 #include "generated/CPACSControlSurfaceStep.h"
@@ -46,8 +47,8 @@ namespace
 class SignalsBlocker
 {
 public:
-    SignalsBlocker(QObject* ptr):
-    _ptr(ptr)
+    SignalsBlocker(QObject* ptr)
+        : _ptr(ptr)
     {
         _b = ptr->blockSignals(true);
     }
@@ -63,27 +64,27 @@ private:
 
 double sliderToControlParameter(const QSlider* slider, const QDoubleSpinBox* spinBox)
 {
-    
+
     double minSlider = static_cast<double>(slider->minimum());
     double maxSlider = static_cast<double>(slider->maximum());
     double valSlider = static_cast<double>(slider->value());
 
     double minControlParam = spinBox->minimum();
     double maxControlParam = spinBox->maximum();
-    
-    return (maxControlParam - minControlParam)/(maxSlider-minSlider) * (valSlider - minSlider) + minControlParam;
+
+    return (maxControlParam - minControlParam) / (maxSlider - minSlider) * (valSlider - minSlider) + minControlParam;
 }
 
 } // namespace
 
-TIGLCreatorSelectWingAndFlapStatusDialog::TIGLCreatorSelectWingAndFlapStatusDialog(TIGLCreatorDocument* document, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::TIGLCreatorSelectWingAndFlapStatusDialog)
+TIGLCreatorSelectWingAndFlapStatusDialog::TIGLCreatorSelectWingAndFlapStatusDialog(TIGLCreatorDocument* document,
+                                                                                   QWidget* parent)
+    : QDialog(parent)
+    , ui(new Ui::TIGLCreatorSelectWingAndFlapStatusDialog)
 {
     ui->setupUi(this);
     this->setWindowTitle("Choose ControlSurface Control Parameters");
     _document = document;
-
 }
 
 TIGLCreatorSelectWingAndFlapStatusDialog::~TIGLCreatorSelectWingAndFlapStatusDialog()
@@ -92,15 +93,14 @@ TIGLCreatorSelectWingAndFlapStatusDialog::~TIGLCreatorSelectWingAndFlapStatusDia
     delete ui;
 }
 
-
 void TIGLCreatorSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
 {
     QSlider* slider = dynamic_cast<QSlider*>(QObject::sender());
     std::string uid = slider->windowTitle().toStdString();
 
     DeviceWidgets& elms = _guiMap.at(uid);
-    double controlParm = sliderToControlParameter(elms.slider, elms.controlParamBox);
-    
+    double controlParm  = sliderToControlParameter(elms.slider, elms.controlParamBox);
+
     SignalsBlocker block(elms.controlParamBox);
     updateWidgets(uid, controlParm);
     _document->updateFlapTransform(uid);
@@ -109,7 +109,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::slider_value_changed(int /* k */)
 void TIGLCreatorSelectWingAndFlapStatusDialog::spinBox_value_changed(double controlParam)
 {
     QDoubleSpinBox* spinBox = dynamic_cast<QDoubleSpinBox*>(QObject::sender());
-    std::string uid = spinBox->windowTitle().toStdString();
+    std::string uid         = spinBox->windowTitle().toStdString();
 
     DeviceWidgets& elms = _guiMap.at(uid);
 
@@ -124,27 +124,36 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::cleanup()
     return;
 }
 
-double TIGLCreatorSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::string uid )
+double TIGLCreatorSelectWingAndFlapStatusDialog::getFlapValue(std::string uid)
 {
-    try {
-        std::map< std::string, tigl::CCPACSTrailingEdgeDevice*>::iterator it;
-        it = _deviceMap.find(uid);
-        if (it == _deviceMap.end()) {
-            throw tigl::CTiglError("getTrailingEdgeFlapValue: UID not found", TIGL_UID_ERROR);
-        }
-        tigl::CCPACSTrailingEdgeDevice* device = it->second;
-        return device->GetControlParameter();
+    if (uidMgr().IsType<tigl::CCPACSTrailingEdgeDevice>(uid)) {
+        auto& ted = uidMgr().ResolveObject<tigl::CCPACSTrailingEdgeDevice>(uid);
+        return ted.GetControlParameter();
     }
-    catch(...) {
-        return 0;
+    else if (uidMgr().IsType<tigl::CCPACSLeadingEdgeDevice>(uid)) {
+        auto& led = uidMgr().ResolveObject<tigl::CCPACSLeadingEdgeDevice>(uid);
+        return led.GetControlParameter();
     }
+    else {
+        throw tigl::CTiglError("getFlapValue: UID not found", TIGL_UID_ERROR);
+    }
+    
 }
 
-void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTrailingEdgeDevice& controlSurfaceDevice, int rowIdx, QTableWidget* gridLayout)
+void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(
+     const tigl::CCPACSControlSurfaces::ControlDevice& device, int rowIdx, QTableWidget* gridLayout)
 {
+    std::visit([&](auto& device) {
+        buildFlapRow_helper(device, rowIdx, gridLayout);
+    }, device);
+}
 
-    QString uid = controlSurfaceDevice.GetUID().c_str();
-    QLabel* labelUID = new QLabel(uid, this);
+template <typename DeviceType>
+void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceType& controlSurfaceDevice, int rowIdx,
+                                                                   QTableWidget* gridLayout)
+{
+    QString uid           = QString::fromStdString(controlSurfaceDevice->GetUID());
+    QLabel* labelUID      = new QLabel(uid, this);
     QString transparentBG = "background-color: rgba(0, 0, 0, 0.0); padding-left: 6px; padding-right: 6px;";
     labelUID->setStyleSheet(transparentBG);
 
@@ -165,39 +174,40 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTr
 
     QString rot;
 
-    if ( controlSurfaceDevice.GetPath().GetSteps().GetSteps().size() > 0 ) {
-        const auto& step = controlSurfaceDevice.GetPath().GetSteps().GetSteps().front();
-        if(step) {
+    if (controlSurfaceDevice->GetPath().GetSteps().GetSteps().size() > 0) {
+        const auto& step = controlSurfaceDevice->GetPath().GetSteps().GetSteps().front();
+        if (step) {
             rot.append(QString::number(step->GetHingeLineRotation().value_or(0.)));
         }
     }
 
-    QLabel* labelRotation   = new QLabel(rot, this);
+    QLabel* labelRotation = new QLabel(rot, this);
     labelRotation->setStyleSheet(transparentBG);
 
     gridLayout->setCellWidget(rowIdx, 3, labelRotation);
 
-    double savedValue = controlSurfaceDevice.GetControlParameter();
+    double savedValue = controlSurfaceDevice->GetControlParameter();
 
-    double minControlParam = controlSurfaceDevice.GetMinControlParameter();
-    double maxControlParam = controlSurfaceDevice.GetMaxControlParameter();
-    
-    int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) / (maxControlParam-minControlParam) * (savedValue - minControlParam))
-                        + slider->minimum();
+    double minControlParam = controlSurfaceDevice->GetMinControlParameter();
+    double maxControlParam = controlSurfaceDevice->GetMaxControlParameter();
+
+    int newSliderValue = static_cast<int>((slider->maximum() - slider->minimum()) /
+                                          (maxControlParam - minControlParam) * (savedValue - minControlParam)) +
+                         slider->minimum();
     slider->setValue(newSliderValue);
 
     spinBox->setMinimum(minControlParam);
     spinBox->setValue(savedValue);
     spinBox->setMaximum(maxControlParam);
-    
+
     DeviceWidgets elements;
-    elements.slider = slider;
-    elements.controlParamBox = spinBox;
-    elements.rotAngleLabel = labelRotation;
+    elements.slider            = slider;
+    elements.controlParamBox   = spinBox;
+    elements.rotAngleLabel     = labelRotation;
     _guiMap[uid.toStdString()] = elements;
 
-    slider->setWindowTitle( uid );
-    spinBox->setWindowTitle( uid );
+    slider->setWindowTitle(uid);
+    spinBox->setWindowTitle(uid);
 
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
     connect(spinBox, SIGNAL(valueChanged(double)), this, SLOT(spinBox_value_changed(double)));
@@ -205,54 +215,54 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow(const tigl::CCPACSTr
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
 {
-    cleanup();    
+    cleanup();
+
     std::string wingUID = m_currentWing;
 
     if (wingUID.empty())
         return;
 
     tigl::CCPACSConfiguration& config = _document->GetConfiguration();
-    tigl::CCPACSWing &wing = config.GetWing(wingUID);
+    tigl::CCPACSWing& wing            = config.GetWing(wingUID);
 
-    std::vector<tigl::CCPACSTrailingEdgeDevice*> devices;
+    std::vector<tigl::CCPACSControlSurfaces::ControlDevice> devices;
 
-    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-        tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
+    for (int i = 1; i <= wing.GetComponentSegmentCount(); i++) {
+        tigl::CCPACSWingComponentSegment& componentSegment =
+            static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(i));
         const auto& controlSurfaces = componentSegment.GetControlSurfaces();
         if (!controlSurfaces.is_initialized() || controlSurfaces->ControlSurfaceCount() < 1) {
             continue;
         }
 
-        // TODO: this logic needs to be adapted when there's support for LEDs and Spoilers
         if (controlSurfaces->GetTrailingEdgeDevices().is_initialized()) {
-            for ( const auto&  controlSurfaceDevice : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
-                if (!controlSurfaceDevice) {
+            for (auto& device : controlSurfaces->GetTrailingEdgeDevices()->GetTrailingEdgeDevices()) {
+                if (!device || !ui->checkTED->isChecked())
                     continue;
-                }
-
-                if ((!ui->checkTED->isChecked() && controlSurfaceDevice->GetType() == TRAILING_EDGE_DEVICE) ||
-                    (!ui->checkLED->isChecked() && controlSurfaceDevice->GetType() == LEADING_EDGE_DEVICE) ||
-                    (!ui->checkSpoiler->isChecked() && controlSurfaceDevice->GetType() == SPOILER)) {
-
-                    continue;
-                }
-
-                devices.push_back(controlSurfaceDevice.get());
+                devices.emplace_back(device.get());
             }
         }
-
+        if (controlSurfaces->GetLeadingEdgeDevices().is_initialized()) {
+            for (auto& device : controlSurfaces->GetLeadingEdgeDevices()->GetLeadingEdgeDevices()) {
+                if (!device || !ui->checkLED->isChecked())
+                    continue;
+                devices.emplace_back(device.get());
+            }
+        }
     }
 
     auto* tableWidget = new QTableWidget(static_cast<int>(devices.size()), 4);
 
     int rowIdx = 0;
-    for (auto* device : devices) {
-        buildFlapRow(*device, rowIdx++, tableWidget);
+    for (const tigl::CCPACSControlSurfaces::ControlDevice& device : devices) {
 
-        _deviceMap[device->GetUID()] = device;
-        updateWidgets(device->GetUID(), device->GetControlParameter() );
+        buildFlapRow(device, rowIdx++, tableWidget);
 
+        std::visit([&](auto& control_device) {
+            auto* device = control_device;  
 
+            updateWidgets(control_device->GetUID(), control_device->GetControlParameter());
+        }, device);
     }
 
     // set style
@@ -272,7 +282,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::drawGUI()
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int)
 {
-   drawGUI();
+    drawGUI();
 }
 
 void TIGLCreatorSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int)
@@ -285,41 +295,60 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int)
     drawGUI();
 }
 
-void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string controlSurfaceDeviceUID,
-                                                            double controlParam)
+void TIGLCreatorSelectWingAndFlapStatusDialog::updateWidgets(std::string controlSurfaceDeviceUID, double controlParam)
 {
     DeviceWidgets& elms = _guiMap.at(controlSurfaceDeviceUID);
 
     QString textVal;
 
-    std::map< std::string, tigl::CCPACSTrailingEdgeDevice*>::iterator it;
-    it = _deviceMap.find(controlSurfaceDeviceUID);
-    if (it == _deviceMap.end()) {
-        return;
-    }
-    tigl::CCPACSTrailingEdgeDevice* device = it->second;
+    if (uidMgr().IsType<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceDeviceUID)) {
+        auto& ted = uidMgr().ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceDeviceUID);
+        auto rotationdata = getRotation(&ted, controlParam);
+        int sliderVal     = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), rotationdata.factor));
 
+        QString textRot = QString::number(rotationdata.rotation);
+
+        elms.slider->setValue(sliderVal);
+        elms.controlParamBox->setValue(rotationdata.controlParam);
+        elms.rotAngleLabel->setText(textRot);
+        ted.SetControlParameter(rotationdata.controlParam);
+    }
+    else if (uidMgr().IsType<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceDeviceUID)) {
+        auto& led = uidMgr().ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceDeviceUID);
+        auto rotationdata = getRotation(&led, controlParam);
+        int sliderVal     = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), rotationdata.factor));
+
+        QString textRot = QString::number(rotationdata.rotation);
+
+        elms.slider->setValue(sliderVal);
+        elms.controlParamBox->setValue(rotationdata.controlParam);
+        elms.rotAngleLabel->setText(textRot);
+        led.SetControlParameter(rotationdata.controlParam);
+    }
+}
+
+template <typename DeviceType>
+TIGLCreatorSelectWingAndFlapStatusDialog::RotationData
+TIGLCreatorSelectWingAndFlapStatusDialog::getRotation(const DeviceType* device, double controlParam)
+{
+    QString textVal;
     // Get rotation for current control parameter value
     std::vector<double> controlParams;
     std::vector<double> rotations;
     const tigl::CCPACSControlSurfaceSteps& steps = device->GetPath().GetSteps();
-    for ( const auto &step : steps.GetSteps()) {
-        if (!step) continue;
+    for (const auto& step : steps.GetSteps()) {
+        if (!step)
+            continue;
         controlParams.push_back(step->GetControlParameter());
         rotations.push_back(step->GetHingeLineRotation().value_or(0.));
     }
     double rotation = tigl::Interpolate(controlParams, rotations, controlParam);
     QString textRot = QString::number(rotation);
 
-    double factor = ( controlParam - device->GetMinControlParameter()  ) / ( device->GetMaxControlParameter() - device->GetMinControlParameter() );
+    double factor = (controlParam - device->GetMinControlParameter()) /
+                    (device->GetMaxControlParameter() - device->GetMinControlParameter());
     textVal.append(QString::number(100 * factor));
     textVal.append("% ");
 
-    int sliderVal = static_cast<int>(Mix(elms.slider->minimum(), elms.slider->maximum(), factor));
-
-    elms.slider->setValue(sliderVal);
-    elms.controlParamBox->setValue(controlParam);
-    elms.rotAngleLabel->setText(textRot);
-
-    device->SetControlParameter(controlParam);
+    return {controlParam, rotation, factor};
 }

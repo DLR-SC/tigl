@@ -118,6 +118,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void onComponentVisibilityChanged(const QString& uid, bool visible);
 
 private:
     void connectSignals();

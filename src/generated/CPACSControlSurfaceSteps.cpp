@@ -86,7 +86,7 @@ namespace generated
     {
         // read element step
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/step")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, tixi::xsdUnbounded, this, m_uidMgr);
+            tixi::TixiReadElements(tixiHandle, xpath + "/step", m_steps, 2, tixi::xsdUnbounded, reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr);
         }
 
     }
@@ -134,7 +134,7 @@ namespace generated
 
     CPACSControlSurfaceStep& CPACSControlSurfaceSteps::AddStep()
     {
-        m_steps.push_back(make_unique<CPACSControlSurfaceStep>(this, m_uidMgr));
+        m_steps.push_back(make_unique<CPACSControlSurfaceStep>(reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr));
         return *m_steps.back();
     }
 
