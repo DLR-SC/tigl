@@ -2980,7 +2980,7 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     std::string modelUID = GetConfiguration().GetUID();
 
     //save filepath from old configuration
-    const char* cCPACSPath = GetLoadedConfigurationFileName().toStdString().c_str();
+    auto cCPACSPath = GetLoadedConfigurationFileName().toStdString();
 
     tiglCloseCPACSConfiguration(m_cpacsHandle);
     m_cpacsHandle = -1;
@@ -2993,7 +2993,7 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     ReturnCode tixiRet = tixiImportFromString(tixiContent.c_str(), &tixiHandle);
 
     //set future filepath for new configuration to former config-path
-    tixiSetDocumentPath(tixiHandle, cCPACSPath);
+    tixiSetDocumentPath(tixiHandle, cCPACSPath.c_str());
 
     if (tixiRet != SUCCESS) {
         displayError(QString("TIGLCreatorDocument::updateCpacsConfigurationFromString: Error in function "
