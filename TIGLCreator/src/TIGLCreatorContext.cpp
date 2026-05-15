@@ -283,6 +283,8 @@ void TIGLCreatorContext::applyGridSettings()
         settings.gridRadialDivisions(),
         0.
     );
+
+    myViewer->Redraw();
 }
 
 /*! 

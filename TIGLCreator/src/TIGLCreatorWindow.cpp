@@ -612,8 +612,7 @@ void TIGLCreatorWindow::applySettings()
 void TIGLCreatorWindow::changeSettings()
 {
     settingsDialog->updateEntries();
-    settingsDialog->exec();
-    applySettings();
+    settingsDialog->show();
 }
 
 

@@ -69,6 +69,10 @@ TIGLCreatorSettingsDialog::TIGLCreatorSettingsDialog(TIGLCreatorSettings& settin
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
     connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
     connect(browseProfilesDBButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseProfilesDB()));
+    connect(grid_origin_X_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_origin_Y_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_size_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_radial_div_spinbox, SIGNAL(valueChanged(int)), this, SLOT(onGridSettingChanged()));
 }
 
 void TIGLCreatorSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -272,4 +276,13 @@ void TIGLCreatorSettingsDialog::onBrowseProfilesDB()
     if (!newFile.isEmpty()) {
         profilesDBLineEdit->setText(newFile);
     }
+}
+
+void TIGLCreatorSettingsDialog::onGridSettingChanged()
+{
+    _settings.setGridOriginX(grid_origin_X_spinbox->value());
+    _settings.setGridOriginY(grid_origin_Y_spinbox->value());
+    _settings.setGridSize(grid_size_spinbox->value());
+    _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
+    emit settingsUpdated();
 }
