@@ -33,6 +33,16 @@
        </property>
       </widget>
      </item>
+    <item>
+     <widget class="QCheckBox" name="geometryNodesCheckBox">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Limit the CPACS tree to elements available in the Geometry Nodes (only checkable UIDs).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Geometry Nodes</string>
+      </property>
+     </widget>
+    </item>
     </layout>
    </item>
    <item>

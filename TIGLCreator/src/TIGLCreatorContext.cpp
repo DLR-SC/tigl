@@ -351,7 +351,7 @@ void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 }
 
 // a small helper when we just want to display a shape
-void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -380,13 +380,14 @@ void TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewe
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
+    return shape;
 }
 
 // a small helper when we just want to display a shape
-void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     if (!pshape) {
-        return;
+        return nullptr;
     }
 
     TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
@@ -426,6 +427,7 @@ void TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateView
         }
     }
     GetShapeManager().addObject(pshape, shape);
+    return shape;
 }
 
 // Displays a point on the screen

@@ -58,6 +58,8 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const override;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
+    
+    TIGL_EXPORT TiglSymmetryAxis GetSymmetryAxis() const override;
 
 private:
     struct HingePoints {
