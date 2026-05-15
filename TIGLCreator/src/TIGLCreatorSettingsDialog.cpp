@@ -280,9 +280,17 @@ void TIGLCreatorSettingsDialog::onBrowseProfilesDB()
 
 void TIGLCreatorSettingsDialog::onGridSettingChanged()
 {
+    validateGridSettings();
     _settings.setGridOriginX(grid_origin_X_spinbox->value());
     _settings.setGridOriginY(grid_origin_Y_spinbox->value());
     _settings.setGridSize(grid_size_spinbox->value());
     _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
     emit settingsUpdated();
+}
+
+void TIGLCreatorSettingsDialog::validateGridSettings()
+{
+    if (grid_size_spinbox->value() <= 0.0) {
+        grid_size_spinbox->setValue(0.001); // just to be save, should be unreachable, since minimum is set in ui-file
+    }
 }

@@ -455,16 +455,16 @@
          <property name="topMargin">
           <number>0</number>
          </property>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="grid_size_spinbox">
-           <property name="minimum">
-            <double>0.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="grid_size_spinbox">
+            <property name="minimum">
+             <double>0.001000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="grid_origin_Y_spinbox">
            <property name="minimum">
@@ -493,13 +493,13 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_23">
-           <property name="text">
-            <string>Orign Y</string>
-           </property>
-          </widget>
-         </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Origin Y</string>
+            </property>
+           </widget>
+          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_25">
            <property name="text">

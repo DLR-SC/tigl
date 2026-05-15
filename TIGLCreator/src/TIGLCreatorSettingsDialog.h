@@ -55,6 +55,7 @@ private slots:
     void onBrowseTemplateDir();
     void onBrowseProfilesDB();
     void onGridSettingChanged();
+    void validateGridSettings();
 
 private:
     double calcTesselationAccu(int value);
