@@ -22,13 +22,13 @@
 
 #include "gp_Vec2d.hxx"
 #include "tiglmathfunctions.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 #include "CFunctionToBspline.h"
 #include "CTiglError.h"
 
 namespace tigl{
         
-        NACA4Calculator::NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
+        CTiglNACA4Calculator::CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
          , max_profile_thickness(max_profile_thickness/100)
@@ -45,8 +45,8 @@ namespace tigl{
             }
         }
 
-        NACA4Calculator::NACA4Calculator(::std::string const& naca_code , const double te_thickness)
-            : NACA4Calculator(0.0,
+        CTiglNACA4Calculator::CTiglNACA4Calculator(::std::string const& naca_code , const double te_thickness)
+            : CTiglNACA4Calculator(0.0,
                               0.0,
                               0.0,
                               te_thickness)
@@ -59,7 +59,7 @@ namespace tigl{
                 double p = static_cast<double>(naca_code[1] - '0');
                 double t = static_cast<double>(std::stoi(naca_code.substr(2,2)));
 
-                *this = NACA4Calculator(m, p, t, te_thickness);
+                *this = CTiglNACA4Calculator(m, p, t, te_thickness);
             }
             catch(...){
                 throw CTiglError("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
@@ -67,12 +67,12 @@ namespace tigl{
 
         }
 
-        double NACA4Calculator::get_trailing_edge_thickness() const
+        double CTiglNACA4Calculator::get_trailing_edge_thickness() const
         {
             return trailing_edge_thickness_half;
         }
 
-        double NACA4Calculator::camberline(double x) const{
+        double CTiglNACA4Calculator::camberline(double x) const{
         
             double m = this->max_camber;
             double p = this->max_camber_position;
@@ -90,27 +90,27 @@ namespace tigl{
             }
         }
 
-        gp_Vec2d NACA4Calculator::upper_curve(double x) const{
+        gp_Vec2d CTiglNACA4Calculator::upper_curve(double x) const{
             double yt = profile_thickness(x); 
             double yc = camberline(x);
             auto point = gp_Vec2d{x, yc};
             return point + yt*normal(x);
         }
         
-        gp_Vec2d NACA4Calculator::lower_curve(double x) const{ 
+        gp_Vec2d CTiglNACA4Calculator::lower_curve(double x) const{ 
             double yt = profile_thickness(x);
             double yc = camberline(x);
             auto point = gp_Vec2d{x, yc};
             return point - yt*normal(x);
         }
 
-        double NACA4Calculator::profile_thickness(double x) const{ 
+        double CTiglNACA4Calculator::profile_thickness(double x) const{ 
             double t = this->max_profile_thickness; 
             double e = -(trailing_edge_thickness_half/(5*t)) + (0.2969 - 0.1260 - 0.3516 + 0.2843);
             return 5*t*(0.2969*sqrt(x) - 0.1260*x - 0.3516*(x*x)+0.2843*pow(x,3) - e*pow(x,4));
         }
 
-        double NACA4Calculator::camberline_derivative(double x) const{ //c'(x)
+        double CTiglNACA4Calculator::camberline_derivative(double x) const{ //c'(x)
             double m = this->max_camber;
             double p = this->max_camber_position;
 
@@ -128,7 +128,7 @@ namespace tigl{
             }
         }
 
-        gp_Vec2d NACA4Calculator::normal(double x) const{
+        gp_Vec2d CTiglNACA4Calculator::normal(double x) const{
             gp_Vec2d normal = {-camberline_derivative(x), 1};
             double nrm = normal.Magnitude(); 
             if (nrm < 1e-12) {
@@ -138,9 +138,9 @@ namespace tigl{
 
         }
 
-        Handle(Geom_BSplineCurve) NACA4Calculator::upper_bspline() const{
+        Handle(Geom_BSplineCurve) CTiglNACA4Calculator::upper_bspline() const{
 
-            NACA4UpperCurve upperCurve(*this);
+            CTiglNACA4UpperCurve upperCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
@@ -152,8 +152,8 @@ namespace tigl{
             return converter.Curve();
         }
 
-        Handle(Geom_BSplineCurve) NACA4Calculator::lower_bspline() const{
-            NACA4LowerCurve lowerCurve(*this);
+        Handle(Geom_BSplineCurve) CTiglNACA4Calculator::lower_bspline() const{
+            CTiglNACA4LowerCurve lowerCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
@@ -165,38 +165,38 @@ namespace tigl{
             return converter.Curve();
         }
 
-        NACA4UpperCurve::NACA4UpperCurve( NACA4Calculator const& calculator)
+        CTiglNACA4UpperCurve::CTiglNACA4UpperCurve( CTiglNACA4Calculator const& calculator)
             : MathFunc3d(), 
             calculator(calculator)
         {}
 
-        double NACA4UpperCurve::valueX(double t)  {
+        double CTiglNACA4UpperCurve::valueX(double t)  {
             gp_Vec2d vec = calculator.upper_curve(t);
             return vec.X();
         }
-        double NACA4UpperCurve::valueY(double t)  {
+        double CTiglNACA4UpperCurve::valueY(double t)  {
             return 0.0;
         }
-        double NACA4UpperCurve::valueZ(double t)  {
+        double CTiglNACA4UpperCurve::valueZ(double t)  {
             gp_Vec2d vec = calculator.upper_curve(t);
             return vec.Y();
         }
 
-        NACA4LowerCurve::NACA4LowerCurve( NACA4Calculator const& calculator)
+        CTiglNACA4LowerCurve::CTiglNACA4LowerCurve( CTiglNACA4Calculator const& calculator)
             : MathFunc3d(), 
             calculator(calculator)
         {}
 
-        double NACA4LowerCurve::valueX(double t)  {
+        double CTiglNACA4LowerCurve::valueX(double t)  {
             gp_Vec2d vec = calculator.lower_curve(t);
             return vec.X();
         }
 
-        double NACA4LowerCurve::valueY(double t)  {
+        double CTiglNACA4LowerCurve::valueY(double t)  {
             return 0.0;
         }
 
-        double NACA4LowerCurve::valueZ(double t)  {
+        double CTiglNACA4LowerCurve::valueZ(double t)  {
             gp_Vec2d vec = calculator.lower_curve(t);
             return vec.Y();
         }

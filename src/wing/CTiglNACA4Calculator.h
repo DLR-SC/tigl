@@ -30,19 +30,19 @@
 namespace tigl{
 
 
-class NACA4Calculator{
+class CTiglNACA4Calculator{
 
     public:
         /**
-        * @brief Construct a new NACA4Calculator object
+        * @brief Construct a new CTiglNACA4Calculator object
         * 
         * @param max_camber 
         * @param max_camber_position 
         * @param max_profile_thickness 
         */
-        TIGL_EXPORT NACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
+        TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
 
-        explicit TIGL_EXPORT NACA4Calculator(const ::std::string& naca_code, const double te_thickness);
+        explicit TIGL_EXPORT CTiglNACA4Calculator(const ::std::string& naca_code, const double te_thickness);
 
         /**
          * @brief getter for the trailing edge thickness
@@ -109,9 +109,9 @@ class NACA4Calculator{
         double  max_camber, max_camber_position, max_profile_thickness, trailing_edge_thickness_half;
 };
 
-class NACA4UpperCurve : public MathFunc3d {
+class CTiglNACA4UpperCurve : public MathFunc3d {
     public: 
-        TIGL_EXPORT explicit NACA4UpperCurve( NACA4Calculator const& calculator);
+        TIGL_EXPORT explicit CTiglNACA4UpperCurve( CTiglNACA4Calculator const& calculator);
 
         /**
          * @brief Get the X coordinate of the upper curve
@@ -137,12 +137,12 @@ class NACA4UpperCurve : public MathFunc3d {
         double valueZ(double t) override;
 
     private:
-         NACA4Calculator const& calculator;
+         CTiglNACA4Calculator const& calculator;
 };
 
-class NACA4LowerCurve : public MathFunc3d {
+class CTiglNACA4LowerCurve : public MathFunc3d {
     public: 
-        TIGL_EXPORT explicit NACA4LowerCurve( NACA4Calculator const& calculator);
+        TIGL_EXPORT explicit CTiglNACA4LowerCurve( CTiglNACA4Calculator const& calculator);
 
         /**
          * @brief Get the X coordinate of the lower curve
@@ -169,6 +169,6 @@ class NACA4LowerCurve : public MathFunc3d {
         double valueZ(double t) override;
 
     private:
-         NACA4Calculator const& calculator;
+         CTiglNACA4Calculator const& calculator;
 };
 }

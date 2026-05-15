@@ -138,7 +138,7 @@
 #include "CTiglFuselageSectionElement.h"
 #include "CTiglWingProfileNACA.h"
 #include "generated/CPACSNacaProfile.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 #include "CPACSNacaProfile.h"
 
 %}
@@ -512,7 +512,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSCurvePointListXYZ.h"
 %include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
-%include "NACA4Calculator.h"
+%include "CTiglNACA4Calculator.h"
 %include "generated/CPACSNacaProfile.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"

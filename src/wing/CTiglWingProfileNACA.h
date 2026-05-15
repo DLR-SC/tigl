@@ -25,7 +25,7 @@
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>
@@ -125,7 +125,7 @@ namespace tigl{
 
     private:
        std::string profileUID;
-       NACA4Calculator calculator;
+        CTiglNACA4Calculator calculator;
        double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
     };

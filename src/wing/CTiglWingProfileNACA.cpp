@@ -26,7 +26,7 @@
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
 #include "geometry/CFunctionToBspline.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 #include "common/tiglcommonfunctions.h"
 
 
@@ -42,7 +42,7 @@ namespace tigl
 
 CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
-    , calculator(nacadef.GetNaca4DigitCode_choice1() ? NACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.") )
+    , calculator(nacadef.GetNaca4DigitCode_choice1() ? CTiglNACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.") )
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
 {
 
