@@ -291,6 +291,6 @@ void TIGLCreatorSettingsDialog::onGridSettingChanged()
 void TIGLCreatorSettingsDialog::validateGridSettings()
 {
     if (grid_size_spinbox->value() <= 0.0) {
-        grid_size_spinbox->setValue(0.001); // just to be save, should be unreachable, since minimum is set in ui-file
+        grid_size_spinbox->setValue(1.0); // just to be save, should be unreachable, since minimum is set in ui-file
     }
 }
