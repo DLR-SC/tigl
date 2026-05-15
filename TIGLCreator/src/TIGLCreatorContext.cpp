@@ -214,6 +214,7 @@ void TIGLCreatorContext::gridXY  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
     myViewer->SetPrivilegedPlane( aPlane );
+    applyGridSettings();
 }
 /*!
 \brief    Sets the privileged plane to the XZ Axis.
@@ -227,6 +228,7 @@ void TIGLCreatorContext::gridXZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
     myViewer->SetPrivilegedPlane( aPlane );
+    applyGridSettings();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.
@@ -237,6 +239,7 @@ void TIGLCreatorContext::gridYZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
     myViewer->SetPrivilegedPlane( aPlane );
+    applyGridSettings();
 }
 
 /*!
