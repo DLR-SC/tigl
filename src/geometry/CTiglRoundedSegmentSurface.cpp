@@ -234,9 +234,12 @@ opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft()
          */
 
     auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
+
+    //DEBUG DELETEME
     Handle(Geom_Surface) handle_surface = surface;
     TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
     tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
+
     return surface;
 }
 

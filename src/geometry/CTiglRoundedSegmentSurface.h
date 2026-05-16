@@ -17,11 +17,19 @@ public:
     TIGL_EXPORT TopoDS_Shape& Shape();
 
 private:
-    // Converts TopoDS_Wire → Handle(Geom_BSplineCurve)
     TIGL_EXPORT void Perform();
+    // Converts TopoDS_Wire → Handle(Geom_BSplineCurve)
     TIGL_EXPORT void ConvertCurves();
+
+    // Initialize values required for 'buildLoft'
+    // Determin dimensions of pole matrix
     TIGL_EXPORT void initializePoleMatrix();
+
+    // Calculate required poles to build rounded curves at given sections
     TIGL_EXPORT void calculatePoleMatrix();
+
+    // Deduce required knot vector and multiplicies from pole matrix properties
+    //TODO: Add mathematical boundaries for required number of knots and multiplicities
     TIGL_EXPORT void calculateKnotsAndMultiplicities();
     /*
      * @brief Creates a surface with rounded sections
@@ -36,6 +44,8 @@ private:
                         Calculate distance between poles, apply inner/outer rounding distance relative to number of dummy profile
                         store new poles and original poles all in one matrix
     */
+
+    // Call required methods to initialize required values and build surface
     TIGL_EXPORT Handle(Geom_BSplineSurface) buildLoft();
     TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
 
