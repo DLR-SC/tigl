@@ -19,34 +19,35 @@ public:
 private:
     // Converts TopoDS_Wire → Handle(Geom_BSplineCurve)
     TIGL_EXPORT void Perform();
+    TIGL_EXPORT void initializePoleMatrix();
     TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
     TIGL_EXPORT void ConvertCurves();
-    TIGL_EXPORT void buildLoft();
+    TIGL_EXPORT Handle(Geom_BSplineSurface) buildLoft();
 
 private:
     // Rows represent profile curves (u-direction) and dummy curves, Columns define poles of curves in v-direction
-    TColgp_HArray2OfPnt pole_matrix;
+    TColgp_HArray2OfPnt m_pole_matrix;
 
-    TColStd_Array1OfReal u_knots;
-    TColStd_Array1OfReal v_knots;
+    TColStd_Array1OfReal m_u_knots;
+    TColStd_Array1OfReal m_v_knots;
 
-    TColStd_HArray1OfInteger u_multiplicities;
-    TColStd_HArray1OfInteger v_multiplicities;
+    TColStd_HArray1OfInteger m_u_multiplicities;
+    TColStd_HArray1OfInteger m_v_multiplicities;
 
     //Input datatype for constructor, to be converted in perform()-method
     const std::vector<TopoDS_Wire>& m_profileWires;
 
     //Storage of inner and outer rounding distance per segment
-    std::vector<double> inner_rounding_distance;
-    std::vector<double> outer_rounding_distance;
+    std::vector<double> m_inner_rounding_distance;
+    std::vector<double> m_outer_rounding_distance;
 
     // Store as B-spline curves internally (after conversion)
     std::vector<Handle(Geom_BSplineCurve)> m_profileCurves;
 
-    Geom_BSplineSurface m_surface;
-
     bool _hasPerformed = false;
     int _maxDegree = 3;
+    int _u_degree = 3;
+    int _v_degree = 3;
     size_t _nb_dummies =3; //Rows per rounding distance
 
 
