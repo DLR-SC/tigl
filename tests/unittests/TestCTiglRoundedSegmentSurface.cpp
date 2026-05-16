@@ -26,87 +26,100 @@
 #include "CCPACSCurvePointListXYZ.h"
 #include "CCPACSCurveParamPointMap.h"
 
-TEST(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
+class TestCTiglRoundedSegmentSurface : public ::testing::Test
 {
+protected:
 
-    //Create Profile Curves Vector
-    TColgp_HArray1OfPnt u_poles(1,7);
-    u_poles.SetValue(1,gp_Pnt(1., 0., 0.));
-    u_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
-    u_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
-    u_poles.SetValue(4,gp_Pnt(0., 0., 0.));
-    u_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
-    u_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
-    u_poles.SetValue(7,gp_Pnt(1., 0., 0.));
+    void SetUp() override
+    {
+        //Create Profile Curves Vector
+        TColgp_HArray1OfPnt u_poles(1,7);
+        u_poles.SetValue(1,gp_Pnt(1., 0., 0.));
+        u_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
+        u_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
+        u_poles.SetValue(4,gp_Pnt(0., 0., 0.));
+        u_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
+        u_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
+        u_poles.SetValue(7,gp_Pnt(1., 0., 0.));
 
-    TColgp_HArray1OfPnt u1_poles(1,7);
-    u1_poles.SetValue(1,gp_Pnt(1., 0., 0.));
-    u1_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
-    u1_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
-    u1_poles.SetValue(4,gp_Pnt(0., 0., 0.));
-    u1_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
-    u1_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
-    u1_poles.SetValue(7,gp_Pnt(1., 0., 0.));
+        TColgp_HArray1OfPnt u1_poles(1,7);
+        u1_poles.SetValue(1,gp_Pnt(1., 0., 0.));
+        u1_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
+        u1_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
+        u1_poles.SetValue(4,gp_Pnt(0., 0., 0.));
+        u1_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
+        u1_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
+        u1_poles.SetValue(7,gp_Pnt(1., 0., 0.));
 
-    TColgp_HArray1OfPnt u2_poles(1,7);
-    u2_poles.SetValue(1,gp_Pnt(1., 0., 0.));
-    u2_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
-    u2_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
-    u2_poles.SetValue(4,gp_Pnt(0., 0., 0.));
-    u2_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
-    u2_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
-    u2_poles.SetValue(7,gp_Pnt(1., 0., 0.));
+        TColgp_HArray1OfPnt u2_poles(1,7);
+        u2_poles.SetValue(1,gp_Pnt(1., 0., 0.));
+        u2_poles.SetValue(2,gp_Pnt(0.66, 0., -0.015));
+        u2_poles.SetValue(3,gp_Pnt(0., 0., -0.1));
+        u2_poles.SetValue(4,gp_Pnt(0., 0., 0.));
+        u2_poles.SetValue(5,gp_Pnt(0., 0., 0.1));
+        u2_poles.SetValue(6,gp_Pnt(0.33, 0., 0.05));
+        u2_poles.SetValue(7,gp_Pnt(1., 0., 0.));
 
 
-    TColStd_Array1OfReal u_knots(1,3);
-    u_knots.SetValue(1,-1.);
-    u_knots.SetValue(2,0.);
-    u_knots.SetValue(3,1.);
+        TColStd_Array1OfReal u_knots(1,3);
+        u_knots.SetValue(1,-1.);
+        u_knots.SetValue(2,0.);
+        u_knots.SetValue(3,1.);
 
-    TColStd_Array1OfInteger u_mults(1,3);
-    u_mults.SetValue(1,4);
-    u_mults.SetValue(2,3);
-    u_mults.SetValue(3,4);
+        TColStd_Array1OfInteger u_mults(1,3);
+        u_mults.SetValue(1,4);
+        u_mults.SetValue(2,3);
+        u_mults.SetValue(3,4);
 
-    int u_degree = 3;
+        int u_degree = 3;
 
-    //Create three profiles for the loft
+        //Create three profiles for the loft
+        auto profile_root = new Geom_BSplineCurve(u_poles, u_knots, u_mults, u_degree);
+        profileCurves.push_back(profile_root);
+
+        Handle(Geom_BSplineCurve) profile_mid = new Geom_BSplineCurve(u1_poles, u_knots, u_mults, u_degree);
+        //Scale by (0.66,1.,0.66) Translate by (0.2,0.5,0.)
+        for(int i= 1; i< profile_root->NbPoles() + 1;i++){
+            double X = profile_mid->Poles().Value(i).Coord().X()*0.66+0.2;
+            double Y = profile_mid->Poles().Value(i).Coord().Y()*1.+0.5;
+            double Z = profile_mid->Poles().Value(i).Coord().Z()*0.66+0.;
+            gp_Pnt transformed_pole(X,Y,Z);
+            profile_mid->SetPole(i,transformed_pole);
+        }
+
+        profileCurves.push_back(profile_mid);
+
+        Handle(Geom_BSplineCurve) profile_tip = new Geom_BSplineCurve(u2_poles, u_knots, u_mults, u_degree);
+        //Scale by (0.2,1.,0.1) Translate by (1.,2.,0.)
+        for(int i= 1; i< profile_root->NbPoles() + 1;i++){
+            double X = profile_tip->Poles().Value(i).Coord().X()*0.2+1.;
+            double Y = profile_tip->Poles().Value(i).Coord().Y()*1.+2.;
+            double Z = profile_tip->Poles().Value(i).Coord().Z()*0.1+0.;
+            gp_Pnt transformed_pole(X,Y,Z);
+            profile_tip->SetPole(i,transformed_pole);
+        }
+
+        profileCurves.push_back(profile_tip);
+
+        for(int i=0; i<profileCurves.size(); i++){
+            BRepBuilderAPI_MakeEdge edge(profileCurves[i]);
+            tigl::dumpShape(edge ,"ProfleCurves","curve",i);
+        }
+
+        }
+
+
+    void TearDown() override
+    {
+    }
+
     std::vector<Handle(Geom_BSplineCurve)> profileCurves;
-    auto profile_root = new Geom_BSplineCurve(u_poles, u_knots, u_mults, u_degree);
-    profileCurves.push_back(profile_root);
 
-    Handle(Geom_BSplineCurve) profile_mid = new Geom_BSplineCurve(u1_poles, u_knots, u_mults, u_degree);
-    //Scale by (0.66,1.,0.66) Translate by (0.2,0.5,0.)
-    for(int i= 1; i< profile_root->NbPoles() + 1;i++){
-        double X = profile_mid->Poles().Value(i).Coord().X()*0.66+0.2;
-        double Y = profile_mid->Poles().Value(i).Coord().Y()*1.+0.5;
-        double Z = profile_mid->Poles().Value(i).Coord().Z()*0.66+0.;
-        gp_Pnt transformed_pole(X,Y,Z);
-        profile_mid->SetPole(i,transformed_pole);
-    }
-
-    profileCurves.push_back(profile_mid);
-
-    Handle(Geom_BSplineCurve) profile_tip = new Geom_BSplineCurve(u2_poles, u_knots, u_mults, u_degree);
-    //Scale by (0.2,1.,0.1) Translate by (1.,2.,0.)
-    for(int i= 1; i< profile_root->NbPoles() + 1;i++){
-        double X = profile_tip->Poles().Value(i).Coord().X()*0.2+1.;
-        double Y = profile_tip->Poles().Value(i).Coord().Y()*1.+2.;
-        double Z = profile_tip->Poles().Value(i).Coord().Z()*0.1+0.;
-        gp_Pnt transformed_pole(X,Y,Z);
-        profile_tip->SetPole(i,transformed_pole);
-    }
-
-    profileCurves.push_back(profile_tip);
-
-    for(int i=0; i<profileCurves.size(); i++){
-        BRepBuilderAPI_MakeEdge edge(profileCurves[i]);
-        tigl::dumpShape(edge ,"ProfleCurves","curve",i);
-    }
+};
 
 
-
-    //Test Code from above
+TEST_F(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
+{
 
     //check if NbPoles is same in all profileCurves
     for(int i=0; i<profileCurves.size()-1; i++){
