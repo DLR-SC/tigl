@@ -1,5 +1,6 @@
 #include "CTiglRoundedSegmentSurface.h"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
 #include "CTiglError.h"
 #include "Debugging.h"
 #include "TopoDS_Edge.hxx"
@@ -16,6 +17,15 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<TopoDS_
 
 //TODO
 void CTiglRoundedSegmentSurface::ConvertCurves(){}
+
+void NumberOfPolesIsSameInAllCurves(std::vector<Handle(Geom_BSplineCurve)> &profileCurves){
+    //check if NbPoles is same in all profileCurves
+    for(int i=0; i<profileCurves.size()-1; i++){
+        if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
+            throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
+        }
+    }
+}
 
 void CTiglRoundedSegmentSurface::initializePoleMatrix(){
     Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
@@ -137,68 +147,47 @@ void CTiglRoundedSegmentSurface::calculatePoleMatrix()
         }
     }
 
+    //CODE FOR PRINT-DEBUGGING
     std::cerr << "Rows: " << m_pole_matrix.ColLength() << "m: " << m << "Columns: " << m_pole_matrix.RowLength() << "n: " << n << std::endl;
 
+    for(int col=1; col<n+1; col++){
+        NCollection_Array1< gp_Pnt > i_poles(1,m);
+        std::cerr<< "Column:" << col << std::endl;
+        for(int i=1; i < m+1; i++){
+            i_poles.SetValue(i,(m_pole_matrix.Value(i,col)));
+            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
+        }
+        auto spline = new Geom_BSplineCurve(i_poles, m_v_knots, m_v_multiplicities, _v_degree);
+        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
+        tigl::dumpShape(edge,"makeLoftWing", "Edge",col);
+    }
+    for(int row=1; row<m+1; row++){
+        NCollection_Array1< gp_Pnt > i_poles(1,n);
+        std::cerr<< "Row:" << row << std::endl;
+        for(int i=1; i < n+1; i++){
+            i_poles.SetValue(i,(m_pole_matrix.Value(row,i)));
+            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
+        }
+        auto spline = new Geom_BSplineCurve(i_poles, m_u_knots, m_u_multiplicities, _u_degree);
+        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
+        tigl::dumpShape(edge,"makeLoftWing", "Row",row);
+    }
 }
 
-
-opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft(){
-    ConvertCurves();
-    initializePoleMatrix();
-    calculatePoleMatrix();
-
-    //TODO CHECK: is this information given anywhere later, so these lines can be deleted again?
-    //create knots in u-direction
-    //    auto nb_u_knots= m_profileCurves[0]->NbPoles()+u_degree-5;
-    //    TColStd_Array1OfReal u_knots(1,nb_u_knots);
-    //    std::vector<double> tmp = LinspaceWithBreaks(0., 1., nb_u_knots,{});
-    //    for(int j=1;j<u_knots.Length()+1; j++){
-    //        u_knots.SetValue(j,tmp[j-1]);
-    //    }
-
-    //   //define multiplicities in u-direction
-    //   TColStd_HArray1OfInteger u_multiplicities(1,nb_u_knots,1);
-    //   u_multiplicities.SetValue(1,4);
-    //   u_multiplicities.SetValue((nb_u_knots),4);
-    //   //END TODO CHECK
-
+void CTiglRoundedSegmentSurface::calculateKnotsAndMultiplicities(){
     //create knots in v-direction
-    //create knot-matrix in v-direction:
-    //Assume that knots are locateted where poles are (which is by implementation: intersections between Profiles/Dummy-Profiles and Curves in v-direction)
-    //DELETEMEstd::vector<std::vector<double>> v_knots(pole_matrix.size(), std::vector<double>(pole_matrix[0].size()));
     auto nb_v_knots = m_pole_matrix.ColLength()+_v_degree-5;
     TColStd_Array1OfReal v_knots(1, nb_v_knots);
-    //iterate through pole_matrix columns and calculate distances between pole-vectors
-    //since the knots are represented by a value relative to total value of curve_length = 1
-    //divide these distances by total length of the curve in v-direction to create a parameter for the knot vector
     std::vector<double> tmp_v = LinspaceWithBreaks(0., 1., nb_v_knots,{});
     for(int i=1;i<v_knots.Length()+1; i++){
         v_knots.SetValue(i,tmp_v[i-1]);
     }
-
+    //create multiplicities in v-direction
     TColStd_HArray1OfInteger v_multiplicities(1, nb_v_knots, 1);
     v_multiplicities.SetValue(1,4);
     v_multiplicities.SetValue((nb_v_knots),4);
-    //create Geom B-Spline Surface from poles, knots and multiplicities, degree
 
-    //Poles : TColpg_array2OfPnt & (pole_matrix)
-    //UKnots : TColStd_array1OfReal & (u_params?)
-    //VKnots : TColStd_array1OfReal & (v_kntos = v_params?)
-    //UMults : TColStd_array1OfInteger &
-    //VMults : TColStd_array1OfInteger (multiplicities)
-    //Udegree :
-    //Vdegree : v_degree
-    /**
-         * OCC Geom_BSplineSurface():
-         * Creates a non-rational b-spline surface (weights default value is 1.).
-         * The following conditions must be verified. 0 < UDegree <= MaxDegree.
-         * UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree
-         * On a non uperiodic surface the first and last umultiplicities may be UDegree+1
-         * (this is even recommended if you want the curve to start and finish on the first and last pole).
-         * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.
-         * ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i))
-         * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
-         */
+    //MAYBE CHECK
     //if(!(u_knots.Length()==u_multiplicities.Length())){
     //    throw tigl::CTiglError("u_knots and mults number mismatch:("+std::to_string(u_knots.Length())+","+std::to_string(u_multiplicities.Length())+")");
     //}
@@ -222,44 +211,34 @@ opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft()
     //if(!(pole_matrix.ColLength()==(nb_v_knots+2*3-v_degree-1))){
     //    throw tigl::CTiglError("poles != knots- v_degree-1 Poles:"+std::to_string(nb_v_knots)+"Knots:"
     //                           +std::to_string(pole_matrix.ColLength())+"v_degree:"+std::to_string(v_degree));
-    //}
+    //
+}
 
-    for(int col=1; col<n+1; col++){
-        NCollection_Array1< gp_Pnt > i_poles(1,m);
-        std::cerr<< "Column:" << col << std::endl;
-        for(int i=1; i < m+1; i++){
-            i_poles.SetValue(i,(pole_matrix.Value(i,col)));
-            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
-        }
-        auto spline = new Geom_BSplineCurve(i_poles, v_knots, v_multiplicities, v_degree);
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
-        tigl::dumpShape(edge,"makeLoftWing", "Edge",col);
-    }
-    for(int row=1; row<m+1; row++){
-        NCollection_Array1< gp_Pnt > i_poles(1,n);
-        std::cerr<< "Row:" << row << std::endl;
-        for(int i=1; i < n+1; i++){
-            i_poles.SetValue(i,(pole_matrix.Value(row,i)));
-            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
-        }
-        auto spline = new Geom_BSplineCurve(i_poles, u_knots, u_mults, u_degree);
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
-        tigl::dumpShape(edge,"makeLoftWing", "Row",row);
-    }
+opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft(){
+    ConvertCurves();
+    NumberOfPolesIsSameInAllCurves(m_profileCurves);
+    initializePoleMatrix();
+    calculatePoleMatrix();
+    calculateKnotsAndMultiplicities();
 
-    auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_mults, v_multiplicities, u_degree, v_degree, false, false);
+    /** TODO IS ALL OF THAT COVERED?
+         * OCC Geom_BSplineSurface():
+         * Creates a non-rational b-spline surface (weights default value is 1.).
+         * The following conditions must be verified. 0 < UDegree <= MaxDegree.
+         * UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree
+         * On a non uperiodic surface the first and last umultiplicities may be UDegree+1
+         * (this is even recommended if you want the curve to start and finish on the first and last pole).
+         * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.
+         * ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i))
+         * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
+         */
+
+    auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
     Handle(Geom_Surface) handle_surface = surface;
     TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
     tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
+    return surface;
 }
 
 }
 
-void NumberOfPolesIsSameInAllCurves(std::vector<Handle(Geom_BSplineCurve)> &profileCurves){
-    //check if NbPoles is same in all profileCurves
-    for(int i=0; i<profileCurves.size()-1; i++){
-        if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
-            throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
-        }
-    }
-}
