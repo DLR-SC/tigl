@@ -14,35 +14,17 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<TopoDS_
     m_outer_rounding_distance(outer_rounding_distance),
     m_profileCurves({}){}
 
+//TODO
+void CTiglRoundedSegmentSurface::ConvertCurves(){}
 
 void CTiglRoundedSegmentSurface::initializePoleMatrix(){
-    ConvertCurves();
     Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
     Standard_Integer n = m_profileCurves[0]->NbPoles();
     m_pole_matrix = TColgp_HArray2OfPnt(1,m,1,n);
 }
 
-//TODO
-void CTiglRoundedSegmentSurface::ConvertCurves(){}
-
-opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft(){
-    initializePoleMatrix();
-    //skin the curves ('profileCurves'): new code for curvesToSurface
-    // //(input are curves, make Geom_BSplineSurface -> build the TopoDS_Shape from this (-> output is TopoDS_Shape))
-    /*
-        New code for skinning a wing surface:
-        Goal: Create a surface, implement rounded sections
-
-        Steps:  Create k Dummy-Profile(s-Curves maybe just the poles?) within innerRounding distance
-                Create Matrix that contains all poles of each profile curve and all Dummy-Profile-Curves
-                - i-th row represents a profile in u-direction
-                - j-th columnrepresents a curve in v-direction
-
-                Steps:  Retrieve poles from inner and outer profile
-                        Calculate distance between poles, apply inner/outer rounding distance relative to number of dummy profile
-                        store new poles and original poles all in one matrix
-        */
-
+void CTiglRoundedSegmentSurface::calculatePoleMatrix()
+{
     //1. loop: iterate through profiles(rows) (index starts with 0 since std::vector
     //2. loop: iterate through profile curves poles(colums) (Geom_Curve) "profileCurves" for each edge
     //i rows, j columns (OCC indizes start with 1, loops start with 1 when iterating through OCC datatypes)
@@ -156,6 +138,14 @@ opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft()
     }
 
     std::cerr << "Rows: " << m_pole_matrix.ColLength() << "m: " << m << "Columns: " << m_pole_matrix.RowLength() << "n: " << n << std::endl;
+
+}
+
+
+opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft(){
+    ConvertCurves();
+    initializePoleMatrix();
+    calculatePoleMatrix();
 
     //TODO CHECK: is this information given anywhere later, so these lines can be deleted again?
     //create knots in u-direction
