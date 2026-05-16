@@ -19,10 +19,24 @@ public:
 private:
     // Converts TopoDS_Wire → Handle(Geom_BSplineCurve)
     TIGL_EXPORT void Perform();
-    TIGL_EXPORT void initializePoleMatrix();
-    TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
     TIGL_EXPORT void ConvertCurves();
+    TIGL_EXPORT void initializePoleMatrix();
+    TIGL_EXPORT void calculatePoleMatrix();
+    /*
+     * @brief Creates a surface with rounded sections
+
+        Steps:  Create Matrix that contains all poles of each profile curve and
+                Dummy-Profile-Curves that contain poles that are required to build the curve in v-Direction
+                TODO: Add mathematical description of the rounded segment curve building process
+                - i-th row represents a profile in u-direction
+                - j-th columnrepresents a curve in v-direction
+
+                Steps:  Retrieve poles from inner and outer profile
+                        Calculate distance between poles, apply inner/outer rounding distance relative to number of dummy profile
+                        store new poles and original poles all in one matrix
+    */
     TIGL_EXPORT Handle(Geom_BSplineSurface) buildLoft();
+    TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
 
 private:
     // Rows represent profile curves (u-direction) and dummy curves, Columns define poles of curves in v-direction
