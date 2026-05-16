@@ -22,6 +22,7 @@ private:
     TIGL_EXPORT void ConvertCurves();
     TIGL_EXPORT void initializePoleMatrix();
     TIGL_EXPORT void calculatePoleMatrix();
+    TIGL_EXPORT void calculateKnotsAndMultiplicities();
     /*
      * @brief Creates a surface with rounded sections
 
