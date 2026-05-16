@@ -23,6 +23,7 @@ private:
     TIGL_EXPORT void ConvertCurves();
     TIGL_EXPORT void buildLoft();
 
+private:
     // Rows represent profile curves (u-direction) and dummy curves, Columns define poles of curves in v-direction
     TColgp_HArray2OfPnt pole_matrix;
 
@@ -46,6 +47,7 @@ private:
 
     bool _hasPerformed = false;
     int _maxDegree = 3;
+    size_t _nb_dummies =3; //Rows per rounding distance
 
 
 };
