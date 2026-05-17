@@ -6,7 +6,7 @@ import os
 import sys
 from OCC.Core.TopoDS import TopoDS_Edge
 from OCC.Core.gp import gp_Vec2d
-from tigl3.configuration import NACA4Calculator
+from tigl3.configuration import CTiglNACA4Calculator
 
 
 class TestNACA(unittest.TestCase):
@@ -39,8 +39,8 @@ class TestNACA(unittest.TestCase):
         point = upper_point.Z()
         self.assertAlmostEqual(point, 0, delta=1e-6)
 
-        calculator = tigl3.configuration.NACA4Calculator(0,0,9, 0.000945)
-        assert isinstance(calculator, NACA4Calculator)
+        calculator = tigl3.configuration.CTiglNACA4Calculator(0,0,9, 0.000945)
+        assert isinstance(calculator, CTiglNACA4Calculator)
         calculator_upper_curve = calculator.upper_curve(0.5)
         assert isinstance(calculator_upper_curve, gp_Vec2d)
         
