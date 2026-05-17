@@ -17,7 +17,7 @@
 */
 /**
 * @file
-* @brief builds the wing profile for NACA profiles based on the NACA4Calculator and returns the upper and lower wire, the trailing edge and the leading edge point
+* @brief builds the wing profile for NACA profiles based on the CTigl and returns the upper and lower wire, the trailing edge and the leading edge point
 */
 
 

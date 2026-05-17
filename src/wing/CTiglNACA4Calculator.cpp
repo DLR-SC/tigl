@@ -35,13 +35,13 @@ namespace tigl{
          , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
             if(this->max_camber > 1 || this->max_camber < 0){
-                throw CTiglError("error in NACA4Calculator The argument max_camber must be between 0 and 9.");
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber must be between 0 and 9.");
             }
             if(this->max_camber_position > 1 || this->max_camber_position < 0){
-                throw CTiglError("error in NACA4Calculator The argument max_camber_position must be between 0 and 9.");
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber_position must be between 0 and 9.");
             }
             if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
-                throw CTiglError("error in NACA4Calculator max_profile_thicknessmust be between 0 and 99.");
+                throw CTiglError("error in CTiglNACA4Calculator max_profile_thicknessmust be between 0 and 99.");
             }
         }
 
@@ -52,7 +52,7 @@ namespace tigl{
                               te_thickness)
         {
             if (naca_code.size() != 4){
-                throw CTiglError("error in NACA4Calculator: naca_code is not four digits long");
+                throw CTiglError("error in CTiglNACA4Calculator: naca_code is not four digits long");
             }
             try{
                 double m = static_cast<double>(naca_code[0] - '0');
@@ -62,7 +62,7 @@ namespace tigl{
                 *this = CTiglNACA4Calculator(m, p, t, te_thickness);
             }
             catch(...){
-                throw CTiglError("error in NACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
+                throw CTiglError("error in CTiglNACA4Calculator: the naca_code format is not correct, it must to contain four digits and nothing else");
             }
 
         }
@@ -80,7 +80,7 @@ namespace tigl{
                 return 0;
             }
             if(x < 0 || x > 1){
-                throw CTiglError("error in NACA4Calculator::camberline: x must be between 0 and 1.");
+                throw CTiglError("error in CTiglNACA4Calculator::camberline: x must be between 0 and 1.");
             }
             if (x <= p) {
                 return (2*p*x - x*x)*m/(p*p);; 
@@ -124,7 +124,7 @@ namespace tigl{
                 return ( 2*p - 2*x)*m/((1-p)*(1-p));;
             }
             else{
-                throw CTiglError("error in NACA4Calculator::camberline_derivative: x must be between 0 and 1.");
+                throw CTiglError("error in CTiglNACA4Calculator::camberline_derivative: x must be between 0 and 1.");
             }
         }
 
