@@ -47,28 +47,21 @@
 
 TEST(CTiglNACA4Calculator, naca2212_le_and_te_points){
     tigl::CTiglNACA4Calculator  NACA4(2,2,12, 0.00252);
-    if(NACA4.profile_thickness(1) >= 0){ 
+    ASSERT_TRUE(NACA4.profile_thickness(1) >= 0)
     gp_Vec2d result1 = NACA4.upper_curve(1);
     EXPECT_NEAR(result1.X(), (1.00006), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.00125843), 1e-8);
     gp_Vec2d result2 = NACA4.lower_curve(1);
     EXPECT_NEAR(result2.X(), (0.999937), 1e-6); 
     EXPECT_NEAR(result2.Y(), (-0.00125843), 1e-8);
-    }
-    else{
-        throw tigl::CTiglError("error in testCTiglNACA4Calculator::naca2212_le_and_te_points 1 the profile_thickness must be positive or 0.");
-    }
-    if(NACA4.profile_thickness(0) >= 0){
+    
+    ASSERT_TRUE(NACA4.profile_thickness(0) >= 0)
     gp_Vec2d result3 = NACA4.upper_curve(0.);
     EXPECT_NEAR(result3.X(), (0.0), 1e-5); 
     EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
     gp_Vec2d result4 = NACA4.lower_curve(0.);
     EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
-    }
-    else{
-        throw tigl::CTiglError("error in testCTiglNACA4Calculator::naca2212_le_and_te_points the profile_thickness must be positive or 0.");
-    }
 }
 
 TEST(CTiglNACA4Calculator, naca2212_le_and_te_points_with_class_lowerCurve){
@@ -87,28 +80,21 @@ TEST(CTiglNACA4Calculator, naca2212_le_and_te_points_with_class_lowerCurve){
 
 TEST(CTiglNACA4Calculator, naca0012_random_point){
     tigl::CTiglNACA4Calculator NACA4(0,0,12, 0.00252);
-    if(NACA4.profile_thickness(0.5) >= 0){
+    ASSERT_TRUE(NACA4.profile_thickness(0.5) >= 0)
     gp_Vec2d result1 = NACA4.upper_curve(0.5);
     EXPECT_NEAR(result1.X(), (0.5), 1e-5); 
     EXPECT_NEAR(result1.Y(), (0.0529403), 1e-7);
     gp_Vec2d result2 = NACA4.lower_curve(0.5);
     EXPECT_NEAR(result2.X(), (0.5), 1e-6); 
     EXPECT_NEAR(result2.Y(), (-0.0529403), 1e-7);
-    }
-    else{
-        throw tigl::CTiglError("error in testCTiglNACA4Calculator::naca0012_random_point 1 the profile_thickness must be positive or 0.");
-    }
-    if(NACA4.profile_thickness(0.) >= 0){
+
+    ASSERT_TRUE(NACA4.profile_thickness(0.) >= 0)
     gp_Vec2d result3 = NACA4.upper_curve(0.);
     EXPECT_NEAR(result3.X(), (0.0), 1e-5);  
     EXPECT_NEAR(result3.Y(), (0.0), 1e-7);
     gp_Vec2d result4 = NACA4.lower_curve(0.);
     EXPECT_NEAR(result4.X(), (0.0), 1e-6); 
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
-    }
-    else{
-        throw tigl::CTiglError("error in testCTiglNACA4Calculator::naca0012_random_point the profile_thickness must be positive or 0.");
-    }
 }
 
 TEST(CTiglNACA4Calculator, naca0009_random_point_and_le_point){
