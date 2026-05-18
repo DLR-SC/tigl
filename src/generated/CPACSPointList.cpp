@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSPoint& CPACSPointList::AddPoint()
     {
-        m_points.push_back(make_unique<CCPACSPoint>(this, m_uidMgr));
+        m_points.push_back(std::make_unique<CCPACSPoint>(this, m_uidMgr));
         return *m_points.back();
     }
 

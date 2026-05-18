@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSPressureBulkheadAssemblyPosition& CPACSPressureBulkheadAssembly::AddPressureBulkhead()
     {
-        m_pressureBulkheads.push_back(make_unique<CCPACSPressureBulkheadAssemblyPosition>(reinterpret_cast<CCPACSPressureBulkheadAssembly*>(this), m_uidMgr));
+        m_pressureBulkheads.push_back(std::make_unique<CCPACSPressureBulkheadAssemblyPosition>(reinterpret_cast<CCPACSPressureBulkheadAssembly*>(this), m_uidMgr));
         return *m_pressureBulkheads.back();
     }
 

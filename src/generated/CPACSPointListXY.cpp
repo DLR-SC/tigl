@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSPointXY& CPACSPointListXY::AddPoint()
     {
-        m_points.push_back(make_unique<CCPACSPointXY>(reinterpret_cast<CCPACSPointListXY*>(this), m_uidMgr));
+        m_points.push_back(std::make_unique<CCPACSPointXY>(reinterpret_cast<CCPACSPointListXY*>(this), m_uidMgr));
         return *m_points.back();
     }
 

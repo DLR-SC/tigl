@@ -28,7 +28,6 @@
 
 #include <memory>
 #include "generated/CPACSProfileGeometry.h"
-#include "generated/UniquePtr.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"

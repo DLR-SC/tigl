@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSGuideCurve& CPACSGuideCurves::AddGuideCurve()
     {
-        m_guideCurves.push_back(make_unique<CCPACSGuideCurve>(reinterpret_cast<CCPACSGuideCurves*>(this), m_uidMgr));
+        m_guideCurves.push_back(std::make_unique<CCPACSGuideCurve>(reinterpret_cast<CCPACSGuideCurves*>(this), m_uidMgr));
         return *m_guideCurves.back();
     }
 

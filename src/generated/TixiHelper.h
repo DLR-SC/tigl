@@ -30,7 +30,6 @@
 #include <algorithm>
 #include <sstream>
 
-#include "UniquePtr.h"
 #ifndef CPACS_GEN
 #include "CTiglLogging.h"
 #endif
@@ -125,14 +124,14 @@ namespace tixi
     {
         // TODO(bgruber): enable when support for g++ < 4.9.0 is dropped
         //TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
-        //    auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
+        //    auto child = std::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
         //    child->ReadCPACS(tixiHandle, childXPath);
         //    return child;
         //});
         struct Reader {
             std::unique_ptr<T> operator()(const std::string& childXPath, ChildCtorArgs&&... args) const
             {
-                auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
+                auto child = std::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
                 child->ReadCPACS(tixiHandle, childXPath);
                 return child;
             }

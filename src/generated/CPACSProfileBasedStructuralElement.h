@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <memory>
 #include <string>
 #include <tixi.h>
 #include <vector>
@@ -29,7 +30,6 @@
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {

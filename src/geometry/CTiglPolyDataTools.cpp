@@ -242,7 +242,9 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
     }
 
     Handle(Poly_Triangulation) triangulation = new Poly_Triangulation(Nodes, Triangles);
-    triangulation->SetNormals(normals);
+    for (Standard_Integer i = 1; i <= normals->Length(); i += 3) {
+        triangulation->SetNormal((i + 2) / 3, gp_Vec3f(normals->Value(i), normals->Value(i + 1), normals->Value(i + 2)));
+    }
 
     return triangulation;
 }

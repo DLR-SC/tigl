@@ -108,7 +108,7 @@ DebugScope::DebugScope(TracePoint& tp)
 DebugScope::~DebugScope()
 {
     // dump shapes in case we are stack unwinding
-    if (std::uncaught_exception()) {
+    if (std::uncaught_exceptions() > 0) {
         for (std::map<std::string, TopoDS_Shape>::iterator it = m_shapes.begin(); it != m_shapes.end(); ++it) {
             m_tp.dumpShape(it->second, it->first);
         }

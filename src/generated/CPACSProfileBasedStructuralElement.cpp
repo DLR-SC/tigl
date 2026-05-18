@@ -516,7 +516,7 @@ namespace generated
 
     CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::AddSheetProperties_choice2()
     {
-        m_sheetProperties_choice2.push_back(make_unique<CPACSMaterialDefinitionForProfileBased>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
+        m_sheetProperties_choice2.push_back(std::make_unique<CPACSMaterialDefinitionForProfileBased>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
         return *m_sheetProperties_choice2.back();
     }
 
@@ -533,7 +533,7 @@ namespace generated
 
     CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::AddPointProperties_choice2_2()
     {
-        m_pointProperties_choice2_2.push_back(make_unique<CPACSMaterialDefinitionForProfileBasedPoint>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
+        m_pointProperties_choice2_2.push_back(std::make_unique<CPACSMaterialDefinitionForProfileBasedPoint>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
         return *m_pointProperties_choice2_2.back();
     }
 

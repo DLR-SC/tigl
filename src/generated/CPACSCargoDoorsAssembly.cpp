@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSDoorAssemblyPosition& CPACSCargoDoorsAssembly::AddCargoDoor()
     {
-        m_cargoDoors.push_back(make_unique<CCPACSDoorAssemblyPosition>(this, m_uidMgr));
+        m_cargoDoors.push_back(std::make_unique<CCPACSDoorAssemblyPosition>(this, m_uidMgr));
         return *m_cargoDoors.back();
     }
 
