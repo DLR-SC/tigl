@@ -134,7 +134,7 @@ namespace generated
 
     CPACSCylinder& CPACSCylinders::AddCylinder()
     {
-        m_cylinders.push_back(make_unique<CPACSCylinder>(this, m_uidMgr));
+        m_cylinders.push_back(std::make_unique<CPACSCylinder>(this, m_uidMgr));
         return *m_cylinders.back();
     }
 

@@ -196,7 +196,7 @@ namespace generated
 
     CCPACSFuselageStringerFramePosition& CPACSStringer::AddStringerPosition()
     {
-        m_stringerPositions.push_back(make_unique<CCPACSFuselageStringerFramePosition>(reinterpret_cast<CCPACSFuselageStringer*>(this), m_uidMgr));
+        m_stringerPositions.push_back(std::make_unique<CCPACSFuselageStringerFramePosition>(reinterpret_cast<CCPACSFuselageStringer*>(this), m_uidMgr));
         return *m_stringerPositions.back();
     }
 

@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemTurboGenerator& CPACSSysElemTurboGenerators::AddTurboGenerator()
     {
-        m_turboGenerators.push_back(make_unique<CPACSSysElemTurboGenerator>(this, m_uidMgr));
+        m_turboGenerators.push_back(std::make_unique<CPACSSysElemTurboGenerator>(this, m_uidMgr));
         return *m_turboGenerators.back();
     }
 

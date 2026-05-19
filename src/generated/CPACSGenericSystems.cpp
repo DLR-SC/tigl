@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSGenericSystem& CPACSGenericSystems::AddGenericSystem()
     {
-        m_genericSystems.push_back(make_unique<CCPACSGenericSystem>(reinterpret_cast<CCPACSGenericSystems*>(this), m_uidMgr));
+        m_genericSystems.push_back(std::make_unique<CCPACSGenericSystem>(reinterpret_cast<CCPACSGenericSystems*>(this), m_uidMgr));
         return *m_genericSystems.back();
     }
 

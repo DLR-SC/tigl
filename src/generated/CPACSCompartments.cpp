@@ -157,7 +157,7 @@ namespace generated
 
     CPACSCompartment& CPACSCompartments::AddCompartment()
     {
-        m_compartments.push_back(make_unique<CPACSCompartment>(this, m_uidMgr));
+        m_compartments.push_back(std::make_unique<CPACSCompartment>(this, m_uidMgr));
         return *m_compartments.back();
     }
 

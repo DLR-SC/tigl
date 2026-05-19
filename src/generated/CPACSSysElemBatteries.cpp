@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemBattery& CPACSSysElemBatteries::AddBattery()
     {
-        m_batterys.push_back(make_unique<CPACSSysElemBattery>(this, m_uidMgr));
+        m_batterys.push_back(std::make_unique<CPACSSysElemBattery>(this, m_uidMgr));
         return *m_batterys.back();
     }
 

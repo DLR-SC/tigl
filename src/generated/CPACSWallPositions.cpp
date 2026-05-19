@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSWallPosition& CPACSWallPositions::AddWallPosition()
     {
-        m_wallPositions.push_back(make_unique<CCPACSWallPosition>(this, m_uidMgr));
+        m_wallPositions.push_back(std::make_unique<CCPACSWallPosition>(this, m_uidMgr));
         return *m_wallPositions.back();
     }
 

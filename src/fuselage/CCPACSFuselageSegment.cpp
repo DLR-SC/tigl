@@ -153,7 +153,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParentComponent())
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
     , surfaceCache(*this, &CCPACSFuselageSegment::BuildSurfaces)
-    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
+    , m_guideCurveBuilder(std::make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
 }

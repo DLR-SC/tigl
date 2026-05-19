@@ -134,7 +134,7 @@ namespace generated
 
     CPACSCone& CPACSCones::AddCone()
     {
-        m_cones.push_back(make_unique<CPACSCone>(this, m_uidMgr));
+        m_cones.push_back(std::make_unique<CPACSCone>(this, m_uidMgr));
         return *m_cones.back();
     }
 

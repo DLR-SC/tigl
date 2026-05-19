@@ -163,7 +163,7 @@ namespace generated
 
     CPACSVehicleElementBase& CPACSSysElemGenericComponents::AddGenericComponent()
     {
-        m_genericComponents.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
+        m_genericComponents.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_genericComponents.back();
     }
 

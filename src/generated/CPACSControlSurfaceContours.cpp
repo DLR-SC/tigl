@@ -144,7 +144,7 @@ namespace generated
 
     CPACSControlSurfaceAirfoil& CPACSControlSurfaceContours::AddIntermediateAirfoil()
     {
-        m_intermediateAirfoils.push_back(make_unique<CPACSControlSurfaceAirfoil>(this, m_uidMgr));
+        m_intermediateAirfoils.push_back(std::make_unique<CPACSControlSurfaceAirfoil>(this, m_uidMgr));
         return *m_intermediateAirfoils.back();
     }
 

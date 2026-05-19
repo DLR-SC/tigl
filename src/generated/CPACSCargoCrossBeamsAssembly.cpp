@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSCrossBeamAssemblyPosition& CPACSCargoCrossBeamsAssembly::AddCargoCrossBeam()
     {
-        m_cargoCrossBeams.push_back(make_unique<CCPACSCrossBeamAssemblyPosition>(reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr));
+        m_cargoCrossBeams.push_back(std::make_unique<CCPACSCrossBeamAssemblyPosition>(reinterpret_cast<CCPACSCargoCrossBeamsAssembly*>(this), m_uidMgr));
         return *m_cargoCrossBeams.back();
     }
 

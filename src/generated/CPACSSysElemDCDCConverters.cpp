@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::AddDcdcConverter()
     {
-        m_dcdcConverters.push_back(make_unique<CPACSSysElemDCDCConverter>(this, m_uidMgr));
+        m_dcdcConverters.push_back(std::make_unique<CPACSSysElemDCDCConverter>(this, m_uidMgr));
         return *m_dcdcConverters.back();
     }
 

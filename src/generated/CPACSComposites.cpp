@@ -163,7 +163,7 @@ namespace generated
 
     CPACSComposite& CPACSComposites::AddComposite()
     {
-        m_composites.push_back(make_unique<CPACSComposite>(this, m_uidMgr));
+        m_composites.push_back(std::make_unique<CPACSComposite>(this, m_uidMgr));
         return *m_composites.back();
     }
 

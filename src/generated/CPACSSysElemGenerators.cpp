@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemGenerator& CPACSSysElemGenerators::AddGenerator()
     {
-        m_generators.push_back(make_unique<CPACSSysElemGenerator>(this, m_uidMgr));
+        m_generators.push_back(std::make_unique<CPACSSysElemGenerator>(this, m_uidMgr));
         return *m_generators.back();
     }
 

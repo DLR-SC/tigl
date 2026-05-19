@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDoorSurroundStructurePosition& CPACSDoorSurroundStructuresAssembly::AddDoorSurroundStructure()
     {
-        m_doorSurroundStructures.push_back(make_unique<CPACSDoorSurroundStructurePosition>(this, m_uidMgr));
+        m_doorSurroundStructures.push_back(std::make_unique<CPACSDoorSurroundStructurePosition>(this, m_uidMgr));
         return *m_doorSurroundStructures.back();
     }
 

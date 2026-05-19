@@ -17,13 +17,13 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
 #include <vector>
 #include "CTiglError.h"
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {

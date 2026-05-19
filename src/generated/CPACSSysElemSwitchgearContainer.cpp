@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemSwitchgear& CPACSSysElemSwitchgearContainer::AddSwitchgear()
     {
-        m_switchgears.push_back(make_unique<CPACSSysElemSwitchgear>(this, m_uidMgr));
+        m_switchgears.push_back(std::make_unique<CPACSSysElemSwitchgear>(this, m_uidMgr));
         return *m_switchgears.back();
     }
 

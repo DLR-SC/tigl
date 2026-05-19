@@ -91,7 +91,7 @@ ISession_Direction::~ISession_Direction()
 {
 }
 
-void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager)& /*aPresentationManager*/,
                                   const Handle(Prs3d_Presentation)& aPresentation,
                                   const Standard_Integer /*aMode*/)
 {
@@ -106,8 +106,8 @@ void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
     aPrims->AddVertex (myPnt);
     aPrims->AddVertex (aLastPoint);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (aPrims);
+    aPresentation->CurrentGroup()->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+    aPresentation->CurrentGroup()->AddPrimitiveArray (aPrims);
     // Draw arrow
 #if OCC_VERSION_HEX < VERSION_HEX_CODE(7,3,0)
     Prs3d_Arrow::Draw (aPresentation,

@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemReservoir& CPACSSysElemReservoirs::AddReservoir()
     {
-        m_reservoirs.push_back(make_unique<CPACSSysElemReservoir>(this, m_uidMgr));
+        m_reservoirs.push_back(std::make_unique<CPACSSysElemReservoir>(this, m_uidMgr));
         return *m_reservoirs.back();
     }
 

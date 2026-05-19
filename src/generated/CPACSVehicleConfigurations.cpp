@@ -157,7 +157,7 @@ namespace generated
 
     CPACSVehicleConfiguration& CPACSVehicleConfigurations::AddConfiguration()
     {
-        m_configurations.push_back(make_unique<CPACSVehicleConfiguration>(this, m_uidMgr));
+        m_configurations.push_back(std::make_unique<CPACSVehicleConfiguration>(this, m_uidMgr));
         return *m_configurations.back();
     }
 

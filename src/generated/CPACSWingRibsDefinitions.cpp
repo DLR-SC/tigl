@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSWingRibsDefinition& CPACSWingRibsDefinitions::AddRibsDefinition()
     {
-        m_ribsDefinitions.push_back(make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));
+        m_ribsDefinitions.push_back(std::make_unique<CCPACSWingRibsDefinition>(reinterpret_cast<CCPACSWingRibsDefinitions*>(this), m_uidMgr));
         return *m_ribsDefinitions.back();
     }
 

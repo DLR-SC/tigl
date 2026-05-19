@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemRectifier& CPACSSysElemRectifiers::AddRectifier()
     {
-        m_rectifiers.push_back(make_unique<CPACSSysElemRectifier>(this, m_uidMgr));
+        m_rectifiers.push_back(std::make_unique<CPACSSysElemRectifier>(this, m_uidMgr));
         return *m_rectifiers.back();
     }
 

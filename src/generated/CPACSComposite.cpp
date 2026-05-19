@@ -249,7 +249,7 @@ namespace generated
 
     CPACSCompositeLayer& CPACSComposite::AddCompositeLayer()
     {
-        m_compositeLayers.push_back(make_unique<CPACSCompositeLayer>(this, m_uidMgr));
+        m_compositeLayers.push_back(std::make_unique<CPACSCompositeLayer>(this, m_uidMgr));
         return *m_compositeLayers.back();
     }
 

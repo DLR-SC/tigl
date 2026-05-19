@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemInverter& CPACSSysElemInverters::AddInverter()
     {
-        m_inverters.push_back(make_unique<CPACSSysElemInverter>(this, m_uidMgr));
+        m_inverters.push_back(std::make_unique<CPACSSysElemInverter>(this, m_uidMgr));
         return *m_inverters.back();
     }
 

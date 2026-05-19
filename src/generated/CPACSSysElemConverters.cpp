@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemConverter& CPACSSysElemConverters::AddConverter()
     {
-        m_converters.push_back(make_unique<CPACSSysElemConverter>(this, m_uidMgr));
+        m_converters.push_back(std::make_unique<CPACSSysElemConverter>(this, m_uidMgr));
         return *m_converters.back();
     }
 

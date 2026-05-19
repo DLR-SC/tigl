@@ -17,7 +17,6 @@
 */
 
 #include "CTiglElementGeometryBuilder.h"
-#include "UniquePtr.h"
 #include "CNamedShape.h"
 
 #include "CTiglImporterFactory.h"
