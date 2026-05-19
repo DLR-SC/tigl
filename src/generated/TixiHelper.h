@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <sstream>
 
+#include <memory>
 #ifndef CPACS_GEN
 #include "CTiglLogging.h"
 #endif
