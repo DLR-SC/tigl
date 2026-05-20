@@ -47,6 +47,7 @@ class CCPACSConfiguration;
 class CCPACSComponent : public generated::CPACSComponent, public CTiglRelativelyPositionedComponent
 {
 public:
+
     /**
      * @brief Constructs a CCPACSComponent.
      * @param parent Parent CPACS <components> container.
