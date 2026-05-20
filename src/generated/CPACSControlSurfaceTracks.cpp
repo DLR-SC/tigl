@@ -173,7 +173,7 @@ namespace generated
 
     CPACSControlSurfaceTrackType& CPACSControlSurfaceTracks::AddTrack()
     {
-        m_tracks.push_back(make_unique<CPACSControlSurfaceTrackType>(this, m_uidMgr));
+        m_tracks.push_back(std::make_unique<CPACSControlSurfaceTrackType>(this, m_uidMgr));
         return *m_tracks.back();
     }
 

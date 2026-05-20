@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSRotorBladeAttachment& CPACSRotorBladeAttachments::AddRotorBladeAttachment()
     {
-        m_rotorBladeAttachments.push_back(make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));
+        m_rotorBladeAttachments.push_back(std::make_unique<CCPACSRotorBladeAttachment>(reinterpret_cast<CCPACSRotorBladeAttachments*>(this), m_uidMgr));
         return *m_rotorBladeAttachments.back();
     }
 

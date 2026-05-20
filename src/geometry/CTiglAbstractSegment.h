@@ -26,7 +26,6 @@
 #include <cassert>
 #include <vector>
 #include <algorithm>
-#include "generated/UniquePtr.h"
 #include "tigl.h"
 #include "tigl_internal.h"
 #include "CTiglError.h"

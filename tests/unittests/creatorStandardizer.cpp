@@ -30,7 +30,6 @@
 #include "CCPACSFuselageSectionElement.h"
 #include "CCPACSWingSectionElement.h"
 #include "CTiglStandardizer.h"
-#include "UniquePtr.h"
 
 class creatorStandardizer : public ::testing::Test
 {

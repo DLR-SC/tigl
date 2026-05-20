@@ -116,7 +116,7 @@ namespace generated
 
     CPACSVersionInfo& CPACSVersionInfos::AddVersionInfo()
     {
-        m_versionInfos.push_back(make_unique<CPACSVersionInfo>(this));
+        m_versionInfos.push_back(std::make_unique<CPACSVersionInfo>(this));
         return *m_versionInfos.back();
     }
 

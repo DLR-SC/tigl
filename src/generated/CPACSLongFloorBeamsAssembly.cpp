@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSLongFloorBeam& CPACSLongFloorBeamsAssembly::AddLongFloorBeam()
     {
-        m_longFloorBeams.push_back(make_unique<CCPACSLongFloorBeam>(reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr));
+        m_longFloorBeams.push_back(std::make_unique<CCPACSLongFloorBeam>(reinterpret_cast<CCPACSLongFloorBeamsAssembly*>(this), m_uidMgr));
         return *m_longFloorBeams.back();
     }
 

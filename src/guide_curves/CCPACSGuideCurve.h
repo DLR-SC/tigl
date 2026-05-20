@@ -27,7 +27,6 @@
 #include "tixi.h"
 #include "CSharedPtr.h"
 #include "generated/CPACSGuideCurve.h"
-#include "generated/UniquePtr.h"
 #include "Cache.h"
 
 #include <gp_Pnt.hxx>

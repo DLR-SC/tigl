@@ -183,7 +183,7 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
         if (rotorcraft.GetRotorBlades()) {
             CCPACSWing& blade = rotorcraft.GetRotorBlades()->GetRotorBlade(m_rotorBladeUID);
             for (int i = 0; i < bladeCount; i++) {
-                attachedRotorBlades.push_back(make_unique<CTiglAttachedRotorBlade>(const_cast<CCPACSRotorBladeAttachment*>(this), blade, i + 1));
+                attachedRotorBlades.push_back(std::make_unique<CTiglAttachedRotorBlade>(const_cast<CCPACSRotorBladeAttachment*>(this), blade, i + 1));
             }
         }
     }

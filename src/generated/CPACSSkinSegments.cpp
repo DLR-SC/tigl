@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSSkinSegment& CPACSSkinSegments::AddSkinSegment()
     {
-        m_skinSegments.push_back(make_unique<CCPACSSkinSegment>(this, m_uidMgr));
+        m_skinSegments.push_back(std::make_unique<CCPACSSkinSegment>(this, m_uidMgr));
         return *m_skinSegments.back();
     }
 
