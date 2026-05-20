@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSFuselage& CPACSFuselages::AddFuselage()
     {
-        m_fuselages.push_back(make_unique<CCPACSFuselage>(reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr));
+        m_fuselages.push_back(std::make_unique<CCPACSFuselage>(reinterpret_cast<CCPACSFuselages*>(this), m_uidMgr));
         return *m_fuselages.back();
     }
 

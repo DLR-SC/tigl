@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSRotor& CPACSRotors::AddRotor()
     {
-        m_rotors.push_back(make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));
+        m_rotors.push_back(std::make_unique<CCPACSRotor>(reinterpret_cast<CCPACSRotors*>(this), m_uidMgr));
         return *m_rotors.back();
     }
 

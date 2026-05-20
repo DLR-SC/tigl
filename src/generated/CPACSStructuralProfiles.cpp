@@ -237,7 +237,7 @@ namespace generated
 
     CPACSStructuralProfile& CPACSStructuralProfiles::AddStructuralProfile2D()
     {
-        m_structuralProfile2Ds.push_back(make_unique<CPACSStructuralProfile>(this, m_uidMgr));
+        m_structuralProfile2Ds.push_back(std::make_unique<CPACSStructuralProfile>(this, m_uidMgr));
         return *m_structuralProfile2Ds.back();
     }
 
@@ -254,7 +254,7 @@ namespace generated
 
     CPACSStructuralProfile3D& CPACSStructuralProfiles::AddStructuralProfile3D()
     {
-        m_structuralProfile3Ds.push_back(make_unique<CPACSStructuralProfile3D>(this, m_uidMgr));
+        m_structuralProfile3Ds.push_back(std::make_unique<CPACSStructuralProfile3D>(this, m_uidMgr));
         return *m_structuralProfile3Ds.back();
     }
 

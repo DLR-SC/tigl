@@ -52,7 +52,6 @@
 #include <BRepBndLib.hxx>
 
 // TIGLCreator includes
-#include "UniquePtr.h"
 #include "CPACSProfileGeometry.h"
 #include "TIGLCreatorInternal.h"
 #include "TIGLCreatorVTKExportDialog.h"

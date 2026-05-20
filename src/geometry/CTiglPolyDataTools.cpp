@@ -131,10 +131,9 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
 
     TColgp_Array1OfPnt Nodes(1,nverts);
     Poly_Array1OfTriangle Triangles(1,ntria);
-    Handle(TShort_HArray1OfShortReal) normals = new TShort_HArray1OfShortReal(1,3*nverts);
+
     Standard_Integer iNode = 1;
     Standard_Integer iTria = 1;
-    Standard_Integer iNormal = 1;
     for (unsigned int ipoly = 0; ipoly < co.getNPolygons(); ++ipoly) {
         unsigned long npoints = co.getNPointsOfPolygon(ipoly);
         if (npoints == 3) {
@@ -155,23 +154,6 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
 
             // add triangle
             Triangles.SetValue(iTria++, Poly_Triangle(iNode_old, iNode_old+1, iNode_old+2));
-
-            CTiglPoint normal = CTiglPoint::cross_prod(v2-v1, v3-v1);
-            normal = normal*(1./normal.norm2());
-
-            // normal at v1
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.z);
-            // normal at v2
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.z);
-            // normal at v3
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal.z);
-
         }
         if (npoints == 4){
             unsigned long index1 = co.getVertexIndexOfPolygon(0, ipoly);
@@ -195,24 +177,6 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
             // add triangle
             Triangles.SetValue(iTria++, Poly_Triangle(iNode_old, iNode_old+1, iNode_old+2));
 
-            CTiglPoint normal1 = CTiglPoint::cross_prod(v2-v1, v3-v1);
-            normal1 = normal1*(1./normal1.norm2());
-
-            // normal at v1
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.z);
-            // normal at v2
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.z);
-            // normal at v3
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal1.z);
-
-
-
             // add triangle 2
             iNode_old = iNode;
             // add vertices
@@ -222,27 +186,22 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
 
             // add triangle
             Triangles.SetValue(iTria++, Poly_Triangle(iNode_old, iNode_old+1, iNode_old+2));
-
-            CTiglPoint normal2 = CTiglPoint::cross_prod(v4-v3, v1-v3);
-            normal2 = normal2*(1./normal2.norm2());
-
-            // normal at v1
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.z);
-            // normal at v2
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.z);
-            // normal at v3
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.x);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.y);
-            normals->SetValue(iNormal++, (Standard_ShortReal) normal2.z);
         }
     }
 
     Handle(Poly_Triangulation) triangulation = new Poly_Triangulation(Nodes, Triangles);
-    triangulation->SetNormals(normals);
+
+    for (Standard_Integer i = 1; i <= Triangles.Length(); i ++) {
+
+        auto const& triangle = Triangles.Value(i);
+        CTiglPoint v1 = triangulation->Node(triangle.Value(1)).XYZ();
+        CTiglPoint v2 = triangulation->Node(triangle.Value(2)).XYZ();
+        CTiglPoint v3 = triangulation->Node(triangle.Value(3)).XYZ();
+
+        CTiglPoint normal = CTiglPoint::cross_prod(v2-v1, v3-v1);
+        normal = normal*(1./normal.norm2());
+        triangulation->SetNormal(i, gp_Vec3f(normal.x, normal.y, normal.z));
+    }
 
     return triangulation;
 }

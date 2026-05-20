@@ -163,7 +163,7 @@ namespace generated
 
     CPACSStructuralWallElement& CPACSStructuralWallElements::AddStructuralWallElement()
     {
-        m_structuralWallElements.push_back(make_unique<CPACSStructuralWallElement>(this, m_uidMgr));
+        m_structuralWallElements.push_back(std::make_unique<CPACSStructuralWallElement>(this, m_uidMgr));
         return *m_structuralWallElements.back();
     }
 

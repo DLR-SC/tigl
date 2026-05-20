@@ -182,7 +182,7 @@ namespace generated
 
     CPACSCutOutProfile& CPACSCutOutProfiles::AddCutOutProfile()
     {
-        m_cutOutProfiles.push_back(make_unique<CPACSCutOutProfile>(this, m_uidMgr));
+        m_cutOutProfiles.push_back(std::make_unique<CPACSCutOutProfile>(this, m_uidMgr));
         return *m_cutOutProfiles.back();
     }
 
