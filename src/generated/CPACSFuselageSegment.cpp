@@ -152,6 +152,16 @@ namespace generated
             }
         }
 
+        // read element innerRoundingDistance
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerRoundingDistance")) {
+            m_innerRoundingDistance = tixi::TixiGetElement<double>(tixiHandle, xpath + "/innerRoundingDistance");
+        }
+
+        // read element outerRoundingDistance
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerRoundingDistance")) {
+            m_outerRoundingDistance = tixi::TixiGetElement<double>(tixiHandle, xpath + "/outerRoundingDistance");
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
@@ -191,6 +201,28 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurves")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/guideCurves");
+            }
+        }
+
+        // write element innerRoundingDistance
+        if (m_innerRoundingDistance) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/innerRoundingDistance");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/innerRoundingDistance", *m_innerRoundingDistance);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerRoundingDistance")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/innerRoundingDistance");
+            }
+        }
+
+        // write element outerRoundingDistance
+        if (m_outerRoundingDistance) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/outerRoundingDistance");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/outerRoundingDistance", *m_outerRoundingDistance);
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerRoundingDistance")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/outerRoundingDistance");
             }
         }
 
@@ -270,6 +302,26 @@ namespace generated
     boost::optional<CCPACSGuideCurves>& CPACSFuselageSegment::GetGuideCurves()
     {
         return m_guideCurves;
+    }
+
+    const boost::optional<double>& CPACSFuselageSegment::GetInnerRoundingDistance() const
+    {
+        return m_innerRoundingDistance;
+    }
+
+    void CPACSFuselageSegment::SetInnerRoundingDistance(const boost::optional<double>& value)
+    {
+        m_innerRoundingDistance = value;
+    }
+
+    const boost::optional<double>& CPACSFuselageSegment::GetOuterRoundingDistance() const
+    {
+        return m_outerRoundingDistance;
+    }
+
+    void CPACSFuselageSegment::SetOuterRoundingDistance(const boost::optional<double>& value)
+    {
+        m_outerRoundingDistance = value;
     }
 
     CCPACSGuideCurves& CPACSFuselageSegment::GetGuideCurves(CreateIfNotExistsTag)

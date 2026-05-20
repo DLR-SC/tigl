@@ -12740,6 +12740,26 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                                 the outer geometry.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="innerRoundingDistance" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the inner end of this segment to create a smooth segment transition. The distance is provided in absolute length units.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="outerRoundingDistance" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the outer end of this segment to create a smooth segment transition. The distance is provided in absolute length units.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>
@@ -12867,6 +12887,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
+                                <xsd:attribute name="roundedSegments" use="optional" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>This attribute determines the lofting approach of this fuselage.
+If set to true, a different lofting algorithm will be used allowing to specify rounding radii at each section which create a smooth transition between two segments.
+This can be achieved e.g. by activating the approximation setting in the profile definitions.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -28757,6 +28784,26 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                                 the outer geometry.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="innerRoundingDistance" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the inner end of this segment to create a smooth segment transition. The distance is provided in absolute length units.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                    <xsd:element name="outerRoundingDistance" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:documentation>This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the outer end of this segment to create a smooth segment transition. The distance is provided in absolute length units.</xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
             </xsd:extension>
@@ -29135,6 +29182,14 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 </xsd:all>
                 <xsd:attribute name="uID" type="xsd:ID" use="required"/>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
+                                <xsd:attribute name="roundedSegments" use="optional" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>This attribute determines the lofting approach of this fuselage.
+If set to true, a different lofting algorithm will be used allowing to specify rounding radii at each section which create a smooth transition between two segments.
+This can be achieved e.g. by activating the approximation setting in the profile definitions.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -35759,6 +35814,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                  </xsd:all>
                  <xsd:attribute name="uID" type="xsd:ID" use="required"/>
  		 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
+                         <xsd:attribute name="roundedSegments" use="optional" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>This attribute determines the lofting approach of this fuselage.
+If set to true, a different lofting algorithm will be used allowing to specify rounding radii at each section which create a smooth transition between two segments.
+This can be achieved e.g. by activating the approximation setting in the profile definitions.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
              </xsd:extension>
          </xsd:complexContent>
      </xsd:complexType>

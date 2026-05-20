@@ -127,6 +127,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
+        TIGL_EXPORT virtual const boost::optional<bool>& GetRoundedSegments() const;
+        TIGL_EXPORT virtual void SetRoundedSegments(const boost::optional<bool>& value);
+
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
@@ -166,6 +169,11 @@ namespace generated
         std::string                                  m_uID;
 
         boost::optional<TiglSymmetryAxis>            m_symmetry;
+
+        /// This attribute determines the lofting approach of this fuselage.
+        /// If set to true, a different lofting algorithm will be used allowing to specify rounding radii at each section which create a smooth transition between two segments.
+        /// This can be achieved e.g. by activating the approximation setting in the profile definitions.
+        boost::optional<bool>                        m_roundedSegments;
 
         /// Name of the wing.
         std::string                                  m_name;
