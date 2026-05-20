@@ -83,6 +83,12 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSGuideCurves>& GetGuideCurves() const;
         TIGL_EXPORT virtual boost::optional<CCPACSGuideCurves>& GetGuideCurves();
 
+        TIGL_EXPORT virtual const boost::optional<double>& GetInnerRoundingDistance() const;
+        TIGL_EXPORT virtual void SetInnerRoundingDistance(const boost::optional<double>& value);
+
+        TIGL_EXPORT virtual const boost::optional<double>& GetOuterRoundingDistance() const;
+        TIGL_EXPORT virtual void SetOuterRoundingDistance(const boost::optional<double>& value);
+
         TIGL_EXPORT virtual CCPACSGuideCurves& GetGuideCurves(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGuideCurves();
 
@@ -110,6 +116,12 @@ namespace generated
         /// Optional and additional guidecurves to shape
         /// the outer geometry.
         boost::optional<CCPACSGuideCurves> m_guideCurves;
+
+        /// This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the inner end of this segment to create a smooth segment transition. The distance is provided in absolute length units.
+        boost::optional<double>            m_innerRoundingDistance;
+
+        /// This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the outer end of this segment to create a smooth segment transition. The distance is provided in absolute length units.
+        boost::optional<double>            m_outerRoundingDistance;
 
     private:
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
