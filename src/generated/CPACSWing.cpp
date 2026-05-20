@@ -118,6 +118,11 @@ namespace generated
             m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
         }
 
+        // read attribute roundedSegments
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "roundedSegments")) {
+            m_roundedSegments = tixi::TixiGetAttribute<bool>(tixiHandle, xpath, "roundedSegments");
+        }
+
         // read element name
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
@@ -210,6 +215,16 @@ namespace generated
             }
         }
 
+        // write attribute roundedSegments
+        if (m_roundedSegments) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "roundedSegments", *m_roundedSegments);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "roundedSegments")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "roundedSegments");
+            }
+        }
+
         // write element name
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
@@ -298,6 +313,16 @@ namespace generated
     void CPACSWing::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
     {
         m_symmetry = value;
+    }
+
+    const boost::optional<bool>& CPACSWing::GetRoundedSegments() const
+    {
+        return m_roundedSegments;
+    }
+
+    void CPACSWing::SetRoundedSegments(const boost::optional<bool>& value)
+    {
+        m_roundedSegments = value;
     }
 
     const std::string& CPACSWing::GetName() const
