@@ -163,7 +163,7 @@ namespace generated
 
     CPACSRivet& CPACSRivets::AddRivet()
     {
-        m_rivets.push_back(make_unique<CPACSRivet>(this, m_uidMgr));
+        m_rivets.push_back(std::make_unique<CPACSRivet>(this, m_uidMgr));
         return *m_rivets.back();
     }
 

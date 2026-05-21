@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSWing& CPACSWings::AddWing()
     {
-        m_wings.push_back(make_unique<CCPACSWing>(reinterpret_cast<CCPACSWings*>(this), m_uidMgr));
+        m_wings.push_back(std::make_unique<CCPACSWing>(reinterpret_cast<CCPACSWings*>(this), m_uidMgr));
         return *m_wings.back();
     }
 

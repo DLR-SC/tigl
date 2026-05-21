@@ -134,7 +134,7 @@ namespace generated
 
     CPACSControlSurfaceStep& CPACSControlSurfaceSteps::AddStep()
     {
-        m_steps.push_back(make_unique<CPACSControlSurfaceStep>(reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr));
+        m_steps.push_back(std::make_unique<CPACSControlSurfaceStep>(reinterpret_cast<CCPACSControlSurfaceSteps*>(this), m_uidMgr));
         return *m_steps.back();
     }
 

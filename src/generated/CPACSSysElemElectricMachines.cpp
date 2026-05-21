@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::AddElectricMachine()
     {
-        m_electricMachines.push_back(make_unique<CPACSSysElemElectricMachine>(this, m_uidMgr));
+        m_electricMachines.push_back(std::make_unique<CPACSSysElemElectricMachine>(this, m_uidMgr));
         return *m_electricMachines.back();
     }
 

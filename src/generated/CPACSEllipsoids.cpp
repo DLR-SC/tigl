@@ -134,7 +134,7 @@ namespace generated
 
     CPACSEllipsoid& CPACSEllipsoids::AddEllipsoid()
     {
-        m_ellipsoids.push_back(make_unique<CPACSEllipsoid>(this, m_uidMgr));
+        m_ellipsoids.push_back(std::make_unique<CPACSEllipsoid>(this, m_uidMgr));
         return *m_ellipsoids.back();
     }
 

@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemPump& CPACSSysElemPumps::AddPump()
     {
-        m_pumps.push_back(make_unique<CPACSSysElemPump>(this, m_uidMgr));
+        m_pumps.push_back(std::make_unique<CPACSSysElemPump>(this, m_uidMgr));
         return *m_pumps.back();
     }
 

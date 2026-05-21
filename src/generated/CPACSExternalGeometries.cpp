@@ -134,7 +134,7 @@ namespace generated
 
     CPACSExternalGeometry& CPACSExternalGeometries::AddExternal()
     {
-        m_externals.push_back(make_unique<CPACSExternalGeometry>(this, m_uidMgr));
+        m_externals.push_back(std::make_unique<CPACSExternalGeometry>(this, m_uidMgr));
         return *m_externals.back();
     }
 

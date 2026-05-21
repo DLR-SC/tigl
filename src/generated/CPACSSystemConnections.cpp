@@ -169,7 +169,7 @@ namespace generated
 
     CCPACSSystemConnection& CPACSSystemConnections::AddConnection()
     {
-        m_connections.push_back(make_unique<CCPACSSystemConnection>(this, m_uidMgr));
+        m_connections.push_back(std::make_unique<CCPACSSystemConnection>(this, m_uidMgr));
         return *m_connections.back();
     }
 

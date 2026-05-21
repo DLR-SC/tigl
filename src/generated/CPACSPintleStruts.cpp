@@ -163,7 +163,7 @@ namespace generated
 
     CPACSStrutAssembly& CPACSPintleStruts::AddPintleStrut()
     {
-        m_pintleStruts.push_back(make_unique<CPACSStrutAssembly>(this, m_uidMgr));
+        m_pintleStruts.push_back(std::make_unique<CPACSStrutAssembly>(this, m_uidMgr));
         return *m_pintleStruts.back();
     }
 

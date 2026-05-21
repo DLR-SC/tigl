@@ -90,12 +90,12 @@ TIGLAISTriangulation::TIGLAISTriangulation(const Handle(Poly_Triangulation)& Tri
 //function : Compute
 //purpose  :
 //=======================================================================
-void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager)& aPresentationManager,
                                    const Handle(Prs3d_Presentation)& aPresentation,
                                    const Standard_Integer aMode)
 {
     aPresentation->Clear();
-    Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+    Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
     TheGroup->Clear();
 
     switch (aMode) {

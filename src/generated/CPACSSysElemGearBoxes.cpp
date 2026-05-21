@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemGearBox& CPACSSysElemGearBoxes::AddGearBox()
     {
-        m_gearBoxs.push_back(make_unique<CPACSSysElemGearBox>(this, m_uidMgr));
+        m_gearBoxs.push_back(std::make_unique<CPACSSysElemGearBox>(this, m_uidMgr));
         return *m_gearBoxs.back();
     }
 

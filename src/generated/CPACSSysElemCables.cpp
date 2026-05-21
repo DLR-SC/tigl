@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemCable& CPACSSysElemCables::AddCables()
     {
-        m_cables.push_back(make_unique<CPACSSysElemCable>(this, m_uidMgr));
+        m_cables.push_back(std::make_unique<CPACSSysElemCable>(this, m_uidMgr));
         return *m_cables.back();
     }
 

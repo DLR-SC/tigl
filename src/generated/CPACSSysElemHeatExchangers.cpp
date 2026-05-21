@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::AddHeatExchanger()
     {
-        m_heatExchangers.push_back(make_unique<CPACSSysElemHeatExchanger>(this, m_uidMgr));
+        m_heatExchangers.push_back(std::make_unique<CPACSSysElemHeatExchanger>(this, m_uidMgr));
         return *m_heatExchangers.back();
     }
 

@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemFuelCell& CPACSSysElemFuelCells::AddFuelCell()
     {
-        m_fuelCells.push_back(make_unique<CPACSSysElemFuelCell>(this, m_uidMgr));
+        m_fuelCells.push_back(std::make_unique<CPACSSysElemFuelCell>(this, m_uidMgr));
         return *m_fuelCells.back();
     }
 

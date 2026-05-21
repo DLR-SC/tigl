@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSRotorHinge& CPACSRotorHubHinges::AddHinge()
     {
-        m_hinges.push_back(make_unique<CCPACSRotorHinge>(reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr));
+        m_hinges.push_back(std::make_unique<CCPACSRotorHinge>(reinterpret_cast<CCPACSRotorHinges*>(this), m_uidMgr));
         return *m_hinges.back();
     }
 

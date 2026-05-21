@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemCompressor& CPACSSysElemCompressors::AddCompressor()
     {
-        m_compressors.push_back(make_unique<CPACSSysElemCompressor>(this, m_uidMgr));
+        m_compressors.push_back(std::make_unique<CPACSSysElemCompressor>(this, m_uidMgr));
         return *m_compressors.back();
     }
 

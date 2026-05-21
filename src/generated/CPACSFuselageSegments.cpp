@@ -203,7 +203,7 @@ namespace generated
 
     CCPACSFuselageSegment& CPACSFuselageSegments::AddSegment()
     {
-        m_segments.push_back(make_unique<CCPACSFuselageSegment>(reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr));
+        m_segments.push_back(std::make_unique<CCPACSFuselageSegment>(reinterpret_cast<CCPACSFuselageSegments*>(this), m_uidMgr));
         return *m_segments.back();
     }
 

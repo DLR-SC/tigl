@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemPowerElectronic& CPACSSysElemPowerElectronics::AddPowerElectronics()
     {
-        m_powerElectronics.push_back(make_unique<CPACSSysElemPowerElectronic>(this, m_uidMgr));
+        m_powerElectronics.push_back(std::make_unique<CPACSSysElemPowerElectronic>(this, m_uidMgr));
         return *m_powerElectronics.back();
     }
 

@@ -30,7 +30,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "UniquePtr.h"
+#include <memory>
 #ifndef CPACS_GEN
 #include "CTiglLogging.h"
 #endif
@@ -123,23 +123,11 @@ namespace tixi
     template<typename T, typename... ChildCtorArgs>
     void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& xpath, std::vector<std::unique_ptr<T>>& children, unsigned int minOccurs, unsigned int maxOccurs, ChildCtorArgs&&... args)
     {
-        // TODO(bgruber): enable when support for g++ < 4.9.0 is dropped
-        //TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
-        //    auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
-        //    child->ReadCPACS(tixiHandle, childXPath);
-        //    return child;
-        //});
-        struct Reader {
-            std::unique_ptr<T> operator()(const std::string& childXPath, ChildCtorArgs&&... args) const
-            {
-                auto child = tigl::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
-                child->ReadCPACS(tixiHandle, childXPath);
-                return child;
-            }
-
-            const TixiDocumentHandle& tixiHandle;
-        };
-        TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, Reader{tixiHandle}, std::forward<ChildCtorArgs>(args)...);
+        TixiReadElementsInternal(tixiHandle, xpath, children, minOccurs, maxOccurs, [&](const std::string& childXPath) {
+           auto child = std::make_unique<T>(std::forward<ChildCtorArgs>(args)...);
+           child->ReadCPACS(tixiHandle, childXPath);
+           return child;
+        });
     }
 
     template<typename T, typename WriteChildFunc>

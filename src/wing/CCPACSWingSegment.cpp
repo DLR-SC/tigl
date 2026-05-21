@@ -154,7 +154,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent, CTiglUIDManager
     , chordSurfaceCache(*this, &CCPACSWingSegment::MakeChordSurfaces)
     , areaCache(*this, &CCPACSWingSegment::ComputeArea)
     , volumeCache(*this, &CCPACSWingSegment::ComputeVolume)
-    , m_guideCurveBuilder(make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
+    , m_guideCurveBuilder(std::make_unique<CTiglWingSegmentGuidecurveBuilder>(*this))
 {
 }
 

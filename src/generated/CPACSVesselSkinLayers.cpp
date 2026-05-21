@@ -134,7 +134,7 @@ namespace generated
 
     CCPACSSkin& CPACSVesselSkinLayers::AddSkinLayer()
     {
-        m_skinLayers.push_back(make_unique<CCPACSSkin>(this, m_uidMgr));
+        m_skinLayers.push_back(std::make_unique<CCPACSSkin>(this, m_uidMgr));
         return *m_skinLayers.back();
     }
 

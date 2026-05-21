@@ -203,7 +203,7 @@ namespace generated
 
     CCPACSFuselageSection& CPACSFuselageSections::AddSection()
     {
-        m_sections.push_back(make_unique<CCPACSFuselageSection>(reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr));
+        m_sections.push_back(std::make_unique<CCPACSFuselageSection>(reinterpret_cast<CCPACSFuselageSections*>(this), m_uidMgr));
         return *m_sections.back();
     }
 

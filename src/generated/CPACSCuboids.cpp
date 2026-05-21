@@ -134,7 +134,7 @@ namespace generated
 
     CPACSCuboid& CPACSCuboids::AddCuboid()
     {
-        m_cuboids.push_back(make_unique<CPACSCuboid>(this, m_uidMgr));
+        m_cuboids.push_back(std::make_unique<CPACSCuboid>(this, m_uidMgr));
         return *m_cuboids.back();
     }
 

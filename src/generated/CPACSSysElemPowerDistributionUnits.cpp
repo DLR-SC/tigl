@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::AddPowerDistributionUnit()
     {
-        m_powerDistributionUnits.push_back(make_unique<CPACSSysElemPowerDistributionUnit>(this, m_uidMgr));
+        m_powerDistributionUnits.push_back(std::make_unique<CPACSSysElemPowerDistributionUnit>(this, m_uidMgr));
         return *m_powerDistributionUnits.back();
     }
 

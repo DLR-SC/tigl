@@ -134,7 +134,7 @@ namespace generated
 
     CPACSMultiSegmentShape& CPACSMultiSegmentShapes::AddMultiSegmentShape()
     {
-        m_multiSegmentShapes.push_back(make_unique<CPACSMultiSegmentShape>(this, m_uidMgr));
+        m_multiSegmentShapes.push_back(std::make_unique<CPACSMultiSegmentShape>(this, m_uidMgr));
         return *m_multiSegmentShapes.back();
     }
 
