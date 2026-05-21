@@ -69,22 +69,22 @@ TEST_F(TiglExternalComponent, invalidFiletype)
     ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[2]"), tigl::CTiglError);
 }
 
-TEST(TiglExternalFileHelpers, getPathRelativeToApp)
+TEST(TiglExternalFileHelpers, ResolveFilePath)
 {
     std::string resultPath;
 
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("TestData\\aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("TestData\\aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
 
     // check some absolute paths
 #ifdef _WIN32
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:/nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "c:/nacelle.stp");
     ASSERT_STREQ("c:/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:\\nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "c:\\nacelle.stp");
     ASSERT_STREQ("c:\\nacelle.stp", resultPath.c_str());
 #else
     resultPath = getPathRelativeToApp("TestData/aircraft.xml", "/data/nacelle.stp");
@@ -92,14 +92,14 @@ TEST(TiglExternalFileHelpers, getPathRelativeToApp)
 #endif
 
     // check, if cpacs path not available
-    resultPath = getPathRelativeToApp("", "mydata/nacelle.stp");
+    resultPath = ResolveFilePath("", "mydata/nacelle.stp");
     ASSERT_STREQ("mydata/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("nacelle.stp", resultPath.c_str());
 
     // evaluate if file exists
-    EXPECT_NO_THROW(evaluatePathRelativeToApp("TestData/aircraft.xml", "nacelle.stp"));
-    EXPECT_THROW(evaluatePathRelativeToApp("TestData/aircraft.xml", "doesNotExist.stp"), tigl::CTiglError);
+    EXPECT_NO_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "nacelle.stp"));
+    EXPECT_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "doesNotExist.stp"), tigl::CTiglError);
 }
 

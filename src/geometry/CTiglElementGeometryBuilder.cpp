@@ -332,7 +332,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExterna
 
     std::string filePath = link.GetValue();
     if (!m_cpacsDocumentPath.empty()) {
-        filePath = evaluatePathRelativeToApp(m_cpacsDocumentPath, filePath);
+        filePath = ResolveReadableFilePath(m_cpacsDocumentPath, filePath);
     }
     const ListPNamedShape shapes = importer->Read(filePath);
 

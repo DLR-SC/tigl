@@ -22,10 +22,26 @@
 #include <string>
 #include "tigl_internal.h"
 
-TIGL_EXPORT std::string getPathRelativeToApp(const std::string& cpacsDocumentPath, 
-                                             const std::string& linkedFilePath);
+/**
+ * @brief Resolves a file path relative to a base file.
+ *
+ * Relative paths are interpreted relative to the directory of @p baseFilePath.
+ * Absolute paths are returned unchanged.
+ *
+ * @param baseFilePath Path to the file whose directory is used as base.
+ * @param filePath Absolute or relative file path to resolve.
+ * @return The resolved file path.
+ */
+TIGL_EXPORT std::string ResolveFilePath(const std::string& baseFilePath, const std::string& filePath);
 
-TIGL_EXPORT std::string evaluatePathRelativeToApp(const std::string& cpacsDocumentPath,
-                                                  const std::string& linkedFilePath);
+/**
+ * @brief Resolves a file path and verifies that it is readable.
+ *
+ * @param baseFilePath Path to the file whose directory is used as base.
+ * @param filePath Absolute or relative file path to resolve.
+ * @return The resolved readable file path.
+ * @throws tigl::CTiglError with TIGL_OPEN_FAILED if the resolved file is not readable.
+ */
+TIGL_EXPORT std::string ResolveReadableFilePath(const std::string& baseFilePath, const std::string& filePath);
 
 #endif // TIGLEXTERNALFILEHELPERS_H

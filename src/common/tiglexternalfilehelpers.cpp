@@ -5,26 +5,24 @@
 #include <string>
 #include <cstddef>
 
-std::string getPathRelativeToApp(const std::string& cpacsDocumentPath,
-                                 const std::string& linkedFilePath)
+std::string ResolveFilePath(const std::string& baseFilePath, const std::string& filePath)
 {
-    if (IsPathRelative(linkedFilePath)) {
-        size_t pos = cpacsDocumentPath.find_last_of("/\\");
+    if (IsPathRelative(filePath)) {
+        size_t pos = baseFilePath.find_last_of("/\\");
         if (pos == std::string::npos) {
-            // kein Verzeichnis verfügbar -> Pfad bleibt relativ
-            return linkedFilePath;
+            return filePath;
         }
-        std::string dirPath = cpacsDocumentPath.substr(0, pos);
-        return dirPath + "/" + linkedFilePath;
+        std::string dirPath = baseFilePath.substr(0, pos);
+        return dirPath + "/" + filePath;
     }
     else {
-        return linkedFilePath;
+        return filePath;
     }
 }
 
-std::string evaluatePathRelativeToApp(const std::string& cpacsDocumentPath, const std::string& linkedFilePath)
+std::string ResolveReadableFilePath(const std::string& baseFilePath, const std::string& filePath)
 {
-    std::string resolved = getPathRelativeToApp(cpacsDocumentPath, linkedFilePath);
+    std::string resolved = ResolveFilePath(baseFilePath, filePath);
     if (!IsFileReadable(resolved)) {
         throw tigl::CTiglError("File " + resolved + " can not be read!", TIGL_OPEN_FAILED);
     }
