@@ -5,6 +5,7 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
   - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
