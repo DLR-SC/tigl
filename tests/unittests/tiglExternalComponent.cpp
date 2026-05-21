@@ -49,7 +49,7 @@ TEST_F(TiglExternalComponent, getFileNameRelative)
 {
     tigl::CCPACSExternalObject object(NULL, NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
-    
+
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
 }
 
@@ -57,7 +57,7 @@ TEST_F(TiglExternalComponent, getShape)
 {
     tigl::CCPACSExternalObject object(NULL, NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
-    
+
     PNamedShape shape = object.GetLoft();
     ASSERT_TRUE(shape != NULL);
     ASSERT_STREQ("nacelle", shape->Name().c_str());
@@ -87,7 +87,7 @@ TEST(TiglExternalFileHelpers, ResolveFilePath)
     resultPath = ResolveFilePath("TestData/aircraft.xml", "c:\\nacelle.stp");
     ASSERT_STREQ("c:\\nacelle.stp", resultPath.c_str());
 #else
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "/data/nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "/data/nacelle.stp");
     ASSERT_STREQ("/data/nacelle.stp", resultPath.c_str());
 #endif
 
@@ -102,4 +102,3 @@ TEST(TiglExternalFileHelpers, ResolveFilePath)
     EXPECT_NO_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "nacelle.stp"));
     EXPECT_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "doesNotExist.stp"), tigl::CTiglError);
 }
-

@@ -330,10 +330,9 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExterna
         throw CTiglError("Cannot open external element. Unknown file format: " + fileType);
     }
 
-    std::string filePath = link.GetValue();
-    if (!m_cpacsDocumentPath.empty()) {
-        filePath = ResolveReadableFilePath(m_cpacsDocumentPath, filePath);
-    }
+    std::string linkedFilePath = link.GetValue();
+    const std::string filePath =
+        m_cpacsDocumentPath.empty() ? linkedFilePath : ResolveReadableFilePath(m_cpacsDocumentPath, linkedFilePath);
     const ListPNamedShape shapes = importer->Read(filePath);
 
     // ToDo: Transformation should be slightly different from the one used in relatively positioned components:
