@@ -682,7 +682,6 @@ void TIGLCreatorWidget::setTransparency()
     dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
 
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    int initTransparency;
     if (viewerContext) {
         Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
         if (!ctx.IsNull()) {
@@ -692,12 +691,12 @@ void TIGLCreatorWidget::setTransparency()
                 if (!obj.IsNull()) {
                     Handle(Prs3d_Drawer) drawer = obj->Attributes();
                     Standard_Real t = drawer->Transparency();
-                    initTransparency = static_cast<int>(std::round(t * 100.0));
+                    int initTransparency = static_cast<int>(std::round(t * 100.0));
+                    dialog->setIntValue(initTransparency);
                 }
             }
         }
     }
-    dialog->setIntValue(initTransparency);
     dialog->setIntRange(0, 100);
 
     dialog->show();

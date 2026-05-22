@@ -111,15 +111,13 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->materialCombo->setVisible(true);
                         ui->buttonResetOptions->setVisible(true);
                     }
-                    
-                    const QString type = QString::fromStdString(item->getType());
-                    const QString uid = QString::fromStdString(item->getUid());
+                
 
 
                     // get current values
                     auto &sm = context->GetShapeManager();
-                    if (sm.HasShapeEntry(uid.toStdString())) {
-                        auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+                    if (sm.HasShapeEntry(uid)) {
+                        auto objs = sm.GetIObjectsFromShapeName(uid);
                         
                         auto obj = objs[0];
                         Standard_Real transparency;
@@ -413,7 +411,7 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
         if (obj.IsNull()) {
             continue;
         }
-        if (!context.IsNull()) {
+         if (!context.IsNull() && currentDoc) {  
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
