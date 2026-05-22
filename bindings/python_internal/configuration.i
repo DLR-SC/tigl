@@ -139,7 +139,7 @@
 #include "CTiglSectionElement.h"
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
-#include "CCPACSSystemElements.h"
+#include "generated/CPACSSystemElements.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
 #include "generated/CPACSSystemArchitectures.h"
@@ -635,6 +635,7 @@ class CCPACSWingRibsPositioning;
 //  ---------------- Systems ------------------ //
 namespace tigl {
 class CCPACSGenericSystem;
+class CCPACSSystemElements;
 }
 
 %boost_optional(tigl::CCPACSSystemElements)
@@ -676,7 +677,6 @@ class CCPACSGenericSystem;
 %include "CCPACSGenericSystems.h"
 %include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
-%include "CCPACSSystemElements.h"
 %include "generated/CPACSSystemArchitecture.h"
 %include "CCPACSSystemArchitecture.h"
 %include "generated/CPACSSystemArchitectures.h"
