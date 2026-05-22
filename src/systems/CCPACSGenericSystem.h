@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2015 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
 *
