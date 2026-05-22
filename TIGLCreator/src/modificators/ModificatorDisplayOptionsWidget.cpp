@@ -118,7 +118,10 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     auto &sm = context->GetShapeManager();
                     if (sm.HasShapeEntry(uid)) {
                         auto objs = sm.GetIObjectsFromShapeName(uid);
-                        
+                        if (objs.empty()) {
+                            LOG(WARNING) << "No objects found for shape with uid " << uid;
+                            return;
+                        }
                         auto obj = objs[0];
                         Standard_Real transparency;
                         int displayMode;
