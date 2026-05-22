@@ -41,14 +41,9 @@ public:
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
-    {
-        return TIGL_COMPONENT_GENERICSYSTEM;
-    }
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
-    {
-        return TIGL_INTENT_PHYSICAL;
-    }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     /**
      * @brief Returns the total mass of all components in the system.

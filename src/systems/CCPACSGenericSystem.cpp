@@ -58,6 +58,16 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
     return m_parent->GetConfiguration();
 }
 
+TiglGeometricComponentType CCPACSGenericSystem::GetComponentType() const
+{
+    return TIGL_COMPONENT_GENERICSYSTEM;
+}
+
+TiglGeometricComponentIntent CCPACSGenericSystem::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
 double CCPACSGenericSystem::GetMassAllComponents() const
 {
     const auto& comps = GetComponents();
