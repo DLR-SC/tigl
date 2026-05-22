@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSExternalObject& CPACSGenericGeometryComponents::AddGenericGeometryComponent()
     {
-        m_genericGeometryComponents.push_back(make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
+        m_genericGeometryComponents.push_back(std::make_unique<CCPACSExternalObject>(reinterpret_cast<CCPACSExternalObjects*>(this), m_uidMgr));
         return *m_genericGeometryComponents.back();
     }
 

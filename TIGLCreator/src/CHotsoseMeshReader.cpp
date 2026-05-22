@@ -49,7 +49,7 @@ TiglReturnCode CHotsoseMeshReader::readFromFile(const char * filename, tigl::CTi
     while (!line.isNull()) {
         line = in.readLine();
 
-        QStringList list = line.split(" ", QString::SkipEmptyParts);
+        QStringList list = line.split(" ", Qt::SkipEmptyParts);
         if (list.size() == 4) {
             // parse polygon number
             int pnr = list.at(0).toInt();

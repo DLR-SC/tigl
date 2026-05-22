@@ -8,7 +8,7 @@ channel-priority = "disabled"
 
 [feature.base.dependencies]
 # Base dependencies for all builds
-tixi3 = "3.3.1.*"
+tixi3 = "3.3.2.*"
 qt = { version = "5.15.15.*", channel = "conda-forge" }
 python = "*"
 matlab-libs = "*"

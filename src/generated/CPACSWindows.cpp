@@ -196,7 +196,7 @@ namespace generated
 
     CPACSCutOut& CPACSWindows::AddWindow()
     {
-        m_windows.push_back(make_unique<CPACSCutOut>(this, m_uidMgr));
+        m_windows.push_back(std::make_unique<CPACSCutOut>(this, m_uidMgr));
         return *m_windows.back();
     }
 

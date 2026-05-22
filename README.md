@@ -1,6 +1,6 @@
 <p><img src="doc/images/logo.png" alt="TiGL Logo" title="TiGL Logo" style="background-color:white;padding:5px;"/></p>
 
-[![CI workflow for main branch](https://github.com/DLR-SC/tigl/actions/workflows/main.yml/badge.svg)](https://github.com/DLR-SC/tigl/actions/workflows/main.yml)
+[![CI workflow](https://github.com/DLR-SC/tigl/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/DLR-SC/tigl/actions/workflows/ci-workflow.yml)
 [![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/main/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
 [![Apache 2.0](https://img.shields.io/crates/l/k)](https://github.com/DLR-SC/tigl/blob/cpacs_3/LICENSE.txt)
 [![Install with conda](https://anaconda.org/dlr-sc/tigl3/badges/version.svg)](https://anaconda.org/dlr-sc/tigl3/badges/version.svg)

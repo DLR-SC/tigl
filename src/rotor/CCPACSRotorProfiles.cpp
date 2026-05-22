@@ -19,7 +19,6 @@
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
 #include "generated/TixiHelper.h"
-#include "generated/UniquePtr.h"
 
 namespace tigl
 {
@@ -49,7 +48,7 @@ void CCPACSRotorProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, cons
     // read element wingAirfoil
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorAirfoil")) {
         tixi::TixiReadElementsInternal(tixiHandle, xpath + "/rotorAirfoil", m_rotorAirfoils, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
-            auto child = tigl::make_unique<CCPACSWingProfile>(this, m_uidMgr);
+            auto child = std::make_unique<CCPACSWingProfile>(this, m_uidMgr);
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });

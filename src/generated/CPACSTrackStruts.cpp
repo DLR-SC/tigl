@@ -134,7 +134,7 @@ namespace generated
 
     CPACSTrackStrut& CPACSTrackStruts::AddStrut()
     {
-        m_struts.push_back(make_unique<CPACSTrackStrut>(this, m_uidMgr));
+        m_struts.push_back(std::make_unique<CPACSTrackStrut>(this, m_uidMgr));
         return *m_struts.back();
     }
 

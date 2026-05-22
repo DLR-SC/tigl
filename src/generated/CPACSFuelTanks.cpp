@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSFuelTank& CPACSFuelTanks::AddFuelTank()
     {
-        m_fuelTanks.push_back(make_unique<CCPACSFuelTank>(this, m_uidMgr));
+        m_fuelTanks.push_back(std::make_unique<CCPACSFuelTank>(this, m_uidMgr));
         return *m_fuelTanks.back();
     }
 

@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSWing& CPACSRotorBlades::AddRotorBlade()
     {
-        m_rotorBlades.push_back(make_unique<CCPACSWing>(reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr));
+        m_rotorBlades.push_back(std::make_unique<CCPACSWing>(reinterpret_cast<CCPACSRotorBlades*>(this), m_uidMgr));
         return *m_rotorBlades.back();
     }
 

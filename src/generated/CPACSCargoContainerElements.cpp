@@ -163,7 +163,7 @@ namespace generated
 
     CPACSCargoContainerElement& CPACSCargoContainerElements::AddCargoContainerElement()
     {
-        m_cargoContainerElements.push_back(make_unique<CPACSCargoContainerElement>(this, m_uidMgr));
+        m_cargoContainerElements.push_back(std::make_unique<CPACSCargoContainerElement>(this, m_uidMgr));
         return *m_cargoContainerElements.back();
     }
 
