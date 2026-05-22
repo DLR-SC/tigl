@@ -35,13 +35,14 @@
 TIGL_EXPORT std::string ResolveFilePath(const std::string& baseFilePath, const std::string& filePath);
 
 /**
- * @brief Resolves a file path and verifies that it is readable.
+ * @brief Checks whether a file path points to a readable file.
  *
- * @param baseFilePath Path to the file whose directory is used as base.
- * @param filePath Absolute or relative file path to resolve.
- * @return The resolved readable file path.
- * @throws tigl::CTiglError with TIGL_OPEN_FAILED if the resolved file is not readable.
+ * This function does not resolve or modify the path. It returns normally if
+ * @p filePath is readable as given.
+ *
+ * @param filePath File path to check.
+ * @throws tigl::CTiglError with TIGL_OPEN_FAILED if the file is not readable.
  */
-TIGL_EXPORT std::string ResolveReadableFilePath(const std::string& baseFilePath, const std::string& filePath);
+TIGL_EXPORT void CheckFileIsReadable(const std::string& filePath);
 
 #endif // TIGLEXTERNALFILEHELPERS_H

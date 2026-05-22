@@ -33,7 +33,7 @@ protected:
         tixiHandle = -1;
 
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE (tixiRet == SUCCESS);
+        ASSERT_TRUE(tixiRet == SUCCESS);
     }
     void TearDown() override
     {
@@ -41,8 +41,7 @@ protected:
         tixiHandle = -1;
     }
 
-
-    TixiDocumentHandle           tixiHandle;
+    TixiDocumentHandle tixiHandle;
 };
 
 TEST_F(TiglExternalComponent, getFileNameRelative)
@@ -99,6 +98,6 @@ TEST(TiglExternalFileHelpers, ResolveFilePath)
     ASSERT_STREQ("nacelle.stp", resultPath.c_str());
 
     // evaluate if file exists
-    EXPECT_NO_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "nacelle.stp"));
-    EXPECT_THROW(ResolveReadableFilePath("TestData/aircraft.xml", "doesNotExist.stp"), tigl::CTiglError);
+    EXPECT_NO_THROW(CheckFileIsReadable(ResolveFilePath("TestData/aircraft.xml", "nacelle.stp")));
+    EXPECT_THROW(CheckFileIsReadable(ResolveFilePath("TestData/aircraft.xml", "doesNotExist.stp")), tigl::CTiglError);
 }
