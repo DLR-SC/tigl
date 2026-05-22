@@ -33,7 +33,6 @@ CPACSEtaXsiPoint                   CCPACSEtaXsiPoint
 CPACSCurvePoint                    CCPACSCurvePoint
 CPACSCurveParamPointMap            CCPACSCurveParamPointMap
 CPACSCurvePointListXYZ             CCPACSCurvePointListXYZ
-CPACSSystemElements                CCPACSSystemElements
 CPACSSystems                       CCPACSACSystems
 CPACSGenericSystems                CCPACSGenericSystems
 CPACSGenericSystem                 CCPACSGenericSystem

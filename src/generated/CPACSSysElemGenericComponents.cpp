@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemGenericComponents.h"
+#include "CPACSSystemElements.h"
 #include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemGenericComponents::CPACSSysElemGenericComponents(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemGenericComponents::CPACSSysElemGenericComponents(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemGenericComponents::GetParent() const
+    const CPACSSystemElements* CPACSSysElemGenericComponents::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemGenericComponents::GetParent()
+    CPACSSystemElements* CPACSSysElemGenericComponents::GetParent()
     {
         return m_parent;
     }

@@ -27,11 +27,11 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSSystemElements;
 
 namespace generated
 {
     class CPACSSysElemGearBox;
+    class CPACSSystemElements;
 
     // This class is used in:
     // CPACSSystemElements
@@ -42,13 +42,13 @@ namespace generated
     class CPACSSysElemGearBoxes
     {
     public:
-        TIGL_EXPORT CPACSSysElemGearBoxes(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemGearBoxes(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemGearBoxes();
 
-        TIGL_EXPORT CCPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSystemElements* GetParent();
 
-        TIGL_EXPORT const CCPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -75,7 +75,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveGearBox(CPACSSysElemGearBox& ref);
 
     protected:
-        CCPACSSystemElements* m_parent;
+        CPACSSystemElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -93,4 +93,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSSysElemGearBoxes = generated::CPACSSysElemGearBoxes;
 using CCPACSSysElemGearBox = generated::CPACSSysElemGearBox;
+using CCPACSSystemElements = generated::CPACSSystemElements;
 } // namespace tigl

@@ -19,7 +19,6 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
-#include <CCPACSSystemElements.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSAircraft.h"
@@ -31,6 +30,7 @@
 #include "CPACSProfiles.h"
 #include "CPACSRotorcraft.h"
 #include "CPACSStructuralElements.h"
+#include "CPACSSystemElements.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -98,8 +98,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSDeckElements>& GetDeckElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSDeckElements>& GetDeckElements();
 
-        TIGL_EXPORT virtual const boost::optional<CCPACSSystemElements>& GetSystemElements() const;
-        TIGL_EXPORT virtual boost::optional<CCPACSSystemElements>& GetSystemElements();
+        TIGL_EXPORT virtual const boost::optional<CPACSSystemElements>& GetSystemElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSystemElements>& GetSystemElements();
 
         TIGL_EXPORT virtual const boost::optional<CPACSMaterials>& GetMaterials() const;
         TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
@@ -128,7 +128,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSDeckElements& GetDeckElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDeckElements();
 
-        TIGL_EXPORT virtual CCPACSSystemElements& GetSystemElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual CPACSSystemElements& GetSystemElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystemElements();
 
         TIGL_EXPORT virtual CPACSMaterials& GetMaterials(CreateIfNotExistsTag);
@@ -147,7 +147,7 @@ namespace generated
         boost::optional<CPACSProfiles>               m_profiles;
         boost::optional<CPACSStructuralElements>     m_structuralElements;
         boost::optional<CPACSDeckElements>           m_deckElements;
-        boost::optional<CCPACSSystemElements>        m_systemElements;
+        boost::optional<CPACSSystemElements>         m_systemElements;
         boost::optional<CPACSMaterials>              m_materials;
 
     private:
