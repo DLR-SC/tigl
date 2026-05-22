@@ -33,6 +33,8 @@
 
 #include "ModificatorModel.h"
 
+namespace cpcr { class CPACSTreeItem; }
+
 class QAction;
 class QLabel;
 class QMenu;
@@ -119,6 +121,13 @@ private slots:
     void drawVector();
     void standardizeDialog();
     void onComponentVisibilityChanged(const QString& uid, bool visible);
+    void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
+    void onDisplayOptionsRequested();
+    void onSetTransparencyRequested(int v);
+    void onSetRenderingModeRequested(int mode);
+    void onSetColorRequested(const QColor &c);
+    void onSetMaterialRequested(const QString &m);
+    void onSceneDisplayAttributesChanged();
 
 private:
     void connectSignals();
@@ -156,6 +165,8 @@ private:
     bool suppressErrors{false};
 
     ModificatorModel* modificatorModel;
+    QString lastSelectedTreeUID;
+    cpcr::CPACSTreeItem* lastSelectedTreeItem{nullptr};
 
 };
 

@@ -249,6 +249,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         modificatorContainerWidget->setNoInterfaceWidget();
         LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
     }
+    modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
 }
 
 void ModificatorModel::createUndoCommand()
