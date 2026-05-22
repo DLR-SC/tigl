@@ -67,16 +67,10 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
 
     /// @brief Returns the TiGL geometric component type.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
-    {
-        return TIGL_COMPONENT_SYSTEM_COMPONENT;
-    }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
 
     /// @brief Returns the TiGL geometric component intent.
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
-    {
-        return TIGL_INTENT_PHYSICAL;
-    }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     /**
      * @brief Returns the geometric representation type of the referenced system element.

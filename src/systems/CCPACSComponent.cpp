@@ -168,6 +168,16 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
 }
 
+TiglGeometricComponentType CCPACSComponent::GetComponentType() const
+{
+    return TIGL_COMPONENT_SYSTEM_COMPONENT;
+}
+
+TiglGeometricComponentIntent CCPACSComponent::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
 CTiglPoint CCPACSComponent::GetCentroidLocal() const
 {
     const TopoDS_Shape shape = BuildLocalLoft()->Shape();
