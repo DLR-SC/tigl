@@ -88,6 +88,9 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
         return GetParent<CCPACSVessel>()->GetConfiguration();
     }
     else if (IsParent<CCPACSMultiSegmentShape>()) {
+        if (!m_refParentCfg) {
+            throw CTiglError("CCPACSFuselageSegments: Missing reference configuration for multiSegmentShape.");
+        }
         return *m_refParentCfg;
     }
     else
