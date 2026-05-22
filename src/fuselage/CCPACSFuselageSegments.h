@@ -81,15 +81,9 @@ public:
     // check order of segments - each segment must start with the element of the previous segment
     TIGL_EXPORT bool NeedReordering() const;
 
-    void SetReferenceParent(CTiglRelativelyPositionedComponent const* refParent) const
-    {
-        m_refParentPtr = refParent;
-    }
+    TIGL_EXPORT void SetReferenceParent(CTiglRelativelyPositionedComponent const* refParent) const;
 
-    void SetConfiguration(CCPACSConfiguration const* cfg) const
-    {
-        m_refParentCfg = cfg;
-    }
+    TIGL_EXPORT void SetConfiguration(CCPACSConfiguration const* cfg) const;
 
 private:
     void BuildGuideCurves(TopoDS_Compound& cache) const;
