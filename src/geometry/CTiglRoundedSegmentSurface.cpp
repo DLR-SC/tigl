@@ -3,29 +3,22 @@
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "CTiglError.h"
 #include "Debugging.h"
+#include "TopTools_IndexedMapOfShape.hxx"
 #include "TopoDS_Edge.hxx"
 #include "tiglcommonfunctions.h"
 
 
 namespace tigl{
-CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<TopoDS_Wire>& profileWires, double inner_rounding_distance, double outer_rounding_distance):
+CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> ,
+                                                       double inner_rounding_distance,
+                                                       double outer_rounding_distance):
     m_pole_matrix({}),
-    m_profileWires(profileWires),
     m_inner_rounding_distance(inner_rounding_distance),
     m_outer_rounding_distance(outer_rounding_distance),
-    m_profileCurves({}){}
+    m_profileCurves(m_profileCurves),
+    m_surface(nullptr){}
 
-//TODO
-void CTiglRoundedSegmentSurface::ConvertCurves(){}
-
-void NumberOfPolesIsSameInAllCurves(std::vector<Handle(Geom_BSplineCurve)> &profileCurves){
-    //check if NbPoles is same in all profileCurves
-    for(int i=0; i<profileCurves.size()-1; i++){
-        if(!(profileCurves[i]->NbPoles()==profileCurves[i+1]->NbPoles())){
-            throw tigl::CTiglError("ProfileCurves: Numbers of poles don't match");
-        }
-    }
-}
+TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
 void CTiglRoundedSegmentSurface::initializePoleMatrix(){
     Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
@@ -33,146 +26,127 @@ void CTiglRoundedSegmentSurface::initializePoleMatrix(){
     m_pole_matrix = TColgp_HArray2OfPnt(1,m,1,n);
 }
 
-void CTiglRoundedSegmentSurface::calculatePoleMatrix()
-{
-    //1. loop: iterate through profiles(rows) (index starts with 0 since std::vector
-    //2. loop: iterate through profile curves poles(colums) (Geom_Curve) "profileCurves" for each edge
-    //i rows, j columns (OCC indizes start with 1, loops start with 1 when iterating through OCC datatypes)
-    //note: loop-indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
+//void CTiglRoundedSegmentSurface::calculatePoleMatrix()
+//{
+//    //1. loop: iterate through profiles(rows) (index starts with 0 since std::vector
+//    //2. loop: iterate through profile curves poles(colums) (Geom_Curve) "profileCurves" for each edge
+//    //i rows, j columns (OCC indizes start with 1, loops start with 1 when iterating through OCC datatypes)
+//    //note: loop-indices are named i,j,k and refer to row,column,number of dummy-Profile for better geometric/code-orientation
+//
+//    //following variables refer to the values between i-th and (i+1)-th profile curve
+//    //cases:
+//    //2 sections: no dummy profiles to build
+//    //3 sections: dummy profiles around middle section
+//    //...
+//    //no dummies after 1.st and before last section
+//
+//    double inner_rd, outer_rd;
+//    gp_Pnt inner_poles_per_col, outer_poles_per_col;
+//
+//    int m = m_pole_matrix.NbRows();
+//    int n = m_pole_matrix.NbColumns();
+//
+//    //iterate through given profile curves
+//    for (int i=0; i< m_profileCurves.size(); i++){
+//        //determine rounding distances between profiles
+//        if(i==0){
+//            inner_rd =0.; //no value available = no dummies after first section
+//            outer_rd = m_outer_rounding_distance[i];
+//        }
+//        if(i>0&&!(i==m_profileCurves.size())){
+//            inner_rd = m_inner_rounding_distance[i-1];
+//            outer_rd = m_outer_rounding_distance[i];
+//        } else{
+//            inner_rd = m_inner_rounding_distance[i-1];
+//            outer_rd = 0.; //no value available = no dummies before last section
+//        }
+//        //iterate through columns to create Dummy Profile-Poles between each pair of profiles
+//        for( int j=0; j< n; j++){
+//            //retrieve poles of i-th and (i+1)-th profile (thus out of bounds for outer pole in row before last row)
+//            inner_poles_per_col = m_profileCurves[i]->Pole(j+1);//v0
+//            if(i<m_profileCurves.size()-1){
+//                outer_poles_per_col = m_profileCurves[i+1]->Pole(j+1); //v1
+//            } else {
+//                outer_poles_per_col = inner_poles_per_col;
+//            }
+//            //calculate Vector between both profile poles and normalize it
+//            gp_Vec vector_in_v_direction(inner_poles_per_col, outer_poles_per_col); //v01
+//            gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
+//            if(inner_poles_per_col.IsEqual(outer_poles_per_col, 1e-14)){
+//                throw tigl::CTiglError(std::to_string(inner_poles_per_col.Coord().X())+"x"+
+//                                       std::to_string(inner_poles_per_col.Coord().Y())+"y"+
+//                                       std::to_string(inner_poles_per_col.Coord().Y())+"Z"+
+//                                       std::to_string(outer_poles_per_col.Coord().X())+"x"+
+//                                       std::to_string(outer_poles_per_col.Coord().Y())+"y"+
+//                                       std::to_string(outer_poles_per_col.Coord().Y())+"Z");
+//            }
+//            normalized_vector_in_v_direction.Normalize(); //|v01|
+//            //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
+//            //(inner)-> profile[0] | ------ dummy_outer1 | dummy_outer2 | dummy_outer3 | profile[i] | dummy_inner1 | dummy_inner2 | dummy_inner3 | ----  profile[i+1] |<-(outer)
+//            //add profile first
+//            int current_row;
+//            if(i==0){
+//                current_row =1;
+//            } else {
+//                current_row = _nb_dummies+3+(i-1)*(1+_nb_dummies*2);
+//            }
+//            //insert first profile pole
+//            if(current_row==1){
+//                std::cerr << "Insert First Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+//                m_pole_matrix.SetValue(current_row,j+1, inner_poles_per_col); //v0 first
+//                current_row+=1;
+//            }
+//            //calculate new poles for inner dummy profiles (from inner to outer) except 1st (i=0) section
+//            if(i>0&&i<m_profileCurves.size()-1){
+//                for (int k=0; k < _nb_dummies; k++){
+//                    //calculate distance between k-th inner dummy-pole in v-direction and profile
+//                    double inner_distance = inner_rd/_nb_dummies*(k+1);
+//                    gp_Vec inner_poles_per_col_vec(inner_poles_per_col.Coord().X(),inner_poles_per_col.Coord().Y(),inner_poles_per_col.Coord().Z());
+//                    //save new poles in a vector for each inner dummy profile
+//                    gp_Vec inner_vec(normalized_vector_in_v_direction);
+//                    inner_vec.Scale(inner_distance); //scaled normalized vector in v-direction
+//                    inner_vec.Add(inner_poles_per_col_vec); //vector to new k-th pole
+//                    gp_Pnt new_pole_inner(inner_vec.XYZ());
+//                    std::cout << "InnerDistance:" << inner_distance << " k:" << k <<std::endl;
+//                    std::cerr << "Insert inner " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+//                    m_pole_matrix.SetValue(current_row,j+1, new_pole_inner);
+//                    current_row +=1;
+//                }
+//            }
+//            //calculate new poles for outer dummy profiles (calculate also from inner to outer -> _nb_dummies -(k+1)/_nb_dummies)
+//            //last segment has no outer dummies -> < m_profileCurves.size()-2
+//            if(i<(m_profileCurves.size()-2)){
+//                for (int k=0; k < _nb_dummies; k++){
+//                    //calculate distance between k-th outer dummy-pole in v-direction and profile
+//                    double outer_distance = outer_rd/_nb_dummies * (_nb_dummies-k);
+//                    gp_Vec outer_vec(outer_poles_per_col.Coord().X(),outer_poles_per_col.Coord().Y(),outer_poles_per_col.Coord().Z());
+//                    gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
+//                    outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
+//                    outer_vec.Subtract(outer_normalized_vec);
+//                    gp_Pnt new_pole_outer(outer_vec.XYZ());
+//                    std::cout << "OuterDistance:" << outer_distance << " k:" << k << std::endl;
+//                    std::cerr << "Insert outer " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+//                    //save new poles in a vector for each outer dummy profile
+//                    m_pole_matrix.SetValue(current_row,j+1, new_pole_outer);
+//                    current_row+=1;
+//                }
+//            }
+//            //insert actual profile pole
+//            if(i<m_profileCurves.size()){
+//                std::cerr << "Last Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
+//                m_pole_matrix.SetValue(current_row, j+1, outer_poles_per_col);
+//                current_row+=1;
+//            }
+//        }
+//    }
+//}
 
-    //following variables refer to the values between i-th and (i+1)-th profile curve
-    //cases:
-    //2 sections: no dummy profiles to build
-    //3 sections: dummy profiles around middle section
-    //...
-    //no dummies after 1.st and before last section
 
-    double inner_rd, outer_rd;
-    gp_Pnt inner_poles_per_col, outer_poles_per_col;
 
-    int m = m_pole_matrix.NbRows();
-    int n = m_pole_matrix.NbColumns();
 
-    //iterate through given profile curves
-    for (int i=0; i< m_profileCurves.size(); i++){
-        //determine rounding distances between profiles
-        if(i==0){
-            inner_rd =0.; //no value available = no dummies after first section
-            outer_rd = m_outer_rounding_distance[i];
-        }
-        if(i>0&&!(i==m_profileCurves.size())){
-            inner_rd = m_inner_rounding_distance[i-1];
-            outer_rd = m_outer_rounding_distance[i];
-        } else{
-            inner_rd = m_inner_rounding_distance[i-1];
-            outer_rd = 0.; //no value available = no dummies before last section
-        }
-        //iterate through columns to create Dummy Profile-Poles between each pair of profiles
-        for( int j=0; j< n; j++){
-            //retrieve poles of i-th and (i+1)-th profile (thus out of bounds for outer pole in row before last row)
-            inner_poles_per_col = m_profileCurves[i]->Pole(j+1);//v0
-            if(i<m_profileCurves.size()-1){
-                outer_poles_per_col = m_profileCurves[i+1]->Pole(j+1); //v1
-            } else {
-                outer_poles_per_col = inner_poles_per_col;
-            }
-            //calculate Vector between both profile poles and normalize it
-            gp_Vec vector_in_v_direction(inner_poles_per_col, outer_poles_per_col); //v01
-            gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
-            if(inner_poles_per_col.IsEqual(outer_poles_per_col, 1e-14)){
-                throw tigl::CTiglError(std::to_string(inner_poles_per_col.Coord().X())+"x"+
-                                       std::to_string(inner_poles_per_col.Coord().Y())+"y"+
-                                       std::to_string(inner_poles_per_col.Coord().Y())+"Z"+
-                                       std::to_string(outer_poles_per_col.Coord().X())+"x"+
-                                       std::to_string(outer_poles_per_col.Coord().Y())+"y"+
-                                       std::to_string(outer_poles_per_col.Coord().Y())+"Z");
-            }
-            normalized_vector_in_v_direction.Normalize(); //|v01|
-            //create dummy_profiles, which will be ordered as follows in between the sections(profile[i]/[i+1]):
-            //(inner)-> profile[0] | ------ dummy_outer1 | dummy_outer2 | dummy_outer3 | profile[i] | dummy_inner1 | dummy_inner2 | dummy_inner3 | ----  profile[i+1] |<-(outer)
-            //add profile first
-            int current_row;
-            if(i==0){
-                current_row =1;
-            } else {
-                current_row = _nb_dummies+3+(i-1)*(1+_nb_dummies*2);
-            }
-            //insert first profile pole
-            if(current_row==1){
-                std::cerr << "Insert First Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
-                m_pole_matrix.SetValue(current_row,j+1, inner_poles_per_col); //v0 first
-                current_row+=1;
-            }
-            //calculate new poles for inner dummy profiles (from inner to outer) except 1st (i=0) section
-            if(i>0&&i<m_profileCurves.size()-1){
-                for (int k=0; k < _nb_dummies; k++){
-                    //calculate distance between k-th inner dummy-pole in v-direction and profile
-                    double inner_distance = inner_rd/_nb_dummies*(k+1);
-                    gp_Vec inner_poles_per_col_vec(inner_poles_per_col.Coord().X(),inner_poles_per_col.Coord().Y(),inner_poles_per_col.Coord().Z());
-                    //save new poles in a vector for each inner dummy profile
-                    gp_Vec inner_vec(normalized_vector_in_v_direction);
-                    inner_vec.Scale(inner_distance); //scaled normalized vector in v-direction
-                    inner_vec.Add(inner_poles_per_col_vec); //vector to new k-th pole
-                    gp_Pnt new_pole_inner(inner_vec.XYZ());
-                    std::cout << "InnerDistance:" << inner_distance << " k:" << k <<std::endl;
-                    std::cerr << "Insert inner " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
-                    m_pole_matrix.SetValue(current_row,j+1, new_pole_inner);
-                    current_row +=1;
-                }
-            }
-            //calculate new poles for outer dummy profiles (calculate also from inner to outer -> _nb_dummies -(k+1)/_nb_dummies)
-            //last segment has no outer dummies -> < m_profileCurves.size()-2
-            if(i<(m_profileCurves.size()-2)){
-                for (int k=0; k < _nb_dummies; k++){
-                    //calculate distance between k-th outer dummy-pole in v-direction and profile
-                    double outer_distance = outer_rd/_nb_dummies * (_nb_dummies-k);
-                    gp_Vec outer_vec(outer_poles_per_col.Coord().X(),outer_poles_per_col.Coord().Y(),outer_poles_per_col.Coord().Z());
-                    gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
-                    outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
-                    outer_vec.Subtract(outer_normalized_vec);
-                    gp_Pnt new_pole_outer(outer_vec.XYZ());
-                    std::cout << "OuterDistance:" << outer_distance << " k:" << k << std::endl;
-                    std::cerr << "Insert outer " << k << ". Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
-                    //save new poles in a vector for each outer dummy profile
-                    m_pole_matrix.SetValue(current_row,j+1, new_pole_outer);
-                    current_row+=1;
-                }
-            }
-            //insert actual profile pole
-            if(i<m_profileCurves.size()){
-                std::cerr << "Last Profile pole: i:" << i << " j:" << j << " current_row:" << current_row << std::endl;
-                m_pole_matrix.SetValue(current_row, j+1, outer_poles_per_col);
-                current_row+=1;
-            }
-        }
-    }
 
-    //CODE FOR PRINT-DEBUGGING
-    std::cerr << "Rows: " << m_pole_matrix.ColLength() << "m: " << m << "Columns: " << m_pole_matrix.RowLength() << "n: " << n << std::endl;
 
-    for(int col=1; col<n+1; col++){
-        NCollection_Array1< gp_Pnt > i_poles(1,m);
-        std::cerr<< "Column:" << col << std::endl;
-        for(int i=1; i < m+1; i++){
-            i_poles.SetValue(i,(m_pole_matrix.Value(i,col)));
-            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
-        }
-        auto spline = new Geom_BSplineCurve(i_poles, m_v_knots, m_v_multiplicities, _v_degree);
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
-        tigl::dumpShape(edge,"makeLoftWing", "Edge",col);
-    }
-    for(int row=1; row<m+1; row++){
-        NCollection_Array1< gp_Pnt > i_poles(1,n);
-        std::cerr<< "Row:" << row << std::endl;
-        for(int i=1; i < n+1; i++){
-            i_poles.SetValue(i,(m_pole_matrix.Value(row,i)));
-            std::cerr << "X:" << i_poles.Value(i).Coord().X() << " Y:" << i_poles.Value(i).Coord().Y() << " Z:" << i_poles.Value(i).Coord().Z() << std::endl;
-        }
-        auto spline = new Geom_BSplineCurve(i_poles, m_u_knots, m_u_multiplicities, _u_degree);
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(spline);
-        tigl::dumpShape(edge,"makeLoftWing", "Row",row);
-    }
-}
+
 
 void CTiglRoundedSegmentSurface::calculateKnotsAndMultiplicities(){
     //create knots in v-direction
@@ -214,12 +188,7 @@ void CTiglRoundedSegmentSurface::calculateKnotsAndMultiplicities(){
     //
 }
 
-opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft(){
-    ConvertCurves();
-    NumberOfPolesIsSameInAllCurves(m_profileCurves);
-    initializePoleMatrix();
-    calculatePoleMatrix();
-    calculateKnotsAndMultiplicities();
+opencascade::handle<Geom_BSplineSurface> Surface(){
 
     /** TODO IS ALL OF THAT COVERED?
          * OCC Geom_BSplineSurface():
@@ -233,15 +202,15 @@ opencascade::handle<Geom_BSplineSurface> CTiglRoundedSegmentSurface::buildLoft()
          * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
          */
 
-    auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
+    //auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
 
     //DEBUG DELETEME
-    Handle(Geom_Surface) handle_surface = surface;
-    TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
-    tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
+   // Handle(Geom_Surface) handle_surface = surface;
+   // TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
+   // tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
 
-    return surface;
+   // return surface;
 }
 
-}
 
+}
