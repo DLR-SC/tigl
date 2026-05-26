@@ -20,7 +20,7 @@ by NURBS surfaces. The library provides external interfaces for C, C++, Python, 
 TiGL is shipped with the Qt based _TiGLCreator_ for visualizing and editing aircraft
 geometries or viewing CAD files.
 
-![Screenshot of the TiGLCreator](doc/images/tiglcreator-web.jpg)
+![Screenshot of the TiGLCreator](doc/images/tiglcreator.png)
 
 # Downloads
 
