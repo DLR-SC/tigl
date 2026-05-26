@@ -12,19 +12,96 @@ namespace tigl {
 class CTiglRoundedSegmentSurface
 {
 public:
-    TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<TopoDS_Wire>&, double inner_rounding_distance, double outer_rounding_distance);
+    TIGL_EXPORT CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
+                                           double inner_rounding_distance,
+                                           double outer_rounding_distance);
 
-    TIGL_EXPORT TopoDS_Shape& Shape();
+    TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
+
+    TIGL_EXPORT void CheckEdgeCountIsSameInAllProfiles(const std::vector<TopoDS_Wire> &profiles);
+    //Row: Profile Curves Col: Edges per Profile
+    TIGL_EXPORT std::vector<std::vector<Handle(Geom_BSplineCurve)>> ConvertCurves(std::vector<TopoDS_Wire> &profiles);
 
 private:
     TIGL_EXPORT void Perform();
-    // Converts TopoDS_Wire → Handle(Geom_BSplineCurve)
-    TIGL_EXPORT void ConvertCurves();
 
-    // Initialize values required for 'buildLoft'
-    // Determin dimensions of pole matrix
+    struct RoundedSegment
+    {
+        RoundedSegment(std::vector<Handle(Geom_BSplineCurve)> const& start,
+                       std::vector<Handle(Geom_BSplineCurve)> const& end,
+                       double inner_rounding_distance,
+                       double outer_rounding_distance) {
+            for(int i = 0; i < start.size(); i++){
+                firstProfile.SetValue(i+1,start[i]->Pole(i+1));
+                lastProfile.SetValue(i+1,end[i]->Pole(i+1));
+            }
+        }
+
+        void insert_inner_rows(int nb_dummies) {
+            for (int i = 0; i < nb_dummies; i++) {
+                auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
+                // for every profile point in start profile
+                for(int j = 1; j< firstProfile.Size()+1; j++){
+                    //calculate Vector between both profile poles and normalize it
+                    gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
+                    gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
+                    // interpolate relative position between the point in the start and end profiles for the ith dummy profile
+                    // append interpolated point to row
+                    double inner_distance = inner_rounding_distance/nb_dummies*(i+1);
+                    gp_Vec inner_pole_vec(firstProfile.Value(j).Coord().X(),firstProfile.Value(j).Coord().Y(),firstProfile.Value(j).Coord().Z());
+                    //save new poles in a vector for each inner dummy profile
+                    gp_Vec inner_vec(normalized_vector_in_v_direction);
+                    inner_vec.Scale(inner_distance); //scaled normalized vector in v-direction
+                    inner_vec.Add(inner_pole_vec); //vector to new k-th pole
+                    gp_Pnt new_pole_inner(inner_vec.XYZ());
+                    row->SetValue(j+1, new_pole_inner);
+                }
+                dummyProfiles.push_back(row);
+            }
+        }
+
+        void insert_outer_rows(int nb_dummies) {
+            for (int i = 0; i < nb_dummies; i++) {
+                auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
+                for (int j=0; j < firstProfile.Size(); j++){
+                    //calculate Vector between both profile poles and normalize it
+                    gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
+                    gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
+                    //calculate distance between k-th outer dummy-pole in v-direction and profile
+                    double outer_distance = outer_rounding_distance/nb_dummies * (nb_dummies-i);
+                    gp_Vec outer_vec(lastProfile.Value(j).Coord().X(),lastProfile.Value(j).Coord().Y(),lastProfile.Value(j).Coord().Z());
+                    gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
+                    outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
+                    outer_vec.Subtract(outer_normalized_vec);
+                    gp_Pnt new_pole_outer(outer_vec.XYZ());
+                    //save new poles in a vector for each outer dummy profile
+                    row->SetValue(j+1, new_pole_outer);
+                }
+                dummyProfiles.push_back(row);
+            }
+        }
+
+        TColgp_HArray1OfPnt get_first_profile(){
+            return firstProfile;
+        }
+        TColgp_HArray1OfPnt get_last_profile(){
+            return lastProfile;
+        }
+        std::vector<TColgp_HArray1OfPnt> getDummyProfiles(){
+            return dummyProfiles;
+        }
+
+
+        TColgp_HArray1OfPnt firstProfile;
+        TColgp_HArray1OfPnt lastProfile;
+        std::vector<TColgp_HArray1OfPnt> dummyProfiles;
+        double inner_rounding_distance;
+        double outer_rounding_distance;
+    };
+
+     //TODO
     TIGL_EXPORT void initializePoleMatrix();
-
+    TIGL_EXPORT void insertBefore(int i);
     // Calculate required poles to build rounded curves at given sections
     TIGL_EXPORT void calculatePoleMatrix();
 
@@ -59,15 +136,13 @@ private:
     TColStd_HArray1OfInteger m_u_multiplicities;
     TColStd_HArray1OfInteger m_v_multiplicities;
 
-    //Input datatype for constructor, to be converted in perform()-method
-    const std::vector<TopoDS_Wire>& m_profileWires;
-
     //Storage of inner and outer rounding distance per segment
     std::vector<double> m_inner_rounding_distance;
     std::vector<double> m_outer_rounding_distance;
 
     // Store as B-spline curves internally (after conversion)
     std::vector<Handle(Geom_BSplineCurve)> m_profileCurves;
+    Handle(Geom_BSplineSurface) m_surface;
 
     bool _hasPerformed = false;
     int _maxDegree = 3;
