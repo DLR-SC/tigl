@@ -23,6 +23,7 @@
 #include "TIGLCreatorWindow.h"
 #include "TIGLCreatorScopedCommand.h"
 #include "TIGLCreatorSelectWingAndFlapStatusDialog.h"
+#include "CTiglError.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -795,6 +796,23 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
             else {
                 IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                if (objects.empty()) {
+                    throw tigl::CTiglError("No object found for component with uid \"" + uid.toStdString() + "\"");
+                    return;
+                }
+                if (objects[0]->Shape() != component.GetLoft()->Shape()) {
+                    objects[0]->SetShape(component.GetLoft()->Shape());
+                }
+                else if (objects.size() > 1) {
+                    auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+                    if (geometricComp) {
+                        if (geometricComp->GetMirroredLoft()) {
+                            if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
+                                objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
+                            }
+                        }
+                    }
+                }
                 for (auto& obj : objects) {
                     app->getScene()->getContext()->Display(obj, Standard_False);
                 }
