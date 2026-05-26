@@ -614,7 +614,7 @@ void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, do
             throw tigl::CTiglError("TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]");
         }
 
-        if (dx == 0. && dy == 0. && dz == 0.) {
+        if (dx*dx + dy*dy + dz*dz < 1e8) {
             throw tigl::CTiglError("TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector");
         }
     }
