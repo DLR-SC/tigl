@@ -163,7 +163,7 @@ namespace generated
 
     CPACSProfileGeometry& CPACSRotorAirfoils::AddRotorAirfoil()
     {
-        m_rotorAirfoils.push_back(make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSRotorProfiles*>(this), m_uidMgr));
+        m_rotorAirfoils.push_back(std::make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSRotorProfiles*>(this), m_uidMgr));
         return *m_rotorAirfoils.back();
     }
 

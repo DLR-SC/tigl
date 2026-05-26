@@ -87,7 +87,7 @@ void ProfilesDBManager::setLocalProfiles(QString newDBFile)
         return;
     }
 
-    localProfiles = tigl::make_unique<tigl::CCPACSProfiles>(nullptr, &myDBUIDManager);
+    localProfiles = std::make_unique<tigl::CCPACSProfiles>(nullptr, &myDBUIDManager);
     localProfiles->ReadCPACS(tixiHandle, "/");
     updateProfilesLists();
 }

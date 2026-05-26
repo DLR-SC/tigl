@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSLeadingEdgeDevice.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CPACSWingComponentSegmentStructure.h"
@@ -39,6 +40,16 @@ namespace generated
         m_parentType = &typeid(CCPACSWingComponentSegment);
     }
 
+    CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
+        , m_lowerShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSLeadingEdgeDevice);
+    }
+
     CPACSWingComponentSegmentStructure::CPACSWingComponentSegmentStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_upperShell(reinterpret_cast<CCPACSWingCSStructure*>(this), m_uidMgr)
@@ -59,6 +70,9 @@ namespace generated
             if (IsParent<CCPACSWingComponentSegment>()) {
                 return GetParent<CCPACSWingComponentSegment>();
             }
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
+            }
             if (IsParent<CCPACSTrailingEdgeDevice>()) {
                 return GetParent<CCPACSTrailingEdgeDevice>();
             }
@@ -71,6 +85,9 @@ namespace generated
         if (m_parent) {
             if (IsParent<CCPACSWingComponentSegment>()) {
                 return GetParent<CCPACSWingComponentSegment>();
+            }
+            if (IsParent<CCPACSLeadingEdgeDevice>()) {
+                return GetParent<CCPACSLeadingEdgeDevice>();
             }
             if (IsParent<CCPACSTrailingEdgeDevice>()) {
                 return GetParent<CCPACSTrailingEdgeDevice>();

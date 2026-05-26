@@ -59,13 +59,13 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkLED">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
        <property name="text">
         <string>LED</string>
        </property>
        <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
         <bool>false</bool>
        </property>
       </widget>

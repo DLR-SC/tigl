@@ -157,7 +157,7 @@ namespace generated
 
     CPACSDeckStructuralMount& CPACSDeckStructuralMounts::AddStructuralMount()
     {
-        m_structuralMounts.push_back(make_unique<CPACSDeckStructuralMount>(this, m_uidMgr));
+        m_structuralMounts.push_back(std::make_unique<CPACSDeckStructuralMount>(this, m_uidMgr));
         return *m_structuralMounts.back();
     }
 

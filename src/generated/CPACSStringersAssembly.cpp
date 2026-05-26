@@ -188,7 +188,7 @@ namespace generated
 
     CCPACSFuselageStringer& CPACSStringersAssembly::AddStringer()
     {
-        m_stringers.push_back(make_unique<CCPACSFuselageStringer>(reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr));
+        m_stringers.push_back(std::make_unique<CCPACSFuselageStringer>(reinterpret_cast<CCPACSStringersAssembly*>(this), m_uidMgr));
         return *m_stringers.back();
     }
 

@@ -17,11 +17,11 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <tixi.h>
 #include <vector>
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {
@@ -88,8 +88,9 @@ namespace generated
     };
 } // namespace generated
 
+// CPACSControlSurfaceSteps is customized, use type CCPACSControlSurfaceSteps directly
+
 // Aliases in tigl namespace
-using CCPACSControlSurfaceSteps = generated::CPACSControlSurfaceSteps;
 using CCPACSControlSurfaceStep = generated::CPACSControlSurfaceStep;
 using CCPACSControlSurfacePath = generated::CPACSControlSurfacePath;
 } // namespace tigl

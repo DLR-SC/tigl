@@ -163,7 +163,7 @@ namespace generated
 
     CPACSStrutAssembly& CPACSSideStruts::AddSideStrut()
     {
-        m_sideStruts.push_back(make_unique<CPACSStrutAssembly>(this, m_uidMgr));
+        m_sideStruts.push_back(std::make_unique<CPACSStrutAssembly>(this, m_uidMgr));
         return *m_sideStruts.back();
     }
 

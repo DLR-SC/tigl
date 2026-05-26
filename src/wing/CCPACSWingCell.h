@@ -21,7 +21,6 @@
 
 #include "ITiglGeometricComponent.h"
 #include "generated/CPACSWingCell.h"
-#include "generated/UniquePtr.h"
 #include "tigletaxsifunctions.h"
 #include "Cache.h"
 #include "CTiglRectGridSurface.h"

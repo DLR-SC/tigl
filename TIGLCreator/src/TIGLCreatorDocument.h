@@ -25,6 +25,7 @@
 #include <QMetaType>
 #include "TIGLCreator.h"
 #include "CCPACSConfiguration.h"
+#include "TIGLCreatorContext.h"
 
 #include <Quantity_Color.hxx>
 
@@ -87,6 +88,8 @@ public slots:
     void drawSystems();
     void drawComponent();
     void drawComponentByUID(const QString& uid);
+    void drawControlPointNet();
+    void drawControlPointNetByUID(const QString& uid);
 
     // Wing slots
     void drawWingProfiles();
@@ -183,6 +186,7 @@ private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     TIGLCreatorWindow*                       app;
     QString                                 loadedConfigurationFileName;
+    TIGLCreatorContext*                      myScene;
 
     // Variable to store information on whether cpacs configuration was modified after last save.
     // Variable is set to true via TIGLCreatorWindow::updateScene implicitely when the SIGNAL undoCommandRequired() is emitted (at the end).

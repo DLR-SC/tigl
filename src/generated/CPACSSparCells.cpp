@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSparCell& CPACSSparCells::AddSparCell()
     {
-        m_sparCells.push_back(make_unique<CPACSSparCell>(this, m_uidMgr));
+        m_sparCells.push_back(std::make_unique<CPACSSparCell>(this, m_uidMgr));
         return *m_sparCells.back();
     }
 

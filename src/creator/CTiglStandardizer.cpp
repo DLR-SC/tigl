@@ -88,7 +88,7 @@ void tigl::CTiglStandardizer::StdandardizePositioningsStructure(CCPACSPositionin
                                                                 std::vector<CTiglSectionElement*> elements)
 {
 
-    std::vector<unique_ptr<CCPACSPositioning>>& refPos = positionings.GetPositionings();
+    std::vector<std::unique_ptr<CCPACSPositioning>>& refPos = positionings.GetPositionings();
     while (refPos.size() != 0) {
         positionings.RemovePositioning(*(refPos.front()));
     }

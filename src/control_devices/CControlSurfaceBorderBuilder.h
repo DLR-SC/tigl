@@ -86,7 +86,7 @@ private:
     CControlSurfaceBorderBuilder();
     
     /// Computes the points on the wing skin and their tangents
-    TopoDS_Wire boarderWithInnerShapeImpl(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower, double offset);
+    TopoDS_Wire borderWithInnerShapeImpl(double rTEHeight, double xsiTail, double xsiTEUpper, double xsiTELower, double offset);
     void computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tangentUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo);
     void computeSkinPoints(double xsiUpper, double xsiLower);
     

@@ -20,18 +20,18 @@
 #define TIGLINTERACTIVESHAPEMANAGER_H
 
 #include "PNamedShape.h"
-#include <AIS_InteractiveObject.hxx>
+#include <AIS_Shape.hxx>
 #include <map>
 #include <string>
 #include <vector>
 
-typedef std::vector<Handle(AIS_InteractiveObject)> IObjectList;
+typedef std::vector<Handle(AIS_Shape)> IObjectList;
 
 struct ShapeEntry
 {
 public:
     PNamedShape shape;
-    std::vector<Handle(AIS_InteractiveObject)> aisObjects;
+    std::vector<Handle(AIS_Shape)> aisObjects;
 };
 
 class InteractiveShapeManager
@@ -40,17 +40,24 @@ public:
     InteractiveShapeManager();
 
     PNamedShape GetShapeFromName(const std::string& name);
-    PNamedShape GetShapeFromIObject(Handle(AIS_InteractiveObject) obj);
-    IObjectList GetIObjectsFromShapeName(const std::string& name);
+    PNamedShape GetShapeFromIObject(Handle(AIS_Shape) obj);
+    IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
     std::vector<PNamedShape> GetAllShapes() const;
 
     // removes the shape and all interactive objects belonging to the shape
     void removeObject(const std::string& name);
+    void clear();
 
     // removes only the interactive object from the shape manager
-    void removeObject(Handle(AIS_InteractiveObject) obj);
-    void addObject(PNamedShape shape, const Handle(AIS_InteractiveObject) iObject);
+    void removeObject(Handle(AIS_Shape) obj);
+    void addObject(PNamedShape shape, const Handle(AIS_Shape) iObject);
+    void addObject(std::string uid, Handle(AIS_Shape) iObject);
+    
+    bool HasShapeEntry(const std::string& name) const;
+    bool GetVisibility(const std::string& name) const;
+
+    std::vector<std::string> GetDisplayedShapeNames() const;
 
 private:
     ShapeEntry& GetShapeEntry(const std::string& name);
@@ -58,8 +65,8 @@ private:
     std::map<std::string, ShapeEntry> _shapeEntries;
     typedef std::map<std::string, ShapeEntry> ShapeMap;
     typedef ShapeMap::iterator ShapeIterator;
-    std::map<Handle(AIS_InteractiveObject), std::string> _names;
-    typedef std::map<Handle(AIS_InteractiveObject), std::string>::iterator NameIterator;
+    std::map<Handle(AIS_Shape), std::string> _names;
+    typedef std::map<Handle(AIS_Shape), std::string>::iterator NameIterator;
 };
 
 #endif // TIGLINTERACTIVESHAPEMANAGER_H

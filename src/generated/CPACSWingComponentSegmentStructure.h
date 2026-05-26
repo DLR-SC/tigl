@@ -34,12 +34,14 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSWingComponentSegment;
+class CCPACSLeadingEdgeDevice;
 class CCPACSTrailingEdgeDevice;
 
 namespace generated
 {
     // This class is used in:
     // CPACSComponentSegment
+    // CPACSLeadingEdgeDevice
     // CPACSTrailingEdgeDevice
 
     /// @brief Structure of the wing
@@ -51,6 +53,7 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSWingComponentSegment* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSLeadingEdgeDevice* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSWingComponentSegmentStructure(CCPACSTrailingEdgeDevice* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSWingComponentSegmentStructure();
@@ -64,7 +67,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
+            static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSLeadingEdgeDevice>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -74,7 +77,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
+            static_assert(std::is_same<P, CCPACSWingComponentSegment>::value || std::is_same<P, CCPACSLeadingEdgeDevice>::value || std::is_same<P, CCPACSTrailingEdgeDevice>::value, "template argument for P is not a parent class of CPACSWingComponentSegmentStructure");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

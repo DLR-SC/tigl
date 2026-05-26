@@ -32,6 +32,8 @@
 
 
 #include "TIGLCreatorWindow.h"
+#include "CPACSTreeWidget.h"
+#include "ModificatorContainerWidget.h"
 #include "TIGLCreatorSettingsDialog.h"
 #include "TIGLCreatorDrawVectorDialog.h"
 #include "TIGLCreatorDocument.h"
@@ -51,6 +53,7 @@
 #include "TIGLCreatorScopedCommand.h"
 #include "tigl_config.h"
 #include "api/tigl_version.h"
+#include "TIGLCreatorMaterials.h"
 #include "CCPACSConfigurationManager.h"
 #include "TIGLCreatorNewFileDialog.h"
 #include "TIGLCreatorAddSpotlightDialog.h"
@@ -127,6 +130,10 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     myOCC->setContext(myScene);
 
+    // refresh display options UI when the scene reports display-attribute changes
+    connect(myScene, &TIGLCreatorContext::displayAttributesChanged,
+        this, &TIGLCreatorWindow::onSceneDisplayAttributesChanged);
+
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
     // TIGLCreator to also open a document many times.
@@ -173,6 +180,17 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this, SLOT(onTreeSelectionChanged(cpcr::CPACSTreeItem*)));
+    connect(modificatorContainerWidget, SIGNAL(parametersTabRequested()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
+    connect(modificatorContainerWidget, SIGNAL(displayOptionsRequested()), this, SLOT(onDisplayOptionsRequested()));
+    connect(modificatorContainerWidget, SIGNAL(setTransparencyRequested(int)), this, SLOT(onSetTransparencyRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setRenderingModeRequested(int)), this, SLOT(onSetRenderingModeRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setColorRequested(const QColor&)), this, SLOT(onSetColorRequested(const QColor&)));
+    connect(modificatorContainerWidget, SIGNAL(setMaterialRequested(const QString&)), this, SLOT(onSetMaterialRequested(const QString&)));
+
+    // connect model visibility changes to the scene
+    connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
+
     connectSignals();
     createMenus();
     updateMenus();
@@ -182,7 +200,6 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
     setMinimumSize(160, 160);
-
 
 }
 
@@ -321,6 +338,7 @@ void TIGLCreatorWindow::closeConfiguration()
     modificatorModel->setCPACSConfiguration(nullptr); // it will also reset the treeview
     treeWidget->refresh();
     if (cpacsConfiguration) {
+
         getScene()->deleteAllObjects();
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
@@ -330,6 +348,7 @@ void TIGLCreatorWindow::closeConfiguration()
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
+    getScene()->GetShapeManager().clear();
 }
 
 void TIGLCreatorWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -371,6 +390,8 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 
         if (fileType.toLower() == tr("xml")) {
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+
+
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
@@ -426,8 +447,15 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
 void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
+        std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
+        
+        modificatorModel->setCPACSConfiguration(nullptr);
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
+        getScene()->deleteAllObjects();
+        for (const auto& name : displayedShapeNames) {
+                    cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
+        }
         treeWidget->refresh();
     }
     else {
@@ -903,6 +931,7 @@ void TIGLCreatorWindow::connectConfiguration()
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
     connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
     connect(drawComponentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawComponent()));
+    connect(drawControlPointNetAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawControlPointNet()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -1064,6 +1093,33 @@ void TIGLCreatorWindow::connectSignals()
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 }
 
+void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)
+{
+    if (!cpacsConfiguration) return;
+
+    try {
+        // find interactive objects for the given uid
+        if (visible) {
+            cpacsConfiguration->drawComponentByUID(uid);
+        }
+        else {
+            auto& shapeManager = myScene->GetShapeManager();
+            if (shapeManager .HasShapeEntry(uid.toStdString())) {
+                auto objs = shapeManager .GetIObjectsFromShapeName(uid.toStdString());
+                for (auto& obj : objs) {
+                    myScene->getContext()->Remove(obj, Standard_False);
+                }
+            }
+            else {
+                throw tigl::CTiglError("Component with UID " + uid.toStdString() + " not found in shape manager");
+            }
+        }
+        myScene->getViewer()->Update();
+    }
+    catch (tigl::CTiglError& ) {
+        throw tigl::CTiglError("Error changing visibility of component with UID " + uid.toStdString());
+    }
+}
 
 void TIGLCreatorWindow::createMenus()
 {
@@ -1095,18 +1151,10 @@ void TIGLCreatorWindow::updateRecentFileActions()
     myLastFolder = settings.value("lastFolder").toString();
 }
 
-void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
-{
-    auto idx = modificatorModel->getIdxForUID(treeWidget->getLastSelectedUID());
-    if (!idx.isValid()) {
-        return;
-    }
-    auto item = modificatorModel->getItem(idx);
-    if (!item) {
-        return;
-    }
-    modificatorModel->dispatch(item);
-}
+// dispatchLastSelectedItemOnConfigurationEdited is implemented later in this
+// file with improved handling for group nodes (empty UID) and a stored
+// lastSelectedTreeItem pointer. Keep that implementation and avoid the
+// duplicate definition.
 
 void TIGLCreatorWindow::updateMenus()
 {
@@ -1324,5 +1372,118 @@ void TIGLCreatorWindow::standardizeDialog()
         else {
             modificatorModel->standardize(newStdDialog.useSimpleDecomposition());
         }
+    }
+}
+
+void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
+{
+    if (!modificatorModel) return;
+    if (!treeWidget) return;
+
+    QString uid = treeWidget->getSelectedUID();
+    cpcr::CPACSTreeItem* item = nullptr;
+
+    if (!uid.isEmpty()) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr && lastSelectedTreeItem != nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    if (!item) return;
+    modificatorModel->dispatch(item);
+}
+
+void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
+{
+    if (!treeWidget) {
+        return;
+    }
+    lastSelectedTreeUID = treeWidget->getSelectedUID();
+    lastSelectedTreeItem = item;
+}
+
+void TIGLCreatorWindow::onDisplayOptionsRequested()
+{
+    cpcr::CPACSTreeItem* item = nullptr;
+    QString uid = QString();
+    if (treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+    if (!uid.isEmpty() && modificatorModel) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    modificatorContainerWidget->setDisplayOptionsFromItem(item, cpacsConfiguration, myScene);
+}
+
+void TIGLCreatorWindow::onSetTransparencyRequested(int v)
+{
+    if (myScene) {
+        myScene->setTransparency(v);
+    }
+}
+
+void TIGLCreatorWindow::onSetRenderingModeRequested(int mode)
+{
+    if (!myScene) {
+        return;
+    }
+    if (mode == 0) {
+        myScene->setObjectsWireframe();
+    }
+    else if (mode == 1) {
+        myScene->setObjectsShading();
+    }
+
+}
+
+void TIGLCreatorWindow::onSetColorRequested(const QColor &c)
+{
+    if (myScene){
+        myScene->setObjectsColor(c);
+    }
+}
+
+void TIGLCreatorWindow::onSceneDisplayAttributesChanged()
+{
+    cpcr::CPACSTreeItem* item = nullptr;
+    QString uid;
+    if (treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+    if (!uid.isEmpty() && modificatorModel) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    modificatorContainerWidget->updateDisplayOptionsIfActive(item, cpacsConfiguration, myScene);
+}
+
+void TIGLCreatorWindow::onSetMaterialRequested(const QString &m)
+{
+    if (!myScene) {
+        return;
+    }
+    auto it = tiglMaterials::materialMap.find(m);
+    if (it != tiglMaterials::materialMap.end()) {
+        myScene->setObjectsMaterial(it->second);
     }
 }
