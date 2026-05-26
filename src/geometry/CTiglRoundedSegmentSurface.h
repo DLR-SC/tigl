@@ -18,22 +18,18 @@ public:
 
     TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
-    TIGL_EXPORT void CheckEdgeCountIsSameInAllProfiles(const std::vector<TopoDS_Wire> &profiles);
-    //Row: Profile Curves Col: Edges per Profile
-    TIGL_EXPORT std::vector<std::vector<Handle(Geom_BSplineCurve)>> ConvertCurves(std::vector<TopoDS_Wire> &profiles);
-
 private:
     TIGL_EXPORT void Perform();
 
     struct RoundedSegment
     {
-        RoundedSegment(std::vector<Handle(Geom_BSplineCurve)> const& start,
-                       std::vector<Handle(Geom_BSplineCurve)> const& end,
+        RoundedSegment(Handle(Geom_BSplineCurve) const& start,
+                       Handle(Geom_BSplineCurve) const& end,
                        double inner_rounding_distance,
                        double outer_rounding_distance) {
-            for(int i = 0; i < start.size(); i++){
-                firstProfile.SetValue(i+1,start[i]->Pole(i+1));
-                lastProfile.SetValue(i+1,end[i]->Pole(i+1));
+            for(int i = 0; i < start->NbPoles(); i++){
+                firstProfile.SetValue(i+1,start->Pole(i));
+                lastProfile.SetValue(i+1,end->Pole(i));
             }
         }
 
@@ -99,12 +95,6 @@ private:
         double outer_rounding_distance;
     };
 
-     //TODO
-    TIGL_EXPORT void initializePoleMatrix();
-    TIGL_EXPORT void insertBefore(int i);
-    // Calculate required poles to build rounded curves at given sections
-    TIGL_EXPORT void calculatePoleMatrix();
-
     // Deduce required knot vector and multiplicies from pole matrix properties
     //TODO: Add mathematical boundaries for required number of knots and multiplicities
     TIGL_EXPORT void calculateKnotsAndMultiplicities();
@@ -123,7 +113,6 @@ private:
     */
 
     // Call required methods to initialize required values and build surface
-    TIGL_EXPORT Handle(Geom_BSplineSurface) buildLoft();
     TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
 
 private:
@@ -137,11 +126,12 @@ private:
     TColStd_HArray1OfInteger m_v_multiplicities;
 
     //Storage of inner and outer rounding distance per segment
-    std::vector<double> m_inner_rounding_distance;
-    std::vector<double> m_outer_rounding_distance;
+    double m_inner_rounding_distance;
+    double m_outer_rounding_distance;
 
     // Store as B-spline curves internally (after conversion)
-    std::vector<Handle(Geom_BSplineCurve)> m_profileCurves;
+    std::vector<Handle(Geom_BSplineCurve)> m_profileCurves; //Vector contains 1 edge per profile Wire, loft ist build edgewise
+    std::vector<RoundedSegment> m_segments;
     Handle(Geom_BSplineSurface) m_surface;
 
     bool _hasPerformed = false;

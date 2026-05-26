@@ -9,21 +9,60 @@
 
 
 namespace tigl{
-CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> ,
+CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
                                                        double inner_rounding_distance,
                                                        double outer_rounding_distance):
     m_pole_matrix({}),
     m_inner_rounding_distance(inner_rounding_distance),
     m_outer_rounding_distance(outer_rounding_distance),
     m_profileCurves(m_profileCurves),
+    m_segments({}),
     m_surface(nullptr){}
 
 TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
-void CTiglRoundedSegmentSurface::initializePoleMatrix(){
+void CTiglRoundedSegmentSurface::Perform(){
+    //initialize polematrix
     Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
     Standard_Integer n = m_profileCurves[0]->NbPoles();
     m_pole_matrix = TColgp_HArray2OfPnt(1,m,1,n);
+    //initialize m_segments vector
+    for(Handle(Geom_BSplineCurve) curve : m_profileCurves){
+        m_segments.push_back(RoundedSegment(m_profileCurves[0],
+                                            m_profileCurves[m_profileCurves.size()-1],
+                                            m_inner_rounding_distance, //TODO access the right values per RoundedSegment
+                                            m_outer_rounding_distance));
+    }
+    //update each element in m_segments vector and create all dummy profiles
+    //outer segments have only inner|outer dummy curves
+    m_segments[0].insert_outer_rows(_nb_dummies);
+    m_segments[m_segments.size()-1].insert_inner_rows(_nb_dummies);
+    //inner segments have both, inner and outer dummy curves
+    for(int i = 1; i< m_segments.size()-1; i++){
+        m_segments[i].insert_inner_rows(_nb_dummies);
+        m_segments[i].insert_outer_rows(_nb_dummies);
+    }
+
+    int row=0; //counter for inserted rows
+    for(RoundedSegment seg: m_segments){
+        //fill pole matrix
+        //Retrieve First Segments Curves
+        for( int col = 1;col< n+1; col++){
+            m_pole_matrix.SetValue(0,col,m_segments[0].get_first_profile().Value(col));
+        }
+        row++; //next row
+        for(TColgp_HArray1OfPnt profile: m_segments[0].getDummyProfiles()){
+            for( int col = 1;col< n+1; col++){
+                m_pole_matrix.SetValue(row,col,profile.Value(col));
+            }
+            row++;
+        }
+        //Retrieve Last Segments Curves
+        for( int col = 1;col< n+1; col++){
+            m_pole_matrix.SetValue(0,col,m_segments[0].get_last_profile().Value(col));
+        }
+    }
+
 }
 
 //void CTiglRoundedSegmentSurface::calculatePoleMatrix()
