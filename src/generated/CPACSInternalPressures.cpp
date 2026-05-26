@@ -128,7 +128,7 @@ namespace generated
 
     CPACSInternalPressure& CPACSInternalPressures::AddInternalPressure()
     {
-        m_internalPressures.push_back(make_unique<CPACSInternalPressure>(this, m_uidMgr));
+        m_internalPressures.push_back(std::make_unique<CPACSInternalPressure>(this, m_uidMgr));
         return *m_internalPressures.back();
     }
 

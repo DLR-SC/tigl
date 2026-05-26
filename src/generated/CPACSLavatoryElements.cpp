@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDeckElementBase& CPACSLavatoryElements::AddLavatoryElement()
     {
-        m_lavatoryElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_lavatoryElements.push_back(std::make_unique<CPACSDeckElementBase>(this, m_uidMgr));
         return *m_lavatoryElements.back();
     }
 

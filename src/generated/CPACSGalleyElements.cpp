@@ -163,7 +163,7 @@ namespace generated
 
     CPACSGalleyElement& CPACSGalleyElements::AddGalleyElement()
     {
-        m_galleyElements.push_back(make_unique<CPACSGalleyElement>(this, m_uidMgr));
+        m_galleyElements.push_back(std::make_unique<CPACSGalleyElement>(this, m_uidMgr));
         return *m_galleyElements.back();
     }
 

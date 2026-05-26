@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDoorCutOut& CPACSDoors::AddDoor()
     {
-        m_doors.push_back(make_unique<CPACSDoorCutOut>(this, m_uidMgr));
+        m_doors.push_back(std::make_unique<CPACSDoorCutOut>(this, m_uidMgr));
         return *m_doors.back();
     }
 

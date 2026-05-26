@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDeckElementBase& CPACSGenericFloorElements::AddGenericFloorElement()
     {
-        m_genericFloorElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_genericFloorElements.push_back(std::make_unique<CPACSDeckElementBase>(this, m_uidMgr));
         return *m_genericFloorElements.back();
     }
 

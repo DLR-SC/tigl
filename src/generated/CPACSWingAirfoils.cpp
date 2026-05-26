@@ -163,7 +163,7 @@ namespace generated
 
     CPACSProfileGeometry& CPACSWingAirfoils::AddWingAirfoil()
     {
-        m_wingAirfoils.push_back(make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSWingProfiles*>(this), m_uidMgr));
+        m_wingAirfoils.push_back(std::make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSWingProfiles*>(this), m_uidMgr));
         return *m_wingAirfoils.back();
     }
 

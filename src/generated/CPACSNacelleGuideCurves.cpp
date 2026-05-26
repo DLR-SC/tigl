@@ -128,7 +128,7 @@ namespace generated
 
     CPACSNacelleGuideCurve& CPACSNacelleGuideCurves::AddNacelleGuideCurve()
     {
-        m_nacelleGuideCurves.push_back(make_unique<CPACSNacelleGuideCurve>(reinterpret_cast<CCPACSNacelleGuideCurves*>(this), m_uidMgr));
+        m_nacelleGuideCurves.push_back(std::make_unique<CPACSNacelleGuideCurve>(reinterpret_cast<CCPACSNacelleGuideCurves*>(this), m_uidMgr));
         return *m_nacelleGuideCurves.back();
     }
 
