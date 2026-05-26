@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSheetBasedStructuralElement& CPACSSheetBasedStructuralElements::AddSheetBasedStructuralElement()
     {
-        m_sheetBasedStructuralElements.push_back(make_unique<CPACSSheetBasedStructuralElement>(this, m_uidMgr));
+        m_sheetBasedStructuralElements.push_back(std::make_unique<CPACSSheetBasedStructuralElement>(this, m_uidMgr));
         return *m_sheetBasedStructuralElements.back();
     }
 

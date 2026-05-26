@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSEnginePylon& CPACSEnginePylons::AddEnginePylon()
     {
-        m_enginePylons.push_back(make_unique<CCPACSEnginePylon>(this, m_uidMgr));
+        m_enginePylons.push_back(std::make_unique<CCPACSEnginePylon>(this, m_uidMgr));
         return *m_enginePylons.back();
     }
 

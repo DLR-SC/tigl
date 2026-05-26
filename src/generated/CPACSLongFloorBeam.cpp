@@ -196,7 +196,7 @@ namespace generated
 
     CCPACSLongFloorBeamPosition& CPACSLongFloorBeam::AddLongFloorBeamPosition()
     {
-        m_longFloorBeamPositions.push_back(make_unique<CCPACSLongFloorBeamPosition>(reinterpret_cast<CCPACSLongFloorBeam*>(this), m_uidMgr));
+        m_longFloorBeamPositions.push_back(std::make_unique<CCPACSLongFloorBeamPosition>(reinterpret_cast<CCPACSLongFloorBeam*>(this), m_uidMgr));
         return *m_longFloorBeamPositions.back();
     }
 

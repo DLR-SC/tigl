@@ -2,11 +2,11 @@ option(TIGL_BINDINGS_PYTHON_INTERNAL "Builds the python interface to the interna
 mark_as_advanced(TIGL_BINDINGS_PYTHON_INTERNAL)
 
 if (POLICY CMP0086)
-  cmake_policy(SET CMP0086 OLD)
+  cmake_policy(SET CMP0086 NEW)
 endif (POLICY CMP0086)
 
 if (POLICY CMP0078)
-  cmake_policy(SET CMP0078 OLD)
+  cmake_policy(SET CMP0078 NEW)
 endif (POLICY CMP0078)
 
 
@@ -96,7 +96,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
         swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
-        install(TARGETS _${MODULE}
+        install(TARGETS ${MODULE}
                 DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
                 COMPONENT interfaces
         )

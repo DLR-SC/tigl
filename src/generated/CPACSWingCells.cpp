@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSWingCell& CPACSWingCells::AddCell()
     {
-        m_cells.push_back(make_unique<CCPACSWingCell>(reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr));
+        m_cells.push_back(std::make_unique<CCPACSWingCell>(reinterpret_cast<CCPACSWingCells*>(this), m_uidMgr));
         return *m_cells.back();
     }
 

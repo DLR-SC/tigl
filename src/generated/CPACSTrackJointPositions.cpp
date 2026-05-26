@@ -116,7 +116,7 @@ namespace generated
 
     CPACSTrackJointPosition& CPACSTrackJointPositions::AddJointPosition()
     {
-        m_jointPositions.push_back(make_unique<CPACSTrackJointPosition>(this));
+        m_jointPositions.push_back(std::make_unique<CPACSTrackJointPosition>(this));
         return *m_jointPositions.back();
     }
 
