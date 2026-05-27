@@ -21,6 +21,7 @@
 
 #include "CCPACSConfiguration.h"
 #include "CCPACSComponent.h"
+#include "tigl.h"
 #include "generated/CPACSComponents.h"
 #include "CCPACSGenericSystems.h"
 #include "CCPACSGenericSystem.h"
@@ -150,12 +151,15 @@ TiglGeometryRepresentation CCPACSComponent::GetComponentRepresentation() const
 
 std::string CCPACSComponent::GetComponentRepresentationAsString() const
 {
-    switch (GetComponentRepresentation()) {
-    case TIGL_GEOMREP_PHYSICAL:
-        return "physical";
-    case TIGL_GEOMREP_ENVELOPE:
-        return "envelope";
+    const char* representation = ::tiglGeometryRepresentationToString(
+        static_cast<TiglGeometryRepresentationFlags>(GetComponentRepresentation()));
+
+    if (!representation) {
+        throw CTiglError("Invalid geometry representation for component with uID \"" +
+                         GetObjectUID().get_value_or("unnamed") + "\".");
     }
+
+    return representation;
 }
 
 void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
