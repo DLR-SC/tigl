@@ -101,7 +101,8 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
 {
     std::vector<size_t>::iterator it = std::find(m_indexOfApproximated.begin(), m_indexOfApproximated.end(), pointIndex);
     if (it == m_indexOfApproximated.end()) {
-        throw CTiglError("Invalid index in CTiglBSplineApproxInterp::InterpolatePoint", TIGL_INDEX_ERROR);
+        // Shift index in error message to be 1-based (internal storage is 0-based)
+        throw CTiglError("Invalid index " + std::to_string(pointIndex+1) + " in CTiglBSplineApproxInterp::InterpolatePoint", TIGL_INDEX_ERROR);
     }
     m_indexOfApproximated.erase(it);
 
