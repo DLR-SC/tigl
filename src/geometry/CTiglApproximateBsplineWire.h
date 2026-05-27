@@ -37,8 +37,11 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
-    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd,
+                                            const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd,
+                                            const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;
@@ -75,6 +78,8 @@ private:
     const std::string* m_profileUID;
 
     bool m_isWingProfile;
+
+    bool m_interpFarestPntFromStartEnd; // Defines whether the farest point from the averaged starting and end point should be interpolated
 
     const std::string m_approxErrStr; // Currently allowed entries are "root mean square error", "maximum error"
 

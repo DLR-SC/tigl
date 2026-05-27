@@ -116,11 +116,11 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
 
         if (approxSettings->GetControlPointNumber_choice1()) {
             int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true, true, approxErrStr, interpPointsIndices);
         }
         else if (approxSettings->GetMaximumError_choice2()) {
             double tolerance = *(approxSettings->GetMaximumError_choice2());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true, true, approxErrStr, interpPointsIndices);
         }
         else {
             throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
