@@ -159,7 +159,7 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         // Account for optional defined indices whose points should be interpolated
         for(auto idx: m_interpolatedPointsIndices) {
             int idxInt = (int) idx;
-            if ( idxInt < 1 || points.size() < idxInt) {
+            if ( idxInt < 1 || usedPoints.size() < idxInt) {
                 throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Index " + std::to_string(idxInt) + " in interpolatedPointsIndices must be in range of [1, npoints]");
             }
             // User input it 1-based, internal vectors are 0-based
