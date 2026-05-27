@@ -163,7 +163,7 @@ namespace generated
 
     CPACSEngine& CPACSEngines::AddEngine()
     {
-        m_engines.push_back(make_unique<CPACSEngine>(this, m_uidMgr));
+        m_engines.push_back(std::make_unique<CPACSEngine>(this, m_uidMgr));
         return *m_engines.back();
     }
 

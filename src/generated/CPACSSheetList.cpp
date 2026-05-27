@@ -157,7 +157,7 @@ namespace generated
 
     CPACSSheet& CPACSSheetList::AddSheet()
     {
-        m_sheets.push_back(make_unique<CPACSSheet>(reinterpret_cast<CCPACSSheetList*>(this), m_uidMgr));
+        m_sheets.push_back(std::make_unique<CPACSSheet>(reinterpret_cast<CCPACSSheetList*>(this), m_uidMgr));
         return *m_sheets.back();
     }
 

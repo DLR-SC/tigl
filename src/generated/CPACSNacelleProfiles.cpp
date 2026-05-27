@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSNacelleProfile& CPACSNacelleProfiles::AddNacelleProfile()
     {
-        m_nacelleProfiles.push_back(make_unique<CCPACSNacelleProfile>(this, m_uidMgr));
+        m_nacelleProfiles.push_back(std::make_unique<CCPACSNacelleProfile>(this, m_uidMgr));
         return *m_nacelleProfiles.back();
     }
 

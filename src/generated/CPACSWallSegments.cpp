@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSWallSegment& CPACSWallSegments::AddWallSegment()
     {
-        m_wallSegments.push_back(make_unique<CCPACSWallSegment>(this, m_uidMgr));
+        m_wallSegments.push_back(std::make_unique<CCPACSWallSegment>(this, m_uidMgr));
         return *m_wallSegments.back();
     }
 

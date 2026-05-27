@@ -128,7 +128,7 @@ namespace generated
 
     CPACSAircraftControlElement& CPACSAircraftControlElements::AddControlElement()
     {
-        m_controlElements.push_back(make_unique<CPACSAircraftControlElement>(this, m_uidMgr));
+        m_controlElements.push_back(std::make_unique<CPACSAircraftControlElement>(this, m_uidMgr));
         return *m_controlElements.back();
     }
 

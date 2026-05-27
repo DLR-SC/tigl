@@ -30,7 +30,6 @@
 #include <vector>
 #include <string>
 
-#include "generated/UniquePtr.h"
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"

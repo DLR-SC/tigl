@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSWingSparPosition& CPACSSparPositions::AddSparPosition()
     {
-        m_sparPositions.push_back(make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));
+        m_sparPositions.push_back(std::make_unique<CCPACSWingSparPosition>(reinterpret_cast<CCPACSWingSparPositions*>(this), m_uidMgr));
         return *m_sparPositions.back();
     }
 

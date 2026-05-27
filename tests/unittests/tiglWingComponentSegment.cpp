@@ -28,6 +28,8 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSMaterialDefinition.h"
 #include "CTiglWingChordface.h"
+#include "tigletaxsifunctions.h"
+#include "EtaXsi.h"
 
 /******************************************************************************/
 
@@ -985,10 +987,17 @@ TEST_F(WingComponentSegmentSpecialModified, SegmentContainedInComponentSegment)
     tigl::CCPACSWingSegment& segment1 = wing.GetSegment("Aircraft1_Wing1_Seg1");
     tigl::CCPACSWingSegment& segment2 = wing.GetSegment("Aircraft1_Wing1_Seg2");
 
-    double xsi = 0;
-    ASSERT_THROW(compSegment.GetSegmentIntersection("Aircraft1_Wing1_Seg2", 0.0, 0.0, 1.0, 1.0, 0.5, xsi), tigl::CTiglError);
+    const tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
 
-    compSegment.GetSegmentIntersection("Aircraft1_Wing1_Seg1", 0.0, 0.0, 1.0, 1.0, 0.5, xsi);
+    double xsi = 0;
+    double error_distance = 0;
+
+    tigl::InterpolateXsi(
+        "Aircraft1_Wing1_Seg1", tigl::EtaXsi(0.0, 0.0),
+        "Aircraft1_Wing1_Seg1", tigl::EtaXsi(1.0, 1.0),
+        "Aircraft1_Wing1_Seg1", 0.5,
+        uidMgr, xsi, error_distance
+    );
     EXPECT_NEAR(xsi, 0.5, 1e-5);
 }
 

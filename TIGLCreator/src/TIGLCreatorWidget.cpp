@@ -266,7 +266,7 @@ void TIGLCreatorWidget::mousePressEvent( QMouseEvent* e )
     else if ( e->button() & Qt::RightButton ) {
         onRightButtonDown ( myKeyboardFlags, e->pos() );
     }
-    else if ( e->button() & Qt::MidButton ) {
+    else if ( e->button() & Qt::MiddleButton ) {
         onMiddleButtonDown( myKeyboardFlags, e->pos() );
     }
 }
@@ -284,7 +284,7 @@ void TIGLCreatorWidget::mouseReleaseEvent(QMouseEvent* e)
     else if ( e->button() & Qt::RightButton ) {
         onRightButtonUp ( myKeyboardFlags, e->pos() );
     }
-    else if ( e->button() & Qt::MidButton ) {
+    else if ( e->button() & Qt::MiddleButton ) {
         onMiddleButtonUp( myKeyboardFlags, e->pos() );
     }
 }
@@ -338,7 +338,7 @@ void TIGLCreatorWidget::wheelEvent ( QWheelEvent* e )
 {
     if ( !myView.IsNull() ) {
         Standard_Real currentScale = myView->Scale();
-        if (e->delta() > 0) {
+        if (e->angleDelta().y() > 0) {
             currentScale *= TIGLCREATOR_ZOOM_STEP; // +10%
         }
         else {
@@ -682,7 +682,21 @@ void TIGLCreatorWidget::setTransparency()
     dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
 
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    dialog->setIntValue(0); // TODO: Include this value within the Geometry Nodes and set value to current and not a hard-wired default
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Standard_Real t = drawer->Transparency();
+                    int initTransparency = static_cast<int>(std::round(t * 100.0));
+                    dialog->setIntValue(initTransparency);
+                }
+            }
+        }
+    }
     dialog->setIntRange(0, 100);
 
     dialog->show();
@@ -696,7 +710,23 @@ void TIGLCreatorWidget::setTransparency(int transparency)
 
 void TIGLCreatorWidget::setObjectsColor()
 {
-    QColor color = QColorDialog::getColor(Qt::green, this);
+    QColor initial;
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Quantity_Color qc = drawer->Color();
+                    initial = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
+                }
+            }
+        }
+    }
+
+    QColor color = QColorDialog::getColor(initial, this);
     viewerContext->setObjectsColor(color);
 }
 
@@ -710,7 +740,8 @@ void TIGLCreatorWidget::setObjectsMaterial()
         items << i->first;
         i++;
     }
-    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+    int defaultIndex = 0;
+    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, defaultIndex, false, &ok);
 
     if (ok && !item.isEmpty()) {
         Graphic3d_NameOfMaterial material = tiglMaterials::materialMap[item];
@@ -889,7 +920,7 @@ void TIGLCreatorWidget::onMouseMove( Qt::MouseButtons buttons,
     }
     setCurrentPoint(point);
 
-    if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton ) {
+    if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MiddleButton ) {
         switch ( myMode ) {
         case CurAction3d_Nothing:
             drawRubberBand ( myStartPoint, myCurrentPoint );
@@ -958,18 +989,16 @@ AIS_StatusOfPick TIGLCreatorWidget::dragEvent( const QPoint startPoint, const QP
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
-        pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
-                                       min (startPoint.y(), endPoint.y()),
-                                       max (startPoint.x(), endPoint.x()),
-                                       max (startPoint.y(), endPoint.y()),
-                                       myView, true );
+pick = myContext->SelectRectangle(
+    Graphic3d_Vec2i(min(startPoint.x(), endPoint.x()), min(startPoint.y(), endPoint.y())),
+    Graphic3d_Vec2i(max(startPoint.x(), endPoint.x()), max(startPoint.y(), endPoint.y())),
+    myView, AIS_SelectionScheme_XOR);
     }
     else {
-        pick = myContext->Select( min (startPoint.x(), endPoint.x()),
-                                  min (startPoint.y(), endPoint.y()),
-                                  max (startPoint.x(), endPoint.x()),
-                                  max (startPoint.y(), endPoint.y()),
-                                  myView, true );
+        pick = myContext->SelectRectangle(
+    Graphic3d_Vec2i(min(startPoint.x(), endPoint.x()), min(startPoint.y(), endPoint.y())),
+    Graphic3d_Vec2i(max(startPoint.x(), endPoint.x()), max(startPoint.y(), endPoint.y())),
+    myView, AIS_SelectionScheme_Replace);
     }
     emit selectionChanged();
     return pick;
@@ -987,10 +1016,10 @@ AIS_StatusOfPick TIGLCreatorWidget::inputEvent( bool multi )
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
-        pick = myContext->ShiftSelect(true);
+        pick = myContext->SelectDetected( AIS_SelectionScheme_XOR );
     }
     else {
-        pick = myContext->Select(true);
+        pick = myContext->SelectDetected( AIS_SelectionScheme_Replace );
     }
     if ( pick != AIS_SOP_NothingSelected ) {
         emit selectionChanged();

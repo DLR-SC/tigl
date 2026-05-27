@@ -157,7 +157,7 @@ namespace generated
 
     CPACSSheet3D& CPACSSheetList3D::AddSheet3D()
     {
-        m_sheet3Ds.push_back(make_unique<CPACSSheet3D>(this, m_uidMgr));
+        m_sheet3Ds.push_back(std::make_unique<CPACSSheet3D>(this, m_uidMgr));
         return *m_sheet3Ds.back();
     }
 

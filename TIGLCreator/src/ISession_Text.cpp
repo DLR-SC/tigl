@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 #include <Prs3d_Text.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
+#include <PrsMgr_PresentationManager.hxx>
 #include <gp_Pnt.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -84,7 +84,7 @@ ISession_Text::~ISession_Text()
 
 }
 
-void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& mgr,
+void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager)& mgr,
                             const Handle(Prs3d_Presentation)& aPresentation,
                             const Standard_Integer /*aMode*/)
 {
@@ -104,7 +104,7 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& mgr,
 #if OCC_VERSION_HEX < 0x070300
     Prs3d_Text::Draw(aPresentation ,myDrawer, MyText, gp_Pnt(MyX, MyY, MyZ));
 #else
-    Prs3d_Text::Draw(Prs3d_Root::CurrentGroup(aPresentation), myDrawer->TextAspect(), MyText, gp_Pnt( MyX, MyY, MyZ));
+    Prs3d_Text::Draw(aPresentation->CurrentGroup(), myDrawer->TextAspect(), MyText, gp_Pnt( MyX, MyY, MyZ));
 #endif
 }
 

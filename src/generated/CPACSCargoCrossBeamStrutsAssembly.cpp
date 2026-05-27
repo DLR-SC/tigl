@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSCrossBeamStrutAssemblyPosition& CPACSCargoCrossBeamStrutsAssembly::AddCargoCrossBeamStrut()
     {
-        m_cargoCrossBeamStruts.push_back(make_unique<CCPACSCrossBeamStrutAssemblyPosition>(reinterpret_cast<CCPACSCargoCrossBeamStrutsAssembly*>(this), m_uidMgr));
+        m_cargoCrossBeamStruts.push_back(std::make_unique<CCPACSCrossBeamStrutAssemblyPosition>(reinterpret_cast<CCPACSCargoCrossBeamStrutsAssembly*>(this), m_uidMgr));
         return *m_cargoCrossBeamStruts.back();
     }
 

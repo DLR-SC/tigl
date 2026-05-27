@@ -128,7 +128,7 @@ namespace generated
 
     CPACSAxleAssembly& CPACSAxleAssemblies::AddAxleAssembly()
     {
-        m_axleAssemblys.push_back(make_unique<CPACSAxleAssembly>(this, m_uidMgr));
+        m_axleAssemblys.push_back(std::make_unique<CPACSAxleAssembly>(this, m_uidMgr));
         return *m_axleAssemblys.back();
     }
 
