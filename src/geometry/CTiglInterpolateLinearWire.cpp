@@ -163,7 +163,7 @@ gp_Pnt CTiglInterpolateLinearWire::GetPointWithMinY(const CPointContainer& point
 gp_Pnt CTiglInterpolateLinearWire::GetPointWithMaxY(const CPointContainer& points) const
 {
     if (points.size() == 0) {
-        throw CTiglError("Too few points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+        throw CTiglError("Too few points in CTiglInterpolateLinearWire::GetPointWithMaxY", TIGL_ERROR);
     }
 
     gp_Pnt maxYPnt = points[0];
