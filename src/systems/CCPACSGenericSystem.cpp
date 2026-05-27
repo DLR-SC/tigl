@@ -160,6 +160,7 @@ std::string CCPACSGenericSystem::GetShortShapeName() const
             return "GS" + std::to_string(i);
         }
     }
+    return "UNKNOWN";
 }
 
 } // end namespace tigl
