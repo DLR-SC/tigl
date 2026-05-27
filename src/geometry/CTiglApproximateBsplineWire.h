@@ -37,10 +37,10 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd,
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd,
                                             const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
-    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd,
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd,
                                             const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
@@ -77,7 +77,7 @@ private:
 
     const std::string* m_profileUID;
 
-    bool m_isWingProfile;
+    bool m_interpStartEnd;
 
     bool m_interpFarestPntFromStartEnd; // Defines whether the farest point from the averaged starting and end point should be interpolated
 

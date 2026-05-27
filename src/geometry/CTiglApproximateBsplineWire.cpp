@@ -39,21 +39,21 @@ namespace tigl
 {
 
 // Constructor
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(nrControlPoints)
     , m_profileUID(&profileUID)
-    , m_isWingProfile(isWingProfile)
+    , m_interpStartEnd(interpStartEnd)
     , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
 {}
 
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool isWingProfile, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(tolerance)
     , m_profileUID(&profileUID)
-    , m_isWingProfile(isWingProfile)
+    , m_interpStartEnd(interpStartEnd)
     , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
@@ -135,8 +135,8 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
 
         CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
 
-        if (m_isWingProfile) {
-            // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+        if (m_interpStartEnd) {
+            // Make sure that the first and last point is still interpolated to ensure a closed profile
             approx.InterpolatePoint(0, false);
             approx.InterpolatePoint(hpoints->Length()-1, false);
         }
