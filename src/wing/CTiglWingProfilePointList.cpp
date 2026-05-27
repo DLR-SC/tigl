@@ -103,7 +103,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             if (*(approxSettings->GetErrorComputationMethod()) == "MaxError") {
                 approxErrStr = "MaxError";
             }
-            // If RMSE is seleted, TiGL just uses the default value
+            // If RMSE is selected, TiGL just uses the default value
             else if (*(approxSettings->GetErrorComputationMethod()) != "RMSE"){
                 throw CTiglError("CTiglWingProfilePointList: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
             }
@@ -126,7 +126,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
         }
     }
-    // Profile points are interpolated, not approximated
+    // All profile points are interpolated, not approximated
     else {
         profileWireAlgo = std::make_unique<CTiglInterpolateBsplineWire>();
     }
