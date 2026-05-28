@@ -158,8 +158,8 @@ TEST(FuselageProfileApproximation, approximatedProfileCheckArgs)
     EXPECT_THROW(TopoDS_Wire wire = profileCompBroken.GetWire(true), tigl::CTiglError);
 
     // Not enough control points
-    tigl::CCPACSFuselageProfile& profileCompBroken = config.GetFuselageProfile("fuselageProfileApprox_ToFewCP");
-    EXPECT_THROW(TopoDS_Wire wire = profileCompBroken.GetWire(true), tigl::CTiglError);
+    tigl::CCPACSFuselageProfile& profileToFewCP = config.GetFuselageProfile("fuselageProfileApprox_ToFewCP");
+    EXPECT_THROW(TopoDS_Wire wire = profileToFewCP.GetWire(true), tigl::CTiglError);
 
 /*
     TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
