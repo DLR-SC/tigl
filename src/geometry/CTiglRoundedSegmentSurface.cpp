@@ -12,7 +12,7 @@ namespace tigl{
 CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
                                                        double inner_rounding_distance,
                                                        double outer_rounding_distance):
-    m_pole_matrix({}),
+    m_pole_matrix(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles())),
     m_inner_rounding_distance(inner_rounding_distance),
     m_outer_rounding_distance(outer_rounding_distance),
     m_profileCurves(m_profileCurves),
@@ -31,25 +31,21 @@ TIGL_EXPORT  Handle(Geom_BSplineSurface) CTiglRoundedSegmentSurface::Surface(){
          * ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i))
          * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
          */
-    if(_hasPerformed){
-        throw CTiglError("Surface cannot be built, must initialize first");
-    }
+    Perform();
     auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
-
-    //DEBUG DELETEME
-    // Handle(Geom_Surface) handle_surface = surface;
-    // TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
-    // tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
 
     return surface;
 }
 
 void CTiglRoundedSegmentSurface::Perform(){
+    if (_hasPerformed) {
+        return;
+    }
     calculateKnotsAndMultiplicities();
-    //initialize polematrix
-    Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
+//    //initialize polematrix
+//    Standard_Integer m = m_profileCurves.size()+(m_profileCurves.size()-2)*2*_nb_dummies;
     Standard_Integer n = m_profileCurves[0]->NbPoles();
-    m_pole_matrix = TColgp_HArray2OfPnt(1,m,1,n);
+//    m_pole_matrix = TColgp_HArray2OfPnt(1,m,1,n);
     //initialize m_segments vector
     for(Handle(Geom_BSplineCurve) curve : m_profileCurves){
         m_segments.push_back(RoundedSegment(m_profileCurves[0],
@@ -67,24 +63,29 @@ void CTiglRoundedSegmentSurface::Perform(){
         m_segments[i].insert_outer_rows(_nb_dummies);
     }
 
-    int row=0; //counter for inserted rows
+    int row=1; //counter for inserted rows
+    std::cerr << "col:" << m_pole_matrix.NbColumns() << " rows: " << m_pole_matrix.NbRows() << std::endl;
     for(RoundedSegment seg: m_segments){
         //fill pole matrix
-        //Retrieve First Segments Curves
         for( int col = 1;col< n+1; col++){
-            m_pole_matrix.SetValue(0,col,m_segments[0].get_first_profile().Value(col));
+            m_pole_matrix.SetValue(row,col,seg.get_first_profile().Value(col));
         }
-        row++; //next row
-        for(TColgp_HArray1OfPnt profile: m_segments[0].getDummyProfiles()){
+        row++;
+        std::cerr << row << std::endl;
+        for(TColgp_HArray1OfPnt profile: seg.getDummyProfiles()){
             for( int col = 1;col< n+1; col++){
                 m_pole_matrix.SetValue(row,col,profile.Value(col));
             }
             row++;
+        std::cerr << row << std::endl;
         }
-        //Retrieve Last Segments Curves
-        for( int col = 1;col< n+1; col++){
-            m_pole_matrix.SetValue(0,col,m_segments[0].get_last_profile().Value(col));
-        }
+ //       if(row==m_pole_matrix.RowLength()){
+ //           for( int col = 1;col< n+1; col++){
+ //               m_pole_matrix.SetValue(row,col,seg.get_last_profile().Value(col));
+ //           }
+ //           row++;
+ //           std::cerr << row << std::endl;
+ //       }
     }
     _hasPerformed = true;
 }
