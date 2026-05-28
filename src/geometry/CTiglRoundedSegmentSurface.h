@@ -3,7 +3,6 @@
 
 #include "Geom_BSplineCurve.hxx"
 #include "Geom_BSplineSurface.hxx"
-#include "TopoDS_Wire.hxx"
 #include "tigl_internal.h"
 #include <vector>
 
@@ -23,21 +22,35 @@ private:
 
     struct RoundedSegment
     {
+        TColgp_HArray1OfPnt firstProfile;
+        TColgp_HArray1OfPnt lastProfile;
+        std::vector<TColgp_HArray1OfPnt> dummyProfiles;
+        double inner_rounding_distance;
+        double outer_rounding_distance;
+
         RoundedSegment(Handle(Geom_BSplineCurve) const& start,
                        Handle(Geom_BSplineCurve) const& end,
-                       double inner_rounding_distance,
-                       double outer_rounding_distance) {
-            for(int i = 0; i < start->NbPoles(); i++){
-                firstProfile.SetValue(i+1,start->Pole(i));
-                lastProfile.SetValue(i+1,end->Pole(i));
+                       double inner_rd,
+                       double outer_rd):
+            firstProfile(1,start->NbPoles()),
+            lastProfile(1,start->NbPoles()),
+            dummyProfiles({}),
+            inner_rounding_distance(inner_rd),
+            outer_rounding_distance(outer_rd)
+        {
+            for(int i = 1; i < start->NbPoles(); i++){
+                firstProfile.SetValue(i,start->Pole(i));
+                lastProfile.SetValue(i,end->Pole(i));
             }
+            std::cerr << "Reserve Profile storage" << std::endl;
+            dummyProfiles.reserve(8);
         }
 
         void insert_inner_rows(int nb_dummies) {
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
                 // for every profile point in start profile
-                for(int j = 1; j< firstProfile.Size()+1; j++){
+                for(int j = 1; j< firstProfile.Size(); j++){
                     //calculate Vector between both profile poles and normalize it
                     gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
                     gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
@@ -52,14 +65,14 @@ private:
                     gp_Pnt new_pole_inner(inner_vec.XYZ());
                     row->SetValue(j+1, new_pole_inner);
                 }
-                dummyProfiles.push_back(row);
+                dummyProfiles.push_back(*row);
             }
         }
 
         void insert_outer_rows(int nb_dummies) {
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
-                for (int j=0; j < firstProfile.Size(); j++){
+                for (int j=1; j < firstProfile.Size(); j++){
                     //calculate Vector between both profile poles and normalize it
                     gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
                     gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
@@ -73,7 +86,7 @@ private:
                     //save new poles in a vector for each outer dummy profile
                     row->SetValue(j+1, new_pole_outer);
                 }
-                dummyProfiles.push_back(row);
+                dummyProfiles.push_back(*row);
             }
         }
 
@@ -88,11 +101,6 @@ private:
         }
 
 
-        TColgp_HArray1OfPnt firstProfile;
-        TColgp_HArray1OfPnt lastProfile;
-        std::vector<TColgp_HArray1OfPnt> dummyProfiles;
-        double inner_rounding_distance;
-        double outer_rounding_distance;
     };
 
     // Deduce required knot vector and multiplicies from pole matrix properties
