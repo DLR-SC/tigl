@@ -159,3 +159,27 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
     GeomAPI_ProjectPointOnCurve projectInterp(pntInterp, approxResult.curve);
     ASSERT_TRUE(projectInterp.LowerDistance() < Precision::Confusion());
 }
+
+TEST(WingProfileApproximation, approximatedProfileCheckArgs)
+{
+    TixiDocumentHandle tixiHandle;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/testProfileAirfoilApproximation.xml", &tixiHandle));
+
+    TiglCPACSConfigurationHandle tiglHandle;
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    tigl::CCPACSConfigurationManager& manager  = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config          = manager.GetConfiguration(tiglHandle);
+
+    // Wrong error computation method
+    tigl::CCPACSWingProfile& profileWrongCompMethod = config.GetWingProfile("NACA1309_Broken");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongCompMethod.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+
+    // Wrong method chosen (Max Error approximation currently not implemented)
+    tigl::CCPACSWingProfile& profileWrongMethodTolerance = config.GetWingProfile("NACA1309_WrongMethodMaxError");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongMethodTolerance.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+
+    // Wrong XML definition (no approximationSetting's choice defined)
+    tigl::CCPACSWingProfile& profileNoMethodChosen = config.GetWingProfile("NACA1309_WrongMethod");
+    EXPECT_THROW(TopoDS_Wire wire = profileNoMethodChosen.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+}
