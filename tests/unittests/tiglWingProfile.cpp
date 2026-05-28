@@ -171,6 +171,10 @@ TEST(WingProfileApproximation, approximatedProfileCheckArgs)
     tigl::CCPACSConfigurationManager& manager  = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config          = manager.GetConfiguration(tiglHandle);
 
+    // Expected to work
+    tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA1309");
+    ASSERT_NO_THROW(TopoDS_Wire wire = profile.GetWire(UNMODIFIED_SHAPE));
+
     // Wrong error computation method
     tigl::CCPACSWingProfile& profileWrongCompMethod = config.GetWingProfile("NACA1309_Broken");
     EXPECT_THROW(TopoDS_Wire wire = profileWrongCompMethod.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
