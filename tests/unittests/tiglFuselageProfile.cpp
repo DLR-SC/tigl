@@ -150,46 +150,31 @@ TEST(FuselageProfileApproximation, approximatedProfileCheckArgs)
     tigl::CCPACSConfiguration& config          = manager.GetConfiguration(tiglHandle);
 
     // Different error computation method
-    tigl::CCPACSFuselageProfile& profileCompMaxErr = config.GetFuselageProfile("fuselageProfileApprox_MaxError");
-    ASSERT_NO_THROW(TopoDS_Wire wire = profileCompMaxErr.GetWire(true));
+    // Expected to work
+    tigl::CCPACSFuselageProfile& profileMaxErr = config.GetFuselageProfile("fuselageProfileApprox_MaxError");
+    ASSERT_NO_THROW(TopoDS_Wire wire = profileMaxErr.GetWire(true));
 
     // Wrong error computation method
-    tigl::CCPACSFuselageProfile& profileCompBroken = config.GetFuselageProfile("fuselageProfileApprox_Broken");
-    EXPECT_THROW(TopoDS_Wire wire = profileCompBroken.GetWire(true), tigl::CTiglError);
+    tigl::CCPACSFuselageProfile& profileWrongCompMethod = config.GetFuselageProfile("fuselageProfileApprox_Broken");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongCompMethod.GetWire(true), tigl::CTiglError);
 
     // Not enough control points
-    tigl::CCPACSFuselageProfile& profileToFewCP = config.GetFuselageProfile("fuselageProfileApprox_ToFewCP");
-    EXPECT_THROW(TopoDS_Wire wire = profileToFewCP.GetWire(true), tigl::CTiglError);
+    tigl::CCPACSFuselageProfile& profileTooFewCP = config.GetFuselageProfile("fuselageProfileApprox_TooFewCP");
+    EXPECT_THROW(TopoDS_Wire wire = profileTooFewCP.GetWire(true), tigl::CTiglError);
 
-/*
-    TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
-    tigl::CCPACSCurvePointListXYZ profile(nullptr);
+    // Too low interpolation point idx
+    tigl::CCPACSFuselageProfile& profileTooLowInterpIdx = config.GetFuselageProfile("fuselageProfileApprox_TooLowIdx");
+    EXPECT_THROW(TopoDS_Wire wire = profileTooLowInterpIdx.GetWire(true), tigl::CTiglError);
 
-    // Read approximated profile that computes the error as MaxError
-    ASSERT_NO_THROW(profile.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[2]/pointList"));
+    // Too high interpolation point idx
+    tigl::CCPACSFuselageProfile& profileTooHighInterpIdx = config.GetFuselageProfile("fuselageProfileApprox_TooHighIdx");
+    EXPECT_THROW(TopoDS_Wire wire = profileTooHighInterpIdx.GetWire(true), tigl::CTiglError);
 
-    // Get points
-    auto yCoords = profile.GetY().AsVector();
-    auto zCoords = profile.GetZ().AsVector();
+    // Wrong method chosen (Max Error approximation currently not implemented)
+    tigl::CCPACSFuselageProfile& profileWrongMethodTolerance = config.GetFuselageProfile("fuselageProfileApprox_WrongMethodMaxError");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongMethodTolerance.GetWire(true), tigl::CTiglError);
 
-    // Get profile options
-    auto paramsMap = profile.GetParamsAsMap();
-    auto kinks = profile.GetKinksAsVector();
-    auto& approximationSettings = profile.GetApproximationSettings();
-
-    int nrControlPoints;
-    std::string errorComputationMethod;
-    std::vector<double> interpolatedPointsIndices;
-
-    // Read out options of approximationSettings node
-    ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
-    ASSERT_NO_THROW(errorComputationMethod = *(approximationSettings->GetErrorComputationMethod()));
-    ASSERT_NO_THROW(interpolatedPointsIndices = approximationSettings->GetInterpolatedPointsIndices()->AsVector());
-
-    ASSERT_TRUE(nrControlPoints == 12);
-    ASSERT_TRUE(errorComputationMethod == "RMSE");
-    ASSERT_TRUE(yCoords.size() == zCoords.size());
-    ASSERT_TRUE(kinks.size() == 1);
-    ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
-*/
+    // Wrong XML definition (no approximationSetting's choice defined)
+    tigl::CCPACSFuselageProfile& profileNoMethodChosen = config.GetFuselageProfile("fuselageProfileApprox_WrongMethod");
+    EXPECT_THROW(TopoDS_Wire wire = profileNoMethodChosen.GetWire(true), tigl::CTiglError);
 }
