@@ -609,17 +609,13 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
 
 void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
 {
-    try {
-        if (concentration < 0.0 || concentration > 1.0) {
-            throw tigl::CTiglError("TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]");
-        }
-
-        if (dx*dx + dy*dy + dz*dz < 1e8) {
-            throw tigl::CTiglError("TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector");
-        }
+    if (concentration < 0.0 || concentration > 1.0) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]";
+        return;
     }
-    catch (const tigl::CTiglError& error) {
-        LOG(ERROR) << error.what();
+
+    if (dx*dx + dy*dy + dz*dz < 1e8) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector";
         return;
     }
 
