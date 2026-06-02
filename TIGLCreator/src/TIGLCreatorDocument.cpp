@@ -168,7 +168,7 @@ bool TIGLCreatorDocument::isConfigurationModifiedSinceLastSave()
     return modifiedSinceLastSave;
 }
 
-TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent)
+TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromString(const std::string cpacsFileContent, const QString& config_uid)
 {
     START_COMMAND()
 
@@ -193,10 +193,10 @@ TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromString(const std::
         return TIGL_XML_ERROR;
     }
 
-    return openCpacsConfiguration(tixiHandle);
+    return openCpacsConfiguration(tixiHandle, "", config_uid);
 }
 
-TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromFile(const QString& fileName)
+TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromFile(const QString& fileName, const QString& config_uid)
 {
     START_COMMAND()
 
@@ -214,10 +214,10 @@ TiglReturnCode TIGLCreatorDocument::openCpacsConfigurationFromFile(const QString
         return TIGL_XML_ERROR;
     }
 
-    return openCpacsConfiguration(tixiHandle, fileName);
+    return openCpacsConfiguration(tixiHandle, fileName, config_uid);
 }
 
-TiglReturnCode TIGLCreatorDocument::openCpacsConfiguration(TixiDocumentHandle& tixiHandle, const QString& fileName)
+TiglReturnCode TIGLCreatorDocument::openCpacsConfiguration(TixiDocumentHandle& tixiHandle, const QString& fileName, const QString& config_uid)
 {
     QStringList configurations;
     ReturnCode tixiRet;
@@ -271,14 +271,18 @@ TiglReturnCode TIGLCreatorDocument::openCpacsConfiguration(TixiDocumentHandle& t
         return TIGL_UNINITIALIZED;
     }
     else if (countRotorcrafts + countAircrafts == 1) {
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &m_cpacsHandle);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, config_uid.toStdString().c_str(), &m_cpacsHandle);
     }
     else {
-        bool ok;
-        QString item = QInputDialog::getItem(app, tr("Select CPACS Configuration"), tr("Available Configurations:"),
-                                             configurations, 0, false, &ok);
-        if (ok && !item.isEmpty()) {
-            tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
+        if (config_uid.isEmpty()) {
+            bool ok;
+            QString item = QInputDialog::getItem(app, tr("Select CPACS Configuration"), tr("Available Configurations:"),
+                                                configurations, 0, false, &ok);
+            if (ok && !item.isEmpty()) {
+                tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
+            }
+        } else {
+            tiglRet = tiglOpenCPACSConfiguration(tixiHandle, config_uid.toStdString().c_str(), &m_cpacsHandle);
         }
     }
 
