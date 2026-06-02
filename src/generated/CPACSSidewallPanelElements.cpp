@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDeckElementBase& CPACSSidewallPanelElements::AddSidewallPanelElement()
     {
-        m_sidewallPanelElements.push_back(make_unique<CPACSDeckElementBase>(this, m_uidMgr));
+        m_sidewallPanelElements.push_back(std::make_unique<CPACSDeckElementBase>(this, m_uidMgr));
         return *m_sidewallPanelElements.back();
     }
 

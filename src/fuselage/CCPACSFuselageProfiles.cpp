@@ -19,7 +19,6 @@
 * @brief  Implementation of CPACS fuselage profiles handling routines.
 */
 
-#include "generated/UniquePtr.h"
 #include "generated/TixiHelper.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
@@ -46,7 +45,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     // read element fuselageProfile
     if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageProfile")) {
         tixi::TixiReadElementsInternal(tixiHandle, xpath + "/fuselageProfile", m_fuselageProfiles, 1, tixi::xsdUnbounded, [&](const std::string& childXPath) {
-            auto child = tigl::make_unique<CCPACSFuselageProfile>(this, m_uidMgr);
+            auto child = std::make_unique<CCPACSFuselageProfile>(this, m_uidMgr);
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
@@ -54,7 +53,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
 }
 
 CCPACSFuselageProfile& CCPACSFuselageProfiles::AddFuselageProfile() {
-    m_fuselageProfiles.push_back(make_unique<CCPACSFuselageProfile>(this, m_uidMgr));
+    m_fuselageProfiles.push_back(std::make_unique<CCPACSFuselageProfile>(this, m_uidMgr));
     return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfiles.back());
 }
 

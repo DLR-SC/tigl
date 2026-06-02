@@ -163,7 +163,7 @@ namespace generated
 
     CPACSDeckComponent2DBase& CPACSSeatModules::AddSeatModule()
     {
-        m_seatModules.push_back(make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
+        m_seatModules.push_back(std::make_unique<CPACSDeckComponent2DBase>(this, m_uidMgr));
         return *m_seatModules.back();
     }
 

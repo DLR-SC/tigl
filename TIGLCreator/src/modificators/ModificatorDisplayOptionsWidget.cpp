@@ -129,11 +129,15 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     }
                 
 
+
                     // get current values
                     auto &sm = context->GetShapeManager();
-                    if (sm.HasShapeEntry(uid.toStdString())) {
-                        auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-                        
+                    if (sm.HasShapeEntry(uid)) {
+                        auto objs = sm.GetIObjectsFromShapeName(uid);
+                        if (objs.empty()) {
+                            LOG(WARNING) << "No objects found for shape with uid " << uid;
+                            return;
+                        }
                         auto obj = objs[0];
                         Standard_Real transparency;
                         int displayMode;
@@ -540,7 +544,7 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
         if (obj.IsNull()) {
             continue;
         }
-        if (!context.IsNull()) {
+         if (!context.IsNull() && currentDoc) {  
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);

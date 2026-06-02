@@ -600,6 +600,11 @@ void TIGLCreatorContext::setObjectsColor(const QColor& color)
     Q_EMIT displayAttributesChanged();
 }
 
+void TIGLCreatorContext::setObjectsColorRGB(int r, int g, int b, int a)
+{
+    setObjectsColor(QColor(r, g, b, a));
+}
+
 void TIGLCreatorContext::setFaceBoundariesEnabled(bool enabled) {
     if (myContext && myContext->DefaultDrawer()) {
         myContext->DefaultDrawer()->SetFaceBoundaryDraw(enabled);

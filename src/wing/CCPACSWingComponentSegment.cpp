@@ -138,9 +138,9 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     : generated::CPACSComponentSegment(parent, uidMgr)
     , CTiglAbstractSegment<CCPACSWingComponentSegment>(parent->GetComponentSegments(), parent->GetParent())
     , wing(parent->GetParent())
-    , upperShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetUpperShape, m_uidMgr))
-    , lowerShape(tigl::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetLowerShape, m_uidMgr))
-    , chordFace(make_unique<CTiglWingChordface>(*this, uidMgr))
+    , upperShape(std::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetUpperShape, m_uidMgr))
+    , lowerShape(std::make_unique<ShapeAdaptor>(this, &CCPACSWingComponentSegment::GetLowerShape, m_uidMgr))
+    , chordFace(std::make_unique<CTiglWingChordface>(*this, uidMgr))
     , wingSegments(*this, &CCPACSWingComponentSegment::BuildWingSegments)
     , geomCache(*this, &CCPACSWingComponentSegment::BuildGeometry)
     , linesCache(*this, &CCPACSWingComponentSegment::BuildLines)
@@ -578,22 +578,6 @@ TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, doub
         old_point = point;
     }
     return wireBuilder.Wire();
-}
-    
-void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi) const
-{
-    // check if the segment is contained in this component segment
-    tigl::CCPACSWingSegment& segment = wing->GetSegment(segmentUID);
-
-    if(this->IsSegmentContained(segment) == false) {
-        throw CTiglError("The wing segment with UID " + segmentUID + " is not contained in this component segment.", TIGL_UID_ERROR);
-    }
-
-    double errorDistance = 0;
-    InterpolateXsi(GetUID(), EtaXsi(csEta1, csXsi1),
-                   GetUID(), EtaXsi(csEta2, csXsi2),
-                   segmentUID, eta, GetUIDManager(), xsi, errorDistance);
-
 }
 
 void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance) const

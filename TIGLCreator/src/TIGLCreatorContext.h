@@ -129,6 +129,7 @@ public slots:
     void setObjectsTexture(const QString& filename);
     void setReflectionlinesEnabled(bool);
     void setObjectsColor(const QColor &color);
+    void setObjectsColorRGB(int r, int g, int b, int a = 255);
     void setFaceBoundariesEnabled(bool enabled);
 
 signals:

@@ -29,8 +29,6 @@
 #include "CTiglUIDManager.h"
 #include "CTiglSectionElement.h"
 
-#include "UniquePtr.h"
-
 /**
  * This class manages available profiles.
  * Basically there are two places where profiles can be stored: In current CPACS file (configuration profiles)

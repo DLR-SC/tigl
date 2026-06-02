@@ -167,7 +167,7 @@ namespace generated
 
     CPACSLandingGearSteeringFunctionStep& CPACSLandingGearSteeringFunction::AddStep()
     {
-        m_steps.push_back(make_unique<CPACSLandingGearSteeringFunctionStep>(this));
+        m_steps.push_back(std::make_unique<CPACSLandingGearSteeringFunctionStep>(this));
         return *m_steps.back();
     }
 

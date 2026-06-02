@@ -23,6 +23,7 @@
 #include "TIGLCreatorWindow.h"
 #include "TIGLCreatorScopedCommand.h"
 #include "TIGLCreatorSelectWingAndFlapStatusDialog.h"
+#include "CTiglError.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -52,7 +53,6 @@
 #include <BRepBndLib.hxx>
 
 // TIGLCreator includes
-#include "UniquePtr.h"
 #include "CPACSProfileGeometry.h"
 #include "TIGLCreatorInternal.h"
 #include "TIGLCreatorVTKExportDialog.h"
@@ -831,19 +831,23 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
             else {
                 IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                if (objects.empty()) {
+                    throw tigl::CTiglError("No object found for component with uid \"" + uid.toStdString() + "\"");
+                    return;
+                }
                 if (objects[0]->Shape() != component.GetLoft()->Shape()) {
                     objects[0]->SetShape(component.GetLoft()->Shape());
                 }
-                
-                auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
-                if (geometricComp) {
-                    if (geometricComp->GetMirroredLoft()) {
-                        if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
-                            objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
+                else if (objects.size() > 1) {
+                    auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
+                    if (geometricComp) {
+                        if (geometricComp->GetMirroredLoft()) {
+                            if (objects[1]->Shape() != geometricComp->GetMirroredLoft()->Shape()) {
+                                objects[1]->SetShape(geometricComp->GetMirroredLoft()->Shape());
+                            }
                         }
                     }
                 }
-                
                 for (auto& obj : objects) {
                     app->getScene()->getContext()->Display(obj, Standard_False);
                 }
@@ -3240,6 +3244,10 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     START_COMMAND();
 
     std::string modelUID = GetConfiguration().GetUID();
+
+    //save filepath from old configuration
+    auto cCPACSPath = GetLoadedConfigurationFileName().toStdString();
+
     tiglCloseCPACSConfiguration(m_cpacsHandle);
     m_cpacsHandle = -1;
     app->getScene()->deleteAllObjects();
@@ -3249,6 +3257,10 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
     TixiDocumentHandle tixiHandle = -1;
 
     ReturnCode tixiRet = tixiImportFromString(tixiContent.c_str(), &tixiHandle);
+
+    //set future filepath for new configuration to former config-path
+    tixiSetDocumentPath(tixiHandle, cCPACSPath.c_str());
+
     if (tixiRet != SUCCESS) {
         displayError(QString("TIGLCreatorDocument::updateCpacsConfigurationFromString: Error in function "
                              "<u>tixiOpenDocument</u> when importing the string Error code: %1")

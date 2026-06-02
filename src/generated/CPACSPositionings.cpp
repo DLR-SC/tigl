@@ -203,7 +203,7 @@ namespace generated
 
     CCPACSPositioning& CPACSPositionings::AddPositioning()
     {
-        m_positionings.push_back(make_unique<CCPACSPositioning>(reinterpret_cast<CCPACSPositionings*>(this), m_uidMgr));
+        m_positionings.push_back(std::make_unique<CCPACSPositioning>(reinterpret_cast<CCPACSPositionings*>(this), m_uidMgr));
         return *m_positionings.back();
     }
 

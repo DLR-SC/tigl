@@ -23,7 +23,6 @@
 #ifndef CCPACSFUSELAGEPROFILE_H
 #define CCPACSFUSELAGEPROFILE_H
 
-#include "generated/UniquePtr.h"
 #include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"

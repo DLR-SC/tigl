@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSeatElement& CPACSSeatElements::AddSeatElement()
     {
-        m_seatElements.push_back(make_unique<CPACSSeatElement>(this, m_uidMgr));
+        m_seatElements.push_back(std::make_unique<CPACSSeatElement>(this, m_uidMgr));
         return *m_seatElements.back();
     }
 

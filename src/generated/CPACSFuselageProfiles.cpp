@@ -163,7 +163,7 @@ namespace generated
 
     CPACSProfileGeometry& CPACSFuselageProfiles::AddFuselageProfile()
     {
-        m_fuselageProfiles.push_back(make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSFuselageProfiles*>(this), m_uidMgr));
+        m_fuselageProfiles.push_back(std::make_unique<CPACSProfileGeometry>(reinterpret_cast<CCPACSFuselageProfiles*>(this), m_uidMgr));
         return *m_fuselageProfiles.back();
     }
 

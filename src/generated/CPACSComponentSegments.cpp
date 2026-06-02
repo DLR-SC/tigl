@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSWingComponentSegment& CPACSComponentSegments::AddComponentSegment()
     {
-        m_componentSegments.push_back(make_unique<CCPACSWingComponentSegment>(reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr));
+        m_componentSegments.push_back(std::make_unique<CCPACSWingComponentSegment>(reinterpret_cast<CCPACSWingComponentSegments*>(this), m_uidMgr));
         return *m_componentSegments.back();
     }
 

@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSWingSectionElement& CPACSWingElements::AddElement()
     {
-        m_elements.push_back(make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));
+        m_elements.push_back(std::make_unique<CCPACSWingSectionElement>(reinterpret_cast<CCPACSWingSectionElements*>(this), m_uidMgr));
         return *m_elements.back();
     }
 
