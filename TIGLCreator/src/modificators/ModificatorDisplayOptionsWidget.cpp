@@ -128,14 +128,12 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->drawOptionsCombo->setVisible(true);
                     }
                 
-
-
                     // get current values
                     auto &sm = context->GetShapeManager();
-                    if (sm.HasShapeEntry(uid)) {
-                        auto objs = sm.GetIObjectsFromShapeName(uid);
+                    if (sm.HasShapeEntry(uid.toStdString())) {
+                        auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
                         if (objs.empty()) {
-                            LOG(WARNING) << "No objects found for shape with uid " << uid;
+                            LOG(WARNING) << "No objects found for shape with uid " << uid.toStdString();
                             return;
                         }
                         auto obj = objs[0];
