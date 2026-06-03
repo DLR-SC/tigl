@@ -371,7 +371,7 @@ void TIGLCreatorWindow::openRecentFile()
     }
 }
 
-void TIGLCreatorWindow::openFile(const QString& fileName)
+void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_uid)
 {
     QString      fileType;
     QFileInfo    fileInfo;
@@ -393,7 +393,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
 
 
-            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath(), config_uid);
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
                 return;

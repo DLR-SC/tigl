@@ -76,7 +76,7 @@ signals:
      void windowInitialized();
 
 public slots:
-    void openFile(const QString& fileName);
+    void openFile(const QString& fileName, const QString& config_uid="");
     void openNewFile(const QString& templatePath);
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);

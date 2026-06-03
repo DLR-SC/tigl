@@ -45,10 +45,10 @@ public:
     explicit TIGLCreatorDocument(TIGLCreatorWindow *parentWidget);
     ~TIGLCreatorDocument( ) override;
 
-    TiglReturnCode openCpacsConfigurationFromFile(const QString& fileName);
-    TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent);
+    TiglReturnCode openCpacsConfigurationFromFile(const QString& fileName, const QString& config_uid="");
+    TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent, const QString& config_uid="");
     // Empty fileName as default value if the function is called from openCpacsConfigurationFromFile => No fileName exists
-    TiglReturnCode openCpacsConfiguration(TixiDocumentHandle &tixiHandle, const QString &fileName="");
+    TiglReturnCode openCpacsConfiguration(TixiDocumentHandle &tixiHandle, const QString &fileName="", const QString& config_uid="");
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle() const;
     QString GetLoadedConfigurationFileName() const;
