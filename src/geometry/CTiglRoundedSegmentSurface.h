@@ -13,7 +13,9 @@ class CTiglRoundedSegmentSurface
 public:
     TIGL_EXPORT CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
                                            double inner_rounding_distance,
-                                           double outer_rounding_distance);
+                                           double outer_rounding_distance,
+                                           int u_degree = 3,
+                                           int v_degree = 3);
 
     TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
@@ -38,7 +40,7 @@ private:
             inner_rounding_distance(inner_rd),
             outer_rounding_distance(outer_rd)
         {
-            for(int i = 1; i < start->NbPoles(); i++){
+            for(int i = 1; i < start->NbPoles()+1; i++){
                 firstProfile.SetValue(i,start->Pole(i));
                 lastProfile.SetValue(i,end->Pole(i));
             }
@@ -47,10 +49,11 @@ private:
         }
 
         void insert_inner_rows(int nb_dummies) {
+            int count =1; //DEBUG DELETEME
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
                 // for every profile point in start profile
-                for(int j = 1; j< firstProfile.Size(); j++){
+                for(int j = 1; j< firstProfile.Size()+1; j++){
                     //calculate Vector between both profile poles and normalize it
                     gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
                     gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
@@ -63,30 +66,37 @@ private:
                     inner_vec.Scale(inner_distance); //scaled normalized vector in v-direction
                     inner_vec.Add(inner_pole_vec); //vector to new k-th pole
                     gp_Pnt new_pole_inner(inner_vec.XYZ());
-                    row->SetValue(j+1, new_pole_inner);
+                    row->SetValue(j, new_pole_inner);
                 }
                 dummyProfiles.push_back(*row);
+                std::cerr << "Insert inner rows:" << count << std::endl; //DEBUG DELETEME
+                count ++;
             }
         }
 
         void insert_outer_rows(int nb_dummies) {
+            int count  =1; //DEBUG DELETEME
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
-                for (int j=1; j < firstProfile.Size(); j++){
+                for (int j=1; j < firstProfile.Size()+1; j++){
                     //calculate Vector between both profile poles and normalize it
                     gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
                     gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
                     //calculate distance between k-th outer dummy-pole in v-direction and profile
                     double outer_distance = outer_rounding_distance/nb_dummies * (nb_dummies-i);
-                    gp_Vec outer_vec(lastProfile.Value(j).Coord().X(),lastProfile.Value(j).Coord().Y(),lastProfile.Value(j).Coord().Z());
+                    gp_Vec outer_vec(lastProfile.Value(j).Coord().X(),
+                                     lastProfile.Value(j).Coord().Y(),
+                                     lastProfile.Value(j).Coord().Z());
                     gp_Vec outer_normalized_vec(normalized_vector_in_v_direction);
                     outer_normalized_vec.Scale(outer_distance); //scaled normalized vector in v-direction
                     outer_vec.Subtract(outer_normalized_vec);
                     gp_Pnt new_pole_outer(outer_vec.XYZ());
                     //save new poles in a vector for each outer dummy profile
-                    row->SetValue(j+1, new_pole_outer);
+                    row->SetValue(j, new_pole_outer);
                 }
                 dummyProfiles.push_back(*row);
+                std::cerr << "Insert outers rows:" << count << std::endl; //DEBUG DELETEME
+                count ++;
             }
         }
 
