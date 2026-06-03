@@ -410,7 +410,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bo
 }
 
 // Displays a point on the screen
-void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
+Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      const char* aText,
                                      Standard_Boolean UpdateViewer,
                                      Standard_Real anXoffset,
@@ -419,16 +419,17 @@ void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real TextScale)
 {
     if (std::string(aText).empty()) {
-        displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
+        return displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {
         Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
         myContext->Display(aGraphicPoint,UpdateViewer);
         Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                     aPoint.Y() + anYoffset,
-                                                     aPoint.Z() + aZoffset);
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
+        return Handle(AIS_Shape)::DownCast(aGraphicPoint);
     }
 
 }

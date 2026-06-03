@@ -162,46 +162,16 @@
      <property name="title">
       <string>Aircraft</string>
      </property>
-     <addaction name="showAllWingsAndFuselagesAction"/>
-     <addaction name="showAllWingsAndFuselageDuctCutoutsAction"/>
-     <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
-     <addaction name="drawFusedAircraftAction"/>
-     <addaction name="showFusedAirplaneTriangulation"/>
-     <addaction name="drawIntersectionAction"/>
-     <addaction name="drawFarFieldAction"/>
-     <addaction name="drawSystemsAction"/>
-     <addaction name="drawComponentAction"/>
-     <addaction name="drawControlPointNetAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
       <string>Wings</string>
      </property>
-     <addaction name="drawWingsAction"/>
-     <addaction name="drawFusedWingAction"/>
-     <addaction name="drawWingShellAction"/>
-     <addaction name="drawWingComponentSegmentAction"/>
-     <addaction name="drawWingStructureAction"/>
-     <addaction name="drawWingTriangulationAction"/>
-     <addaction name="drawWingProfilesAction"/>
-     <addaction name="drawWingGuideCurvesAction"/>
-     <addaction name="drawWingFlapsAction"/>
-     <addaction name="separator"/>
-     <addaction name="drawWingSamplePointsAction"/>
-     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
-     <addaction name="drawWingCSPointAction"/>
     </widget>
     <widget class="QMenu" name="menuFuselages">
      <property name="title">
       <string>Fuselages</string>
      </property>
-     <addaction name="drawFuselageAction"/>
-     <addaction name="drawFuselageProfilesAction"/>
-     <addaction name="drawFuselageGuideCurvesAction"/>
-     <addaction name="drawFuselageTriangulationAction"/>
-     <addaction name="drawFuselageSamplePointsAction"/>
-     <addaction name="drawFuselageSamplePointsAngleAction"/>
-     <addaction name="drawFusedFuselageAction"/>
     </widget>
     <widget class="QMenu" name="menuRotorcraft">
      <property name="title">
@@ -214,17 +184,6 @@
      <property name="title">
       <string>Rotor blades</string>
      </property>
-     <addaction name="drawRotorBladesAction"/>
-     <addaction name="drawFusedRotorBladeAction"/>
-     <addaction name="drawRotorBladeShellAction"/>
-     <addaction name="drawRotorBladeComponentSegmentAction"/>
-     <addaction name="drawRotorBladeTriangulationAction"/>
-     <addaction name="drawRotorProfilesAction"/>
-     <addaction name="drawRotorBladeGuideCurvesAction"/>
-     <addaction name="separator"/>
-     <addaction name="drawRotorBladeSamplePointsAction"/>
-     <addaction name="drawRotorBladeOverlayCPACSProfilePointsAction"/>
-     <addaction name="drawRotorBladeCSPointAction"/>
     </widget>
     <widget class="QMenu" name="menuMisc_Geometry">
      <property name="title">
@@ -517,272 +476,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="showAllWingsAndFuselagesAction">
-   <property name="text">
-    <string>Show the complete Aircraft</string>
-   </property>
-   <property name="statusTip">
-    <string>Show all Fuselages and Wings</string>
-   </property>
-   <property name="whatsThis">
-    <string>Show all Fuselages and Wings</string>
-   </property>
-  </action>
-  <action name="showAllWingsAndFuselagesSurfacePointsAction">
-   <property name="text">
-    <string>Show sample Surface points on Fuselage and Wings</string>
-   </property>
-   <property name="toolTip">
-    <string>Show sample Surface points on Fuselages and Wings</string>
-   </property>
-   <property name="statusTip">
-    <string>Show sample Surface points on Fuselages and Wings</string>
-   </property>
-  </action>
-  <action name="drawFusedAircraftAction">
-   <property name="text">
-    <string>Show the complete Aircraft fused (slow)</string>
-   </property>
-   <property name="statusTip">
-    <string>Show the complete Aircraft fused</string>
-   </property>
-  </action>
-  <action name="drawWingsAction">
-   <property name="text">
-    <string>Show Wing</string>
-   </property>
-   <property name="toolTip">
-    <string>Show a wing only</string>
-   </property>
-  </action>
-  <action name="drawWingProfilesAction">
-   <property name="text">
-    <string>Show Wing Profiles</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the profiles of a wing</string>
-   </property>
-   <property name="statusTip">
-    <string>Show the profiles of a wing</string>
-   </property>
-  </action>
-  <action name="drawWingOverlayCPACSProfilePointsAction">
-   <property name="text">
-    <string>Show Wing overlay profile points</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the points of a wing profile</string>
-   </property>
-  </action>
-  <action name="drawWingTriangulationAction">
-   <property name="text">
-    <string>Show Wing triangulation</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows the triangulation of a wing</string>
-   </property>
-  </action>
-  <action name="drawWingSamplePointsAction">
-   <property name="text">
-    <string>Show Sample Wing points</string>
-   </property>
-   <property name="toolTip">
-    <string>Show sample points on a wing</string>
-   </property>
-   <property name="statusTip">
-    <string/>
-   </property>
-  </action>
-  <action name="drawFusedWingAction">
-   <property name="text">
-    <string>Show Fused Wing</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows a fused wing</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows a fused wing</string>
-   </property>
-  </action>
-  <action name="drawWingComponentSegmentAction">
-   <property name="text">
-    <string>Show Wing Component Segment</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows a wing component segment</string>
-   </property>
-   <property name="whatsThis">
-    <string>Shows a wing component segment</string>
-   </property>
-  </action>
-  <action name="drawRotorBladesAction">
-   <property name="text">
-    <string>Show Rotor Blade</string>
-   </property>
-   <property name="toolTip">
-    <string>Show a rotor blade only</string>
-   </property>
-  </action>
-  <action name="drawRotorProfilesAction">
-   <property name="text">
-    <string>Show Rotor Profiles</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the profiles of a rotor</string>
-   </property>
-   <property name="statusTip">
-    <string>Show the profiles of a rotor</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeOverlayCPACSProfilePointsAction">
-   <property name="text">
-    <string>Show Rotor Blade overlay profile points</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the points of a rotor blade profile</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeTriangulationAction">
-   <property name="text">
-    <string>Show Rotor Blade triangulation</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows the triangulation of a rotor blade</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeSamplePointsAction">
-   <property name="text">
-    <string>Show Sample Rotor Blade points</string>
-   </property>
-   <property name="toolTip">
-    <string>Show sample points on a rotor blade</string>
-   </property>
-   <property name="statusTip">
-    <string/>
-   </property>
-  </action>
-  <action name="drawFusedRotorBladeAction">
-   <property name="text">
-    <string>Show Fused Rotor Blade</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows a fused rotor blade</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows a fused rotor blade</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeComponentSegmentAction">
-   <property name="text">
-    <string>Show Rotor Blade Component Segment</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows a rotor blade component segment</string>
-   </property>
-   <property name="whatsThis">
-    <string>Shows a rotor blade component segment</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeCSPointAction">
-   <property name="text">
-    <string>Show Rotor Blade Component Segment Point</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeShellAction">
-   <property name="text">
-    <string>Show Rotor Blade Shells</string>
-   </property>
-  </action>
-  <action name="drawAllRotorsWingsAndFuselagesAction">
-   <property name="text">
-    <string>Show all Rotors, Wings and Fuselages</string>
-   </property>
-   <property name="toolTip">
-    <string>Show all Rotors, Wings and Fuselages</string>
-   </property>
-  </action>
-  <action name="drawRotorsAction">
-   <property name="text">
-    <string>Show a Rotor</string>
-   </property>
-   <property name="toolTip">
-    <string>Show only one rotor</string>
-   </property>
-  </action>
-  <action name="showRotorPropertiesAction">
-   <property name="text">
-    <string>Show Rotor Properties...</string>
-   </property>
-   <property name="toolTip">
-    <string>Show properties of a rotor</string>
-   </property>
-  </action>
-  <action name="drawFuselageAction">
-   <property name="text">
-    <string>Show Fuselage</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows a fuselage</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows a fuselage.</string>
-   </property>
-  </action>
-  <action name="drawFuselageProfilesAction">
-   <property name="text">
-    <string>Show Fuselage Profiles</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the profiles of a fuselage</string>
-   </property>
-   <property name="statusTip">
-    <string>Show the profiles of a fuselage</string>
-   </property>
-  </action>
-  <action name="drawFuselageTriangulationAction">
-   <property name="text">
-    <string>Show Fuselage triangulation</string>
-   </property>
-   <property name="toolTip">
-    <string>Shows the triangulation of a fuselage</string>
-   </property>
-   <property name="statusTip">
-    <string>Shows the triangulation of a fuselage.</string>
-   </property>
-  </action>
-  <action name="drawFuselageSamplePointsAction">
-   <property name="text">
-    <string>Show Sample Fuselage points</string>
-   </property>
-   <property name="toolTip">
-    <string>Show sample points on a fuselage</string>
-   </property>
-   <property name="statusTip">
-    <string>Show sample points on a fuselage.</string>
-   </property>
-  </action>
-  <action name="drawFuselageSamplePointsAngleAction">
-   <property name="text">
-    <string>Show Sample Fuselage point at Angle</string>
-   </property>
-   <property name="toolTip">
-    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
-   </property>
-   <property name="statusTip">
-    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
-   </property>
-  </action>
-  <action name="drawFusedFuselageAction">
-   <property name="text">
-    <string>Show Fused Fuselage</string>
-   </property>
-   <property name="toolTip">
-    <string>Show a fused fuselage</string>
-   </property>
-   <property name="statusTip">
-    <string>Show a fused fuselage.</string>
    </property>
   </action>
   <action name="tiglExportIgesAction">
@@ -1202,16 +895,6 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="drawIntersectionAction">
-   <property name="text">
-    <string>Show Intersection Line</string>
-   </property>
-  </action>
-  <action name="showFusedAirplaneTriangulation">
-   <property name="text">
-    <string>Show fused Airplane Triangulation (slow)</string>
-   </property>
-  </action>
   <action name="closeAction">
    <property name="icon">
     <iconset resource="TIGLCreator.qrc">
@@ -1243,11 +926,6 @@
     <string>Settings</string>
    </property>
   </action>
-  <action name="drawWingShellAction">
-   <property name="text">
-    <string>Show Wing Shells</string>
-   </property>
-  </action>
   <action name="tiglExportStructuredIgesAction">
    <property name="text">
     <string>Export Model as structed IGES</string>
@@ -1269,11 +947,6 @@
     <string>Export Fuselage</string>
    </property>
   </action>
-  <action name="drawWingCSPointAction">
-   <property name="text">
-    <string>Show Wing Component Segment Point</string>
-   </property>
-  </action>
   <action name="tiglExportMeshedConfigVTK">
    <property name="text">
     <string>Export fused Configuration (slow)</string>
@@ -1282,14 +955,6 @@
   <action name="tiglExportMeshedConfigVTKNoFuse">
    <property name="text">
     <string>Export Configuration (not fused)</string>
-   </property>
-  </action>
-  <action name="drawFarFieldAction">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Draw Far Field</string>
    </property>
   </action>
   <action name="tiglExportFusedStepAction">
@@ -1310,21 +975,6 @@
   <action name="tiglExportFusedConfigBRep">
    <property name="text">
     <string>Export Fused Configuration (slow)</string>
-   </property>
-  </action>
-  <action name="drawWingGuideCurvesAction">
-   <property name="text">
-    <string>Show Wing Guide Curves</string>
-   </property>
-  </action>
-  <action name="drawRotorBladeGuideCurvesAction">
-   <property name="text">
-    <string>Show Rotor Blade Guide Curves</string>
-   </property>
-  </action>
-  <action name="drawFuselageGuideCurvesAction">
-   <property name="text">
-    <string>Show Fuselage Guide Curves</string>
    </property>
   </action>
   <action name="tiglExportWingCurvesBRepAction">
@@ -1366,16 +1016,6 @@
     <string>Draw Vector</string>
    </property>
   </action>
-  <action name="drawSystemsAction">
-   <property name="text">
-    <string>Draw Systems</string>
-   </property>
-  </action>
-  <action name="drawWingStructureAction">
-   <property name="text">
-    <string>Show Wing Structure</string>
-   </property>
-  </action>
   <action name="tiglExportMeshedConfigSTL">
    <property name="text">
     <string>Export Configuration</string>
@@ -1402,38 +1042,12 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="drawComponentAction">
-   <property name="text">
-    <string>Draw any Component</string>
-   </property>
-  </action>
-  <action name="drawControlPointNetAction">
-   <property name="text">
-    <string>Draw Control Point Net</string>
-   </property>
-  </action>
   <action name="selectAllAction">
    <property name="text">
     <string>Select all</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
-   </property>
-  </action>
-  <action name="drawWingFlapsAction">
-   <property name="text">
-    <string>Show Wing Flaps</string>
-   </property>
-  </action>
-  <action name="showAllWingsAndFuselageDuctCutoutsAction">
-   <property name="text">
-    <string>Show the complete Aircraft with Duct Cutouts</string>
-   </property>
-   <property name="statusTip">
-    <string>Show all Fuselages and Wings with Duct Cutouts</string>
-   </property>
-   <property name="whatsThis">
-    <string>Show all Fuselages and Wings with Duct Cutouts</string>
    </property>
   </action>
   <action name="saveAction">

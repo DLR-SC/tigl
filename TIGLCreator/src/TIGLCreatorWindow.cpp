@@ -51,6 +51,7 @@
 #include "TIGLCreatorLoggerHTMLDecorator.h"
 #include "TIGLCreatorScreenshotDialog.h"
 #include "TIGLCreatorScopedCommand.h"
+#include "DrawOptionsActions.h"
 #include "tigl_config.h"
 #include "api/tigl_version.h"
 #include "TIGLCreatorMaterials.h"
@@ -192,6 +193,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
 
     connectSignals();
     createMenus();
+    setupDrawMenus();
     updateMenus();
 
     loadSettings();
@@ -906,57 +908,6 @@ void TIGLCreatorWindow::connectConfiguration()
         return;
     }
 
-    // CPACS Wing Actions
-    connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
-    connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
-    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
-    connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
-    connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
-    connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
-    connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
-    connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
-    connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
-    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
-    connect(drawWingStructureAction, SIGNAL(triggered(bool)), cpacsConfiguration, SLOT(drawWingStructure()));
-    connect(drawWingFlapsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFlaps()));
-
-    // CPACS Aircraft Actions
-    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
-    connect(showAllWingsAndFuselageDuctCutoutsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfigurationWithDuctCutouts()));
-    connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
-    connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
-    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
-    connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
-    connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
-    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
-    connect(drawComponentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawComponent()));
-    connect(drawControlPointNetAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawControlPointNet()));
-
-    // CPACS Fuselage Actions
-    connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
-    connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
-    connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
-    connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
-    connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
-    connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
-
-    // CPACS RotorBlade Actions
-    connect(drawRotorProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorProfiles()));
-    connect(drawRotorBladeOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeOverlayProfilePoints()));
-    connect(drawRotorBladeGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeGuideCurves()));
-    connect(drawRotorBladesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBlade()));
-    connect(drawRotorBladeTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeTriangulation()));
-    connect(drawRotorBladeSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeSamplePoints()));
-    connect(drawFusedRotorBladeAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedRotorBlade()));
-    connect(drawRotorBladeComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegment()));
-    connect(drawRotorBladeCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegmentPoints()));
-    connect(drawRotorBladeShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeShells()));
-
-    // CPACS Rotorcraft Actions
-    connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
-    connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
-
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
@@ -1207,10 +1158,6 @@ void TIGLCreatorWindow::updateMenus()
         }
     }
     catch(tigl::CTiglError& ){}
-    drawFarFieldAction->setEnabled(hasFarField);
-    showAllWingsAndFuselageDuctCutoutsAction->setEnabled(hasDucts);
-    drawSystemsAction->setEnabled(hasACSystems);
-    drawRotorsAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuWings->setEnabled(nWings - nRotorBlades > 0);
@@ -1470,3 +1417,64 @@ void TIGLCreatorWindow::onSetMaterialRequested(const QString &m)
         myScene->setObjectsMaterial(it->second);
     }
 }
+
+
+void TIGLCreatorWindow::populateDrawMenu(
+    QMenu* menu,
+    const std::vector<DrawOptionAction>& actions,
+    bool needsUid)
+{
+    for (const auto& action : actions) {
+        QAction* qa = new QAction(action.label, this);
+
+        connect(qa, &QAction::triggered, this,
+            [this, action, needsUid]() {
+                QString uid;
+                if (needsUid && treeWidget) {
+                    uid = treeWidget->getSelectedUID();
+                }
+                action.handler(cpacsConfiguration, uid);
+            });
+
+        menu->addAction(qa);
+    }
+}
+
+void TIGLCreatorWindow::setupDrawMenus()
+{
+    // Aircraft (plane-level, no UID needed)
+    populateDrawMenu(
+        menuAircraft,
+        getPlaneDrawOptionsActions(),
+        false
+    );
+
+    // Wings
+    populateDrawMenu(
+        menuWings,
+        getWingDrawOptionsActions(),
+        true
+    );
+
+    // Fuselages
+    populateDrawMenu(
+        menuFuselages,
+        getFuselageDrawOptionsActions(),
+        true
+    );
+
+    // Rotor blades
+    populateDrawMenu(
+        menuRotorBlades,
+        getRotorBladeDrawOptionsActions(),
+        true
+    );
+
+    // Rotors
+    populateDrawMenu(
+        menuRotorcraft,
+        getRotorDrawOptionsActions(),
+        true
+    );
+}
+

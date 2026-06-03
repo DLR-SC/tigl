@@ -64,6 +64,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
+#include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
@@ -304,6 +305,39 @@ CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const std::string& u
 {
     return m_componentSegments->GetComponentSegment(uid);
 }
+
+PNamedShape CCPACSWing::GetMirroredLoft(PNamedShape input_shape) const
+{   
+    if (!input_shape) {
+        input_shape = GetLoft();
+    }
+    const TiglSymmetryAxis& symmetryAxis = GetSymmetryAxis();
+    if (symmetryAxis == TIGL_NO_SYMMETRY) {
+        return PNamedShape();
+    }
+
+    CTiglTransformation trafo;
+    if (symmetryAxis == TIGL_X_Z_PLANE) {
+        trafo.AddMirroringAtXZPlane();
+    }
+    else if (symmetryAxis == TIGL_X_Y_PLANE) {
+        trafo.AddMirroringAtXYPlane();
+    }
+    else if (symmetryAxis == TIGL_Y_Z_PLANE) {
+        trafo.AddMirroringAtYZPlane();
+    }
+
+    PNamedShape mirroredShape = trafo.Transform(input_shape);
+
+    std::string mirrorName = mirroredShape->Name();
+    mirrorName += "M";
+    std::string mirrorShortName = mirroredShape->ShortName();
+    mirrorShortName += "M";
+    mirroredShape->SetName(mirrorName.c_str());
+    mirroredShape->SetShortName(mirrorShortName.c_str());
+    return mirroredShape;
+}
+
 
 // Gets the loft of the whole wing with modeled leading edge.
 TopoDS_Shape& CCPACSWing::GetLoftWithLeadingEdge()
