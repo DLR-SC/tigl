@@ -75,7 +75,7 @@ TIGL_EXPORT  Handle(Geom_BSplineSurface) CTiglRoundedSegmentSurface::Surface(){
     //END DEBUG DELETEME
 
 
-    auto surface = new Geom_BSplineSurface(m_pole_matrix, m_u_knots, m_v_knots, m_u_multiplicities, m_v_multiplicities, _u_degree, _v_degree, false, false);
+    auto surface = new Geom_BSplineSurface(m_pole_matrix, m_v_knots, m_u_knots,  m_v_multiplicities, m_u_multiplicities,_v_degree, _u_degree, false, false);
     return surface;
 }
 

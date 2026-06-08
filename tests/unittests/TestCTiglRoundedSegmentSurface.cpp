@@ -121,12 +121,12 @@ protected:
 
 TEST_F(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
 {
-    double ird = 0.3;
-    double ord = 0.2;
+    double ird = 0.25;
+    double ord = 0.25;
     tigl::CTiglRoundedSegmentSurface lofter(profileCurves, ird, ord);
     auto surface = lofter.Surface();
-    //DEBUG DELETEME
-    // Handle(Geom_Surface) handle_surface = surface;
-    // TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
-    // tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
+   // DEBUG DELETEME
+    Handle(Geom_Surface) handle_surface = surface;
+    TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
+    tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
 }
