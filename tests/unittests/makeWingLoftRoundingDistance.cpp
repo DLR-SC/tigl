@@ -649,7 +649,7 @@ TEST(WingLoftRoundingDistance, makeShape)
             tigl::dumpShape(edge,"makeLoftWing", "Row",row);
         }
 
-        auto surface = new Geom_BSplineSurface(pole_matrix, u_knots, v_knots, u_mults, v_multiplicities, u_degree, v_degree, false, false);
+        auto surface = new Geom_BSplineSurface(pole_matrix, v_knots, u_knots, v_multiplicities, u_mults, v_degree, u_degree, false, false);
         Handle(Geom_Surface) handle_surface = surface;
         TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
         tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
