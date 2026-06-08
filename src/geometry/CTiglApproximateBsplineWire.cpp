@@ -39,20 +39,18 @@ namespace tigl
 {
 
 // Constructor
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(nrControlPoints)
-    , m_profileUID(&profileUID)
     , m_interpStartEnd(interpStartEnd)
     , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
 {}
 
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(tolerance)
-    , m_profileUID(&profileUID)
     , m_interpStartEnd(interpStartEnd)
     , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
@@ -115,10 +113,10 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
 
     // Define root mean square error as the default approximation error computation method
     CalcPointVecErrorFct approxErrFct = calcPointVecErrorRMSE;
-    std::string approxErrStrLong = "root mean square error";
+    m_approxErrStrLong = "root mean square error";
     if (m_approxErrStr == "MaxError") {
         approxErrFct = calcPointVecErrorMax;
-        approxErrStrLong = "maximum error";
+        m_approxErrStrLong = "maximum error";
     }
     else if (m_approxErrStr != "RMSE"){
         throw CTiglError("CTiglApproximateBsplineWire::BuildWire: Unsupported errorComputationMethod. Currently supported: RMSE, MaxError");
@@ -169,9 +167,9 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), approxErrFct);
 
         hcurve = approxResult.curve;
-        errApproxCalc = approxResult.error;
+        m_approxErr = approxResult.error;
+        m_usedNrPoles = hcurve->NbPoles();
 
-        LOG(WARNING) << "The profile '" << *m_profileUID << "' is created by approximating the point list using " << hcurve->NbPoles() << " poles. This leads to a " << approxErrStrLong << " of " << errApproxCalc << "." << std::endl;
     }
     else if (std::holds_alternative<double>(m_approximationSettings)) {
         double maxErrorApprox = std::get<double>(m_approximationSettings);
@@ -198,6 +196,21 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
     }
 
     return wire;
+}
+
+int CTiglApproximateBsplineWire::GetUsedNrPoles() const
+{
+    return m_usedNrPoles;
+}
+
+std::string CTiglApproximateBsplineWire::GetApproxErrStrLong() const
+{
+    return m_approxErrStrLong;
+}
+
+double CTiglApproximateBsplineWire::GetApproxErr() const
+{
+    return m_approxErr;
 }
 
 // Returns the algorithm code identifier for an algorithm

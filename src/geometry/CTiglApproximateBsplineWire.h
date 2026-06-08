@@ -37,10 +37,10 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd,
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, bool interpStartEnd, bool interpFarestPntFromStartEnd,
                                             const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
-    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string& profileUID, bool interpStartEnd, bool interpFarestPntFromStartEnd,
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, bool interpStartEnd, bool interpFarestPntFromStartEnd,
                                             const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
@@ -48,6 +48,12 @@ public:
 
     // Builds the wire from the given points
     TIGL_EXPORT TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const override;
+
+    TIGL_EXPORT int GetUsedNrPoles() const;
+
+    TIGL_EXPORT std::string GetApproxErrStrLong() const;
+
+    TIGL_EXPORT double GetApproxErr() const;
 
     // Returns the algorithm code identifier for an algorithm
     TIGL_EXPORT TiglAlgorithmCode GetAlgorithmCode() const override;
@@ -81,7 +87,13 @@ private:
 
     bool m_interpFarestPntFromStartEnd; // Defines whether the farest point from the averaged starting and end point should be interpolated
 
-    const std::string m_approxErrStr; // Currently allowed entries are "root mean square error", "maximum error"
+    const std::string m_approxErrStr; // Currently allowed entries are "RMSE", "MaxError"
+
+    mutable std::string m_approxErrStrLong; // Currently allowed entries are "root mean square error", "maximum error"
+
+    mutable int m_usedNrPoles; // Number of actually used poles (might differ from user input due to interpolated points)
+
+    mutable double m_approxErr; // Approximation error according to chosen computation method
 
     std::vector<double> m_interpolatedPointsIndices; // Contains indices of points that should still be interpolated
 };

@@ -116,11 +116,11 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
 
         if (approxSettings->GetControlPointNumber_choice1()) {
             int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, profileUID, true, true, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, true, true, approxErrStr, interpPointsIndices);
         }
         else if (approxSettings->GetMaximumError_choice2()) {
             double tolerance = *(approxSettings->GetMaximumError_choice2());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, profileUID, true, true, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, true, true, approxErrStr, interpPointsIndices);
         }
         else {
             throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
@@ -213,6 +213,15 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
     }
     else {
         tempShape = wireBuilder.BuildWire(openPoints, false);
+    }
+
+    if (auto* wireBuilderApprox = dynamic_cast<const CTiglApproximateBsplineWire*>(&wireBuilder)) {
+
+        int usedNrPoles = wireBuilderApprox->GetUsedNrPoles();
+        std::string approxErrStr = wireBuilderApprox->GetApproxErrStrLong();
+        double approxErr = wireBuilderApprox->GetApproxErr();
+
+        LOG(WARNING) << "The profile '" << profileUID << "' is created by approximating the point list using " << usedNrPoles << " poles. This leads to a " << approxErrStr << " of " << approxErr << "." << std::endl;
     }
 
     if (tempShape.IsNull()) {

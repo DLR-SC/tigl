@@ -141,7 +141,7 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
     ASSERT_EQ(approxResult.curve->NbPoles(), 10);
 
     // Error should be thrown, because nrControlPoints (=2) is not large enough
-    tigl::CTiglApproximateBsplineWire approxDummy(2, "DummyUID", true, true);
+    tigl::CTiglApproximateBsplineWire approxDummy(2, true, true);
     ASSERT_THROW(approxDummy.BuildWire(cpoints, true), tigl::CTiglError);
 
     const gp_Pnt pntStart(1., 0., 0.); // Starting point in CPACS configuration
