@@ -44,8 +44,12 @@ private:
                 firstProfile.SetValue(i,start->Pole(i));
                 lastProfile.SetValue(i,end->Pole(i));
             }
-            std::cerr << "Reserve Profile storage" << std::endl;
-            dummyProfiles.reserve(8);
+            if(inner_rounding_distance>1e-6){
+                insert_inner_rows(3);
+            }
+            if(outer_rounding_distance>1e-6){
+                insert_outer_rows(3);
+            }
         }
 
         void insert_inner_rows(int nb_dummies) {
@@ -83,7 +87,7 @@ private:
                     gp_Vec vector_in_v_direction(firstProfile.Value(j), lastProfile.Value(j)); //v01
                     gp_Vec normalized_vector_in_v_direction(vector_in_v_direction);
                     //calculate distance between k-th outer dummy-pole in v-direction and profile
-                    double outer_distance = outer_rounding_distance/nb_dummies * (nb_dummies-i);
+                    double outer_distance = (outer_rounding_distance/nb_dummies) * (nb_dummies-i);
                     gp_Vec outer_vec(lastProfile.Value(j).Coord().X(),
                                      lastProfile.Value(j).Coord().Y(),
                                      lastProfile.Value(j).Coord().Z());
