@@ -37,51 +37,59 @@
 
 namespace tigl
 {
-
-template <typename T>
-static const CCPACSElementGeometry* ResolveGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+namespace
 {
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+
+    template <typename T>
+    const CCPACSElementGeometry* ResolveGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetGeometry();
     }
-    return &uidMgr.ResolveObject<T>(uid).GetGeometry();
-}
 
-template <typename... Ts>
-static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    const CCPACSElementGeometry* g = nullptr;
-    ((g = g ? g : ResolveGeometry<Ts>(uidMgr, uid)), ...);
-    return g;
-}
-
-static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    return GetGeomFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement, CCPACSGalleyElement>(uidMgr, uid);
-}
-
-template <typename T>
-static const boost::optional<CCPACSElementMass>* ResolveMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+    template <typename T>
+    const boost::optional<CCPACSElementMass>* ResolveMassDescription(const CTiglUIDManager& uidMgr,
+                                                                     const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetMass();
     }
-    return &uidMgr.ResolveObject<T>(uid).GetMass();
-}
 
-template <typename... Ts>
-static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTiglUIDManager& uidMgr,
-                                                                             const std::string& uid)
-{
-    const boost::optional<CCPACSElementMass>* m = nullptr;
-    ((m = m ? m : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
-    return m;
-}
+    template <typename... Ts> struct SupportedDeckElementTypes {
+        static const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+        {
+            const CCPACSElementGeometry* geometry = nullptr;
+            ((geometry = geometry ? geometry : ResolveGeometry<Ts>(uidMgr, uid)), ...);
+            return geometry;
+        }
 
-static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    return GetMassDescriptionFromTypes<CCPACSVehicleElementBase, CCPACSSeatElement, CCPACSGalleyElement>(uidMgr, uid);
-}
+        static const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr,
+                                                                            const std::string& uid)
+        {
+            const boost::optional<CCPACSElementMass>* mass = nullptr;
+            ((mass = mass ? mass : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
+            return mass;
+        }
+    };
+
+    using DeckElementTypes =
+        SupportedDeckElementTypes<CCPACSVehicleElementBase, CCPACSSeatElement, CCPACSGalleyElement>;
+
+    const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return DeckElementTypes::GetGeometry(uidMgr, uid);
+    }
+
+    const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return DeckElementTypes::GetMassDescription(uidMgr, uid);
+    }
+
+} // namespace
 
 CCPACSDeckComponentBase::CCPACSDeckComponentBase(CCPACSCeilingPanels* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDeckComponentBase(parent, uidMgr)
@@ -269,4 +277,4 @@ void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
     }
 }
 
-} //namespace tigl
+} // namespace tigl
