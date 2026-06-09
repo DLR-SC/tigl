@@ -37,11 +37,11 @@ class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, bool interpStartEnd, bool interpFarestPntFromStartEnd,
-                                            const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string approxErrStr="RMSE",
+                                            std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
-    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, bool interpStartEnd, bool interpFarestPntFromStartEnd,
-                                            const std::string approxErrStr="RMSE", std::vector<double> interpolatedPointsIndices=std::vector<double>{});
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string approxErrStr="RMSE",
+                                            std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;

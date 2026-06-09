@@ -34,25 +34,21 @@
 #include "GeomAbs_Shape.hxx"
 #include "Precision.hxx"
 #include "CTiglLogging.h"
-            
+
 namespace tigl 
 {
 
 // Constructor
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(nrControlPoints)
-    , m_interpStartEnd(interpStartEnd)
-    , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
 {}
 
-CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, bool interpStartEnd, bool interpFarestPntFromStartEnd, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices)
     : continuity(_C0)
     , m_approximationSettings(tolerance)
-    , m_interpStartEnd(interpStartEnd)
-    , m_interpFarestPntFromStartEnd(interpFarestPntFromStartEnd)
     , m_approxErrStr(approxErrStr)
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
 {}
@@ -132,27 +128,6 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         }
 
         CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
-
-        if (m_interpStartEnd) {
-            // Make sure that the first and last point is still interpolated to ensure a closed profile
-            approx.InterpolatePoint(0, false);
-            approx.InterpolatePoint(hpoints->Length()-1, false);
-        }
-
-        if (m_interpFarestPntFromStartEnd) {
-            // Determine the farest point from the starting and end point (averaged) to interpolate it
-            double maxDist = -1.;
-            gp_Pnt avgPnt((startPnt.X()+endPnt.X())*0.5, (startPnt.Y()+endPnt.Y())*0.5, (startPnt.Z()+endPnt.Z())*0.5);
-            size_t farestPntIdx;
-            for (CPointContainer::size_type i = 1 ; i < usedPoints.size(); i++) {
-                double dist = avgPnt.Distance(usedPoints[i]);
-                if (dist > maxDist) {
-                    maxDist = dist;
-                    farestPntIdx = i;
-                }
-            }
-            approx.InterpolatePoint(farestPntIdx);
-        }
 
         // Account for optional defined indices whose points should be interpolated
         for(auto idx: m_interpolatedPointsIndices) {
