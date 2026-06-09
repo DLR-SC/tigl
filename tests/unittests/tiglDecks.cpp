@@ -72,10 +72,10 @@ TiglCPACSConfigurationHandle Decks::tiglHandle = 0;
 
 TEST_F(Decks, Basics)
 {
-    const auto& deck      = GetDeck("deck1");
+    const auto& deck      = GetDeck("deck");
     const auto& component = GetComponent("seatModule1_rh");
 
-    EXPECT_EQ(deck.GetDefaultedUID(), "deck1");
+    EXPECT_EQ(deck.GetDefaultedUID(), "deck");
     EXPECT_EQ(component.GetDefaultedUID(), "seatModule1_rh");
 
     EXPECT_EQ(deck.GetComponentType(), TIGL_COMPONENT_DECK);
@@ -90,11 +90,11 @@ TEST_F(Decks, Basics)
 
 TEST_F(Decks, DeckGeometry)
 {
-    const auto& deck = GetDeck("deck1");
+    const auto& deck = GetDeck("deck");
 
     const PNamedShape shape = deck.GetLoft();
     ASSERT_TRUE(shape);
-    EXPECT_EQ(shape->Name(), "deck1");
+    EXPECT_EQ(shape->Name(), "deck");
 
     // 2 seat modules + 8 further deck components
     unsigned shapeCount = 0;

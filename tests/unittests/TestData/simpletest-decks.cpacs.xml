@@ -104,8 +104,8 @@
                             </segment>
                         </segments>
                         <decks>
-                            <deck uID="deck1">
-                                <name>Deck 1</name>
+                            <deck uID="deck">
+                                <name>Deck</name>
                                 <transformation>
                                     <translation>
                                         <x>2.0</x>
