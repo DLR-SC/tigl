@@ -43,14 +43,10 @@ public:
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
-    {
-        return TIGL_COMPONENT_DECK;
-    }
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
-    {
-        return TIGL_INTENT_PHYSICAL;
-    }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
+
+    /// @brief Returns the TiGL geometric component intent.
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
 protected:
     // Build the shape of the system

@@ -173,6 +173,16 @@ CCPACSConfiguration const& CCPACSDeckComponentBase::GetConfiguration() const
     return m_parentDeck->GetConfiguration();
 }
 
+TiglGeometricComponentType CCPACSDeckComponentBase::GetComponentType() const
+{
+    return TIGL_COMPONENT_DECK_COMPONENT;
+}
+
+TiglGeometricComponentIntent CCPACSDeckComponentBase::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
 TiglGeometryRepresentation CCPACSDeckComponentBase::GetComponentRepresentation() const
 {
     using CPACSGeomRep        = generated::CPACSGeometryRepresentation;

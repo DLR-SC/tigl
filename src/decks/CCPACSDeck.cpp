@@ -31,9 +31,7 @@ namespace tigl
 // Constructor
 CCPACSDeck::CCPACSDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDeck(parent, uidMgr)
-    , CTiglRelativelyPositionedComponent(
-          &m_parentUID,
-          &m_transformation)
+    , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
 {
 }
 
@@ -63,6 +61,16 @@ std::string CCPACSDeck::GetDefaultedUID() const
 CCPACSConfiguration const& CCPACSDeck::GetConfiguration() const
 {
     return m_parent->GetParent()->GetConfiguration();
+}
+
+TiglGeometricComponentType CCPACSDeck::GetComponentType() const
+{
+    return TIGL_COMPONENT_DECK;
+}
+
+TiglGeometricComponentIntent CCPACSDeck::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
 }
 
 // build loft
