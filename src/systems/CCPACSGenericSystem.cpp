@@ -118,6 +118,10 @@ boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() cons
         }
 
         const auto cogG = c.GetCenterOfGravityGlobal();
+        if (!cogG) {
+            continue;
+        }
+
         mSum += *m;
         xSum += (*m) * cogG->x;
         ySum += (*m) * cogG->y;
