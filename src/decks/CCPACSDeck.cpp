@@ -33,7 +33,7 @@ CCPACSDeck::CCPACSDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDeck(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(
           &m_parentUID,
-          &m_transformation) // ToDo: if m_parentUID is not given, the parent should be the parent fuselage
+          &m_transformation)
 {
 }
 
