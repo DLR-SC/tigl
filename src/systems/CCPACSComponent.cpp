@@ -220,12 +220,17 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityLocal() const
 
 boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
 {
-    const auto cogLocal = m_mass->cogLocal;
     if (!IsPositioned()) {
         LOG(WARNING) << "Global center of gravity of component with uID=\"" << GetObjectUID().get_value_or("unnamed")
                      << "\" is only available if <transformation> is defined.";
         return boost::none;
     }
+
+    const auto cogLocal = GetCenterOfGravityLocal();
+    if (!cogLocal) {
+        return boost::none;
+    }
+
     return GetTransformationMatrix() * (*cogLocal);
 }
 
