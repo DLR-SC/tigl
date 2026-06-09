@@ -262,6 +262,9 @@ TEST_F(Decks, NoMass)
     // Deck component without mass definition (which is ok)
     const auto& comp = GetComponent("galley");
     ASSERT_FALSE(comp.GetMass());
+    EXPECT_FALSE(comp.GetCenterOfGravityLocal());
+    EXPECT_FALSE(comp.GetCenterOfGravityGlobal());
+    EXPECT_FALSE(comp.GetMassInertiaLocal());
 }
 
 // This test serves an intuitive testing of the scaling effect on mass properties at deck level
