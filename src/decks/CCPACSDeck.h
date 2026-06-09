@@ -40,7 +40,7 @@ public:
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
 
     // Returns the Component Type TIGL_COMPONENT_GENERICSYSTEM.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override

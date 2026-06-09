@@ -60,7 +60,7 @@ std::string CCPACSDeck::GetDefaultedUID() const
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSDeck::GetConfiguration() const
+CCPACSConfiguration const& CCPACSDeck::GetConfiguration() const
 {
     return m_parent->GetParent()->GetConfiguration();
 }
