@@ -18,6 +18,7 @@
 
 #include "test.h"
 #include "tigl.h"
+#include "testUtils.h"
 
 #include <boost/optional/optional_io.hpp>
 
@@ -93,20 +94,6 @@ protected:
 
 TixiDocumentHandle Systems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle Systems::tiglHandle = 0;
-
-void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
-{
-    try {
-        func();
-        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
-    }
-    catch (const tigl::CTiglError& e) {
-        EXPECT_STREQ(e.what(), expectedMessage);
-    }
-    catch (...) {
-        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
-    }
-}
 
 TEST_F(Systems, Basics)
 {
