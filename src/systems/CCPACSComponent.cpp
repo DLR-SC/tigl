@@ -58,65 +58,63 @@
 
 namespace tigl
 {
-
-template <typename T>
-static const CCPACSElementGeometry* ResolveGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+namespace
 {
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+
+    template <typename T>
+    const CCPACSElementGeometry* ResolveGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetGeometry();
     }
-    return &uidMgr.ResolveObject<T>(uid).GetGeometry();
-}
 
-template <typename... Ts>
-static const CCPACSElementGeometry* GetGeomFromTypes(const CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    const CCPACSElementGeometry* g = nullptr;
-    ((g = g ? g : ResolveGeometry<Ts>(uidMgr, uid)), ...);
-    return g;
-}
+    template <typename T>
+    const boost::optional<CCPACSElementMass>* ResolveMassDescription(const CTiglUIDManager& uidMgr,
+                                                                     const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetMass();
+    }
 
-static const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    return GetGeomFromTypes<
+    template <typename... Ts> struct SupportedSystemElementTypes {
+        static const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+        {
+            const CCPACSElementGeometry* geometry = nullptr;
+            ((geometry = geometry ? geometry : ResolveGeometry<Ts>(uidMgr, uid)), ...);
+            return geometry;
+        }
+
+        static const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr,
+                                                                            const std::string& uid)
+        {
+            const boost::optional<CCPACSElementMass>* mass = nullptr;
+            ((mass = mass ? mass : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
+            return mass;
+        }
+    };
+
+    using SystemElementTypes = SupportedSystemElementTypes<
         CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
         CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
         CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
         CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
-        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
-                                                                                                                uid);
-}
+        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>;
 
-template <typename T>
-static const boost::optional<CCPACSElementMass>* ResolveMassDescription(const CTiglUIDManager& uidMgr,
-                                                                        const std::string& uid)
-{
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+    const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return SystemElementTypes::GetGeometry(uidMgr, uid);
     }
-    return &uidMgr.ResolveObject<T>(uid).GetMass();
-}
 
-template <typename... Ts>
-static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(const CTiglUIDManager& uidMgr,
-                                                                             const std::string& uid)
-{
-    const boost::optional<CCPACSElementMass>* m = nullptr;
-    ((m = m ? m : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
-    return m;
-}
+    const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return SystemElementTypes::GetMassDescription(uidMgr, uid);
+    }
 
-static const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr,
-                                                                    const std::string& uid)
-{
-    return GetMassDescriptionFromTypes<
-        CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
-        CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
-        CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
-        CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
-        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
-                                                                                                                uid);
-}
+} // namespace
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
@@ -290,4 +288,4 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
     return;
 }
 
-} //namespace tigl
+} // namespace tigl
