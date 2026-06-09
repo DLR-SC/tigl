@@ -337,10 +337,6 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExterna
     CheckFileIsReadable(filePath);
 
     const ListPNamedShape shapes = importer->Read(filePath);
-
-    // ToDo: Transformation should be slightly different from the one used in relatively positioned components:
-    //       as there is no parent, there should not be a refType attribute.
-    //       This change in XSD would affect CCPACSTransformation and CTiglTransformation.
     const PNamedShape shapeGroup = CGroupShapes(shapes);
 
     TopoDS_Shape shape = shapeGroup->Shape();
