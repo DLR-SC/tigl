@@ -60,7 +60,7 @@ namespace tigl
 {
 
 template <typename T>
-static const CCPACSElementGeometry* ResolveGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+static const CCPACSElementGeometry* ResolveGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
 {
     if (!uidMgr.IsType<T>(uid)) {
         return nullptr;
@@ -69,14 +69,14 @@ static const CCPACSElementGeometry* ResolveGeometry(CTiglUIDManager& uidMgr, con
 }
 
 template <typename... Ts>
-static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
+static const CCPACSElementGeometry* GetGeomFromTypes(const CTiglUIDManager& uidMgr, const std::string& uid)
 {
     const CCPACSElementGeometry* g = nullptr;
     ((g = g ? g : ResolveGeometry<Ts>(uidMgr, uid)), ...);
     return g;
 }
 
-static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+static const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
 {
     return GetGeomFromTypes<
         CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
@@ -88,7 +88,8 @@ static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const s
 }
 
 template <typename T>
-static const boost::optional<CCPACSElementMass>* ResolveMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
+static const boost::optional<CCPACSElementMass>* ResolveMassDescription(const CTiglUIDManager& uidMgr,
+                                                                        const std::string& uid)
 {
     if (!uidMgr.IsType<T>(uid)) {
         return nullptr;
@@ -97,7 +98,7 @@ static const boost::optional<CCPACSElementMass>* ResolveMassDescription(CTiglUID
 }
 
 template <typename... Ts>
-static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTiglUIDManager& uidMgr,
+static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(const CTiglUIDManager& uidMgr,
                                                                              const std::string& uid)
 {
     const boost::optional<CCPACSElementMass>* m = nullptr;
@@ -105,7 +106,8 @@ static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTi
     return m;
 }
 
-static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
+static const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr,
+                                                                    const std::string& uid)
 {
     return GetMassDescriptionFromTypes<
         CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
