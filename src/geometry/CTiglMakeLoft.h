@@ -96,6 +96,8 @@ public:
     TIGL_EXPORT void Perform();
 
 private:
+
+    void makeLoftWithRoundedSegments();
     void makeLoftWithGuides();
     void makeLoftWithoutGuides();
 
