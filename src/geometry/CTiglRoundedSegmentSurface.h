@@ -12,8 +12,8 @@ class CTiglRoundedSegmentSurface
 {
 public:
     TIGL_EXPORT CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
-                                           double inner_rounding_distance,
-                                           double outer_rounding_distance,
+                                           std::vector<double> inner_rounding_distance,
+                                           std::vector<double> outer_rounding_distance,
                                            int u_degree = 3,
                                            int v_degree = 3);
 
@@ -148,8 +148,8 @@ private:
     TColStd_HArray1OfInteger m_v_multiplicities;
 
     //Storage of inner and outer rounding distance per segment
-    double m_inner_rounding_distance;
-    double m_outer_rounding_distance;
+    std::vector<double> m_inner_rounding_distance;
+    std::vector<double> m_outer_rounding_distance;
 
     // Store as B-spline curves internally (after conversion)
     std::vector<Handle(Geom_BSplineCurve)> m_profileCurves; //Vector contains 1 edge per profile Wire, loft ist build edgewise
