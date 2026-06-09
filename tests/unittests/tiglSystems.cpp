@@ -97,11 +97,11 @@ TiglCPACSConfigurationHandle Systems::tiglHandle = 0;
 
 TEST_F(Systems, Basics)
 {
-    const auto& system    = GetSystem("genSys_1");
+    const auto& system    = GetSystem("genSys");
     const auto& component = GetComponent("cuboid_1");
 
     // defaulted UID check
-    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys");
     EXPECT_EQ(component.GetDefaultedUID(), "cuboid_1");
 
     // check system's type and intent
@@ -122,7 +122,7 @@ TEST_F(Systems, Basics)
 
 TEST_F(Systems, SystemsGeometry)
 {
-    const auto& system = GetSystem("genSys_1");
+    const auto& system = GetSystem("genSys");
 
     const PNamedShape shape = system.GetLoft();
     ASSERT_TRUE(shape);
@@ -141,7 +141,7 @@ TEST_F(Systems, SystemsGeometry)
 
 TEST_F(Systems, SystemMass)
 {
-    const auto& system = GetSystem("genSys_1");
+    const auto& system = GetSystem("genSys");
     const double eps   = 1e-6;
 
     // ---- Mass values ----
@@ -421,7 +421,7 @@ TEST_F(Systems, ComponentCentroid)
 
 TEST_F(Systems, EmptyGenericSystem)
 {
-    const auto& system = GetSystem("genSys_2");
+    const auto& system = GetSystem("genSys_empty");
 
     // Missing <components> must be represented as boost::none.
     EXPECT_FALSE(system.GetComponents());
@@ -434,7 +434,7 @@ TEST_F(Systems, EmptyGenericSystem)
     // Geometry access should still be valid and return an empty grouped shape.
     const PNamedShape shape = system.GetLoft();
     ASSERT_TRUE(shape);
-    EXPECT_EQ(shape->Name(), "genSys_2");
+    EXPECT_EQ(shape->Name(), "genSys_empty");
     EXPECT_EQ(shape->GetFaceCount(), 0u);
 
     unsigned shapeCount = 0;
@@ -452,12 +452,12 @@ TEST_F(Systems, ConfigurationAccess)
     EXPECT_EQ(config.GetGenericSystemCount(), 2u);
 
     const auto& system = config.GetGenericSystem(1);
-    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
-    EXPECT_EQ(system.GetName(), "Generic System 1");
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys");
+    EXPECT_EQ(system.GetName(), "Generic System");
 
-    const auto& systemByUid = config.GetGenericSystem("genSys_1");
-    EXPECT_EQ(systemByUid.GetDefaultedUID(), "genSys_1");
-    EXPECT_EQ(systemByUid.GetName(), "Generic System 1");
+    const auto& systemByUid = config.GetGenericSystem("genSys");
+    EXPECT_EQ(systemByUid.GetDefaultedUID(), "genSys");
+    EXPECT_EQ(systemByUid.GetName(), "Generic System");
     EXPECT_EQ(&system, &systemByUid);
 
     // systemArchitecture
@@ -476,7 +476,7 @@ TEST_F(Systems, ConfigurationAccessNonConst)
     auto& config = GetConfig();
 
     auto& system = config.GetGenericSystem(1);
-    EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
+    EXPECT_EQ(system.GetDefaultedUID(), "genSys");
 
     auto& saByIndex = config.GetSystemArchitecture(1);
     EXPECT_EQ(saByIndex.GetName(), "Test system architecture");

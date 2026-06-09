@@ -107,8 +107,8 @@
                 </fuselages>
                 <systems>
                     <genericSystems>
-                        <genericSystem uID="genSys_1">
-                            <name>Generic System 1</name>
+                        <genericSystem uID="genSys">
+                            <name>Generic System</name>
                             <components>
                                 <component uID="cuboid_1">
                                     <name>Installed cuboid 1</name>
@@ -381,8 +381,8 @@
                                 </component>
                             </components>
                         </genericSystem>
-                        <genericSystem uID="genSys_2">
-                            <name>Generic System 2</name>
+                        <genericSystem uID="genSys_empty">
+                            <name>Generic System empty</name>
                             <description>This schema-valid system intentionally contains no components.</description>
                         </genericSystem>
                     </genericSystems>
