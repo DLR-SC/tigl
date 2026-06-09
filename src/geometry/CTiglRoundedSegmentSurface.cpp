@@ -9,7 +9,7 @@
 
 
 namespace tigl{
-CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
+CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
                                                        std::vector<double> inner_rounding_distance,
                                                        std::vector<double> outer_rounding_distance, int u_degree, int v_degree):
     m_pole_matrix(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles())),
