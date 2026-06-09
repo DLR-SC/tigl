@@ -163,6 +163,11 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
     TopoDS_Wire wire = wireBuilder.Wire();
 
     if (forceClosed && !hcurve->IsClosed()) {
+        if (startPnt.Distance(endPnt) < Precision::Confusion()) {
+            throw CTiglError("Wire in CTiglApproximateBsplineWire::BuildWire could not be constructed. Start and end point are "
+                "identical, still the approximated curve is not closed. This might be due to an ill-defined combination of pole number "
+                "and list of interpolation indices.", TIGL_ERROR);
+        }
         edge = BRepBuilderAPI_MakeEdge(endPnt, startPnt);
         wire = BRepBuilderAPI_MakeWire(wire, edge).Wire();
         if (!wire.Closed()) {
