@@ -115,6 +115,17 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             interpPointsIndices = approxSettings->GetInterpolatedPointsIndices()->AsVector();
         }
 
+        // If not already selected by the user, interpolate the trailing edge point (-> first and last point) and leading edge point
+        if (std::find(interpPointsIndices.begin(), interpPointsIndices.end(), 1.) == interpPointsIndices.end()) {
+            interpPointsIndices.insert(interpPointsIndices.begin(), 1.);
+        }
+        if (std::find(interpPointsIndices.begin(), interpPointsIndices.end(), coordinates.size()) == interpPointsIndices.end()) {
+            interpPointsIndices.push_back(static_cast<double>(coordinates.size()));
+        }
+        if (std::find(interpPointsIndices.begin(), interpPointsIndices.end(), lePointIdx) == interpPointsIndices.end()) {
+            interpPointsIndices.push_back(lePointIdx+1);
+        }
+
         if (approxSettings->GetControlPointNumber_choice1()) {
             int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
             profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, approxErrStr, interpPointsIndices);
