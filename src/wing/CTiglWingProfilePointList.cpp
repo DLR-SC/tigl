@@ -92,6 +92,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
     , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
     , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
+    BuildLETEPoints();
     // Profile points are approximated, not interpolated. Read out and pass the corresponding options
     auto& approxSettings = cpacsPointList.GetApproximationSettings();
     if (approxSettings) {
@@ -139,6 +140,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSNacelleProfile&
     , wireCacheOpened(*this, &CTiglWingProfilePointList::BuildWiresOpened)
     , wireCacheClosed(*this, &CTiglWingProfilePointList::BuildWiresClosed)
 {
+    BuildLETEPoints();
     // Up to now, profile approximation is not implemented for nacelles. Also needs CPACS adaptation
 }
 
@@ -235,15 +237,13 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
     TopExp_Explorer wireEx(tempShape, TopAbs_EDGE);
     TopoDS_Edge profileEdgeTmp = TopoDS::Edge(wireEx.Current());
 
-    BuildLETEPoints(cache);
-
     // Get the curve of the wire
     Standard_Real u1,u2;
     Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
 
     // Get Leading edge parameter on curve
-    double lep_par = GeomAPI_ProjectPointOnCurve(cache.lePoint, curve).LowerDistanceParameter();
+    double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
 
     // upper and lower curve
     Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
@@ -284,7 +284,7 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-void CTiglWingProfilePointList::BuildLETEPoints(WireCache& cache) const
+void CTiglWingProfilePointList::BuildLETEPoints()
 {
     // compute TE point
     gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
@@ -292,29 +292,29 @@ void CTiglWingProfilePointList::BuildLETEPoints(WireCache& cache) const
     double x = (firstPnt.X() + lastPnt.X()) / 2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
-    cache.tePoint = gp_Pnt(x,y,z);
+    tePoint = gp_Pnt(x,y,z);
 
     // find the point with the max dist to TE point
-    cache.lePoint = cache.tePoint;
+    lePoint = tePoint;
     for (std::vector<CTiglPoint>::const_iterator it = coordinates.begin(); it != coordinates.end(); ++it) {
         gp_Pnt point = it->Get_gp_Pnt();
-        if (cache.tePoint.Distance(point) > cache.tePoint.Distance(cache.lePoint)) {
-            cache.lePoint = point;
+        if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
+            lePoint = point;
         }
     }
     // project into x-z plane
-    cache.lePoint.SetY(0.);
-    cache.tePoint.SetY(0.);
+    lePoint.SetY(0.);
+    tePoint.SetY(0.);
 
     // shorten chord at te, that upper and lower
     // profile are reachable through cord
-    gp_Vec vchord(cache.lePoint, cache.tePoint);
-    gp_Vec vfirst(cache.lePoint, firstPnt);
-    gp_Vec vlast (cache.lePoint, lastPnt);
+    gp_Vec vchord(lePoint, tePoint);
+    gp_Vec vfirst(lePoint, firstPnt);
+    gp_Vec vlast (lePoint, lastPnt);
     double alphaFirst = vfirst * vchord / vchord.SquareMagnitude();
     double alphaLast  = vlast  * vchord / vchord.SquareMagnitude();
     double alphamin = std::min(alphaFirst, alphaLast);
-    cache.tePoint = cache.lePoint.XYZ() + alphamin*(vchord.XYZ());
+    tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
 }
 
 const std::vector<CTiglPoint>& CTiglWingProfilePointList::GetSamplePoints() const {
@@ -416,23 +416,13 @@ const TopoDS_Edge& CTiglWingProfilePointList::GetTrailingEdge(TiglShapeModifier 
 // get leading edge point();
 const gp_Pnt& CTiglWingProfilePointList::GetLEPoint() const
 {
-    if (isProfileClosed()) {
-        return wireCacheClosed->lePoint;
-    }
-    else {
-        return wireCacheOpened->lePoint;
-    }
+    return lePoint;
 }
 
 // get trailing edge point();
 const gp_Pnt& CTiglWingProfilePointList::GetTEPoint() const
 {
-    if (isProfileClosed()) {
-        return wireCacheClosed->tePoint;
-    }
-    else {
-        return wireCacheOpened->tePoint;
-    }
+    return tePoint;
 }
 
 // Helper method for closing profile points at trailing edge
@@ -514,13 +504,13 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
     // Trim upper and lower curve to make sure, that the trailing edge
     // is perpendicular to the chord line
     double tolerance = 1e-4;
-    gp_Pln plane(cache.tePoint, gp_Vec(cache.lePoint, cache.tePoint));
+    gp_Pln plane(tePoint, gp_Vec(lePoint, tePoint));
     GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
     if (int1.IsDone() && int1.NbPoints() > 0) {
         Standard_Real u, v, w;
         int1.Parameters(1, u, v, w);
         if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
-            double relDist = lowerCurve->Value(w).Distance(firstPnt) / cache.tePoint.Distance(cache.lePoint);
+            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
             if (relDist > tolerance) {
                 LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."
@@ -536,7 +526,7 @@ void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geo
         Standard_Real u, v, w;
         int2.Parameters(1, u, v, w);
         if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
-            double relDist = upperCurve->Value(w).Distance(lastPnt) / cache.tePoint.Distance(cache.lePoint);
+            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
             if (relDist > tolerance) {
                 LOG(WARNING) << "The wing profile " << profileUID << " will be trimmed"
                     << " to avoid a skewed trailing edge."

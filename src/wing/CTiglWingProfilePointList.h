@@ -92,8 +92,6 @@ protected:
         TopoDS_Edge lowerWire;          ///< wire of lower wing profile
         TopoDS_Edge upperLowerEdge;     ///< edge of the upper and lower wing profile combined
         TopoDS_Edge trailingEdge;       ///< wire of the trailing edge (NULL for closed profile)
-        gp_Pnt      lePoint;            ///< Leading edge point
-        gp_Pnt      tePoint;            ///< Trailing edge point
     };
 
     // Builds the wing profile wires.
@@ -102,7 +100,7 @@ protected:
     void BuildWiresImpl(WireCache& cache, bool closed) const;
 
     // Builds leading and trailing edge points of the wing profile wire.
-    void BuildLETEPoints(WireCache& cache) const;
+    void BuildLETEPoints();
 
     // Helper method for closing profile at trailing edge
     void closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points) const;
@@ -129,6 +127,10 @@ private:
     const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const std::string                   profileUID;      /**< Reference to the wing profile */
+
+    gp_Pnt lePoint;     // Leading edge point
+    size_t lePointIdx;  // Leading edge point idx (0-based)
+    gp_Pnt tePoint;     // Trailing edge point
 
     Cache<WireCache, CTiglWingProfilePointList> wireCacheOpened;
     Cache<WireCache, CTiglWingProfilePointList> wireCacheClosed;
