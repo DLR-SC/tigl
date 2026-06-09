@@ -311,6 +311,7 @@ void CTiglWingProfilePointList::BuildLETEPoints()
         gp_Pnt point = it->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
+            lePointIdx = it - coordinates.begin();
         }
     }
     // project into x-z plane
