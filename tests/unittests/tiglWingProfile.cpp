@@ -189,7 +189,7 @@ TEST(WingProfileApproximation, approximatedProfileCheckArgs)
     EXPECT_THROW(TopoDS_Wire wire = profileNoMethodChosen.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
 }
 
-TEST(WingProfileApproximation, testDummy)
+TEST(WingProfileApproximation, approxInterpProfiles)
 {
     TixiDocumentHandle tixiHandle;
     ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/testProfileAirfoilApproximation.xml", &tixiHandle));
