@@ -291,6 +291,26 @@ TEST_F(Decks, MassProperties_ScalingOfDeckInstance)
     EXPECT_NEAR(cogGlobal->z, 0.0, eps);
 }
 
+TEST_F(Decks, EmptyDeck)
+{
+    const auto& deck = GetDeck("deck_empty");
+
+    EXPECT_EQ(deck.GetDefaultedUID(), "deck_empty");
+    EXPECT_EQ(deck.GetComponentType(), TIGL_COMPONENT_DECK);
+    EXPECT_EQ(deck.GetComponentIntent(), TIGL_INTENT_PHYSICAL);
+
+    const PNamedShape shape = deck.GetLoft();
+    ASSERT_TRUE(shape);
+    EXPECT_EQ(shape->Name(), "deck_empty");
+    EXPECT_EQ(shape->GetFaceCount(), 0u);
+
+    unsigned shapeCount = 0;
+    for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
+        ++shapeCount;
+    }
+    EXPECT_EQ(shapeCount, 0u);
+}
+
 class InvalidDecks : public ::testing::Test
 {
 protected:

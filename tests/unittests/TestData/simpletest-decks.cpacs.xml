@@ -265,6 +265,26 @@
                                     </cargoContainer>
                                 </cargoContainers>
                             </deck>
+                            <deck uID="deck_empty">
+                                <name>Deck empty</name>
+                                <description>This schema-valid deck intentionally contains no components.</description>
+                                <transformation>
+                                    <translation>
+                                        <x>0.0</x>
+                                    </translation>
+                                </transformation>
+                                <deckType>passenger</deckType>
+                                <cabinGeometry>
+                                    <name>Cabin geometry</name>
+                                    <contours>
+                                        <contour>
+                                            <y>0;1;2;3</y>
+                                            <z>4</z>
+                                        </contour>
+                                    </contours>
+                                    <x>5;6;7;8</x>
+                                </cabinGeometry>
+                            </deck>
                         </decks>
                     </fuselage>
                 </fuselages>
