@@ -264,6 +264,7 @@
      <addaction name="separator"/>
      <addaction name="showWireframeAction"/>
      <addaction name="showReflectionLinesAction"/>
+     <addaction name="addSpotlightAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
      <property name="title">
@@ -381,7 +382,7 @@
   </widget>
   <widget class="QDockWidget" name="editorDockWidget">
    <property name="windowTitle">
-    <string>CPACS Editor</string>
+    <string>Editor</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -1400,6 +1401,11 @@
    </property>
    <property name="iconVisibleInMenu">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="addSpotlightAction">
+   <property name="text">
+    <string>Add a spotlight</string>
    </property>
   </action>
   <action name="drawComponentAction">

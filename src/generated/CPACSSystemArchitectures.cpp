@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSSystemArchitecture& CPACSSystemArchitectures::AddSystemArchitecture()
     {
-        m_systemArchitectures.push_back(make_unique<CCPACSSystemArchitecture>(this, m_uidMgr));
+        m_systemArchitectures.push_back(std::make_unique<CCPACSSystemArchitecture>(this, m_uidMgr));
         return *m_systemArchitectures.back();
     }
 

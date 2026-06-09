@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSComponent& CPACSComponents::AddComponent()
     {
-        m_components.push_back(make_unique<CCPACSComponent>(this, m_uidMgr));
+        m_components.push_back(std::make_unique<CCPACSComponent>(this, m_uidMgr));
         return *m_components.back();
     }
 

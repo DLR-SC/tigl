@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemInverter.h"
 #include "CPACSSysElemInverters.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemInverters::CPACSSysElemInverters(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemInverters::CPACSSysElemInverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemInverters::GetParent() const
+    const CPACSSystemElements* CPACSSysElemInverters::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemInverters::GetParent()
+    CPACSSystemElements* CPACSSysElemInverters::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemInverter& CPACSSysElemInverters::AddInverter()
     {
-        m_inverters.push_back(make_unique<CPACSSysElemInverter>(this, m_uidMgr));
+        m_inverters.push_back(std::make_unique<CPACSSysElemInverter>(this, m_uidMgr));
         return *m_inverters.back();
     }
 

@@ -43,7 +43,7 @@
 #include "CSharedPtr.h"
 #include "generated/CPACSProfiles.h"
 #include "generated/CPACSEngines.h"
-#include "CCPACSSystemElements.h"
+#include "generated/CPACSSystemElements.h"
 #include "generated/CPACSDeckElements.h"
 
 namespace tigl

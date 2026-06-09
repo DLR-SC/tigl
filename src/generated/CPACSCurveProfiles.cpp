@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSNacelleProfile& CPACSCurveProfiles::AddCurveProfile()
     {
-        m_curveProfiles.push_back(make_unique<CCPACSNacelleProfile>(this, m_uidMgr));
+        m_curveProfiles.push_back(std::make_unique<CCPACSNacelleProfile>(this, m_uidMgr));
         return *m_curveProfiles.back();
     }
 

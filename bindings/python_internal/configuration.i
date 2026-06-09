@@ -139,7 +139,7 @@
 #include "CTiglSectionElement.h"
 #include "CTiglWingSectionElement.h"
 #include "CTiglFuselageSectionElement.h"
-#include "CCPACSSystemElements.h"
+#include "generated/CPACSSystemElements.h"
 #include "CCPACSComponent.h"
 #include "generated/CPACSComponents.h"
 #include "generated/CPACSSystemArchitectures.h"
@@ -153,6 +153,10 @@
 #include "generated/CPACSSourceTarget.h"
 #include "generated/CPACSSourceTarget_externalElement.h"
 #include "generated/CPACSAtaChapterList.h"
+#include "CTiglWingProfileNACA.h"
+#include "generated/CPACSNacaProfile.h"
+#include "CTiglNACA4Calculator.h"
+#include "CPACSNacaProfile.h"
 #include "CCPACSDeck.h"
 #include "generated/CPACSDecks.h"
 #include "generated/CPACSCabinGeometryContour.h"
@@ -194,6 +198,7 @@
 %boost_optional(tigl::CCPACSRectangleProfile)
 %boost_optional(tigl::CCPACSStandardProfile)
 %boost_optional(tigl::CCPACSWingProfileCST)
+%boost_optional(tigl::CPACSNacaProfile)
 %boost_optional(tigl::CTiglTransformation)
 %boost_optional(tigl::CCPACSRotorHinges)
 %boost_optional(tigl::generated::CPACSRotorHub)
@@ -586,12 +591,15 @@ class CCPACSWingRibsPositioning;
 %include "CCPACSWingProfileCST.h"
 %include "PTiglWingProfileAlgo.h"
 %include "generated/CPACSFuselageElements.h"
+%include "generated/CPACSNacaProfile.h"
 %include "CCPACSFuselageSectionElements.h"
 %include "generated/CPACSCurveParamPointMap.h"
 %include "CCPACSCurveParamPointMap.h"
 %include "generated/CPACSCurvePointListXYZ.h"
 %include "CCPACSCurvePointListXYZ.h"
 %include "generated/CPACSProfileGeometry.h"
+%include "CTiglNACA4Calculator.h"
+%include "generated/CPACSNacaProfile.h"
 %include "CCPACSWingProfile.h"
 %include "CCPACSFuselageProfile.h"
 %include "CTiglSectionElement.h"
@@ -617,6 +625,7 @@ class CCPACSWingRibsPositioning;
 %include "generated/CPACSGuideCurveProfileGeometry.h"
 %include "CCPACSGuideCurveProfile.h"
 %include "generated/CPACSWingSegment.h"
+
 
 %template (WingSegmentTemplate) tigl::CTiglAbstractSegment<tigl::CCPACSWingSegment>;
 %apply double &OUTPUT { double& eta, double& xsi };
@@ -691,11 +700,15 @@ class CCPACSWingRibsPositioning;
 //  ---------------- Systems ------------------ //
 namespace tigl {
 class CCPACSGenericSystem;
+class CCPACSSystemElements;
 }
 
 %boost_optional(tigl::CCPACSSystemElements)
 %boost_optional(tigl::CCPACSGenericSystems)
 %boost_optional(tigl::CPACSUIDSequence)
+%boost_optional(tigl::CTiglPoint)
+%boost_optional(tigl::CTiglMassInertia)
+%boost_optional(tigl::CCPACSComponents)
 %boost_optional(tigl::CCPACSComponent)
 
 %ignore tigl::generated::CPACSComponents::GetComponents;
@@ -728,7 +741,6 @@ class CCPACSGenericSystem;
 %include "CCPACSGenericSystems.h"
 %include "generated/CPACSSystems.h"
 %include "CCPACSACSystems.h"
-%include "CCPACSSystemElements.h"
 %include "generated/CPACSSystemArchitecture.h"
 %include "CCPACSSystemArchitecture.h"
 %include "generated/CPACSSystemArchitectures.h"

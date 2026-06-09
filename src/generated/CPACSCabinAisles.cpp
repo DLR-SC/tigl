@@ -157,7 +157,7 @@ namespace generated
 
     CPACSCabinAisle& CPACSCabinAisles::AddAisle()
     {
-        m_aisles.push_back(make_unique<CPACSCabinAisle>(this, m_uidMgr));
+        m_aisles.push_back(std::make_unique<CPACSCabinAisle>(this, m_uidMgr));
         return *m_aisles.back();
     }
 

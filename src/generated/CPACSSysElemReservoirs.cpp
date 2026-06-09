@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemReservoir.h"
 #include "CPACSSysElemReservoirs.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemReservoirs::CPACSSysElemReservoirs(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemReservoirs::CPACSSysElemReservoirs(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemReservoirs::GetParent() const
+    const CPACSSystemElements* CPACSSysElemReservoirs::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemReservoirs::GetParent()
+    CPACSSystemElements* CPACSSysElemReservoirs::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemReservoir& CPACSSysElemReservoirs::AddReservoir()
     {
-        m_reservoirs.push_back(make_unique<CPACSSysElemReservoir>(this, m_uidMgr));
+        m_reservoirs.push_back(std::make_unique<CPACSSysElemReservoir>(this, m_uidMgr));
         return *m_reservoirs.back();
     }
 

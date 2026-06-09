@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSClassDividers::AddClassDivider()
     {
-        m_classDividers.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_classDividers.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_classDividers.back();
     }
 

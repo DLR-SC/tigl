@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemBatteries.h"
 #include "CPACSSysElemBattery.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemBatteries::CPACSSysElemBatteries(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemBatteries::CPACSSysElemBatteries(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemBatteries::GetParent() const
+    const CPACSSystemElements* CPACSSysElemBatteries::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemBatteries::GetParent()
+    CPACSSystemElements* CPACSSysElemBatteries::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemBattery& CPACSSysElemBatteries::AddBattery()
     {
-        m_batterys.push_back(make_unique<CPACSSysElemBattery>(this, m_uidMgr));
+        m_batterys.push_back(std::make_unique<CPACSSysElemBattery>(this, m_uidMgr));
         return *m_batterys.back();
     }
 

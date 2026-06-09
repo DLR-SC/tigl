@@ -67,10 +67,10 @@ jobs:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
       - name: Setup sccache
         if: startsWith(inputs.os, 'windows')
-        uses: mozilla-actions/sccache-action@v0.0.9
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.9.4
+        uses: prefix-dev/setup-pixi@v0.9.6
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -116,7 +116,7 @@ jobs:
 
       - name: Create MacOS package
         if: startsWith(inputs.os, 'macos') && inputs.package == 'ON'
-        uses: nick-fields/retry@v3  # see https://github.com/actions/runner-images/issues/7522
+        uses: nick-fields/retry@v4  # see https://github.com/actions/runner-images/issues/7522
         with:
           max_attempts: 5
           timeout_minutes: 10
@@ -161,7 +161,7 @@ jobs:
       - name: Extract build archive
         run: tar -xzf build.tar.gz
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.9.4
+        uses: prefix-dev/setup-pixi@v0.9.6
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
@@ -171,7 +171,7 @@ jobs:
 
       - name: Publish coverage report to codecov.io
         if: ${{ inputs.pixienv == 'coverage' }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: ./build/tests/unittests/coverageReport-unit.info,./build/tests/integrationtests/coverageReport-integration.info
           token: ${{ secrets.CODECOV_TOKEN }}

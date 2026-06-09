@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemSwitchgear.h"
 #include "CPACSSysElemSwitchgearContainer.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemSwitchgearContainer::CPACSSysElemSwitchgearContainer(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemSwitchgearContainer::CPACSSysElemSwitchgearContainer(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemSwitchgearContainer::GetParent() const
+    const CPACSSystemElements* CPACSSysElemSwitchgearContainer::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemSwitchgearContainer::GetParent()
+    CPACSSystemElements* CPACSSysElemSwitchgearContainer::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemSwitchgear& CPACSSysElemSwitchgearContainer::AddSwitchgear()
     {
-        m_switchgears.push_back(make_unique<CPACSSysElemSwitchgear>(this, m_uidMgr));
+        m_switchgears.push_back(std::make_unique<CPACSSysElemSwitchgear>(this, m_uidMgr));
         return *m_switchgears.back();
     }
 

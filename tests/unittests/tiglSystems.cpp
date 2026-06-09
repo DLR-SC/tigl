@@ -18,6 +18,7 @@
 
 #include "test.h"
 #include "tigl.h"
+#include "testUtils.h"
 
 #include <boost/optional/optional_io.hpp>
 
@@ -94,20 +95,6 @@ protected:
 TixiDocumentHandle Systems::tixiHandle           = 0;
 TiglCPACSConfigurationHandle Systems::tiglHandle = 0;
 
-void CheckExceptionMessage(const std::function<void()>& func, const char* expectedMessage)
-{
-    try {
-        func();
-        FAIL() << "Expected tigl::CTiglError but no exception was thrown.";
-    }
-    catch (const tigl::CTiglError& e) {
-        EXPECT_STREQ(e.what(), expectedMessage);
-    }
-    catch (...) {
-        FAIL() << "Expected tigl::CTiglError but a different exception was thrown.";
-    }
-}
-
 TEST_F(Systems, Basics)
 {
     const auto& system    = GetSystem("genSys_1");
@@ -140,12 +127,16 @@ TEST_F(Systems, SystemsGeometry)
     const PNamedShape shape = system.GetLoft();
     ASSERT_TRUE(shape);
 
+    const auto& components = system.GetComponents();
+    ASSERT_TRUE(components);
+
     // all component shapes should be included in grouped system shape
     unsigned shapeCount = 0;
     for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
         ++shapeCount;
     }
-    EXPECT_EQ(shapeCount, system.GetComponents().GetComponents().size());
+
+    EXPECT_EQ(shapeCount, components->GetComponents().size());
 }
 
 TEST_F(Systems, SystemMass)
@@ -410,12 +401,55 @@ TEST_F(Systems, ComponentMasses)
     }
 }
 
+TEST_F(Systems, ComponentCentroid)
+{
+    const double eps = 1e-6;
+
+    const auto& component = GetComponent("cuboid_2");
+
+    const auto centroidLocal = component.GetCentroidLocal();
+    EXPECT_NEAR(centroidLocal.x, 1.5, eps);
+    EXPECT_NEAR(centroidLocal.y, 0.25, eps);
+    EXPECT_NEAR(centroidLocal.z, 0.25, eps);
+
+    const auto centroidGlobal = component.GetCentroidGlobal();
+    ASSERT_TRUE(centroidGlobal);
+    EXPECT_NEAR(centroidGlobal->x, 1.5, eps);
+    EXPECT_NEAR(centroidGlobal->y, 5.25, eps);
+    EXPECT_NEAR(centroidGlobal->z, 0.25, eps);
+}
+
+TEST_F(Systems, EmptyGenericSystem)
+{
+    const auto& system = GetSystem("genSys_2");
+
+    // Missing <components> must be represented as boost::none.
+    EXPECT_FALSE(system.GetComponents());
+
+    // Empty systems have no mass contribution and no defined center of gravity.
+    EXPECT_DOUBLE_EQ(system.GetMassAllComponents(), 0.0);
+    EXPECT_DOUBLE_EQ(system.GetMassPositionedComponents(), 0.0);
+    EXPECT_FALSE(system.GetCenterOfGravity());
+
+    // Geometry access should still be valid and return an empty grouped shape.
+    const PNamedShape shape = system.GetLoft();
+    ASSERT_TRUE(shape);
+    EXPECT_EQ(shape->Name(), "genSys_2");
+    EXPECT_EQ(shape->GetFaceCount(), 0u);
+
+    unsigned shapeCount = 0;
+    for (TopoDS_Iterator it(shape->Shape()); it.More(); it.Next()) {
+        ++shapeCount;
+    }
+    EXPECT_EQ(shapeCount, 0u);
+}
+
 TEST_F(Systems, ConfigurationAccess)
 {
     const auto& config = GetConfig();
 
     // genericSystem
-    EXPECT_EQ(config.GetGenericSystemCount(), 1u);
+    EXPECT_EQ(config.GetGenericSystemCount(), 2u);
 
     const auto& system = config.GetGenericSystem(1);
     EXPECT_EQ(system.GetDefaultedUID(), "genSys_1");
@@ -568,9 +602,13 @@ TEST_F(InvalidSystems, Exceptions)
 TEST_F(InvalidSystems, InvalidShapes)
 {
     {
-        const auto& system = GetSystem("testSystem");
-        const auto& comp   = system.GetComponents().GetComponent(12);
-        const auto loft    = comp.GetLoft();
+        const auto& system     = GetSystem("testSystem");
+        const auto& components = system.GetComponents();
+        ASSERT_TRUE(components);
+
+        const auto& comp = components->GetComponent(12);
+        const auto loft  = comp.GetLoft();
+
         ASSERT_TRUE(loft);
         EXPECT_EQ(loft->Name(), "predCuboid_1_cuboid_1");
     }
@@ -626,6 +664,26 @@ TEST_F(InvalidSystems, InvalidShapes)
     }
 }
 
+TEST_F(InvalidSystems, InvalidComponentCentroid)
+{
+    {
+        const auto& comp = GetComponent("zeroHeightComponent");
+        CheckExceptionMessage(
+            [&] { (void)comp.GetCentroidLocal(); },
+            "Cannot compute geometric centroid of component with uID=\"zeroHeightComponent\" (zero volume).");
+
+        CheckExceptionMessage(
+            [&] { (void)comp.GetCentroidGlobal(); },
+            "Cannot compute geometric centroid of component with uID=\"zeroHeightComponent\" (zero volume).");
+    }
+
+    {
+        const auto& comp = GetComponent("elementWithoutGeometry");
+        CheckExceptionMessage([&] { (void)comp.GetCentroidLocal(); },
+                              "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
+    }
+}
+
 TEST_F(InvalidSystems, InvalidFileHandling)
 {
     {
@@ -664,15 +722,6 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
         CheckExceptionMessage([&] { (void)sys.GetCenterOfGravity(); },
                               "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
     }
-}
-
-TEST_F(InvalidSystems, RotorElements)
-{
-    const auto& comp = GetComponent("rotor");
-    CheckExceptionMessage([&] { (void)comp.GetLoft(); }, "rotorElementUID is currently not supported. Component with "
-                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
-    CheckExceptionMessage([&] { (void)comp.GetMass(); }, "rotorElementUID is currently not supported. Component with "
-                                                         "uID \"rotor\" referenced rotor element uID: \"predRotor\".");
 }
 
 TixiDocumentHandle InvalidSystems::tixiHandle           = 0;

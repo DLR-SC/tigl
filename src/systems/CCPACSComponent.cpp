@@ -21,6 +21,7 @@
 
 #include "CCPACSConfiguration.h"
 #include "CCPACSComponent.h"
+#include "tigl.h"
 #include "generated/CPACSComponents.h"
 #include "CCPACSGenericSystems.h"
 #include "CCPACSGenericSystem.h"
@@ -57,63 +58,63 @@
 
 namespace tigl
 {
-
-template <typename T>
-static const CCPACSElementGeometry* ResolveGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
+namespace
 {
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+
+    template <typename T>
+    const CCPACSElementGeometry* ResolveGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetGeometry();
     }
-    return &uidMgr.ResolveObject<T>(uid).GetGeometry();
-}
 
-template <typename... Ts>
-static const CCPACSElementGeometry* GetGeomFromTypes(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    const CCPACSElementGeometry* g = nullptr;
-    ((g = g ? g : ResolveGeometry<Ts>(uidMgr, uid)), ...);
-    return g;
-}
+    template <typename T>
+    const boost::optional<CCPACSElementMass>* ResolveMassDescription(const CTiglUIDManager& uidMgr,
+                                                                     const std::string& uid)
+    {
+        if (!uidMgr.IsType<T>(uid)) {
+            return nullptr;
+        }
+        return &uidMgr.ResolveObject<T>(uid).GetMass();
+    }
 
-static const CCPACSElementGeometry* GetGeometry(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    return GetGeomFromTypes<
+    template <typename... Ts> struct SupportedSystemElementTypes {
+        static const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+        {
+            const CCPACSElementGeometry* geometry = nullptr;
+            ((geometry = geometry ? geometry : ResolveGeometry<Ts>(uidMgr, uid)), ...);
+            return geometry;
+        }
+
+        static const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr,
+                                                                            const std::string& uid)
+        {
+            const boost::optional<CCPACSElementMass>* mass = nullptr;
+            ((mass = mass ? mass : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
+            return mass;
+        }
+    };
+
+    using SystemElementTypes = SupportedSystemElementTypes<
         CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
         CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
         CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
         CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
-        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
-                                                                                                                uid);
-}
+        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>;
 
-template <typename T>
-static const boost::optional<CCPACSElementMass>* ResolveMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    if (!uidMgr.IsType<T>(uid)) {
-        return nullptr;
+    const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return SystemElementTypes::GetGeometry(uidMgr, uid);
     }
-    return &uidMgr.ResolveObject<T>(uid).GetMass();
-}
 
-template <typename... Ts>
-static const boost::optional<CCPACSElementMass>* GetMassDescriptionFromTypes(CTiglUIDManager& uidMgr,
-                                                                             const std::string& uid)
-{
-    const boost::optional<CCPACSElementMass>* m = nullptr;
-    ((m = m ? m : ResolveMassDescription<Ts>(uidMgr, uid)), ...);
-    return m;
-}
+    const boost::optional<CCPACSElementMass>* GetMassDescription(const CTiglUIDManager& uidMgr, const std::string& uid)
+    {
+        return SystemElementTypes::GetMassDescription(uidMgr, uid);
+    }
 
-static const boost::optional<CCPACSElementMass>* GetMassDescription(CTiglUIDManager& uidMgr, const std::string& uid)
-{
-    return GetMassDescriptionFromTypes<
-        CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
-        CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
-        CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
-        CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
-        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>(uidMgr,
-                                                                                                                uid);
-}
+} // namespace
 
 CCPACSComponent::CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSComponent(parent, uidMgr)
@@ -150,12 +151,15 @@ TiglGeometryRepresentation CCPACSComponent::GetComponentRepresentation() const
 
 std::string CCPACSComponent::GetComponentRepresentationAsString() const
 {
-    switch (GetComponentRepresentation()) {
-    case TIGL_GEOMREP_PHYSICAL:
-        return "physical";
-    case TIGL_GEOMREP_ENVELOPE:
-        return "envelope";
+    const char* representation = ::tiglGeometryRepresentationToString(
+        static_cast<TiglGeometryRepresentationFlags>(GetComponentRepresentation()));
+
+    if (!representation) {
+        throw CTiglError("Invalid geometry representation for component with uID \"" +
+                         GetObjectUID().get_value_or("unnamed") + "\".");
     }
+
+    return representation;
 }
 
 void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath)
@@ -166,6 +170,42 @@ void CCPACSComponent::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std:
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
     _cpacsDocPath = cCPACSPath ? std::string(cCPACSPath) : std::string();
+}
+
+TiglGeometricComponentType CCPACSComponent::GetComponentType() const
+{
+    return TIGL_COMPONENT_SYSTEM_COMPONENT;
+}
+
+TiglGeometricComponentIntent CCPACSComponent::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
+CTiglPoint CCPACSComponent::GetCentroidLocal() const
+{
+    const TopoDS_Shape shape = BuildLocalLoft()->Shape();
+
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(shape, props);
+
+    if (props.Mass() <= 0.0) {
+        throw CTiglError("Cannot compute geometric centroid of component with uID=\"" +
+                         GetObjectUID().get_value_or("unnamed") + "\" (zero volume).");
+    }
+
+    const gp_Pnt c = props.CentreOfMass();
+    return CTiglPoint(c.X(), c.Y(), c.Z());
+}
+
+boost::optional<CTiglPoint> CCPACSComponent::GetCentroidGlobal() const
+{
+    if (!IsPositioned()) {
+        LOG(WARNING) << "Global centroid of component with uID=\"" << GetObjectUID().get_value_or("unnamed")
+                     << "\" is only available if <transformation> is defined.";
+        return boost::none;
+    }
+    return GetTransformationMatrix() * GetCentroidLocal();
 }
 
 boost::optional<double> CCPACSComponent::GetMass() const
@@ -180,12 +220,17 @@ boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityLocal() const
 
 boost::optional<CTiglPoint> CCPACSComponent::GetCenterOfGravityGlobal() const
 {
-    const auto cogLocal = m_mass->cogLocal;
     if (!IsPositioned()) {
-        LOG(WARNING) << "Global center of gravity of component \"" << GetObjectUID().get_value_or("unnamed")
+        LOG(WARNING) << "Global center of gravity of component with uID=\"" << GetObjectUID().get_value_or("unnamed")
                      << "\" is only available if <transformation> is defined.";
         return boost::none;
     }
+
+    const auto cogLocal = GetCenterOfGravityLocal();
+    if (!cogLocal) {
+        return boost::none;
+    }
+
     return GetTransformationMatrix() * (*cogLocal);
 }
 
@@ -201,22 +246,13 @@ bool CCPACSComponent::IsPositioned() const
 
 const CCPACSElementGeometry& CCPACSComponent::GetElementGeometry() const
 {
-    if (const auto& systemElementUID = GetSystemElementUID_choice1()) {
-        const std::string& uid                  = *systemElementUID;
-        const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, uid);
+    const CCPACSElementGeometry* const geom = GetGeometry(*m_uidMgr, GetSystemElementUID());
 
-        if (!geom) {
-            throw CTiglError("Unsupported system element for uID \"" + uid + "\".");
-        }
-
-        return *geom;
+    if (!geom) {
+        throw CTiglError("Unsupported system element for uID \"" + GetSystemElementUID() + "\".");
     }
 
-    if (const auto& rotorElementUID = GetRotorElementUID_choice2()) {
-        throw CTiglError("rotorElementUID is currently not supported. Component with uID \"" +
-                         GetObjectUID().get_value_or("unnamed") + "\" referenced rotor element uID: \"" +
-                         *rotorElementUID + "\".");
-    }
+    return *geom;
 }
 
 PNamedShape CCPACSComponent::BuildLocalLoft() const
@@ -235,31 +271,21 @@ PNamedShape CCPACSComponent::BuildLoft() const
 
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
-    if (const auto& systemElementUID = GetSystemElementUID_choice1()) {
-        const std::string& uid = *systemElementUID;
-
-        const auto* massPtr = GetMassDescription(*m_uidMgr, uid);
-        if (!massPtr || !*massPtr) {
-            LOG(WARNING) << "No mass definition for uID \"" + uid + "\"!";
-            return;
-        }
-
-        const CCPACSElementMass& massDef = massPtr->get();
-
-        CTiglElementMassBuilder builder(massDef, uid, BuildLocalLoft()->Shape());
-
-        const auto result  = builder.EvaluateMass();
-        cache.mass         = result.mass;
-        cache.cogLocal     = result.cogLocal;
-        cache.inertiaLocal = result.inertiaLocal;
+    const auto* massPtr = GetMassDescription(*m_uidMgr, GetSystemElementUID());
+    if (!massPtr || !*massPtr) {
+        LOG(WARNING) << "No mass definition for uID \"" + GetSystemElementUID() + "\"!";
         return;
     }
 
-    if (const auto& rotorElementUID = GetRotorElementUID_choice2()) {
-        throw CTiglError("rotorElementUID is currently not supported. Component with uID \"" +
-                         GetObjectUID().get_value_or("unnamed") + "\" referenced rotor element uID: \"" +
-                         *rotorElementUID + "\".");
-    }
+    const CCPACSElementMass& massDef = massPtr->get();
+
+    CTiglElementMassBuilder builder(massDef, GetSystemElementUID(), BuildLocalLoft()->Shape());
+
+    const auto result  = builder.EvaluateMass();
+    cache.mass         = result.mass;
+    cache.cogLocal     = result.cogLocal;
+    cache.inertiaLocal = result.inertiaLocal;
+    return;
 }
 
-} //namespace tigl
+} // namespace tigl

@@ -46,7 +46,8 @@ void CCPACSExternalObject::ReadCPACS(const TixiDocumentHandle& tixiHandle, const
 
     char* cCPACSPath = NULL;
     tixiGetDocumentPath(tixiHandle, &cCPACSPath);
-    _filePath = evaluatePathRelativeToApp(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
+    _filePath = ResolveFilePath(cCPACSPath ? cCPACSPath : "", m_linkToFile.GetValue());
+    CheckFileIsReadable(_filePath);
 }
 
 void CCPACSExternalObject::InvalidateImpl(const boost::optional<std::string>& source) const

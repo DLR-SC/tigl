@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSCargoContainers::AddCargoContainer()
     {
-        m_cargoContainers.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_cargoContainers.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_cargoContainers.back();
     }
 

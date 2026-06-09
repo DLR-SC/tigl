@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
+* Copyright (C) 2025 German Aerospace Center (DLR/SC)
 *
-* Created: 2026-01-25 Marko Alder <marko.alder@dlr.de>
+* Created: 2025-11-12 Ole Albers <ole.albers@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,13 +16,24 @@
 * limitations under the License.
 */
 
-#include "CCPACSSystemElements.h"
+#pragma once
 
-namespace tigl
-{
-CCPACSSystemElements::CCPACSSystemElements(CCPACSVehicles* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSSystemElements(parent, uidMgr)
-{
-}
+#include "modificators/ModificatorWidget.h"
 
-} // end namespace tigl
+class CpacsEditorBase : public ModificatorWidget
+{
+    Q_OBJECT
+
+public:
+    explicit CpacsEditorBase(QWidget* parent = nullptr);
+    virtual ~CpacsEditorBase();
+
+    virtual void applyCurrentModifications();
+
+    virtual void applyCurrentCancellation();
+
+signals:
+
+    void undoCommandRequired();
+};
+

@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSProfileBasedStructuralElement& CPACSProfileBasedStructuralElements::AddProfileBasedStructuralElement()
     {
-        m_profileBasedStructuralElements.push_back(make_unique<CCPACSProfileBasedStructuralElement>(this, m_uidMgr));
+        m_profileBasedStructuralElements.push_back(std::make_unique<CCPACSProfileBasedStructuralElement>(this, m_uidMgr));
         return *m_profileBasedStructuralElements.back();
     }
 

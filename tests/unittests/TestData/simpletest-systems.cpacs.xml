@@ -381,6 +381,10 @@
                                 </component>
                             </components>
                         </genericSystem>
+                        <genericSystem uID="genSys_2">
+                            <name>Generic System 2</name>
+                            <description>This schema-valid system intentionally contains no components.</description>
+                        </genericSystem>
                     </genericSystems>
                 </systems>
                 <systemArchitectures>

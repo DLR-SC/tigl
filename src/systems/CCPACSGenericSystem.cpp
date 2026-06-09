@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2015 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
 *
@@ -58,14 +58,28 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration() const
     return m_parent->GetConfiguration();
 }
 
+TiglGeometricComponentType CCPACSGenericSystem::GetComponentType() const
+{
+    return TIGL_COMPONENT_GENERICSYSTEM;
+}
+
+TiglGeometricComponentIntent CCPACSGenericSystem::GetComponentIntent() const
+{
+    return TIGL_INTENT_PHYSICAL;
+}
+
 double CCPACSGenericSystem::GetMassAllComponents() const
 {
     const auto& comps = GetComponents();
-    const auto n      = comps.GetComponentCount();
+    if (!comps) {
+        return 0.0;
+    }
+
+    const auto n = comps->GetComponentCount();
 
     double total_mass = 0.0;
     for (size_t i = 1; i <= n; ++i) {
-        const auto& c = comps.GetComponent(i);
+        const auto& c = comps->GetComponent(i);
         total_mass += c.GetMass().get_value_or(0);
     }
     return total_mass;
@@ -74,11 +88,15 @@ double CCPACSGenericSystem::GetMassAllComponents() const
 double CCPACSGenericSystem::GetMassPositionedComponents() const
 {
     const auto& comps = GetComponents();
-    const auto n      = comps.GetComponentCount();
+    if (!comps) {
+        return 0.0;
+    }
+
+    const auto n = comps->GetComponentCount();
 
     double total_mass = 0.0;
     for (size_t i = 1; i <= n; ++i) {
-        const auto& c = comps.GetComponent(i);
+        const auto& c = comps->GetComponent(i);
         if (c.IsPositioned()) {
             total_mass += c.GetMass().get_value_or(0);
         }
@@ -89,13 +107,17 @@ double CCPACSGenericSystem::GetMassPositionedComponents() const
 boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() const
 {
     const auto& comps = GetComponents();
-    const auto n      = comps.GetComponentCount();
+    if (!comps) {
+        return boost::none;
+    }
+
+    const auto n = comps->GetComponentCount();
 
     double mSum = 0.0;
     double xSum = 0.0, ySum = 0.0, zSum = 0.0;
 
     for (size_t i = 1; i <= n; ++i) {
-        const auto& c = comps.GetComponent(i);
+        const auto& c = comps->GetComponent(i);
 
         // Only consider components which have a proper mass description, and which are positioned
         if (!c.IsPositioned()) {
@@ -108,6 +130,10 @@ boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() cons
         }
 
         const auto cogG = c.GetCenterOfGravityGlobal();
+        if (!cogG) {
+            continue;
+        }
+
         mSum += *m;
         xSum += (*m) * cogG->x;
         ySum += (*m) * cogG->y;
@@ -124,12 +150,14 @@ boost::optional<tigl::CTiglPoint> CCPACSGenericSystem::GetCenterOfGravity() cons
 // build loft
 PNamedShape CCPACSGenericSystem::BuildLoft() const
 {
-    const auto& components = GetComponents().GetComponents();
+    const auto& components = GetComponents();
     ListPNamedShape shapes;
 
-    for (const auto& component : components) {
-        auto loft = component->GetLoft();
-        shapes.push_back(loft);
+    if (components) {
+        for (const auto& component : components->GetComponents()) {
+            auto loft = component->GetLoft();
+            shapes.push_back(loft);
+        }
     }
 
     PNamedShape groupedShape = CGroupShapes(shapes);
@@ -150,6 +178,7 @@ std::string CCPACSGenericSystem::GetShortShapeName() const
             return "GS" + std::to_string(i);
         }
     }
+    return "UNKNOWN";
 }
 
 } // end namespace tigl

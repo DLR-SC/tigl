@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSLuggageCompartments::AddLuggageCompartment()
     {
-        m_luggageCompartments.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_luggageCompartments.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_luggageCompartments.back();
     }
 

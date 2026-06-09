@@ -389,12 +389,12 @@ namespace generated
         return m_deckElements;
     }
 
-    const boost::optional<CCPACSSystemElements>& CPACSVehicles::GetSystemElements() const
+    const boost::optional<CPACSSystemElements>& CPACSVehicles::GetSystemElements() const
     {
         return m_systemElements;
     }
 
-    boost::optional<CCPACSSystemElements>& CPACSVehicles::GetSystemElements()
+    boost::optional<CPACSSystemElements>& CPACSVehicles::GetSystemElements()
     {
         return m_systemElements;
     }
@@ -505,7 +505,7 @@ namespace generated
         m_deckElements = boost::none;
     }
 
-    CCPACSSystemElements& CPACSVehicles::GetSystemElements(CreateIfNotExistsTag)
+    CPACSSystemElements& CPACSVehicles::GetSystemElements(CreateIfNotExistsTag)
     {
         if (!m_systemElements)
             m_systemElements = boost::in_place(this, m_uidMgr);

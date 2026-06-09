@@ -116,7 +116,7 @@ namespace generated
 
     CPACSCabinGeometryContour& CPACSCabinGeometryContours::AddContour()
     {
-        m_contours.push_back(make_unique<CPACSCabinGeometryContour>(this));
+        m_contours.push_back(std::make_unique<CPACSCabinGeometryContour>(this));
         return *m_contours.back();
     }
 

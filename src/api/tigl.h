@@ -266,6 +266,18 @@ typedef enum TiglGeometryRepresentationFlags TiglGeometryRepresentationFlags;
 
 typedef unsigned long TiglGeometryRepresentation;
 
+/**
+* @brief Returns the string representation of a geometry representation.
+*
+* @param[in] representation Geometry representation.
+*
+* @return
+*   - "physical" for TIGL_GEOMREP_PHYSICAL
+*   - "envelope" for TIGL_GEOMREP_ENVELOPE
+*   - NULL for invalid or unsupported values
+*/
+TIGL_COMMON_EXPORT const char* tiglGeometryRepresentationToString(TiglGeometryRepresentationFlags representation);
+
 enum TiglStructureType 
 {
     UPPER_SHELL = 0,

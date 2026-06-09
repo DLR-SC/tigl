@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSGenericFloorModules::AddGenericFloorModule()
     {
-        m_genericFloorModules.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_genericFloorModules.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_genericFloorModules.back();
     }
 

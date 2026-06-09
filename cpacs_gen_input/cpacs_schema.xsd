@@ -8419,6 +8419,88 @@ marko.alder@dlr.de
         </xsd:complexContent>
     </xsd:complexType>
 
+    <xsd:complexType name="nacaProfileType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>NACA airfoil definition</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>Parametric definition of a NACA airfoil (4-digit or 5-digit series).</ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:choice>
+                        <xsd:element name="naca4DigitCode">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <sd:schemaDoc>
+                                        <ddue:summary>
+                                            <ddue:para>NACA 4-digit airfoil code</ddue:para>
+                                        </ddue:summary>
+                                        <ddue:remarks>
+                                            <ddue:para>Four digits defining a NACA 4-digit airfoil, e.g. <ddue:emphasis>2412</ddue:emphasis> or <ddue:emphasis>0012</ddue:emphasis>.</ddue:para>
+                                        </ddue:remarks>
+                                    </sd:schemaDoc>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:pattern value="[0-9]{4}"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element name="naca5DigitCode">
+                            <xsd:annotation>
+                                <xsd:appinfo>
+                                    <sd:schemaDoc>
+                                        <ddue:summary>
+                                            <ddue:para>NACA 5-digit airfoil code</ddue:para>
+                                        </ddue:summary>
+                                        <ddue:remarks>
+                                            <ddue:para>Five digits defining a NACA 5-digit airfoil, e.g. <ddue:emphasis>23012</ddue:emphasis>.</ddue:para>
+                                        </ddue:remarks>
+                                    </sd:schemaDoc>
+                                </xsd:appinfo>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+                                <xsd:restriction base="xsd:string">
+                                    <xsd:pattern value="[0-9]{5}"/>
+                                </xsd:restriction>
+                            </xsd:simpleType>
+                        </xsd:element>
+                    </xsd:choice>
+                    <xsd:element name="trailingEdgeThickness" minOccurs="0">
+                        <xsd:annotation>
+                            <xsd:appinfo>
+                                <sd:schemaDoc>
+                                    <ddue:summary>
+                                        <ddue:para>Trailing edge thickness</ddue:para>
+                                    </ddue:summary>
+                                    <ddue:remarks>
+                                        <ddue:para>Trailing edge thickness normalized with respect to chord length. Must be greater than or equal to 0. A value of 0 corresponds to a closed trailing edge.</ddue:para>
+                                    </ddue:remarks>
+                                </sd:schemaDoc>
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:double">
+                                <xsd:minInclusive value="0"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
     <xsd:complexType name="curveProfilesType">
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
@@ -13397,7 +13479,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Description</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="components" type="componentsType"/>
+                    <xsd:element name="components" minOccurs="0" type="componentsType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
@@ -22164,6 +22246,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                         <xsd:element name="pointList" type="curvePointListXYZType"/>
                         <xsd:element name="cst2D" type="cst2DType"/>
                         <xsd:element name="standardProfile" type="standardProfileType"/>
+                        <xsd:element name="nacaProfile" type="nacaProfileType"/>
                     </xsd:choice>
                 </xsd:sequence>
                 <xsd:attribute name="symmetry" type="symmetryXyXzYzType"/>
@@ -37409,7 +37492,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="complexBaseType">
-                <xsd:sequence>
+                <xsd:all>
                     <xsd:element name="name" type="stringBaseType">
                         <xsd:annotation>
                             <xsd:documentation>
@@ -37424,22 +37507,13 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:choice> 
-                        <xsd:element name="systemElementUID" type="stringUIDBaseType">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    UID reference to the predefined system element
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                        <xsd:element name="rotorElementUID" type="stringUIDBaseType">
-                            <xsd:annotation>
-                                <xsd:documentation>
-                                    UID reference to the predefined rotor element
-                                </xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
-                    </xsd:choice>
+                    <xsd:element name="systemElementUID" type="stringUIDBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                UID reference to the predefined system element
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                     <xsd:element name="parentUID" minOccurs="0" type="stringUIDBaseType">
                         <xsd:annotation>
                             <xsd:documentation>Optional UID reference to the parent object used for relative positioning</xsd:documentation>
@@ -37455,7 +37529,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>UIDs of the structural mounts as defined in the fuselages or wings (see structuralMountType for further details).</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                </xsd:sequence>
+                </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
         </xsd:complexContent>

@@ -5,13 +5,19 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
+  - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
   - Add fuselage decks
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
+  - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
   - Add the new system definition introduced in CPACS v3.5
+  - Add an alternative wing airfoil parametrization that allows the specification of NACA4 codes directly in CPACS (with the trailing edge thickness). This makes a preprocessing step of writing sampled NACA profiles as point lists obsolete and improves the overall surface quality by internally generating B-Splines with a fine-tuned number of control points. [#1293](https://github.com/DLR-SC/tigl/pull/1293)
+  - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
 
 - Fixes
+  - Fix many CMake and compiler warnings ([#1307](https://github.com/DLR-SC/tigl/pull/1307))
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))
   - Update modificator widget's references after undo/redo action. Fixes ([#1240](https://github.com/DLR-SC/tigl/issues/1240))
   - Fix wrong scaling of the main application, if the screen scale is set to 150% on Windows ([#1238](https://github.com/DLR-SC/tigl/issues/1238))

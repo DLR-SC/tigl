@@ -22,6 +22,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSComponents.h"
+#include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
@@ -72,23 +73,26 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
-        TIGL_EXPORT virtual const CPACSComponents& GetComponents() const;
-        TIGL_EXPORT virtual CPACSComponents& GetComponents();
+        TIGL_EXPORT virtual const boost::optional<CPACSComponents>& GetComponents() const;
+        TIGL_EXPORT virtual boost::optional<CPACSComponents>& GetComponents();
+
+        TIGL_EXPORT virtual CPACSComponents& GetComponents(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveComponents();
 
     protected:
         CCPACSGenericSystems* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                  m_uID;
+        std::string                      m_uID;
 
         /// Name
-        std::string                  m_name;
+        std::string                      m_name;
 
         /// Description
-        boost::optional<std::string> m_description;
+        boost::optional<std::string>     m_description;
 
-        CPACSComponents              m_components;
+        boost::optional<CPACSComponents> m_components;
 
     private:
         CPACSGenericSystem(const CPACSGenericSystem&) = delete;

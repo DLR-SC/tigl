@@ -163,7 +163,7 @@ namespace generated
 
     CPACSPointPerformanceDefinition& CPACSPointPerformanceDefinitions::AddPointPerformanceDefinition()
     {
-        m_pointPerformanceDefinitions.push_back(make_unique<CPACSPointPerformanceDefinition>(this, m_uidMgr));
+        m_pointPerformanceDefinitions.push_back(std::make_unique<CPACSPointPerformanceDefinition>(this, m_uidMgr));
         return *m_pointPerformanceDefinitions.back();
     }
 

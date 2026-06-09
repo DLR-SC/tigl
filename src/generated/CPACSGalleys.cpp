@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSGalleys::AddGalley()
     {
-        m_galleys.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_galleys.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_galleys.back();
     }
 

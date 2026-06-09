@@ -67,16 +67,10 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& objectXPath) override;
 
     /// @brief Returns the TiGL geometric component type.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override
-    {
-        return TIGL_COMPONENT_SYSTEM_COMPONENT;
-    }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override;
 
     /// @brief Returns the TiGL geometric component intent.
-    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override
-    {
-        return TIGL_INTENT_PHYSICAL;
-    }
+    TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override;
 
     /**
      * @brief Returns the geometric representation type of the referenced system element.
@@ -103,6 +97,29 @@ public:
      * @return Geometry representation as human-readable string.
      */
     TIGL_EXPORT std::string GetComponentRepresentationAsString() const;
+
+    /**
+     * @brief Returns the geometric centroid of the component in the local coordinate system.
+     *
+     * The centroid is computed purely from the component's volume geometry and is
+     * independent of any mass or density definition.
+     *
+     * @throw CTiglError if the component has no valid, non-zero volume geometry.
+     * @return Local geometric centroid (x, y, z).
+     */
+    TIGL_EXPORT CTiglPoint GetCentroidLocal() const;
+
+    /**
+     * @brief Returns the geometric centroid of the component in the global coordinate system.
+     *
+     * The global centroid is obtained by applying the component transformation to
+     * the local centroid. This value is only available if the component is explicitly
+     * positioned (see IsPositioned()).
+     *
+     * @throw CTiglError if the component has no valid, non-zero volume geometry.
+     * @return Global geometric centroid, or boost::none if the component is not positioned.
+     */
+    TIGL_EXPORT boost::optional<CTiglPoint> GetCentroidGlobal() const;
 
     /**
      * @brief Returns the component mass.

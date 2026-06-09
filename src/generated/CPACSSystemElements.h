@@ -245,8 +245,7 @@ namespace generated
     };
 } // namespace generated
 
-// CPACSSystemElements is customized, use type CCPACSSystemElements directly
-
 // Aliases in tigl namespace
+using CCPACSSystemElements = generated::CPACSSystemElements;
 using CCPACSVehicles = generated::CPACSVehicles;
 } // namespace tigl

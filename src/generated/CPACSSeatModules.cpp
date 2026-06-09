@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSSeatModules::AddSeatModule()
     {
-        m_seatModules.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_seatModules.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_seatModules.back();
     }
 

@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemDCDCConverter.h"
 #include "CPACSSysElemDCDCConverters.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemDCDCConverters::CPACSSysElemDCDCConverters(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemDCDCConverters::CPACSSysElemDCDCConverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemDCDCConverters::GetParent() const
+    const CPACSSystemElements* CPACSSysElemDCDCConverters::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemDCDCConverters::GetParent()
+    CPACSSystemElements* CPACSSysElemDCDCConverters::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::AddDcdcConverter()
     {
-        m_dcdcConverters.push_back(make_unique<CPACSSysElemDCDCConverter>(this, m_uidMgr));
+        m_dcdcConverters.push_back(std::make_unique<CPACSSysElemDCDCConverter>(this, m_uidMgr));
         return *m_dcdcConverters.back();
     }
 

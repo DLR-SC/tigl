@@ -26,7 +26,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include "CTiglBSplineApproxInterp.h"
 #include "stringtools.h"
-#include "UniquePtr.h"
 #include <BRepTools.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>

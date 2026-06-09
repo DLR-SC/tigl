@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemGenerator.h"
 #include "CPACSSysElemGenerators.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemGenerators::CPACSSysElemGenerators(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemGenerators::CPACSSysElemGenerators(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemGenerators::GetParent() const
+    const CPACSSystemElements* CPACSSysElemGenerators::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemGenerators::GetParent()
+    CPACSSystemElements* CPACSSysElemGenerators::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemGenerator& CPACSSysElemGenerators::AddGenerator()
     {
-        m_generators.push_back(make_unique<CPACSSysElemGenerator>(this, m_uidMgr));
+        m_generators.push_back(std::make_unique<CPACSSysElemGenerator>(this, m_uidMgr));
         return *m_generators.back();
     }
 

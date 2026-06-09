@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSSidewallPanels::AddSidewallPanel()
     {
-        m_sidewallPanels.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_sidewallPanels.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_sidewallPanels.back();
     }
 

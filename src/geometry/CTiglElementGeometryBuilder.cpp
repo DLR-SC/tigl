@@ -17,7 +17,6 @@
 */
 
 #include "CTiglElementGeometryBuilder.h"
-#include "UniquePtr.h"
 #include "CNamedShape.h"
 
 #include "CTiglImporterFactory.h"
@@ -53,6 +52,13 @@ CTiglElementGeometryBuilder::CTiglElementGeometryBuilder(const CTiglRelativelyPo
 {
 }
 
+// Note:
+//   Transformations in system element geometries differ slightly from transformations
+//   used for relatively positioned components: since there is no parent component in
+//   this context, a refType attribute has no meaningful effect here. A schema-level
+//   cleanup would affect CCPACSTransformation and CTiglTransformation. Therefore,
+//   CTiglElementGeometryBuilder treats these transformations as local shape
+//   transformations and does not evaluate refType.
 PNamedShape CTiglElementGeometryBuilder::BuildShape() const
 {
     const auto& geom = *m_geometry;
@@ -333,13 +339,11 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildExternalShape(const CCPACSExterna
 
     std::string filePath = link.GetValue();
     if (!m_cpacsDocumentPath.empty()) {
-        filePath = evaluatePathRelativeToApp(m_cpacsDocumentPath, filePath);
+        filePath = ResolveFilePath(m_cpacsDocumentPath, filePath);
     }
-    const ListPNamedShape shapes = importer->Read(filePath);
+    CheckFileIsReadable(filePath);
 
-    // ToDo: Transformation should be slightly different from the one used in relatively positioned components:
-    //       as there is no parent, there should not be a refType attribute.
-    //       This change in XSD would affect CCPACSTransformation and CTiglTransformation.
+    const ListPNamedShape shapes = importer->Read(filePath);
     const PNamedShape shapeGroup = CGroupShapes(shapes);
 
     TopoDS_Shape shape = shapeGroup->Shape();

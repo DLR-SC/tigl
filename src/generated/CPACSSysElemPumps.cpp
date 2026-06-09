@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemPump.h"
 #include "CPACSSysElemPumps.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemPumps::CPACSSysElemPumps(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemPumps::CPACSSysElemPumps(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemPumps::GetParent() const
+    const CPACSSystemElements* CPACSSysElemPumps::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemPumps::GetParent()
+    CPACSSystemElements* CPACSSysElemPumps::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemPump& CPACSSysElemPumps::AddPump()
     {
-        m_pumps.push_back(make_unique<CPACSSysElemPump>(this, m_uidMgr));
+        m_pumps.push_back(std::make_unique<CPACSSysElemPump>(this, m_uidMgr));
         return *m_pumps.back();
     }
 

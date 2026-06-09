@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSRotorcraftModel& CPACSRotorcraft::AddModel()
     {
-        m_models.push_back(make_unique<CCPACSRotorcraftModel>(this, m_uidMgr));
+        m_models.push_back(std::make_unique<CCPACSRotorcraftModel>(this, m_uidMgr));
         return *m_models.back();
     }
 

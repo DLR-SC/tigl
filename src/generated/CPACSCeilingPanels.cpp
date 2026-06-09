@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeckComponentBase& CPACSCeilingPanels::AddCeilingPanel()
     {
-        m_ceilingPanels.push_back(make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
+        m_ceilingPanels.push_back(std::make_unique<CCPACSDeckComponentBase>(this, m_uidMgr));
         return *m_ceilingPanels.back();
     }
 

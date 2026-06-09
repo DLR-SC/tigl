@@ -157,7 +157,7 @@ namespace generated
 
     CPACSCabinSpace& CPACSCabinSpaces::AddSpace()
     {
-        m_spaces.push_back(make_unique<CPACSCabinSpace>(this, m_uidMgr));
+        m_spaces.push_back(std::make_unique<CPACSCabinSpace>(this, m_uidMgr));
         return *m_spaces.back();
     }
 

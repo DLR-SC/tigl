@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSVessel& CPACSVessels::AddVessel()
     {
-        m_vessels.push_back(make_unique<CCPACSVessel>(this, m_uidMgr));
+        m_vessels.push_back(std::make_unique<CCPACSVessel>(this, m_uidMgr));
         return *m_vessels.back();
     }
 

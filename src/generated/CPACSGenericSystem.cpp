@@ -29,7 +29,6 @@ namespace generated
 {
     CPACSGenericSystem::CPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_components(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -116,10 +115,13 @@ namespace generated
 
         // read element components
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
-            m_components.ReadCPACS(tixiHandle, xpath + "/components");
-        }
-        else {
-            LOG(ERROR) << "Required element components is missing at xpath " << xpath;
+            m_components = boost::in_place(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr);
+            try {
+                m_components->ReadCPACS(tixiHandle, xpath + "/components");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read components at xpath " << xpath << ": " << e.what();
+                m_components = boost::none;
+            }
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -146,8 +148,15 @@ namespace generated
         }
 
         // write element components
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/components");
-        m_components.WriteCPACS(tixiHandle, xpath + "/components");
+        if (m_components) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/components");
+            m_components->WriteCPACS(tixiHandle, xpath + "/components");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/components");
+            }
+        }
 
     }
 
@@ -189,14 +198,26 @@ namespace generated
         m_description = value;
     }
 
-    const CPACSComponents& CPACSGenericSystem::GetComponents() const
+    const boost::optional<CPACSComponents>& CPACSGenericSystem::GetComponents() const
     {
         return m_components;
     }
 
-    CPACSComponents& CPACSGenericSystem::GetComponents()
+    boost::optional<CPACSComponents>& CPACSGenericSystem::GetComponents()
     {
         return m_components;
+    }
+
+    CPACSComponents& CPACSGenericSystem::GetComponents(CreateIfNotExistsTag)
+    {
+        if (!m_components)
+            m_components = boost::in_place(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr);
+        return *m_components;
+    }
+
+    void CPACSGenericSystem::RemoveComponents()
+    {
+        m_components = boost::none;
     }
 
 } // namespace generated

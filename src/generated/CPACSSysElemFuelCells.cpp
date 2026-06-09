@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemFuelCell.h"
 #include "CPACSSysElemFuelCells.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemFuelCells::CPACSSysElemFuelCells(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemFuelCells::CPACSSysElemFuelCells(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemFuelCells::GetParent() const
+    const CPACSSystemElements* CPACSSysElemFuelCells::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemFuelCells::GetParent()
+    CPACSSystemElements* CPACSSysElemFuelCells::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemFuelCell& CPACSSysElemFuelCells::AddFuelCell()
     {
-        m_fuelCells.push_back(make_unique<CPACSSysElemFuelCell>(this, m_uidMgr));
+        m_fuelCells.push_back(std::make_unique<CPACSSysElemFuelCell>(this, m_uidMgr));
         return *m_fuelCells.back();
     }
 

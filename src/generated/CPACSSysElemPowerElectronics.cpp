@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemPowerElectronic.h"
 #include "CPACSSysElemPowerElectronics.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemPowerElectronics::CPACSSysElemPowerElectronics(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemPowerElectronics::CPACSSysElemPowerElectronics(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemPowerElectronics::GetParent() const
+    const CPACSSystemElements* CPACSSysElemPowerElectronics::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemPowerElectronics::GetParent()
+    CPACSSystemElements* CPACSSysElemPowerElectronics::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemPowerElectronic& CPACSSysElemPowerElectronics::AddPowerElectronics()
     {
-        m_powerElectronics.push_back(make_unique<CPACSSysElemPowerElectronic>(this, m_uidMgr));
+        m_powerElectronics.push_back(std::make_unique<CPACSSysElemPowerElectronic>(this, m_uidMgr));
         return *m_powerElectronics.back();
     }
 

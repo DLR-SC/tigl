@@ -62,7 +62,7 @@ protected:
 private: 
 
   
-  Standard_EXPORT    void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) override;
+  Standard_EXPORT    void Compute(const Handle(PrsMgr_PresentationManager)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) override;
   
   Standard_EXPORT    void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) override;
   //! Attenuates 32-bit color by a given attenuation factor (0...1): <br>

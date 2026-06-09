@@ -17,21 +17,21 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 #include <tixi.h>
 #include <vector>
 #include "tigl_internal.h"
-#include "UniquePtr.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSSystemElements;
 
 namespace generated
 {
     class CPACSSysElemTurboGenerator;
+    class CPACSSystemElements;
 
     // This class is used in:
     // CPACSSystemElements
@@ -42,13 +42,13 @@ namespace generated
     class CPACSSysElemTurboGenerators
     {
     public:
-        TIGL_EXPORT CPACSSysElemTurboGenerators(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemTurboGenerators(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemTurboGenerators();
 
-        TIGL_EXPORT CCPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSystemElements* GetParent();
 
-        TIGL_EXPORT const CCPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -75,7 +75,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTurboGenerator(CPACSSysElemTurboGenerator& ref);
 
     protected:
-        CCPACSSystemElements* m_parent;
+        CPACSSystemElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -93,4 +93,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSSysElemTurboGenerators = generated::CPACSSysElemTurboGenerators;
 using CCPACSSysElemTurboGenerator = generated::CPACSSysElemTurboGenerator;
+using CCPACSSystemElements = generated::CPACSSystemElements;
 } // namespace tigl

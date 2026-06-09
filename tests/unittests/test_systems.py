@@ -88,6 +88,9 @@ class SystemsBindings(unittest.TestCase):
             component.get_center_of_gravity_global(), geometry.CTiglPoint
         )
 
+        self.assertIsInstance(component.get_centroid_local(), geometry.CTiglPoint)
+        self.assertIsInstance(component.get_centroid_global(), geometry.CTiglPoint)
+
         # optional mass inertia -> None in Python
         self.assertIsNone(component.get_mass_inertia_local())
 
@@ -110,6 +113,14 @@ class SystemsBindings(unittest.TestCase):
         self.assertIsNone(inertia.Jxy)
         self.assertIsNone(inertia.Jxz)
         self.assertIsNone(inertia.Jyz)
+
+    def test_empty_generic_system(self):
+        system = self.uid_mgr.get_geometric_component("genSys_2")
+
+        self.assertIsInstance(system, configuration.CCPACSGenericSystem)
+        self.assertIsNone(system.get_components())
+        self.assertIsNone(system.get_center_of_gravity())
+        self.assertIsNotNone(system.get_loft())
 
     def test_system_architecture_access(self):
         self.assertEqual(self.config.get_system_architectures_count(), 1)

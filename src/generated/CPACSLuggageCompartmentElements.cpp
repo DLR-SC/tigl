@@ -163,7 +163,7 @@ namespace generated
 
     CPACSVehicleElementBase& CPACSLuggageCompartmentElements::AddLuggageCompartmentElement()
     {
-        m_luggageCompartmentElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
+        m_luggageCompartmentElements.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_luggageCompartmentElements.back();
     }
 

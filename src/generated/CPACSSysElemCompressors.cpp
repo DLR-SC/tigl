@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSSystemElements.h"
 #include "CPACSSysElemCompressor.h"
 #include "CPACSSysElemCompressors.h"
+#include "CPACSSystemElements.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemCompressors::CPACSSysElemCompressors(CCPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemCompressors::CPACSSysElemCompressors(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSSystemElements* CPACSSysElemCompressors::GetParent() const
+    const CPACSSystemElements* CPACSSysElemCompressors::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSSystemElements* CPACSSysElemCompressors::GetParent()
+    CPACSSystemElements* CPACSSysElemCompressors::GetParent()
     {
         return m_parent;
     }
@@ -163,7 +163,7 @@ namespace generated
 
     CPACSSysElemCompressor& CPACSSysElemCompressors::AddCompressor()
     {
-        m_compressors.push_back(make_unique<CPACSSysElemCompressor>(this, m_uidMgr));
+        m_compressors.push_back(std::make_unique<CPACSSysElemCompressor>(this, m_uidMgr));
         return *m_compressors.back();
     }
 

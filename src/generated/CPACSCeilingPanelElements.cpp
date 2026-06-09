@@ -163,7 +163,7 @@ namespace generated
 
     CPACSVehicleElementBase& CPACSCeilingPanelElements::AddCeilingPanelElement()
     {
-        m_ceilingPanelElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
+        m_ceilingPanelElements.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_ceilingPanelElements.back();
     }
 

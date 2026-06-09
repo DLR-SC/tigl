@@ -157,7 +157,7 @@ namespace generated
 
     CPACSDeckDoor& CPACSDeckDoors::AddDeckDoor()
     {
-        m_deckDoors.push_back(make_unique<CPACSDeckDoor>(this, m_uidMgr));
+        m_deckDoors.push_back(std::make_unique<CPACSDeckDoor>(this, m_uidMgr));
         return *m_deckDoors.back();
     }
 

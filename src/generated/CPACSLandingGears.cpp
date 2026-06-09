@@ -157,7 +157,7 @@ namespace generated
 
     CPACSLandingGearBase& CPACSLandingGears::AddLandingGear()
     {
-        m_landingGears.push_back(make_unique<CPACSLandingGearBase>(this, m_uidMgr));
+        m_landingGears.push_back(std::make_unique<CPACSLandingGearBase>(this, m_uidMgr));
         return *m_landingGears.back();
     }
 

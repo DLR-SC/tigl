@@ -163,7 +163,7 @@ namespace generated
 
     CPACSVehicleElementBase& CPACSClassDividerElements::AddClassDividerElement()
     {
-        m_classDividerElements.push_back(make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
+        m_classDividerElements.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_classDividerElements.back();
     }
 

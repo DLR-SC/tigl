@@ -88,6 +88,9 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
         return GetParent<CCPACSVessel>()->GetConfiguration();
     }
     else if (IsParent<CCPACSMultiSegmentShape>()) {
+        if (!m_refParentCfg) {
+            throw CTiglError("CCPACSFuselageSegments: Missing reference configuration for multiSegmentShape.");
+        }
         return *m_refParentCfg;
     }
     else
@@ -143,6 +146,16 @@ void CCPACSFuselageSegments::ReorderSegments()
     } catch (std::invalid_argument) {
         throw CTiglError("Fuselage segments not continuous.");
     }
+}
+
+void CCPACSFuselageSegments::SetReferenceParent(CTiglRelativelyPositionedComponent const* refParent) const
+{
+    m_refParentPtr = refParent;
+}
+
+void CCPACSFuselageSegments::SetConfiguration(CCPACSConfiguration const* cfg) const
+{
+    m_refParentCfg = cfg;
 }
 
 void CCPACSFuselageSegments::BuildGuideCurves(TopoDS_Compound& cache) const

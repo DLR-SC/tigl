@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSDeck& CPACSDecks::AddDeck()
     {
-        m_decks.push_back(make_unique<CCPACSDeck>(this, m_uidMgr));
+        m_decks.push_back(std::make_unique<CCPACSDeck>(this, m_uidMgr));
         return *m_decks.back();
     }
 

@@ -38,8 +38,7 @@ namespace generated
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         if (m_uidMgr) {
-            if (m_systemElementUID_choice1 && !m_systemElementUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_systemElementUID_choice1, *this);
-            if (m_rotorElementUID_choice2 && !m_rotorElementUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_rotorElementUID_choice2, *this);
+            if (!m_systemElementUID.empty()) m_uidMgr->TryUnregisterReference(m_systemElementUID, *this);
             if (m_parentUID && !m_parentUID->empty()) m_uidMgr->TryUnregisterReference(*m_parentUID, *this);
         }
     }
@@ -120,20 +119,14 @@ namespace generated
 
         // read element systemElementUID
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemElementUID")) {
-            m_systemElementUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/systemElementUID");
-            if (m_systemElementUID_choice1->empty()) {
-                LOG(WARNING) << "Optional element systemElementUID is present but empty at xpath " << xpath;
+            m_systemElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/systemElementUID");
+            if (m_systemElementUID.empty()) {
+                LOG(WARNING) << "Required element systemElementUID is empty at xpath " << xpath;
             }
-            if (m_uidMgr && !m_systemElementUID_choice1->empty()) m_uidMgr->RegisterReference(*m_systemElementUID_choice1, *this);
+            if (m_uidMgr && !m_systemElementUID.empty()) m_uidMgr->RegisterReference(m_systemElementUID, *this);
         }
-
-        // read element rotorElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorElementUID")) {
-            m_rotorElementUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorElementUID");
-            if (m_rotorElementUID_choice2->empty()) {
-                LOG(WARNING) << "Optional element rotorElementUID is present but empty at xpath " << xpath;
-            }
-            if (m_uidMgr && !m_rotorElementUID_choice2->empty()) m_uidMgr->RegisterReference(*m_rotorElementUID_choice2, *this);
+        else {
+            LOG(ERROR) << "Required element systemElementUID is missing at xpath " << xpath;
         }
 
         // read element parentUID
@@ -168,25 +161,20 @@ namespace generated
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
-        if (!ValidateChoices()) {
-            LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
-        }
     }
 
     void CPACSComponent::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        const std::vector<std::string> childElemOrder = { "name", "description", "systemElementUID", "rotorElementUID", "parentUID", "transformation", "structuralMountUIDs" };
-
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
 
         // write element name
-        tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/name", childElemOrder);
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
         tixi::TixiSaveElement(tixiHandle, xpath + "/name", m_name);
 
         // write element description
         if (m_description) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/description", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/description");
             tixi::TixiSaveElement(tixiHandle, xpath + "/description", *m_description);
         }
         else {
@@ -196,30 +184,12 @@ namespace generated
         }
 
         // write element systemElementUID
-        if (m_systemElementUID_choice1) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/systemElementUID", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/systemElementUID", *m_systemElementUID_choice1);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemElementUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/systemElementUID");
-            }
-        }
-
-        // write element rotorElementUID
-        if (m_rotorElementUID_choice2) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/rotorElementUID", childElemOrder);
-            tixi::TixiSaveElement(tixiHandle, xpath + "/rotorElementUID", *m_rotorElementUID_choice2);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorElementUID")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/rotorElementUID");
-            }
-        }
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systemElementUID");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/systemElementUID", m_systemElementUID);
 
         // write element parentUID
         if (m_parentUID) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/parentUID", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/parentUID");
             tixi::TixiSaveElement(tixiHandle, xpath + "/parentUID", *m_parentUID);
         }
         else {
@@ -230,7 +200,7 @@ namespace generated
 
         // write element transformation
         if (m_transformation) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/transformation", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
             m_transformation->WriteCPACS(tixiHandle, xpath + "/transformation");
         }
         else {
@@ -241,7 +211,7 @@ namespace generated
 
         // write element structuralMountUIDs
         if (m_structuralMountUIDs) {
-            tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/structuralMountUIDs", childElemOrder);
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/structuralMountUIDs");
             m_structuralMountUIDs->WriteCPACS(tixiHandle, xpath + "/structuralMountUIDs");
         }
         else {
@@ -250,36 +220,6 @@ namespace generated
             }
         }
 
-    }
-
-    bool CPACSComponent::ValidateChoices() const
-    {
-        return
-        (
-            (
-                (
-                    // mandatory elements of this choice must be there
-                    m_systemElementUID_choice1.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_rotorElementUID_choice2.is_initialized()
-                    )
-                )
-                +
-                (
-                    // mandatory elements of this choice must be there
-                    m_rotorElementUID_choice2.is_initialized()
-                    &&
-                    // elements of other choices must not be there
-                    !(
-                        m_systemElementUID_choice1.is_initialized()
-                    )
-                )
-                == 1
-            )
-        )
-        ;
     }
 
     const std::string& CPACSComponent::GetUID() const
@@ -320,32 +260,18 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<std::string>& CPACSComponent::GetSystemElementUID_choice1() const
+    const std::string& CPACSComponent::GetSystemElementUID() const
     {
-        return m_systemElementUID_choice1;
+        return m_systemElementUID;
     }
 
-    void CPACSComponent::SetSystemElementUID_choice1(const boost::optional<std::string>& value)
+    void CPACSComponent::SetSystemElementUID(const std::string& value)
     {
         if (m_uidMgr) {
-            if (m_systemElementUID_choice1 && !m_systemElementUID_choice1->empty()) m_uidMgr->TryUnregisterReference(*m_systemElementUID_choice1, *this);
-            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
+            if (!m_systemElementUID.empty()) m_uidMgr->TryUnregisterReference(m_systemElementUID, *this);
+            if (!value.empty()) m_uidMgr->RegisterReference(value, *this);
         }
-        m_systemElementUID_choice1 = value;
-    }
-
-    const boost::optional<std::string>& CPACSComponent::GetRotorElementUID_choice2() const
-    {
-        return m_rotorElementUID_choice2;
-    }
-
-    void CPACSComponent::SetRotorElementUID_choice2(const boost::optional<std::string>& value)
-    {
-        if (m_uidMgr) {
-            if (m_rotorElementUID_choice2 && !m_rotorElementUID_choice2->empty()) m_uidMgr->TryUnregisterReference(*m_rotorElementUID_choice2, *this);
-            if (value && !value->empty()) m_uidMgr->RegisterReference(*value, *this);
-        }
-        m_rotorElementUID_choice2 = value;
+        m_systemElementUID = value;
     }
 
     const boost::optional<std::string>& CPACSComponent::GetParentUID() const
@@ -413,11 +339,8 @@ namespace generated
 
     void CPACSComponent::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
     {
-        if (m_systemElementUID_choice1 && *m_systemElementUID_choice1 == oldUid) {
-            m_systemElementUID_choice1 = newUid;
-        }
-        if (m_rotorElementUID_choice2 && *m_rotorElementUID_choice2 == oldUid) {
-            m_rotorElementUID_choice2 = newUid;
+        if (m_systemElementUID == oldUid) {
+            m_systemElementUID = newUid;
         }
         if (m_parentUID && *m_parentUID == oldUid) {
             m_parentUID = newUid;

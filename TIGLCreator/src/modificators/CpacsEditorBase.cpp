@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
+* Copyright (C) 2025 German Aerospace Center (DLR/SC)
 *
-* Created: 2026-01-25 Marko Alder <marko.alder@dlr.de>
+* Created: 2025-11-12 Ole Albers <ole.albers@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,19 +16,21 @@
 * limitations under the License.
 */
 
-#ifndef CCPACSSYSTEMELEMENTS_H
-#define CCPACSSYSTEMELEMENTS_H
+#include "CpacsEditorBase.h"
 
-#include "generated/CPACSSystemElements.h"
-
-namespace tigl
+CpacsEditorBase::CpacsEditorBase(QWidget* parent)
+    : ModificatorWidget(parent)
 {
-class CCPACSSystemElements : public generated::CPACSSystemElements
+}
+
+CpacsEditorBase::~CpacsEditorBase() = default;
+
+void CpacsEditorBase::applyCurrentModifications()
 {
-public:
-    TIGL_EXPORT CCPACSSystemElements(CCPACSVehicles* parent, CTiglUIDManager* uidMgr);
-};
+    // Default: do nothing. Derived editors can override.
+}
 
-} // end namespace tigl
-
-#endif // CCPACSSYSTEMELEMENTS_H
+void CpacsEditorBase::applyCurrentCancellation()
+{
+    // Default: do nothing. Derived editors can override.
+}
