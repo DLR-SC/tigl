@@ -32,7 +32,7 @@ class SystemsBindings(unittest.TestCase):
         cls.tixi.close()
 
     def test_uid_manager_factory_returns_concrete_types(self):
-        system = self.uid_mgr.get_geometric_component("genSys_1")
+        system = self.uid_mgr.get_geometric_component("genSys")
         component = self.uid_mgr.get_geometric_component("cuboid_1")
 
         self.assertIsInstance(system, geometry.ITiglGeometricComponent)
@@ -42,11 +42,11 @@ class SystemsBindings(unittest.TestCase):
         self.assertIsInstance(component, configuration.CCPACSComponent)
 
     def test_system_accessors(self):
-        system = self.uid_mgr.get_geometric_component("genSys_1")
+        system = self.uid_mgr.get_geometric_component("genSys")
 
-        self.assertEqual(system.get_uid(), "genSys_1")
-        self.assertEqual(system.get_defaulted_uid(), "genSys_1")
-        self.assertEqual(system.get_name(), "Generic System 1")
+        self.assertEqual(system.get_uid(), "genSys")
+        self.assertEqual(system.get_defaulted_uid(), "genSys")
+        self.assertEqual(system.get_name(), "Generic System")
         self.assertIsInstance(
             system.get_configuration(), configuration.CCPACSConfiguration
         )
@@ -115,7 +115,7 @@ class SystemsBindings(unittest.TestCase):
         self.assertIsNone(inertia.Jyz)
 
     def test_empty_generic_system(self):
-        system = self.uid_mgr.get_geometric_component("genSys_2")
+        system = self.uid_mgr.get_geometric_component("genSys_empty")
 
         self.assertIsInstance(system, configuration.CCPACSGenericSystem)
         self.assertIsNone(system.get_components())
