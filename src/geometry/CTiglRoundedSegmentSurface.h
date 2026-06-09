@@ -11,7 +11,7 @@ namespace tigl {
 class CTiglRoundedSegmentSurface
 {
 public:
-    TIGL_EXPORT CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
+    TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
                                            std::vector<double> inner_rounding_distance,
                                            std::vector<double> outer_rounding_distance,
                                            int u_degree = 3,
