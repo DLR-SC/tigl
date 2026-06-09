@@ -643,6 +643,7 @@ class CCPACSSystemElements;
 %boost_optional(tigl::CPACSUIDSequence)
 %boost_optional(tigl::CTiglPoint)
 %boost_optional(tigl::CTiglMassInertia)
+%boost_optional(tigl::CCPACSComponents)
 %boost_optional(tigl::CCPACSComponent)
 
 %ignore tigl::generated::CPACSComponents::GetComponents;

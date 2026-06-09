@@ -13479,7 +13479,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>Description</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="components" type="componentsType"/>
+                    <xsd:element name="components" minOccurs="0" type="componentsType"/>
                 </xsd:all>
                 <xsd:attribute name="uID" use="required" type="xsd:ID"/>
             </xsd:extension>
