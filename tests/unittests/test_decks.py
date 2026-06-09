@@ -1,5 +1,5 @@
 #############################################################################
-# Copyright (C) 2007-2025 German Aerospace Center (DLR/SC)
+# Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
 #
 # Created: 2026-01-30 Marko Alder <marko.alder@dlr.de>
 #
