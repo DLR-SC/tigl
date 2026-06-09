@@ -10,8 +10,8 @@
 
 namespace tigl{
 CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const  std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
-                                                       double inner_rounding_distance,
-                                                       double outer_rounding_distance, int u_degree, int v_degree):
+                                                       std::vector<double> inner_rounding_distance,
+                                                       std::vector<double> outer_rounding_distance, int u_degree, int v_degree):
     m_pole_matrix(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles())),
     m_u_knots(1,m_profileCurves[0]->NbKnots()),
     m_v_knots(1, m_pole_matrix.ColLength()-v_degree+1),
@@ -86,20 +86,12 @@ void CTiglRoundedSegmentSurface::Perform(){
     calculateKnotsAndMultiplicities();
 
     //initialize m_segments vector
-    m_segments.push_back(RoundedSegment(m_profileCurves[0],
-                                            m_profileCurves[1],
-                                            0., //TODO access the right values per RoundedSegment later -> Put this line back in loop
-                                            m_outer_rounding_distance));
-    for(int i = 1; i < m_profileCurves.size()-2; i++){
+    for(int i = 0; i < m_profileCurves.size()-1; i++){
         m_segments.push_back(RoundedSegment(m_profileCurves[i],
                                             m_profileCurves[i+1],
-                                            m_inner_rounding_distance, //TODO access the right values per RoundedSegment
-                                            m_outer_rounding_distance));
+                                            m_inner_rounding_distance[i], //TODO access the right values per RoundedSegment
+                                            m_outer_rounding_distance[i]));
     }
-    m_segments.push_back(RoundedSegment(m_profileCurves[m_profileCurves.size()-2],
-                                        m_profileCurves[m_profileCurves.size()-1],
-                                        m_inner_rounding_distance, //TODO access the right values per RoundedSegment later -> Put this line back in loop
-                                        0.));
 
     //Write poles in pole matrix
     int row=1; //counter for inserted rows
