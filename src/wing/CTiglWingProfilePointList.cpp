@@ -557,6 +557,11 @@ bool CTiglWingProfilePointList::HasBluntTE() const
     return firstPnt.Distance(lastPnt) > Precision::Confusion();
 }
 
+ITiglWireAlgorithm* CTiglWingProfilePointList::GetWireAlgo()
+{
+    return &*profileWireAlgo;
+}
+
 } // end namespace tigl
 
 

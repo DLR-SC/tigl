@@ -86,6 +86,8 @@ public:
     // not by comparing first and last point.
     TIGL_EXPORT bool HasBluntTE() const override;
 
+    TIGL_EXPORT ITiglWireAlgorithm* GetWireAlgo();
+
 protected:
     struct WireCache {
         TopoDS_Edge upperWire;          ///< wire of upper wing profile
