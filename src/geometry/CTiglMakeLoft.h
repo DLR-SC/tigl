@@ -38,11 +38,29 @@ public:
     
     /**
      * @brief Should be called to add sections/profiles to the algorithm.
-     *
      * @param profiles A shape that is either a wire or a compound consisting of multiple wires.
      */
     TIGL_EXPORT void addProfiles(const TopoDS_Shape& profiles);
-    
+
+    /**
+     * @brief If the class is used to create a loft with rounded segments, you can add
+     *  inner/outer rounding distances as a vector. Make sure to add a value for each
+     *  segment.
+     *
+     * @param innerRoundingDistance This is a distance relative to 1. Make sure to
+     *  provide a value for each segment.
+     */
+    TIGL_EXPORT void addInnerRoundingDistance(const double innerRoundingDistance);
+
+    /**
+     * @brief If the class is used to create a loft with rounded segments, you can add
+     *  inner/outer rounding distances as a vector. Make sure to add a value for each
+     *  segment.
+     * @param outerRoundingDistance  This is a distance relative to 1. Make sure to
+     *  provide a value for each segment.
+     */
+    TIGL_EXPORT void addOuterRoundingDistance(const double outerRoundingDistance);
+
     /** 
      * This function may be called to add guide curves to
      * the lofting algo. The shape should be either a wire
@@ -104,6 +122,8 @@ private:
     double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
     std::vector<Standard_Real> uparams, vparams;
+    std::vector<double> m_innerRoundingDistance;
+    std::vector<double> m_outerRoundingDistance;
     bool _hasPerformed, _makeSolid;
     bool _makeSmooth = false;
     
