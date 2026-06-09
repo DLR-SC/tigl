@@ -221,7 +221,11 @@ boost::optional<CTiglPoint> CCPACSDeckComponentBase::GetCenterOfGravityLocal() c
 
 boost::optional<CTiglPoint> CCPACSDeckComponentBase::GetCenterOfGravityGlobal() const
 {
-    const auto cogLocal = m_mass->cogLocal;
+    const auto cogLocal = GetCenterOfGravityLocal();
+    if (!cogLocal) {
+        return boost::none;
+    }
+
     return GetTransformationMatrix() * (*cogLocal);
 }
 
