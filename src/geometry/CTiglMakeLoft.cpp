@@ -145,7 +145,7 @@ void CTiglMakeLoft::Perform()
 
         // to the loft with guides
         makeLoftWithGuides();
-    } else if (m_innerRoundingDistance.size()>0|m_outerRoundingDistance.size()>0){
+    } else if (m_innerRoundingDistance.size()>0&&m_outerRoundingDistance.size()>0){
         makeLoftWithRoundedSegments();
     }
     else {
@@ -368,11 +368,7 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
 
         builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
     }
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
-
-    // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    _result = faces;
     CloseShape();
 }
 
