@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -112,7 +112,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -120,7 +120,7 @@ namespace generated
         }
 
         // read element parentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/parentUID")) {
             m_parentUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/parentUID");
             if (m_parentUID->empty()) {
                 LOG(WARNING) << "Optional element parentUID is present but empty at xpath " << xpath;
@@ -151,17 +151,17 @@ namespace generated
         }
 
         // read element totalLength
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/totalLength")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/totalLength")) {
             m_totalLength_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/totalLength");
         }
 
         // read element staticSuspensionTravel
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/staticSuspensionTravel")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/staticSuspensionTravel")) {
             m_staticSuspensionTravel_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/staticSuspensionTravel");
         }
 
         // read element compressedSuspensionTravel
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compressedSuspensionTravel")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/compressedSuspensionTravel")) {
             m_compressedSuspensionTravel_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/compressedSuspensionTravel");
         }
 

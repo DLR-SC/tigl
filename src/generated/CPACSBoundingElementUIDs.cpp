@@ -95,7 +95,7 @@ namespace generated
     void CPACSBoundingElementUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element boundingElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/boundingElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/boundingElementUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/boundingElementUID", m_boundingElementUIDs, 1, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_boundingElementUIDs.begin(); it != m_boundingElementUIDs.end(); ++it) {

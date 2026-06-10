@@ -102,7 +102,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -113,7 +113,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -121,7 +121,7 @@ namespace generated
         }
 
         // read element length
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/length")) {
             m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
         else {
@@ -129,7 +129,7 @@ namespace generated
         }
 
         // read element sweepAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sweepAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sweepAngle")) {
             m_sweepAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/sweepAngle");
         }
         else {
@@ -137,7 +137,7 @@ namespace generated
         }
 
         // read element dihedralAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dihedralAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/dihedralAngle")) {
             m_dihedralAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dihedralAngle");
         }
         else {
@@ -145,7 +145,7 @@ namespace generated
         }
 
         // read element fromSectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromSectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromSectionUID")) {
             m_fromSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromSectionUID");
             if (m_fromSectionUID->empty()) {
                 LOG(WARNING) << "Optional element fromSectionUID is present but empty at xpath " << xpath;
@@ -154,7 +154,7 @@ namespace generated
         }
 
         // read element toSectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toSectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toSectionUID")) {
             m_toSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toSectionUID");
             if (m_toSectionUID.empty()) {
                 LOG(WARNING) << "Required element toSectionUID is empty at xpath " << xpath;

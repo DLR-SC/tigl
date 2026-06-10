@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element frameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/frameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/frameUID")) {
             m_frameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/frameUID");
             if (m_frameUID.empty()) {
                 LOG(WARNING) << "Required element frameUID is empty at xpath " << xpath;
@@ -111,7 +111,7 @@ namespace generated
         }
 
         // read element pressureBulkheadElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressureBulkheadElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/pressureBulkheadElementUID")) {
             m_pressureBulkheadElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/pressureBulkheadElementUID");
             if (m_pressureBulkheadElementUID.empty()) {
                 LOG(WARNING) << "Required element pressureBulkheadElementUID is empty at xpath " << xpath;

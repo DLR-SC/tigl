@@ -95,7 +95,7 @@ namespace generated
     void CPACSCompartmentGeometry::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element boundaryElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/boundaryElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/boundaryElementUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/boundaryElementUID", m_boundaryElementUIDs, 1, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_boundaryElementUIDs.begin(); it != m_boundaryElementUIDs.end(); ++it) {

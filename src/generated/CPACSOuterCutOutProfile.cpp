@@ -88,7 +88,7 @@ namespace generated
     void CPACSOuterCutOutProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element profileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/profileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/profileUID")) {
             m_profileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/profileUID");
             if (m_profileUID.empty()) {
                 LOG(WARNING) << "Required element profileUID is empty at xpath " << xpath;
@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element rotZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rotZ")) {
             m_rotZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotZ");
         }
         else {

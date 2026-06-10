@@ -83,7 +83,7 @@ namespace generated
     void CPACSCompositeLayer::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -91,7 +91,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element thickness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/thickness")) {
             m_thickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
         }
         else {
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element phi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/phi")) {
             m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
         }
         else {
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID.empty()) {
                 LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;

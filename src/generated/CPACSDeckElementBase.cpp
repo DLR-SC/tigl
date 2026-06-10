@@ -171,7 +171,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;

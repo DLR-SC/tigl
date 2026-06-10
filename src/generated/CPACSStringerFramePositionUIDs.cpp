@@ -89,7 +89,7 @@ namespace generated
     void CPACSStringerFramePositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element stringerFramePositionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringerFramePositionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/stringerFramePositionUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/stringerFramePositionUID", m_stringerFramePositionUIDs, 1, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_stringerFramePositionUIDs.begin(); it != m_stringerFramePositionUIDs.end(); ++it) {

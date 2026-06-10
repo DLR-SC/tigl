@@ -74,12 +74,12 @@ namespace generated
         }
 
         // read element controlPointNumber
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlPointNumber")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlPointNumber")) {
             m_controlPointNumber_choice1 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/controlPointNumber");
         }
 
         // read element maximumError
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/maximumError")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/maximumError")) {
             m_maximumError_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maximumError");
         }
 

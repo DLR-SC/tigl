@@ -95,7 +95,7 @@ namespace generated
     void CPACSWallPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element wallPositionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/wallPositionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/wallPositionUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/wallPositionUID", m_wallPositionUIDs, 2, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_wallPositionUIDs.begin(); it != m_wallPositionUIDs.end(); ++it) {
