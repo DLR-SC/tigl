@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include <QColorDialog>
+#include <QSignalBlocker>
 
 #include <TIGLCreatorSettingsDialog.h>
 #include <TIGLCreatorSettings.h>
@@ -74,10 +75,16 @@ TIGLCreatorSettingsDialog::TIGLCreatorSettingsDialog(TIGLCreatorSettings& settin
     connect(grid_size_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
     connect(grid_radial_div_spinbox, SIGNAL(valueChanged(int)), this, SLOT(onGridSettingChanged()));
 
-    grid_origin_X_spinbox->setValue(_settings.gridOriginX());
-    grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
-    grid_size_spinbox->setValue(_settings.gridSize());
-    grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    {
+        QSignalBlocker b1(grid_origin_X_spinbox);
+        QSignalBlocker b2(grid_origin_Y_spinbox);
+        QSignalBlocker b3(grid_size_spinbox);
+        QSignalBlocker b4(grid_radial_div_spinbox);
+        grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+        grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+        grid_size_spinbox->setValue(_settings.gridSize());
+        grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    }
 }
 
 void TIGLCreatorSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -178,10 +185,16 @@ void TIGLCreatorSettingsDialog::updateEntries()
     profilesDBLineEdit->setText(_settings.profilesDBPath());
     cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
 
-    grid_origin_X_spinbox->setValue(_settings.gridOriginX());
-    grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
-    grid_size_spinbox->setValue(_settings.gridSize());
-    grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    {
+        QSignalBlocker b1(grid_origin_X_spinbox);
+        QSignalBlocker b2(grid_origin_Y_spinbox);
+        QSignalBlocker b3(grid_size_spinbox);
+        QSignalBlocker b4(grid_radial_div_spinbox);
+        grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+        grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+        grid_size_spinbox->setValue(_settings.gridSize());
+        grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    }
 
     auto i(tiglMaterials::materialMap.begin());
     QStringList items;
