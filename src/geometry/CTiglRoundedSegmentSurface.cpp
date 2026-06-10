@@ -26,17 +26,7 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(
     _v_degree(v_degree){}
 
 TIGL_EXPORT  Handle(Geom_BSplineSurface) CTiglRoundedSegmentSurface::Surface(){
-    /** TODO IS ALL OF THAT COVERED?
-         * OCC Geom_BSplineSurface():
-         * Creates a non-rational b-spline surface (weights default value is 1.).
-         * The following conditions must be verified. 0 < UDegree <= MaxDegree.
-         * UKnots.Length() == UMults.Length() >= 2 UKnots(i) < UKnots(i+1) (Knots are increasing) 1 <= UMults(i) <= UDegree
-         * On a non uperiodic surface the first and last umultiplicities may be UDegree+1
-         * (this is even recommended if you want the curve to start and finish on the first and last pole).
-         * On a uperiodic surface the first and the last umultiplicities must be the same. on non-uperiodic surfaces Poles.
-         * ColLength() == Sum(UMults(i)) - UDegree - 1 >= 2 on uperiodic surfaces Poles.ColLength() == Sum(UMults(i))
-         * except the first or last The previous conditions for U holds also for V, with the RowLength of the poles.
-         */
+
     Perform();
 
 
