@@ -1,0 +1,26 @@
+var classCNamedShape =
+[
+    [ "CNamedShape", "classCNamedShape.html#a02e7e3fc79ca4aa2e9d6a86ef85ba65a", null ],
+    [ "CNamedShape", "classCNamedShape.html#a94a5309008a60d01c6220882e9738d7b", null ],
+    [ "CNamedShape", "classCNamedShape.html#a6ed6f12e25be3458efc9da1dd7d6e429", null ],
+    [ "CNamedShape", "classCNamedShape.html#ae9cd1bab80011fb1a94665f26f111921", null ],
+    [ "~CNamedShape", "classCNamedShape.html#a4d2e68b93b5b920848f0f46e5f26ec3b", null ],
+    [ "Clear", "classCNamedShape.html#a86ea0da51327d40c5707a93cd47f465c", null ],
+    [ "DeepCopy", "classCNamedShape.html#ad96676c0b81a303e1f628a3967db7a82", null ],
+    [ "FaceTraits", "classCNamedShape.html#aa915e9c7a2bd7a276667cad3c269d836", null ],
+    [ "GetFaceCount", "classCNamedShape.html#ad30a70ca7e4b13b31da1da8ecb5c4ff8", null ],
+    [ "GetFaceTraits", "classCNamedShape.html#acefbbd83b0941d87a0ffedbb66bec756", null ],
+    [ "InitFaceTraits", "classCNamedShape.html#a24cee87aa0e0413db5a8eb0c24a72e3f", null ],
+    [ "Name", "classCNamedShape.html#a19f920ae29e17315f32f4c2f1cb7e817", null ],
+    [ "operator=", "classCNamedShape.html#a1495a7024a4afc0458fda04694d6331e", null ],
+    [ "SetFaceTraits", "classCNamedShape.html#a38f4e9769c98c77a2016c76419d2b961", null ],
+    [ "SetName", "classCNamedShape.html#a0ea6bf62966d24f563a8853b77268898", null ],
+    [ "SetShape", "classCNamedShape.html#ab99b219680ccdaa193a61bebe83ef0b6", null ],
+    [ "SetShortName", "classCNamedShape.html#a43fc9b37298e96456d61425a0417a40d", null ],
+    [ "Shape", "classCNamedShape.html#a64c932688e10328565ecdcbcfc05f06f", null ],
+    [ "ShortName", "classCNamedShape.html#a58a3ef13c2e44917a4b2f10a379b2ba4", null ],
+    [ "_myfaceTraits", "classCNamedShape.html#ac35852cf0959ba7cd5c3f46bac454576", null ],
+    [ "_myname", "classCNamedShape.html#a94cca2bdbfd4fdcddd62196e8baea40a", null ],
+    [ "_myshape", "classCNamedShape.html#a76a4dcdc7766d98f23b2a94c9538403d", null ],
+    [ "_myshortName", "classCNamedShape.html#a2fa3941dae910bdbbd83eac5794986d8", null ]
+];

@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	
+	<!-- TITLE OF SITE -->
+	<title>Features | The TiGL Geometry Library</title>
+
+
+	
+	<!-- META DATA -->
+    <meta name="description" content="The TiGL Geometry Library to process aircraft geometries in pre-design."/>
+ 
+	<meta name="keywords" content="tigl, aircraft, dlr, cad, geometry, design, simulation, aeronautics, aerospace, space, optimization, MDO, Open Source">
+	<meta name="author" content="Deutsches Zentrum für Luft- und Raumfahrt e.V. (DLR)">
+
+	
+	<meta property="og:title" content="Features" />
+	<meta property="og:type" content="article" />
+	<meta property="og:image" content="https://dlr-sc.github.io/tigl/images/features/ParametricGeometry.gif" />
+	<meta property="og:url" content="https://dlr-sc.github.io/tigl/pages/features.html" />
+	<meta property="og:description" content="Features of TiGL" />
+	<meta property="og:locale" content="C" />
+	<meta property="og:site_name" content="The TiGL Geometry Library" />
+	<meta property="article:published_time" content="2015-08-17" />
+	<meta property="article:section" content="pages" />
+
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+ 
+   <!-- =========================
+      FAV AND TOUCH ICONS  
+    ============================== -->
+
+	<!-- ****** faviconit.com Favicons ****** -->
+	<link rel="shortcut icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/TiGL.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL.ico">
+	<link rel="icon" type="image/png" sizes="196x196" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-192.png">
+	<link rel="icon" type="image/png" sizes="160x160" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-160.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-96.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-64.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-16.png">
+	<link rel="apple-touch-icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-57.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-114.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-72.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-60.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-120.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-76.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-180.png">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<meta name="msapplication-config" content="https://dlr-sc.github.io/tigl/theme/browserconfig.xml">
+	<!-- ****** faviconit.com Favicons ****** -->
+
+    <!-- =========================
+       STYLESHEETS 
+    ============================== -->
+    <!-- PRELOADER -->
+    <link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/preloader.css">
+	
+	<!-- Bootstrap v3.3.4 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- icon fonts Font Awesome 4.3.0 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/font-awesome.min.css" rel="stylesheet"> 
+	<!-- code highlighting from pygments -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/pygments.css" rel="stylesheet"> 
+	<!-- Plugins  -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/jquery.fs.boxer.css" rel="stylesheet" /> 
+	<link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/owl.carousel.css"> 
+	
+	<!-- Import Custom Styles -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/style.css" rel="stylesheet"> 
+	
+</head>
+
+
+<body class="">
+	<!-- Pre Loader -->
+	<div class="pre-loader">
+		<div class="spinner"></div>
+	</div>
+	<span id="page-top"></span>
+	<!-- Main Menu -->
+	<div class="main-menu-container navbar-fixed-top-">
+		<div id="main-menu" class="navbar navbar-default" role="navigation">
+			<div class="container">
+
+				<div class="navbar-header">
+					<!-- responsive navigation -->
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<i class="fa fa-bars"></i>
+					</button> <!-- /.navbar-toggle -->
+					<!-- Logo -->
+					<h1 class="logo">
+						<a class="navbar-brand" href="https://dlr-sc.github.io/tigl/">
+							<img height="50px" src="https://dlr-sc.github.io/tigl/images/tigl-logo.png" alt="TiGL Logo">
+						</a><!-- /.navbar-brand -->
+					</h1>
+				</div> <!-- /.navbar-header -->
+
+				<nav class="collapse navbar-collapse">
+					<!-- Main navigation -->
+					<ul id="mainNavigation" class="main-mav nav navbar-nav pull-right">
+						<li><a class="not-in-home"class="active" href="https://dlr-sc.github.io/tigl/#page-top">Home</a>
+						</li>
+
+
+					<!--	<li><a href="https://dlr-sc.github.io/tigl/#contents">What is TiGL?</a></li>   -->
+						
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#contents">About TiGL</a></li>
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#news">News</a></li>
+
+ 
+            					<li class="active"><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/features.html">Features</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/showcase.html">Showcase</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/ecosystem.html">Ecosystem</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/documentation.html">Documentation</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/contact.html">Contact</a></li>
+
+
+
+						<li><a class="donate red" href="https://dlr-sc.github.io/tigl/pages/download.html">Download</a></li>     
+					</ul> <!-- /#mainNavigation -->
+				</nav> <!-- /.navbar-collapse  -->
+			</div> <!-- /.container -->
+		</div><!-- /#main-menu -->
+	</div><!-- /.main-menu-container -->
+	<!-- Main Menu End -->
+
+<section id="content">
+
+	<div class="page-name background-bg page-name-bg">
+		<div class="overlay">
+			<div class="container">
+				<h2 class="page-title m0">
+					Features
+				</h2>
+				<div class="page-location">
+					<a href="https://dlr-sc.github.io/tigl/">Home</a> <span> Features </span>
+				</div>
+			</div><!-- /.container -->
+		</div><!-- /.overlay -->
+	</div><!-- /.page-name -->
+
+
+
+	<section id="team"> 
+		<div id="contents"> 
+			<div class="container section-padding"> 
+				<h2 class="section-title">Features</h2>
+				
+
+	<p>  		
+		TiGL is a geometry library for aircraft design. It is the connection between the CPACS parametrization of the aircraft and 
+		the simulation tools. TiGL is written in C++ but comes with a variety of language bindings
+		for the major programming languages used by engineers. Here's a short overview about the core
+		features of TiGL.
+	</p>
+
+	<section id="success-story">
+		<div class="success-story background-bg"> 
+			<div class="overlay subsection-padding"> 
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<h2 class="title">
+								Parametric Geometry
+							</h2>
+							<p>
+								TiGL transforms parametric <a href="ecosystem.html#ecosystem_cpacs">CPACS</a>
+								models into 3D aircraft geometries.
+								It plays a central role in the preliminary aircraft design process,
+								allowing accessing and analyzing a variety of aircraft concepts.
+								The CPACS model contains a parametric description of wings, fuselages,
+								engines, control surfaces or the inner aircraft structure. TiGL computes
+								CAD models from these components and gives access to them via
+								file exports and query functions.
+							</p>
+						</div><!-- /.col-md-6 -->
+
+						<div class="col-md-6">
+							<div class="feature-image">
+								<img src="images/features/ParametricGeometry.gif" />
+
+							</div>
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.container -->
+			</div><!-- /.overlay -->
+		</div><!-- /.background-bg -->
+	</section><!-- /#success-story -->
+
+	<section id="success-story">
+			<div class="success-story background-bg"> 
+				<div class="overlay subsection-padding"> 
+					<div class="container">
+						<div class="row">
+							<div class="col-md-6">
+								<h2 class="title">
+									Detailed Surface Modeling
+								</h2>
+								<p>
+									The backbone of TiGL surface modeling algorithms is the curve network 
+									interpolation based on Gordon surfaces. The curve network interpolation
+									allows to model surfaces using additional guide curves, which adds
+									more flexibility in surface design while keeping the surface complexity
+									low at the same time. The algorithm is used for most of modeling tasks, 
+									including wings, fuselages, nacelles or pylons.
+								</p>
+							</div><!-- /.col-md-6 -->
+	
+							<div class="col-md-6">
+								<div class="feature-image">
+									<img src="images/features/CurveNetworks.png" />
+	
+								</div>
+							</div><!-- /.col-md-6 -->
+						</div><!-- /.row -->
+					</div><!-- /.container -->
+				</div><!-- /.overlay -->
+			</div><!-- /.background-bg -->
+		</section><!-- /#success-story -->
+
+		<section id="success-story">
+				<div class="success-story background-bg"> 
+					<div class="overlay subsection-padding"> 
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6">
+									<h2 class="title">
+										Structure Model, Flaps
+									</h2>
+									<p>
+										For structural analyses, TiGL builds a wing structure model consisting
+										of 2D spars and ribs and a fuselage structure model of 1D elements.
+										The structural model can be used for further load simulations using 
+										the finite element method.
+										In addition to the structural model, TiGL can be used to model different control
+										surfaces like ailerons, landing flaps and leading edge devices. The control surface
+										devices can then be extended with TiGL API functions or from the TiGL Viewer. 
+									</p>
+								</div><!-- /.col-md-6 -->
+		
+								<div class="col-md-6">
+									<div class="feature-image">
+										<img src="images/features/StructureModel.png" />
+		
+									</div>
+								</div><!-- /.col-md-6 -->
+							</div><!-- /.row -->
+						</div><!-- /.container -->
+					</div><!-- /.overlay -->
+				</div><!-- /.background-bg -->
+			</section><!-- /#success-story -->
+
+	<section id="success-story">
+		<div class="success-story background-bg"> 
+			<div class="overlay subsection-padding"> 
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<h2 class="title">
+								Standardized Geometry Exports
+							</h2>
+							<p>
+								To use TiGL's geometries in other software - like mesh generators, 
+								CAD programs or 3D rendering tools - TiGL can export them
+								into different standardized file formats. 
+								TiGL supports CAD standards like STEP (ISO 10303) or IGES
+								as well as Open CASCADE's internal BREP format.
+								TiGL also allows to export the triangulated surfaces into 
+								the VTK or STL format. The Collada file format can directly
+								be imported into Blender to create visually impressive 3D renderings.
+							</p>
+						</div><!-- /.col-md-6 -->
+
+						<div class="col-md-6">
+							<div class="feature-image">
+								<img src="images/features/FileExports.png" />
+
+							</div>
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.container -->
+			</div><!-- /.overlay -->
+		</div><!-- /.background-bg -->
+	</section><!-- /#success-story -->
+
+	<section id="success-story">
+		<div class="success-story background-bg"> 
+			<div class="overlay subsection-padding"> 
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<h2 class="title">
+								Script with Python
+							</h2>
+							<p>
+								TiGL's C++ class structure can be used from Python and is fully
+								interoperable with <a href="ecosystem.html#ecosystem_oce">pythonOCC</a>.
+								You can access the CPACS parameter tree this way or you can query the geometries.
+								With pythonOCC, it is even possible to alter
+								the geometries created by TiGL or to reuse them to create new geometries.
+								PythonOCC comes with a simple 3D viewer that you can use to visualize
+								TiGL geometries in your own Python programs.
+							</p>
+						</div><!-- /.col-md-6 -->
+
+						<div class="col-md-6">
+							<div class="feature-image">
+								<img src="images/features/PythonLight.png" />
+
+							</div>
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.container -->
+			</div><!-- /.overlay -->
+		</div><!-- /.background-bg -->
+	</section><!-- /#success-story -->
+
+	<section id="success-story">
+		<div class="success-story background-bg"> 
+			<div class="overlay subsection-padding"> 
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<h2 class="title">
+								Visualization
+							</h2>
+							<p>
+								Instead of using directly the TiGL library, we also ship the program TiGL Viewer
+								with each software release. This is a simple viewer visualizes the geometries
+								created by TiGL. It comes with a JavaScript based console that allows to 
+								automate the visualization to e.g. create movies. 
+								TiGL Viewer can import and display also other CAD formats. This comes really handy when
+								developing CPACS files to re-create existing aircraft configurations.
+
+							</p>
+						</div><!-- /.col-md-6 -->
+
+						<div class="col-md-6">
+							<div class="feature-image">
+								<img src="images/features/TiGLViewer.png" />
+
+							</div>
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+				</div><!-- /.container -->
+			</div><!-- /.overlay -->
+		</div><!-- /.background-bg -->
+	</section><!-- /#success-story -->
+
+    
+			</div><!-- /.container -->
+		</div>
+	</section><!-- /#team -->
+
+
+	
+
+
+</section><!-- /#content -->
+
+    <div class="footer-area ">
+
+	<footer class="section-padding">
+		<div class="social-btn footer-social text-center">
+			<!--<a href="https://twitter.com" class="twitter"><i class="fa fa-twitter"></i></a>-->
+			<!--<a href="https://www.youtube.com" class="youtube"><i class="fa fa-youtube"></i></a>-->
+			<a href="https://github.com/DLR-SC/tigl" class="github"><i class="fa fa-github"></i></a>
+		</div>
+
+
+		<div class="site-info text-center">
+			 &copy; 2020 <a href="http://www.DLR.de">Deutsches Zentrum für Luft- und Raumfahrt e.V.</a>
+
+                	&nbsp;&sdot;&nbsp;<a href="http://www.dlr.de/sc">Institute for Software Technology</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/imprint.html">Imprint</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/privacy.html">Privacy</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/terms-of-use.html">Terms of use</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/accessibility.html">Accessibility</a></li>
+
+		</div>
+
+		<div id="go-top-top">
+			  <span><i class="fa fa-chevron-up"></i></span>
+		</div>
+	</footer>
+
+	</div><!-- /footer-area -->
+
+	<!-- Include modernizr-2.8.0.min.js -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/modernizr.js"></script>
+
+	<!-- Include jquery.min.js plugin -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery-2.1.0.min.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/plugins.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/onePage-nav.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery.ajaxchimp.min.js"></script> 
+	<script src="https://dlr-sc.github.io/tigl/theme/js/custom.js"></script>
+
+	<script>
+	(function($) {
+		"use strict";
+		
+	        $(window).on("load",function(e){
+	        	// Main menu
+	        	$('#main-menu #mainNavigation').onePageNav({
+	        		currentClass: 'active',
+	        		changeHash: false,
+	        		scrollSpeed: 750,
+	        		scrollThreshold: 0.5,
+	        		scrollOffset: 84,
+	        		filter: ':not(.sub-menu a, .not-in-home, .donate)',
+	        		easing: 'swing'
+	        	});  
+	        });
+		$(window).on('scroll', function (){ 
+			if ($(window).scrollTop() >$(window).height()-110){
+				$('#main-menu').addClass('navbar-fixed-top'); 
+			} else {
+				$('#main-menu').removeClass('navbar-fixed-top'); 
+			} 
+		});
+	 })(jQuery);
+	</script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-134418253-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+</body>
+</html>

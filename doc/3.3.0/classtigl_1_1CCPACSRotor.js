@@ -1,0 +1,28 @@
+var classtigl_1_1CCPACSRotor =
+[
+    [ "CCPACSRotor", "classtigl_1_1CCPACSRotor.html#a18af81cd5fa21467bb4f2fe4c7be9be6", null ],
+    [ "BuildLoft", "classtigl_1_1CCPACSRotor.html#ac77c1135cfa969e9f4e98ce8ed03b55a", null ],
+    [ "Cleanup", "classtigl_1_1CCPACSRotor.html#ae00069a57b3f4fb7d6fb58ee3879d4a8", null ],
+    [ "GetComponentIntent", "classtigl_1_1CCPACSRotor.html#afa5ec6a452797533c0b4715208d183c6", null ],
+    [ "GetComponentType", "classtigl_1_1CCPACSRotor.html#ade62988e66a8d1fe44ba4fe6de54e173", null ],
+    [ "GetConfiguration", "classtigl_1_1CCPACSRotor.html#a13266caf423b0d2422ab56211033e615", null ],
+    [ "GetDefaultedType", "classtigl_1_1CCPACSRotor.html#afb0b434257a5c20971418658228c3b41", null ],
+    [ "GetDefaultedUID", "classtigl_1_1CCPACSRotor.html#a0dd4996fabfd4d0f54d301f8452ceff1", null ],
+    [ "GetRadius", "classtigl_1_1CCPACSRotor.html#a1d3a4b940e3efac459db959d878b6d96", null ],
+    [ "GetReferenceArea", "classtigl_1_1CCPACSRotor.html#a3fb082df4d43bd4042e09709a3157344", null ],
+    [ "GetRotorBlade", "classtigl_1_1CCPACSRotor.html#a11eca96f6589b4cb6af524766a8d03d0", null ],
+    [ "GetRotorBladeAttachment", "classtigl_1_1CCPACSRotor.html#ae5fa569dbcb7b1cfc710a1431c04bbd1", null ],
+    [ "GetRotorBladeAttachmentCount", "classtigl_1_1CCPACSRotor.html#a52e5abd25d95bf0f6714c9f8eeb58eaa", null ],
+    [ "GetRotorBladeCount", "classtigl_1_1CCPACSRotor.html#ad61459a55cdd7913c533917eafa7ad55", null ],
+    [ "GetRotorDisk", "classtigl_1_1CCPACSRotor.html#a29c9c9ae1589a236c85573c1ec6ec537", null ],
+    [ "GetSolidity", "classtigl_1_1CCPACSRotor.html#a21bb76edfba8f475604f3d0bbdfc09d1", null ],
+    [ "GetSurfaceArea", "classtigl_1_1CCPACSRotor.html#afe3769bd914e9ea04e93072e0f4ac66b", null ],
+    [ "GetTipSpeed", "classtigl_1_1CCPACSRotor.html#a79da9f0e6c9d6f64482e2f7446b97ea5", null ],
+    [ "GetTotalBladePlanformArea", "classtigl_1_1CCPACSRotor.html#ab8509b99f8206c7804ff0cf759d1f98d", null ],
+    [ "GetTransformationMatrix", "classtigl_1_1CCPACSRotor.html#ab415851c188b720c5e9ec6a446a27079", null ],
+    [ "GetTranslation", "classtigl_1_1CCPACSRotor.html#a8c961a1dd7e682430e77a1dc61d89c52", null ],
+    [ "GetVolume", "classtigl_1_1CCPACSRotor.html#a749964c102800ffddd75057995f11705", null ],
+    [ "InvalidateImpl", "classtigl_1_1CCPACSRotor.html#aeaae5770bbb659a4c35a1c8eea30fd62", null ],
+    [ "ReadCPACS", "classtigl_1_1CCPACSRotor.html#a3c175396832512c29003e26671ce073e", null ],
+    [ "Update", "classtigl_1_1CCPACSRotor.html#a8bf1f39c0bf83e66c55bf22bda5f3aaa", null ]
+];
