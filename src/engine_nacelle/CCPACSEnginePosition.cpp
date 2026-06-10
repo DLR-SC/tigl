@@ -63,21 +63,15 @@ void CCPACSEnginePosition::SetEngineUID(const std::string& value)
 }
 PNamedShape CCPACSEnginePosition::BuildLoft() const
 {
-    try {
-        CCPACSEngine& engine = m_uidMgr->ResolveObject<CCPACSEngine>(m_engineUID);
-        if (engine.GetNacelle()) {
-            boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
-            auto transform = this->GetTransformationMatrix();
-            CTiglEngineNacelleBuilder builder(*nacelle, transform);
-            return builder.BuildShape();
-        }
-        else {
-            throw CTiglError("Cannot build geometry of engine " + m_engineUID + " without a nacelle definition.");
-        }
+    CCPACSEngine& engine = m_uidMgr->ResolveObject<CCPACSEngine>(m_engineUID);
+    if (!engine.GetNacelle()) {
+        return PNamedShape();
     }
-    catch(...) {
-        throw(CTiglError("CCPACSEnginePosition: Unable to build nacelle for the engine with UID " + m_engineUID + ".", TIGL_ERROR));
-    }
+
+    boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
+    auto transform = this->GetTransformationMatrix();
+    CTiglEngineNacelleBuilder builder(*nacelle, transform);
+    return builder.BuildShape();
 }
 
 } //namespace tigl
