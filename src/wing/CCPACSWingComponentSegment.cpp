@@ -34,7 +34,6 @@
 #include "CCPACSWingComponentSegments.h"
 #include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
-#include "CTiglApproximateBsplineWire.h"
 #include "CTiglMakeLoft.h"
 #include "CPointsToLinearBSpline.h"
 #include "tiglcommonfunctions.h"
