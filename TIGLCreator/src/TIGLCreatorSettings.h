@@ -36,6 +36,12 @@ public:
     void loadSettings();
     void storeSettings();
 
+    enum class GridPlane { XY, XZ, YZ };
+    Q_ENUM(GridPlane)
+
+    GridPlane gridPlane() const;
+    void setGridPlane(GridPlane plane);
+
     // Display settings Tab
     void setTesselationAccuracy(double);
     void setTriangulationAccuracy(double);
@@ -89,6 +95,8 @@ public:
 
     void restoreDefaults();
 
+signals:
+    void gridPlaneChanged(GridPlane plane);
 
 public slots:
     void setDefaultShapeColor(int r, int g, int b, int a = 0);
@@ -111,6 +119,7 @@ private:
     double _grid_origin_y;
     double _grid_size;
     int _grid_radial_divisions;
+    GridPlane _grid_plane;
 
     bool _debugBOPs;
     bool _enumFaces;

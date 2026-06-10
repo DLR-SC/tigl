@@ -109,6 +109,9 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     setGridOffset (0.0);
     gridXY();
     gridOn();
+
+    connect(&TIGLCreatorSettings::Instance(), &TIGLCreatorSettings::gridPlaneChanged,
+            this, &TIGLCreatorContext::gridPlaneChanged);
 }
 
 void TIGLCreatorContext::initShaders()
@@ -214,6 +217,7 @@ void TIGLCreatorContext::gridXY  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XY);
     applyGridSettings();
 }
 /*!
@@ -228,6 +232,7 @@ void TIGLCreatorContext::gridXZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XZ);
     applyGridSettings();
 }
 /*! 
@@ -239,6 +244,7 @@ void TIGLCreatorContext::gridYZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::YZ);
     applyGridSettings();
 }
 

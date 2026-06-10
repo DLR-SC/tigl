@@ -85,6 +85,8 @@ TIGLCreatorSettingsDialog::TIGLCreatorSettingsDialog(TIGLCreatorSettings& settin
         grid_size_spinbox->setValue(_settings.gridSize());
         grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
     }
+
+    updateOriginLabels();
 }
 
 void TIGLCreatorSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -195,6 +197,8 @@ void TIGLCreatorSettingsDialog::updateEntries()
         grid_size_spinbox->setValue(_settings.gridSize());
         grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
     }
+
+    updateOriginLabels();
 
     auto i(tiglMaterials::materialMap.begin());
     QStringList items;
@@ -311,4 +315,27 @@ void TIGLCreatorSettingsDialog::validateGridSettings()
     if (grid_size_spinbox->value() <= 0.0) {
         grid_size_spinbox->setValue(1.0); // just to be save, should be unreachable, since minimum is set in ui-file
     }
+}
+
+void TIGLCreatorSettingsDialog::updateOriginLabels()
+{
+    switch (_settings.gridPlane()) {
+    case TIGLCreatorSettings::GridPlane::XZ:
+        grid_origin_1_label->setText("Origin X");
+        grid_origin_2_label->setText("Origin Z");
+        break;
+    case TIGLCreatorSettings::GridPlane::YZ:
+        grid_origin_1_label->setText("Origin Y");
+        grid_origin_2_label->setText("Origin Z");
+        break;
+    default:
+        grid_origin_1_label->setText("Origin X");
+        grid_origin_2_label->setText("Origin Y");
+        break;
+    }
+}
+
+void TIGLCreatorSettingsDialog::onGridPlaneChanged(TIGLCreatorSettings::GridPlane)
+{
+    updateOriginLabels();
 }

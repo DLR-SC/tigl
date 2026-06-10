@@ -580,6 +580,13 @@ void TIGLCreatorWindow::loadSettings()
 
     tiglCreatorSettings->loadSettings();
     settingsDialog->updateEntries();
+
+    switch (tiglCreatorSettings->gridPlane()) {
+    case TIGLCreatorSettings::GridPlane::XZ: myScene->gridXZ(); break;
+    case TIGLCreatorSettings::GridPlane::YZ: myScene->gridYZ(); break;
+    default:                                 myScene->gridXY(); break;
+    }
+
     applySettings();
 }
 
@@ -1091,6 +1098,7 @@ void TIGLCreatorWindow::connectSignals()
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 
     connect(settingsDialog, SIGNAL(settingsUpdated()), myScene, SLOT(applyGridSettings()));
+    connect(myScene, SIGNAL(gridPlaneChanged(TIGLCreatorSettings::GridPlane)), settingsDialog, SLOT(updateEntries()));
 }
 
 void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)

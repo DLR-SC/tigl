@@ -204,6 +204,7 @@ void TIGLCreatorSettings::loadSettings()
     _grid_origin_y = settings.value("grid_origin_y", 0.).toDouble();
     _grid_size = settings.value("grid_size", 10.).toDouble();
     _grid_radial_divisions = settings.value("grid_radial_divisions", 8).toInt();
+    _grid_plane = static_cast<GridPlane>(settings.value("grid_plane", static_cast<int>(GridPlane::XY)).toInt());
 
     _debugBOPs = settings.value("debug_bops", false).toBool();
     _enumFaces = settings.value("enumerate_faces", false).toBool();
@@ -242,6 +243,7 @@ void TIGLCreatorSettings::storeSettings()
     settings.setValue("grid_origin_y", gridOriginY());
     settings.setValue("grid_size", gridSize());
     settings.setValue("grid_radial_divisions", gridRadialDivisions());
+    settings.setValue("grid_plane", static_cast<int>(_grid_plane));
 
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
@@ -271,6 +273,7 @@ void TIGLCreatorSettings::restoreDefaults()
     _grid_origin_y = 0.;
     _grid_size = 10.;
     _grid_radial_divisions = 8;
+    _grid_plane = GridPlane::XY;
 
     // Possible issue:
     // restoreDefaults() is called in the constructor
@@ -342,4 +345,15 @@ void TIGLCreatorSettings::setGridRadialDivisions(int n)
 int TIGLCreatorSettings::gridRadialDivisions() const
 {
     return _grid_radial_divisions;
+}
+
+TIGLCreatorSettings::GridPlane TIGLCreatorSettings::gridPlane() const
+{
+    return _grid_plane;
+}
+
+void TIGLCreatorSettings::setGridPlane(GridPlane plane)
+{
+    _grid_plane = plane;
+    emit gridPlaneChanged(plane);
 }
