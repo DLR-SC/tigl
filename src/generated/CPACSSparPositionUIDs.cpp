@@ -83,7 +83,7 @@ namespace generated
     void CPACSSparPositionUIDs::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sparPositionUID
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sparPositionUID")) {
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/sparPositionUID", m_sparPositionUIDs, 2, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_sparPositionUIDs.begin(); it != m_sparPositionUIDs.end(); ++it) {

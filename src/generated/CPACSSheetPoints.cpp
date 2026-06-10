@@ -83,7 +83,7 @@ namespace generated
     void CPACSSheetPoints::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sheetPointUID
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sheetPointUID")) {
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetPointUID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/sheetPointUID", m_sheetPointUIDs, 3, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_sheetPointUIDs.begin(); it != m_sheetPointUIDs.end(); ++it) {

@@ -99,7 +99,7 @@ namespace generated
     void CPACSUIDSequence::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element uID
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/uID")) {
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/uID")) {
             tixi::TixiReadElements(tixiHandle, xpath + "/uID", m_uIDs, 1, tixi::xsdUnbounded);
             if (m_uidMgr) {
                 for (std::vector<std::string>::iterator it = m_uIDs.begin(); it != m_uIDs.end(); ++it) {
