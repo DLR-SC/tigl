@@ -73,6 +73,11 @@ TIGLCreatorSettingsDialog::TIGLCreatorSettingsDialog(TIGLCreatorSettings& settin
     connect(grid_origin_Y_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
     connect(grid_size_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
     connect(grid_radial_div_spinbox, SIGNAL(valueChanged(int)), this, SLOT(onGridSettingChanged()));
+
+    grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+    grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+    grid_size_spinbox->setValue(_settings.gridSize());
+    grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
 }
 
 void TIGLCreatorSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -126,7 +131,7 @@ void TIGLCreatorSettingsDialog::onSettingsAccepted()
     _settings.setProfilesDBPath(profilesDBLineEdit->text());
 
     _settings.setGridOriginX(grid_origin_X_spinbox->value());
-    _settings.setGridOriginX(grid_origin_Y_spinbox->value());
+    _settings.setGridOriginY(grid_origin_Y_spinbox->value());
     _settings.setGridSize(grid_size_spinbox->value());
     _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
 

@@ -464,23 +464,14 @@
            <property name="minimum">
             <double>0.001000000000000</double>
            </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="grid_origin_Y_spinbox">
-           <property name="minimum">
-            <double>-99.989999999999995</double>
-           </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="grid_origin_X_spinbox">
-           <property name="minimum">
-            <double>-99.989999999999995</double>
-           </property>
           </widget>
          </item>
          <item row="0" column="0">

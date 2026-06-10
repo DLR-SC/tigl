@@ -200,6 +200,11 @@ void TIGLCreatorSettings::loadSettings()
     _shapesymmetrycolor = settings.value("shape_symmetry_color", shapeSymmetryColor()).value<QColor>();
     _defaultMaterial = static_cast<Graphic3d_NameOfMaterial>(settings.value("shape_material", defaultMaterial()).toInt());
 
+    _grid_origin_x = settings.value("grid_origin_x", 0.).toDouble();
+    _grid_origin_y = settings.value("grid_origin_y", 0.).toDouble();
+    _grid_size = settings.value("grid_size", 10.).toDouble();
+    _grid_radial_divisions = settings.value("grid_radial_divisions", 8).toInt();
+
     _debugBOPs = settings.value("debug_bops", false).toBool();
     _enumFaces = settings.value("enumerate_faces", false).toBool();
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
@@ -232,6 +237,11 @@ void TIGLCreatorSettings::storeSettings()
     settings.setValue("shape_color", shapeColor());
     settings.setValue("shape_symmetry_color", shapeSymmetryColor());
     settings.setValue("shape_material", static_cast<int>(defaultMaterial()));
+
+    settings.setValue("grid_origin_x", gridOriginX());
+    settings.setValue("grid_origin_y", gridOriginY());
+    settings.setValue("grid_size", gridSize());
+    settings.setValue("grid_radial_divisions", gridRadialDivisions());
 
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);

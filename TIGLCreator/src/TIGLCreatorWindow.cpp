@@ -126,6 +126,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     settingsDialog = new TIGLCreatorSettingsDialog(*tiglCreatorSettings, this);
 
     myScene  = new TIGLCreatorContext(undoStack);
+    myScene->applyGridSettings();
 
     myOCC->setContext(myScene);
 
