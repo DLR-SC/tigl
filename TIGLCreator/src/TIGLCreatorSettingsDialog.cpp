@@ -321,12 +321,12 @@ void TIGLCreatorSettingsDialog::updateOriginLabels()
 {
     switch (_settings.gridPlane()) {
     case TIGLCreatorSettings::GridPlane::XZ:
-        grid_origin_1_label->setText("Origin X");
-        grid_origin_2_label->setText("Origin Z");
+        grid_origin_1_label->setText("Origin Z");
+        grid_origin_2_label->setText("Origin X");
         break;
     case TIGLCreatorSettings::GridPlane::YZ:
-        grid_origin_1_label->setText("Origin Y");
-        grid_origin_2_label->setText("Origin Z");
+        grid_origin_1_label->setText("Origin Z");
+        grid_origin_2_label->setText("Origin Y");
         break;
     default:
         grid_origin_1_label->setText("Origin X");
