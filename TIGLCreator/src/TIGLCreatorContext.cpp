@@ -109,6 +109,9 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     setGridOffset (0.0);
     gridXY();
     gridOn();
+
+    connect(&TIGLCreatorSettings::Instance(), &TIGLCreatorSettings::gridPlaneChanged,
+            this, &TIGLCreatorContext::gridPlaneChanged);
 }
 
 void TIGLCreatorContext::initShaders()
@@ -214,6 +217,8 @@ void TIGLCreatorContext::gridXY  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XY);
+    applyGridSettings();
 }
 /*!
 \brief    Sets the privileged plane to the XZ Axis.
@@ -227,6 +232,8 @@ void TIGLCreatorContext::gridXZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XZ);
+    applyGridSettings();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.
@@ -237,6 +244,8 @@ void TIGLCreatorContext::gridYZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::YZ);
+    applyGridSettings();
 }
 
 /*!
@@ -259,6 +268,29 @@ void TIGLCreatorContext::gridOn  ( void )
 {
     myViewer->ActivateGrid( myGridType , myGridMode );
     myViewer->SetGridEcho ( Standard_True );
+}
+
+void TIGLCreatorContext::applyGridSettings()
+{
+    TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
+
+    myViewer->SetRectangularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridSize(),
+        0.
+        );
+
+    myViewer->SetCircularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridRadialDivisions(),
+        0.
+    );
+
+    myViewer->Redraw();
 }
 
 /*! 

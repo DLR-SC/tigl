@@ -25,6 +25,8 @@
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <QColor>
 
+#include "TIGLCreatorSettings.h"
+
 class TIGLCreatorSettingsDialog : public QDialog, private Ui::TIGLCreatorSettingsDialog
 {
     Q_OBJECT
@@ -34,10 +36,14 @@ public:
 
     ~TIGLCreatorSettingsDialog() override = default;
 
+signals:
+    void settingsUpdated();
+
 public slots:
     void updateEntries();
 
 private slots:
+    void onGridPlaneChanged(TIGLCreatorSettings::GridPlane plane);
     void onSettingsAccepted();
     void onSliderTesselationChanged(int);
     void onSliderTriangulationChanged(int);
@@ -51,6 +57,8 @@ private slots:
     void restoreDefaults();
     void onBrowseTemplateDir();
     void onBrowseProfilesDB();
+    void onGridSettingChanged();
+    void validateGridSettings();
 
 private:
     double calcTesselationAccu(int value);
@@ -58,6 +66,7 @@ private:
     void updateBGColorButton();
     void updateShapeColorButton();
     void updateShapeSymmetryColorButton();
+    void updateOriginLabels();
 
     class TIGLCreatorSettings& _settings;
     QColor _bgcolor;
