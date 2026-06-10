@@ -56,6 +56,7 @@
 #include "TIGLCreatorMaterials.h"
 #include "CCPACSConfigurationManager.h"
 #include "TIGLCreatorNewFileDialog.h"
+#include "TIGLCreatorAddSpotlightDialog.h"
 #include "StandardizeDialog.h"
 #include <tixicpp.h>
 
@@ -370,7 +371,7 @@ void TIGLCreatorWindow::openRecentFile()
     }
 }
 
-void TIGLCreatorWindow::openFile(const QString& fileName)
+void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_uid)
 {
     QString      fileType;
     QFileInfo    fileInfo;
@@ -392,7 +393,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
 
 
-            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath(), config_uid);
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
                 return;
@@ -1012,6 +1013,7 @@ void TIGLCreatorWindow::connectSignals()
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
     connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
+    connect(addSpotlightAction, SIGNAL(triggered()), this, SLOT(addSpotlight()));
 
     // Misc drawing actions
     connect(drawPointAction, SIGNAL(triggered()), this, SLOT(drawPoint()));
@@ -1322,6 +1324,21 @@ void TIGLCreatorWindow::changeColorSaveButton() {
 // Reset the icon of the save button to show that the file has not been edited since the last save
 void TIGLCreatorWindow::resetColorSaveButton() {
     saveAction->setIcon(QIcon(":/gfx/document-save.png"));
+}
+
+void TIGLCreatorWindow::addSpotlight()
+{
+    TIGLCreatorAddSpotlightDialog addSpotlightDialog(this);
+
+    if (addSpotlightDialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    gp_Pnt pos = addSpotlightDialog.getPosition().Get_gp_Pnt();
+    gp_Vec dir = addSpotlightDialog.getDirection().Get_gp_Pnt().XYZ();
+    double concentration = addSpotlightDialog.getConcentration();
+
+    getViewer()->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
 }
 
 /// This function is copied from QtCoreLib (>5.1)
