@@ -45,7 +45,7 @@ public:
     /**
      * @brief If the class is used to create a loft with rounded segments, you can add
      *  inner/outer rounding distances as a vector. Make sure to add a value for each
-     *  segment.
+     *  segment. If no rounding distance is given, add '0.'
      *
      * @param innerRoundingDistance This is a distance relative to 1. Make sure to
      *  provide a value for each segment.
@@ -55,7 +55,7 @@ public:
     /**
      * @brief If the class is used to create a loft with rounded segments, you can add
      *  inner/outer rounding distances as a vector. Make sure to add a value for each
-     *  segment.
+     *  segment. If no rounding distance is given, add '0.'
      * @param outerRoundingDistance  This is a distance relative to 1. Make sure to
      *  provide a value for each segment.
      */
