@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [Unreleased]
+
+### Breaking Changes
+- `CTiglAbstractGeometricComponent::GetLoft()` now returns untrimmed loft by default. Use `GetTrimmedLoft()` for the previous behavior (with UV cutting at profile positions). This affects `CCPACSWing` and `CCPACSFuselage` (and their segments). [#994](https://github.com/DLR-SC/tigl/issues/994)
+
+### Features
+- Add optional UV profile cutting to `CTiglMakeLoft` via `setEnableProfileCutting(bool)`. When enabled, creates seams at each profile wire position for consistent UV parameterization. Wing and fuselage builders now build both trimmed and untrimmed lofts on demand. [#994](https://github.com/DLR-SC/tigl/issues/994)
+
 Changes since last release
 ----------------
 2025/09/26

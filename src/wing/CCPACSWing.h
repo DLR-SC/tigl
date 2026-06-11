@@ -182,6 +182,20 @@ public:
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
     /**
+     * @brief Returns the wing loft (untrimmed, i.e. without UV cuts at profile positions).
+     * This is the default loft returned by GetLoft().
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
+    /**
+     * @brief Returns the wing loft with UV cuts at profile positions.
+     * This is the legacy trimmed behavior.
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+
+    /**
      * @brief Returns the upper point in absolute (world) coordinates for a given segment,
      * eta, xsi (calculated output may be influenced by setting different value for Enum getPointBehavior)
      * @param segmentIndex
@@ -379,10 +393,16 @@ public:
     TIGL_EXPORT void SetBuildFlaps(bool enabled);
 
     /**
-     * @brief Returns the wing shape without flaps cut out
+     * @brief Returns the wing shape without flaps cut out (untrimmed, i.e. without UV cuts at profiles)
      * @return PNamedShape
      */
     TIGL_EXPORT PNamedShape GetWingCleanShape() const;
+
+    /**
+     * @brief Returns the trimmed wing shape (with UV cuts at profile positions)
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetTrimmedWingCleanShape() const;
 
     TiglGetPointBehavior getPointBehavior {asParameterOnSurface};       /**< sets behavior of the GetPoint-function (default: asParameterOnSurface)      */
 
@@ -599,8 +619,11 @@ protected:
     // Update internal wing data
     void Update();
 
-    // Adds all Segments of this wing to one shape
-    void BuildFusedSegments(PNamedShape& ) const;
+    // Adds all Segments of this wing to one shape (trimmed, with profile cuts)
+    void BuildFusedSegmentsTrimmed(PNamedShape& ) const;
+
+    // Adds all Segments of this wing to one shape (untrimmed, without profile cuts)
+    void BuildFusedSegmentsUntrimmed(PNamedShape& ) const;
         
     PNamedShape BuildLoft() const override;
         
@@ -633,7 +656,8 @@ private:
     Cache<LocatedGuideCurves, CCPACSWing> guideCurves;
 
     Cache<PNamedShape, CCPACSWing> wingShapeWithCutouts;     /**< Wing without flaps / flaps removed */
-    Cache<PNamedShape, CCPACSWing> wingCleanShape;           /**< Clean wing surface without flaps cutout*/
+    Cache<PNamedShape, CCPACSWing> wingCleanShapeTrimmed;    /**< Clean wing surface, trimmed (with UV cuts at profiles) */
+    Cache<PNamedShape, CCPACSWing> wingCleanShapeUntrimmed;  /**< Clean wing surface, untrimmed (without UV cuts at profiles) */
     mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     mutable bool                   rebuildShells;
     bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */

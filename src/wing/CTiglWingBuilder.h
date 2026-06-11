@@ -28,17 +28,18 @@ namespace tigl
 class CTiglWingBuilder
 {
 public:
-    CTiglWingBuilder(const CCPACSWing& wing);
+    CTiglWingBuilder(const CCPACSWing& wing, bool enableProfileCutting = true);
 
 
     operator PNamedShape();
 
     PNamedShape BuildShape();
 
-    static void SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUid, PNamedShape shape, bool hasBluntTE);
+    static void SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUid, PNamedShape shape, bool hasBluntTE, bool enableProfileCutting = false);
 private:
 
     const CCPACSWing& _wing;
+    bool _enableProfileCutting;
 };
 
 } //namespace tigl

@@ -95,7 +95,8 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , wingShapeWithCutouts(*this, &CCPACSWing::BuildWingWithCutouts)
-    , wingCleanShape(*this, &CCPACSWing::BuildFusedSegments)
+    , wingCleanShapeTrimmed(*this, &CCPACSWing::BuildFusedSegmentsTrimmed)
+    , wingCleanShapeUntrimmed(*this, &CCPACSWing::BuildFusedSegmentsUntrimmed)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
@@ -124,7 +125,8 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , configuration(&parent->GetConfiguration())
     , guideCurves(*this, &CCPACSWing::BuildGuideCurveWires)
     , wingShapeWithCutouts(*this, &CCPACSWing::BuildWingWithCutouts)
-    , wingCleanShape(*this, &CCPACSWing::BuildFusedSegments)
+    , wingCleanShapeTrimmed(*this, &CCPACSWing::BuildFusedSegmentsTrimmed)
+    , wingCleanShapeUntrimmed(*this, &CCPACSWing::BuildFusedSegmentsUntrimmed)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
     , buildFlaps(false)
@@ -148,7 +150,8 @@ void CCPACSWing::InvalidateImpl(const boost::optional<std::string>& source) cons
 
     loft.clear();
     guideCurves.clear();
-    wingCleanShape.clear();
+    wingCleanShapeTrimmed.clear();
+    wingCleanShapeUntrimmed.clear();
     wingShapeWithCutouts.clear();
     wingHelper.clear();
 
@@ -309,7 +312,7 @@ CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const std::string& u
 TopoDS_Shape& CCPACSWing::GetLoftWithLeadingEdge()
 {
     if (rebuildFusedSegWEdge) {
-        fusedSegmentWithEdge = (*wingCleanShape)->Shape();
+        fusedSegmentWithEdge = (*wingCleanShapeUntrimmed)->Shape();
     }
     rebuildFusedSegWEdge = false;
     return fusedSegmentWithEdge;
@@ -363,10 +366,10 @@ PNamedShape CCPACSWing::BuildLoft() const
     else {
 
         if (GetConfiguration().HasDucts()) {
-            return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShape, GetUID());
+            return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*wingCleanShapeUntrimmed, GetUID());
         }
 
-        return *wingCleanShape;
+        return *wingCleanShapeUntrimmed;
     }
 
     return ret;
@@ -376,17 +379,23 @@ TopoDS_Shape CCPACSWing::GetLoftWithCutouts()
 {
     if (NumberOfControlSurfaces(*this) == 0) {
         LOG(WARNING) << "No control devices defined, GetLoftWithCutOuts() will return a clean shape.";
-        return (*wingCleanShape)->Shape();
+        return (*wingCleanShapeUntrimmed)->Shape();
     }
     else {
         return (*wingShapeWithCutouts)->Shape();
     }
 }
 
-// Builds a fused shape of all wing segments
-void CCPACSWing::BuildFusedSegments(PNamedShape& shape) const
+// Builds a fused shape of all wing segments (trimmed, with profile cuts)
+void CCPACSWing::BuildFusedSegmentsTrimmed(PNamedShape& shape) const
 {
-    shape = CTiglWingBuilder(*this);
+    shape = CTiglWingBuilder(*this, true);
+}
+
+// Builds a fused shape of all wing segments (untrimmed, without profile cuts)
+void CCPACSWing::BuildFusedSegmentsUntrimmed(PNamedShape& shape) const
+{
+    shape = CTiglWingBuilder(*this, false);
 }
 
 // Builds a fused shape of all wing segments
@@ -449,12 +458,12 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         
     }
 
-    CCutShape cutter(*wingCleanShape, fusedBoxes);
+    CCutShape cutter(*wingCleanShapeUntrimmed, fusedBoxes);
     cutter.Perform();
     result = cutter.NamedShape();
     for (int iFace = 0; iFace < static_cast<int>(result->GetFaceCount()); ++iFace) {
         CFaceTraits ft = result->GetFaceTraits(iFace);
-        ft.SetOrigin(*wingCleanShape);
+        ft.SetOrigin(*wingCleanShapeUntrimmed);
         result->SetFaceTraits(iFace, ft);
     }
 
@@ -1733,7 +1742,22 @@ void CCPACSWing::SetBuildFlaps(bool build)
 
 PNamedShape CCPACSWing::GetWingCleanShape() const
 {
-    return *wingCleanShape;
+    return *wingCleanShapeUntrimmed;
+}
+
+PNamedShape CCPACSWing::GetTrimmedWingCleanShape() const
+{
+    return *wingCleanShapeTrimmed;
+}
+
+PNamedShape CCPACSWing::GetUntrimmedLoft() const
+{
+    return *wingCleanShapeUntrimmed;
+}
+
+PNamedShape CCPACSWing::GetTrimmedLoft() const
+{
+    return *wingCleanShapeTrimmed;
 }
 
 namespace

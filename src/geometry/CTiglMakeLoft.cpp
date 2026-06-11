@@ -64,6 +64,7 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
     _makeSolid = true;
+    _enableProfileCutting = true;
     _result.Nullify();
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
@@ -72,8 +73,8 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
+    _enableProfileCutting = true;
     _result.Nullify();
-    _myTolerance = tolerance;
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
     addProfiles(profiles);
@@ -151,6 +152,11 @@ void CTiglMakeLoft::setMakeSolid(bool enabled)
 void CTiglMakeLoft::setMakeSmooth(bool enabled)
 {
     _makeSmooth = enabled;
+}
+
+void CTiglMakeLoft::setEnableProfileCutting(bool enabled)
+{
+    _enableProfileCutting = enabled;
 }
 
 /**
@@ -297,7 +303,9 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
 
     // make sure the order is the same as for the COONS Patch algorithm
     _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    if (_enableProfileCutting) {
+        _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    }
     CloseShape();
 }
 

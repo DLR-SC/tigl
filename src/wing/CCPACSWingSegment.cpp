@@ -460,7 +460,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     if (GetGuideCurves()) {
         guideCurveParams = GetGuideCurves()->GetRelativeCircumferenceParameters();
     }
-    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
+    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE(), false);
     return loft;
 }
 

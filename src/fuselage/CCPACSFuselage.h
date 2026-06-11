@@ -261,7 +261,8 @@ public:
 
 protected:
 
-    void BuildCleanLoft(PNamedShape& cache) const;
+    void BuildCleanLoftUntrimmed(PNamedShape& cache) const;
+    void BuildCleanLoftTrimmed(PNamedShape& cache) const;
 
     // Cleanup routine
     void Cleanup();
@@ -269,7 +270,22 @@ protected:
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft() const override;
 
-    void SetFaceTraits(PNamedShape loft) const;
+    /**
+     * @brief Returns the fuselage loft (untrimmed, i.e. without UV cuts at profile positions).
+     * This is the default loft returned by GetLoft().
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
+    /**
+     * @brief Returns the fuselage loft with UV cuts at profile positions.
+     * This is the legacy trimmed behavior.
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+
+    void SetFaceTraitsUntrimmed(PNamedShape loft) const;
+    void SetFaceTraitsTrimmed(PNamedShape loft) const;
 
     void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
@@ -289,7 +305,8 @@ private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
-    Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
+    Cache<PNamedShape, CCPACSFuselage> cleanLoftUntrimmed;   /**< Clean fuselage surface, untrimmed (without UV cuts at profiles) */
+    Cache<PNamedShape, CCPACSFuselage> cleanLoftTrimmed;     /**< Clean fuselage surface, trimmed (with UV cuts at profiles) */
 
 
     TopoDS_Compound            aCompound;
