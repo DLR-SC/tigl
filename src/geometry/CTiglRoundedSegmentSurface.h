@@ -46,9 +46,11 @@ private:
             }
             if(inner_rounding_distance>1e-6){
                 insert_inner_rows(3);
+                std::cerr << "Struct inner rows:" << inner_rd << " " << outer_rd;
             }
             if(outer_rounding_distance>1e-6){
                 insert_outer_rows(3);
+                std::cerr << "Struct outer rows:" << inner_rd << " " << outer_rd;
             }
         }
 
