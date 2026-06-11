@@ -31,6 +31,8 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSDuct.h"
 #include "CCPACSVessel.h"
+#include "CCPACSComponent.h"
+#include "generated/CPACSMultiSegmentShape.h"
 #include "CTiglError.h"
 #include "sorting.h"
 #include "CTiglLogging.h"
@@ -68,6 +70,12 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSVessel* parent, CTiglUIDMan
     , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
 {}
 
+CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSegments(parent, uidMgr)
+    , guideCurves(*this, &CCPACSFuselageSegments::BuildGuideCurves)
+{
+}
+
 CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
 {
     if (IsParent<CCPACSFuselage>()) {
@@ -78,6 +86,12 @@ CCPACSConfiguration const& CCPACSFuselageSegments::GetConfiguration() const
     }
     else if (IsParent<CCPACSVessel>()) {
         return GetParent<CCPACSVessel>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSMultiSegmentShape>()) {
+        if (!m_refParentCfg) {
+            throw CTiglError("CCPACSFuselageSegments: Missing reference configuration for multiSegmentShape.");
+        }
+        return *m_refParentCfg;
     }
     else
     {
@@ -106,6 +120,9 @@ CTiglRelativelyPositionedComponent const* CCPACSFuselageSegments::GetParentCompo
     else if (IsParent<CCPACSVessel>()) {
         return GetParent<CCPACSVessel>();
     }
+    else if (IsParent<CCPACSMultiSegmentShape>()) {
+        return m_refParentPtr;
+    }
     else {
         throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
     }
@@ -129,6 +146,16 @@ void CCPACSFuselageSegments::ReorderSegments()
     } catch (std::invalid_argument) {
         throw CTiglError("Fuselage segments not continuous.");
     }
+}
+
+void CCPACSFuselageSegments::SetReferenceParent(CTiglRelativelyPositionedComponent const* refParent) const
+{
+    m_refParentPtr = refParent;
+}
+
+void CCPACSFuselageSegments::SetConfiguration(CCPACSConfiguration const* cfg) const
+{
+    m_refParentCfg = cfg;
 }
 
 void CCPACSFuselageSegments::BuildGuideCurves(TopoDS_Compound& cache) const

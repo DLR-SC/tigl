@@ -28,37 +28,31 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSGenericSystem
+    // CPACSSourceTarget
 
-    enum CPACSGenericSystem_geometricBaseType
+    enum CPACSSourceTarget_externalElement
     {
-        cone,
-        sphere,
-        cube,
-        cylinder
+        ambient,
+        passengers
     };
 
-    inline std::string CPACSGenericSystem_geometricBaseTypeToString(const CPACSGenericSystem_geometricBaseType& value)
+    inline std::string CPACSSourceTarget_externalElementToString(const CPACSSourceTarget_externalElement& value)
     {
         switch(value) {
-        case cone: return "cone";
-        case sphere: return "sphere";
-        case cube: return "cube";
-        case cylinder: return "cylinder";
-        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGenericSystem_geometricBaseType");
+        case ambient: return "ambient";
+        case passengers: return "passengers";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSourceTarget_externalElement");
         }
     }
-    inline CPACSGenericSystem_geometricBaseType stringToCPACSGenericSystem_geometricBaseType(const std::string& value)
+    inline CPACSSourceTarget_externalElement stringToCPACSSourceTarget_externalElement(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "cone") { return cone; }
-        if (toLower(value) == "sphere") { return sphere; }
-        if (toLower(value) == "cube") { return cube; }
-        if (toLower(value) == "cylinder") { return cylinder; }
-        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGenericSystem_geometricBaseType");
+        if (toLower(value) == "ambient") { return ambient; }
+        if (toLower(value) == "passengers") { return passengers; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSourceTarget_externalElement");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-using ECPACSGenericSystem_geometricBaseType = generated::CPACSGenericSystem_geometricBaseType;
+using ECPACSSourceTarget_externalElement = generated::CPACSSourceTarget_externalElement;
 } // namespace tigl

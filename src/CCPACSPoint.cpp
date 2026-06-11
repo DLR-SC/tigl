@@ -51,6 +51,15 @@ CCPACSPoint::CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
 {
 }
 
+CCPACSPoint::CCPACSPoint(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
+
+CCPACSPoint::CCPACSPoint(CCPACSElementMass* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPoint(parent, uidMgr)
+{
+}
 
 CCPACSPoint::CCPACSPoint(const CCPACSPoint &p)
     : generated::CPACSPoint((CCPACSTransformation*)nullptr, p.m_uidMgr)
