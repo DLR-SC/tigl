@@ -95,7 +95,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -220,6 +220,17 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read configurations at xpath " << xpath << ": " << e.what();
                 m_configurations = boost::none;
+            }
+        }
+
+        // read element systemArchitectures
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectures")) {
+            m_systemArchitectures = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_systemArchitectures->ReadCPACS(tixiHandle, xpath + "/systemArchitectures");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read systemArchitectures at xpath " << xpath << ": " << e.what();
+                m_systemArchitectures = boost::none;
             }
         }
 
@@ -353,6 +364,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/configurations");
+            }
+        }
+
+        // write element systemArchitectures
+        if (m_systemArchitectures) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systemArchitectures");
+            m_systemArchitectures->WriteCPACS(tixiHandle, xpath + "/systemArchitectures");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectures")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/systemArchitectures");
             }
         }
 
@@ -496,6 +518,16 @@ namespace generated
         return m_configurations;
     }
 
+    const boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures() const
+    {
+        return m_systemArchitectures;
+    }
+
+    boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures()
+    {
+        return m_systemArchitectures;
+    }
+
     CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
     {
         if (!m_ducts)
@@ -614,6 +646,18 @@ namespace generated
     void CPACSAircraftModel::RemoveConfigurations()
     {
         m_configurations = boost::none;
+    }
+
+    CPACSSystemArchitectures& CPACSAircraftModel::GetSystemArchitectures(CreateIfNotExistsTag)
+    {
+        if (!m_systemArchitectures)
+            m_systemArchitectures = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_systemArchitectures;
+    }
+
+    void CPACSAircraftModel::RemoveSystemArchitectures()
+    {
+        m_systemArchitectures = boost::none;
     }
 
 } // namespace generated

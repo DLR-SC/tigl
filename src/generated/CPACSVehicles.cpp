@@ -171,6 +171,17 @@ namespace generated
             }
         }
 
+        // read element systemElements
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemElements")) {
+            m_systemElements = boost::in_place(this, m_uidMgr);
+            try {
+                m_systemElements->ReadCPACS(tixiHandle, xpath + "/systemElements");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read systemElements at xpath " << xpath << ": " << e.what();
+                m_systemElements = boost::none;
+            }
+        }
+
         // read element materials
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/materials")) {
             m_materials = boost::in_place(this, m_uidMgr);
@@ -274,6 +285,17 @@ namespace generated
             }
         }
 
+        // write element systemElements
+        if (m_systemElements) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systemElements");
+            m_systemElements->WriteCPACS(tixiHandle, xpath + "/systemElements");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemElements")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/systemElements");
+            }
+        }
+
         // write element materials
         if (m_materials) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/materials");
@@ -365,6 +387,16 @@ namespace generated
     boost::optional<CPACSDeckElements>& CPACSVehicles::GetDeckElements()
     {
         return m_deckElements;
+    }
+
+    const boost::optional<CPACSSystemElements>& CPACSVehicles::GetSystemElements() const
+    {
+        return m_systemElements;
+    }
+
+    boost::optional<CPACSSystemElements>& CPACSVehicles::GetSystemElements()
+    {
+        return m_systemElements;
     }
 
     const boost::optional<CPACSMaterials>& CPACSVehicles::GetMaterials() const
@@ -471,6 +503,18 @@ namespace generated
     void CPACSVehicles::RemoveDeckElements()
     {
         m_deckElements = boost::none;
+    }
+
+    CPACSSystemElements& CPACSVehicles::GetSystemElements(CreateIfNotExistsTag)
+    {
+        if (!m_systemElements)
+            m_systemElements = boost::in_place(this, m_uidMgr);
+        return *m_systemElements;
+    }
+
+    void CPACSVehicles::RemoveSystemElements()
+    {
+        m_systemElements = boost::none;
     }
 
     CPACSMaterials& CPACSVehicles::GetMaterials(CreateIfNotExistsTag)

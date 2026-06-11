@@ -43,6 +43,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglPatchShell.h"
 #include "Debugging.h"
+#include "generated/CPACSMultiSegmentShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -125,9 +126,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 

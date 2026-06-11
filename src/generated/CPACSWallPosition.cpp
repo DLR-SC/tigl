@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element bulkheadUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/bulkheadUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/bulkheadUID")) {
             m_bulkheadUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/bulkheadUID");
             if (m_bulkheadUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element bulkheadUID is present but empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element wallSegmentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/wallSegmentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/wallSegmentUID")) {
             m_wallSegmentUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/wallSegmentUID");
             if (m_wallSegmentUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element wallSegmentUID is present but empty at xpath " << xpath;
@@ -118,7 +118,7 @@ namespace generated
         }
 
         // read element fuselageSectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageSectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fuselageSectionUID")) {
             m_fuselageSectionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fuselageSectionUID");
             if (m_fuselageSectionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element fuselageSectionUID is present but empty at xpath " << xpath;
@@ -127,7 +127,7 @@ namespace generated
         }
 
         // read element sectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sectionUID")) {
             m_sectionUID_choice4 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sectionUID");
             if (m_sectionUID_choice4->empty()) {
                 LOG(WARNING) << "Optional element sectionUID is present but empty at xpath " << xpath;
@@ -136,12 +136,12 @@ namespace generated
         }
 
         // read element x
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/x")) {
             m_x_choice5 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
         }
 
         // read element y
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/y")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/y")) {
             m_y = tixi::TixiGetElement<double>(tixiHandle, xpath + "/y");
         }
         else {
@@ -149,7 +149,7 @@ namespace generated
         }
 
         // read element z
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/z")) {
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
         else {

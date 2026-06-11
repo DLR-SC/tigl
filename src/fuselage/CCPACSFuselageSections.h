@@ -40,6 +40,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSections(CCPACSFuselage* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSFuselageSections(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
 
     /**
      * Create a new section and a new element with the given profile uid.

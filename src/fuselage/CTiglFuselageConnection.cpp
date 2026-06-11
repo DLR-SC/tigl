@@ -31,6 +31,7 @@
 #include "generated/CPACSVessels.h"
 #include "CCPACSFuelTank.h"
 #include "generated/CPACSFuselageSections.h"
+#include "generated/CPACSMultiSegmentShape.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -104,9 +105,11 @@ const CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() const
             break;
         }
     }
-    CCPACSConfiguration const& config = segment->GetParent()->GetConfiguration();
 
-    return (config.GetFuselageProfile(profileUID));
+    CCPACSConfiguration const& config = segment->GetParent()->GetConfiguration();
+    auto const& profile = config.GetFuselageProfile(profileUID);
+
+    return profile;
 }
 
 CCPACSFuselageProfile& CTiglFuselageConnection::GetProfile() {
@@ -169,6 +172,9 @@ CCPACSFuselageSections const& CTiglFuselageConnection::GetParentComponentSection
     }
     else if (segment->GetParent()->IsParent<CCPACSVessel>()) {
         return segment->GetParent()->GetParent<CCPACSVessel>()->GetSections_choice1().get();
+    }
+    else if (segment->GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
+        return segment->GetParent()->GetParent<CCPACSMultiSegmentShape>()->GetSections();
     }
     else {
         throw CTiglError("CTiglFuselageConnection: Unknown parent for segment.");

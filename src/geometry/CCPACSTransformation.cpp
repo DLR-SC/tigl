@@ -71,12 +71,6 @@ CCPACSTransformation::CCPACSTransformation(CCPACSExternalObject* parent, CTiglUI
 {
 }
 
-CCPACSTransformation::CCPACSTransformation(CCPACSGenericSystem* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSTransformation(parent, uidMgr)
-    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
-{
-}
-
 CCPACSTransformation::CCPACSTransformation(CCPACSGenericGeometryComponent* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
@@ -132,6 +126,18 @@ CCPACSTransformation::CCPACSTransformation(CCPACSWingSectionElement* parent, CTi
 }
 
 CCPACSTransformation::CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSExternalGeometry* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformation(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
+{
+}
+
+CCPACSTransformation::CCPACSTransformation(CCPACSElementGeometry* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {

@@ -30,7 +30,7 @@
 #include <iostream>
 #include "Precision.hxx"
 
-namespace tigl 
+namespace tigl
 {
 
 class CTiglPoint
@@ -100,7 +100,7 @@ public:
     TIGL_EXPORT double distance2(const CTiglPoint& point) const;
 
     // returns minimum and maximum component
-    TIGL_EXPORT void getMinMax(double & min, double & max) const;
+    TIGL_EXPORT void getMinMax(double& min, double& max) const;
 
     // update the vector such that is norm2 is 1
     TIGL_EXPORT void normalize();
