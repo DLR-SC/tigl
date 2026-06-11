@@ -155,10 +155,8 @@ void ModificatorWingWidget::setWing(tigl::CCPACSWing& wing, ProfilesDBManager* p
     internalArea = tiglWing->GetReferenceArea();
     ui->spinBoxArea->setValue(internalArea);
 
-    ui->spinBoxSweepChord->setValue(0.25);
     updateSweepAccordingChordValue();   // call it explicitly because if the value of the chord is similar has before
                                         // the signal "valueChanged" will not rise up and sweep value will not be updated
-    ui->spinBoxDihedralChord->setValue(0.25);
     updateDihedralAccordingChordValue();
 
     ui->rootLE->setInternal(tiglWing->GetRootLEPosition());
@@ -244,7 +242,7 @@ bool ModificatorWingWidget::apply()
             if (sweepHasChanged) {
                 internalSweep      = ui->spinBoxSweep->value();
                 internalSweepChord = ui->spinBoxSweepChord->value();
-                tiglWing->SetSweep(internalSweep, internalDihedralChord);
+                tiglWing->SetSweep(internalSweep, internalSweepChord);
                 wasModified = true;
             }
 
