@@ -285,7 +285,6 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
     cache.mass         = result.mass;
     cache.cogLocal     = result.cogLocal;
     cache.inertiaLocal = result.inertiaLocal;
-    return;
 }
 
 } // namespace tigl

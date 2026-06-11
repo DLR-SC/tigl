@@ -31,6 +31,7 @@
 #include "TIGLCreator.h"
 #include "TIGLCreatorColors.h"
 #include "TIGLInteractiveShapeManager.h"
+#include "TIGLCreatorSettings.h"
 #include <QMetaType>
 #include <QUndoStack>
 #include <Standard_Version.hxx>
@@ -119,6 +120,7 @@ public slots:
     void gridOff    ();
     void gridRect   ();
     void gridCirc   ();
+    void applyGridSettings ();
     void wireFrame  ( bool );
     void selectAll();
     void eraseSelected();
@@ -136,6 +138,7 @@ signals:
 
     void error (int errorCode, QString& errorDescription);
     void displayAttributesChanged();
+    void gridPlaneChanged(TIGLCreatorSettings::GridPlane plane);
 
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();

@@ -78,6 +78,8 @@ private:
 
 };
 
+TIGL_EXPORT std::vector<double> computeParams(const Handle(TColgp_HArray1OfPnt)& pnts, tigl::ParamMap& params, double alpha);
+
 } // namespace tigl
 
 #endif // CTIGLINTERPOLATEPOINTSWITHKINKS_H
