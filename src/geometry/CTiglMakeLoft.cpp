@@ -166,10 +166,10 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
 
 void CTiglMakeLoft::makeLoftWithRoundedSegments(){
     //check if there are both rounding distances defined for each segment
-    if(!(m_innerRoundingDistance.size()<profiles.size()-1)){
-        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments and inner rounding distances.");
+    if(!(m_innerRoundingDistance.size()==profiles.size()-1)){
+        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments (is "+std::to_string(m_innerRoundingDistance.size())+" ) and inner rounding distances: "+std::to_string(profiles.size()-1));
     }
-    if(!(m_outerRoundingDistance.size()<profiles.size()-1)){
+    if(!(m_outerRoundingDistance.size()==profiles.size()-1)){
         throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments and outer rounding distances.");
     }
 
@@ -197,6 +197,7 @@ void CTiglMakeLoft::makeLoftWithRoundedSegments(){
     // in the same way along each profile (e.g. lower edge,
     // upper edge, trailing edge for a wing)
     for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
+        std::cerr << "Creating surface No " << iE << std::endl;
 
         // get the curves
         std::vector<Handle(Geom_BSplineCurve)> profileCurves;
@@ -208,13 +209,17 @@ void CTiglMakeLoft::makeLoftWithRoundedSegments(){
             assert( profileMap.Extent() >= iE );
 
             TopoDS_Edge edge = TopoDS::Edge(profileMap(iE));
-            profileCurves.push_back(GetBSplineCurve(edge));
+            profileCurves.push_back(GeomConvert::CurveToBSplineCurve(GetBSplineCurve(edge)));
         }
 
+        // CHECK!!! MAYBE create a common knot vector for profileCurves
+        std::vector<Handle(Geom_BSplineCurve)> compatibleProfileCurves = tigl::CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(profileCurves, 1e-14);
 
         // skin the curves
-        tigl::CTiglRoundedSegmentSurface surfaceSkinner(profileCurves, m_innerRoundingDistance, m_outerRoundingDistance);
+        tigl::CTiglRoundedSegmentSurface surfaceSkinner(compatibleProfileCurves, m_innerRoundingDistance, m_outerRoundingDistance);
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+        TopoDS_Shape surf = BRepBuilderAPI_MakeFace(surface, 1e-15);
+        tigl::dumpShape(surf, "makeLoftWing", "CTiglMakeLoftSurfaceNo",iE);
 
         // remember the profile parameters used for the skinning
 
