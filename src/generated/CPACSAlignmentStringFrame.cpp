@@ -89,17 +89,17 @@ namespace generated
         }
 
         // read element rotationLocX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotationLocX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rotationLocX")) {
             m_rotationLocX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotationLocX");
         }
 
         // read element translationLocY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/translationLocY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/translationLocY")) {
             m_translationLocY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/translationLocY");
         }
 
         // read element translationLocZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/translationLocZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/translationLocZ")) {
             m_translationLocZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/translationLocZ");
         }
 

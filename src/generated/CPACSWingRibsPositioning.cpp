@@ -105,7 +105,7 @@ namespace generated
         }
 
         // read element startSparPositionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startSparPositionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startSparPositionUID")) {
             m_startSparPositionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startSparPositionUID");
             if (m_startSparPositionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element startSparPositionUID is present but empty at xpath " << xpath;
@@ -136,7 +136,7 @@ namespace generated
         }
 
         // read element endSparPositionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endSparPositionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endSparPositionUID")) {
             m_endSparPositionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endSparPositionUID");
             if (m_endSparPositionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element endSparPositionUID is present but empty at xpath " << xpath;
@@ -145,7 +145,7 @@ namespace generated
         }
 
         // read element ribStart
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribStart")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribStart")) {
             m_ribStart = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribStart");
             if (m_ribStart.empty()) {
                 LOG(WARNING) << "Required element ribStart is empty at xpath " << xpath;
@@ -156,7 +156,7 @@ namespace generated
         }
 
         // read element ribEnd
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribEnd")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribEnd")) {
             m_ribEnd = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribEnd");
             if (m_ribEnd.empty()) {
                 LOG(WARNING) << "Required element ribEnd is empty at xpath " << xpath;
@@ -167,17 +167,17 @@ namespace generated
         }
 
         // read element spacing
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/spacing")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/spacing")) {
             m_spacing_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/spacing");
         }
 
         // read element numberOfRibs
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfRibs")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/numberOfRibs")) {
             m_numberOfRibs_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfRibs");
         }
 
         // read element ribReference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribReference")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribReference")) {
             m_ribReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribReference");
             if (m_ribReference.empty()) {
                 LOG(WARNING) << "Required element ribReference is empty at xpath " << xpath;
@@ -188,7 +188,7 @@ namespace generated
         }
 
         // read element ribCrossingBehaviour
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribCrossingBehaviour")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribCrossingBehaviour")) {
             m_ribCrossingBehaviour = stringToCPACSRibCrossingBehaviour(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribCrossingBehaviour"));
         }
         else {

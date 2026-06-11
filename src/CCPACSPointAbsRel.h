@@ -27,6 +27,7 @@ public:
     TIGL_EXPORT static ECPACSTranslationType defaultTranslationType;
 
     TIGL_EXPORT CCPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSPointAbsRel(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPointAbsRel(CCPACSStrutAssembly* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPointAbsRel(const CCPACSPointAbsRel& p);
 

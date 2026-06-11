@@ -139,7 +139,7 @@ namespace generated
         }
 
         // read element mass
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/mass")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/mass")) {
             m_mass = tixi::TixiGetElement<double>(tixiHandle, xpath + "/mass");
         }
         else {

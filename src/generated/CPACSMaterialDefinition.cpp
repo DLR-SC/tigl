@@ -188,7 +188,7 @@ namespace generated
     void CPACSMaterialDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element compositeUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compositeUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/compositeUID")) {
             m_compositeUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/compositeUID");
             if (m_compositeUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element compositeUID is present but empty at xpath " << xpath;
@@ -197,17 +197,17 @@ namespace generated
         }
 
         // read element orthotropyDirection
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/orthotropyDirection")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/orthotropyDirection")) {
             m_orthotropyDirection_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/orthotropyDirection");
         }
 
         // read element thicknessScaling
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thicknessScaling")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/thicknessScaling")) {
             m_thicknessScaling_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thicknessScaling");
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element materialUID is present but empty at xpath " << xpath;
@@ -216,7 +216,7 @@ namespace generated
         }
 
         // read element thickness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/thickness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/thickness")) {
             m_thickness_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/thickness");
         }
 
