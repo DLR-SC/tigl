@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element structuralElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementUID")) {
             m_structuralElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementUID");
             if (m_structuralElementUID.empty()) {
                 LOG(WARNING) << "Required element structuralElementUID is empty at xpath " << xpath;
@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element crossBeamUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/crossBeamUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/crossBeamUID")) {
             m_crossBeamUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/crossBeamUID");
             if (m_crossBeamUID.empty()) {
                 LOG(WARNING) << "Required element crossBeamUID is empty at xpath " << xpath;
@@ -118,7 +118,7 @@ namespace generated
         }
 
         // read element positionY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/positionY")) {
             m_positionY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionY");
         }
         else {
@@ -137,12 +137,12 @@ namespace generated
         }
 
         // read element continuity
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/continuity")) {
             m_continuity = stringToCPACSContinuity(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
         }
 
         // read element interpolation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/interpolation")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/interpolation")) {
             m_interpolation = stringToCPACSInterpolation(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/interpolation"));
         }
 

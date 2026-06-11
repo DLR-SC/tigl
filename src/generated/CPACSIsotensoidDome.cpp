@@ -67,7 +67,7 @@ namespace generated
     void CPACSIsotensoidDome::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element polarOpeningRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/polarOpeningRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/polarOpeningRadius")) {
             m_polarOpeningRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/polarOpeningRadius");
         }
         else {

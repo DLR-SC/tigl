@@ -102,7 +102,7 @@ namespace generated
         }
 
         // read element sheetElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sheetElementUID")) {
             m_sheetElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sheetElementUID");
             if (m_sheetElementUID.empty()) {
                 LOG(WARNING) << "Required element sheetElementUID is empty at xpath " << xpath;
@@ -114,7 +114,7 @@ namespace generated
         }
 
         // read element startFrameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startFrameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startFrameUID")) {
             m_startFrameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startFrameUID");
             if (m_startFrameUID.empty()) {
                 LOG(WARNING) << "Required element startFrameUID is empty at xpath " << xpath;
@@ -126,7 +126,7 @@ namespace generated
         }
 
         // read element endFrameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endFrameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endFrameUID")) {
             m_endFrameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endFrameUID");
             if (m_endFrameUID.empty()) {
                 LOG(WARNING) << "Required element endFrameUID is empty at xpath " << xpath;
@@ -138,7 +138,7 @@ namespace generated
         }
 
         // read element startStringerUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startStringerUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startStringerUID")) {
             m_startStringerUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startStringerUID");
             if (m_startStringerUID.empty()) {
                 LOG(WARNING) << "Required element startStringerUID is empty at xpath " << xpath;
@@ -150,7 +150,7 @@ namespace generated
         }
 
         // read element endStringerUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endStringerUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endStringerUID")) {
             m_endStringerUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endStringerUID");
             if (m_endStringerUID->empty()) {
                 LOG(WARNING) << "Optional element endStringerUID is present but empty at xpath " << xpath;

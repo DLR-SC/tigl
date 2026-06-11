@@ -113,7 +113,7 @@ namespace generated
         }
 
         // read element length
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/length")) {
             m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
         else {
@@ -129,7 +129,7 @@ namespace generated
         }
 
         // read element numberOfWheels
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfWheels")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/numberOfWheels")) {
             m_numberOfWheels = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfWheels");
         }
         else {
@@ -137,7 +137,7 @@ namespace generated
         }
 
         // read element sideOfFirstWheel
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sideOfFirstWheel")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sideOfFirstWheel")) {
             m_sideOfFirstWheel = stringToCPACSAxle_sideOfFirstWheel(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sideOfFirstWheel"));
         }
         else {

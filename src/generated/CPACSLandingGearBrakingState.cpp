@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element controlParameterBraked
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameterBraked")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameterBraked")) {
             m_controlParameterBraked = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameterBraked");
         }
         else {
@@ -105,7 +105,7 @@ namespace generated
         }
 
         // read element controlParameterReleased
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameterReleased")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameterReleased")) {
             m_controlParameterReleased = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameterReleased");
         }
         else {
