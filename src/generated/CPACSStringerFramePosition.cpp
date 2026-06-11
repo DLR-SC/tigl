@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element structuralElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementUID")) {
             m_structuralElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementUID");
             if (m_structuralElementUID.empty()) {
                 LOG(WARNING) << "Required element structuralElementUID is empty at xpath " << xpath;
@@ -127,12 +127,12 @@ namespace generated
         }
 
         // read element positionX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/positionX")) {
             m_positionX_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionX");
         }
 
         // read element sectionElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sectionElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sectionElementUID")) {
             m_sectionElementUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sectionElementUID");
             if (m_sectionElementUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element sectionElementUID is present but empty at xpath " << xpath;
@@ -141,7 +141,7 @@ namespace generated
         }
 
         // read element referenceY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceY")) {
             m_referenceY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceY");
         }
         else {
@@ -149,7 +149,7 @@ namespace generated
         }
 
         // read element referenceZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceZ")) {
             m_referenceZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceZ");
         }
         else {
@@ -157,7 +157,7 @@ namespace generated
         }
 
         // read element referenceAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceAngle")) {
             m_referenceAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/referenceAngle");
         }
         else {
@@ -176,12 +176,12 @@ namespace generated
         }
 
         // read element continuity
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/continuity")) {
             m_continuity = stringToCPACSContinuity(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
         }
 
         // read element interpolation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/interpolation")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/interpolation")) {
             m_interpolation = stringToCPACSInterpolation(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/interpolation"));
         }
 

@@ -82,9 +82,9 @@ configure = { cmd = [
 ]}
 generate = { cmd = """
     git submodule update --init --recursive
-    && cd thirdparty/cpacs_gen
-    && cmake -GNinja -S. -Bbuild -DTIGL_PATH=../.. 
-    && cmake --build build --target generate
+    cd thirdparty/cpacs_gen
+    cmake -GNinja -S . -Bbuild -DTIGL_PATH=../.. 
+    cmake --build build --target generate
 """}
 build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
 install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
@@ -103,6 +103,7 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 "occt-static" = ["base", "opencascade-static"]
 # python-internal feature builds the internal python bindings of the C++ core using swig
 "python-internal" = ["base", "python-internal"]
+
 
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled

@@ -115,12 +115,12 @@ namespace generated
         }
 
         // read element xsiTEUpper
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiTEUpper")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiTEUpper")) {
             m_xsiTEUpper_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiTEUpper");
         }
 
         // read element xsiTELower
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiTELower")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiTELower")) {
             m_xsiTELower_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiTELower");
         }
 

@@ -95,7 +95,7 @@ namespace generated
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID.empty()) {
                 LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element source
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/source")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/source")) {
             m_source = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/source");
             if (m_source.empty()) {
                 LOG(WARNING) << "Required element source is empty at xpath " << xpath;
@@ -118,7 +118,7 @@ namespace generated
         }
 
         // read element consistancy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/consistancy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/consistancy")) {
             m_consistancy = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/consistancy");
         }
         else {
@@ -164,7 +164,7 @@ namespace generated
         }
 
         // read element beamSpecificMass
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/beamSpecificMass")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/beamSpecificMass")) {
             m_beamSpecificMass = tixi::TixiGetElement<double>(tixiHandle, xpath + "/beamSpecificMass");
         }
 

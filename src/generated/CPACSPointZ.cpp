@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element z
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/z")) {
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
         else {

@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element area
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/area")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/area")) {
             m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
         }
         else {
@@ -102,7 +102,7 @@ namespace generated
         }
 
         // read element xMin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xMin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xMin")) {
             m_xMin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xMin");
         }
         else {
@@ -110,7 +110,7 @@ namespace generated
         }
 
         // read element xMax
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xMax")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xMax")) {
             m_xMax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xMax");
         }
         else {
@@ -118,7 +118,7 @@ namespace generated
         }
 
         // read element yMin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/yMin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/yMin")) {
             m_yMin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/yMin");
         }
         else {
@@ -126,7 +126,7 @@ namespace generated
         }
 
         // read element yMax
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/yMax")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/yMax")) {
             m_yMax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/yMax");
         }
         else {

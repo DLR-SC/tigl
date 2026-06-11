@@ -87,7 +87,7 @@ namespace generated
     void CPACSTrackSecondaryStructure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID.empty()) {
                 LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;

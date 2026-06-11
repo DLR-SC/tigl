@@ -87,7 +87,7 @@ namespace generated
     void CPACSBoundingBox::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element deltaX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaX")) {
             m_deltaX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaX");
         }
         else {
@@ -95,7 +95,7 @@ namespace generated
         }
 
         // read element deltaY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaY")) {
             m_deltaY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaY");
         }
         else {
@@ -103,7 +103,7 @@ namespace generated
         }
 
         // read element deltaZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaZ")) {
             m_deltaZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ");
         }
         else {

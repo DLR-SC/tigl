@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -108,7 +108,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -116,7 +116,7 @@ namespace generated
         }
 
         // read element altitude
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/altitude")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/altitude")) {
             m_altitude = tixi::TixiGetElement<double>(tixiHandle, xpath + "/altitude");
         }
         else {
@@ -124,17 +124,17 @@ namespace generated
         }
 
         // read element machNumber
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/machNumber")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/machNumber")) {
             m_machNumber_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/machNumber");
         }
 
         // read element calibratedAirSpeed
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/calibratedAirSpeed")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/calibratedAirSpeed")) {
             m_calibratedAirSpeed_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/calibratedAirSpeed");
         }
 
         // read element trueAirSpeed
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trueAirSpeed")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/trueAirSpeed")) {
             m_trueAirSpeed_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trueAirSpeed");
         }
 
