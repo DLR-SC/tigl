@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include <QColorDialog>
+#include <QSignalBlocker>
 
 #include <TIGLCreatorSettingsDialog.h>
 #include <TIGLCreatorSettings.h>
@@ -69,6 +70,23 @@ TIGLCreatorSettingsDialog::TIGLCreatorSettingsDialog(TIGLCreatorSettings& settin
     connect(btnRestoreDefaults, SIGNAL(clicked(bool)), this, SLOT(restoreDefaults()));
     connect(browseTemplateDirButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseTemplateDir()));
     connect(browseProfilesDBButton, SIGNAL(clicked(bool)), this, SLOT(onBrowseProfilesDB()));
+    connect(grid_origin_X_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_origin_Y_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_size_spinbox, SIGNAL(valueChanged(double)), this, SLOT(onGridSettingChanged()));
+    connect(grid_radial_div_spinbox, SIGNAL(valueChanged(int)), this, SLOT(onGridSettingChanged()));
+
+    {
+        QSignalBlocker b1(grid_origin_X_spinbox);
+        QSignalBlocker b2(grid_origin_Y_spinbox);
+        QSignalBlocker b3(grid_size_spinbox);
+        QSignalBlocker b4(grid_radial_div_spinbox);
+        grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+        grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+        grid_size_spinbox->setValue(_settings.gridSize());
+        grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    }
+
+    updateOriginLabels();
 }
 
 void TIGLCreatorSettingsDialog::onComboBoxIndexChanged(const QString& index)
@@ -120,6 +138,13 @@ void TIGLCreatorSettingsDialog::onSettingsAccepted()
 
     _settings.setTemplateDir(templateLineEdit->text());
     _settings.setProfilesDBPath(profilesDBLineEdit->text());
+
+    _settings.setGridOriginX(grid_origin_X_spinbox->value());
+    _settings.setGridOriginY(grid_origin_Y_spinbox->value());
+    _settings.setGridSize(grid_size_spinbox->value());
+    _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
+
+    emit settingsUpdated();
 }
 
 void TIGLCreatorSettingsDialog::updateEntries()
@@ -161,6 +186,19 @@ void TIGLCreatorSettingsDialog::updateEntries()
     templateLineEdit->setText(_settings.templateDir().absolutePath());
     profilesDBLineEdit->setText(_settings.profilesDBPath());
     cbDrawFaceBoundaries->setChecked(_settings.drawFaceBoundaries());
+
+    {
+        QSignalBlocker b1(grid_origin_X_spinbox);
+        QSignalBlocker b2(grid_origin_Y_spinbox);
+        QSignalBlocker b3(grid_size_spinbox);
+        QSignalBlocker b4(grid_radial_div_spinbox);
+        grid_origin_X_spinbox->setValue(_settings.gridOriginX());
+        grid_origin_Y_spinbox->setValue(_settings.gridOriginY());
+        grid_size_spinbox->setValue(_settings.gridSize());
+        grid_radial_div_spinbox->setValue(_settings.gridRadialDivisions());
+    }
+
+    updateOriginLabels();
 
     auto i(tiglMaterials::materialMap.begin());
     QStringList items;
@@ -260,4 +298,44 @@ void TIGLCreatorSettingsDialog::onBrowseProfilesDB()
     if (!newFile.isEmpty()) {
         profilesDBLineEdit->setText(newFile);
     }
+}
+
+void TIGLCreatorSettingsDialog::onGridSettingChanged()
+{
+    validateGridSettings();
+    _settings.setGridOriginX(grid_origin_X_spinbox->value());
+    _settings.setGridOriginY(grid_origin_Y_spinbox->value());
+    _settings.setGridSize(grid_size_spinbox->value());
+    _settings.setGridRadialDivisions(grid_radial_div_spinbox->value());
+    emit settingsUpdated();
+}
+
+void TIGLCreatorSettingsDialog::validateGridSettings()
+{
+    if (grid_size_spinbox->value() <= 0.0) {
+        grid_size_spinbox->setValue(1.0); // just to be save, should be unreachable, since minimum is set in ui-file
+    }
+}
+
+void TIGLCreatorSettingsDialog::updateOriginLabels()
+{
+    switch (_settings.gridPlane()) {
+    case TIGLCreatorSettings::GridPlane::XZ:
+        grid_origin_1_label->setText("Origin Z");
+        grid_origin_2_label->setText("Origin X");
+        break;
+    case TIGLCreatorSettings::GridPlane::YZ:
+        grid_origin_1_label->setText("Origin Z");
+        grid_origin_2_label->setText("Origin Y");
+        break;
+    default:
+        grid_origin_1_label->setText("Origin X");
+        grid_origin_2_label->setText("Origin Y");
+        break;
+    }
+}
+
+void TIGLCreatorSettingsDialog::onGridPlaneChanged(TIGLCreatorSettings::GridPlane)
+{
+    updateOriginLabels();
 }

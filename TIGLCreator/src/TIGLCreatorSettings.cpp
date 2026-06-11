@@ -200,6 +200,12 @@ void TIGLCreatorSettings::loadSettings()
     _shapesymmetrycolor = settings.value("shape_symmetry_color", shapeSymmetryColor()).value<QColor>();
     _defaultMaterial = static_cast<Graphic3d_NameOfMaterial>(settings.value("shape_material", defaultMaterial()).toInt());
 
+    _grid_origin_x = settings.value("grid_origin_x", 0.).toDouble();
+    _grid_origin_y = settings.value("grid_origin_y", 0.).toDouble();
+    _grid_size = settings.value("grid_size", 10.).toDouble();
+    _grid_radial_divisions = settings.value("grid_radial_divisions", 8).toInt();
+    _grid_plane = static_cast<GridPlane>(settings.value("grid_plane", static_cast<int>(GridPlane::XY)).toInt());
+
     _debugBOPs = settings.value("debug_bops", false).toBool();
     _enumFaces = settings.value("enumerate_faces", false).toBool();
     _nUIsosPerFace = settings.value("number_uisolines_per_face", 0).toInt();
@@ -233,6 +239,12 @@ void TIGLCreatorSettings::storeSettings()
     settings.setValue("shape_symmetry_color", shapeSymmetryColor());
     settings.setValue("shape_material", static_cast<int>(defaultMaterial()));
 
+    settings.setValue("grid_origin_x", gridOriginX());
+    settings.setValue("grid_origin_y", gridOriginY());
+    settings.setValue("grid_size", gridSize());
+    settings.setValue("grid_radial_divisions", gridRadialDivisions());
+    settings.setValue("grid_plane", static_cast<int>(_grid_plane));
+
     settings.setValue("debug_bops", _debugBOPs);
     settings.setValue("enumerate_faces", _enumFaces);
     settings.setValue("number_uisolines_per_face", _nUIsosPerFace);
@@ -256,6 +268,13 @@ void TIGLCreatorSettings::restoreDefaults()
     _nVIsosPerFace = DEFAULT_NISO_FACES;
     _drawFaceBoundaries = DEFAULT_DRAW_FACE_BOUNDARIES;
     _defaultMaterial = Graphic3d_NOM_METALIZED;
+
+    _grid_origin_x = 0.;
+    _grid_origin_y = 0.;
+    _grid_size = 10.;
+    _grid_radial_divisions = 8;
+    _grid_plane = GridPlane::XY;
+
     // Possible issue:
     // restoreDefaults() is called in the constructor
     // -> the dir will be always create at start up of the application
@@ -286,4 +305,55 @@ QString TIGLCreatorSettings::profilesDBPath() const
 void TIGLCreatorSettings::setProfilesDBPath(QString path)
 {
     _profilesDBPath = path;  // not check on the file is performed
+}
+
+void TIGLCreatorSettings::setGridOriginX(double x)
+{
+    _grid_origin_x = x;
+}
+
+double TIGLCreatorSettings::gridOriginX() const
+{
+    return _grid_origin_x;
+}
+
+void TIGLCreatorSettings::setGridOriginY(double y)
+{
+    _grid_origin_y = y;
+}
+
+double TIGLCreatorSettings::gridOriginY() const
+{
+    return _grid_origin_y;
+}
+
+void TIGLCreatorSettings::setGridSize(double delta)
+{
+    _grid_size = delta;
+}
+
+double TIGLCreatorSettings::gridSize() const
+{
+    return _grid_size;
+}
+
+void TIGLCreatorSettings::setGridRadialDivisions(int n)
+{
+    _grid_radial_divisions = n;
+}
+
+int TIGLCreatorSettings::gridRadialDivisions() const
+{
+    return _grid_radial_divisions;
+}
+
+TIGLCreatorSettings::GridPlane TIGLCreatorSettings::gridPlane() const
+{
+    return _grid_plane;
+}
+
+void TIGLCreatorSettings::setGridPlane(GridPlane plane)
+{
+    _grid_plane = plane;
+    emit gridPlaneChanged(plane);
 }

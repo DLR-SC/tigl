@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>314</height>
+    <width>511</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,47 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetFixedSize</enum>
    </property>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="settingsList">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Display Settings</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Debugging</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Directories</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="btnRestoreDefaults">
      <property name="text">
@@ -37,7 +78,7 @@
    <item row="0" column="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageDisplaySettings">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -392,8 +433,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBoxShapeMaterial">
-          </widget>
+          <widget class="QComboBox" name="comboBoxShapeMaterial"/>
          </item>
         </layout>
        </item>
@@ -403,6 +443,76 @@
           <string>Draw face boundaries</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_18">
+         <property name="text">
+          <string>Grid Settings</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="grid_size_spinbox">
+           <property name="decimals">
+            <number>3</number>
+           </property>
+           <property name="minimum">
+            <double>0.001000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="grid_origin_Y_spinbox">
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="grid_origin_X_spinbox">
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="grid_origin_1_label">
+           <property name="text">
+            <string>Origin X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_24">
+           <property name="text">
+            <string>Grid Size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="grid_origin_2_label">
+           <property name="text">
+            <string>Origin Y</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_25">
+           <property name="text">
+            <string>Radial Divisions</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="grid_radial_div_spinbox">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>8</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer name="verticalSpacer_5">
@@ -816,47 +926,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QListWidget" name="settingsList">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>Display Settings</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Debugging</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Directories</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>
