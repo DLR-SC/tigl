@@ -530,9 +530,9 @@ TEST_F(Systems, SystemArchitectureConnections)
     }
 
     {
-        const auto& c             = connections->GetConnection(5);
-        const auto sourceComonent = c.GetSourceComponent();
-        EXPECT_FALSE(sourceComonent);
+        const auto& c              = connections->GetConnection(5);
+        const auto sourceComponent = c.GetSourceComponent();
+        EXPECT_FALSE(sourceComponent);
 
         const auto& targetSourceElement = c.GetSource().GetExternalElement_choice1();
         ASSERT_TRUE(targetSourceElement);
