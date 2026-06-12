@@ -166,6 +166,13 @@ public:
     // Return a transformation that only contains a axial rotation defined by the two parameters.
     TIGL_EXPORT static CTiglTransformation GetRotationFromAxisRotation( tigl::CTiglPoint axis, double angle );
 
+    // Get Linear Determinant
+    TIGL_EXPORT double GetLinearDeterminant() const;
+
+    // Get the absolute volume scaling factor of the affine transformation,
+    // i.e. abs(det(A)) of the upper-left 3x3 linear part.
+    TIGL_EXPORT double GetVolumeScaleFactor() const;
+
     // Return true if the transformation has a zero scaling
     TIGL_EXPORT bool HasZeroScaling() const;
 
