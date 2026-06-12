@@ -60,32 +60,32 @@ namespace generated
     void CPACSPointPerformanceRequirements::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sustainedLoadFactor
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sustainedLoadFactor")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sustainedLoadFactor")) {
             m_sustainedLoadFactor = tixi::TixiGetElement<double>(tixiHandle, xpath + "/sustainedLoadFactor");
         }
 
         // read element instantaneousLoadFactor
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/instantaneousLoadFactor")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/instantaneousLoadFactor")) {
             m_instantaneousLoadFactor = tixi::TixiGetElement<double>(tixiHandle, xpath + "/instantaneousLoadFactor");
         }
 
         // read element specificExcessPower
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/specificExcessPower")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/specificExcessPower")) {
             m_specificExcessPower = tixi::TixiGetElement<double>(tixiHandle, xpath + "/specificExcessPower");
         }
 
         // read element rollRate
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rollRate")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rollRate")) {
             m_rollRate = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rollRate");
         }
 
         // read element rollAccelerationOnset
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rollAccelerationOnset")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rollAccelerationOnset")) {
             m_rollAccelerationOnset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rollAccelerationOnset");
         }
 
         // read element rollAccelerationStop
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rollAccelerationStop")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rollAccelerationStop")) {
             m_rollAccelerationStop = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rollAccelerationStop");
         }
 

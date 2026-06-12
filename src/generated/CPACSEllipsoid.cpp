@@ -85,7 +85,7 @@ namespace generated
     void CPACSEllipsoid::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element radiusX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusX")) {
             m_radiusX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusX");
         }
         else {
@@ -93,17 +93,17 @@ namespace generated
         }
 
         // read element radiusY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusY")) {
             m_radiusY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusY");
         }
 
         // read element radiusZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusZ")) {
             m_radiusZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusZ");
         }
 
         // read element diskAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/diskAngle")) {
             m_diskAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/diskAngle");
         }
 

@@ -86,7 +86,7 @@ namespace generated
     void CPACSControlSurfaceHingePoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element hingeXsi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hingeXsi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/hingeXsi")) {
             m_hingeXsi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/hingeXsi");
         }
         else {
@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element hingeRelHeight
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hingeRelHeight")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/hingeRelHeight")) {
             m_hingeRelHeight = tixi::TixiGetElement<double>(tixiHandle, xpath + "/hingeRelHeight");
         }
         else {

@@ -86,7 +86,7 @@ namespace generated
     void CPACSCone::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element lowerRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/lowerRadius")) {
             m_lowerRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerRadius");
         }
         else {
@@ -94,12 +94,12 @@ namespace generated
         }
 
         // read element upperRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperRadius")) {
             m_upperRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperRadius");
         }
 
         // read element height
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/height")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/height")) {
             m_height = tixi::TixiGetElement<double>(tixiHandle, xpath + "/height");
         }
         else {

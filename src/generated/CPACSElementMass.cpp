@@ -394,12 +394,12 @@ namespace generated
     void CPACSElementMass::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element density
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/density")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/density")) {
             m_density_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/density");
         }
 
         // read element mass
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/mass")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/mass")) {
             m_mass_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/mass");
         }
 

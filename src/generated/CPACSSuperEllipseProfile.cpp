@@ -103,7 +103,7 @@ namespace generated
         }
 
         // read element lowerHeightFraction
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerHeightFraction")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/lowerHeightFraction")) {
             m_lowerHeightFraction = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerHeightFraction");
         }
         else {

@@ -69,7 +69,7 @@ namespace generated
     void CPACSMassInertia::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element Jxx
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jxx")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jxx")) {
             m_Jxx = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jxx");
         }
         else {
@@ -77,7 +77,7 @@ namespace generated
         }
 
         // read element Jyy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jyy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jyy")) {
             m_Jyy = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jyy");
         }
         else {
@@ -85,7 +85,7 @@ namespace generated
         }
 
         // read element Jzz
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jzz")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jzz")) {
             m_Jzz = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jzz");
         }
         else {
@@ -93,17 +93,17 @@ namespace generated
         }
 
         // read element Jxy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jxy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jxy")) {
             m_Jxy = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jxy");
         }
 
         // read element Jxz
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jxz")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jxz")) {
             m_Jxz = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jxz");
         }
 
         // read element Jyz
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/Jyz")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/Jyz")) {
             m_Jyz = tixi::TixiGetElement<double>(tixiHandle, xpath + "/Jyz");
         }
 

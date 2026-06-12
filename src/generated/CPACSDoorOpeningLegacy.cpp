@@ -70,7 +70,7 @@ namespace generated
     void CPACSDoorOpeningLegacy::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element x
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/x")) {
             m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
         }
         else {
@@ -78,7 +78,7 @@ namespace generated
         }
 
         // read element z
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/z")) {
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
         else {
@@ -86,7 +86,7 @@ namespace generated
         }
 
         // read element width
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/width")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/width")) {
             m_width = tixi::TixiGetElement<double>(tixiHandle, xpath + "/width");
         }
         else {
@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element height
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/height")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/height")) {
             m_height = tixi::TixiGetElement<double>(tixiHandle, xpath + "/height");
         }
         else {
@@ -102,7 +102,7 @@ namespace generated
         }
 
         // read element side
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/side")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/side")) {
             m_side = stringToCPACSDoorOpeningLegacy_side(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/side"));
         }
         else {

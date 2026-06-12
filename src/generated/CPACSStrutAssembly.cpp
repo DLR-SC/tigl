@@ -137,7 +137,7 @@ namespace generated
         }
 
         // read element mainStrutRelativePosition
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/mainStrutRelativePosition")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/mainStrutRelativePosition")) {
             m_mainStrutRelativePosition = tixi::TixiGetElement<double>(tixiHandle, xpath + "/mainStrutRelativePosition");
         }
         else {
@@ -189,7 +189,7 @@ namespace generated
         }
 
         // read element actuatorUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/actuatorUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/actuatorUID")) {
             m_actuatorUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/actuatorUID");
             if (m_actuatorUID->empty()) {
                 LOG(WARNING) << "Optional element actuatorUID is present but empty at xpath " << xpath;

@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element phi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/phi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/phi")) {
             m_phi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/phi");
         }
         else {
@@ -105,17 +105,17 @@ namespace generated
         }
 
         // read element doubleSidedExtrusion
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/doubleSidedExtrusion")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/doubleSidedExtrusion")) {
             m_doubleSidedExtrusion = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/doubleSidedExtrusion");
         }
 
         // read element flushConnectionStart
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/flushConnectionStart")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/flushConnectionStart")) {
             m_flushConnectionStart = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/flushConnectionStart");
         }
 
         // read element flushConnectionEnd
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/flushConnectionEnd")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/flushConnectionEnd")) {
             m_flushConnectionEnd = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/flushConnectionEnd");
         }
 
@@ -131,7 +131,7 @@ namespace generated
         }
 
         // read element structuralWallElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralWallElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralWallElementUID")) {
             m_structuralWallElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralWallElementUID");
             if (m_structuralWallElementUID->empty()) {
                 LOG(WARNING) << "Optional element structuralWallElementUID is present but empty at xpath " << xpath;

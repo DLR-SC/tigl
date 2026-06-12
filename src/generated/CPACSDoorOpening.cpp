@@ -81,7 +81,7 @@ namespace generated
     void CPACSDoorOpening::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element cutOutUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cutOutUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/cutOutUID")) {
             m_cutOutUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cutOutUID");
             if (m_cutOutUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element cutOutUID is present but empty at xpath " << xpath;

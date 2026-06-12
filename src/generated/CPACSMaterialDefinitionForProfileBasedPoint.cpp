@@ -83,7 +83,7 @@ namespace generated
     void CPACSMaterialDefinitionForProfileBasedPoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element pointUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pointUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/pointUID")) {
             m_pointUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/pointUID");
             if (m_pointUID->empty()) {
                 LOG(WARNING) << "Optional element pointUID is present but empty at xpath " << xpath;
@@ -92,7 +92,7 @@ namespace generated
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID.empty()) {
                 LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element crossSectionArea
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/crossSectionArea")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/crossSectionArea")) {
             m_crossSectionArea = tixi::TixiGetElement<double>(tixiHandle, xpath + "/crossSectionArea");
         }
         else {
@@ -112,12 +112,12 @@ namespace generated
         }
 
         // read element optionalAux1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/optionalAux1")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/optionalAux1")) {
             m_optionalAux1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/optionalAux1");
         }
 
         // read element optionalAux2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/optionalAux2")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/optionalAux2")) {
             m_optionalAux2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/optionalAux2");
         }
 

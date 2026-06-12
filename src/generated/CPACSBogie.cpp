@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element length
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/length")) {
             m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
         else {
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element tiltAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tiltAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/tiltAngle")) {
             m_tiltAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/tiltAngle");
         }
         else {

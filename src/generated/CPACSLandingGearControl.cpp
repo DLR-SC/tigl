@@ -78,7 +78,7 @@ namespace generated
     void CPACSLandingGearControl::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element retractAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/retractAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/retractAngle")) {
             m_retractAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/retractAngle");
         }
 
@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element offset
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/offset")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/offset")) {
             m_offset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/offset");
         }
 

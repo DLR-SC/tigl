@@ -87,7 +87,7 @@ namespace generated
     void CPACSControlSurfaceSkinCutOut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sparUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sparUID")) {
             m_sparUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparUID");
             if (m_sparUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element sparUID is present but empty at xpath " << xpath;
@@ -96,12 +96,12 @@ namespace generated
         }
 
         // read element xsiInnerBorder
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiInnerBorder")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiInnerBorder")) {
             m_xsiInnerBorder_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiInnerBorder");
         }
 
         // read element xsiOuterBorder
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiOuterBorder")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiOuterBorder")) {
             m_xsiOuterBorder_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiOuterBorder");
         }
 
