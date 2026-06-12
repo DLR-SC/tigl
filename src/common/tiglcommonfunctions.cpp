@@ -707,11 +707,21 @@ Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
 {
     double u1, u2;
     Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
-    curve = new Geom_TrimmedCurve(curve, u1, u2);
 
-    // convert to bspline
-    Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
-    return bspl;
+    Handle(Geom_BSplineCurve) bspl = Handle(Geom_BSplineCurve)::DownCast(curve);
+    if (bspl.IsNull()) {
+        Handle(Geom_TrimmedCurve) trimmed = Handle(Geom_TrimmedCurve)::DownCast(curve);
+        if (!trimmed.IsNull()) {
+            bspl = Handle(Geom_BSplineCurve)::DownCast(trimmed->BasisCurve());
+        }
+    }
+
+    if (!bspl.IsNull()) {
+        return Handle(Geom_BSplineCurve)::DownCast(bspl->Copy());
+    }
+
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
+    return GeomConvert::CurveToBSplineCurve(curve);
 }
 
 namespace {

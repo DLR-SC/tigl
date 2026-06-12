@@ -673,8 +673,46 @@ CTiglBSplineAlgorithms::computeParamsBSplineSurf(const TColgp_Array2OfPnt& point
 
 std::vector<Handle(Geom_BSplineCurve)> CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector, double tol)
 {
-    // Match parameter range
     matchParameterRange(splines_vector, tol);
+
+    if (splines_vector.size() > 1) {
+        const Handle(Geom_BSplineCurve)& ref = splines_vector[0];
+        bool identical = true;
+        for (size_t i = 1; i < splines_vector.size() && identical; ++i) {
+            const Handle(Geom_BSplineCurve)& s = splines_vector[i];
+            if (s->Degree() != ref->Degree() || s->NbKnots() != ref->NbKnots()) {
+                identical = false;
+            }
+            else {
+                TColStd_Array1OfReal refKnots = ref->Knots();
+                TColStd_Array1OfReal sKnots = s->Knots();
+                for (int k = refKnots.Lower(); k <= refKnots.Upper(); ++k) {
+                    if (std::abs(refKnots(k) - sKnots(k)) > 1e-8) {
+                        identical = false;
+                        break;
+                    }
+                }
+                if (identical) {
+                    TColStd_Array1OfInteger refMults = ref->Multiplicities();
+                    TColStd_Array1OfInteger sMults = s->Multiplicities();
+                    for (int m = refMults.Lower(); m <= refMults.Upper(); ++m) {
+                        if (sMults(m) != refMults(m)) {
+                            identical = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (identical) {
+            std::vector<Handle(Geom_BSplineCurve)> result;
+            result.reserve(splines_vector.size());
+            for (size_t i = 0; i < splines_vector.size(); ++i) {
+                result.push_back(Handle(Geom_BSplineCurve)::DownCast(splines_vector[i]->Copy()));
+            }
+            return result;
+        }
+    }
 
     // Create a copy that we can modify
     std::vector<CurveAdapterView> splines_adapter;
