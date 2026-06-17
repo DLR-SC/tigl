@@ -134,7 +134,9 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             hpoints->SetValue(static_cast<Standard_Integer>(i + 1), coordinates[i].Get_gp_Pnt());
         }
 
-        tigl::ParamMap paramsMap;
+        ParamMap paramsMap;
+        auto le_idx = static_cast<unsigned int>(lePointIdx);
+        auto le_in_params_map = false;
         if (cpacsPointList.GetParameterMap()) {
             const auto& cpacsMap = cpacsPointList.GetParameterMap().value();
             auto params = cpacsMap.GetParamAsVector();
@@ -143,12 +145,17 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
                 throw CTiglError("Number of parameters does not match number of indices");
             }
             for (size_t i = 0; i < params.size(); ++i) {
+                if (idx[i] == le_idx) {
+                    le_in_params_map = true;
+                }
                 paramsMap[idx[i]] = params[i];
             }
         }
-        paramsMap[static_cast<unsigned int>(lePointIdx)] = c_prescribedLEParam;
+        if (!le_in_params_map) {
+            paramsMap[le_idx] = c_prescribedLEParam;
+        }
 
-        m_initialParams = tigl::computeParams(hpoints, paramsMap, c_prescribedLEParam);
+        m_initialParams = computeParams(hpoints, paramsMap, c_prescribedLEParam);
 
         if (approxSettings->GetControlPointNumber_choice1()) {
             int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
