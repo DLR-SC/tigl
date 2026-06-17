@@ -68,10 +68,14 @@ PNamedShape CCPACSEnginePosition::BuildLoft() const
         return PNamedShape();
     }
 
-    boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
-    auto transform = this->GetTransformationMatrix();
-    CTiglEngineNacelleBuilder builder(*nacelle, transform);
-    return builder.BuildShape();
+    try {
+        boost::optional<CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
+        auto transform = this->GetTransformationMatrix();
+        CTiglEngineNacelleBuilder builder(*nacelle, transform);
+        return builder.BuildShape();
+    } catch(CTiglError const& e) {
+         throw CTiglError("CCPACSEnginePosition: Unable to build nacelle for the engine with UID " + m_engineUID + ": " + e.what(), TIGL_ERROR);
+    }
 }
 
 } //namespace tigl
