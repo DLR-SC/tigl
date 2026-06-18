@@ -1,7 +1,7 @@
 #include "DrawOptionsActions.h"
 #include <QDebug>
 
-// Forward declaration for example
+
 void onColorChosen();
 
 

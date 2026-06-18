@@ -65,14 +65,6 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
     connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
 
-    // for (const auto& action : getDrawOptionsActions()) {
-    //     QAction* act = findChild<QAction*>(action.name);
-    //     if (act) {
-    //         connect(act, &QAction::triggered, this, [this, action]() {
-    //             action.handler(currentUid); // Pass the UID
-    //         });
-    //     }
-    // }
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
