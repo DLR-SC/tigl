@@ -807,7 +807,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                 if (objects[0]->Shape() != component.GetLoft()->Shape()) {
                     objects[0]->SetShape(component.GetLoft()->Shape());
                 }
-                else if (objects.size() > 1) {
+                if (objects.size() > 1) {
                     auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
                     if (geometricComp) {
                         if (geometricComp->GetMirroredLoft()) {
