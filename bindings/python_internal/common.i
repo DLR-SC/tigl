@@ -116,6 +116,64 @@ enum TiglImportExportFormat
     TIGL_IMPORTEXPORT_VTK  = 3             /**< Use VTK (XML/VTP) format for geometry import/export */
 };
 
+enum TiglGeometricComponentType
+{
+    TIGL_COMPONENT_PLANE                  = 1, /**< The whole aircraft */
+    TIGL_COMPONENT_FUSELAGE               = 2, /**< The Component is a fuselage */
+    TIGL_COMPONENT_WING                   = 3, /**< The Component is a wing */
+    TIGL_COMPONENT_SEGMENT                = 4, /**< The Component is a general segment */
+    TIGL_COMPONENT_WINGSEGMENT            = 5, /**< The Component is a wing segment */
+    TIGL_COMPONENT_FUSELSEGMENT           = 6, /**< The Component is a fuselage segment */
+    TIGL_COMPONENT_WINGCOMPSEGMENT        = 7, /**< The Component is a wing component segment */
+    TIGL_COMPONENT_WINGSHELL              = 8, /**< The Component is a face of the wing (e.g. upper wing surface) */
+    TIGL_COMPONENT_WINGRIB                = 9, /**< The Component is rib (set) of a wing */
+    TIGL_COMPONENT_WINGSPAR               = 10, /**< The Component is a spar segment */
+    TIGL_COMPONENT_WINGCELL               = 11, /**< The Component is a cell on the wing */
+    TIGL_COMPONENT_GENERICSYSTEM          = 12, /**< The Component is a generic system */
+    TIGL_COMPONENT_ROTOR                  = 13, /**< The Component is a rotor */
+    TIGL_COMPONENT_ROTORBLADE             = 14, /**< The Component is a rotor blade */
+    TIGL_COMPONENT_ATTACHED_ROTORBLADE    = 15, /**< The Component is a attached rotor blade */
+    TIGL_COMPONENT_PRESSURE_BULKHEAD      = 16, /**< The Component is a pressure bulkhead */
+    TIGL_COMPONENT_CROSS_BEAM_STRUT       = 17, /**< The Component is a cross beam strut */
+    TIGL_COMPONENT_CARGO_DOOR             = 18, /**< The Component is a cargo door */
+    TIGL_COMPONENT_LONG_FLOOR_BEAM        = 19, /**< The Component is a long floor beam */
+    TIGL_COMPONENT_EXTERNAL_OBJECT        = 20, /**< The Component is a long floor beam */
+    TIGL_COMPONENT_FARFIELD               = 21, /**< The Component is a far field */
+    TIGL_COMPONENT_ENGINE_PYLON           = 22, /**< The Component is a engine pylon */
+    TIGL_COMPONENT_ENGINE_NACELLE         = 23, /**< The Component is a engine nacelle */
+    TIGL_COMPONENT_FUSELAGE_WALL          = 24, /**< The Component is a fuselage wall */
+    TIGL_COMPONENT_CONTROL_SURFACE_DEVICE = 25, /**< The component is a control surface device (flap) */
+    TIGL_COMPONENT_DUCT                   = 26, /**< The Component belongs to a duct */
+    TIGL_COMPONENT_TANK                   = 27, /**< The Component is a fuel tank */
+    TIGL_COMPONENT_TANK_HULL              = 28, /**< The Component is a vessel of a fuel tank */
+    TIGL_COMPONENT_SYSTEM_COMPONENT       = 29, /**< The Component is a system component */
+    TIGL_COMPONENT_OTHER                  = 30
+};
+
+typedef enum TiglGeometricComponentType TiglGeometricComponentType;
+
+enum TiglGeometricComponentIntentFlags
+{
+    TIGL_INTENT_PHYSICAL           = 1,   /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+    TIGL_INTENT_LOGICAL            = 2,   /**< A logical component, like a wing segment */
+    TIGL_INTENT_INNER_STRUCTURE    = 4,   /**< Part of  the aircrafts structure geometry */
+    TIGL_INTENT_OUTER_AERO_SURFACE = 8    /**< Part of the outer aircraft (wing, fuselage, nacelle)  */
+};
+
+typedef enum TiglGeometricComponentIntentFlags TiglGeometricComponentIntentFlags;
+
+typedef unsigned long TiglGeometricComponentIntent;
+
+enum TiglGeometryRepresentationFlags
+{
+    TIGL_GEOMREP_PHYSICAL = 1,   /**< The geometry represents the intended physical shape of the component */
+    TIGL_GEOMREP_ENVELOPE = 2    /**< The geometry represents an enclosing envelope of the component */
+};
+
+typedef enum TiglGeometryRepresentationFlags TiglGeometryRepresentationFlags;
+
+typedef unsigned long TiglGeometryRepresentation;
+
 enum TiglCoordinateSystem
 {
     GLOBAL_COORDINATE_SYSTEM   = 0,

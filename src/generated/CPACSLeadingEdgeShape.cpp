@@ -81,7 +81,7 @@ namespace generated
     void CPACSLeadingEdgeShape::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element relHeightLE
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relHeightLE")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/relHeightLE")) {
             m_relHeightLE = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relHeightLE");
         }
         else {
@@ -89,7 +89,7 @@ namespace generated
         }
 
         // read element xsiUpperSkin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiUpperSkin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiUpperSkin")) {
             m_xsiUpperSkin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiUpperSkin");
         }
         else {
@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element xsiLowerSkin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiLowerSkin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiLowerSkin")) {
             m_xsiLowerSkin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiLowerSkin");
         }
         else {

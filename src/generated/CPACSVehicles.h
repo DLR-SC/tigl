@@ -30,6 +30,7 @@
 #include "CPACSProfiles.h"
 #include "CPACSRotorcraft.h"
 #include "CPACSStructuralElements.h"
+#include "CPACSSystemElements.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -97,6 +98,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSDeckElements>& GetDeckElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSDeckElements>& GetDeckElements();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSSystemElements>& GetSystemElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSystemElements>& GetSystemElements();
+
         TIGL_EXPORT virtual const boost::optional<CPACSMaterials>& GetMaterials() const;
         TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
 
@@ -124,6 +128,9 @@ namespace generated
         TIGL_EXPORT virtual CPACSDeckElements& GetDeckElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDeckElements();
 
+        TIGL_EXPORT virtual CPACSSystemElements& GetSystemElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSystemElements();
+
         TIGL_EXPORT virtual CPACSMaterials& GetMaterials(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveMaterials();
 
@@ -140,6 +147,7 @@ namespace generated
         boost::optional<CPACSProfiles>               m_profiles;
         boost::optional<CPACSStructuralElements>     m_structuralElements;
         boost::optional<CPACSDeckElements>           m_deckElements;
+        boost::optional<CPACSSystemElements>         m_systemElements;
         boost::optional<CPACSMaterials>              m_materials;
 
     private:

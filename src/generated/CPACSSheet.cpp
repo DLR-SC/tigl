@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element fromPointUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromPointUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromPointUID")) {
             m_fromPointUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromPointUID");
             if (m_fromPointUID.empty()) {
                 LOG(WARNING) << "Required element fromPointUID is empty at xpath " << xpath;
@@ -127,7 +127,7 @@ namespace generated
         }
 
         // read element continuityAtP1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuityAtP1")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/continuityAtP1")) {
             m_continuityAtP1 = stringToCPACSContinuityAtP(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuityAtP1"));
         }
 
@@ -143,7 +143,7 @@ namespace generated
         }
 
         // read element toPointUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toPointUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toPointUID")) {
             m_toPointUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toPointUID");
             if (m_toPointUID.empty()) {
                 LOG(WARNING) << "Required element toPointUID is empty at xpath " << xpath;
@@ -155,7 +155,7 @@ namespace generated
         }
 
         // read element continuityAtP2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuityAtP2")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/continuityAtP2")) {
             m_continuityAtP2 = stringToCPACSContinuityAtP(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuityAtP2"));
         }
 

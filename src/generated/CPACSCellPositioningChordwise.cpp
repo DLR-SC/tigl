@@ -81,7 +81,7 @@ namespace generated
     void CPACSCellPositioningChordwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sparUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sparUID")) {
             m_sparUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparUID");
             if (m_sparUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element sparUID is present but empty at xpath " << xpath;
@@ -90,17 +90,17 @@ namespace generated
         }
 
         // read element contourCoordinate
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/contourCoordinate")) {
             m_contourCoordinate_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
         }
 
         // read element xsi1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi1")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsi1")) {
             m_xsi1_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi1");
         }
 
         // read element xsi2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi2")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsi2")) {
             m_xsi2_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi2");
         }
 

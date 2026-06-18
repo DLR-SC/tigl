@@ -25,6 +25,12 @@
 
 #include "CCPACSCurvePointListXYZ.h"
 #include "CCPACSCurveParamPointMap.h"
+#include "CTiglBSplineApproxInterp.h"
+#include "CTiglApproximateBsplineWire.h"
+#include "CTiglWingProfilePointList.h"
+#include "ITiglWireAlgorithm.h"
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+#include <Precision.hxx>
 
 TEST(WingProfileBugs, getPoint1)
 {
@@ -79,4 +85,133 @@ TEST(WingProfileParams, GetParamMap)
 
     EXPECT_TRUE(ArraysMatch({30}, curve.GetParameterMap()->GetPointIndexAsVector()));
     EXPECT_TRUE(ArraysMatch({-0.2}, curve.GetParameterMap()->GetParamAsVector()));
+}
+
+TEST(WingProfileApproximation, ComputeApproximatedProfile)
+{
+    TixiHandleWrapper tixiHandle("TestData/testProfileAirfoilApproximation.xml");
+    tigl::CCPACSCurvePointListXYZ curve(nullptr);
+
+    ASSERT_NO_THROW(curve.ReadCPACS(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[1]/pointList"));
+
+    // Get points
+    auto xCoords = curve.GetX().AsVector();
+    auto zCoords = curve.GetZ().AsVector();
+
+    // Get profile option
+    auto& approximationSettings = curve.GetApproximationSettings();
+    int nrControlPoints;
+    std::string errorComputationMethod;
+    std::vector<double> interpolatedPointsIndices;
+
+    // Read out options of approximationSettings node
+    ASSERT_NO_THROW(nrControlPoints = *(approximationSettings->GetControlPointNumber_choice1()));
+    ASSERT_NO_THROW(errorComputationMethod = *(approximationSettings->GetErrorComputationMethod()));
+    ASSERT_NO_THROW(interpolatedPointsIndices = approximationSettings->GetInterpolatedPointsIndices()->AsVector());
+
+    ASSERT_TRUE(nrControlPoints == 10);
+    ASSERT_TRUE(errorComputationMethod == "MaxError");
+    ASSERT_TRUE(xCoords.size() == zCoords.size());
+    ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
+
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, xCoords.size());
+    tigl::ITiglWireAlgorithm::CPointContainer cpoints;
+    for (int j = 0; j < xCoords.size(); j++) {
+        gp_Pnt pnt(xCoords[j], 0., zCoords[j]);
+        hpoints->SetValue(j + 1, pnt);
+        cpoints.push_back(pnt);
+    }
+
+
+    // Profile contains one interpolation point to test for more robustness
+    tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3);
+
+    approx.InterpolatePoint(interpolatedPointsIndices[0]-1);
+
+    // Make sure that the first and last point is still interpolated to ensure a closed wing profile
+    approx.InterpolatePoint(0);
+    approx.InterpolatePoint(hpoints->Length()-1);
+
+    // Compare two different ways to compute the approximation error
+    tigl::CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorRMSE);
+    ASSERT_NEAR(approxResult.error, 0.0061707237406683612, 1e-8);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 10);
+
+    approxResult = approx.FitCurve(std::vector<double>(), calcPointVecErrorMax);
+    ASSERT_NEAR(approxResult.error, 0.023565195267064902, 1e-8);
+    ASSERT_EQ(approxResult.curve->NbPoles(), 10);
+
+    // Error should be thrown, because nrControlPoints (=2) is not large enough
+    tigl::CTiglApproximateBsplineWire approxDummy(2);
+    ASSERT_THROW(approxDummy.BuildWire(cpoints, true), tigl::CTiglError);
+
+    const gp_Pnt pntStart(1., 0., 0.); // Starting point in CPACS configuration
+    const gp_Pnt pntEnd(1., 0., 0.); // Last point in CPACS configuration
+    const gp_Pnt pntInterp(0.975456, 0., -0.001938); // As defined as interpolation point in CPACS configuration
+
+    // Check whether wanted points are really interpolated
+    // => distance between point and its orthogonal projection on the curve has to vanish
+    GeomAPI_ProjectPointOnCurve projectStartPnt(pntStart, approxResult.curve);
+    ASSERT_TRUE(projectStartPnt.LowerDistance() < Precision::Confusion());
+
+    GeomAPI_ProjectPointOnCurve projectEndPnt(pntEnd, approxResult.curve);
+    ASSERT_TRUE(projectEndPnt.LowerDistance() < Precision::Confusion());
+
+    GeomAPI_ProjectPointOnCurve projectInterp(pntInterp, approxResult.curve);
+    ASSERT_TRUE(projectInterp.LowerDistance() < Precision::Confusion());
+}
+
+TEST(WingProfileApproximation, approximatedProfileCheckArgs)
+{
+    TixiDocumentHandle tixiHandle;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/testProfileAirfoilApproximation.xml", &tixiHandle));
+
+    TiglCPACSConfigurationHandle tiglHandle;
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    tigl::CCPACSConfigurationManager& manager  = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config          = manager.GetConfiguration(tiglHandle);
+
+    // Expected to work
+    tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA1309");
+    ASSERT_NO_THROW(TopoDS_Wire wire = profile.GetWire(UNMODIFIED_SHAPE));
+
+    // Wrong error computation method
+    tigl::CCPACSWingProfile& profileWrongCompMethod = config.GetWingProfile("NACA1309_Broken");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongCompMethod.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+
+    // Wrong method chosen (Max Error approximation currently not implemented)
+    tigl::CCPACSWingProfile& profileWrongMethodTolerance = config.GetWingProfile("NACA1309_WrongMethodMaxError");
+    EXPECT_THROW(TopoDS_Wire wire = profileWrongMethodTolerance.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+
+    // Wrong XML definition (no approximationSetting's choice defined)
+    tigl::CCPACSWingProfile& profileNoMethodChosen = config.GetWingProfile("NACA1309_WrongMethod");
+    EXPECT_THROW(TopoDS_Wire wire = profileNoMethodChosen.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+}
+
+TEST(WingProfileApproximation, approxInterpProfiles)
+{
+    TixiDocumentHandle tixiHandle;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/testProfileAirfoilApproximation.xml", &tixiHandle));
+
+    TiglCPACSConfigurationHandle tiglHandle;
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    tigl::CCPACSConfigurationManager& manager  = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config          = manager.GetConfiguration(tiglHandle);
+
+    // Expected to work
+    tigl::CCPACSWingProfile& profileApproxInterp = config.GetWingProfile("NACA1309_ApproxInterp");
+    ASSERT_NO_THROW(TopoDS_Wire wire = profileApproxInterp.GetWire(UNMODIFIED_SHAPE));
+
+    auto* wingProfilePointList = dynamic_cast<tigl::CTiglWingProfilePointList*>(profileApproxInterp.GetProfileAlgo());
+    auto* wireAlgo = dynamic_cast<tigl::CTiglApproximateBsplineWire*>(wingProfilePointList->GetWireAlgo());
+    double approxErr = wireAlgo->GetApproxErr();
+
+    EXPECT_NEAR(approxErr, 0.00218717, 1e-8);
+
+    // Broken combination of pole number and interpolation indices
+    tigl::CCPACSWingProfile& profileApproxInterpBroken = config.GetWingProfile("NACA1309_ApproxInterp_Broken");
+    EXPECT_THROW(TopoDS_Wire wire = profileApproxInterpBroken.GetWire(UNMODIFIED_SHAPE), tigl::CTiglError);
+
 }

@@ -98,7 +98,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element contour
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contour")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/contour")) {
             m_contour = stringToCPACSCargoContainerElement_contour(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/contour"));
         }
         else {
@@ -125,7 +125,7 @@ namespace generated
         }
 
         // read element deltaX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaX")) {
             m_deltaX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaX");
         }
         else {
@@ -133,7 +133,7 @@ namespace generated
         }
 
         // read element deltaY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaY")) {
             m_deltaY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaY");
         }
         else {
@@ -141,12 +141,12 @@ namespace generated
         }
 
         // read element deltaYBase
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaYBase")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaYBase")) {
             m_deltaYBase = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaYBase");
         }
 
         // read element deltaZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaZ")) {
             m_deltaZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaZ");
         }
         else {
@@ -154,7 +154,7 @@ namespace generated
         }
 
         // read element deltaZKink
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaZKink")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaZKink")) {
             m_deltaZKink = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaZKink");
         }
 

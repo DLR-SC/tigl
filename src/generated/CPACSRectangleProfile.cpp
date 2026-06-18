@@ -67,7 +67,7 @@ namespace generated
     void CPACSRectangleProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element cornerRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cornerRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/cornerRadius")) {
             m_cornerRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/cornerRadius");
         }
 

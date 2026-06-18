@@ -88,7 +88,7 @@ namespace generated
     void CPACSInternalPressure::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element referenceUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceUID")) {
             m_referenceUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceUID");
             if (m_referenceUID.empty()) {
                 LOG(WARNING) << "Required element referenceUID is empty at xpath " << xpath;
@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element pressure
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/pressure")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/pressure")) {
             m_pressure = tixi::TixiGetElement<double>(tixiHandle, xpath + "/pressure");
         }
         else {

@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element upperN1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperN1")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperN1")) {
             m_upperN1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperN1");
         }
         else {
@@ -105,7 +105,7 @@ namespace generated
         }
 
         // read element upperN2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperN2")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperN2")) {
             m_upperN2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperN2");
         }
         else {
@@ -121,7 +121,7 @@ namespace generated
         }
 
         // read element lowerN1
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerN1")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/lowerN1")) {
             m_lowerN1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerN1");
         }
         else {
@@ -129,7 +129,7 @@ namespace generated
         }
 
         // read element lowerN2
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lowerN2")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/lowerN2")) {
             m_lowerN2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lowerN2");
         }
         else {
@@ -145,7 +145,7 @@ namespace generated
         }
 
         // read element trailingEdgeThickness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/trailingEdgeThickness")) {
             m_trailingEdgeThickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trailingEdgeThickness");
         }
 

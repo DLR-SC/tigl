@@ -36,6 +36,12 @@ public:
     void loadSettings();
     void storeSettings();
 
+    enum class GridPlane { XY, XZ, YZ };
+    Q_ENUM(GridPlane)
+
+    GridPlane gridPlane() const;
+    void setGridPlane(GridPlane plane);
+
     // Display settings Tab
     void setTesselationAccuracy(double);
     void setTriangulationAccuracy(double);
@@ -54,6 +60,18 @@ public:
 
     void setDefaultMaterial(Graphic3d_NameOfMaterial material);
     Graphic3d_NameOfMaterial defaultMaterial() const;
+
+    void setGridOriginX(double x);
+    double gridOriginX() const;
+
+    void setGridOriginY(double y);
+    double gridOriginY() const;
+
+    void setGridSize(double delta);
+    double gridSize() const;
+
+    void setGridRadialDivisions(int n);
+    int gridRadialDivisions() const;
 
     QDir templateDir() const;
     void setTemplateDir(QString path);
@@ -77,6 +95,8 @@ public:
 
     void restoreDefaults();
 
+signals:
+    void gridPlaneChanged(GridPlane plane);
 
 public slots:
     void setDefaultShapeColor(int r, int g, int b, int a = 0);
@@ -93,6 +113,13 @@ private:
     QColor _shapecolor;
     QColor _shapesymmetrycolor;
     Graphic3d_NameOfMaterial _defaultMaterial;
+
+    // grid settings
+    double _grid_origin_x;
+    double _grid_origin_y;
+    double _grid_size;
+    int _grid_radial_divisions;
+    GridPlane _grid_plane;
 
     bool _debugBOPs;
     bool _enumFaces;

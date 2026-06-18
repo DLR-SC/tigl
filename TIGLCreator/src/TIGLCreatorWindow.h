@@ -121,6 +121,7 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void addSpotlight();
     void onComponentVisibilityChanged(const QString& uid, bool visible);
     void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
     void onDisplayOptionsRequested();

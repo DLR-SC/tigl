@@ -67,7 +67,7 @@ namespace generated
     void CPACSEllipsoidDome::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element halfAxisFraction
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/halfAxisFraction")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/halfAxisFraction")) {
             m_halfAxisFraction = tixi::TixiGetElement<double>(tixiHandle, xpath + "/halfAxisFraction");
         }
         else {

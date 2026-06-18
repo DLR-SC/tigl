@@ -82,7 +82,7 @@ namespace generated
     void CPACSWingRibPoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element ribDefinitionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribDefinitionUID")) {
             m_ribDefinitionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
             if (m_ribDefinitionUID.empty()) {
                 LOG(WARNING) << "Required element ribDefinitionUID is empty at xpath " << xpath;
@@ -94,12 +94,12 @@ namespace generated
         }
 
         // read element ribNumber
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribNumber")) {
             m_ribNumber = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ribNumber");
         }
 
         // read element xsi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsi")) {
             m_xsi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi");
         }
         else {

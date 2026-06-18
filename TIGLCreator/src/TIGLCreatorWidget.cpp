@@ -607,6 +607,28 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
     }
 }
 
+void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
+{
+    if (concentration < 0.0 || concentration > 1.0) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]";
+        return;
+    }
+
+    if (dx*dx + dy*dy + dz*dz < 1e8) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector";
+        return;
+    }
+
+    Handle(V3d_Light) theLight = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
+    theLight->SetPosition(gp_Pnt(x,y,z));
+    theLight->SetDirection(gp_Dir(dx, dy, dz));
+    theLight->SetConcentration(concentration);
+
+    if (!myView.IsNull()) {
+        myView->SetLightOn(theLight);
+    }
+}
+
 void TIGLCreatorWidget::hiddenLineOff()
 {
     if (!myView.IsNull()) {
