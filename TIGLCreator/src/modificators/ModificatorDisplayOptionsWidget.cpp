@@ -229,7 +229,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             if (type == TIGL_COMPONENT_PLANE) {
                 drawCallbacks.clear();
                 ui->drawOptionsCombo->clear();
-                for (const auto& action : getPlaneDrawOptionsActions()) {
+                for (const auto& action : getPlaneDisplayOptionsActions()) {
                     ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);
@@ -276,7 +276,13 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         }
                     }, Qt::UniqueConnection);
             }
-
+            
+            if (type == TIGL_COMPONENT_ENGINE_PYLON || type == TIGL_COMPONENT_ENGINE_NACELLE) {
+                 drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                ui->drawOptionsCombo->setVisible(false);
+                ui->labelDrawOptions->setVisible(false);
+            }
         }
     }   
 

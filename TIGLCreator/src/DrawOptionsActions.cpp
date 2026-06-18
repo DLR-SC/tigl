@@ -43,13 +43,24 @@ const std::vector<DrawOptionAction>& getPlaneDrawOptionsActions() {
     static std::vector<DrawOptionAction> actions = {
         { "Show the complete aircraft", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawConfiguration(); } },
         { "Show the complete aircraft with duct cutouts", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawConfigurationWithDuctCutouts(); } },
-        { "Show he complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
+        { "Show the complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
         { "Show fused aircraft triangulation (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraftTriangulation(); } },
         { "Show intersection line", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawIntersectionLine(); } },
         { "Draw Far Field", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFarField(); } },
         { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
         { "Draw any Component", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawComponent(); } },
         { "Draw Control Point Net", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawControlPointNet(); } }
+    };
+    return actions;
+}
+
+const std::vector<DrawOptionAction>& getPlaneDisplayOptionsActions() {
+    static std::vector<DrawOptionAction> actions = {
+        { "Show the complete aircraft", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawConfiguration(); } },
+        { "Show the complete aircraft with duct cutouts", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawConfigurationWithDuctCutouts(); } },
+        { "Show the complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
+        { "Show fused aircraft triangulation (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraftTriangulation(); } },
+        { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
     };
     return actions;
 }

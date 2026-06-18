@@ -12,5 +12,6 @@ struct DrawOptionAction {
 const std::vector<DrawOptionAction>& getWingDrawOptionsActions();
 const std::vector<DrawOptionAction>& getFuselageDrawOptionsActions();
 const std::vector<DrawOptionAction>& getPlaneDrawOptionsActions();
+const std::vector<DrawOptionAction>& getPlaneDisplayOptionsActions();
 const std::vector<DrawOptionAction>& getRotorBladeDrawOptionsActions();
 const std::vector<DrawOptionAction>& getRotorDrawOptionsActions();
