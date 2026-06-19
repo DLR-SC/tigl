@@ -21,8 +21,8 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(
     {
 
     m_profileCurves.reserve(profileCurves.size());
-    for (std::vector<Handle(Geom_Curve) >::const_iterator curve_iter = profileCurves.begin(); curve_iter != profileCurves.end(); ++curve_iter) {
-        m_profileCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
+    for (Handle(Geom_Curve) curve : profileCurves) {
+        m_profileCurves.push_back(GeomConvert::CurveToBSplineCurve(curve));
     }
 
     CTiglBSplineAlgorithms::matchDegree(m_profileCurves);
