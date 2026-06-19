@@ -47,7 +47,7 @@ class CCPACSDeckComponentBase : public generated::CPACSDeckComponentBase, public
 {
 public:
     /**
-     * @brief Constructs a CCPACSDeckComponent2DBase.
+     * @brief Constructs a CCPACSDeckComponentBase.
      * @param parent Parent CPACS container owning this component.
      * @param uidMgr UID manager for resolving referenced deck elements.
      */
