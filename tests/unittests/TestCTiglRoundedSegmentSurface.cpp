@@ -30,7 +30,7 @@
 
 TEST(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
 {
-    std::vector<Handle(Geom_BSplineCurve)> profileCurves;
+    std::vector<Handle(Geom_Curve)> profileCurves;
     //Create Profile Curves Vector
     TColgp_HArray1OfPnt u_poles(1,7);
     u_poles.SetValue(1,gp_Pnt(1., 0., 0.));
