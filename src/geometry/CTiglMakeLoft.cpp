@@ -24,6 +24,7 @@
 
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglCurvesToSurface.h"
+#include "geometry/CTiglRoundedSegmentSurface.h"
 #include "CTiglPatchShell.h"
 #include "Debugging.h"
 #include "to_string.h"
@@ -93,6 +94,14 @@ void CTiglMakeLoft::addProfiles(const TopoDS_Shape &profiles)
     }
 }
 
+void CTiglMakeLoft::addInnerRoundingDistance(const double innerRoundingDistance){
+    m_innerRoundingDistance.push_back(innerRoundingDistance);
+}
+
+void CTiglMakeLoft::addOuterRoundingDistance(const double outerRoundingDistance){
+    m_outerRoundingDistance.push_back(outerRoundingDistance);
+}
+
 void CTiglMakeLoft::addGuides(const TopoDS_Shape &guides)
 {
     if (guides.ShapeType() == TopAbs_COMPOUND) {
@@ -136,6 +145,8 @@ void CTiglMakeLoft::Perform()
 
         // to the loft with guides
         makeLoftWithGuides();
+    } else if (m_innerRoundingDistance.size()>0&&m_outerRoundingDistance.size()>0){
+        makeLoftWithRoundedSegments();
     }
     else {
         makeLoftWithoutGuides();
@@ -151,6 +162,75 @@ void CTiglMakeLoft::setMakeSolid(bool enabled)
 void CTiglMakeLoft::setMakeSmooth(bool enabled)
 {
     _makeSmooth = enabled;
+}
+
+void CTiglMakeLoft::makeLoftWithRoundedSegments(){
+    //check if there are both rounding distances defined for each segment
+    if(!(m_innerRoundingDistance.size()==profiles.size()-1)){
+        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments (is "+std::to_string(m_innerRoundingDistance.size())+" ) and inner rounding distances: "+std::to_string(profiles.size()-1));
+    }
+    if(!(m_outerRoundingDistance.size()==profiles.size()-1)){
+        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments and outer rounding distances.");
+    }
+
+    // check number of edges are all same
+    std::vector<unsigned int> edgeCountPerProfile;
+    for (const auto& profile : profiles) {
+        edgeCountPerProfile.push_back(GetNumberOfEdges(profile));
+    }
+    if (!AllSame(edgeCountPerProfile.begin(), edgeCountPerProfile.end())) {
+        throw tigl::CTiglError("Number of edges not equal in CTiglMakeLoft");
+    }
+
+    TopoDS_Shell faces;
+    BRep_Builder builder;
+    builder.MakeShell(faces);
+
+    // get number of edges per profile wire
+    // --> should be the same for all profiles
+    TopTools_IndexedMapOfShape firstProfileMap;
+    TopExp::MapShapes(profiles[0], TopAbs_EDGE, firstProfileMap);
+    int const nEdgesPerProfile = firstProfileMap.Extent();
+
+    // skin the surface edge by adge
+    // CAUTION: Here it is assumed that the edges are ordered
+    // in the same way along each profile (e.g. lower edge,
+    // upper edge, trailing edge for a wing)
+    for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
+        std::cerr << "Creating surface No " << iE << std::endl;
+
+        // get the curves
+        std::vector<Handle(Geom_Curve)> profileCurves;
+        profileCurves.reserve(profiles.size());
+        for (unsigned iP=0; iP<profiles.size(); ++iP ) {
+
+            TopTools_IndexedMapOfShape profileMap;
+            TopExp::MapShapes(profiles[iP], TopAbs_EDGE, profileMap);
+            assert( profileMap.Extent() >= iE );
+
+            TopoDS_Edge edge = TopoDS::Edge(profileMap(iE));
+            profileCurves.push_back(GetBSplineCurve(edge));
+        }
+
+        // CHECK!!! MAYBE create a common knot vector for profileCurves
+    //    std::vector<Handle(Geom_BSplineCurve)> compatibleProfileCurves = tigl::CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(profileCurves, 1e-14);
+
+        // skin the curves
+        tigl::CTiglRoundedSegmentSurface surfaceSkinner(profileCurves, m_innerRoundingDistance, m_outerRoundingDistance);
+        Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
+        TopoDS_Shape surf = BRepBuilderAPI_MakeFace(surface, 1e-15);
+        tigl::dumpShape(surf, "makeLoftWing", "CTiglMakeLoftSurfaceNo",iE);
+
+        // remember the profile parameters used for the skinning
+
+        builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
+    }
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
+
+    // make sure the order is the same as for the COONS Patch algorithm
+    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
+    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    CloseShape();
 }
 
 /**
@@ -293,11 +373,7 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
 
         builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
     }
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
-
-    // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    _result = faces;
     CloseShape();
 }
 
