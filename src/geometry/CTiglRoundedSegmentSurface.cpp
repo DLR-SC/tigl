@@ -6,24 +6,33 @@
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopoDS_Edge.hxx"
 #include "tiglcommonfunctions.h"
+#include <GeomConvert.hxx>
+#include "CTiglBSplineAlgorithms.h"
 
 
 namespace tigl{
-CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves ,
-                                                       std::vector<double> inner_rounding_distance,
-                                                       std::vector<double> outer_rounding_distance, int u_degree, int v_degree):
-    m_pole_matrix(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles())),
-    m_u_knots(1,m_profileCurves[0]->NbKnots()),
-    m_v_knots(1, m_pole_matrix.ColLength()-v_degree+1),
-    m_u_multiplicities(m_profileCurves[0]->Multiplicities()),
-    m_v_multiplicities(1, m_pole_matrix.ColLength()-v_degree+1, 1),
+CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_Curve)> &profileCurves ,
+                                                       const std::vector<double> &inner_rounding_distance,
+                                                       const std::vector<double> &outer_rounding_distance):
     m_inner_rounding_distance(inner_rounding_distance),
     m_outer_rounding_distance(outer_rounding_distance),
-    m_profileCurves(m_profileCurves),
     m_segments({}),
-    m_surface(nullptr),
-    _u_degree(u_degree),
-    _v_degree(v_degree){}
+    m_surface(nullptr)
+    {
+
+    m_profileCurves.reserve(profileCurves.size());
+    for (std::vector<Handle(Geom_Curve) >::const_iterator curve_iter = profileCurves.begin(); curve_iter != profileCurves.end(); ++curve_iter) {
+        m_profileCurves.push_back(GeomConvert::CurveToBSplineCurve(*curve_iter));
+    }
+
+    CTiglBSplineAlgorithms::matchDegree(m_profileCurves);
+
+    m_pole_matrix = TColgp_Array2OfPnt(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles()));
+    m_u_knots = TColStd_Array1OfReal(1,m_profileCurves[0]->NbKnots());
+    m_v_knots = TColStd_Array1OfReal(1, m_pole_matrix.ColLength()-_v_degree+1);
+    m_u_multiplicities = m_profileCurves[0]->Multiplicities();
+    m_v_multiplicities= TColStd_HArray1OfInteger(1, m_pole_matrix.ColLength()-_v_degree+1, 1);
+}
 
 TIGL_EXPORT  Handle(Geom_BSplineSurface) CTiglRoundedSegmentSurface::Surface(){
 

@@ -11,11 +11,9 @@ namespace tigl {
 class CTiglRoundedSegmentSurface
 {
 public:
-    TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_BSplineCurve)> &m_profileCurves,
-                                           std::vector<double> inner_rounding_distance,
-                                           std::vector<double> outer_rounding_distance,
-                                           int u_degree = 3,
-                                           int v_degree = 3);
+    TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_Curve)> &m_profileCurves,
+                                           const std::vector<double> &inner_rounding_distance,
+                                           const std::vector<double> &outer_rounding_distance);
 
     TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
@@ -141,7 +139,7 @@ private:
 
 private:
     // Rows represent profile curves (u-direction) and dummy curves, Columns define poles of curves in v-direction
-    TColgp_HArray2OfPnt m_pole_matrix;
+    TColgp_Array2OfPnt m_pole_matrix;
 
     TColStd_Array1OfReal m_u_knots;
     TColStd_Array1OfReal m_v_knots;
