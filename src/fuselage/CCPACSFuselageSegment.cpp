@@ -208,6 +208,11 @@ std::string CCPACSFuselageSegment::GetDefaultedUID() const {
     return generated::CPACSFuselageSegment::GetUID();
 }
 
+bool CCPACSFuselageSegment::IsIndependentGeometry() const
+{
+    return !m_parent->IsParent<generated::CPACSMultiSegmentShape>();
+}
+
 void CCPACSFuselageSegment::SetFromElementUID(const std::string& value) {
     generated::CPACSFuselageSegment::SetFromElementUID(value);
     startConnection = CTiglFuselageConnection(m_fromElementUID, this);

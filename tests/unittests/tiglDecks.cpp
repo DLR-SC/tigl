@@ -25,6 +25,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSDeck.h"
 #include "CCPACSDeckComponentBase.h"
+#include "CCPACSFuselageSegment.h"
 
 #include "CNamedShape.h"
 #include <TopExp_Explorer.hxx>
@@ -309,6 +310,23 @@ TEST_F(Decks, EmptyDeck)
         ++shapeCount;
     }
     EXPECT_EQ(shapeCount, 0u);
+}
+
+TEST_F(Decks, InternalSegmentRegistration)
+{
+    auto& uidManager = GetUIDManager();
+
+    // The segment remains addressable as a CPACS UID object.
+    EXPECT_TRUE(uidManager.IsUIDRegistered("predGE_seg1"));
+
+    EXPECT_NO_THROW(uidManager.ResolveObject<tigl::CCPACSFuselageSegment>("predGE_seg1"));
+
+    // It is not exposed as independently evaluable geometry.
+    EXPECT_FALSE(uidManager.HasGeometricComponent("predGE_seg1"));
+
+    // The instantiated deck component remains regular geometry.
+    EXPECT_TRUE(uidManager.HasGeometricComponent("galley"));
+    EXPECT_NO_THROW(GetComponent("galley").GetLoft());
 }
 
 class InvalidDecks : public ::testing::Test
