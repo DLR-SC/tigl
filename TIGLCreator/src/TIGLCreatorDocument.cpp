@@ -1282,6 +1282,40 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
     return true;
 }
 
+void TIGLCreatorDocument::drawFlapsOverlay(const QString& uid)
+{
+    removeAirfoil();
+
+    std::vector<TiglGeometricComponentType> shapesToDraw;
+    shapesToDraw.push_back(TIGL_COMPONENT_CONTROL_SURFACE_DEVICE);
+
+    try {
+
+            tigl::CTiglUIDManager& uidMgr = GetConfiguration().GetUIDManager();
+
+            const tigl::ShapeContainerType& container = uidMgr.GetShapeContainer();
+
+            for (const auto& it : container) {
+                tigl::ITiglGeometricComponent* component = it.second;
+
+                if (!component) {
+                    continue;
+                }
+
+                if (std::find(shapesToDraw.begin(), shapesToDraw.end(), component->GetComponentType()) !=
+                    shapesToDraw.end()) {
+                    drawComponentByUID(component->GetDefaultedUID().c_str());
+                }
+            }
+        }
+    catch (tigl::CTiglError& err) {
+        displayError(err.what());
+    }
+}
+
+
+
+
 void TIGLCreatorDocument::drawWingFlap(const QString& uid)
 {
     try {

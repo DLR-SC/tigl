@@ -49,7 +49,8 @@ const std::vector<DrawOptionAction>& getPlaneDrawOptionsActions() {
         { "Draw Far Field", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFarField(); } },
         { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
         { "Draw any Component", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawComponent(); } },
-        { "Draw Control Point Net", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawControlPointNet(); } }
+        { "Draw Control Point Net", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawControlPointNet(); } },
+        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay(uid);} },
     };
     return actions;
 }
@@ -61,6 +62,7 @@ const std::vector<DrawOptionAction>& getPlaneDisplayOptionsActions() {
         { "Show the complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
         { "Show fused aircraft triangulation (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraftTriangulation(); } },
         { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
+        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay(uid);} },
     };
     return actions;
 }
