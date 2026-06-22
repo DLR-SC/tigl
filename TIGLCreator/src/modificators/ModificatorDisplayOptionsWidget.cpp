@@ -41,6 +41,12 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
 {
     ui = new Ui::ModificatorDisplayOptionsWidget();
     ui->setupUi(this);
+    connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
+    [this](int idx) {
+        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
+            drawCallbacks[idx]();
+        }
+    });
 
     infoLabel = ui->infoLabel;
     transparencySlider = ui->transparencySlider;
@@ -201,12 +207,6 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         action.handler(doc, uid);
                     });
                 }
-                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-                    [this](int idx) {
-                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                            drawCallbacks[idx]();
-                        }
-                    }, Qt::UniqueConnection);
             }
 
             if (type == TIGL_COMPONENT_FUSELAGE) {
@@ -218,12 +218,6 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         action.handler(doc, uid);
                     });
                 }
-                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-                    [this](int idx) {
-                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                            drawCallbacks[idx]();
-                        }
-                    }, Qt::UniqueConnection);
             }
 
             if (type == TIGL_COMPONENT_PLANE) {
@@ -234,13 +228,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);
                     });
-                }
-                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-                    [this](int idx) {
-                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                            drawCallbacks[idx]();
-                        }
-                    }, Qt::UniqueConnection);   
+                } 
             }
 
             if (type == TIGL_COMPONENT_ROTORBLADE) {
@@ -251,13 +239,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);
                     });
-                }
-                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-                    [this](int idx) {
-                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                            drawCallbacks[idx]();
-                        }
-                    }, Qt::UniqueConnection);    
+                }  
             }
             
             if (type == TIGL_COMPONENT_ROTOR) {
@@ -269,12 +251,6 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         action.handler(doc, uid);
                     });
                 }
-                connect(ui->drawOptionsCombo, QOverload<int>::of(&QComboBox::activated), this,
-                    [this](int idx) {
-                        if (idx >= 0 && idx < static_cast<int>(drawCallbacks.size()) && drawCallbacks[idx]) {
-                            drawCallbacks[idx]();
-                        }
-                    }, Qt::UniqueConnection);
             }
             
             if (type == TIGL_COMPONENT_ENGINE_PYLON || type == TIGL_COMPONENT_ENGINE_NACELLE) {
@@ -360,7 +336,7 @@ bool ModificatorDisplayOptionsWidget::apply()
 
 void ModificatorDisplayOptionsWidget::reset()
 {
-    setFromItem(currentItem, currentDoc);
+    setFromItem(currentItem, currentDoc, currentContext);
 }
 
 void ModificatorDisplayOptionsWidget::onTransparencyChanged(int value)
