@@ -2429,12 +2429,14 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
 
     // find component segment first
     tigl::CCPACSWingComponentSegment* cs = nullptr;
+    QString WingUid = Uid;
     for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
             tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(j);
             if (segment.GetUID() == csUid.toStdString()) {
                 cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
+                WingUid = wing.GetDefaultedUID().c_str();
                 break;
             }
         }
@@ -2457,23 +2459,23 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             return;
         }
 
-        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(Uid.toStdString());
+        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(WingUid.toStdString());
         for (auto& obj : objects) {
             app->getScene()->getContext()->Remove(obj, Standard_False);
             app->getScene()->GetShapeManager().removeObject(obj);
         }
 
-        removeWingFlaps(Uid);
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+        removeWingFlaps(WingUid);
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(WingUid.toStdString());
 
         // display component segment shape with transparency
         auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, Quantity_NOC_ShapeCol, 0.5);
-        app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
+        app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), cs_shape);
         PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
             if (mirroredLoft)
             {
                 auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_ShapeCol, 0.5);
-                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
                 
             }
 
@@ -2484,14 +2486,14 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
             TopoDS_Shape sparGeom                   = spar.GetSparGeometry();
             auto spar_shape = app->getScene()->displayShape(sparGeom, true, Quantity_NOC_RED);
-            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), spar_shape);
+            app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), spar_shape);
 
-            PNamedShape loftNamed(new CNamedShape(sparGeom, Uid.toStdString()));
+            PNamedShape loftNamed(new CNamedShape(sparGeom, WingUid.toStdString()));
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
                 auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
-                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
                 
             }
         }
@@ -2501,15 +2503,15 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
             TopoDS_Shape ribGeom                      = rib.GetRibsGeometry();
             auto rib_shape = app->getScene()->displayShape(ribGeom, true, Quantity_NOC_RED);
-            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), rib_shape);
+            app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), rib_shape);
 
-            PNamedShape loftNamed(new CNamedShape(ribGeom, Uid.toStdString()));
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
+            PNamedShape loftNamed(new CNamedShape(ribGeom, WingUid.toStdString()));
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(WingUid.toStdString());
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
                 auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
-                app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
 
             }
         }

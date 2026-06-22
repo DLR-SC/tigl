@@ -93,44 +93,44 @@ public slots:
 
     // Wing slots
     void drawWingProfiles();
-    void drawWing(const QString& Uid=nullptr);
-    void drawWingOverlayProfilePoints(const QString& wingUID=nullptr);
-    void drawWingGuideCurves(const QString& wingUID=nullptr);
-    void drawWingTriangulation(const QString& wingUID=nullptr);
-    void drawWingSamplePoints(const QString& wingUID=nullptr);
-    void drawFusedWing(const QString& wingUID=nullptr);
-    void drawWingComponentSegment(const QString& wingUID=nullptr);
-    void drawWingComponentSegmentPoints(const QString& wingUID=nullptr);
-    void drawWingShells(const QString& wingUID=nullptr);
-    void drawWingFlaps(const QString& wingUID=nullptr);
-    void drawWingStructure(const QString& wingUID=nullptr);
+    void drawWing(const QString& Uid);
+    void drawWingOverlayProfilePoints(const QString& wingUID);
+    void drawWingGuideCurves(const QString& wingUID);
+    void drawWingTriangulation(const QString& wingUID);
+    void drawWingSamplePoints(const QString& wingUID);
+    void drawFusedWing(const QString& wingUID);
+    void drawWingComponentSegment(const QString& wingUID);
+    void drawWingComponentSegmentPoints(const QString& wingUID);
+    void drawWingShells(const QString& wingUID);
+    void drawWingFlaps(const QString& wingUID);
+    void drawWingStructure(const QString& wingUID);
 
     // Fuselage slots
     void drawFuselageProfiles();
-    void drawFuselage(const QString& Uid=nullptr);
-    void drawFuselageTriangulation(const QString& Uid=nullptr);
-    void drawFuselageSamplePoints(const QString& Uid=nullptr);
-    void drawFuselageSamplePointsAngle(const QString& Uid=nullptr);
-    void drawFusedFuselage(const QString& Uid=nullptr);
-    void drawFuselageGuideCurves(const QString& Uid=nullptr);
+    void drawFuselage(const QString& Uid);
+    void drawFuselageTriangulation(const QString& Uid);
+    void drawFuselageSamplePoints(const QString& Uid);
+    void drawFuselageSamplePointsAngle(const QString& Uid);
+    void drawFusedFuselage(const QString& Uid);
+    void drawFuselageGuideCurves(const QString& Uid);
 
     // Rotor blade slots
     void drawRotorProfiles();
-    void drawRotorBlade(const QString& uid=nullptr);
-    void drawRotorBladeOverlayProfilePoints(const QString& uid=nullptr);
+    void drawRotorBlade(const QString& uid);
+    void drawRotorBladeOverlayProfilePoints(const QString& uid);
     void drawRotorBladeGuideCurves();
-    void drawRotorBladeTriangulation(const QString& uid=nullptr);
-    void drawRotorBladeSamplePoints(const QString& uid=nullptr);
-    void drawFusedRotorBlade(const QString& uid=nullptr);
-    void drawRotorBladeComponentSegment(const QString& uid=nullptr);
-    void drawRotorBladeComponentSegmentPoints(const QString& uid=nullptr);
-    void drawRotorBladeShells(const QString& uid=nullptr);
+    void drawRotorBladeTriangulation(const QString& uid);
+    void drawRotorBladeSamplePoints(const QString& uid);
+    void drawFusedRotorBlade(const QString& uid);
+    void drawRotorBladeComponentSegment(const QString& uid);
+    void drawRotorBladeComponentSegmentPoints(const QString& uid);
+    void drawRotorBladeShells(const QString& uid);
 
     // Rotorcraft slots
-    void drawRotorByUID(const QString& uid=nullptr);
+    void drawRotorByUID(const QString& uid);
     void drawRotor();
-    void drawRotorDisk(const QString& uid=nullptr);
-    void showRotorProperties(const QString& uid=nullptr);
+    void drawRotorDisk(const QString& uid);
+    void showRotorProperties(const QString& uid);
 
     // TIGL slots
     void exportAsIges();
