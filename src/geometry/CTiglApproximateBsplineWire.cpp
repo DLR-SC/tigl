@@ -139,9 +139,11 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
             approx.InterpolatePoint(idxInt-1, false);
         }
 
-        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), approxErrFct);
+        int max_iter = 5;
+        CTiglApproxResult approxResult = approx.FitCurveOptimal(std::vector<double>(), max_iter, approxErrFct);
 
         hcurve = approxResult.curve;
+
         m_approxErr = approxResult.error;
         m_usedNrPoles = hcurve->NbPoles();
 
