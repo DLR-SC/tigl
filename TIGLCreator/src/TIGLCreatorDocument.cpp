@@ -885,6 +885,7 @@ void TIGLCreatorDocument::drawControlPointNet()
 
 void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
 {
+    removeAirfoil();
     try {
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
         PNamedShape loft = component.GetLoft();
@@ -973,6 +974,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
 
 void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
 {
+    removeAirfoil();
     tiglConfigurationSetWithDuctCutouts(m_cpacsHandle, (TiglBoolean)withDuctCutouts);
 
     std::vector<TiglGeometricComponentType> shapesToDraw;
@@ -1016,6 +1018,7 @@ void TIGLCreatorDocument::drawConfigurationWithDuctCutouts()
 
 void TIGLCreatorDocument::drawWingProfiles()
 {
+    removeAirfoil();
     QString wingProfile = dlgGetWingProfileSelection();
     try {
         tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
@@ -1028,6 +1031,7 @@ void TIGLCreatorDocument::drawWingProfiles()
 
 void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1040,6 +1044,7 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingGuideCurves(const QString& uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(uid);
     if (wingUid == "") {
         return;
@@ -1085,6 +1090,8 @@ void TIGLCreatorDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 
 void TIGLCreatorDocument::drawFuselageProfiles()
 {
+    displayedShapeNames = app->getScene()->GetShapeManager().GetDisplayedShapeNames();
+    removeAirfoil();
     QString fuselageProfile = dlgGetFuselageProfileSelection();
     if (fuselageProfile == "") {
         return;
@@ -1095,7 +1102,8 @@ void TIGLCreatorDocument::drawFuselageProfiles()
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
     TopoDS_Wire wire                     = profile.GetWire();
-    app->getScene()->displayShape(wire, true, getDefaultShapeColor());
+    auto wireObj = app->getScene()->displayShape(wire, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager().addObject(std::string("airfoil"), wireObj);
 
     if (profile.GetPointList_choice1()) {
         const std::vector<tigl::CTiglPoint>& points = profile.GetPointList_choice1()->AsVector();
@@ -1124,10 +1132,13 @@ void TIGLCreatorDocument::drawFuselageProfiles()
             }
         }
     }
+    app->getViewer()->viewFront();
+    app->getViewer()->fitAll();
 }
 
 void TIGLCreatorDocument::drawFuselageGuideCurves(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -1160,6 +1171,7 @@ void TIGLCreatorDocument::drawFuselageGuideCurves(const QString& Uid)
 
 void TIGLCreatorDocument::drawWing(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1176,6 +1188,7 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
 
     try {
@@ -1440,6 +1453,7 @@ void TIGLCreatorDocument::removeFuselage(const QString& Uid)
 
 void TIGLCreatorDocument::drawFuselage(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -1459,6 +1473,7 @@ void TIGLCreatorDocument::drawFuselage(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingTriangulation(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1471,6 +1486,7 @@ void TIGLCreatorDocument::drawWingTriangulation(const QString& Uid)
 
 void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -1492,6 +1508,7 @@ void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1504,6 +1521,7 @@ void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawFuselageSamplePoints(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -1532,6 +1550,7 @@ void TIGLCreatorDocument::drawFuselageSamplePoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawFuselageSamplePointsAngle(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -2172,6 +2191,7 @@ void TIGLCreatorDocument::exportFuselageCurvesBRep()
 
 void TIGLCreatorDocument::drawFusedFuselage(const QString& Uid)
 {
+    removeAirfoil();
     QString fuselageUid = dlgGetFuselageSelection(Uid);
     if (fuselageUid == "") {
         return;
@@ -2191,6 +2211,7 @@ void TIGLCreatorDocument::drawFusedWing(const QString& Uid)
 
 void TIGLCreatorDocument::drawFusedAircraft()
 {
+    removeAirfoil();
     FuseDialog dialog(app);
     if (dialog.exec() != QDialog::Accepted) {
         return;
@@ -2362,6 +2383,7 @@ void TIGLCreatorDocument::drawIntersectionLine()
 
 void TIGLCreatorDocument::drawWingComponentSegment(const QString& Uid)
 {
+    removeAirfoil();
     QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
@@ -2394,6 +2416,7 @@ void TIGLCreatorDocument::drawWingComponentSegment(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingComponentSegmentPoints(const QString& Uid)
 {
+    removeAirfoil();
     QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
@@ -2409,6 +2432,7 @@ void TIGLCreatorDocument::drawWingComponentSegmentPoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingShells(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
 
     try {
@@ -2422,6 +2446,8 @@ void TIGLCreatorDocument::drawWingShells(const QString& Uid)
 
 void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
 {
+    
+    removeAirfoil();
     QString csUid = dlgGetWingComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
@@ -2458,7 +2484,7 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             displayError("This wing has no structure defined.", "Information");
             return;
         }
-
+        
         auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(WingUid.toStdString());
         for (auto& obj : objects) {
             app->getScene()->getContext()->Remove(obj, Standard_False);
@@ -2542,6 +2568,7 @@ void TIGLCreatorDocument::drawFarField()
 
 void TIGLCreatorDocument::drawSystems()
 {
+    removeAirfoil();
     START_COMMAND()
     // Draw all generic systems
     for (int gs = 1; gs <= GetConfiguration().GetGenericSystemCount(); gs++) {
@@ -2558,6 +2585,7 @@ void TIGLCreatorDocument::drawSystems()
 
 void TIGLCreatorDocument::drawComponent()
 {
+    removeAirfoil();
     TIGLGeometryChoserDialog dialog(GetConfiguration().GetUIDManager(), app);
     if (dialog.exec() != QDialog::Accepted) {
         return;
@@ -2571,6 +2599,7 @@ void TIGLCreatorDocument::drawComponent()
 
 void TIGLCreatorDocument::drawRotorProfiles()
 {
+    removeAirfoil();
     QString wingProfile = dlgGetRotorProfileSelection();
     try {
         tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
@@ -2583,6 +2612,7 @@ void TIGLCreatorDocument::drawRotorProfiles()
 
 void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2595,6 +2625,7 @@ void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorBladeGuideCurves()
 {
+    removeAirfoil();
     // loop over all wings
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount                     = config.GetWingCount();
@@ -2608,6 +2639,7 @@ void TIGLCreatorDocument::drawRotorBladeGuideCurves()
 
 void TIGLCreatorDocument::drawRotorBlade(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2620,6 +2652,7 @@ void TIGLCreatorDocument::drawRotorBlade(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorBladeTriangulation(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2632,6 +2665,7 @@ void TIGLCreatorDocument::drawRotorBladeTriangulation(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorBladeSamplePoints(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2644,6 +2678,7 @@ void TIGLCreatorDocument::drawRotorBladeSamplePoints(const QString& Uid)
 
 void TIGLCreatorDocument::drawFusedRotorBlade(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2656,6 +2691,7 @@ void TIGLCreatorDocument::drawFusedRotorBlade(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorBladeComponentSegment(const QString& Uid)
 {
+    removeAirfoil();
     QString csUid = dlgGetRotorBladeComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
@@ -2675,6 +2711,7 @@ void TIGLCreatorDocument::drawRotorBladeComponentSegment(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorBladeComponentSegmentPoints(const QString& Uid)
 {
+    removeAirfoil();
     QString csUid = dlgGetRotorBladeComponentSegmentSelection(Uid);
     if (csUid == "") {
         return;
@@ -2689,6 +2726,7 @@ void TIGLCreatorDocument::drawRotorBladeComponentSegmentPoints(const QString& Ui
 
 void TIGLCreatorDocument::drawRotorBladeShells(const QString& Uid)
 {
+    removeAirfoil();
     QString wingUid = dlgGetRotorBladeSelection(Uid);
     try {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -2701,6 +2739,7 @@ void TIGLCreatorDocument::drawRotorBladeShells(const QString& Uid)
 
 void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 {
+    removeAirfoil();
     START_COMMAND()
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(uid.toStdString());
     if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
@@ -2751,6 +2790,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 
 void TIGLCreatorDocument::drawRotor()
 {
+    removeAirfoil();
     QString rotorUid = dlgGetRotorSelection();
     if (rotorUid == "") {
         return;
@@ -2764,6 +2804,7 @@ void TIGLCreatorDocument::drawRotor()
 
 void TIGLCreatorDocument::drawRotorDisk(const QString& uid)
 {
+    removeAirfoil();
     QString rotorUid = dlgGetRotorSelection(uid);
     if (rotorUid == "") {
         return;
@@ -2783,6 +2824,7 @@ void TIGLCreatorDocument::drawRotorDisk(const QString& uid)
 
 void TIGLCreatorDocument::showRotorProperties(const QString& uid)
 {
+    removeAirfoil();
     QString rotorUid = dlgGetRotorSelection(uid);
     if (rotorUid == "") {
         return;
@@ -2868,10 +2910,12 @@ Quantity_Color TIGLCreatorDocument::getDefaultShapeSymmetryColor()
  */
 void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 {
+    displayedShapeNames = app->getScene()->GetShapeManager().GetDisplayedShapeNames();
     app->getScene()->deleteAllObjects();
 
     TopoDS_Wire wire = profile.GetWire();
-    app->getScene()->displayShape(wire, true, getDefaultShapeColor());
+    auto WireObj = app->getScene()->displayShape(wire, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager().addObject(std::string("airfoil"), WireObj);
 
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
@@ -2949,6 +2993,26 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 
     app->getViewer()->viewLeft();
     app->getViewer()->fitAll();
+}
+
+void TIGLCreatorDocument::removeAirfoil()
+{
+
+    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName("airfoil");
+    for (auto& obj : objects) {
+        app->getScene()->getContext()->Remove(obj, Standard_False);
+        app->getScene()->GetShapeManager().removeObject(obj);
+    }
+    
+    if (!objects.empty())
+    {
+        app->getScene()->deleteAllObjects();
+        for (const auto& name : displayedShapeNames) {
+                    drawComponentByUID(QString::fromStdString(name));
+        }
+        app->getViewer()->viewAxo();
+        app->getViewer()->fitAll();
+    }
 }
 
 /*

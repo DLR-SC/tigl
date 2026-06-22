@@ -219,8 +219,11 @@ private:
     void removeWing(const QString& Uid);
     void removeWingFlaps(const QString& Uid);
     void removeFuselage(const QString& Uid);
+    void removeAirfoil();
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
+
+    std::vector<std::string> displayedShapeNames;
     
 };
 
