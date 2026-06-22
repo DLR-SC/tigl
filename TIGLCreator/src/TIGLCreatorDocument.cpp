@@ -984,7 +984,6 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_PYLON);
     shapesToDraw.push_back(TIGL_COMPONENT_ENGINE_NACELLE);
     shapesToDraw.push_back(TIGL_COMPONENT_EXTERNAL_OBJECT);
-    shapesToDraw.push_back(TIGL_COMPONENT_CONTROL_SURFACE_DEVICE);
 
     try {
 
