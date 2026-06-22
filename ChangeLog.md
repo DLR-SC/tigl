@@ -19,6 +19,8 @@ Changes since last release
   - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
 
 - Fixes
+  - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
+  - Fix error when displaying an aircraft with pylon but without segments. Now returns null geometry gracefully instead of throwing an error
   - Fix wrong behaviour in GUI for the spinbox of the wing sweep and dihedral chord percantage ([#1327](https://github.com/DLR-SC/tigl/pull/1327))
   - Fix hard crash for invalid xml files ([#1322](https://github.com/DLR-SC/tigl/pull/1322))
   - Fix many CMake and compiler warnings ([#1307](https://github.com/DLR-SC/tigl/pull/1307))
