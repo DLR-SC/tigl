@@ -43,6 +43,14 @@ public:
     TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string approxErrStr="RMSE",
                                             std::vector<double> interpolatedPointsIndices=std::vector<double>{});
 
+    TIGL_EXPORT CTiglApproximateBsplineWire(int nrControlPoints, const std::string approxErrStr,
+                                            std::vector<double> interpolatedPointsIndices,
+                                            std::vector<double> initialParams);
+
+    TIGL_EXPORT CTiglApproximateBsplineWire(double tolerance, const std::string approxErrStr,
+                                            std::vector<double> interpolatedPointsIndices,
+                                            std::vector<double> initialParams);
+
     // Destructor
     TIGL_EXPORT ~CTiglApproximateBsplineWire() override;
 
@@ -96,6 +104,8 @@ private:
     mutable double m_approxErr; // Approximation error according to chosen computation method
 
     std::vector<double> m_interpolatedPointsIndices; // Contains indices of points that should still be interpolated
+
+    std::vector<double> m_initialParams; // Initial parameter values for approximation
 };
 
 } // end namespace tigl

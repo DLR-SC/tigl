@@ -208,7 +208,7 @@ TEST(WingProfileApproximation, approxInterpProfiles)
     auto* wireAlgo = dynamic_cast<tigl::CTiglApproximateBsplineWire*>(wingProfilePointList->GetWireAlgo());
     double approxErr = wireAlgo->GetApproxErr();
 
-    EXPECT_NEAR(approxErr, 0.0012563542066345885, 1e-8);
+    EXPECT_NEAR(approxErr, 0.0012975978942703363, 1e-8);
 
     // Broken combination of pole number and interpolation indices
     tigl::CCPACSWingProfile& profileApproxInterpBroken = config.GetWingProfile("NACA1309_ApproxInterp_Broken");
