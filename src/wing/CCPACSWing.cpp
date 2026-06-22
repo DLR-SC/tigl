@@ -330,9 +330,9 @@ PNamedShape CCPACSWing::GetMirroredLoft(PNamedShape input_shape) const
     PNamedShape mirroredShape = trafo.Transform(input_shape);
 
     std::string mirrorName = mirroredShape->Name();
-    mirrorName += "M";
+    mirrorName += ":mirrored";
     std::string mirrorShortName = mirroredShape->ShortName();
-    mirrorShortName += "M";
+    mirrorShortName += ":mirrored";
     mirroredShape->SetName(mirrorName.c_str());
     mirroredShape->SetShortName(mirrorShortName.c_str());
     return mirroredShape;

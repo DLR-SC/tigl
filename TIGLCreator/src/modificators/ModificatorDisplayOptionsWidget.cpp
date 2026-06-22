@@ -65,14 +65,6 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
     connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
 
-    // for (const auto& action : getDrawOptionsActions()) {
-    //     QAction* act = findChild<QAction*>(action.name);
-    //     if (act) {
-    //         connect(act, &QAction::triggered, this, [this, action]() {
-    //             action.handler(currentUid); // Pass the UID
-    //         });
-    //     }
-    // }
 }
 
 ModificatorDisplayOptionsWidget::~ModificatorDisplayOptionsWidget() = default;
@@ -237,7 +229,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             if (type == TIGL_COMPONENT_PLANE) {
                 drawCallbacks.clear();
                 ui->drawOptionsCombo->clear();
-                for (const auto& action : getPlaneDrawOptionsActions()) {
+                for (const auto& action : getPlaneDisplayOptionsActions()) {
                     ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);
@@ -284,7 +276,13 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         }
                     }, Qt::UniqueConnection);
             }
-
+            
+            if (type == TIGL_COMPONENT_ENGINE_PYLON || type == TIGL_COMPONENT_ENGINE_NACELLE) {
+                 drawCallbacks.clear();
+                ui->drawOptionsCombo->clear();
+                ui->drawOptionsCombo->setVisible(false);
+                ui->labelDrawOptions->setVisible(false);
+            }
         }
     }   
 
