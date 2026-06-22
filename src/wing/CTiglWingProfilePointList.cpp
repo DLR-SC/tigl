@@ -39,8 +39,6 @@
 #include "CCPACSNacelleProfile.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSCurvePointListXYZ.h"
-#include "CTiglInterpolatePointsWithKinks.h"
-#include "CTiglBSplineAlgorithms.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
