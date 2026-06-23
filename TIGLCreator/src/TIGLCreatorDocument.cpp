@@ -1782,7 +1782,7 @@ void TIGLCreatorDocument::exportMeshedFuselageSTL()
 {
     QString fileName;
 
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection("");
     if (fuselageUid == "") {
         return;
     }
@@ -1927,7 +1927,7 @@ void TIGLCreatorDocument::exportFuselageCollada()
 {
     QString fileName;
 
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection("");
 
     writeToStatusBar(tr("Saving meshed Fuselage as Collada file with TIGL..."));
 
@@ -1971,7 +1971,7 @@ void TIGLCreatorDocument::exportMeshedFuselageVTK()
 {
     QString fileName;
 
-    QString wingUid = dlgGetFuselageSelection();
+    QString wingUid = dlgGetFuselageSelection("");
     if (wingUid == "") {
         return;
     }
@@ -2094,7 +2094,7 @@ void TIGLCreatorDocument::exportWingBRep()
 
 void TIGLCreatorDocument::exportFuselageBRep()
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection("");
     if (fuselageUid == "") {
         return;
     }
@@ -2180,7 +2180,7 @@ void TIGLCreatorDocument::exportWingCurvesBRep()
 
 void TIGLCreatorDocument::exportFuselageCurvesBRep()
 {
-    QString fuselageUid = dlgGetFuselageSelection();
+    QString fuselageUid = dlgGetFuselageSelection("");
     if (fuselageUid == "") {
         return;
     }
@@ -2827,7 +2827,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 void TIGLCreatorDocument::drawRotor()
 {
     removeAirfoil();
-    QString rotorUid = dlgGetRotorSelection();
+    QString rotorUid = dlgGetRotorSelection("");
     if (rotorUid == "") {
         return;
     }

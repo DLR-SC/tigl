@@ -164,22 +164,22 @@ private slots:
 
     // Wing selection dialogs
     QString dlgGetWingOrRotorBladeSelection();
-    QString dlgGetWingSelection(const QString& wingUID=nullptr);
-    QString dlgGetWingComponentSegmentSelection(const QString& wingUID=nullptr);
+    QString dlgGetWingSelection(const QString& wingUID);
+    QString dlgGetWingComponentSegmentSelection(const QString& wingUID);
     QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
     // Rotor selection dialogs
-    QString dlgGetRotorSelection(const QString& rotorUid=nullptr);
+    QString dlgGetRotorSelection(const QString& rotorUid);
 
     // Rotor Blade selection dialogs
-    QString dlgGetRotorBladeSelection(const QString& rotorBladeUid=nullptr);
-    QString dlgGetRotorBladeComponentSegmentSelection(const QString& rotorBladeCompSegUid=nullptr);
+    QString dlgGetRotorBladeSelection(const QString& rotorBladeUid);
+    QString dlgGetRotorBladeComponentSegmentSelection(const QString& rotorBladeCompSegUid);
     QString dlgGetRotorBladeSegmentSelection();
     QString dlgGetRotorProfileSelection();
 
     // Fuselage selection dialogs
-    QString dlgGetFuselageSelection(const QString& Uid=nullptr);
+    QString dlgGetFuselageSelection(const QString& Uid);
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
