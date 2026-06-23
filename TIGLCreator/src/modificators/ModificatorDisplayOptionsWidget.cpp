@@ -202,6 +202,9 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 drawCallbacks.clear();
                 ui->drawOptionsCombo->clear();
                 for (const auto& action : getWingDrawOptionsActions()) {
+                     if (action.isAvailable && !action.isAvailable(doc, uid)) {
+                        continue;
+                    }
                     ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);
@@ -224,6 +227,10 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 drawCallbacks.clear();
                 ui->drawOptionsCombo->clear();
                 for (const auto& action : getPlaneDisplayOptionsActions()) {
+                    if (action.isAvailable && !action.isAvailable(doc, uid)) {
+                        continue;
+                    }
+
                     ui->drawOptionsCombo->addItem(tr(action.label.toUtf8()));
                     drawCallbacks.push_back([this, action, uid, doc]() {
                         action.handler(doc, uid);

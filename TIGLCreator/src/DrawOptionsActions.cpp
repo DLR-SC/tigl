@@ -1,10 +1,94 @@
 #include "DrawOptionsActions.h"
+
+#include "CCPACSWing.h"
+#include "CCPACSWingComponentSegment.h"
+#include "CTiglError.h"
+
 #include <QDebug>
 
 
 void onColorChosen();
 
+namespace
+{
 
+bool hasControlSurfaces(TIGLCreatorDocument* doc, const QString& uid)
+{
+    if (!doc || doc->getCpacsHandle() <= 0) {
+        return false;
+    }
+
+    try {
+        auto& config = doc->GetConfiguration();
+        if (uid.isEmpty()) {
+            for (int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex) {
+                tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+                for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
+                    tigl::CCPACSWingComponentSegment& componentSegment = wing.GetComponentSegment(segmentIndex);
+                    const auto& controlSurfaces = componentSegment.GetControlSurfaces();
+                    if (controlSurfaces && controlSurfaces->ControlSurfaceCount() > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        else {
+            tigl::CCPACSWing& wing = config.GetWing(uid.toStdString());
+            for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
+                tigl::CCPACSWingComponentSegment& componentSegment = wing.GetComponentSegment(segmentIndex);
+                const auto& controlSurfaces = componentSegment.GetControlSurfaces();
+                if (controlSurfaces && controlSurfaces->ControlSurfaceCount() > 0) {
+                    return true;
+                }
+            }
+        }
+    }
+    catch (const tigl::CTiglError&) {
+        return false;
+    }
+
+    return false;
+}
+
+bool hasStructure(TIGLCreatorDocument* doc, const QString& uid)
+{
+    if (!doc || doc->getCpacsHandle() <= 0) {
+        return false;
+    }
+     try {
+        auto& config = doc->GetConfiguration();
+        if (uid.isEmpty()) {
+            for (int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex) {
+                tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+                for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
+                    tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(segmentIndex);
+                    tigl::CCPACSWingComponentSegment* cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
+                    if (cs && cs->GetStructure()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        else {
+            tigl::CCPACSWing& wing = doc->GetConfiguration().GetWing(uid.toStdString());
+            for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
+                tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(segmentIndex);
+                    tigl::CCPACSWingComponentSegment* cs = static_cast<tigl::CCPACSWingComponentSegment*>(&segment);
+                    if (cs && cs->GetStructure()) {
+                        return true;
+                    }
+                }
+        }
+    }
+      catch (const tigl::CTiglError&) {
+        return false;
+    }
+
+
+    return false;
+}
+
+}
 // WING actions
 const std::vector<DrawOptionAction>& getWingDrawOptionsActions() {
     static std::vector<DrawOptionAction> actions = {
@@ -12,11 +96,13 @@ const std::vector<DrawOptionAction>& getWingDrawOptionsActions() {
         { "Show Fused wing", [](TIGLCreatorDocument* doc, const QString& uid){  doc->drawFusedWing(uid);} },
         { "Show Wing Shells", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingShells(uid); } },
         { "Show Wing Component segment", [](TIGLCreatorDocument* doc, const QString& uid){  doc->drawWingComponentSegment(uid); } },
-        { "Show Wing Structure", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingStructure(uid);} },
+        { "Show Wing Structure", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingStructure(uid);} ,[](TIGLCreatorDocument* doc, const QString& uid) {
+            return hasStructure(doc, uid); }},
         { "Show Wing triangulation", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingTriangulation(uid); } },
         { "Show Wing Profiles", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingProfiles(); } },
         { "Show Wing Guide curves", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingGuideCurves(uid);} },
-        { "Show Wing Flaps", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingFlaps(uid);} },
+        { "Show Wing Flaps", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingFlaps(uid);},[](TIGLCreatorDocument* doc, const QString& uid) {
+            return hasControlSurfaces(doc, uid); }},
         { "Show Wing Sample points", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingSamplePoints(uid);} },
         { "Show Wing Overlay profile points", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingOverlayProfilePoints(uid); } },
         { "Show Wing Component segment points", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawWingComponentSegmentPoints(uid);} }
@@ -46,11 +132,15 @@ const std::vector<DrawOptionAction>& getPlaneDrawOptionsActions() {
         { "Show the complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
         { "Show fused aircraft triangulation (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraftTriangulation(); } },
         { "Show intersection line", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawIntersectionLine(); } },
-        { "Draw Far Field", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFarField(); } },
-        { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
+        { "Draw Far Field", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFarField(); }, [](TIGLCreatorDocument* doc, const QString&) {
+            return doc && doc->getCpacsHandle() > 0 && doc->GetConfiguration().GetFarField().GetType() != tigl::NONE;}},
+        { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();}, [](TIGLCreatorDocument* doc, const QString&) {
+            return doc && doc->getCpacsHandle() > 0 && doc->GetConfiguration().GetGenericSystemCount() > 0;}},
         { "Draw any Component", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawComponent(); } },
         { "Draw Control Point Net", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawControlPointNet(); } },
-        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay(uid);} },
+        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay();}, [](TIGLCreatorDocument* doc, const QString& uid) {
+            return hasControlSurfaces(doc, uid); }},
+
     };
     return actions;
 }
@@ -61,8 +151,10 @@ const std::vector<DrawOptionAction>& getPlaneDisplayOptionsActions() {
         { "Show the complete aircraft with duct cutouts", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawConfigurationWithDuctCutouts(); } },
         { "Show the complete aircraft fused (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraft(); } },
         { "Show fused aircraft triangulation (slow)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFusedAircraftTriangulation(); } },
-        { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();} },
-        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay(uid);} },
+        { "Draw Systems", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawSystems();}, [](TIGLCreatorDocument* doc, const QString&) {
+            return doc && doc->getCpacsHandle() > 0 && doc->GetConfiguration().GetGenericSystemCount() > 0;}},
+        { "Show Wing Flaps (Overlay)", [](TIGLCreatorDocument* doc, const QString& uid){ doc->drawFlapsOverlay();}, [](TIGLCreatorDocument* doc, const QString& uid) {
+            return hasControlSurfaces(doc, uid); }},
     };
     return actions;
 }

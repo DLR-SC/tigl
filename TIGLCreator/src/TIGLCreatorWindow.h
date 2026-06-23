@@ -144,6 +144,7 @@ private:
     bool deleteEnvVar(const char* varname);
 
     void populateDrawMenu(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void updateDrawMenuAvailability(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
     void setupDrawMenus();
 
     QAction *recentFileActions[MaxRecentFiles];
@@ -176,4 +177,3 @@ private:
 };
 
 #endif
-

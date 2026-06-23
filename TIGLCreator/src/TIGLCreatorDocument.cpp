@@ -1282,7 +1282,7 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
     return true;
 }
 
-void TIGLCreatorDocument::drawFlapsOverlay(const QString& uid)
+void TIGLCreatorDocument::drawFlapsOverlay()
 {
     removeAirfoil();
 
@@ -1446,6 +1446,9 @@ void TIGLCreatorDocument::removeWingFlaps(const QString& Uid)
     for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
         tigl::CCPACSWingComponentSegment& cs = wing.GetComponentSegment(j);
 
+        if (!cs.GetControlSurfaces()) {
+            continue;
+        }
         if (cs.GetControlSurfaces()->ControlSurfaceCount() == 0) {
             continue;
         }

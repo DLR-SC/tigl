@@ -1152,19 +1152,11 @@ void TIGLCreatorWindow::updateMenus()
 
     closeAction->setEnabled(hand > 0);
 
-    bool hasFarField = false;
-    bool hasACSystems = false;
-    bool hasDucts = false;
     int nRotorBlades = 0;
     int nRotors = 0;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
-            hasFarField = config.GetFarField().GetType() != tigl::NONE;
-            hasACSystems = config.GetGenericSystemCount() > 0;
-            if (config.GetDucts()) {
-                hasDucts = config.GetDucts()->GetDuctAssemblys().size() > 0;
-            }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();
         }
@@ -1173,6 +1165,12 @@ void TIGLCreatorWindow::updateMenus()
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuWings->setEnabled(nWings - nRotorBlades > 0);
+
+    updateDrawMenuAvailability(menuAircraft, getPlaneDrawOptionsActions(), false);
+    updateDrawMenuAvailability(menuWings, getWingDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuFuselages, getFuselageDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuRotorBlades, getRotorBladeDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuRotorcraft, getRotorDrawOptionsActions(), true);
 }
 
 void TIGLCreatorWindow::closeEvent(QCloseEvent* event)
@@ -1460,10 +1458,36 @@ void TIGLCreatorWindow::populateDrawMenu(
                 if (needsUid && treeWidget) {
                     uid = treeWidget->getSelectedUID();
                 }
+                if (action.isAvailable && !action.isAvailable(cpacsConfiguration, uid)) {
+                    return;
+                }
                 action.handler(cpacsConfiguration, uid);
             });
 
         menu->addAction(qa);
+    }
+}
+
+void TIGLCreatorWindow::updateDrawMenuAvailability(
+    QMenu* menu,
+    const std::vector<DrawOptionAction>& actions,
+    bool needsUid)
+{
+    const QList<QAction*> menuActions = menu->actions();
+    const int actionCount = menuActions.size() < static_cast<int>(actions.size())
+        ? menuActions.size()
+        : static_cast<int>(actions.size());
+
+    QString uid;
+    if (needsUid && treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+
+    for (int i = 0; i < actionCount; ++i) {
+        const DrawOptionAction& drawAction = actions[static_cast<size_t>(i)];
+        const bool available = !drawAction.isAvailable || drawAction.isAvailable(cpacsConfiguration, uid);
+        menuActions[i]->setVisible(available);
+        menuActions[i]->setEnabled(available);
     }
 }
 
@@ -1504,4 +1528,3 @@ void TIGLCreatorWindow::setupDrawMenus()
         true
     );
 }
-
