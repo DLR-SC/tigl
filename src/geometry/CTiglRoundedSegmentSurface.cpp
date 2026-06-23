@@ -47,13 +47,30 @@ void CTiglRoundedSegmentSurface::Perform(){
         return;
     }
 
-    calculateKnotsAndMultiplicities();
+    //create knots in v-direction
+    auto nb_v_knots = m_pole_matrix.ColLength()-_v_degree+1;
+    std::vector<double> tmp_v = LinspaceWithBreaks(0., 1., nb_v_knots,{});
+    for(int i=1;i<m_v_knots.Length()+1; i++){
+        m_v_knots.SetValue(i,tmp_v[i-1]);
+    }
+
+    //create multiplicities in v-direction
+    m_v_multiplicities.SetValue(1,4);
+    m_v_multiplicities.SetValue((nb_v_knots),4);
+
+    //initialize knots in u-direction(copy from originial 1. profile curve fits all)
+    m_u_knots = m_profileCurves[0]->Knots();
+    if (m_u_multiplicities.Length()==2){
+        _u_degree =m_profileCurves[0]->Degree();
+    } else {
+        m_u_multiplicities = m_profileCurves[0]->Multiplicities();
+    }
 
     //initialize m_segments vector
     for(int i = 0; i < m_profileCurves.size()-1; i++){
         m_segments.push_back(RoundedSegment(m_profileCurves[i],
                                             m_profileCurves[i+1],
-                                            m_inner_rounding_distance[i], //TODO access the right values per RoundedSegment
+                                            m_inner_rounding_distance[i],
                                             m_outer_rounding_distance[i]));
     }
 
@@ -79,26 +96,6 @@ void CTiglRoundedSegmentSurface::Perform(){
         }
     }
     _hasPerformed = true;
-}
-
-void CTiglRoundedSegmentSurface::calculateKnotsAndMultiplicities(){
-    //create knots in v-direction
-    //auto nb_v_knots = m_pole_matrix.ColLength()+_v_degree-5;
-    auto nb_v_knots = m_pole_matrix.ColLength()-_v_degree+1;
-    std::vector<double> tmp_v = LinspaceWithBreaks(0., 1., nb_v_knots,{});
-    for(int i=1;i<m_v_knots.Length()+1; i++){
-        m_v_knots.SetValue(i,tmp_v[i-1]);
-    }
-    //create multiplicities in v-direction
-    m_v_multiplicities.SetValue(1,4);
-    m_v_multiplicities.SetValue((nb_v_knots),4);
-    //initialize knots in u-direction(copy from originial 1. profile curve fits all)
-    m_u_knots = m_profileCurves[0]->Knots();
-     if (m_u_multiplicities.Length()==2){
-        _u_degree =m_profileCurves[0]->Degree();
-    } else {
-        m_u_multiplicities = m_profileCurves[0]->Multiplicities();
-    }
 }
 
 }
