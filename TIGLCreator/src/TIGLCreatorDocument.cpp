@@ -2609,13 +2609,19 @@ void TIGLCreatorDocument::drawSystems()
     // Draw all generic systems
     for (int gs = 1; gs <= GetConfiguration().GetGenericSystemCount(); gs++) {
         tigl::CCPACSGenericSystem& genericSystem = GetConfiguration().GetGenericSystem(gs);
-        app->getScene()->displayShape(genericSystem.GetLoft(), true, getDefaultShapeColor());
 
-        if (genericSystem.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
+        try {
+            app->getScene()->displayShape(genericSystem.GetLoft(), true, getDefaultShapeColor());
+
+            if (genericSystem.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
+                app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), true,
+                                              getDefaultShapeSymmetryColor());
+            }
         }
-
-        app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), true, getDefaultShapeSymmetryColor());
+        catch (const tigl::CTiglError& err) {
+            const QString uid = QString::fromStdString(genericSystem.GetUID());
+            displayError("Cannot display \"" + uid + "\": " + err.what());
+        }
     }
 }
 

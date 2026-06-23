@@ -60,7 +60,7 @@ public:
 
     /// Fits the curve by optimizing the parameters.
     /// Important: Parameters of points that are interpolated are not optimized
-    TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
+    TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10, CalcPointVecErrorFct calcErrorFct=calcPointVecErrorMax) const;
 
 private:
     ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double initial_Parm) const;
