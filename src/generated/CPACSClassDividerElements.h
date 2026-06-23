@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetClassDividerElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetClassDividerElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetClassDividerElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetClassDividerElements();
 
         TIGL_EXPORT virtual size_t GetClassDividerElementCount() const;
         TIGL_EXPORT virtual size_t GetClassDividerElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetClassDividerElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetClassDividerElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetClassDividerElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetClassDividerElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetClassDividerElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetClassDividerElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetClassDividerElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetClassDividerElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddClassDividerElement();
-        TIGL_EXPORT virtual void RemoveClassDividerElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddClassDividerElement();
+        TIGL_EXPORT virtual void RemoveClassDividerElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Class divider element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_classDividerElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_classDividerElements;
 
     private:
         CPACSClassDividerElements(const CPACSClassDividerElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSClassDividerElements = generated::CPACSClassDividerElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

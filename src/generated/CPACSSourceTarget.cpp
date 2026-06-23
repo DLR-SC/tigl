@@ -85,17 +85,17 @@ namespace generated
     void CPACSSourceTarget::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element externalElement
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/externalElement")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/externalElement")) {
             m_externalElement_choice1 = stringToCPACSSourceTarget_externalElement(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/externalElement"));
         }
 
         // read element ataChapter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ataChapter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ataChapter")) {
             m_ataChapter_choice2 = stringToCPACSAtaChapterList(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ataChapter"));
         }
 
         // read element systemArchitectureUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectureUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/systemArchitectureUID")) {
             m_systemArchitectureUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/systemArchitectureUID");
             if (m_systemArchitectureUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element systemArchitectureUID is present but empty at xpath " << xpath;
@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element componentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/componentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/componentUID")) {
             m_componentUID_choice4 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/componentUID");
             if (m_componentUID_choice4->empty()) {
                 LOG(WARNING) << "Optional element componentUID is present but empty at xpath " << xpath;

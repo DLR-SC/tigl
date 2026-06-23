@@ -16,7 +16,6 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckElementMass.h"
 #include "CPACSElementMass.h"
 #include "CPACSMassInertia.h"
 #include "CTiglError.h"
@@ -28,16 +27,6 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSMassInertia::CPACSMassInertia(CPACSDeckElementMass* parent)
-        : m_Jxx(0)
-        , m_Jyy(0)
-        , m_Jzz(0)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSDeckElementMass);
-    }
-
     CPACSMassInertia::CPACSMassInertia(CPACSElementMass* parent)
         : m_Jxx(0)
         , m_Jyy(0)
@@ -45,22 +34,26 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
-        m_parentType = &typeid(CPACSElementMass);
     }
 
     CPACSMassInertia::~CPACSMassInertia()
     {
     }
 
+    const CPACSElementMass* CPACSMassInertia::GetParent() const
+    {
+        return m_parent;
+    }
+
+    CPACSElementMass* CPACSMassInertia::GetParent()
+    {
+        return m_parent;
+    }
+
     const CTiglUIDObject* CPACSMassInertia::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CPACSDeckElementMass>()) {
-                return GetParent<CPACSDeckElementMass>();
-            }
-            if (IsParent<CPACSElementMass>()) {
-                return GetParent<CPACSElementMass>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }
@@ -68,12 +61,7 @@ namespace generated
     CTiglUIDObject* CPACSMassInertia::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CPACSDeckElementMass>()) {
-                return GetParent<CPACSDeckElementMass>();
-            }
-            if (IsParent<CPACSElementMass>()) {
-                return GetParent<CPACSElementMass>()->GetNextUIDParent();
-            }
+            return m_parent->GetNextUIDParent();
         }
         return nullptr;
     }

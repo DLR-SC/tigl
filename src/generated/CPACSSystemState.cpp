@@ -62,7 +62,7 @@ namespace generated
     void CPACSSystemState::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element controlParameterActive
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameterActive")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameterActive")) {
             m_controlParameterActive = tixi::TixiGetElement<int>(tixiHandle, xpath + "/controlParameterActive");
         }
         else {
@@ -70,7 +70,7 @@ namespace generated
         }
 
         // read element controlParameterInactive
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameterInactive")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameterInactive")) {
             m_controlParameterInactive = tixi::TixiGetElement<int>(tixiHandle, xpath + "/controlParameterInactive");
         }
         else {

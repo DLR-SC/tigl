@@ -35,7 +35,7 @@ namespace generated
         pax,
         service,
         emergency,
-        cargo
+        CPACSDoorAssemblyPosition_doorType_cargo
     };
 
     inline std::string CPACSDoorAssemblyPosition_doorTypeToString(const CPACSDoorAssemblyPosition_doorType& value)
@@ -44,7 +44,7 @@ namespace generated
         case pax: return "pax";
         case service: return "service";
         case emergency: return "emergency";
-        case cargo: return "cargo";
+        case CPACSDoorAssemblyPosition_doorType_cargo: return "cargo";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSDoorAssemblyPosition_doorType");
         }
     }
@@ -54,7 +54,7 @@ namespace generated
         if (toLower(value) == "pax") { return pax; }
         if (toLower(value) == "service") { return service; }
         if (toLower(value) == "emergency") { return emergency; }
-        if (toLower(value) == "cargo") { return cargo; }
+        if (toLower(value) == "cargo") { return CPACSDoorAssemblyPosition_doorType_cargo; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSDoorAssemblyPosition_doorType");
     }
 } // namespace generated

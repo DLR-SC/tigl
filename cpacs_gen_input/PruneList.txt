@@ -44,7 +44,6 @@ CPACSControlLaws
 CPACSReference
 
 // in fuselage
-CPACSDecks
 CPACSFuselageCutOuts
 CPACSFuselageFuelTanks
 CPACSCenterFuselageAreasAssembly
