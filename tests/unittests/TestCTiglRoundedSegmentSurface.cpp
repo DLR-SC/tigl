@@ -124,7 +124,7 @@ TEST(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
     tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
 }
 
-TEST(TestCTiglRoundedSegmentSurface, openCpacsRoundedSegments){
+TEST(TestCTiglRoundedSegmentSurface, openCpacsTwoRoundedSegments){
 
         const char* filename = "TestData/simpletest-roundedSegmentSurface.cpacs.xml";
         ReturnCode tixiRet;
@@ -147,6 +147,33 @@ TEST(TestCTiglRoundedSegmentSurface, openCpacsRoundedSegments){
         tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
         auto wing = config.GetWing(1).GetLoftWithCutouts();
         tigl::dumpShape(wing, "makeLoftWing", "Surface",2);
+       // auto wing = config.GetWing(1).GetWingCleanShape();
+       // ASSERT_TRUE(BRepCheck_Analyzer(wing.IsValid()));
 }
 
+TEST(TestCTiglRoundedSegmentSurface, openCpacsThreeRoundedSegments3){
+
+    const char* filename = "TestData/simpletest-roundedSegmentSurface2.cpacs.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TixiDocumentHandle tiglHandle = -1;
+    TiglCPACSConfigurationHandle tixiHandle = -1;
+
+
+    tiglHandle = -1;
+    tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    auto wing = config.GetWing(1).GetLoftWithCutouts();
+   // ASSERT_TRUE(BRepCheck_Analyzer(wing.IsValid()));
+    tigl::dumpShape(wing, "makeLoftWing", "Surface",3);
+}
 

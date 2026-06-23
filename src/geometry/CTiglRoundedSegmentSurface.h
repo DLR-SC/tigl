@@ -11,6 +11,18 @@ namespace tigl {
 class CTiglRoundedSegmentSurface
 {
 public:
+    /**
+     * @brief CTiglRoundedSegmentSurface
+     * Surface skinning algorithm to create a loft for a given set of
+     * profile curves with rounded sections.
+     * @param m_profileCurves
+     * @param inner_rounding_distance Vector of numbers between  0.< 1. per section
+     * with a size of m_profileCurves.size()-2
+     * (outer section has no inner rounding distance)
+     * @param outer_rounding_distance Vector of numbers between  0.< 1. per section
+     * with a size of m_profileCurves.size()-2
+     * (inner section has no outer rounding distance)
+     */
     TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_Curve)> &m_profileCurves,
                                            const std::vector<double> &inner_rounding_distance,
                                            const std::vector<double> &outer_rounding_distance);
@@ -18,8 +30,16 @@ public:
     TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
 private:
+
     TIGL_EXPORT void Perform();
 
+
+    /**
+     * @brief The RoundedSegment class
+     * A Rounded Segment is a helper container for each segment of the surface to create.
+     * It gets two profile curves and two rounding distances, and creates a vector for
+     * the poles of each dummy-profile curve from this information.
+     */
     struct RoundedSegment
     {
         TColgp_HArray1OfPnt firstProfile;
@@ -44,16 +64,13 @@ private:
             }
             if(inner_rounding_distance>1e-6){
                 insert_inner_rows(3);
-                std::cerr << "Struct inner rows:" << inner_rd << " " << outer_rd;
             }
             if(outer_rounding_distance>1e-6){
                 insert_outer_rows(3);
-                std::cerr << "Struct outer rows:" << inner_rd << " " << outer_rd;
             }
         }
 
         void insert_inner_rows(int nb_dummies) {
-            int count =1; //DEBUG DELETEME
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
                 // for every profile point in start profile
@@ -73,13 +90,10 @@ private:
                     row->SetValue(j, new_pole_inner);
                 }
                 dummyProfiles.push_back(*row);
-                std::cerr << "Insert inner rows:" << count << std::endl; //DEBUG DELETEME
-                count ++;
             }
         }
 
         void insert_outer_rows(int nb_dummies) {
-            int count  =1; //DEBUG DELETEME
             for (int i = 0; i < nb_dummies; i++) {
                 auto row =  new TColgp_HArray1OfPnt(1, firstProfile.Size());
                 for (int j=1; j < firstProfile.Size()+1; j++){
@@ -99,8 +113,6 @@ private:
                     row->SetValue(j, new_pole_outer);
                 }
                 dummyProfiles.push_back(*row);
-                std::cerr << "Insert outers rows:" << count << std::endl; //DEBUG DELETEME
-                count ++;
             }
         }
 
@@ -116,8 +128,6 @@ private:
 
 
     };
-
-    TIGL_EXPORT void calculateKnotsAndMultiplicities();
 
     TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
 
