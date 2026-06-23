@@ -125,6 +125,8 @@ private:
     static const double       c_trailingEdgeRelGap;
     // constant blending distance for opening/closing trailing edge
     static const double       c_blendingDistance;
+    // constant prescribed parameter value for leading edge point
+    static const double       c_prescribedLEParam;
 
     const std::vector<CTiglPoint>&      coordinates;     /**< Coordinates of a wing profile element */
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo; /**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
@@ -133,6 +135,7 @@ private:
     gp_Pnt lePoint;     // Leading edge point
     size_t lePointIdx;  // Leading edge point idx (0-based)
     gp_Pnt tePoint;     // Trailing edge point
+    std::vector<double> m_initialParams; /**< Initial parameter values for B-spline approximation (used for consistent knot vectors in lofting) */
 
     Cache<WireCache, CTiglWingProfilePointList> wireCacheOpened;
     Cache<WireCache, CTiglWingProfilePointList> wireCacheClosed;
