@@ -23,7 +23,6 @@
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QLabel>
-#include <QDoubleSpinBox>
 #include <QDialogButtonBox>
 
 TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
@@ -34,7 +33,7 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     , dx(new QDoubleSpinBox())
     , dy(new QDoubleSpinBox())
     , dz(new QDoubleSpinBox())
-    , concentration(new QDoubleSpinBox())
+    , concentration(new TIGLDoubleLineEdit())
 {
     setWindowTitle("Add a spotlight");
 
@@ -69,7 +68,8 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     dx->setValue(1.);
     dy->setValue(1.);
     dz->setValue(1.);
-    concentration->setValue(0.5);
+
+    concentration->setValue(0.5, 2);
 
     // The main layout is vertical with a horizontal layout on top
     // and the dialog buttons below
@@ -149,5 +149,15 @@ tigl::CTiglPoint TIGLCreatorAddSpotlightDialog::getDirection() const
 
 double TIGLCreatorAddSpotlightDialog::getConcentration() const
 {
-    return concentration->value();
+    double value = concentration->text().toDouble();
+
+    // Probably not needed anymore
+    // Intention of this part is to round the user input to some defined decimal places
+    /*if(auto *validator = qobject_cast<const QDoubleValidator*>(concentration->validator())) {
+        int maxDecimals = validator->decimals();
+
+        double factorRounding = std::pow(10., maxDecimals);
+        value = std::round(value * factorRounding) / factorRounding;
+    }*/
+    return value;
 }
