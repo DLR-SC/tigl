@@ -212,7 +212,7 @@ namespace tigl{
                 double q = this->reflex;
                 double k1 = k1_const(s, p, q);
                 double m = m_const(s, p, q);
-                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m));
+                double frack1k2 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
                 if(q == 0){
                 if(p == 0){
                     return 0;
@@ -231,11 +231,11 @@ namespace tigl{
                     return 0;
                 }
                 if(0 <= x && x <= p){
-                    double result1 = (k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- (m*m*m*x+m*m*m)); 
+                    double result1 = (k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m))); 
                     return result1;
                 }
                 else if(x > p){ 
-                    double result2 = (k1/6)*((frack1k2)*(x-m)*(x-m)*(x-m)-(frack1k2)*(1-m)*(1-m)*(1-m)*x-m*m*m*x+m*m*m);
+                    double result2 = (k1/6)*(frack1k2*((x-m)*(x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
                     return result2;
                 }
                 }
@@ -291,7 +291,7 @@ namespace tigl{
                 double q = this->reflex;
                 double k1 = k1_const(s, p, q);
                 double m = m_const(s, p, q);
-                double frack1k2 = (3*(m-p)*(m-p)-m*m*m)/((1-m)*(1-m)*(1-m));
+                double frack1k2 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
                 if(p == 0){
                     return 0;
                 }
@@ -303,12 +303,12 @@ namespace tigl{
                         return -((k1*m*m*m)/6);
                     }
                 }
-                if(q==1){
+                else if(q==1){
                     if(0 <= x && x <= p){
-                        return (k1/6)*(3*(x-m)*(x-m)-frack1k2*(1-m)*(1-m)*(1-m)-m*m*m);
+                        return (k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
                     else if(x > p){
-                        return (k1/6)*(3*frack1k2*(x-m)*(x-m)-frack1k2*(1-m)*(1-m)*(1-m)-m*m*m);
+                        return (k1/6)*(3*frack1k2*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
                 }
                 else{

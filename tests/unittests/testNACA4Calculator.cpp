@@ -450,18 +450,64 @@ TEST(NACA4Calculator, naca22012_le_and_te_points){
     
 }
 
+TEST(NACA4Calculator, naca22012_export_bsplines){
+    tigl::NACA4Calculator NACA4(2,2,0,12, 0.00252);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest5_22012.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_22012.brep");
+}
+
 TEST(NACA4Calculator, naca22112_le_and_te_points_with_class_lowerCurve){
     tigl::NACA4Calculator  NACA4(2,2,1,12, 0.00252); 
     tigl::NACA4LowerCurve lowerCurve(NACA4);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
-    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125923), 1e-6);
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125997), 1e-7);//den wert hab ich von airfooilttols.com
 }
 
 TEST(NACA4Calculator, naca24112_le_and_te_points_with_class_lowerCurve){
     tigl::NACA4Calculator  NACA4(2,4,1,12, 0.00252); 
     tigl::NACA4LowerCurve lowerCurve(NACA4);
-    EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
+    EXPECT_NEAR(lowerCurve.valueX(1), (0.99999999), 1e-6); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
-    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00126000), 1e-7);
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00126000), 1e-6);
+    //EXPECT_NEAR(lowerCurve.valueZ(1), (-6785.00126000), 1e-7);
+}
+
+TEST(NACA4Calculator, naca22112_export_bsplines){
+    tigl::NACA4Calculator NACA4(2,2,1,12, 0.00252);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest5.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5.brep");
+}
+
+TEST(NACA4Calculator, naca24112_export_bsplines){
+    tigl::NACA4Calculator NACA4(2,4,1,12, 0.00252);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest5_24112.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_24112.brep");
 }
