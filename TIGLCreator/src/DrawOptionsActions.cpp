@@ -57,6 +57,7 @@ bool hasStructure(TIGLCreatorDocument* doc, const QString& uid)
     }
      try {
         auto& config = doc->GetConfiguration();
+        tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
         if (uid.isEmpty()) {
             for (int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex) {
                 tigl::CCPACSWing& wing = config.GetWing(wingIndex);
@@ -69,7 +70,7 @@ bool hasStructure(TIGLCreatorDocument* doc, const QString& uid)
                 }
             }
         }
-        else {
+        else if (uidMgr.IsType<tigl::CCPACSWing>(uid.toStdString())) {
             tigl::CCPACSWing& wing = doc->GetConfiguration().GetWing(uid.toStdString());
             for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
                 tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(segmentIndex);
