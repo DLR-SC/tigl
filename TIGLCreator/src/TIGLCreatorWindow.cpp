@@ -1099,6 +1099,10 @@ void TIGLCreatorWindow::connectSignals()
 
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
 
+    //TODO: disable standardizeAction, until fixed (https://github.com/DLR-SC/tigl/issues/1202)
+    standardizeAction->setEnabled(false);
+    standardizeAction->setVisible(false);
+
     connect(settingsDialog, SIGNAL(settingsUpdated()), myScene, SLOT(applyGridSettings()));
     connect(myScene, SIGNAL(gridPlaneChanged(TIGLCreatorSettings::GridPlane)), settingsDialog, SLOT(updateEntries()));
 }
