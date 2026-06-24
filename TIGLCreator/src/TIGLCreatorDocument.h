@@ -94,7 +94,7 @@ public slots:
 
     // Wing slots
     void drawWingProfiles();
-    void drawWing(const QString& Uid);
+    void drawWing(const QString& Uid, bool drawFlaps = false);
     void drawWingOverlayProfilePoints(const QString& wingUID);
     void drawWingGuideCurves(const QString& wingUID);
     void drawWingTriangulation(const QString& wingUID);

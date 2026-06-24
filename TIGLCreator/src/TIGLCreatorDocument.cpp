@@ -1168,13 +1168,13 @@ void TIGLCreatorDocument::drawFuselageGuideCurves(const QString& Uid)
     app->getScene()->getContext()->UpdateCurrentViewer();
 }
 
-void TIGLCreatorDocument::drawWing(const QString& Uid)
+void TIGLCreatorDocument::drawWing(const QString& Uid, bool drawFlaps)
 {
     removeAirfoil();
     QString wingUid = dlgGetWingSelection(Uid);
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    wing.SetBuildFlaps(false);
+    wing.SetBuildFlaps(drawFlaps);
     auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
     for (auto& obj : objects) {
         app->getScene()->GetShapeManager().removeObject(obj);
@@ -1199,6 +1199,11 @@ void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
             m_flapsDialog->show();
             m_flapsDialog->raise();
             m_flapsDialog->activateWindow();
+
+            disconnect(m_flapsDialog, &QDialog::finished, this, nullptr);
+            connect(m_flapsDialog, &QDialog::finished, this, [this, wingUid](int) {
+                drawWing(wingUid, true);
+            });
         }
     }
     catch (tigl::CTiglError& ex) {
