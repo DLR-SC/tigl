@@ -1174,6 +1174,7 @@ void TIGLCreatorDocument::drawWing(const QString& Uid)
     QString wingUid = dlgGetWingSelection(Uid);
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    wing.SetBuildFlaps(false);
     auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
     for (auto& obj : objects) {
         app->getScene()->GetShapeManager().removeObject(obj);
