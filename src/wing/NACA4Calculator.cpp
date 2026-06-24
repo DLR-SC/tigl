@@ -51,7 +51,7 @@ namespace tigl{
          : series_(Series::NACA5)
          , max_camber(max_camber_cl/100)
          , max_camber_position(max_camber_position/20)
-         , reflex(reflex)
+         , reflex(reflex) //überprüfen, ob hier wirklich nh 0 oder1 eingegben wurde
          , max_profile_thickness(max_profile_thickness/100)
          , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
@@ -140,6 +140,9 @@ namespace tigl{
                 case 251:
                     k1 = 3.191;
                     break;
+                default:
+                    throw ::std::logic_error("error in NACA4Calculator::k1: this profile does not provide a constant for k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    break;
                 }
             return k1; 
         }
@@ -183,6 +186,9 @@ namespace tigl{
                 case 251:
                     m = 0.4410;
                     break;
+                default:
+                    throw ::std::logic_error("error in NACA4Calculator::m: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    break;
                 }
             return m; 
         }
@@ -214,42 +220,58 @@ namespace tigl{
                 double m = m_const(s, p, q);
                 double frack1k2 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
                 if(q == 0){
-                if(p == 0){
-                    return 0;
-                }
-                if(0 <= x && x <= p){
-                    double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
-                    return result;
-                }
-                else if(x > p){ 
-                    double result3 = ((k1*m*m*m)/6)*(1-x);
-                    return result3;
-                }
+                    if(p == 0){
+                        return 0;
+                    }
+                    if(0 <= x && x <= p){
+                        double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
+                        std::cerr << "result " << result << std::endl;
+                        return result;
+                    }
+                    else if(x > p){ 
+                        double result3 = ((k1*m*m*m)/6)*(1-x);
+                        std::cerr << "result3 " << result3 << std::endl;
+                        return result3;
+                    }
                 }
                 else if(q == 1){
-                if(p == 0){
-                    return 0;
-                }
-                if(0 <= x && x <= p){
-                    double result1 = (k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m))); 
-                    return result1;
-                }
-                else if(x > p){ 
-                    double result2 = (k1/6)*(frack1k2*((x-m)*(x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
-                    return result2;
-                }
-                }
+                    if(p == 0){
+                        return 0.0;
+                    }
+                    if(0 <= x && x <= p){
+                    
+                        double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m))))/5; 
+                        //std::cerr << "result1 " << result1 << std::endl;
+                    
+                        return result1;
+                    }
+                    else if(x > p){ 
+                        double result2 = (k1/6)*(frack1k2*((x-m)*(x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
+                        //std::cerr << "result2 " << result2 << std::endl;
+                        return result2;
+                    }
+                    }
                 else{
                     throw ::std::logic_error("error in NACA4Calculator::camberline::NACA5: x must be between 0 and 1.");
                 }
+                return 0;
             }
+            return 0;
         }
 
         
         gp_Vec2d NACA4Calculator::upper_curve(double x) const{
+            std::cerr << "x \t  " << x;
             double yt = profile_thickness(x); 
+            std::cerr << "\t profile thickness \t  " << yt;
             double yc = camberline(x);
+            std::cerr << "\t camberline \t " << yc << std::endl;
             auto point = gp_Vec2d{x, yc};
+            std::cerr << "\t point.x \t " << point.X();
+            std::cerr << "\t point.y \t " << point.Y() << std::endl;
+            gp_Vec2d point_calculated = point + yt*normal(x);
+            std::cerr << "\t point_calculatedX \t " << point_calculated.X();
+            std::cerr << "\t point_calculatedY \t " << point_calculated.Y() << "\n\n";
             return point + yt*normal(x);
         }
         
@@ -305,7 +327,7 @@ namespace tigl{
                 }
                 else if(q==1){
                     if(0 <= x && x <= p){
-                        return (k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
+                        return ((k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m));
                     }
                     else if(x > p){
                         return (k1/6)*(3*frack1k2*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
@@ -314,7 +336,9 @@ namespace tigl{
                 else{
                     throw ::std::logic_error("error in NACA4Calculator::camberline_derivative: x must be between 0 and 1.");
                 }
+                return 0;
             }
+            return 0;
         }
 
         gp_Vec2d NACA4Calculator::normal(double x) const{
