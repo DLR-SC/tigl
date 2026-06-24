@@ -237,7 +237,9 @@ enum TiglGeometricComponentType
     TIGL_COMPONENT_TANK                   = 27, /**< The Component is a fuel tank */
     TIGL_COMPONENT_TANK_HULL              = 28, /**< The Component is a vessel of a fuel tank */
     TIGL_COMPONENT_SYSTEM_COMPONENT       = 29, /**< The Component is a system component */
-    TIGL_COMPONENT_OTHER                  = 30
+    TIGL_COMPONENT_DECK                   = 30, /**< The Component is a fuselage deck */
+    TIGL_COMPONENT_DECK_COMPONENT         = 31, /**< The Component is a component of a fuselage deck */
+    TIGL_COMPONENT_OTHER                  = 32
 };
 
 typedef enum TiglGeometricComponentType TiglGeometricComponentType;

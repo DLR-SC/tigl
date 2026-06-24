@@ -42,7 +42,6 @@ public:
     TIGL_EXPORT CCPACSTransformation(CCPACSExternalObject* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSVessel* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSFuelTank* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSTransformation(CCPACSGenericGeometryComponent* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSLandingGearBase* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSNacelleSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSRotor* parent, CTiglUIDManager* uidMgr);
@@ -52,7 +51,9 @@ public:
     TIGL_EXPORT CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSExternalGeometry* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
-
+    TIGL_EXPORT CCPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
+    
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT void reset();

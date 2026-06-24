@@ -185,10 +185,16 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
             sectionElement = wingElement.GetCTiglSectionElement();
         }
-        modificatorContainerWidget->setElementModificator(*(sectionElement));
-        std::vector<tigl::CTiglSectionElement*> elements;
-        elements.push_back(sectionElement);
-        highlight(elements);
+
+        if (sectionElement && sectionElement->IsValid()) {
+            modificatorContainerWidget->setElementModificator(*sectionElement);
+            std::vector<tigl::CTiglSectionElement*> elements;
+            elements.push_back(sectionElement);
+            highlight(elements);
+        }
+        else {
+            modificatorContainerWidget->setNoInterfaceWidget();
+        }
     }
     else if (item->getType() == "section") {
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
@@ -212,13 +218,34 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             }
         }
 
-        highlight(cTiglElements);
-        modificatorContainerWidget->setSectionModificator(qCTiglElements);
+        bool isEditable = !qCTiglElements.isEmpty();
+        for (tigl::CTiglSectionElement* element : qCTiglElements) {
+            if (!element || !element->IsValid()) {
+                isEditable = false;
+                break;
+            }
+        }
+
+        if (isEditable) {
+            highlight(cTiglElements);
+            modificatorContainerWidget->setSectionModificator(qCTiglElements);
+        }
+        else {
+            modificatorContainerWidget->setNoInterfaceWidget();
+        }
     }
     else if (item->getType() == "sections" ) {
-        std::string bodyUID = item->getParent()->getUid(); // return the fuselage or wing uid
-        auto element = resolve(bodyUID);
-        modificatorContainerWidget->setSectionsModificator(std::move(element));
+
+        cpcr::CPACSTreeItem* parent = item->getParent();
+
+        if (parent && (parent->getType() == "wing" || parent->getType() == "fuselage")) {
+            std::string bodyUID = parent->getUid(); // return the fuselage or wing uid
+            auto element        = resolve(bodyUID);
+            modificatorContainerWidget->setSectionsModificator(std::move(element));
+        }
+        else {
+            modificatorContainerWidget->setNoInterfaceWidget();
+        }
     }
     else if (item->getType() == "positioning" ) {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();

@@ -27,14 +27,13 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeckComponentBase;
+class CCPACSDeck;
 
 namespace generated
 {
-    class CPACSDeckComponent2DBase;
-    class CPACSStructuralElements;
-
     // This class is used in:
-    // CPACSStructuralElements
+    // CPACSDeck
 
     /// @brief Seat modules
     /// 
@@ -43,13 +42,13 @@ namespace generated
     class CPACSSeatModules
     {
     public:
-        TIGL_EXPORT CPACSSeatModules(CPACSStructuralElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSeatModules(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSeatModules();
 
-        TIGL_EXPORT CPACSStructuralElements* GetParent();
+        TIGL_EXPORT CCPACSDeck* GetParent();
 
-        TIGL_EXPORT const CPACSStructuralElements* GetParent() const;
+        TIGL_EXPORT const CCPACSDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -60,28 +59,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckComponent2DBase>>& GetSeatModules();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetSeatModules() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeckComponentBase>>& GetSeatModules();
 
         TIGL_EXPORT virtual size_t GetSeatModuleCount() const;
         TIGL_EXPORT virtual size_t GetSeatModuleIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetSeatModule(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetSeatModule(size_t index);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetSeatModule(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetSeatModule(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckComponent2DBase& GetSeatModule(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& GetSeatModule(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSDeckComponentBase& GetSeatModule(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& GetSeatModule(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckComponent2DBase& AddSeatModule();
-        TIGL_EXPORT virtual void RemoveSeatModule(CPACSDeckComponent2DBase& ref);
+        TIGL_EXPORT virtual CCPACSDeckComponentBase& AddSeatModule();
+        TIGL_EXPORT virtual void RemoveSeatModule(CCPACSDeckComponentBase& ref);
 
     protected:
-        CPACSStructuralElements* m_parent;
+        CCPACSDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
         /// Seat module
-        std::vector<std::unique_ptr<CPACSDeckComponent2DBase>> m_seatModules;
+        std::vector<std::unique_ptr<CCPACSDeckComponentBase>> m_seatModules;
 
     private:
         CPACSSeatModules(const CPACSSeatModules&) = delete;
@@ -94,6 +93,4 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSeatModules = generated::CPACSSeatModules;
-using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
-using CCPACSStructuralElements = generated::CPACSStructuralElements;
 } // namespace tigl

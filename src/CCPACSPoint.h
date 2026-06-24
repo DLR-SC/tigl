@@ -27,8 +27,6 @@ public:
     TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceStep* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSControlSurfaceHingePoint* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(CCPACSBoundingBox* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSPoint(CCPACSDeckElementMass* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSPoint(CCPACSElementMass* parent, CTiglUIDManager* uidMgr);
