@@ -20,7 +20,10 @@ bool hasControlSurfaces(TIGLCreatorDocument* doc, const QString& uid)
 
     try {
         auto& config = doc->GetConfiguration();
-        if (uid.isEmpty()) {
+        tigl::CTiglUIDManager& uidMgr = config.GetUIDManager();
+        // As the uid can also be an aircraft uid we need to check if the uid is anything else than a wing. 
+        // The fucntion is designed to work for wings and aircrafts and therefore has to check both cases.
+        if (uid.isEmpty() || !uidMgr.IsType<tigl::CCPACSWing>(uid.toStdString())) {
             for (int wingIndex = 1; wingIndex <= config.GetWingCount(); ++wingIndex) {
                 tigl::CCPACSWing& wing = config.GetWing(wingIndex);
                 for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
@@ -70,7 +73,7 @@ bool hasStructure(TIGLCreatorDocument* doc, const QString& uid)
                 }
             }
         }
-        else if (uidMgr.IsType<tigl::CCPACSWing>(uid.toStdString())) {
+        else {
             tigl::CCPACSWing& wing = doc->GetConfiguration().GetWing(uid.toStdString());
             for (int segmentIndex = 1; segmentIndex <= wing.GetComponentSegmentCount(); ++segmentIndex) {
                 tigl::CCPACSWingComponentSegment& segment = wing.GetComponentSegment(segmentIndex);
