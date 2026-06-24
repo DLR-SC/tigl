@@ -48,7 +48,7 @@ class Decks(unittest.TestCase):
 
     def test_deck(self):
 
-        deck = self.uid_mgr.get_geometric_component("deck1")
+        deck = self.uid_mgr.get_geometric_component("deck")
         self.assertIsInstance(deck, geometry.ITiglGeometricComponent)
         self.assertIsInstance(deck, configuration.CCPACSDeck)
 
