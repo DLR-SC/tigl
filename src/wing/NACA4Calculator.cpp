@@ -223,8 +223,8 @@ namespace tigl{
                 std::cerr << "k1 " << k1<< std::endl;
                 double m = m_const(s, p, q);
                 std::cerr << "m " << m<< std::endl;
-                double frack1k2 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
-                std::cerr << "frack1k2 " << frack1k2<< std::endl;
+                double frack2k1 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
+                std::cerr << "frack2k1 " << frack2k1<< std::endl;
                 if(q == 0){
                      //std::cerr << "x " << x<< std::endl;
 
@@ -260,22 +260,22 @@ namespace tigl{
                     }
                     if(0 <= x && x <= p){
                     
-                        //double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m)))); 
-                        double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack1k2*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3))))/2; 
+                        //double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack2k1*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m)))); 
+                        double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack2k1*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3))))/2; 
                         //std::cerr << "x<p " << x<< std::endl;
                         //std::cerr << "m " << m<< std::endl;
                         //std::cerr << "x " << x<< std::endl;
                         //std::cerr << "k1 " << k1<< std::endl;
-                        //std::cerr << "frack1k2 " << frack1k2<< std::endl;
+                        //std::cerr << "frack2k1 " << frack2k1<< std::endl;
                         //std::cerr << "result1 " << result1<< std::endl;
                         //double yt = profile_thickness(x); 
                         //std::cerr << "yt " << yt<< std::endl;
                         return result1;
                     }
                     else if(x > p){ 
-                        double result2 = (k1/6)*(frack1k2*((x-m)*(x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
+                        double result2 = (k1/6)*(frack2k1*((x-m)*(x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
                         //std::cerr << "x>p " << x<< std::endl;
-                        //std::cerr << "result2 " << frack1k2 << std::endl;
+                        //std::cerr << "result2 " << frack2k1 << std::endl;
                         //std::cerr << "p " << p<< std::endl;
                         //double yt = profile_thickness(x); 
                         //std::cerr << "yt " << yt<< std::endl;
@@ -344,7 +344,7 @@ namespace tigl{
                 double q = this->reflex;
                 double k1 = k1_const(s, p, q);
                 double m = m_const(s, p, q);
-                double frack1k2 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
+                double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
                 if(p == 0){
                     return 0;
                 }
@@ -360,12 +360,12 @@ namespace tigl{
                 }
                 else if(q==1){
                     if(0 <= x && x <= p){
-                        double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m));
+                        double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m));
                         //std::cerr << "result5 " << result5 << std::endl;
                         return result5;
                     }
                     else if(x > p){
-                        return (k1/6)*(3*frack1k2*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
+                        return (k1/6)*(3*frack2k1*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
                 }
                 else{
