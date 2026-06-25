@@ -166,6 +166,10 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
+      - name: Install TiGL (required for Python bindings)
+        if: ${{ inputs.pixienv == 'python-internal' && startsWith(inputs.os, 'ubuntu') }}
+        run: cmake --install build
+
       - name: Run unit tests
         run: pixi run -e ${{ inputs.pixienv }} unittests
 
