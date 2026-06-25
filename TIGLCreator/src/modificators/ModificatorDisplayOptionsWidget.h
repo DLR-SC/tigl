@@ -35,6 +35,9 @@ class QButtonGroup;
 class QPushButton;
 class QComboBox;
 class QColor;
+// callbacks used for draw options (avoid direct QAction dependency)
+#include <vector>
+#include <functional>
 
 class ModificatorDisplayOptionsWidget : public CpacsEditorBase
 {
@@ -73,6 +76,9 @@ private:
     QPushButton* buttonColorChoser{nullptr};
     QComboBox* materialCombo{nullptr};
     QPushButton* buttonResetOptions{nullptr};
+
+    // Callbacks mapped to indices of ui->drawOptionsCombo (used for wing draw options)
+    std::vector<std::function<void()>> drawCallbacks;
 
     cpcr::CPACSTreeItem* currentItem{nullptr};
     TIGLCreatorDocument* currentDoc{nullptr};

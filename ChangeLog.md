@@ -13,9 +13,12 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - TIGLCreator: Add a display options tab to the editor. This enables users to change display settings for the selected component and also offers to choose the corresponding draw options. The draw options are also centralized and modified using the scene graph functionality. Therefore the configuration stays visible upon choosing a draw option like the flaps. [#1270](https://github.com/DLR-SC/tigl/pull/1270) and [#1279](https://github.com/DLR-SC/tigl/pull/1279)
+  - TiGLCreator: Disable Standardize menu option, until the algorithm works reliably [#1336](https://github.com/DLR-SC/tigl/issues/1336)
   - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
   - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
   - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
+  - Add geometry and mass-property evaluation for fuselage decks ([#1298](https://github.com/DLR-SC/tigl/pull/1298), [CPACS#859](https://github.com/DLR-SL/CPACS/issues/859))
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
   - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
@@ -27,6 +30,8 @@ Changes since last release
   - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
 
 - Fixes
+  - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
+  - Fix error when displaying an aircraft with pylon but without segments. Now returns null geometry gracefully instead of throwing an error
   - Fix wrong behaviour in GUI for the spinbox of the wing sweep and dihedral chord percantage ([#1327](https://github.com/DLR-SC/tigl/pull/1327))
   - Fix hard crash for invalid xml files ([#1322](https://github.com/DLR-SC/tigl/pull/1322))
   - Fix many CMake and compiler warnings ([#1307](https://github.com/DLR-SC/tigl/pull/1307))

@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLuggageCompartmentElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetLuggageCompartmentElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetLuggageCompartmentElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetLuggageCompartmentElements();
 
         TIGL_EXPORT virtual size_t GetLuggageCompartmentElementCount() const;
         TIGL_EXPORT virtual size_t GetLuggageCompartmentElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLuggageCompartmentElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetLuggageCompartmentElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetLuggageCompartmentElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetLuggageCompartmentElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetLuggageCompartmentElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetLuggageCompartmentElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetLuggageCompartmentElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetLuggageCompartmentElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddLuggageCompartmentElement();
-        TIGL_EXPORT virtual void RemoveLuggageCompartmentElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddLuggageCompartmentElement();
+        TIGL_EXPORT virtual void RemoveLuggageCompartmentElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Luggage compartment element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_luggageCompartmentElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_luggageCompartmentElements;
 
     private:
         CPACSLuggageCompartmentElements(const CPACSLuggageCompartmentElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSLuggageCompartmentElements = generated::CPACSLuggageCompartmentElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

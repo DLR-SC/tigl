@@ -30,6 +30,7 @@
 #include "CSharedPtr.h"
 
 #include "ui_TIGLCreatorWindow.h"
+#include "DrawOptionsActions.h"
 
 #include "ModificatorModel.h"
 
@@ -142,6 +143,10 @@ private:
     void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
 
+    void populateDrawMenu(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void updateDrawMenuAvailability(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void setupDrawMenus();
+
     QAction *recentFileActions[MaxRecentFiles];
 
     // The OpenCASCADE context;
@@ -172,4 +177,3 @@ private:
 };
 
 #endif
-

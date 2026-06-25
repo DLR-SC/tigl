@@ -87,7 +87,7 @@ namespace generated
     void CPACSCuboid::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element lengthX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/lengthX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/lengthX")) {
             m_lengthX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/lengthX");
         }
         else {
@@ -95,7 +95,7 @@ namespace generated
         }
 
         // read element depthY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/depthY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/depthY")) {
             m_depthY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/depthY");
         }
         else {
@@ -103,7 +103,7 @@ namespace generated
         }
 
         // read element heightZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/heightZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/heightZ")) {
             m_heightZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/heightZ");
         }
         else {
@@ -111,22 +111,22 @@ namespace generated
         }
 
         // read element upperFaceXmin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperFaceXmin")) {
             m_upperFaceXmin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmin");
         }
 
         // read element upperFaceXmax
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceXmax")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperFaceXmax")) {
             m_upperFaceXmax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceXmax");
         }
 
         // read element upperFaceYmin
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmin")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperFaceYmin")) {
             m_upperFaceYmin = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmin");
         }
 
         // read element upperFaceYmax
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/upperFaceYmax")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/upperFaceYmax")) {
             m_upperFaceYmax = tixi::TixiGetElement<double>(tixiHandle, xpath + "/upperFaceYmax");
         }
 

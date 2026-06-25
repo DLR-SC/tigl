@@ -36,16 +36,6 @@ CCPACSPoint::CCPACSPoint(CCPACSPointList* parent, CTiglUIDManager* uidMgr)
 {
 }
 
-CCPACSPoint::CCPACSPoint(CCPACSBoundingBox* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPoint(parent, uidMgr)
-{
-}
-
-CCPACSPoint::CCPACSPoint(CCPACSDeckElementMass* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSPoint(parent, uidMgr)
-{
-}
-
 CCPACSPoint::CCPACSPoint(CCPACSTransformation* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPoint(parent, uidMgr)
 {

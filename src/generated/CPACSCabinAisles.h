@@ -17,38 +17,39 @@
 
 #pragma once
 
-#include <CCPACSTransformation.h>
+#include <memory>
 #include <string>
 #include <tixi.h>
-#include "CPACSLinkToFile.h"
+#include <vector>
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeck;
 
 namespace generated
 {
-    class CPACSDeckElementGeometry;
+    class CPACSCabinAisle;
 
     // This class is used in:
-    // CPACSDeckElementGeometry
+    // CPACSDeck
 
-    /// @brief Generic geometry component
+    /// @brief Cabin aisles
     /// 
     /// 
     /// 
-    class CPACSGenericGeometryComponent
+    class CPACSCabinAisles
     {
     public:
-        TIGL_EXPORT CPACSGenericGeometryComponent(CPACSDeckElementGeometry* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCabinAisles(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSGenericGeometryComponent();
+        TIGL_EXPORT virtual ~CPACSCabinAisles();
 
-        TIGL_EXPORT CPACSDeckElementGeometry* GetParent();
+        TIGL_EXPORT CCPACSDeck* GetParent();
 
-        TIGL_EXPORT const CPACSDeckElementGeometry* GetParent() const;
+        TIGL_EXPORT const CCPACSDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,30 +60,38 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const CPACSLinkToFile& GetLinkToFile() const;
-        TIGL_EXPORT virtual CPACSLinkToFile& GetLinkToFile();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCabinAisle>>& GetAisles() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCabinAisle>>& GetAisles();
 
-        TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
-        TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
+        TIGL_EXPORT virtual size_t GetAisleCount() const;
+        TIGL_EXPORT virtual size_t GetAisleIndex(const std::string& UID) const;
+
+        TIGL_EXPORT virtual const CPACSCabinAisle& GetAisle(size_t index) const;
+        TIGL_EXPORT virtual CPACSCabinAisle& GetAisle(size_t index);
+
+        TIGL_EXPORT virtual const CPACSCabinAisle& GetAisle(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSCabinAisle& GetAisle(const std::string& UID);
+
+        TIGL_EXPORT virtual CPACSCabinAisle& AddAisle();
+        TIGL_EXPORT virtual void RemoveAisle(CPACSCabinAisle& ref);
 
     protected:
-        CPACSDeckElementGeometry* m_parent;
+        CCPACSDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        CPACSLinkToFile      m_linkToFile;
-        CCPACSTransformation m_transformation;
+        std::vector<std::unique_ptr<CPACSCabinAisle>> m_aisles;
 
     private:
-        CPACSGenericGeometryComponent(const CPACSGenericGeometryComponent&) = delete;
-        CPACSGenericGeometryComponent& operator=(const CPACSGenericGeometryComponent&) = delete;
+        CPACSCabinAisles(const CPACSCabinAisles&) = delete;
+        CPACSCabinAisles& operator=(const CPACSCabinAisles&) = delete;
 
-        CPACSGenericGeometryComponent(CPACSGenericGeometryComponent&&) = delete;
-        CPACSGenericGeometryComponent& operator=(CPACSGenericGeometryComponent&&) = delete;
+        CPACSCabinAisles(CPACSCabinAisles&&) = delete;
+        CPACSCabinAisles& operator=(CPACSCabinAisles&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSGenericGeometryComponent = generated::CPACSGenericGeometryComponent;
-using CCPACSDeckElementGeometry = generated::CPACSDeckElementGeometry;
+using CCPACSCabinAisles = generated::CPACSCabinAisles;
+using CCPACSCabinAisle = generated::CPACSCabinAisle;
 } // namespace tigl
