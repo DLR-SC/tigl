@@ -64,7 +64,6 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
     _makeSolid = true;
-    _enableProfileCutting = true;
     _result.Nullify();
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
@@ -73,7 +72,6 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
-    _enableProfileCutting = true;
     _result.Nullify();
     _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;

@@ -172,7 +172,7 @@ TEST(FuselageStandardProfileSuperEllipse_kinks, issue_1094)
 
     // check number of faces. It should be Front, Rear and additionally four faces, one face per quadrant.
     // If there are additional kinks, there are more faces
-    auto fuselage = config.GetFuselage(1).GetLoft();
+    auto fuselage = config.GetFuselage(1).GetTrimmedLoft();
     int face_count = 0;
     for (int i=0; i < fuselage->GetFaceCount(); ++i) {
         if (fuselage->GetFaceTraits(i).Name() != "Front" && fuselage->GetFaceTraits(i).Name() != "Rear") {

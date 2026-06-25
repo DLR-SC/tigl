@@ -54,6 +54,9 @@
 #include "CPACSElementGeometry.h"
 #include "CPACSElementMass.h"
 
+#include "CCPACSFuselage.h"
+#include "CCPACSWing.h"
+
 #include "CNamedShape.h"
 
 namespace tigl
@@ -267,6 +270,18 @@ PNamedShape CCPACSComponent::BuildLocalLoft() const
 PNamedShape CCPACSComponent::BuildLoft() const
 {
     return GetTransformationMatrix().Transform(BuildLocalLoft());
+}
+
+PNamedShape CCPACSComponent::GetUntrimmedLoft() const
+{
+    // Default to current behavior (no trimming support for generic components)
+    return GetLoft();
+}
+
+PNamedShape CCPACSComponent::GetTrimmedLoft() const
+{
+    // Default to current behavior (no trimming support for generic components)
+    return GetLoft();
 }
 
 void CCPACSComponent::BuildMass(MassCache& cache) const

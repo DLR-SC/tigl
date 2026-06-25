@@ -252,23 +252,11 @@ public:
      */
     TIGL_EXPORT std::vector<std::string> GetAllUsedProfiles();
 
-     /**
-      * Set the profile uid of all the section elements of this fuselage.
-      * @param profileUID ; the profile UID to use
-      */
+      /**
+       * Set the profile uid of all the section elements of this fuselage.
+       * @param profileUID ; the profile UID to use
+       */
     TIGL_EXPORT void SetAllProfiles(const std::string& profileUID);
-
-
-protected:
-
-    void BuildCleanLoftUntrimmed(PNamedShape& cache) const;
-    void BuildCleanLoftTrimmed(PNamedShape& cache) const;
-
-    // Cleanup routine
-    void Cleanup();
-
-    // Adds all segments of this fuselage to one shape
-    PNamedShape BuildLoft() const override;
 
     /**
      * @brief Returns the fuselage loft (untrimmed, i.e. without UV cuts at profile positions).
@@ -286,6 +274,17 @@ protected:
 
     void SetFaceTraitsUntrimmed(PNamedShape loft) const;
     void SetFaceTraitsTrimmed(PNamedShape loft) const;
+
+protected:
+
+    void BuildCleanLoftUntrimmed(PNamedShape& cache) const;
+    void BuildCleanLoftTrimmed(PNamedShape& cache) const;
+
+    // Cleanup routine
+    void Cleanup();
+
+    // Adds all segments of this fuselage to one shape
+    PNamedShape BuildLoft() const override;
 
     void SetFuselageHelper(CTiglFuselageHelper& cache) const ;
 
