@@ -2788,17 +2788,21 @@ void TIGLCreatorDocument::drawRotorBladeShells(const QString& Uid)
 void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 {
     removeAirfoil();
-    START_COMMAND()
-    tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(uid.toStdString());
-    if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
+    QString rotorUid = dlgGetRotorSelection(uid);
+    if (rotorUid == "") {
+        return;
+    }
 
+    START_COMMAND()
+    tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
+    if (!app->getScene()->GetShapeManager().HasShapeEntry(rotorUid.toStdString())) {
         // Draw segment loft
         app->getScene()->displayShape(rotor.GetLoft(), true, Quantity_NOC_RotorCol);
 
         // Draw rotor disk
         TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
         auto shape = app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
-        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
 
         if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
             return;
@@ -2806,7 +2810,7 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 
         // Draw mirrored rotor
         shape = app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
-        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
 
         // Draw mirrored rotor disk
         gp_Ax2 mirrorPlane;
@@ -2825,10 +2829,10 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
         const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
 
         shape = app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
-        app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
     }
     else {
-        IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+        IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(rotorUid.toStdString());
         for (auto& obj : objects) {
             app->getScene()->getContext()->Display(obj, Standard_False);
         }
