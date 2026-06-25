@@ -166,8 +166,15 @@ jobs:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
-      - name: Run unit and integration tests
-        run: pixi run -e ${{ inputs.pixienv }} tests
+      - name: Run unit tests
+        run: pixi run -e ${{ inputs.pixienv }} unittests
+
+      - name: Run integration tests
+        run: pixi run -e ${{ inputs.pixienv }} integrationtests
+
+      - name: Run Python tests
+        if: ${{ inputs.pixienv == 'python-internal' && startsWith(inputs.os, 'ubuntu') }}
+        run: pixi run -e ${{ inputs.pixienv }} pythontests
 
       - name: Publish coverage report to codecov.io
         if: ${{ inputs.pixienv == 'coverage' }}
