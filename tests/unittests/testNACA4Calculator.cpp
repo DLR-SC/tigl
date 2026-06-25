@@ -209,7 +209,7 @@ TEST(NACA4Calculator, naca001515_trailingedge_length){
     double half_thickness1_y = result1.Y();
     double half_thickness1_x = result1.X();
     gp_Vec2d result2 = NACA4.lower_curve(1);
-    double half_thickness2_y = result2.Y();
+    double half_thickness2_y = result2.Y();                                                                                                                                                                         
     double half_thickness2_x = result2.X();
     double thickness = sqrt((half_thickness1_x - half_thickness2_x)*(half_thickness1_x - half_thickness2_x)+(half_thickness1_y - half_thickness2_y)*(half_thickness1_y - half_thickness2_y));
 
@@ -450,8 +450,8 @@ TEST(NACA4Calculator, naca22012_le_and_te_points){
     
 }
 
-TEST(NACA4Calculator, naca22012_export_bsplines){
-    tigl::NACA4Calculator NACA4(2,2,0,12, 0.00252);
+TEST(NACA4Calculator, naca23012_export_bsplines){
+    tigl::NACA4Calculator NACA4(2,3,0,12, 0.00252);
     Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
     Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
     ASSERT_FALSE(upperCurve.IsNull());

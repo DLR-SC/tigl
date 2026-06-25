@@ -206,48 +206,79 @@ namespace tigl{
                     throw ::std::logic_error("error in NACA4Calculator::camberline::NACA4: x must be between 0 and 1.");
                 }
                 else if(0 <= x && x <= p){
-                    return (2*p*x - x*x)*m/(p*p);; 
+                    return (2*p*x - x*x)*m/(p*p);
                 }
                 else if(x > p){ 
-                    return (1 - 2*p + 2*p*x - x*x)*m/((1-p)*(1-p));;
+                    return (1 - 2*p + 2*p*x - x*x)*m/((1-p)*(1-p));
                 }
             }
             else if(series_ == Series::NACA5){
                 double s = this->max_camber;
+                std::cerr << "s " << s<< std::endl;
                 double p = this->max_camber_position;
+                std::cerr << "p " << p<< std::endl;
                 double q = this->reflex;
+                std::cerr << "q " << q<< std::endl;
                 double k1 = k1_const(s, p, q);
+                std::cerr << "k1 " << k1<< std::endl;
                 double m = m_const(s, p, q);
+                std::cerr << "m " << m<< std::endl;
                 double frack1k2 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
+                std::cerr << "frack1k2 " << frack1k2<< std::endl;
                 if(q == 0){
+                     //std::cerr << "x " << x<< std::endl;
+
                     if(p == 0){
                         return 0;
                     }
                     if(0 <= x && x <= p){
                         double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
-                        std::cerr << "result " << result << std::endl;
+                        //std::cerr << "result okay " << result << std::endl;
+                        //std::cerr << "m " << m<< std::endl;
+                        //double yt = profile_thickness(x); 
+                        //std::cerr << "yt " << yt<< std::endl;
+                        //double yc = camberline(x);
+                        //std::cerr << "camberline " << yc<< std::endl;
                         return result;
                     }
                     else if(x > p){ 
                         double result3 = ((k1*m*m*m)/6)*(1-x);
-                        std::cerr << "result3 " << result3 << std::endl;
+                        //std::cerr << "result3 " << result3 << std::endl;
+                         //std::cerr << "p " << p<< std::endl;
+                        //double yt = profile_thickness(x); 
+                        //double yc = camberline(x);
+                        //std::cerr << "camberline " << yc<< std::endl;
+                        
                         return result3;
                     }
                 }
                 else if(q == 1){
+                        //std::cerr << "x " << x<< std::endl;
+
                     if(p == 0){
                         return 0.0;
                     }
                     if(0 <= x && x <= p){
                     
-                        double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m))))/5; 
-                        //std::cerr << "result1 " << result1 << std::endl;
-                    
+                        //double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack1k2*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m)))); 
+                        double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack1k2*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3))))/2; 
+                        //std::cerr << "x<p " << x<< std::endl;
+                        //std::cerr << "m " << m<< std::endl;
+                        //std::cerr << "x " << x<< std::endl;
+                        //std::cerr << "k1 " << k1<< std::endl;
+                        //std::cerr << "frack1k2 " << frack1k2<< std::endl;
+                        //std::cerr << "result1 " << result1<< std::endl;
+                        //double yt = profile_thickness(x); 
+                        //std::cerr << "yt " << yt<< std::endl;
                         return result1;
                     }
                     else if(x > p){ 
                         double result2 = (k1/6)*(frack1k2*((x-m)*(x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
-                        //std::cerr << "result2 " << result2 << std::endl;
+                        //std::cerr << "x>p " << x<< std::endl;
+                        //std::cerr << "result2 " << frack1k2 << std::endl;
+                        //std::cerr << "p " << p<< std::endl;
+                        //double yt = profile_thickness(x); 
+                        //std::cerr << "yt " << yt<< std::endl;
                         return result2;
                     }
                     }
@@ -267,11 +298,11 @@ namespace tigl{
             double yc = camberline(x);
             std::cerr << "\t camberline \t " << yc << std::endl;
             auto point = gp_Vec2d{x, yc};
-            std::cerr << "\t point.x \t " << point.X();
-            std::cerr << "\t point.y \t " << point.Y() << std::endl;
+            //std::cerr << "\t point.x \t " << point.X();
+            //std::cerr << "\t point.y \t " << point.Y() << std::endl;
             gp_Vec2d point_calculated = point + yt*normal(x);
-            std::cerr << "\t point_calculatedX \t " << point_calculated.X();
-            std::cerr << "\t point_calculatedY \t " << point_calculated.Y() << "\n\n";
+            //std::cerr << "\t point_calculatedX \t " << point_calculated.X();
+            //std::cerr << "\t point_calculatedY \t " << point_calculated.Y() << "\n\n";
             return point + yt*normal(x);
         }
         
@@ -319,7 +350,9 @@ namespace tigl{
                 }
                 if(q == 0){
                     if(0 <= x && x <= p){
-                        return (k1/6)*(3*x*x-6*m*x+m*m*(3-m));
+                        double result6 = (k1/6)*(3*x*x-6*m*x+m*m*(3-m));
+                        //std::cerr << "result6 okay " << result6 << std::endl;
+                        return result6;
                     }
                     else if(x > p){
                         return -((k1*m*m*m)/6);
@@ -327,7 +360,9 @@ namespace tigl{
                 }
                 else if(q==1){
                     if(0 <= x && x <= p){
-                        return ((k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m));
+                        double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m));
+                        //std::cerr << "result5 " << result5 << std::endl;
+                        return result5;
                     }
                     else if(x > p){
                         return (k1/6)*(3*frack1k2*((x-m)*(x-m))-frack1k2*((1-m)*(1-m)*(1-m))-m*m*m);
@@ -357,7 +392,7 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-5;
+            double tolerance=1e-5;//war 5!!
             int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
