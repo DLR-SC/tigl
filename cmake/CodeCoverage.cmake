@@ -67,7 +67,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _testdir _outputname)
         ENDIF() # TIGL_COVERAGE_GENHTML
         
         # copy testdata
-        file(COPY ${PROJECT_SOURCE_DIR}/${_testdir}/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+        file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         if (BUILD_TIGL_CONFIDENTIAL_TESTS)
             file(COPY ${PROJECT_SOURCE_DIR}/tests/conftests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
         endif()

@@ -14,7 +14,7 @@ ADD_TEST(
 add_custom_command(
         TARGET ${test_BIN} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/TestData
+                ${PROJECT_SOURCE_DIR}/TestData
                 ${CMAKE_CURRENT_BINARY_DIR}/TestData)
 
 #create directory to avoid crash in unit tests

@@ -16,17 +16,10 @@ ADD_TEST(
 add_custom_command(
         TARGET ${test_BIN} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/TestData
+                ${PROJECT_SOURCE_DIR}/TestData
                 ${CMAKE_CURRENT_BINARY_DIR}/TestData)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pythonwrapper-tests.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 #create directory to avoid crash in unit tests
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/analysis)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/bugs/505)
-
-configure_file (
-  "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
-)
