@@ -320,10 +320,6 @@ class TestTiglApi(unittest.TestCase):
         (eta, xsi) = self.tigl.wingSegmentPointGetComponentSegmentEtaXsi('D150_VAMP_W1_Seg1', 'D150_VAMP_W1_CompSeg1', 0.0, 0.0)
         self.assertAlmostEqual(eta, 0.0)
         self.assertAlmostEqual(xsi, 0.0)
-        
-    def test_getFuselageCount(self):
-        fc = self.tigl.getFuselageCount()
-        self.assertEqual(fc,1)
     
     def test_fuselageGetSegmentCount(self):
         sc = self.tigl.fuselageGetSegmentCount(1)
@@ -501,11 +497,6 @@ class TestTiglApi(unittest.TestCase):
         ret = self.tigl.fuselageGetSegmentVolume(fuselageIndex, segmentIndex)
         self.assertEqual(isinstance(ret,float),True)
             
-    def test_wingGetSurfaceArea(self):
-        wingIndex = 1
-        ret = self.tigl.wingGetSurfaceArea(wingIndex)
-        self.assertEqual(isinstance(ret,float),True)
-            
     def test_wingGetSegmentSurfaceArea(self):
         wingIndex = 1
         segmentIndex = 1
@@ -533,7 +524,8 @@ class TestTiglApi(unittest.TestCase):
         self.assertEqual(isinstance(ret,float),True)
         
     def test_wingGetSurfaceArea(self):
-        area = self.tigl.wingGetSurfaceArea(1);
+        area = self.tigl.wingGetSurfaceArea(1)
+        self.assertEqual(isinstance(area,float),True)
         self.assertGreater(area, 125.)
         self.assertLess(area, 135.)
         
