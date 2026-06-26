@@ -511,3 +511,9 @@ TEST(NACA4Calculator, naca24112_export_bsplines){
     ASSERT_FALSE(upperEdge.IsNull());
     BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_24112.brep");
 }
+TEST(NACA4Calculator, naca24112_export_bsplines2){
+    tigl::NACA4Calculator NACA4(2,4,1,12, 0.00252);
+    for(double x =0; x<1; x+=0.05){
+        auto z = NACA4.upper_curve(x);
+    }
+}

@@ -152,7 +152,7 @@ namespace tigl{
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
             int reflex_int = static_cast<int>(reflex);
             double m;
-            //alles von chapter 8 table 8-6
+            //alles von chapter 8 table 8-6 und von https://ntrs.nasa.gov/api/citations/19970008124/downloads/19970008124.pdf
             std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
             int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
@@ -193,6 +193,56 @@ namespace tigl{
             return m; 
         }
 
+        double NACA4Calculator::k2k1_const(double max_camber, double max_camber_position, double reflex) const{
+            int max_camber_cl_whole = static_cast<int>(max_camber*100);
+            int max_camber_position_whole = static_cast<int>(max_camber_position*20);
+            int reflex_int = static_cast<int>(reflex);
+            double k2k1;
+            //alles von chapter 8 table 8-6 und von https://ntrs.nasa.gov/api/citations/19970008124/downloads/19970008124.pdf
+            std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
+            int meanline_designation = std::stoi(meanline_designation_str);
+            switch(meanline_designation){
+                case 210:
+                     throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1.");
+                     break;
+                case 220:
+                     throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1.");
+                     break;
+                case 230:
+                     throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1m.");
+                     break;
+                case 240:
+                    throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1.");
+                    break;
+                case 250:
+                    throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1.");
+                    break;
+                case 211:
+                    throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for k2/k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    break;
+                case 221:
+                    k2k1 = 0.000764;
+                    break;
+                case 231:
+                    k2k1 = 0.00677;
+                    break;
+                case 241:
+                    k2k1 = 0.0303;
+                    break;
+                case 251:
+                    k2k1 = 0.1355;
+                    break;
+                default:
+                    throw ::std::logic_error("error in NACA4Calculator::k2k1: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    break;
+                }
+            return k2k1; 
+        }
+
+
+
+
+        
 
         double NACA4Calculator::camberline(double x) const{
         
@@ -214,24 +264,24 @@ namespace tigl{
             }
             else if(series_ == Series::NACA5){
                 double s = this->max_camber;
-                std::cerr << "s " << s<< std::endl;
+                //std::cerr << "s " << s<< std::endl;
                 double p = this->max_camber_position;
-                std::cerr << "p " << p<< std::endl;
+                //std::cerr << "p " << p<< std::endl;
                 double q = this->reflex;
-                std::cerr << "q " << q<< std::endl;
+                //std::cerr << "q " << q<< std::endl;
                 double k1 = k1_const(s, p, q);
-                std::cerr << "k1 " << k1<< std::endl;
+                //std::cerr << "k1 " << k1<< std::endl;
                 double m = m_const(s, p, q);
-                std::cerr << "m " << m<< std::endl;
-                double frack2k1 = (3*((m-p)*(m-p))-(m*m*m))/((1-m)*(1-m)*(1-m));
-                std::cerr << "frack2k1 " << frack2k1<< std::endl;
+                //std::cerr << "m " << m<< std::endl;
+                
+                //std::cerr << "frack2k1 " << frack2k1<< std::endl; //als konstanten machen
                 if(q == 0){
                      //std::cerr << "x " << x<< std::endl;
 
                     if(p == 0){
                         return 0;
                     }
-                    if(0 <= x && x <= p){
+                    if(0 <= x && x <= m){
                         double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
                         //std::cerr << "result okay " << result << std::endl;
                         //std::cerr << "m " << m<< std::endl;
@@ -241,7 +291,7 @@ namespace tigl{
                         //std::cerr << "camberline " << yc<< std::endl;
                         return result;
                     }
-                    else if(x > p){ 
+                    else if(x > m){ 
                         double result3 = ((k1*m*m*m)/6)*(1-x);
                         //std::cerr << "result3 " << result3 << std::endl;
                          //std::cerr << "p " << p<< std::endl;
@@ -253,26 +303,24 @@ namespace tigl{
                     }
                 }
                 else if(q == 1){
+                    double frack2k1 = k2k1_const(s,p,q);
                         //std::cerr << "x " << x<< std::endl;
 
                     if(p == 0){
                         return 0.0;
                     }
-                    if(0 <= x && x <= p){
+                    if(0 <= x && x <= m){
+                    
                     
                         //double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack2k1*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m)))); 
-                        double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack2k1*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3))))/2; 
-                        //std::cerr << "x<p " << x<< std::endl;
-                        //std::cerr << "m " << m<< std::endl;
-                        //std::cerr << "x " << x<< std::endl;
-                        //std::cerr << "k1 " << k1<< std::endl;
-                        //std::cerr << "frack2k1 " << frack2k1<< std::endl;
-                        //std::cerr << "result1 " << result1<< std::endl;
-                        //double yt = profile_thickness(x); 
-                        //std::cerr << "yt " << yt<< std::endl;
+                        //double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack2k1*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3)))); 
+                        double result1 = (k1/6)*(pow(x-m, 3) - frack2k1*pow(1-m, 3)*x - pow(m,3)*x + pow(m,3)); 
+                        //getloft funktion mit timeit laufzeit rausfinden -> auf cache achten, das der nicht gespeichert wird
+                        
                         return result1;
                     }
-                    else if(x > p){ 
+                    else if(x > m){ 
+                    
                         double result2 = (k1/6)*(frack2k1*((x-m)*(x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
                         //std::cerr << "x>p " << x<< std::endl;
                         //std::cerr << "result2 " << frack2k1 << std::endl;
@@ -292,11 +340,11 @@ namespace tigl{
 
         
         gp_Vec2d NACA4Calculator::upper_curve(double x) const{
-            std::cerr << "x \t  " << x;
+            //std::cerr << "x \t  " << x;
             double yt = profile_thickness(x); 
-            std::cerr << "\t profile thickness \t  " << yt;
+            //std::cerr << "\t profile thickness \t  " << yt;
             double yc = camberline(x);
-            std::cerr << "\t camberline \t " << yc << std::endl;
+            //std::cerr << "\t camberline \t " << yc << std::endl;
             auto point = gp_Vec2d{x, yc};
             //std::cerr << "\t point.x \t " << point.X();
             //std::cerr << "\t point.y \t " << point.Y() << std::endl;
@@ -328,10 +376,10 @@ namespace tigl{
                 if(p == 0){
                     return 0;
                 }
-                if(0 <= x && x <= p){
+                if(0 <= x && x <= m){
                     return (2*p - 2*x)*m/(p*p);
                 }
-                else if(x > p){
+                else if(x > m){
                     return ( 2*p - 2*x)*m/((1-p)*(1-p));;
                 }
                 else{
@@ -344,12 +392,12 @@ namespace tigl{
                 double q = this->reflex;
                 double k1 = k1_const(s, p, q);
                 double m = m_const(s, p, q);
-                double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
+                
                 if(p == 0){
                     return 0;
                 }
                 if(q == 0){
-                    if(0 <= x && x <= p){
+                    if(0 <= x && x <= m){
                         double result6 = (k1/6)*(3*x*x-6*m*x+m*m*(3-m));
                         //std::cerr << "result6 okay " << result6 << std::endl;
                         return result6;
@@ -359,12 +407,15 @@ namespace tigl{
                     }
                 }
                 else if(q==1){
-                    if(0 <= x && x <= p){
+                    double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
+                    if(0 <= x && x <= m){
+                    
                         double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m));
                         //std::cerr << "result5 " << result5 << std::endl;
                         return result5;
                     }
-                    else if(x > p){
+                    else if(x > 0.3180){
+                    
                         return (k1/6)*(3*frack2k1*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
                 }
@@ -393,7 +444,7 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;//war 5!!
-            int maxDepth = 10;
+            int maxDepth = 10;//war 10!!
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();

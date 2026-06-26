@@ -83,6 +83,7 @@ class NACA4Calculator{
         TIGL_EXPORT double profile_thickness(double x) const; 
         TIGL_EXPORT double m_const(double max_camber, double max_camber_position, double reflex) const;
         TIGL_EXPORT double k1_const(double max_camber, double max_camber_position, double reflex) const;
+        TIGL_EXPORT double k2k1_const(double max_camber, double max_camber_position, double reflex) const;
 
         TIGL_EXPORT Handle(Geom_BSplineCurve) upper_bspline() const; 
 
