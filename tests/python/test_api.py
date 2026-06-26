@@ -156,8 +156,10 @@ class TestTiglLogging(unittest.TestCase):
 
     def test_silent(self):
         status, out, err = self.get_logs(0)
-        self.assertTrue(len(out), 0)
-        self.assertTrue(len(err), 0)
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0], '')
+        self.assertEqual(len(err), 1)
+        self.assertEqual(err[0], '')
 
     def test_file_logging(self):
         status, out, err = self.get_logs(0)
