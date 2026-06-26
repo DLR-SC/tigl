@@ -177,8 +177,6 @@
      <property name="title">
       <string>Rotorcraft</string>
      </property>
-     <addaction name="drawRotorsAction"/>
-     <addaction name="showRotorPropertiesAction"/>
     </widget>
     <widget class="QMenu" name="menuRotorBlades">
      <property name="title">
