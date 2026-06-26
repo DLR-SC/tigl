@@ -68,7 +68,7 @@ else(OCE_FOUND)
             HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../ ${OpenCASCADE_RESOURCE_DIR}
   )
 
-  if(NOT DEFINED OpenCASCADE_SHADER_DIRECTORY)
+  if(OpenCASCADE_SHADER_DIRECTORY MATCHES "NOTFOUND" OR NOT DEFINED OpenCASCADE_SHADER_DIRECTORY)
     message(WARNING "OpenCASCADE shader directory not found. TiGLCreator shaders will not be installed.")
   else()
     get_filename_component(_shader_src "${OpenCASCADE_SHADER_DIRECTORY}" ABSOLUTE)
