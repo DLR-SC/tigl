@@ -6,7 +6,14 @@
     <creator>Tobias Stollenwerk, DLR, SC-VSS</creator>
     <timestamp>2014-01-17T08:42:00</timestamp>
     <version>0.4.0</version>
-    <cpacsVersion>3.2</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="0.4.0">
+        <cpacsVersion>3.99</cpacsVersion>
+        <creator>cpacs2to3</creator>
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
+        <timestamp>2018-01-15T09:22:57</timestamp>
+      </versionInfo>
+    </versionInfos>
     <updates>
       <update>
         <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
