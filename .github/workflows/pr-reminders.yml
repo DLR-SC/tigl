@@ -70,9 +70,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## Reminders for this PR
+            ## PR Reminders
 
             ${{ steps.reminders.outputs.reminders }}
+
+            ---
+            _This is an automated reminder from CI_
+          mode: upsert
+          append: false
+          comment-type: review
+
+      - name: Post all-clear comment
+        if: steps.reminders.outputs.reminders == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## PR Reminders
+
+            All looks good — no action needed.
 
             ---
             _This is an automated reminder from CI_
