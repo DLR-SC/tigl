@@ -14,6 +14,7 @@
 #include "CCPACSWing.h"
 
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepCheck_Analyzer.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -146,12 +147,11 @@ TEST(TestCTiglRoundedSegmentSurface, openCpacsTwoRoundedSegments){
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
         auto wing = config.GetWing(1).GetLoftWithCutouts();
-        tigl::dumpShape(wing, "makeLoftWing", "Surface",2);
-       // auto wing = config.GetWing(1).GetWingCleanShape();
-       // ASSERT_TRUE(BRepCheck_Analyzer(wing.IsValid()));
+        ASSERT_TRUE(BRepCheck_Analyzer(wing).IsValid());
 }
 
-TEST(TestCTiglRoundedSegmentSurface, openCpacsThreeRoundedSegments3){
+
+TEST(TestCTiglRoundedSegmentSurface, openCpacsThreeRoundedSegments){
 
     const char* filename = "TestData/simpletest-roundedSegmentSurface2.cpacs.xml";
     ReturnCode tixiRet;
@@ -173,7 +173,6 @@ TEST(TestCTiglRoundedSegmentSurface, openCpacsThreeRoundedSegments3){
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
     auto wing = config.GetWing(1).GetLoftWithCutouts();
-   // ASSERT_TRUE(BRepCheck_Analyzer(wing.IsValid()));
-    tigl::dumpShape(wing, "makeLoftWing", "Surface",3);
+    ASSERT_TRUE(BRepCheck_Analyzer(wing).IsValid());
 }
 
