@@ -35,36 +35,33 @@ jobs:
           CHANGED="${{ steps.changed.outputs.all_changed_files }}"
           REMINDERS=""
 
-          # Check for unit/integration test (src/ or TIGLCreator/ changed, but no unit/integration tests)
-          HAS_SRC=$(echo "$CHANGED" | grep -qE '^(src/|TIGLCreator/)' && echo "yes" || echo "no")
+          HAS_SRC=$(echo "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
+          HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
           HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
 
           if [ "$HAS_SRC" = "yes" ] && [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
-            REMINDERS="${REMINDERS}\n- 💡 **Tip**: Consider adding a unit or integration test"
+            REMINDERS+=$'- :bulb: **Tip**: Consider adding a unit or integration test\n'
           fi
 
-          # Check for Python bindings (src/ changed, but no bindings/python_internal changes)
           HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
 
           if [ "$HAS_SRC" = "yes" ] && [ "$HAS_BINDINGS" = "no" ]; then
-            REMINDERS="${REMINDERS}\n- 💡 **Tip**: Please check if new classes need to be added to the Python bindings"
+            REMINDERS+=$'- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings\n'
           fi
 
-          # Check for Python test (bindings/python_internal/*.i changed, but no Python test)
           HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
 
           if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
-            REMINDERS="${REMINDERS}\n- 💡 **Tip**: Python bindings updated — please add a Python test"
+            REMINDERS+=$'- :bulb: **Tip**: Python bindings updated — please add a Python test\n'
           fi
 
-          # Check for Changelog (src/ or TIGLCreator/ changed)
-          if [ "$HAS_SRC" = "yes" ]; then
-            REMINDERS="${REMINDERS}\n- 📝 **Tip**: Don't forget to add an entry to \`ChangeLog.md\`"
+          if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            REMINDERS+=$'- :memo: **Tip**: Don'\''t forget to add an entry to `ChangeLog.md`\n'
           fi
 
-          echo "reminders=${REMINDERS}" >> $GITHUB_OUTPUT
+          echo "reminders<<EOF"$'\n'"${REMINDERS}EOF" >> $GITHUB_OUTPUT
 
       - name: Post PR comment
         if: steps.reminders.outputs.reminders != ''
@@ -73,9 +70,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## Reminders for this PR
+            ## PR Reminders
 
             ${{ steps.reminders.outputs.reminders }}
+
+            ---
+            _This is an automated reminder from CI_
+          mode: upsert
+          append: false
+          comment-type: review
+
+      - name: Post all-clear comment
+        if: steps.reminders.outputs.reminders == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## PR Reminders
+
+            All looks good — no action needed.
 
             ---
             _This is an automated reminder from CI_
