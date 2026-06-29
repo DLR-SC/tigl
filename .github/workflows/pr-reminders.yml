@@ -61,7 +61,8 @@ jobs:
             REMINDERS+=$'- :memo: **Tip**: Don'\''t forget to add an entry to `ChangeLog.md`\n'
           fi
 
-          echo "reminders<<EOF"$'\n'"${REMINDERS}EOF" >> $GITHUB_OUTPUT
+          REMINDERS=${REMINDERS%$'\n'}
+          echo "reminders<<ENDREMINDERS"$'\n'"${REMINDERS}"$'\n'ENDREMINDERS >> $GITHUB_OUTPUT
 
       - name: Post PR comment
         if: steps.reminders.outputs.reminders != ''
