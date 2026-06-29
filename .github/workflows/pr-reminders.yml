@@ -100,7 +100,7 @@ jobs:
           } > pr-reminder-body.md
 
       - name: Find existing PR reminder comment
-        if: steps.reminders.outputs.skip != 'true'
+        if: steps.reminders.outputs.skip == 'false'
         id: find-comment
         uses: peter-evans/find-comment@v3
         with:
@@ -108,13 +108,22 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: github-actions[bot]
           comment-type: issue
+          body-includes: "automated reminder from CI"
 
-      - name: Post PR comment
-        if: steps.reminders.outputs.skip != 'true'
+      - name: Create comment
+        if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body-path: pr-reminder-body.md
-          edit-mode: replace
+
+      - name: Update comment
+        if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: pr-reminder-body.md
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
