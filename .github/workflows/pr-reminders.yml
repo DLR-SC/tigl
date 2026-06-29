@@ -61,7 +61,7 @@ jobs:
 
           # Check for Changelog (src/ or TIGLCreator/ changed)
           if [ "$HAS_SRC" = "yes" ]; then
-            REMINDERS="${REMINDERS}\n- 📝 **Tip**: Don't forget to add an entry to `ChangeLog.md`"
+            REMINDERS="${REMINDERS}\n- 📝 **Tip**: Don't forget to add an entry to \`ChangeLog.md\`"
           fi
 
           echo "reminders=${REMINDERS}" >> $GITHUB_OUTPUT
