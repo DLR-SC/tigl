@@ -26,7 +26,7 @@ jobs:
         id: changed
         uses: tj-actions/changed-files@v46
         with:
-          base-sha: ${{ steps.fetch-base.outputs.base_sha }}
+          sha: ${{ steps.fetch-base.outputs.base_sha }}
           files: |
             src/**
             TIGLCreator/**
@@ -48,7 +48,7 @@ jobs:
 
           echo "skip=false" >> $GITHUB_OUTPUT
 
-          HAS_SRC=$(echo "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
+          HAS_SRC=$(printf '%s\n' "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
           HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
@@ -107,7 +107,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: github-actions[bot]
-          comment-type: issue
           body-includes: "automated reminder from CI"
 
       - name: Create comment
