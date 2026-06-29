@@ -79,7 +79,7 @@ jobs:
 
           if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
             if [ "$HAS_CHANGELOG" = "no" ]; then
-              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to `ChangeLog.md`")
+              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
             else
               PASSED+=("- :white_check_mark: ChangeLog.md updated")
             fi
