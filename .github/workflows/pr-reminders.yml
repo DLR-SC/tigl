@@ -33,67 +33,58 @@ jobs:
         id: reminders
         run: |
           CHANGED="${{ steps.changed.outputs.all_changed_files }}"
-          REMINDERS=""
 
           HAS_SRC=$(echo "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
           HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
 
+          ITEMS=()
           if [ "$HAS_SRC" = "yes" ] && [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
-            REMINDERS+=$'- :bulb: **Tip**: Consider adding a unit or integration test\n'
+            ITEMS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
           fi
 
           HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
-
           if [ "$HAS_SRC" = "yes" ] && [ "$HAS_BINDINGS" = "no" ]; then
-            REMINDERS+=$'- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings\n'
+            ITEMS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
           fi
 
           HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
-
           if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
-            REMINDERS+=$'- :bulb: **Tip**: Python bindings updated — please add a Python test\n'
+            ITEMS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
           fi
 
           if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-            REMINDERS+=$'- :memo: **Tip**: Don'\''t forget to add an entry to `ChangeLog.md`\n'
+            ITEMS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
           fi
 
-          REMINDERS=${REMINDERS%$'\n'}
-          echo "reminders<<ENDREMINDERS"$'\n'"${REMINDERS}"$'\n'ENDREMINDERS >> $GITHUB_OUTPUT
+          {
+            printf '%s\n' "## PR Reminders" "" 
+            if [ ${#ITEMS[@]} -eq 0 ]; then
+              printf '%s\n' "All looks good — no action needed."
+            else
+              for item in "${ITEMS[@]}"; do
+                printf '%s\n' "$item"
+              done
+            fi
+            printf '\n%s\n' "---" "_This is an automated reminder from CI_"
+          } > pr-reminder-body.md
+
+      - name: Find existing PR reminder comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions
+          body-includes: _This is an automated reminder from CI_
 
       - name: Post PR comment
-        if: steps.reminders.outputs.reminders != ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## PR Reminders
-
-            ${{ steps.reminders.outputs.reminders }}
-
-            ---
-            _This is an automated reminder from CI_
-          mode: upsert
-          append: false
-          comment-type: review
-
-      - name: Post all-clear comment
-        if: steps.reminders.outputs.reminders == ''
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## PR Reminders
-
-            All looks good — no action needed.
-
-            ---
-            _This is an automated reminder from CI_
-          mode: upsert
-          append: false
-          comment-type: review
+          body-path: pr-reminder-body.md
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
