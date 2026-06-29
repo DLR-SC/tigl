@@ -18,15 +18,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch base branch
-        run: git fetch origin ${{ github.base_ref }} --depth=1
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
 
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v46
         with:
-          base-sha: origin/${{ github.base_ref }}
-          from-commit: ${{ github.event.pull_request.base.sha }}
-          to-commit: ${{ github.sha }}
+          base-sha: ${{ steps.fetch-base.outputs.base_sha }}
           files: |
             src/**
             TIGLCreator/**
@@ -41,47 +41,47 @@ jobs:
         run: |
           CHANGED="${{ steps.changed.outputs.all_changed_files }}"
 
+          if [ -z "$CHANGED" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "skip=false" >> $GITHUB_OUTPUT
+
           HAS_SRC=$(echo "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
           HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+          HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
+          HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
+          HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
           HAS_CHANGELOG=$(echo "$CHANGED" | grep -qE '^ChangeLog\.md$' && echo "yes" || echo "no")
 
           REMINDERS=()
           PASSED=()
 
           if [ "$HAS_SRC" = "yes" ]; then
-            if [ "$HAS_UNIT" = "yes" ] || [ "$HAS_INTEG" = "yes" ]; then
-              PASSED+=("- :white_check_mark: **Tests**: unit/integration test added")
-            else
+            if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
               REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
-            fi
-          fi
-
-          HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
-          if [ "$HAS_SRC" = "yes" ]; then
-            if [ "$HAS_BINDINGS" = "yes" ]; then
-              PASSED+=("- :white_check_mark: **Python bindings**: up to date")
             else
+              PASSED+=("- :white_check_mark: Tests added or not required")
+            fi
+            if [ "$HAS_BINDINGS" = "no" ]; then
               REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+            else
+              PASSED+=("- :white_check_mark: Python bindings considered")
             fi
           fi
 
-          HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
-          HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
-          if [ "$HAS_I_FILE" = "yes" ]; then
-            if [ "$HAS_PYTHON_TEST" = "yes" ]; then
-              PASSED+=("- :white_check_mark: **Python tests**: test added")
-            else
-              REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
-            fi
+          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
+            REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
           fi
 
           if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-            if [ "$HAS_CHANGELOG" = "yes" ]; then
-              PASSED+=("- :white_check_mark: **Changelog**: entry added")
+            if [ "$HAS_CHANGELOG" = "no" ]; then
+              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to `ChangeLog.md`")
             else
-              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
+              PASSED+=("- :white_check_mark: ChangeLog.md updated")
             fi
           fi
 
@@ -100,19 +100,21 @@ jobs:
           } > pr-reminder-body.md
 
       - name: Find existing PR reminder comment
+        if: steps.reminders.outputs.skip != 'true'
         id: find-comment
         uses: peter-evans/find-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: github-actions
-          body-includes: _This is an automated reminder from CI_
+          comment-author: github-actions[bot]
+          comment-type: issue
 
       - name: Post PR comment
+        if: steps.reminders.outputs.skip != 'true'
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body-path: pr-reminder-body.md
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
