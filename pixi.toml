@@ -27,6 +27,7 @@ setuptools = "*"
 numpy = "*"
 matplotlib = "*"
 pyqt = ">=5.15.11,<6"
+pytest = "*"
 
 [feature.opencascade-static.dependencies]
 opencascade-static = "7.6.2.*"
@@ -173,3 +174,10 @@ configure = { cmd = [
         { "arg" = "nightly", "default"="OFF"},
 ]}
 tiglcreator = { cmd = "tiglcreator" }
+pythontests = { cmd = "python -m pytest -v", cwd = "build/tests/python" }
+tests = [
+    {task = "unittests"},
+    {task = "integrationtests"},
+    {task = "pythontests"},
+]
+

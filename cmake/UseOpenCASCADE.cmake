@@ -68,6 +68,15 @@ else(OCE_FOUND)
             HINTS ${CASROOT} ${OCE_INCLUDE_DIRS}/../../ ${OpenCASCADE_RESOURCE_DIR}
   )
 
+  if(OpenCASCADE_SHADER_DIRECTORY MATCHES "NOTFOUND" OR NOT DEFINED OpenCASCADE_SHADER_DIRECTORY)
+    message(WARNING "OpenCASCADE shader directory not found. TiGLCreator shaders will not be installed.")
+  else()
+    get_filename_component(_shader_src "${OpenCASCADE_SHADER_DIRECTORY}" ABSOLUTE)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/TIGLCreator/shaders)
+    file(COPY ${_shader_src}/
+         DESTINATION ${CMAKE_BINARY_DIR}/TIGLCreator/shaders/)
+    set(OpenCASCADE_SHADER_DIRECTORY ${CMAKE_BINARY_DIR}/TIGLCreator/shaders CACHE INTERNAL "" FORCE)
+  endif()
 
   if (OpenCASCADE_WITH_TBB AND NOT OpenCASCADE_BUILD_SHARED_LIBS)
       set(TBB_FIND_QUIETLY 1)
