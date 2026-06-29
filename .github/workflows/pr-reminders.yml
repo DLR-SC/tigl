@@ -47,32 +47,52 @@ jobs:
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
           HAS_CHANGELOG=$(echo "$CHANGED" | grep -qE '^ChangeLog\.md$' && echo "yes" || echo "no")
 
-          ITEMS=()
-          if [ "$HAS_SRC" = "yes" ] && [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
-            ITEMS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
+          REMINDERS=()
+          PASSED=()
+
+          if [ "$HAS_SRC" = "yes" ]; then
+            if [ "$HAS_UNIT" = "yes" ] || [ "$HAS_INTEG" = "yes" ]; then
+              PASSED+=("- :white_check_mark: **Tests**: unit/integration test added")
+            else
+              REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
+            fi
           fi
 
           HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
-          if [ "$HAS_SRC" = "yes" ] && [ "$HAS_BINDINGS" = "no" ]; then
-            ITEMS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+          if [ "$HAS_SRC" = "yes" ]; then
+            if [ "$HAS_BINDINGS" = "yes" ]; then
+              PASSED+=("- :white_check_mark: **Python bindings**: up to date")
+            else
+              REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+            fi
           fi
 
           HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
-          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
-            ITEMS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
+          if [ "$HAS_I_FILE" = "yes" ]; then
+            if [ "$HAS_PYTHON_TEST" = "yes" ]; then
+              PASSED+=("- :white_check_mark: **Python tests**: test added")
+            else
+              REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
+            fi
           fi
 
-          if ([ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]) && [ "$HAS_CHANGELOG" = "no" ]; then
-            ITEMS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
+          if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            if [ "$HAS_CHANGELOG" = "yes" ]; then
+              PASSED+=("- :white_check_mark: **Changelog**: entry added")
+            else
+              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
+            fi
           fi
 
           {
             printf '%s\n' "## PR Reminders" ""
-            if [ ${#ITEMS[@]} -eq 0 ]; then
-              printf '%s\n' "All looks good — no action needed."
+            if [ ${#REMINDERS[@]} -gt 0 ]; then
+              for item in "${REMINDERS[@]}"; do
+                printf '%s\n' "$item"
+              done
             else
-              for item in "${ITEMS[@]}"; do
+              for item in "${PASSED[@]}"; do
                 printf '%s\n' "$item"
               done
             fi
