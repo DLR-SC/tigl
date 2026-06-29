@@ -17,10 +17,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }} --depth=1
+
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v46
         with:
+          base-sha: origin/${{ github.base_ref }}
+          from-commit: ${{ github.event.pull_request.base.sha }}
+          to-commit: ${{ github.sha }}
           files: |
             src/**
             TIGLCreator/**
@@ -28,6 +34,7 @@ jobs:
             tests/integrationtests/**
             tests/python/**
             bindings/python_internal/**/*.i
+            ChangeLog.md
 
       - name: Generate reminder message
         id: reminders
@@ -38,6 +45,7 @@ jobs:
           HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
           HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
           HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+          HAS_CHANGELOG=$(echo "$CHANGED" | grep -qE '^ChangeLog\.md$' && echo "yes" || echo "no")
 
           ITEMS=()
           if [ "$HAS_SRC" = "yes" ] && [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
@@ -55,12 +63,12 @@ jobs:
             ITEMS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
           fi
 
-          if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+          if ([ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]) && [ "$HAS_CHANGELOG" = "no" ]; then
             ITEMS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
           fi
 
           {
-            printf '%s\n' "## PR Reminders" "" 
+            printf '%s\n' "## PR Reminders" ""
             if [ ${#ITEMS[@]} -eq 0 ]; then
               printf '%s\n' "All looks good — no action needed."
             else
