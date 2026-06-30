@@ -545,7 +545,7 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
         if (manager.HasGeometricComponent(uid.toStdString()) ) {
-            TopoDS_Shape shape = manager.GetGeometricComponent(uid.toStdString()).GetLoft()->Shape();
+            TopoDS_Shape shape = manager.GetGeometricComponent(uid.toStdString()).GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
             return engine()->newVariant(QVariant::fromValue(shape));
         }
         else {

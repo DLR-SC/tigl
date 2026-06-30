@@ -809,7 +809,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
 
             if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
-                PNamedShape loft = component.GetLoft();
+PNamedShape loft = component.GetTrimmedLoft(); // Using trimmed loft for better visualization quality
 
                 if (loft) {
                     double opacity = 0;
@@ -839,8 +839,8 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     throw tigl::CTiglError("No object found for component with uid \"" + uid.toStdString() + "\"");
                     return;
                 }
-                if (objects[0]->Shape() != component.GetLoft()->Shape()) {
-                    objects[0]->SetShape(component.GetLoft()->Shape());
+                if (objects[0]->Shape() != component.GetTrimmedLoft()->Shape()) { // Using trimmed loft for better visualization quality
+                    objects[0]->SetShape(component.GetTrimmedLoft()->Shape()); // Using trimmed loft for better visualization quality
                 }
                 if (objects.size() > 1) {
                     auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
@@ -888,7 +888,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
     removeAirfoil();
     try {
         tigl::ITiglGeometricComponent& component = GetConfiguration().GetUIDManager().GetGeometricComponent(uid.toStdString());
-        PNamedShape loft = component.GetLoft();
+        PNamedShape loft = component.GetTrimmedLoft(); // Using trimmed loft for better visualization quality
         if (loft == nullptr) {
             LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" is invalid.";
             return;
@@ -1509,7 +1509,7 @@ void TIGLCreatorDocument::drawFuselage(const QString& Uid)
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         // Draw segment loft
         auto& segment = (tigl::CCPACSFuselageSegment&)fuselage.GetSegment(i);
-        app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor()); // Using untrimmed loft: child components (fuselage segments) lack a trimmed variant // Using untrimmed loft: child components (fuselage segments) lack a trimmed variant
     }
 }
 
@@ -1539,7 +1539,7 @@ void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
 
     //clear screen
     removeFuselage(fuselageUid);
-    const TopoDS_Shape& fusedFuselage = fuselage.GetLoft()->Shape();
+    const TopoDS_Shape& fusedFuselage = fuselage.GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
 
     TopoDS_Compound triangulation;
     createShapeTriangulation(fusedFuselage, triangulation);
@@ -1640,7 +1640,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
             continue;
         }
 
-        app->getScene()->displayShape(wing.GetLoft(), true, getDefaultShapeColor());
+app->getScene()->displayShape(wing.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
@@ -1663,7 +1663,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
     for (int fuselageIndex = 1; fuselageIndex <= GetConfiguration().GetFuselageCount(); fuselageIndex++) {
         auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
-        app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
+app->getScene()->displayShape(fuselage.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
 
         for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
             // Draw some points on the fuselage segment
@@ -2242,7 +2242,7 @@ void TIGLCreatorDocument::drawFusedFuselage(const QString& Uid)
     START_COMMAND()
     removeFuselage(fuselageUid);
     auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->displayShape(fuselage.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
 }
 
 void TIGLCreatorDocument::drawFusedWing(const QString& Uid)
@@ -2356,9 +2356,9 @@ void TIGLCreatorDocument::drawIntersectionLine()
         std::string uid1 = dialog.GetShape1UID().toStdString();
         std::string uid2 = dialog.GetShape2UID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
-        const TopoDS_Shape& compoundOne = uidManager.GetGeometricComponent(uid1).GetLoft()->Shape();
+        const TopoDS_Shape& compoundOne = uidManager.GetGeometricComponent(uid1).GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid2.c_str()));
-        const TopoDS_Shape& compoundTwo = uidManager.GetGeometricComponent(uid2).GetLoft()->Shape();
+        const TopoDS_Shape& compoundTwo = uidManager.GetGeometricComponent(uid2).GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
 
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector =
@@ -2368,7 +2368,7 @@ void TIGLCreatorDocument::drawIntersectionLine()
         // shape - plane
         std::string uid = dialog.GetShapeUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
-        const TopoDS_Shape& compoundOne = uidManager.GetGeometricComponent(uid).GetLoft()->Shape();
+        const TopoDS_Shape& compoundOne = uidManager.GetGeometricComponent(uid).GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
 
         gp_Pnt p                = dialog.GetPoint().Get_gp_Pnt();
         tigl::CTiglPoint normal = dialog.GetNormal();
@@ -2385,7 +2385,7 @@ void TIGLCreatorDocument::drawIntersectionLine()
         // shape - plane segment
         std::string uid = dialog.GetShapeSUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
-        const TopoDS_Shape& compound = uidManager.GetGeometricComponent(uid).GetLoft()->Shape();
+        const TopoDS_Shape& compound = uidManager.GetGeometricComponent(uid).GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
 
         gp_Pnt p1               = dialog.GetPoint1().Get_gp_Pnt();
         gp_Pnt p2               = dialog.GetPoint2().Get_gp_Pnt();
@@ -2443,7 +2443,7 @@ void TIGLCreatorDocument::drawWingComponentSegment(const QString& Uid)
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
 
     // display component segment shape with transparency
-    auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, getDefaultShapeColor());
+    auto cs_shape = app->getScene()->displayShape(cs.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
     app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
     PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
         if (mirroredLoft)
@@ -2617,7 +2617,7 @@ void TIGLCreatorDocument::drawSystems()
         tigl::CCPACSGenericSystem& genericSystem = GetConfiguration().GetGenericSystem(gs);
 
         try {
-            app->getScene()->displayShape(genericSystem.GetLoft(), true, getDefaultShapeColor());
+            app->getScene()->displayShape(genericSystem.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
 
             if (genericSystem.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
                 app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), true,
@@ -3130,7 +3130,7 @@ void TIGLCreatorDocument::drawWing(tigl::CCPACSWing& wing)
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Draw segment loft
-        app->getScene()->displayShape(wing.GetSegment(i).GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(wing.GetSegment(i).GetLoft(), true, getDefaultShapeColor()); // Using untrimmed loft: wing segments lack trimmed variant
     }
 }
 
@@ -3146,7 +3146,7 @@ void TIGLCreatorDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
     removeWingFlaps(QString::fromStdString(wing.GetUID()));
 
     //we do not fuse segments anymore but build it from scratch with the profiles
-    const TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
+    const TopoDS_Shape& fusedWing = wing.GetTrimmedLoft()->Shape(); // Using trimmed loft for better visualization quality
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
@@ -3190,7 +3190,7 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
         // Draw segment loft
         auto& segment = (tigl::CCPACSWingSegment&)wing.GetSegment(segmentIndex);
 
-        auto shape = app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        auto shape = app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor()); // Using untrimmed loft: wing segments lack trimmed variant
         app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
 
         PNamedShape mirroredLoft = wing.GetMirroredLoft(segment.GetLoft()); 
@@ -3238,7 +3238,7 @@ void TIGLCreatorDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegm
     START_COMMAND()
     app->getScene()->deleteAllObjects();
 
-    app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->displayShape(segment.GetTrimmedLoft(), true, getDefaultShapeColor()); // Using trimmed loft for better visualization quality
 }
 
 /*
