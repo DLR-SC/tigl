@@ -17,17 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fetch base branch
-        id: fetch-base
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
-
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v46
         with:
-          sha: ${{ steps.fetch-base.outputs.base_sha }}
           separator: "\n"
           files: |
             src/**
