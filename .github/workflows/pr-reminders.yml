@@ -33,14 +33,16 @@ jobs:
 
       - name: Generate reminder message
         id: reminders
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         run: |
-          CHANGED="${{ steps.changed.outputs.all_changed_files }}"
+          CHANGED="$CHANGED_FILES"
+          echo $CHANGED
           NORMALIZED=$(printf '%s\n' "$CHANGED" | tr -d '\r' | sed -e 's|^\./||' -e 's/[[:space:]]*$//')
 
           HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
-          HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
-          HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+          HAS_CPP_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/' && echo "yes" || echo "no")
           HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
           HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
@@ -62,7 +64,7 @@ jobs:
           PASSED=()
 
           if [ "$HAS_SRC" = "yes" ]; then
-            if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
+            if [ "$HAS_CPP_TEST" = "no" ]; then
               REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
             else
               PASSED+=("- :white_check_mark: Tests added or not required")
@@ -74,8 +76,12 @@ jobs:
             fi
           fi
 
-          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
-            REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
+          if [ "$HAS_I_FILE" = "yes" ]; then
+            if [ "$HAS_PYTHON_TEST" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Python bindings updated — consider adding a Python test")
+            else 
+              PASSED+=("- :white_check_mark: Python tests updated or added")
+            fi
           fi
 
           if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
@@ -134,5 +140,5 @@ jobs:
           edit-mode: replace
 
       - name: Fail if reminders were posted
-        if: steps.reminders.ouputs.has_reminders == 'true'
+        if: steps.reminders.outputs.has_reminders == 'true'
         run: exit 1
