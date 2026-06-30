@@ -55,6 +55,13 @@ PNamedShape CTiglAbstractGeometricComponent::GetLoft() const
     return *loft;
 }
 
+// Default implementation: return the untrimmed loft. Concrete top‑level components override this to provide the trimmed version.
+PNamedShape CTiglAbstractGeometricComponent::GetTrimmedLoft() const
+{
+    // Fallback to the regular loft if a trimmed variant is not provided.
+    return GetLoft();
+}
+
 Bnd_Box const& CTiglAbstractGeometricComponent::GetBoundingBox() const
 {
     return *bounding_box;

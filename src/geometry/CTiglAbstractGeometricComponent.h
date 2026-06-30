@@ -47,6 +47,8 @@ public:
 
     // Gets the loft of a geometric component
     TIGL_EXPORT PNamedShape GetLoft() const override;
+    // Gets the trimmed loft (default implementation returns untrimmed)
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
     // Get the loft mirrored at the mirror plane
     TIGL_EXPORT virtual PNamedShape GetMirroredLoft() const;

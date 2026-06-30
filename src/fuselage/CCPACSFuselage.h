@@ -270,7 +270,7 @@ public:
      * This is the legacy trimmed behavior.
      * @return PNamedShape
      */
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
     void SetFaceTraitsUntrimmed(PNamedShape loft) const;
     void SetFaceTraitsTrimmed(PNamedShape loft) const;

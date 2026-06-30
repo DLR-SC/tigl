@@ -55,7 +55,7 @@ protected:
 
 public:
     // Returns the trimmed loft (UV cuts at profile positions)
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
     // Returns the untrimmed loft (delegates to GetLoft())
     TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
 

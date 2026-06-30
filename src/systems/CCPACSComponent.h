@@ -189,7 +189,7 @@ public:
      * @brief Returns the component loft with UV cuts at profile positions (trimmed).
      * @return PNamedShape
      */
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
 protected:
     virtual PNamedShape BuildLoft() const override;

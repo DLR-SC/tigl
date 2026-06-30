@@ -45,7 +45,7 @@ public:
     //as a callback.
     TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
 
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
     TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
 
 protected:

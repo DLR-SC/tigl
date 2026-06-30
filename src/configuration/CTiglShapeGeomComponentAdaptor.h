@@ -78,6 +78,12 @@ public:
         return PNamedShape();
     }
 
+    // Default trimmed loft implementation falls back to the regular loft
+    PNamedShape GetTrimmedLoft() const override
+    {
+        return GetLoft();
+    }
+
     TiglGeometricComponentType GetComponentType() const override
     {
         return TIGL_COMPONENT_OTHER;

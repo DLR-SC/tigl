@@ -201,7 +201,7 @@ public:
      * This is the legacy trimmed behavior.
      * @return PNamedShape
      */
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
     /**
      * @brief Returns the upper point in absolute (world) coordinates for a given segment,

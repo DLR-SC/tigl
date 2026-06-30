@@ -38,6 +38,8 @@ public:
 
     // Gets the loft of a geometric component
     TIGL_EXPORT virtual PNamedShape GetLoft() const = 0;
+    // Gets the trimmed loft (better for visualization); defaults to untrimmed if not overridden
+    TIGL_EXPORT virtual PNamedShape GetTrimmedLoft() const { return GetLoft(); }
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType() const = 0;

@@ -97,7 +97,7 @@ public:
     TIGL_EXPORT bool HasIsotensoidDome() const;
 
     // Returns the trimmed loft (empty if IsVesselViaDesignParameters == true)
-    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
     // Retunrs the untrimmed loft (delegates to GetLoft)
     TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
