@@ -47,10 +47,7 @@ namespace tigl {
 CTiglPatchShell::CTiglPatchShell(TopoDS_Shape const& shell, double tol)
   : _inputShell(shell)
   , _tolerance(tol)
-{
-    // Print stack trace (simplified - just show caller address)
-    void* caller = __builtin_return_address(0);
-}
+{}
 
 void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
 {
