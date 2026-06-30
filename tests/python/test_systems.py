@@ -1,7 +1,19 @@
 #############################################################################
-# Copyright (C) 2007-2026 German Aerospace Center (DLR/SC)
+# Copyright (C) 2007-2025 German Aerospace Center (DLR/SC)
 #
-# Licensed under the Apache License, Version 2.0
+# Created: 2025-06-04 Marko Alder <marko.alder@dlr.de>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #############################################################################
 
 from pathlib import Path
@@ -23,13 +35,11 @@ class TestSystemsBindings(unittest.TestCase):
         if not cls.CPACS_FILE.is_file():
             raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}")
 
-        # Load the read-only CPACS configuration once for the complete test class.
         cls.tixi = Tixi3()
         cls.tigl = Tigl3()
         cls._tixi_is_open = False
         cls._tigl_is_open = False
 
-        # Register cleanup before opening native resources.
         cls.addClassCleanup(cls._close_configuration)
 
         tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
