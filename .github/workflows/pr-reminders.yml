@@ -35,7 +35,7 @@ jobs:
         id: reminders
         run: |
           CHANGED="${{ steps.changed.outputs.all_changed_files }}"
-          NORMALIZED=$(printf '%s\n' "$CHANGED" | sed 's|^\./||')
+          NORMALIZED=$(printf '%s\n' "$CHANGED" | tr -d '\r' | sed -e 's|^\./||' -e 's/[[:space:]]*$//')
 
           HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
@@ -44,7 +44,7 @@ jobs:
           HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
           HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
-          HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qFx "ChangeLog.md" && echo "yes" || echo "no")
+          HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qE "ChangeLog.md" && echo "yes" || echo "no")
 
           if [ -z "$NORMALIZED" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
@@ -104,7 +104,7 @@ jobs:
           cat pr-reminder-body.md
           echo "::endgroup::"
 
-          echo "has_reminders=$([ ${#REMINDERS[@]} -gt 0] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "has_reminders=$([ ${#REMINDERS[@]} -gt 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
