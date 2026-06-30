@@ -28,7 +28,7 @@ jobs:
         uses: tj-actions/changed-files@v46
         with:
           sha: ${{ steps.fetch-base.outputs.base_sha }}
-          seperator: "\n"
+          separator: "\n"
           files: |
             src/**
             TIGLCreator/**
@@ -106,7 +106,7 @@ jobs:
             fi
             printf '\n%s\n' "---" "_This is an automated reminder from CI_"
           } > pr-reminder-body.md
-          
+
           echo "::group::Generated PR reminder body"
           cat pr-reminder-body.md
           echo "::endgroup::"
