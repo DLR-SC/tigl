@@ -16,49 +16,96 @@
 # limitations under the License.
 #############################################################################
 
+from pathlib import Path
 import unittest
 
-from tigl3.tigl3wrapper import *
-from tixi3.tixi3wrapper import *
 from tigl3 import configuration, geometry
+from tigl3.tigl3wrapper import Tigl3
+from tixi3.tixi3wrapper import Tixi3
 
-from OCC.Core.Bnd import Bnd_Box
-from OCC.Core.BRepBndLib import brepbndlib_Add
 
+class TestDeckBindings(unittest.TestCase):
+    CPACS_FILE = Path("TestData/simpletest-decks.cpacs.xml")
+    CONFIGURATION_UID = "testAircraft"
 
-class Decks(unittest.TestCase):
+    DECK_UID = "deck"
+    COMPONENT_UID = "classDivider"
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        if not cls.CPACS_FILE.is_file():
+            raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}")
+
+        # Load the read-only CPACS configuration once for all tests.
         cls.tixi = Tixi3()
         cls.tigl = Tigl3()
+        cls._tixi_is_open = False
+        cls._tigl_is_open = False
 
-        cls.assertIsNone = staticmethod(unittest.TestCase().assertIsNone)
-        cls.assertIsNone(cls.tixi.open("TestData/simpletest-decks.cpacs.xml"))
-        cls.assertIsNone(cls.tigl.open(cls.tixi, "testAircraft"))
+        # Register cleanup before opening native resources.
+        cls.addClassCleanup(cls._close_configuration)
 
-        mgr = configuration.CCPACSConfigurationManager.get_instance()
-        cls.config = mgr.get_configuration(cls.tigl._handle.value)
-        cls.uid_mgr = cls.config.get_uidmanager()
+        tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
+        if tixi_result is not None:
+            raise AssertionError(f"Tixi3.open() unexpectedly returned {tixi_result!r}")
+        cls._tixi_is_open = True
+
+        tigl_result = cls.tigl.open(cls.tixi, cls.CONFIGURATION_UID)
+        if tigl_result is not None:
+            raise AssertionError(f"Tigl3.open() unexpectedly returned {tigl_result!r}")
+        cls._tigl_is_open = True
+
+        manager = configuration.CCPACSConfigurationManager.get_instance()
+        cls.aircraft_config = manager.get_configuration(cls.tigl._handle.value)
+        cls.uid_manager = cls.aircraft_config.get_uidmanager()
+
+        cls.deck = cls.uid_manager.get_geometric_component(cls.DECK_UID)
+        cls.component = cls.uid_manager.get_geometric_component(cls.COMPONENT_UID)
 
     @classmethod
-    def tearDownClass(cls):
-        cls.tigl.close()
-        cls.tixi.close()
+    def _close_configuration(cls) -> None:
+        # Close TiGL before releasing its underlying TiXI document.
+        try:
+            if cls._tigl_is_open:
+                cls.tigl.close()
+        finally:
+            if cls._tixi_is_open:
+                cls.tixi.close()
 
-    def test_deck(self):
-
-        deck = self.uid_mgr.get_geometric_component("deck")
-        self.assertIsInstance(deck, geometry.ITiglGeometricComponent)
-        self.assertIsInstance(deck, configuration.CCPACSDeck)
-
-        # Cabin geometry
-        cabinGeometry = deck.get_cabin_geometry()
-        self.assertIsInstance(cabinGeometry, configuration.CPACSCabinGeometry)
+    def test_factory_types(self) -> None:
+        # The SWIG factory must expose the concrete C++ runtime types.
         self.assertIsInstance(
-            cabinGeometry.get_contours(), configuration.CPACSCabinGeometryContours
+            self.deck,
+            geometry.ITiglGeometricComponent,
         )
-        contour = cabinGeometry.get_contours().get_contour(1)
+        self.assertIsInstance(
+            self.deck,
+            configuration.CCPACSDeck,
+        )
+        self.assertIsInstance(
+            self.component,
+            configuration.CCPACSDeckComponentBase,
+        )
+
+    def test_cabin_geometry(self) -> None:
+        cabin_geometry = self.deck.get_cabin_geometry()
+
+        self.assertIsInstance(
+            cabin_geometry,
+            configuration.CPACSCabinGeometry,
+        )
+
+        contours = cabin_geometry.get_contours()
+
+        self.assertIsInstance(
+            contours,
+            configuration.CPACSCabinGeometryContours,
+        )
+
+        contour = contours.get_contour(1)
+
         self.assertIsInstance(
             contour,
             configuration.CPACSCabinGeometryContour,
@@ -68,121 +115,178 @@ class Decks(unittest.TestCase):
             configuration.CPACSDoubleVectorBase,
         )
 
-        # Deck components
-        self.assertIsInstance(deck.get_seat_modules(), configuration.CPACSSeatModules)
+    def test_component_containers(self) -> None:
+        seat_modules = self.deck.get_seat_modules()
+
         self.assertIsInstance(
-            deck.get_seat_modules().get_seat_module(1),
+            seat_modules,
+            configuration.CPACSSeatModules,
+        )
+        self.assertIsInstance(
+            seat_modules.get_seat_module(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        sidewall_panels = self.deck.get_sidewall_panels()
+
         self.assertIsInstance(
-            deck.get_sidewall_panels(), configuration.CPACSSidewallPanels
+            sidewall_panels,
+            configuration.CPACSSidewallPanels,
         )
         self.assertIsInstance(
-            deck.get_sidewall_panels().get_sidewall_panel(1),
+            sidewall_panels.get_sidewall_panel(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        luggage_compartments = self.deck.get_luggage_compartments()
+
         self.assertIsInstance(
-            deck.get_luggage_compartments(), configuration.CPACSLuggageCompartments
+            luggage_compartments,
+            configuration.CPACSLuggageCompartments,
         )
         self.assertIsInstance(
-            deck.get_luggage_compartments().get_luggage_compartment(1),
+            luggage_compartments.get_luggage_compartment(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        ceiling_panels = self.deck.get_ceiling_panels()
+
         self.assertIsInstance(
-            deck.get_ceiling_panels(), configuration.CPACSCeilingPanels
+            ceiling_panels,
+            configuration.CPACSCeilingPanels,
         )
         self.assertIsInstance(
-            deck.get_ceiling_panels().get_ceiling_panel(1),
+            ceiling_panels.get_ceiling_panel(1),
             configuration.CCPACSDeckComponentBase,
         )
 
-        self.assertIsInstance(deck.get_galleys(), configuration.CPACSGalleys)
+        galleys = self.deck.get_galleys()
+
         self.assertIsInstance(
-            deck.get_galleys().get_galley(1),
+            galleys,
+            configuration.CPACSGalleys,
+        )
+        self.assertIsInstance(
+            galleys.get_galley(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        floor_modules = self.deck.get_generic_floor_modules()
+
         self.assertIsInstance(
-            deck.get_generic_floor_modules(), configuration.CPACSGenericFloorModules
+            floor_modules,
+            configuration.CPACSGenericFloorModules,
         )
         self.assertIsInstance(
-            deck.get_generic_floor_modules().get_generic_floor_module(1),
+            floor_modules.get_generic_floor_module(1),
             configuration.CCPACSDeckComponentBase,
         )
 
-        self.assertIsInstance(deck.get_lavatories(), configuration.CPACSLavatories)
+        lavatories = self.deck.get_lavatories()
+
         self.assertIsInstance(
-            deck.get_lavatories().get_lavatory(1),
+            lavatories,
+            configuration.CPACSLavatories,
+        )
+        self.assertIsInstance(
+            lavatories.get_lavatory(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        class_dividers = self.deck.get_class_dividers()
+
         self.assertIsInstance(
-            deck.get_class_dividers(), configuration.CPACSClassDividers
+            class_dividers,
+            configuration.CPACSClassDividers,
         )
         self.assertIsInstance(
-            deck.get_class_dividers().get_class_divider(1),
+            class_dividers.get_class_divider(1),
             configuration.CCPACSDeckComponentBase,
         )
 
+        cargo_containers = self.deck.get_cargo_containers()
+
         self.assertIsInstance(
-            deck.get_cargo_containers(), configuration.CPACSCargoContainers
+            cargo_containers,
+            configuration.CPACSCargoContainers,
         )
         self.assertIsInstance(
-            deck.get_cargo_containers().get_cargo_container(1),
+            cargo_containers.get_cargo_container(1),
             configuration.CCPACSDeckComponentBase,
         )
+
+    def test_plural_getters_hidden(self) -> None:
+        # Generated vector getters are intentionally hidden from Python.
+        with self.assertRaises(AttributeError):
+            self.deck.get_seat_modules().get_seat_modules()
 
         with self.assertRaises(AttributeError):
-            deck.get_seat_modules().get_seat_modules()
-        with self.assertRaises(AttributeError):
-            deck.get_sidewall_panels().get_sidewall_panels()
-        with self.assertRaises(AttributeError):
-            deck.get_luggage_compartments().get_luggage_compartments()
-        with self.assertRaises(AttributeError):
-            deck.get_ceiling_panels().get_ceiling_panels()
-        with self.assertRaises(AttributeError):
-            deck.get_galleys().get_galleys()
-        with self.assertRaises(AttributeError):
-            deck.get_generic_floor_modules().get_generic_floor_modules()
-        with self.assertRaises(AttributeError):
-            deck.get_lavatories().get_lavatorys()
-        with self.assertRaises(AttributeError):
-            deck.get_class_dividers().get_class_dividers()
-        with self.assertRaises(AttributeError):
-            deck.get_cargo_containers().get_cargo_containers()
+            self.deck.get_sidewall_panels().get_sidewall_panels()
 
-    def test_deckComponentBase(self):
+        with self.assertRaises(AttributeError):
+            self.deck.get_luggage_compartments().get_luggage_compartments()
 
-        component = self.uid_mgr.get_geometric_component("classDivider")
+        with self.assertRaises(AttributeError):
+            self.deck.get_ceiling_panels().get_ceiling_panels()
+
+        with self.assertRaises(AttributeError):
+            self.deck.get_galleys().get_galleys()
+
+        with self.assertRaises(AttributeError):
+            (self.deck.get_generic_floor_modules().get_generic_floor_modules())
+
+        with self.assertRaises(AttributeError):
+            self.deck.get_lavatories().get_lavatorys()
+
+        with self.assertRaises(AttributeError):
+            self.deck.get_class_dividers().get_class_dividers()
+
+        with self.assertRaises(AttributeError):
+            self.deck.get_cargo_containers().get_cargo_containers()
+
+    def test_component_accessors(self) -> None:
         self.assertIsInstance(
-            component,
-            configuration.CCPACSDeckComponentBase,
-        )
-
-        self.assertIsInstance(component.get_mass(), float)
-        self.assertIsInstance(
-            component.get_center_of_gravity_global(), geometry.CTiglPoint
+            self.component.get_mass(),
+            float,
         )
         self.assertIsInstance(
-            component.get_center_of_gravity_local(), geometry.CTiglPoint
+            self.component.get_center_of_gravity_global(),
+            geometry.CTiglPoint,
         )
         self.assertIsInstance(
-            component.get_mass_inertia_local(), configuration.CTiglMassInertia
+            self.component.get_center_of_gravity_local(),
+            geometry.CTiglPoint,
         )
-
-        self.assertIsInstance(component.get_component_intent(), int)
-        self.assertIsInstance(component.get_component_representation(), int)
-        self.assertIsInstance(component.get_component_representation_as_string(), str)
-        self.assertIsInstance(component.get_component_type(), int)
+        self.assertIsInstance(
+            self.component.get_mass_inertia_local(),
+            configuration.CTiglMassInertia,
+        )
 
         self.assertIsInstance(
-            component.get_configuration(), configuration.CCPACSConfiguration
+            self.component.get_component_intent(),
+            int,
+        )
+        self.assertIsInstance(
+            self.component.get_component_representation(),
+            int,
+        )
+        self.assertIsInstance(
+            self.component.get_component_representation_as_string(),
+            str,
+        )
+        self.assertIsInstance(
+            self.component.get_component_type(),
+            int,
         )
 
-        self.assertIsInstance(component.get_defaulted_uid(), str)
+        self.assertIsInstance(
+            self.component.get_configuration(),
+            configuration.CCPACSConfiguration,
+        )
+        self.assertIsInstance(
+            self.component.get_defaulted_uid(),
+            str,
+        )
 
 
 if __name__ == "__main__":
