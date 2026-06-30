@@ -106,9 +106,12 @@ jobs:
             fi
             printf '\n%s\n' "---" "_This is an automated reminder from CI_"
           } > pr-reminder-body.md
+          
           echo "::group::Generated PR reminder body"
           cat pr-reminder-body.md
           echo "::endgroup::"
+
+          echo "has_reminders=$([ ${#REMINDERS[@]} -gt 0] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
@@ -136,3 +139,7 @@ jobs:
           body-path: pr-reminder-body.md
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
+
+      - name: Fail if reminders were posted
+        if: steps.reminders.ouputs.has_reminders == 'true'
+        run: exit 1
