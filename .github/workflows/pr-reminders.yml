@@ -17,16 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fetch base branch
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
-
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v46
         with:
-          sha: ${{ steps.fetch-base.outputs.base_sha }}
+          separator: "\n"
           files: |
             src/**
             TIGLCreator/**
@@ -105,6 +100,12 @@ jobs:
             printf '\n%s\n' "---" "_This is an automated reminder from CI_"
           } > pr-reminder-body.md
 
+          echo "::group::Generated PR reminder body"
+          cat pr-reminder-body.md
+          echo "::endgroup::"
+
+          echo "has_reminders=$([ ${#REMINDERS[@]} -gt 0] && echo true || echo false)" >> $GITHUB_OUTPUT
+
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
         id: find-comment
@@ -131,3 +132,7 @@ jobs:
           body-path: pr-reminder-body.md
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
+
+      - name: Fail if reminders were posted
+        if: steps.reminders.ouputs.has_reminders == 'true'
+        run: exit 1
