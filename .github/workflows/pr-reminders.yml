@@ -140,5 +140,5 @@ jobs:
           edit-mode: replace
 
       - name: Fail if reminders were posted
-        if: steps.reminders.ouputs.has_reminders == 'true'
+        if: steps.reminders.outputs.has_reminders == 'true'
         run: exit 1
