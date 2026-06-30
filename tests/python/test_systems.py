@@ -23,11 +23,13 @@ class TestSystemsBindings(unittest.TestCase):
         if not cls.CPACS_FILE.is_file():
             raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}")
 
+        # Load the read-only CPACS configuration once for the complete test class.
         cls.tixi = Tixi3()
         cls.tigl = Tigl3()
         cls._tixi_is_open = False
         cls._tigl_is_open = False
 
+        # Register cleanup before opening native resources.
         cls.addClassCleanup(cls._close_configuration)
 
         tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
@@ -54,6 +56,7 @@ class TestSystemsBindings(unittest.TestCase):
                 cls.tixi.close()
 
     def test_factory_types(self) -> None:
+        # The SWIG factory must expose the concrete C++ runtime types.
         system = self.uid_manager.get_geometric_component("genSys")
         component = self.uid_manager.get_geometric_component("cuboid_1")
 
@@ -98,6 +101,7 @@ class TestSystemsBindings(unittest.TestCase):
         with self.assertRaises(AttributeError):
             components.get_components()
 
+        # Numerical behavior is covered by C++ tests; verify the Python types here.
         self.assertIsInstance(
             system.get_mass_all_components(),
             float,
@@ -164,6 +168,7 @@ class TestSystemsBindings(unittest.TestCase):
         self.assertGreater(shape.get_face_count(), 0)
 
     def test_missing_optional_values(self) -> None:
+        # C++ boost::optional values are exposed as objects or None in Python.
         wedge = self.uid_manager.get_geometric_component("wedge_1")
 
         self.assertIsNone(wedge.get_mass())
@@ -194,6 +199,8 @@ class TestSystemsBindings(unittest.TestCase):
         )
         self.assertIsNone(system.get_components())
         self.assertIsNone(system.get_center_of_gravity())
+
+        # The loft builder still returns a valid grouped shape.
         self.assertIsNotNone(system.get_loft())
 
     def test_architecture_access(self) -> None:
@@ -209,6 +216,7 @@ class TestSystemsBindings(unittest.TestCase):
             "Test system architecture",
         )
 
+        # Verify SWIG overload resolution for index and UID arguments.
         architecture_by_uid = self.aircraft_config.get_system_architecture(
             "systemArchitecture1"
         )
@@ -227,6 +235,7 @@ class TestSystemsBindings(unittest.TestCase):
         architecture = self.aircraft_config.get_system_architecture(1)
         connections = architecture.get_connections()
 
+        # Both endpoints resolve to generic-system components.
         component_connection = connections.get_connection(1)
 
         self.assertIsInstance(
@@ -238,6 +247,7 @@ class TestSystemsBindings(unittest.TestCase):
             configuration.CCPACSComponent,
         )
 
+        # A fuselage target must not be exposed as CCPACSComponent.
         fuselage_connection = connections.get_connection(3)
 
         self.assertIsInstance(
@@ -250,6 +260,7 @@ class TestSystemsBindings(unittest.TestCase):
             "SimpleFuselage",
         )
 
+        # External endpoints are available through the generated choice API.
         external_connection = connections.get_connection(4)
 
         self.assertIsNone(external_connection.get_source_component())
@@ -263,6 +274,7 @@ class TestSystemsBindings(unittest.TestCase):
         architecture = self.aircraft_config.get_system_architecture(1)
         components = architecture.get_generic_system_components()
 
+        # Components are unique by UID and retain first-connection order.
         self.assertEqual(len(components), 3)
         self.assertTrue(
             all(

@@ -72,6 +72,7 @@ class TestFuelTanks(unittest.TestCase):
         cls.aircraft_config = manager.get_configuration(cls.tigl._handle.value)
         cls.uid_manager = cls.aircraft_config.get_uidmanager()
 
+        # Cache representative segment-based and parametric vessels.
         cls.fuel_tank = cls.uid_manager.get_geometric_component(cls.TANK_UID)
         cls.segment_vessel = cls.uid_manager.get_geometric_component(
             cls.SEGMENT_VESSEL_UID
@@ -104,6 +105,8 @@ class TestFuelTanks(unittest.TestCase):
             self.aircraft_config.get_fuel_tank_count(),
             8,
         )
+
+        # Verify the index- and UID-based overloads exposed by SWIG.
         self.assertIsInstance(
             self.aircraft_config.get_fuel_tank(1),
             configuration.CPACSFuelTank,
@@ -209,11 +212,13 @@ class TestFuelTanks(unittest.TestCase):
         )
 
     def test_vessel_types(self) -> None:
+        # Vessel geometry uses either segments or parametric design data.
         self.assertTrue(self.segment_vessel.is_vessel_via_segments())
         self.assertFalse(self.segment_vessel.is_vessel_via_design_parameters())
         self.assertFalse(self.spherical_vessel.is_vessel_via_segments())
         self.assertTrue(self.spherical_vessel.is_vessel_via_design_parameters())
 
+        # A spherical dome is an ellipsoid with a half-axis fraction of 1.
         self.assertFalse(self.segment_vessel.has_spherical_dome())
         self.assertFalse(self.segment_vessel.has_ellipsoid_dome())
         self.assertFalse(self.segment_vessel.has_torispherical_dome())
@@ -240,6 +245,7 @@ class TestFuelTanks(unittest.TestCase):
         self.assertTrue(self.isotensoid_vessel.has_isotensoid_dome())
 
     def test_vessel_sections(self) -> None:
+        # Parametric vessels have no sections and reject section-only access.
         self.assertEqual(
             self.segment_vessel.get_section_count(),
             3,
@@ -261,6 +267,7 @@ class TestFuelTanks(unittest.TestCase):
             self.INVALID_VESSEL_TYPE_MESSAGE,
         )
 
+        # Section faces are reconstructed from segment boundary wires.
         self.assertIsInstance(
             self.segment_vessel.get_section_face("outerVessel_section3"),
             TopoDS_Face,
@@ -275,6 +282,7 @@ class TestFuelTanks(unittest.TestCase):
         )
 
     def test_vessel_segments(self) -> None:
+        # Parametric vessels have no segments and reject segment access.
         self.assertEqual(
             self.segment_vessel.get_segment_count(),
             2,
@@ -376,6 +384,7 @@ class TestFuelTanks(unittest.TestCase):
         )
 
     def test_structure(self) -> None:
+        # Vessel structures expose optional frame, stringer, and wall assemblies.
         wall_structure = self.isotensoid_vessel.get_structure()
         reinforced_structure = self.segment_vessel.get_structure()
 
