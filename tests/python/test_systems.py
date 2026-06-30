@@ -4,169 +4,274 @@
 # Licensed under the Apache License, Version 2.0
 #############################################################################
 
+from pathlib import Path
 import unittest
 
-from tigl3.tigl3wrapper import *
-from tixi3.tixi3wrapper import *
 from tigl3 import configuration, geometry
+from tigl3.tigl3wrapper import Tigl3
+from tixi3.tixi3wrapper import Tixi3
 
 
-class SystemsBindings(unittest.TestCase):
+class TestSystemsBindings(unittest.TestCase):
+    CPACS_FILE = Path("TestData/simpletest-systems.cpacs.xml")
+    CONFIGURATION_UID = "testAircraft"
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+
+        if not cls.CPACS_FILE.is_file():
+            raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}")
+
         cls.tixi = Tixi3()
         cls.tigl = Tigl3()
+        cls._tixi_is_open = False
+        cls._tigl_is_open = False
 
-        cls.assertIsNone = staticmethod(unittest.TestCase().assertIsNone)
-        cls.assertIsNone(cls.tixi.open("TestData/simpletest-systems.cpacs.xml"))
-        cls.assertIsNone(cls.tigl.open(cls.tixi, "testAircraft"))
+        cls.addClassCleanup(cls._close_configuration)
 
-        mgr = configuration.CCPACSConfigurationManager.get_instance()
-        cls.config = mgr.get_configuration(cls.tigl._handle.value)
-        cls.uid_mgr = cls.config.get_uidmanager()
+        tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
+        if tixi_result is not None:
+            raise AssertionError(f"Tixi3.open() unexpectedly returned {tixi_result!r}")
+        cls._tixi_is_open = True
+
+        tigl_result = cls.tigl.open(cls.tixi, cls.CONFIGURATION_UID)
+        if tigl_result is not None:
+            raise AssertionError(f"Tigl3.open() unexpectedly returned {tigl_result!r}")
+        cls._tigl_is_open = True
+
+        manager = configuration.CCPACSConfigurationManager.get_instance()
+        cls.aircraft_config = manager.get_configuration(cls.tigl._handle.value)
+        cls.uid_manager = cls.aircraft_config.get_uidmanager()
 
     @classmethod
-    def tearDownClass(cls):
-        cls.tigl.close()
-        cls.tixi.close()
+    def _close_configuration(cls) -> None:
+        try:
+            if cls._tigl_is_open:
+                cls.tigl.close()
+        finally:
+            if cls._tixi_is_open:
+                cls.tixi.close()
 
-    def test_uid_manager_factory_returns_concrete_types(self):
-        system = self.uid_mgr.get_geometric_component("genSys")
-        component = self.uid_mgr.get_geometric_component("cuboid_1")
+    def test_factory_types(self) -> None:
+        system = self.uid_manager.get_geometric_component("genSys")
+        component = self.uid_manager.get_geometric_component("cuboid_1")
 
-        self.assertIsInstance(system, geometry.ITiglGeometricComponent)
-        self.assertIsInstance(system, configuration.CCPACSGenericSystem)
+        self.assertIsInstance(
+            system,
+            geometry.ITiglGeometricComponent,
+        )
+        self.assertIsInstance(
+            system,
+            configuration.CCPACSGenericSystem,
+        )
+        self.assertIsInstance(
+            component,
+            geometry.ITiglGeometricComponent,
+        )
+        self.assertIsInstance(
+            component,
+            configuration.CCPACSComponent,
+        )
 
-        self.assertIsInstance(component, geometry.ITiglGeometricComponent)
-        self.assertIsInstance(component, configuration.CCPACSComponent)
-
-    def test_system_accessors(self):
-        system = self.uid_mgr.get_geometric_component("genSys")
+    def test_system_accessors(self) -> None:
+        system = self.uid_manager.get_geometric_component("genSys")
 
         self.assertEqual(system.get_uid(), "genSys")
         self.assertEqual(system.get_defaulted_uid(), "genSys")
         self.assertEqual(system.get_name(), "Generic System")
         self.assertIsInstance(
-            system.get_configuration(), configuration.CCPACSConfiguration
+            system.get_configuration(),
+            configuration.CCPACSConfiguration,
         )
 
         components = system.get_components()
+
         self.assertIsNotNone(components)
         self.assertEqual(components.get_component_count(), 24)
         self.assertIsInstance(
-            components.get_component(1), configuration.CCPACSComponent
+            components.get_component(1),
+            configuration.CCPACSComponent,
         )
 
-        # curated Python API: generated plural getter is intentionally hidden
+        # The generated plural getter is intentionally hidden from Python.
         with self.assertRaises(AttributeError):
             components.get_components()
 
-        # smoke-check wrapped system methods without reproducing C++ numerics
-        self.assertIsInstance(system.get_mass_all_components(), float)
-        self.assertIsInstance(system.get_mass_positioned_components(), float)
-        self.assertIsInstance(system.get_center_of_gravity(), geometry.CTiglPoint)
+        self.assertIsInstance(
+            system.get_mass_all_components(),
+            float,
+        )
+        self.assertIsInstance(
+            system.get_mass_positioned_components(),
+            float,
+        )
+        self.assertIsInstance(
+            system.get_center_of_gravity(),
+            geometry.CTiglPoint,
+        )
 
         shape = system.get_loft()
+
         self.assertIsNotNone(shape)
         self.assertGreater(shape.get_face_count(), 0)
 
-    def test_component_accessors(self):
-        component = self.uid_mgr.get_geometric_component("cuboid_2")
+    def test_component_accessors(self) -> None:
+        component = self.uid_manager.get_geometric_component("cuboid_2")
 
-        self.assertIsInstance(component.get_component_intent(), int)
-        self.assertIsInstance(component.get_component_type(), int)
-        self.assertIsInstance(component.get_component_representation(), int)
-        self.assertEqual(component.get_component_representation_as_string(), "envelope")
+        self.assertIsInstance(
+            component.get_component_intent(),
+            int,
+        )
+        self.assertIsInstance(
+            component.get_component_type(),
+            int,
+        )
+        self.assertIsInstance(
+            component.get_component_representation(),
+            int,
+        )
+        self.assertEqual(
+            component.get_component_representation_as_string(),
+            "envelope",
+        )
 
         self.assertIsInstance(component.get_mass(), float)
         self.assertTrue(component.is_positioned())
+
         self.assertIsInstance(
-            component.get_center_of_gravity_local(), geometry.CTiglPoint
+            component.get_center_of_gravity_local(),
+            geometry.CTiglPoint,
         )
         self.assertIsInstance(
-            component.get_center_of_gravity_global(), geometry.CTiglPoint
+            component.get_center_of_gravity_global(),
+            geometry.CTiglPoint,
+        )
+        self.assertIsInstance(
+            component.get_centroid_local(),
+            geometry.CTiglPoint,
+        )
+        self.assertIsInstance(
+            component.get_centroid_global(),
+            geometry.CTiglPoint,
         )
 
-        self.assertIsInstance(component.get_centroid_local(), geometry.CTiglPoint)
-        self.assertIsInstance(component.get_centroid_global(), geometry.CTiglPoint)
-
-        # optional mass inertia -> None in Python
         self.assertIsNone(component.get_mass_inertia_local())
 
         shape = component.get_loft()
+
         self.assertIsNotNone(shape)
         self.assertGreater(shape.get_face_count(), 0)
 
-    def test_none_for_missing_optional_values(self):
-        wedge = self.uid_mgr.get_geometric_component("wedge_1")
+    def test_missing_optional_values(self) -> None:
+        wedge = self.uid_manager.get_geometric_component("wedge_1")
+
         self.assertIsNone(wedge.get_mass())
 
-        unpositioned = self.uid_mgr.get_geometric_component("unpositionedCuboid")
+        unpositioned = self.uid_manager.get_geometric_component("unpositionedCuboid")
+
         self.assertFalse(unpositioned.is_positioned())
         self.assertIsNotNone(unpositioned.get_center_of_gravity_local())
         self.assertIsNone(unpositioned.get_center_of_gravity_global())
 
-        cuboid1 = self.uid_mgr.get_geometric_component("cuboid_1")
-        inertia = cuboid1.get_mass_inertia_local()
-        self.assertIsInstance(inertia, configuration.CTiglMassInertia)
+        cuboid = self.uid_manager.get_geometric_component("cuboid_1")
+        inertia = cuboid.get_mass_inertia_local()
+
+        self.assertIsInstance(
+            inertia,
+            configuration.CTiglMassInertia,
+        )
         self.assertIsNone(inertia.Jxy)
         self.assertIsNone(inertia.Jxz)
         self.assertIsNone(inertia.Jyz)
 
-    def test_empty_generic_system(self):
-        system = self.uid_mgr.get_geometric_component("genSys_empty")
+    def test_empty_system(self) -> None:
+        system = self.uid_manager.get_geometric_component("genSys_empty")
 
-        self.assertIsInstance(system, configuration.CCPACSGenericSystem)
+        self.assertIsInstance(
+            system,
+            configuration.CCPACSGenericSystem,
+        )
         self.assertIsNone(system.get_components())
         self.assertIsNone(system.get_center_of_gravity())
         self.assertIsNotNone(system.get_loft())
 
-    def test_system_architecture_access(self):
-        self.assertEqual(self.config.get_system_architectures_count(), 1)
+    def test_architecture_access(self) -> None:
+        self.assertEqual(
+            self.aircraft_config.get_system_architectures_count(),
+            1,
+        )
 
-        sa = self.config.get_system_architecture(1)
-        self.assertEqual(sa.get_name(), "Test system architecture")
+        architecture = self.aircraft_config.get_system_architecture(1)
 
-        # overload resolution (index vs uid)
-        sa_by_uid = self.config.get_system_architecture("systemArchitecture1")
-        self.assertEqual(sa_by_uid.get_name(), "Test system architecture")
+        self.assertEqual(
+            architecture.get_name(),
+            "Test system architecture",
+        )
 
-        connections = sa.get_connections()
+        architecture_by_uid = self.aircraft_config.get_system_architecture(
+            "systemArchitecture1"
+        )
+
+        self.assertEqual(
+            architecture_by_uid.get_name(),
+            "Test system architecture",
+        )
+
+        connections = architecture.get_connections()
+
         self.assertIsNotNone(connections)
         self.assertEqual(connections.get_connection_count(), 5)
 
-    def test_system_architecture_connection_typemaps(self):
-        sa = self.config.get_system_architecture(1)
-        connections = sa.get_connections()
+    def test_connection_typemaps(self) -> None:
+        architecture = self.aircraft_config.get_system_architecture(1)
+        connections = architecture.get_connections()
 
-        # component -> component
-        c1 = connections.get_connection(1)
-        self.assertIsInstance(c1.get_source_component(), configuration.CCPACSComponent)
-        self.assertIsInstance(c1.get_target_component(), configuration.CCPACSComponent)
+        component_connection = connections.get_connection(1)
 
-        # component -> fuselage: wrapped component accessor must return None
-        c3 = connections.get_connection(3)
-        self.assertIsInstance(c3.get_source_component(), configuration.CCPACSComponent)
-        self.assertIsNone(c3.get_target_component())
-        self.assertEqual(c3.get_target().get_component_uid_choice4(), "SimpleFuselage")
+        self.assertIsInstance(
+            component_connection.get_source_component(),
+            configuration.CCPACSComponent,
+        )
+        self.assertIsInstance(
+            component_connection.get_target_component(),
+            configuration.CCPACSComponent,
+        )
 
-        # fuselage -> externalElement: optional enum should be available
-        c4 = connections.get_connection(4)
-        self.assertIsNone(c4.get_source_component())
-        self.assertIsNone(c4.get_target_component())
-        self.assertEqual(c4.get_target().get_external_element_choice1(), 0)
+        fuselage_connection = connections.get_connection(3)
 
-    def test_component_sequence_exposure(self):
-        sa = self.config.get_system_architecture(1)
-        components = sa.get_generic_system_components()
+        self.assertIsInstance(
+            fuselage_connection.get_source_component(),
+            configuration.CCPACSComponent,
+        )
+        self.assertIsNone(fuselage_connection.get_target_component())
+        self.assertEqual(
+            fuselage_connection.get_target().get_component_uid_choice4(),
+            "SimpleFuselage",
+        )
+
+        external_connection = connections.get_connection(4)
+
+        self.assertIsNone(external_connection.get_source_component())
+        self.assertIsNone(external_connection.get_target_component())
+        self.assertEqual(
+            external_connection.get_target().get_external_element_choice1(),
+            0,
+        )
+
+    def test_component_sequence(self) -> None:
+        architecture = self.aircraft_config.get_system_architecture(1)
+        components = architecture.get_generic_system_components()
 
         self.assertEqual(len(components), 3)
         self.assertTrue(
-            all(isinstance(c, configuration.CCPACSComponent) for c in components)
+            all(
+                isinstance(component, configuration.CCPACSComponent)
+                for component in components
+            )
         )
-        self.assertEqual(
-            [c.get_defaulted_uid() for c in components],
+        self.assertSequenceEqual(
+            [component.get_defaulted_uid() for component in components],
             ["cuboid_1", "cuboid_2", "cuboid_3"],
         )
 
