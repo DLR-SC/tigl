@@ -112,20 +112,12 @@ TopoDS_Shape CTiglPatchShell::PatchedShape()
 
 void CTiglPatchShell::Perform()
 {
-    int nFacesInput = 0;
-    for (TopExp_Explorer exp(_inputShell, TopAbs_FACE); exp.More(); exp.Next()) {
-        nFacesInput++;
-    }
-    
-    if (nFacesInput == 0 && _sidecaps.size() == 0) {
-        throw CTiglError("Cannot patch a shape with no faces and no side caps", TIGL_ERROR);
+    int nFacesInput = GetNumberOfFaces(_inputShell);
+    if (nFacesInput == 0) {
+        throw CTiglError("Cannot patch a shape with no faces", TIGL_ERROR);
     }
     
     TopoDS_Shape shell = MakeShells(_inputShell, _tolerance);
-    int nFacesShell = 0;
-    for (TopExp_Explorer exp(shell, TopAbs_FACE); exp.More(); exp.Next()) {
-        nFacesShell++;
-    }
 
     if (_sidecaps.size()>0) {
         // close holes using side caps
