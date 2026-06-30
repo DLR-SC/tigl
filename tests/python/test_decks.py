@@ -38,13 +38,11 @@ class TestDeckBindings(unittest.TestCase):
         if not cls.CPACS_FILE.is_file():
             raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}")
 
-        # Load the read-only CPACS configuration once for all tests.
         cls.tixi = Tixi3()
         cls.tigl = Tigl3()
         cls._tixi_is_open = False
         cls._tigl_is_open = False
 
-        # Register cleanup before opening native resources.
         cls.addClassCleanup(cls._close_configuration)
 
         tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
@@ -66,7 +64,6 @@ class TestDeckBindings(unittest.TestCase):
 
     @classmethod
     def _close_configuration(cls) -> None:
-        # Close TiGL before releasing its underlying TiXI document.
         try:
             if cls._tigl_is_open:
                 cls.tigl.close()
