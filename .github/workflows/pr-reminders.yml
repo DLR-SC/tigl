@@ -1,0 +1,129 @@
+name: PR Reminders
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths-ignore:
+      - '*.md'
+      - 'doc/**'
+      - 'examples/**'
+      - 'README.md'
+      - 'ChangeLog.md'
+
+jobs:
+  pr-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch base branch
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
+
+      - name: Get changed files
+        id: changed
+        uses: tj-actions/changed-files@v46
+        with:
+          sha: ${{ steps.fetch-base.outputs.base_sha }}
+          files: |
+            src/**
+            TIGLCreator/**
+            tests/unittests/**
+            tests/integrationtests/**
+            tests/python/**
+            bindings/python_internal/**/*.i
+            ChangeLog.md
+
+      - name: Generate reminder message
+        id: reminders
+        run: |
+          CHANGED="${{ steps.changed.outputs.all_changed_files }}"
+          NORMALIZED=$(printf '%s\n' "$CHANGED" | sed 's|^\./||')
+
+          if [ -z "$NORMALIZED" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "skip=false" >> $GITHUB_OUTPUT
+
+          HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
+          HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
+          HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
+          HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+          HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
+          HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
+          HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
+          HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qFx "ChangeLog.md" && echo "yes" || echo "no")
+
+          REMINDERS=()
+          PASSED=()
+
+          if [ "$HAS_SRC" = "yes" ]; then
+            if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
+            else
+              PASSED+=("- :white_check_mark: Tests added or not required")
+            fi
+            if [ "$HAS_BINDINGS" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+            else
+              PASSED+=("- :white_check_mark: Python bindings considered")
+            fi
+          fi
+
+          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
+            REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
+          fi
+
+          if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            if [ "$HAS_CHANGELOG" = "no" ]; then
+              REMINDERS+=("- :memo: **Tip**: Don't forget to add an entry to \`ChangeLog.md\`")
+            else
+              PASSED+=("- :white_check_mark: ChangeLog.md updated")
+            fi
+          fi
+
+          {
+            printf '%s\n' "## PR Reminders" ""
+            if [ ${#REMINDERS[@]} -gt 0 ]; then
+              for item in "${REMINDERS[@]}"; do
+                printf '%s\n' "$item"
+              done
+            else
+              for item in "${PASSED[@]}"; do
+                printf '%s\n' "$item"
+              done
+            fi
+            printf '\n%s\n' "---" "_This is an automated reminder from CI_"
+          } > pr-reminder-body.md
+
+      - name: Find existing PR reminder comment
+        if: steps.reminders.outputs.skip == 'false'
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions[bot]
+          body-includes: "automated reminder from CI"
+
+      - name: Create comment
+        if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: pr-reminder-body.md
+
+      - name: Update comment
+        if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: pr-reminder-body.md
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
