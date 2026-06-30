@@ -56,6 +56,8 @@ namespace tigl
 CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSVessel(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
+    , loftTrimmed(*this, &CCPACSVessel::BuildLoftUntrimmed)
+    , loftUntrimmed(*this, &CCPACSVessel::BuildLoftUntrimmed)
 {
     m_transformation.setScalingType(ABS_LOCAL);
     m_transformation.setRotationType(ABS_LOCAL);
@@ -367,7 +369,7 @@ TopoDS_Edge CCPACSVessel::IsotensoidContour::ToEdge() const
     return BRepBuilderAPI_MakeEdge(ToBSpline());
 }
 
-void CCPACSVessel::BuildShapeFromSegments(TopoDS_Shape& loftShape) const
+void CCPACSVessel::BuildShapeFromSegments(TopoDS_Shape& loftShape, bool trim) const
 {
     const auto& segments    = m_segments_choice1.get();
     TiglContinuity cont     = segments.GetSegment(1).GetContinuity();
@@ -385,6 +387,7 @@ void CCPACSVessel::BuildShapeFromSegments(TopoDS_Shape& loftShape) const
 
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
+    lofter.setEnableProfileCutting(trim);
 
     loftShape = lofter.Shape();
 }
@@ -581,7 +584,7 @@ void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
     loftShape = TransformedShape;
 }
 
-PNamedShape CCPACSVessel::BuildLoft() const
+void CCPACSVessel::BuildLoftUntrimmed(PNamedShape& cache) const
 {
     TopoDS_Shape loftShape;
     std::string loftName      = GetUID();
@@ -589,21 +592,48 @@ PNamedShape CCPACSVessel::BuildLoft() const
 
     if (m_sections_choice1) {
         BuildShapeFromSegments(loftShape);
-        PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-        SetFaceTraitsFromSegments(loft);
-        return loft;
+        cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+        SetFaceTraitsFromSegments(cache);
     }
     else if (m_domeType_choice2) {
         BuildShapeFromSimpleParameters(loftShape);
-        PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-        SetFaceTraitsFromParams(loft);
-        return loft;
+        cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+        SetFaceTraitsFromParams(cache);
     }
     else {
         throw CTiglError("No valid combination of segments and sections or parametric specification for lofting of "
                          "tank vessel available.",
                          TIGL_ERROR);
     }
+}
+
+void CCPACSVessel::BuildLoftTrimmed(PNamedShape& cache) const
+{
+    TopoDS_Shape loftShape;
+    std::string loftName      = GetUID();
+    std::string loftShortName = GetShortShapeName();
+
+    bool trim = true;
+    if (m_sections_choice1) {
+        BuildShapeFromSegments(loftShape, trim);
+        cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
+    }
+    //note: trimmed loft is null if not build from segments.
+}
+
+PNamedShape CCPACSVessel::BuildLoft() const
+{
+    return *loftUntrimmed;
+}
+
+PNamedShape CCPACSVessel::GetTrimmedLoft() const
+{
+    return *loftTrimmed;
+}
+
+PNamedShape CCPACSVessel::GetUntrimmedLoft() const
+{
+    return GetLoft();
 }
 
 CCPACSGuideCurve& CCPACSVessel::GetGuideCurveSegment(std::string uid)
@@ -680,33 +710,20 @@ std::string CCPACSVessel::GetShortShapeName() const
 void CCPACSVessel::SetFaceTraitsFromSegments(PNamedShape loft) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    int nFacesAero  = nFacesTotal;
 
     auto& segments = m_segments_choice1.get();
-    int nSegments  = segments.GetSegmentCount();
+    int nSegments = segments.GetSegmentCount();
 
     bool hasSymmetryPlane = GetNumberOfEdges(segments.GetSegment(1).GetEndWire()) > 1;
 
     std::array<std::string, 4> names = {loft->Name(), "symmetry", "Front", "Rear"};
 
-    if (!CTiglTopoAlgorithms::IsDegenerated(segments.GetSegment(1).GetStartWire())) {
-        nFacesAero--;
-    }
-    if (!CTiglTopoAlgorithms::IsDegenerated(segments.GetSegment(nSegments).GetEndWire())) {
-        nFacesAero--;
-    }
-
-    int facesPerSegment = nFacesAero / nSegments;
     int iFaceTotal      = 0;
     int nSymmetryFaces  = hasSymmetryPlane ? 1 : 0;
 
-    for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
-        for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
-            loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
-        }
-        for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
-            loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
-        }
+    loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+    for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
     }
 
     // Front and rear caps
@@ -734,6 +751,8 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
 void CCPACSVessel::InvalidateImpl(const boost::optional<std::string>&) const
 {
     loft.clear();
+    loftTrimmed.clear();
+    loftUntrimmed.clear();
     if (m_segments_choice1) {
         m_segments_choice1.get().Invalidate();
     }

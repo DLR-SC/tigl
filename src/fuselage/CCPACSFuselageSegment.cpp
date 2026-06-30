@@ -390,7 +390,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
             fuselageLoft =  GetParent()->GetParent<CCPACSDuct>()->GetTrimmedLoft();
         }
         else if (GetParent()->IsParent<CCPACSVessel>()) {
-            throw CTiglError("To Do.");
+            fuselageLoft =  GetParent()->GetParent<CCPACSVessel>()->GetTrimmedLoft();
         }
         else if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
             throw CTiglError("To Do.");

@@ -96,9 +96,18 @@ public:
     // Check whether the vessel has isotensoid dome
     TIGL_EXPORT bool HasIsotensoidDome() const;
 
+    // Returns the trimmed loft (empty if IsVesselViaDesignParameters == true)
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+
+    // Retunrs the untrimmed loft (delegates to GetLoft)
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
 protected:
     // Build the loft
     PNamedShape BuildLoft() const override;
+
+    void BuildLoftUntrimmed(PNamedShape& cache) const;
+    void BuildLoftTrimmed(PNamedShape& cache) const;
 
     // Set the face traits
     void SetFaceTraitsFromSegments(PNamedShape loft) const;
@@ -117,13 +126,16 @@ private:
     // Get short name for loft
     std::string GetShortShapeName() const;
 
-    void BuildShapeFromSegments(TopoDS_Shape& loftShape) const;
+    void BuildShapeFromSegments(TopoDS_Shape& loftShape, bool trim=false) const;
     void BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const;
 
     void BuildVesselWire(std::vector<TopoDS_Edge>& edges, BRepBuilderAPI_MakeWire& wire) const;
     void BuildVesselWireEllipsoid(BRepBuilderAPI_MakeWire& wire) const;
     void BuildVesselWireTorispherical(BRepBuilderAPI_MakeWire& wire) const;
     void BuildVesselWireIsotensoid(BRepBuilderAPI_MakeWire& wire) const;
+
+    Cache<PNamedShape, CCPACSVessel> loftUntrimmed;   /**< Clean vessel surface, untrimmed (without UV cuts at profiles) */
+    Cache<PNamedShape, CCPACSVessel> loftTrimmed;     /**< Clean vessel surface, trimmed (with UV cuts at profiles) */
 
     /**
      * @brief  Approximated contour of an isotensoid dome section.
