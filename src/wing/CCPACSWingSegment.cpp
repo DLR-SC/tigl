@@ -352,9 +352,9 @@ PNamedShape GetParentLoft(const CCPACSWingSegment& segment)
         const CCPACSWing* wing = segment.GetParent()->GetParent<CCPACSWing>();
         return wing->GetTrimmedLoft();
     }
-    else if (segment.GetParent()->IsParent<CCPACSWing>()) {
+    else if (segment.GetParent()->IsParent<CCPACSEnginePylon>()) {
         const CCPACSEnginePylon* pylon = segment.GetParent()->GetParent<CCPACSEnginePylon>();
-        return pylon->GetLoft(); //To Do
+        return pylon->GetTrimmedLoft();
     }
     else {
         throw CTiglError("Invalid parent type");

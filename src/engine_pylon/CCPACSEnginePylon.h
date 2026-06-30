@@ -20,6 +20,7 @@
 
 #include "generated/CPACSEnginePylon.h"
 #include "CTiglRelativelyPositionedComponent.h"
+#include "Cache.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -45,10 +46,25 @@ public:
     TIGL_EXPORT bool HasLoft() const;
 
 protected:
+    // Legacy untrimmed loft (default behavior)
     virtual PNamedShape BuildLoft() const override;
+
+    // New API – trimmed/untrimmed caches
+    void BuildLoftTrimmed(PNamedShape& cache) const;
+    void BuildLoftUntrimmed(PNamedShape& cache) const;
+
+public:
+    // Returns the trimmed loft (UV cuts at profile positions)
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    // Returns the untrimmed loft (delegates to GetLoft())
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
 
 private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
+
+    // Caches for trimmed/untrimmed geometry
+    mutable Cache<PNamedShape, CCPACSEnginePylon> loftTrimmed;
+    mutable Cache<PNamedShape, CCPACSEnginePylon> loftUntrimmed;
 
 };
 
