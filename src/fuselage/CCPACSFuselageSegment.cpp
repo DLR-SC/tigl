@@ -349,7 +349,7 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft) const
     int facesPerSegment = GetNumberOfLoftFaces();
     int remainingFaces = nFaces - facesPerSegment;
     if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
-        LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
+        LOG(WARNING) << "Fuselage segment faces cannot be named properly (maybe due to Guide Curves?)";
         return;
     }
 
@@ -393,7 +393,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
             fuselageLoft =  GetParent()->GetParent<CCPACSVessel>()->GetTrimmedLoft();
         }
         else if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
-            throw CTiglError("To Do.");
+            throw CTiglError("CCPACSFuselageSegment::BuildLoft called on a CCPACSMultiSegmentShape. This is currently not supported.");
         }
         else {
             throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
@@ -427,7 +427,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
         TopoDS_Wire endWire  = GetEndWire();
 
         CTiglPatchShell patcher(loftShell);
-        patcher.SetMakeSolid(false);
+        patcher.SetMakeSolid(true);
         patcher.AddSideCap(startWire);
         patcher.AddSideCap(endWire);
         loftShape = patcher.PatchedShape();
