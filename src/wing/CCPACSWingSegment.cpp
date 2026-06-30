@@ -428,7 +428,10 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
         int nFaces = faceMap.Extent();
         int nSegments = segments->GetSegmentCount();
-        int nFacesPerSegment = (nFaces - 2)/nSegments;
+        int nFacesPerSegment = (nFaces - 2 + nSegments - 1) / nSegments;
+        if (nFacesPerSegment == 0) {
+            nFacesPerSegment = 1;
+        }
 
         // determine index of segment to retrieve the correct subshapes of the wing
         // Here we explicitly require the subshapes to be ordered consistently
@@ -436,7 +439,9 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             const CCPACSWingSegment& ws = segments->GetSegment(j);
             if (GetUID() == ws.GetUID()) {
                 for(int i=0; i<nFacesPerSegment; ++i) {
-                    BB.Add(loftShell, TopoDS::Face(faceMap((j-1)*nFacesPerSegment + i + 1))); // guides
+                    int faceIndex = (j-1)*nFacesPerSegment + i + 1;
+                    faceIndex = (faceIndex - 1) % nFaces + 1;
+                    BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex))); // guides
                 }
                 break;
             }
@@ -447,6 +452,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopoDS_Wire outerWire = GetOuterWire();
 
         CTiglPatchShell patcher(loftShell);
+        patcher.SetMakeSolid(false);
         patcher.AddSideCap(innerWire);
         patcher.AddSideCap(outerWire);
         loftShape = patcher.PatchedShape();

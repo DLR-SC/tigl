@@ -129,7 +129,7 @@ TEST_F(DuctSimple, DuctLevel)
     }
 
     // Check the position of a sample duct with help of its bounding box
-    auto loftSimpleDuct = ductSimpleDuct->GetLoft();
+    auto loftSimpleDuct = ductSimpleDuct->GetTrimmedLoft();
     const TopoDS_Shape& shapeSimpleDuct = loftSimpleDuct->Shape();
 
     Bnd_Box ductBBox;

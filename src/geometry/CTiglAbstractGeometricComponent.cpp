@@ -52,7 +52,8 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis() const
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft() const
 {
-    return *loft;
+    PNamedShape result = *loft;
+    return result;
 }
 
 Bnd_Box const& CTiglAbstractGeometricComponent::GetBoundingBox() const

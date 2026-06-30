@@ -394,10 +394,17 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
 
         //determine the number of faces per segment
         int nFacesPerSegment = GetNumberOfLoftFaces();
+        int nfaces = faceMap.Extent();
 
         const int mySegmentIndex = GetSegmentIndex();
         for (int i = 1; i <= nFacesPerSegment; ++i) {
-            BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(mySegmentIndex-1) + i)));
+            int faceIndex = nFacesPerSegment*(mySegmentIndex-1) + i;
+            faceIndex = (faceIndex - 1) % nfaces + 1;
+            BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex)));
+        }
+        int nFacesInShell = 0;
+        for (TopExp_Explorer exp(loftShell, TopAbs_FACE); exp.More(); exp.Next()) {
+            nFacesInShell++;
         }
 
         //close the shell with sidecaps and make them a solid
@@ -405,6 +412,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
         TopoDS_Wire endWire  = GetEndWire();
 
         CTiglPatchShell patcher(loftShell);
+        patcher.SetMakeSolid(false);
         patcher.AddSideCap(startWire);
         patcher.AddSideCap(endWire);
         loftShape = patcher.PatchedShape();
@@ -795,8 +803,32 @@ gp_Pnt CCPACSFuselageSegment::GetPointOnXPlane(double eta, double xpos, int poin
 // Gets the wire on the loft at a given eta
 TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
 {
-
-    TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
+    PNamedShape loft;
+    try {
+        loft = GetLoft();
+    }
+    catch (const tigl::CTiglError& e) {
+        throw;
+    }
+    catch (const std::exception& e) {
+        throw;
+    }
+    catch (...) {
+        throw;
+    }
+    TopoDS_Shape s;
+    try {
+        s = GetFacesByName(loft, GetUID());
+    }
+    catch (const tigl::CTiglError& e) {
+        throw;
+    }
+    catch (const std::exception& e) {
+        throw;
+    }
+    catch (...) {
+        throw;
+    }
 
     BRepBuilderAPI_MakeWire wireMaker;
     for(TopExp_Explorer faceExplorer(s, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
@@ -957,7 +989,10 @@ TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
           nfaces-=1;
     }
 
-    int facesPerSegment = nfaces / nSegments;
+    int facesPerSegment = (nfaces + nSegments - 1) / nSegments;
+    if (facesPerSegment == 0) {
+        facesPerSegment = 1;
+    }
     return facesPerSegment;
 }
 } // end namespace tigl

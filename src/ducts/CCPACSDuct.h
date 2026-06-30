@@ -45,6 +45,9 @@ public:
     //as a callback.
     TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
 
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const;
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
 protected:
     PNamedShape BuildLoft() const override;
 
@@ -55,10 +58,16 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
-    void SetFaceTraits (PNamedShape loft) const;
+    void SetFaceTraitsTrimmed (PNamedShape loft) const;
+    void SetFaceTraitsUntrimmed (PNamedShape loft) const;
 
     std::vector<std::function<void()>> invalidationCallbacks;
 
+    mutable Cache<PNamedShape, CCPACSDuct> loftTrimmed;
+    mutable Cache<PNamedShape, CCPACSDuct> loftUntrimmed;
+
+    void BuildLoftTrimmed(PNamedShape& cache) const;
+    void BuildLoftUntrimmed(PNamedShape& cache) const;
 };
 
 }

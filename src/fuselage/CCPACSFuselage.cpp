@@ -245,12 +245,8 @@ void CCPACSFuselage::SetFaceTraitsUntrimmed (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
-          nFacesAero-=1;
-    }
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
-          nFacesAero-=1;
-    }
+    // For untrimmed loft, all faces are segment faces (no separate cap faces)
+    // Don't subtract anything - nFacesAero == nFacesTotal
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
     int nSegments = this->GetSegmentCount();
@@ -270,8 +266,10 @@ void CCPACSFuselage::SetFaceTraitsUntrimmed (PNamedShape loft) const
 
     // set the caps
     int iFace = 2;
-    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
-        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal, ++iFace) {
+        if (!names.empty()) {
+            loft->FaceTraits(iFaceTotal).SetName(names[iFace % names.size()].c_str());
+        }
     }
 }
 
@@ -295,10 +293,9 @@ void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
     }
 
     int nSegments = this->GetSegmentCount();
-    int facesPerSegment = nFacesAero / nSegments;
-
-    if (nFacesAero % nSegments != 0) {
-        LOG(WARNING) << "CCPACSFuselage: Face count mismatch in trimmed loft (profile cutting may have altered face structure). Expected " << facesPerSegment*nSegments << " aero faces for " << nSegments << " segments, got " << nFacesAero << ". Proceeding with sequential naming.";
+    int facesPerSegment = (nFacesAero + nSegments - 1) / nSegments;
+    if (facesPerSegment == 0) {
+        facesPerSegment = 1;
     }
 
     int iFaceTotal = 0;

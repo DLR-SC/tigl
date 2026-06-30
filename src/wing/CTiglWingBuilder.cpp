@@ -163,7 +163,9 @@ void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParam
     // assign "Top" and "Bottom" to face traits
     for (unsigned int i = 0; i < nFaces-2; i++) {
         CFaceTraits traits = shape->GetFaceTraits(i);
-        traits.SetName(names[i%names.size()]);
+        if (!names.empty()) {
+            traits.SetName(names[i%names.size()]);
+        }
         shape->SetFaceTraits(i, traits);
     }
 
