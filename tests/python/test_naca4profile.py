@@ -1,48 +1,109 @@
+from pathlib import Path
+import unittest
+
+from OCC.Core.gp import gp_Vec2d
+from OCC.Core.TopoDS import TopoDS_Edge
+
 from tixi3.tixi3wrapper import Tixi3
 from tigl3.tigl3wrapper import Tigl3
-import tigl3.configuration
-import unittest
-import os
-import sys
-from OCC.Core.TopoDS import TopoDS_Edge
-from OCC.Core.gp import gp_Vec2d
-from tigl3.configuration import CTiglNACA4Calculator
+from tigl3.configuration import (
+    CCPACSConfigurationManager_get_instance,
+    CPACSNacaProfile,
+    CTiglNACA4Calculator,
+)
 
 
 class TestNACA(unittest.TestCase):
-    def setUp(self):
-        self.tixi_h = Tixi3()
-        self.tigl_h = Tigl3()
-        self.assertIsNone(self.tixi_h.open("TestData/naca_test.cpacs.xml"))
-        self.assertIsNone(self.tigl_h.open(self.tixi_h, ""))
-        mgr = tigl3.configuration.CCPACSConfigurationManager_get_instance()
-        self.aircraft_config = mgr.get_configuration(self.tigl_h._handle.value)
-        
+    CPACS_FILE = Path("TestData/naca_test.cpacs.xml")
+    PROFILE_UID = "NACA0012"
+    ABS_TOLERANCE = 1e-6
 
-    def tearDown(self):
-        self.tigl_h.close()
-        self.tixi_h.close()
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
 
-    def test_nacaAircraftElements_0012(self):
-        profiles = self.aircraft_config.get_wing_profiles()
-        self.wing_profile = profiles.get_profile("NACA0012")
-        choice = self.wing_profile.get_naca_profile_choice4()
-        assert isinstance(self.wing_profile.get_naca_profile_choice4(), tigl3.configuration.CPACSNacaProfile)
-        upper_wire = self.wing_profile.get_upper_wire()
-        assert isinstance(upper_wire, TopoDS_Edge)
-        lower_wire = self.wing_profile.get_lower_wire()
-        assert isinstance(lower_wire, TopoDS_Edge)
-        trailing_edge = self.wing_profile.get_trailing_edge()
-        assert isinstance(trailing_edge, TopoDS_Edge)
+        if not cls.CPACS_FILE.is_file():
+            raise FileNotFoundError(f"File not found: {cls.CPACS_FILE.resolve()}.")
 
+        cls.tixi = Tixi3()
+        cls.tigl = Tigl3()
+        cls._tixi_is_open = False
+        cls._tigl_is_open = False
+
+        cls.addClassCleanup(cls._close_configuration)
+
+        tixi_result = cls.tixi.open(str(cls.CPACS_FILE))
+        if tixi_result is not None:
+            raise AssertionError(f"Tixi3.open() unexpectedly returned {tixi_result!r}")
+        cls._tixi_is_open = True
+
+        tigl_result = cls.tigl.open(cls.tixi, "")
+        if tigl_result is not None:
+            raise AssertionError(f"Tigl3.open() unexpectedly returned {tigl_result!r}")
+        cls._tigl_is_open = True
+
+        manager = CCPACSConfigurationManager_get_instance()
+        cls.aircraft_config = manager.get_configuration(cls.tigl._handle.value)
+
+        profiles = cls.aircraft_config.get_wing_profiles()
+        cls.wing_profile = profiles.get_profile(cls.PROFILE_UID)
+
+    @classmethod
+    def _close_configuration(cls) -> None:
+        try:
+            if cls._tigl_is_open:
+                cls.tigl.close()
+        finally:
+            if cls._tixi_is_open:
+                cls.tixi.close()
+
+    def test_profile_type(self) -> None:
+        naca_profile = self.wing_profile.get_naca_profile_choice4()
+
+        self.assertIsInstance(naca_profile, CPACSNacaProfile)
+
+    def test_edges(self) -> None:
+        self.assertIsInstance(
+            self.wing_profile.get_upper_wire(),
+            TopoDS_Edge,
+        )
+        self.assertIsInstance(
+            self.wing_profile.get_lower_wire(),
+            TopoDS_Edge,
+        )
+        self.assertIsInstance(
+            self.wing_profile.get_trailing_edge(),
+            TopoDS_Edge,
+        )
+
+    def test_trailing_edge_point(self) -> None:
         upper_point = self.wing_profile.get_upper_point(1.0)
-        point = upper_point.Z()
-        self.assertAlmostEqual(point, 0, delta=1e-6)
 
-        calculator = tigl3.configuration.CTiglNACA4Calculator(0,0,9, 0.000945)
-        assert isinstance(calculator, CTiglNACA4Calculator)
-        calculator_upper_curve = calculator.upper_curve(0.5)
-        assert isinstance(calculator_upper_curve, gp_Vec2d)
-        
+        self.assertAlmostEqual(
+            upper_point.Z(),
+            0.0,
+            delta=self.ABS_TOLERANCE,
+        )
+
+    def test_upper_curve_type(self) -> None:
+        max_camber = 0
+        camber_position = 0
+        thickness = 9
+        trailing_edge_thickness = 0.000945
+
+        calculator = CTiglNACA4Calculator(
+            max_camber,
+            camber_position,
+            thickness,
+            trailing_edge_thickness,
+        )
+
+        self.assertIsInstance(calculator, CTiglNACA4Calculator)
+
+        upper_curve_point = calculator.upper_curve(0.5)
+
+        self.assertIsInstance(upper_curve_point, gp_Vec2d)
+
+
 if __name__ == "__main__":
     unittest.main()
