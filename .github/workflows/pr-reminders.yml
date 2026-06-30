@@ -106,6 +106,9 @@ jobs:
             fi
             printf '\n%s\n' "---" "_This is an automated reminder from CI_"
           } > pr-reminder-body.md
+          echo "::group::Generated PR reminder body"
+          cat pr-reminder-body.md
+          echo "::endgroup::"
 
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
