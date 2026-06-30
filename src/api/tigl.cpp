@@ -2999,7 +2999,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCrossSectionArea(TiglCPACSConfi
 
         // get ISO curve as a wire
         TopoDS_Wire curve = TopoDS::Wire(segment.getWireOnLoft(eta));
-        
+
         // get surface which is framed by the ISO curve
         TopoDS_Face surface = BuildFace(curve);
 
