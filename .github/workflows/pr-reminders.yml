@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch base branch
+        id: fetch-base
         run: |
           git fetch origin ${{ github.base_ref }}
           echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
