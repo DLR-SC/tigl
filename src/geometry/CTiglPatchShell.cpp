@@ -18,6 +18,7 @@
 
 #include "CTiglPatchShell.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 
 #include <cassert>

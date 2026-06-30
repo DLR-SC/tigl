@@ -382,7 +382,22 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
     }
     else {
         // retrieve segment loft as subshape of the fuselage loft
-        PNamedShape fuselageLoft = GetParent()->GetParentComponent()->GetLoft();
+        PNamedShape fuselageLoft;
+        if (GetParent()->IsParent<CCPACSFuselage>()) {
+            fuselageLoft = GetParent()->GetParent<CCPACSFuselage>()->GetTrimmedLoft();
+        }
+        else if (GetParent()->IsParent<CCPACSDuct>()) {
+            fuselageLoft =  GetParent()->GetParent<CCPACSDuct>()->GetTrimmedLoft();
+        }
+        else if (GetParent()->IsParent<CCPACSVessel>()) {
+            throw CTiglError("To Do.");
+        }
+        else if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
+            throw CTiglError("To Do.");
+        }
+        else {
+            throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
+        }
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
