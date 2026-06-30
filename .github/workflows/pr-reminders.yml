@@ -28,6 +28,7 @@ jobs:
         uses: tj-actions/changed-files@v46
         with:
           sha: ${{ steps.fetch-base.outputs.base_sha }}
+          seperator: "\n"
           files: |
             src/**
             TIGLCreator/**
