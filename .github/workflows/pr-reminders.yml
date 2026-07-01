@@ -17,16 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fetch base branch
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          echo "base_sha=$(git rev-parse origin/${{ github.base_ref }})" >> $GITHUB_OUTPUT
-
       - name: Get changed files
         id: changed
         uses: tj-actions/changed-files@v46
         with:
-          sha: ${{ steps.fetch-base.outputs.base_sha }}
+          separator: "\n"
           files: |
             src/**
             TIGLCreator/**
@@ -38,95 +33,107 @@ jobs:
 
       - name: Generate reminder message
         id: reminders
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.all_changed_files }}
         run: |
-          CHANGED="${{ steps.changed.outputs.all_changed_files }}"
-          NORMALIZED=$(printf '%s\n' "$CHANGED" | sed 's|^\./||')
+          CHANGED="$CHANGED_FILES"
+          echo $CHANGED
+          NORMALIZED=$(printf '%s\n' "$CHANGED" | tr -d '\r' | sed -e 's|^\./||' -e 's/[[:space:]]*$//')
+
+          HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
+          HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
+          HAS_CPP_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/' && echo "yes" || echo "no")
+          HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
+          HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
+          HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
+          HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qE "ChangeLog.md" && echo "yes" || echo "no")
 
           if [ -z "$NORMALIZED" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "skip=false" >> $GITHUB_OUTPUT
+          if [ "$HAS_SRC" = "no" ] && [ "$HAS_TIGL_CREATOR" = "no" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
-          HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
-          HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
-          HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
-          HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
-          HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
-          HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
-          HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
-          HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qFx "ChangeLog.md" && echo "yes" || echo "no")
+           echo "skip=false" >> $GITHUB_OUTPUT
 
-          # Build arrays for positive (changed) and negative (unchanged) categories
-          POSITIVE=()
-          NEGATIVE=()
+           # Build arrays for positive (changed) and negative (unchanged) categories
+           POSITIVE=()
+           NEGATIVE=()
 
-          # Source code changes
+           # Source code changes
+           if [ "$HAS_SRC" = "yes" ]; then
+             POSITIVE+=("`src/`")
+           else
+             NEGATIVE+=("`src/`")
+           fi
+           # TiGLCreator changes
+           if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+             POSITIVE+=("`TIGLCreator`")
+           else
+             NEGATIVE+=("`TIGLCreator`")
+           fi
+           # Test changes
+           if [ "$HAS_CPP_TEST" = "yes" ]; then
+             POSITIVE+=("tests")
+           else
+             NEGATIVE+=("tests")
+           fi
+
+           # Helper to join positives with commas and 'and'
+           join_and() {
+             local n=${#POSITIVE[@]}
+             if [ "$n" -eq 0 ]; then echo ""; return; fi
+             if [ "$n" -eq 1 ]; then printf '%s' "${POSITIVE[0]}"; return; fi
+             if [ "$n" -eq 2 ]; then printf '%s and %s' "${POSITIVE[0]}" "${POSITIVE[1]}"; return; fi
+             local last="${POSITIVE[$((n-1))]}"
+             local all_but_last="${POSITIVE[@]:0:$((n-1))}"
+             printf '%s, and %s' "$(IFS=,; echo "$all_but_last")" "$last"
+           }
+
+           # Helper to join negatives with commas and final 'but not in'
+           join_negative() {
+             local n=${#NEGATIVE[@]}
+             if [ "$n" -eq 0 ]; then echo ""; return; fi
+             if [ "$n" -eq 1 ]; then printf 'but not in %s' "${NEGATIVE[0]}"; return; fi
+             local last="${NEGATIVE[$((n-1))]}"
+             local all_but_last="${NEGATIVE[@]:0:$((n-1))}"
+             printf 'but not in %s or %s' "$(IFS=,; echo "$all_but_last")" "$last"
+           }
+
+           # Build the preamble sentence
+           PREAMBLE="This PR has changes in $(join_and) $(join_negative)."
+           if [ "$HAS_CHANGELOG" = "yes" ]; then
+             PREAMBLE="$PREAMBLE \`ChangeLog.md\` has changes."
+           else
+             PREAMBLE="$PREAMBLE \`ChangeLog.md\` has no changes."
+           fi
+
+           REMINDERS=()
+           PASSED=()
+
           if [ "$HAS_SRC" = "yes" ]; then
-            POSITIVE+=("`src/`")
-          else
-            NEGATIVE+=("`src/`")
-          fi
-          # TiGLCreator changes
-          if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-            POSITIVE+=("`TIGLCreator`")
-          else
-            NEGATIVE+=("`TIGLCreator`")
-          fi
-          # Test changes (unit, integration, python)
-          if [ "$HAS_UNIT" = "yes" ] || [ "$HAS_INTEG" = "yes" ] || [ "$HAS_PYTHON_TEST" = "yes" ]; then
-            POSITIVE+=("tests")
-          else
-            NEGATIVE+=("tests")
-          fi
-
-          # Helper to join positives with commas and 'and'
-          join_and() {
-            local n=${#POSITIVE[@]}
-            if [ "$n" -eq 0 ]; then echo ""; return; fi
-            if [ "$n" -eq 1 ]; then printf '%s' "${POSITIVE[0]}"; return; fi
-            if [ "$n" -eq 2 ]; then printf '%s and %s' "${POSITIVE[0]}" "${POSITIVE[1]}"; return; fi
-            local last="${POSITIVE[$((n-1))]}"
-            local all_but_last="${POSITIVE[@]:0:$((n-1))}"
-            printf '%s, and %s' "$(IFS=,; echo "$all_but_last")" "$last"
-          }
-
-          # Helper to join negatives with commas and final 'but not in'
-          join_negative() {
-            local n=${#NEGATIVE[@]}
-            if [ "$n" -eq 0 ]; then echo ""; return; fi
-            if [ "$n" -eq 1 ]; then printf 'but not in %s' "${NEGATIVE[0]}"; return; fi
-            local last="${NEGATIVE[$((n-1))]}"
-            local all_but_last="${NEGATIVE[@]:0:$((n-1))}"
-            printf 'but not in %s or %s' "$(IFS=,; echo "$all_but_last")" "$last"
-          }
-
-          # Build the preamble sentence
-          PREAMBLE="This PR has changes in $(join_and) $(join_negative)."
-          if [ "$HAS_CHANGELOG" = "yes" ]; then
-            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has changes."
-          else
-            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has no changes."
-          fi
-
-          REMINDERS=()
-          PASSED=()
-
-            if [ "$HAS_SRC" = "yes" ]; then
-              if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
-                REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
-              else
-                PASSED+=("- :white_check_mark: Tests added or not required")
-              fi
-              if [ "$HAS_BINDINGS" = "no" ]; then
-                REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
-              else
-                PASSED+=("- :white_check_mark: Python bindings considered")
-              fi
+            if [ "$HAS_CPP_TEST" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
+            else
+              PASSED+=("- :white_check_mark: Tests added or not required")
             fi
-            if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
-            REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
+            if [ "$HAS_BINDINGS" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+            else
+              PASSED+=("- :white_check_mark: Python bindings modified")
+            fi
+          fi
+
+          if [ "$HAS_I_FILE" = "yes" ]; then
+            if [ "$HAS_PYTHON_TEST" = "no" ]; then
+              REMINDERS+=("- :bulb: **Tip**: Python bindings updated — consider adding a Python test")
+            else 
+              PASSED+=("- :white_check_mark: Python tests updated or added")
+            fi
           fi
 
           if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
@@ -137,35 +144,39 @@ jobs:
             fi
           fi
 
-            {
-              printf '%s\n' "## PR Reminders" ""
-              # Insert the preamble sentence (always present)
-              printf '%s\n' "$PREAMBLE"
-              if [ ${#REMINDERS[@]} -gt 0 ]; then
-                for item in "${REMINDERS[@]}"; do
-                  printf '%s\n' "$item"
-                done
-              else
-                for item in "${PASSED[@]}"; do
-                  printf '%s\n' "$item"
-                done
-              fi
-              printf '\n%s\n' "---" "_This is an automated reminder from CI_"
-            } > pr-reminder-body.md
+          {
+            printf '%s\n' "## PR Reminders" ""
+            printf '%s\n' "$PREAMBLE"
+            if [ ${#REMINDERS[@]} -gt 0 ]; then
+              for item in "${REMINDERS[@]}"; do
+                printf '%s\n' "$item"
+              done
+            else
+              for item in "${PASSED[@]}"; do
+                printf '%s\n' "$item"
+              done
+            fi
+            printf '\n%s\n' "---" "_This is an automated reminder from CI_"
+          } > pr-reminder-body.md
+
+          echo "::group::Generated PR reminder body"
+          cat pr-reminder-body.md
+          echo "::endgroup::"
+
+          echo "has_reminders=$([ ${#REMINDERS[@]} -gt 0 ] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
         id: find-comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: github-actions[bot]
           body-includes: "automated reminder from CI"
 
       - name: Create comment
         if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -173,10 +184,14 @@ jobs:
 
       - name: Update comment
         if: steps.reminders.outputs.skip == 'false' && steps.find-comment.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body-path: pr-reminder-body.md
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
+
+      - name: Fail if reminders were posted
+        if: steps.reminders.outputs.has_reminders == 'true'
+        run: exit 1
