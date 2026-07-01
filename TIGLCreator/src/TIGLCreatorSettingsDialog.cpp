@@ -33,8 +33,8 @@
 #include "TIGLCreatorSettingsDialog.h"
 
 
-#define WORST_TESSELATION 0.01
-#define BEST_TESSELATION 0.00001
+#define WORST_TESSELATION 0.055
+#define BEST_TESSELATION 0.000011
 
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
@@ -157,7 +157,8 @@ void TIGLCreatorSettingsDialog::updateEntries()
     double mu = log(dmax/dmin)/double(imax-imin);
     double c  = dmax / exp(-mu * (double)imin);
 
-    int tessVal = int (log(c/_settings.tesselationAccuracy())/mu);
+    int tessVal = static_cast<int>(std::lround(log(c/_settings.tesselationAccuracy())/mu));
+    tessVal = std::clamp(tessVal, sliderTesselationAccuracy->minimum(), sliderTesselationAccuracy->maximum());
     sliderTesselationAccuracy->setValue(tessVal);
 
     dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
@@ -166,7 +167,8 @@ void TIGLCreatorSettingsDialog::updateEntries()
     mu = log(dmax/dmin)/double(imax-imin);
     c  = dmax / exp(-mu * (double)imin);
 
-    int triaVal = int (log(c/_settings.triangulationAccuracy())/mu);
+    int triaVal = static_cast<int>(std::lround(log(c/_settings.triangulationAccuracy())/mu));
+    triaVal = std::clamp(triaVal, sliderTriangulationAccuracy->minimum(), sliderTriangulationAccuracy->maximum());
     sliderTriangulationAccuracy->setValue(triaVal);
 
     _bgcolor = _settings.BGColor();
