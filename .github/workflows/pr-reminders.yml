@@ -58,23 +58,74 @@ jobs:
           HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
           HAS_CHANGELOG=$(echo "$NORMALIZED" | grep -qFx "ChangeLog.md" && echo "yes" || echo "no")
 
+          # Build arrays for positive (changed) and negative (unchanged) categories
+          POSITIVE=()
+          NEGATIVE=()
+
+          # Source code changes
+          if [ "$HAS_SRC" = "yes" ]; then
+            POSITIVE+=("`src/`")
+          else
+            NEGATIVE+=("`src/`")
+          fi
+          # TiGLCreator changes
+          if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            POSITIVE+=("`TIGLCreator`")
+          else
+            NEGATIVE+=("`TIGLCreator`")
+          fi
+          # Test changes (unit, integration, python)
+          if [ "$HAS_UNIT" = "yes" ] || [ "$HAS_INTEG" = "yes" ] || [ "$HAS_PYTHON_TEST" = "yes" ]; then
+            POSITIVE+=("tests")
+          else
+            NEGATIVE+=("tests")
+          fi
+
+          # Helper to join positives with commas and 'and'
+          join_and() {
+            local n=${#POSITIVE[@]}
+            if [ "$n" -eq 0 ]; then echo ""; return; fi
+            if [ "$n" -eq 1 ]; then printf '%s' "${POSITIVE[0]}"; return; fi
+            if [ "$n" -eq 2 ]; then printf '%s and %s' "${POSITIVE[0]}" "${POSITIVE[1]}"; return; fi
+            local last="${POSITIVE[$((n-1))]}"
+            local all_but_last="${POSITIVE[@]:0:$((n-1))}"
+            printf '%s, and %s' "$(IFS=,; echo "$all_but_last")" "$last"
+          }
+
+          # Helper to join negatives with commas and final 'but not in'
+          join_negative() {
+            local n=${#NEGATIVE[@]}
+            if [ "$n" -eq 0 ]; then echo ""; return; fi
+            if [ "$n" -eq 1 ]; then printf 'but not in %s' "${NEGATIVE[0]}"; return; fi
+            local last="${NEGATIVE[$((n-1))]}"
+            local all_but_last="${NEGATIVE[@]:0:$((n-1))}"
+            printf 'but not in %s or %s' "$(IFS=,; echo "$all_but_last")" "$last"
+          }
+
+          # Build the preamble sentence
+          PREAMBLE="This PR has changes in $(join_and) $(join_negative)."
+          if [ "$HAS_CHANGELOG" = "yes" ]; then
+            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has changes."
+          else
+            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has no changes."
+          fi
+
           REMINDERS=()
           PASSED=()
 
-          if [ "$HAS_SRC" = "yes" ]; then
-            if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
-              REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
-            else
-              PASSED+=("- :white_check_mark: Tests added or not required")
+            if [ "$HAS_SRC" = "yes" ]; then
+              if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
+                REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
+              else
+                PASSED+=("- :white_check_mark: Tests added or not required")
+              fi
+              if [ "$HAS_BINDINGS" = "no" ]; then
+                REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
+              else
+                PASSED+=("- :white_check_mark: Python bindings considered")
+              fi
             fi
-            if [ "$HAS_BINDINGS" = "no" ]; then
-              REMINDERS+=("- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings")
-            else
-              PASSED+=("- :white_check_mark: Python bindings considered")
-            fi
-          fi
-
-          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
+            if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
             REMINDERS+=("- :bulb: **Tip**: Python bindings updated — please add a Python test")
           fi
 
@@ -86,19 +137,21 @@ jobs:
             fi
           fi
 
-          {
-            printf '%s\n' "## PR Reminders" ""
-            if [ ${#REMINDERS[@]} -gt 0 ]; then
-              for item in "${REMINDERS[@]}"; do
-                printf '%s\n' "$item"
-              done
-            else
-              for item in "${PASSED[@]}"; do
-                printf '%s\n' "$item"
-              done
-            fi
-            printf '\n%s\n' "---" "_This is an automated reminder from CI_"
-          } > pr-reminder-body.md
+            {
+              printf '%s\n' "## PR Reminders" ""
+              # Insert the preamble sentence (always present)
+              printf '%s\n' "$PREAMBLE"
+              if [ ${#REMINDERS[@]} -gt 0 ]; then
+                for item in "${REMINDERS[@]}"; do
+                  printf '%s\n' "$item"
+                done
+              else
+                for item in "${PASSED[@]}"; do
+                  printf '%s\n' "$item"
+                done
+              fi
+              printf '\n%s\n' "---" "_This is an automated reminder from CI_"
+            } > pr-reminder-body.md
 
       - name: Find existing PR reminder comment
         if: steps.reminders.outputs.skip == 'false'
