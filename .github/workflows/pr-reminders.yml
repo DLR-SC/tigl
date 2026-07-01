@@ -42,8 +42,8 @@ jobs:
 
           HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
-           HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
-           HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+          HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
+          HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
           HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
           HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
@@ -59,85 +59,101 @@ jobs:
             exit 0
           fi
 
-           echo "skip=false" >> $GITHUB_OUTPUT
+          echo "skip=false" >> $GITHUB_OUTPUT
 
-           # Build arrays for positive (changed) and negative (unchanged) categories
-           POSITIVE=()
-           NEGATIVE=()
+          # Build arrays for positive (changed) and negative (unchanged) categories
+          POSITIVE=()
+          NEGATIVE=()
 
-           # Source code changes
-           if [ "$HAS_SRC" = "yes" ]; then
-             POSITIVE+=("\`src/\`")
-           else
-             NEGATIVE+=("\`src/\`")
-           fi
+          # Source code changes
+          if [ "$HAS_SRC" = "yes" ]; then
+            POSITIVE+=("\`src/\`")
+          else
+            NEGATIVE+=("\`src/\`")
+          fi
 
-           # TiGLCreator changes
-           if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-             POSITIVE+=("\`TIGLCreator/\`")
-           else
-             NEGATIVE+=("\`TIGLCreator/\`")
-           fi
+          # TiGLCreator changes
+          if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            POSITIVE+=("\`TIGLCreator/\`")
+          else
+            NEGATIVE+=("\`TIGLCreator/\`")
+          fi
 
-            # C++ unit test changes
-            if [ "$HAS_UNIT" = "yes" ]; then
-              POSITIVE+=("\`tests/unittests/\`")
+          # C++ unit test changes
+          if [ "$HAS_UNIT" = "yes" ]; then
+            POSITIVE+=("\`tests/unittests/\`")
+          else
+            NEGATIVE+=("\`tests/unittests/\`")
+          fi
+
+          # C++ integration test changes
+          if [ "$HAS_INTEG" = "yes" ]; then
+            POSITIVE+=("\`tests/integrationtests/\`")
+          else
+            NEGATIVE+=("\`tests/integrationtests/\`")
+          fi
+
+          # Python test changes
+          if [ "$HAS_PYTHON_TEST" = "yes" ]; then
+            POSITIVE+=("\`tests/python/\`")
+          else
+            NEGATIVE+=("\`tests/python/\`")
+          fi
+
+          # Python bindings changes (any change under bindings/python_internal/)
+          if [ "$HAS_BINDINGS" = "yes" ]; then
+            POSITIVE+=("\`bindings/python_internal/\`")
+          else
+            NEGATIVE+=("\`bindings/python_internal/\`")
+          fi
+
+          # Helper to join positives with commas and 'and'
+          join_and() {
+            local n=${#POSITIVE[@]}
+            if [ "$n" -eq 0 ]; then printf ''; return; fi
+            if [ "$n" -eq 1 ]; then printf '%s' "${POSITIVE[0]}"; return; fi
+            local result="${POSITIVE[0]}"
+            local i
+            for ((i = 1; i < n - 1; i++)); do
+              result+=", ${POSITIVE[$i]}"
+            done
+            result+=", and ${POSITIVE[$((n-1))]}"
+            printf '%s' "$result"
+          }
+
+          # Helper to join negatives with commas and final 'but not in ... or ...'
+          join_negative() {
+            local n=${#NEGATIVE[@]}
+            if [ "$n" -eq 0 ]; then printf ''; return; fi
+            if [ "$n" -eq 1 ]; then printf 'but not in %s' "${NEGATIVE[0]}"; return; fi
+            local result="but not in ${NEGATIVE[0]}"
+            local i
+            for ((i = 1; i < n - 1; i++)); do
+              result+=", ${NEGATIVE[$i]}"
+            done
+            if [ "$n" -eq 2 ]; then
+              result+=" or ${NEGATIVE[$((n-1))]}"
             else
-              NEGATIVE+=("\`tests/unittests/\`")
+              result+=", or ${NEGATIVE[$((n-1))]}"
             fi
+            printf '%s' "$result"
+          }
 
-            # C++ integration test changes
-            if [ "$HAS_INTEG" = "yes" ]; then
-              POSITIVE+=("\`tests/integrationtests/\`")
-            else
-              NEGATIVE+=("\`tests/integrationtests/\`")
-            fi
+          # Build the preamble sentence
+          PREAMBLE="This PR has changes in $(join_and)"
+          NEG_PART=$(join_negative)
+          if [ -n "$NEG_PART" ]; then
+            PREAMBLE="$PREAMBLE $NEG_PART"
+          fi
+          PREAMBLE="$PREAMBLE."
+          if [ "$HAS_CHANGELOG" = "yes" ]; then
+            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has changes."
+          else
+            PREAMBLE="$PREAMBLE \`ChangeLog.md\` has no changes."
+          fi
 
-            # Python test changes
-            if [ "$HAS_PYTHON_TEST" = "yes" ]; then
-              POSITIVE+=("\`tests/python/\`")
-            else
-              NEGATIVE+=("\`tests/python/\`")
-            fi
-
-            # Python bindings changes (any change under bindings/python_internal/)
-            if [ "$HAS_BINDINGS" = "yes" ]; then
-              POSITIVE+=("\`bindings/python_internal/\`")
-            else
-              NEGATIVE+=("\`bindings/python_internal/\`")
-            fi
-
-           # Helper to join positives with commas and 'and'
-           join_and() {
-             local n=${#POSITIVE[@]}
-             if [ "$n" -eq 0 ]; then echo ""; return; fi
-             if [ "$n" -eq 1 ]; then printf '%s' "${POSITIVE[0]}"; return; fi
-             if [ "$n" -eq 2 ]; then printf '%s and %s' "${POSITIVE[0]}" "${POSITIVE[1]}"; return; fi
-             local last="${POSITIVE[$((n-1))]}"
-             local all_but_last="${POSITIVE[@]:0:$((n-1))}"
-             printf '%s, and %s' "$(IFS=,; echo "$all_but_last")" "$last"
-           }
-
-           # Helper to join negatives with commas and final 'but not in'
-           join_negative() {
-             local n=${#NEGATIVE[@]}
-             if [ "$n" -eq 0 ]; then echo ""; return; fi
-             if [ "$n" -eq 1 ]; then printf 'but not in %s' "${NEGATIVE[0]}"; return; fi
-             local last="${NEGATIVE[$((n-1))]}"
-             local all_but_last="${NEGATIVE[@]:0:$((n-1))}"
-             printf 'but not in %s or %s' "$(IFS=,; echo "$all_but_last")" "$last"
-           }
-
-           # Build the preamble sentence
-           PREAMBLE="This PR has changes in $(join_and) $(join_negative)."
-           if [ "$HAS_CHANGELOG" = "yes" ]; then
-             PREAMBLE="$PREAMBLE \`ChangeLog.md\` has changes."
-           else
-             PREAMBLE="$PREAMBLE \`ChangeLog.md\` has no changes."
-           fi
-
-           REMINDERS=()
-           PASSED=()
+          REMINDERS=()
+          PASSED=()
 
           if [ "$HAS_SRC" = "yes" ]; then
             if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
@@ -155,7 +171,7 @@ jobs:
           if [ "$HAS_I_FILE" = "yes" ]; then
             if [ "$HAS_PYTHON_TEST" = "no" ]; then
               REMINDERS+=("- :bulb: **Tip**: Python bindings updated — consider adding a Python test")
-            else 
+            else
               PASSED+=("- :white_check_mark: Python tests updated or added")
             fi
           fi
