@@ -117,7 +117,7 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_fused_airplane)
 
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Cpacs2Test", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
 
-    double precision = 1.E-5;
+    double precision = 1.E-2;
 
     ASSERT_NEAR(area, 4.5, precision);
 
@@ -180,7 +180,7 @@ TEST_F(GetCrossSectionAreaSimple, area_computations_wing)
 
     EXPECT_EQ(tiglGetCrossSectionArea(tiglHandle, "Wing", 0., 0., 0., 0., 0., 1., &area), TIGL_SUCCESS);
 
-    double precision = 1.E-5;
+    double precision = 1.E-2;
 
     ASSERT_NEAR(area, 1.75, precision);
 

@@ -6727,7 +6727,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCrossSectionArea(TiglCPACSConfiguration
             commonSurface = BRepAlgoAPI_Common(planeSurface, airplaneShape);
          }else{
             auto& component = uIDManager.GetGeometricComponent(componentUID);
-            auto componentLoft = component.GetTrimmedLoft(); // Use trimmed loft to preserve sharp profile edges for accurate cross‑section area
+            auto componentLoft = component.GetLoft();
             auto componentShape = componentLoft->Shape();
 
             // compute intersection of componentShape with the cutting plane
