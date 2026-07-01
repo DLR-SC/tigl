@@ -79,11 +79,18 @@ jobs:
              NEGATIVE+=("\`TIGLCreator/\`")
            fi
 
-            # C++ test changes (unit or integration)
-            if [ "$HAS_UNIT" = "yes" ] || [ "$HAS_INTEG" = "yes" ]; then
-              POSITIVE+=("\`tests/\`")
+            # C++ unit test changes
+            if [ "$HAS_UNIT" = "yes" ]; then
+              POSITIVE+=("\`tests/unittests/\`")
             else
-              NEGATIVE+=("\`tests/\`")
+              NEGATIVE+=("\`tests/unittests/\`")
+            fi
+
+            # C++ integration test changes
+            if [ "$HAS_INTEG" = "yes" ]; then
+              POSITIVE+=("\`tests/integrationtests/\`")
+            else
+              NEGATIVE+=("\`tests/integrationtests/\`")
             fi
 
             # Python test changes
