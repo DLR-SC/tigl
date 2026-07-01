@@ -66,21 +66,21 @@ jobs:
 
            # Source code changes
            if [ "$HAS_SRC" = "yes" ]; then
-             POSITIVE+=("`src/`")
+             POSITIVE+=("\`src/\`")
            else
-             NEGATIVE+=("`src/`")
+             NEGATIVE+=("\`src/\`")
            fi
            # TiGLCreator changes
            if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-             POSITIVE+=("`TIGLCreator`")
+             POSITIVE+=("\`TIGLCreator\`")
            else
-             NEGATIVE+=("`TIGLCreator`")
+             NEGATIVE+=("\`TIGLCreator\`")
            fi
            # Test changes
            if [ "$HAS_CPP_TEST" = "yes" ]; then
-             POSITIVE+=("tests")
+             POSITIVE+=("\`tests\`")
            else
-             NEGATIVE+=("tests")
+             NEGATIVE+=("\`tests\`")
            fi
 
            # Helper to join positives with commas and 'and'
