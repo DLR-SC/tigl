@@ -1,0 +1,98 @@
+name: PR Reminders
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths-ignore:
+      - '*.md'
+      - 'doc/**'
+      - 'examples/**'
+      - 'README.md'
+      - 'ChangeLog.md'
+
+jobs:
+  pr-reminders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed
+        uses: tj-actions/changed-files@v46
+        with:
+          files: |
+            src/**
+            TIGLCreator/**
+            tests/unittests/**
+            tests/integrationtests/**
+            tests/python/**
+            bindings/python_internal/**/*.i
+
+      - name: Generate reminder message
+        id: reminders
+        run: |
+          CHANGED="${{ steps.changed.outputs.all_changed_files }}"
+          REMINDERS=""
+
+          HAS_SRC=$(echo "$CHANGED" | grep -qE '^src/' && echo "yes" || echo "no")
+          HAS_TIGL_CREATOR=$(echo "$CHANGED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
+          HAS_UNIT=$(echo "$CHANGED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
+          HAS_INTEG=$(echo "$CHANGED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
+
+          if [ "$HAS_SRC" = "yes" ] && [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
+            REMINDERS+=$'- :bulb: **Tip**: Consider adding a unit or integration test\n'
+          fi
+
+          HAS_BINDINGS=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
+
+          if [ "$HAS_SRC" = "yes" ] && [ "$HAS_BINDINGS" = "no" ]; then
+            REMINDERS+=$'- :bulb: **Tip**: Please check if new classes need to be added to the Python bindings\n'
+          fi
+
+          HAS_I_FILE=$(echo "$CHANGED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
+          HAS_PYTHON_TEST=$(echo "$CHANGED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
+
+          if [ "$HAS_I_FILE" = "yes" ] && [ "$HAS_PYTHON_TEST" = "no" ]; then
+            REMINDERS+=$'- :bulb: **Tip**: Python bindings updated — please add a Python test\n'
+          fi
+
+          if [ "$HAS_SRC" = "yes" ] || [ "$HAS_TIGL_CREATOR" = "yes" ]; then
+            REMINDERS+=$'- :memo: **Tip**: Don'\''t forget to add an entry to `ChangeLog.md`\n'
+          fi
+
+          echo "reminders<<EOF"$'\n'"${REMINDERS}EOF" >> $GITHUB_OUTPUT
+
+      - name: Post PR comment
+        if: steps.reminders.outputs.reminders != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## PR Reminders
+
+            ${{ steps.reminders.outputs.reminders }}
+
+            ---
+            _This is an automated reminder from CI_
+          mode: upsert
+          append: false
+          comment-type: review
+
+      - name: Post all-clear comment
+        if: steps.reminders.outputs.reminders == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## PR Reminders
+
+            All looks good — no action needed.
+
+            ---
+            _This is an automated reminder from CI_
+          mode: upsert
+          append: false
+          comment-type: review

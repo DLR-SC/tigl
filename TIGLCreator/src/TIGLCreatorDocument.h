@@ -90,47 +90,48 @@ public slots:
     void drawComponentByUID(const QString& uid);
     void drawControlPointNet();
     void drawControlPointNetByUID(const QString& uid);
+    void drawFlapsOverlay();
 
     // Wing slots
     void drawWingProfiles();
-    void drawWing();
-    void drawWingOverlayProfilePoints();
-    void drawWingGuideCurves();
-    void drawWingTriangulation();
-    void drawWingSamplePoints();
-    void drawFusedWing();
-    void drawWingComponentSegment();
-    void drawWingComponentSegmentPoints();
-    void drawWingShells();
-    void drawWingFlaps();
-    void drawWingStructure();
+    void drawWing(const QString& Uid, bool drawFlaps = false);
+    void drawWingOverlayProfilePoints(const QString& wingUID);
+    void drawWingGuideCurves(const QString& wingUID);
+    void drawWingTriangulation(const QString& wingUID);
+    void drawWingSamplePoints(const QString& wingUID);
+    void drawFusedWing(const QString& wingUID);
+    void drawWingComponentSegment(const QString& wingUID);
+    void drawWingComponentSegmentPoints(const QString& wingUID);
+    void drawWingShells(const QString& wingUID);
+    void drawWingFlaps(const QString& wingUID);
+    void drawWingStructure(const QString& wingUID);
 
     // Fuselage slots
     void drawFuselageProfiles();
-    void drawFuselage();
-    void drawFuselageTriangulation();
-    void drawFuselageSamplePoints();
-    void drawFuselageSamplePointsAngle();
-    void drawFusedFuselage();
-    void drawFuselageGuideCurves();
+    void drawFuselage(const QString& Uid);
+    void drawFuselageTriangulation(const QString& Uid);
+    void drawFuselageSamplePoints(const QString& Uid);
+    void drawFuselageSamplePointsAngle(const QString& Uid);
+    void drawFusedFuselage(const QString& Uid);
+    void drawFuselageGuideCurves(const QString& Uid);
 
     // Rotor blade slots
     void drawRotorProfiles();
-    void drawRotorBlade();
-    void drawRotorBladeOverlayProfilePoints();
+    void drawRotorBlade(const QString& uid);
+    void drawRotorBladeOverlayProfilePoints(const QString& uid);
     void drawRotorBladeGuideCurves();
-    void drawRotorBladeTriangulation();
-    void drawRotorBladeSamplePoints();
-    void drawFusedRotorBlade();
-    void drawRotorBladeComponentSegment();
-    void drawRotorBladeComponentSegmentPoints();
-    void drawRotorBladeShells();
+    void drawRotorBladeTriangulation(const QString& uid);
+    void drawRotorBladeSamplePoints(const QString& uid);
+    void drawFusedRotorBlade(const QString& uid);
+    void drawRotorBladeComponentSegment(const QString& uid);
+    void drawRotorBladeComponentSegmentPoints(const QString& uid);
+    void drawRotorBladeShells(const QString& uid);
 
     // Rotorcraft slots
     void drawRotorByUID(const QString& uid);
     void drawRotor();
-    void drawRotorDisk();
-    void showRotorProperties();
+    void drawRotorDisk(const QString& uid);
+    void showRotorProperties(const QString& uid);
 
     // TIGL slots
     void exportAsIges();
@@ -163,22 +164,22 @@ private slots:
 
     // Wing selection dialogs
     QString dlgGetWingOrRotorBladeSelection();
-    QString dlgGetWingSelection();
-    QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingSelection(const QString& wingUID);
+    QString dlgGetWingComponentSegmentSelection(const QString& wingUID);
     QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
     // Rotor selection dialogs
-    QString dlgGetRotorSelection();
+    QString dlgGetRotorSelection(const QString& rotorUid);
 
     // Rotor Blade selection dialogs
-    QString dlgGetRotorBladeSelection();
-    QString dlgGetRotorBladeComponentSegmentSelection();
+    QString dlgGetRotorBladeSelection(const QString& rotorBladeUid);
+    QString dlgGetRotorBladeComponentSegmentSelection(const QString& rotorBladeCompSegUid);
     QString dlgGetRotorBladeSegmentSelection();
     QString dlgGetRotorProfileSelection();
 
     // Fuselage selection dialogs
-    QString dlgGetFuselageSelection();
+    QString dlgGetFuselageSelection(const QString& Uid);
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
@@ -216,8 +217,14 @@ private:
     void drawWingShells(tigl::CCPACSWing& wing);
     bool drawWingFlaps(tigl::CCPACSWing& wing);
     void drawWingFlap(const QString& flapUID);
+    void removeWing(const QString& Uid);
+    void removeWingFlaps(const QString& Uid);
+    void removeFuselage(const QString& Uid);
+    void removeAirfoil();
 
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
+
+    std::vector<std::string> displayedShapeNames;
     
 };
 
