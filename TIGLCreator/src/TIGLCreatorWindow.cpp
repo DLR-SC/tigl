@@ -1206,12 +1206,46 @@ Console* TIGLCreatorWindow::getConsole()
 
 void TIGLCreatorWindow::makeScreenShot()
 {
+    QString selectedFilter;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Screenshot"), myLastFolder,
                                                     tr("PNG-Image (*.png);;") +
-                                                    tr("JPEG-Image (*.jpg);;") +
-                                                    tr("Windows-BMP-Image (*.bmp)"));
+                                                    tr("JPEG-Image (*.jpg *.jpeg);;") +
+                                                    tr("Windows-BMP-Image (*.bmp)"),
+                                                    &selectedFilter);
 
     if (!fileName.isEmpty() && myOCC) {
+        QString suffix = QFileInfo(fileName).suffix().toLower();
+        if (!suffix.isEmpty() && suffix != "png" && suffix != "jpg" && suffix != "jpeg" && suffix != "bmp") {
+            suffix.clear();
+        }
+
+        if (suffix.isEmpty()) {
+            QString defaultExt = "png";
+            if (selectedFilter.contains("*.jpg") || selectedFilter.contains("*.jpeg")) {
+                defaultExt = "jpg";
+            }
+            else if (selectedFilter.contains("*.bmp")) {
+                defaultExt = "bmp";
+            }
+            fileName += "." + defaultExt;
+        }
+        else if (suffix == "jpeg") {
+            fileName = fileName.left(fileName.lastIndexOf('.')) + ".jpg";
+        }
+        else if (suffix != "png") {
+            QString filterExt = "png";
+            if (selectedFilter.contains("*.jpg") || selectedFilter.contains("*.jpeg")) {
+                filterExt = "jpg";
+            }
+            else if (selectedFilter.contains("*.bmp")) {
+                filterExt = "bmp";
+            }
+            if (suffix != filterExt) {
+                QMessageBox::warning(this, tr("File Extension Mismatch"),
+                    tr("You selected '%1' as the image format, but the filename ends with '.%2'. "
+                       "The file will be saved using the format indicated by the extension '.%2'.").arg(selectedFilter, suffix));
+            }
+        }
 
         TIGLCreatorScreenshotDialog dialog(fileName, this);
         dialog.setQualityValue(80);
