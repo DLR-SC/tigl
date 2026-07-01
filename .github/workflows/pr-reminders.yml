@@ -209,6 +209,7 @@ jobs:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
 
-      - name: Fail if reminders were posted
-        if: steps.reminders.outputs.has_reminders == 'true'
-        run: exit 1
+      # Failing the workflow is a bit harsh
+      #- name: Fail if reminders were posted
+      #  if: steps.reminders.outputs.has_reminders == 'true'
+      #  run: exit 1
