@@ -197,7 +197,6 @@ void CTiglMakeLoft::makeLoftWithRoundedSegments(){
     // in the same way along each profile (e.g. lower edge,
     // upper edge, trailing edge for a wing)
     for ( int iE = 1; iE <= nEdgesPerProfile; ++iE ) {
-        std::cerr << "Creating surface No " << iE << std::endl;
 
         // get the curves
         std::vector<Handle(Geom_Curve)> profileCurves;
@@ -218,8 +217,6 @@ void CTiglMakeLoft::makeLoftWithRoundedSegments(){
         // skin the curves
         tigl::CTiglRoundedSegmentSurface surfaceSkinner(profileCurves, m_innerRoundingDistance, m_outerRoundingDistance);
         Handle(Geom_BSplineSurface) surface = surfaceSkinner.Surface();
-        TopoDS_Shape surf = BRepBuilderAPI_MakeFace(surface, 1e-15);
-        tigl::dumpShape(surf, "makeLoftWing", "CTiglMakeLoftSurfaceNo",iE);
 
         // remember the profile parameters used for the skinning
 
