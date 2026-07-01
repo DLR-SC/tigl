@@ -42,7 +42,8 @@ jobs:
 
           HAS_SRC=$(printf '%s\n' "$NORMALIZED" | grep -qE '^src/' && echo "yes" || echo "no")
           HAS_TIGL_CREATOR=$(echo "$NORMALIZED" | grep -qE '^TIGLCreator/' && echo "yes" || echo "no")
-          HAS_CPP_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/' && echo "yes" || echo "no")
+           HAS_UNIT=$(echo "$NORMALIZED" | grep -qE '^tests/unittests/' && echo "yes" || echo "no")
+           HAS_INTEG=$(echo "$NORMALIZED" | grep -qE '^tests/integrationtests/' && echo "yes" || echo "no")
           HAS_BINDINGS=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/' && echo "yes" || echo "no")
           HAS_I_FILE=$(echo "$NORMALIZED" | grep -qE '^bindings/python_internal/.*\.i$' && echo "yes" || echo "no")
           HAS_PYTHON_TEST=$(echo "$NORMALIZED" | grep -qE '^tests/python/' && echo "yes" || echo "no")
@@ -70,18 +71,41 @@ jobs:
            else
              NEGATIVE+=("\`src/\`")
            fi
+
            # TiGLCreator changes
            if [ "$HAS_TIGL_CREATOR" = "yes" ]; then
-             POSITIVE+=("\`TIGLCreator\`")
+             POSITIVE+=("\`TIGLCreator/\`")
            else
-             NEGATIVE+=("\`TIGLCreator\`")
+             NEGATIVE+=("\`TIGLCreator/\`")
            fi
-           # Test changes
-           if [ "$HAS_CPP_TEST" = "yes" ]; then
-             POSITIVE+=("\`tests\`")
-           else
-             NEGATIVE+=("\`tests\`")
-           fi
+
+            # C++ unit test changes
+            if [ "$HAS_UNIT" = "yes" ]; then
+              POSITIVE+=("\`tests/unittests/\`")
+            else
+              NEGATIVE+=("\`tests/unittests/\`")
+            fi
+
+            # C++ integration test changes
+            if [ "$HAS_INTEG" = "yes" ]; then
+              POSITIVE+=("\`tests/integrationtests/\`")
+            else
+              NEGATIVE+=("\`tests/integrationtests/\`")
+            fi
+
+            # Python test changes
+            if [ "$HAS_PYTHON_TEST" = "yes" ]; then
+              POSITIVE+=("\`tests/python/\`")
+            else
+              NEGATIVE+=("\`tests/python/\`")
+            fi
+
+            # Python bindings changes (any change under bindings/python_internal/)
+            if [ "$HAS_BINDINGS" = "yes" ]; then
+              POSITIVE+=("\`bindings/python_internal/\`")
+            else
+              NEGATIVE+=("\`bindings/python_internal/\`")
+            fi
 
            # Helper to join positives with commas and 'and'
            join_and() {
@@ -116,7 +140,7 @@ jobs:
            PASSED=()
 
           if [ "$HAS_SRC" = "yes" ]; then
-            if [ "$HAS_CPP_TEST" = "no" ]; then
+            if [ "$HAS_UNIT" = "no" ] && [ "$HAS_INTEG" = "no" ]; then
               REMINDERS+=("- :bulb: **Tip**: Consider adding a unit or integration test")
             else
               PASSED+=("- :white_check_mark: Tests added or not required")
@@ -192,6 +216,7 @@ jobs:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           edit-mode: replace
 
-      - name: Fail if reminders were posted
-        if: steps.reminders.outputs.has_reminders == 'true'
-        run: exit 1
+      # Failing the workflow is a bit harsh
+      #- name: Fail if reminders were posted
+      #  if: steps.reminders.outputs.has_reminders == 'true'
+      #  run: exit 1
