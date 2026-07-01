@@ -95,6 +95,10 @@ void CTiglRoundedSegmentSurface::Perform(){
             }
         }
     }
+    //Check if number of rows matches expected total number of profile curves
+    if (row<m_profileCurves.size()+(m_profileCurves.size()-2)*6){
+        throw tigl::CTiglError("CTiglRoundedSegmentSurface: Check Rounding Distances, only inner and outer segment can have  rounding distance = 0 ");
+    }
     _hasPerformed = true;
 }
 
