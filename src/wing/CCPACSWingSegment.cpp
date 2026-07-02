@@ -452,7 +452,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopoDS_Wire outerWire = GetOuterWire();
 
         CTiglPatchShell patcher(loftShell);
-        patcher.SetMakeSolid(false);
+        patcher.SetMakeSolid(true);
         patcher.AddSideCap(innerWire);
         patcher.AddSideCap(outerWire);
         loftShape = patcher.PatchedShape();
