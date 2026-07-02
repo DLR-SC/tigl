@@ -131,7 +131,6 @@ std::string CCPACSDuct::GetShortShapeName() const
 void CCPACSDuct::SetFaceTraitsUntrimmed(PNamedShape loft) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -139,16 +138,6 @@ void CCPACSDuct::SetFaceTraitsUntrimmed(PNamedShape loft) const
     names.push_back("symmetry");
     names.push_back("Front");
     names.push_back("Rear");
-
-    if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(1).GetStartWire())) {
-          nFacesAero-=1;
-    }
-    if (!CTiglTopoAlgorithms::IsDegenerated(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire())) {
-          nFacesAero-=1;
-    }
-
-    int nSegments = m_segments.GetSegmentCount();
-    int facesPerSegment = nFacesAero / nSegments;
 
     int iFaceTotal = 0;
     int nSymmetryFaces = (int) hasSymmetryPlane;
