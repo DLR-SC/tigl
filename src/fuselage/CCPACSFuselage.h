@@ -252,10 +252,10 @@ public:
      */
     TIGL_EXPORT std::vector<std::string> GetAllUsedProfiles();
 
-      /**
-       * Set the profile uid of all the section elements of this fuselage.
-       * @param profileUID ; the profile UID to use
-       */
+    /**
+     * Set the profile uid of all the section elements of this fuselage.
+     * @param profileUID ; the profile UID to use
+     */
     TIGL_EXPORT void SetAllProfiles(const std::string& profileUID);
 
     /**
