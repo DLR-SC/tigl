@@ -56,7 +56,7 @@ namespace tigl
 CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSVessel(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
-    , loftTrimmed(*this, &CCPACSVessel::BuildLoftUntrimmed)
+    , loftTrimmed(*this, &CCPACSVessel::BuildLoftTrimmed)
     , loftUntrimmed(*this, &CCPACSVessel::BuildLoftUntrimmed)
 {
     m_transformation.setScalingType(ABS_LOCAL);
