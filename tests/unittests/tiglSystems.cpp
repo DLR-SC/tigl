@@ -155,9 +155,9 @@ TEST_F(Systems, SystemMass)
     const auto cog = system.GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
-    EXPECT_NEAR(cog->x, 16.4246386, eps);
-    EXPECT_NEAR(cog->y, 7.0952247, eps);
-    EXPECT_NEAR(cog->z, 0.2864855, eps);
+    EXPECT_NEAR(cog->x, 16.4252455, eps);
+    EXPECT_NEAR(cog->y, 7.0955393, eps);
+    EXPECT_NEAR(cog->z, 0.2893651, eps);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -256,7 +256,7 @@ TEST_F(Systems, ComponentsGeometry)
         const auto& multiSegment = GetComponent("wing");
         PNamedShape shape        = multiSegment.GetLoft();
         ASSERT_TRUE(shape);
-        EXPECT_EQ(shape->GetFaceCount(), 4u);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
 
         Bnd_Box box;
         BRepBndLib::Add(shape->Shape(), box);
@@ -269,11 +269,12 @@ TEST_F(Systems, ComponentsGeometry)
     }
 
     // multiSegmentShape with 2 segments and super ellipses
+    // Note: multiSegmentShapes geometry doesn't support trimming, so GetTrimmedLoft() == GetUntrimmedLoft() == GetLoft()
     {
         const auto& multiSegment = GetComponent("multiSegmentComponent3");
         PNamedShape shape        = multiSegment.GetLoft();
         ASSERT_TRUE(shape);
-        EXPECT_EQ(shape->GetFaceCount(), 10u);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
     }
 }
 

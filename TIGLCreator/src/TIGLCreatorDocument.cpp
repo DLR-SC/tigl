@@ -1663,7 +1663,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
     for (int fuselageIndex = 1; fuselageIndex <= GetConfiguration().GetFuselageCount(); fuselageIndex++) {
         auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
-        app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
+app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
 
         for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
             // Draw some points on the fuselage segment

@@ -27,6 +27,8 @@ namespace tigl
 CCPACSEnginePylon::CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSEnginePylon(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
+    , loftUntrimmed(*this, &CCPACSEnginePylon::BuildLoftUntrimmed)
+    , loftTrimmed(*this, &CCPACSEnginePylon::BuildLoftTrimmed)
 {
 }
 
@@ -37,14 +39,44 @@ std::string CCPACSEnginePylon::GetDefaultedUID() const
 
 void CCPACSEnginePylon::InvalidateImpl(const boost::optional<std::string>& source) const
 {
+    // Invalidate both trimmed and untrimmed loft caches
+    loftTrimmed.clear();
+    loftUntrimmed.clear();
     CTiglAbstractGeometricComponent::Reset();
 }
 
+// Untrimmed loft – default behavior (no profile cutting)
 PNamedShape CCPACSEnginePylon::BuildLoft() const
 {
-    CTiglEnginePylonBuilder builder(*this);
+    // Delegates to untrimmed cache
+    return *loftUntrimmed;
+}
 
-    return builder.BuildShape();
+void CCPACSEnginePylon::BuildLoftImpl(PNamedShape& cache, bool trim) const
+{
+    CTiglEnginePylonBuilder builder(*this, trim);
+    cache = builder.BuildShape();
+}
+
+void CCPACSEnginePylon::BuildLoftUntrimmed(PNamedShape& cache) const
+{
+    BuildLoftImpl(cache, false);
+}
+
+void CCPACSEnginePylon::BuildLoftTrimmed(PNamedShape& cache) const
+{
+    BuildLoftImpl(cache, true);
+}
+
+PNamedShape CCPACSEnginePylon::GetTrimmedLoft() const
+{
+    return *loftTrimmed;
+}
+
+PNamedShape CCPACSEnginePylon::GetUntrimmedLoft() const
+{
+    // Alias for the default untrimmed loft
+    return GetLoft();
 }
 
 void CCPACSEnginePylon::SetSymmetryAxis(const TiglSymmetryAxis& axis)

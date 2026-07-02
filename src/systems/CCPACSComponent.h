@@ -178,6 +178,19 @@ public:
      */
     TIGL_EXPORT bool IsPositioned() const;
 
+    /**
+     * @brief Returns the component loft (untrimmed).
+     * For components referencing fuselages/wings, this returns the untrimmed loft.
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
+    /**
+     * @brief Returns the component loft with UV cuts at profile positions (trimmed).
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
+
 protected:
     virtual PNamedShape BuildLoft() const override;
 

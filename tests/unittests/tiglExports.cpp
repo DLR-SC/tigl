@@ -493,8 +493,8 @@ TEST_F(tiglExportSymmetricWing, duplicateFaceBug)
     }
 
     // expected number of faces = 24
-    //   main wing: three segments with upper and lower face + wing tip = 7, symmetry -> 14
-    //   HTP: one segment with upper and lower face + wing tip = 3, symmetry -> 6
-    //   VTP: one segment with upper and lower face + wing tip + wing root = 4, no symmetry -> 4
-    ASSERT_EQ(24, nfaces);
+    //   main wing: upper and lower face + wing tip = 3, symmetry -> 6
+    //   HTP: upper and lower face + wing tip = 3, symmetry -> 6
+    //   VTP: upper and lower face + wing tip + wing root = 4, no symmetry -> 4
+    ASSERT_EQ(16, nfaces);
 }

@@ -74,7 +74,6 @@ CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& g
     _hasPerformed = false;
     _result.Nullify();
     _myTolerance = tolerance;
-    _myTolerance = tolerance;
     _mySameKnotTolerance = sameKnotTolerance;
     addProfiles(profiles);
     addGuides(guides);
@@ -109,7 +108,6 @@ void CTiglMakeLoft::addGuides(const TopoDS_Shape &guides)
 TopoDS_Shape &CTiglMakeLoft::Shape()
 {
     Perform();
-    
     return _result;
 }
 
@@ -151,6 +149,11 @@ void CTiglMakeLoft::setMakeSolid(bool enabled)
 void CTiglMakeLoft::setMakeSmooth(bool enabled)
 {
     _makeSmooth = enabled;
+}
+
+void CTiglMakeLoft::setEnableProfileCutting(bool enabled)
+{
+    _enableProfileCutting = enabled;
 }
 
 /**
@@ -293,16 +296,25 @@ void CTiglMakeLoft::makeLoftWithoutGuides()
 
         builder.Add(faces, BRepBuilderAPI_MakeFace(surface, 1e-6).Face());
     }
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
-
-    // make sure the order is the same as for the COONS Patch algorithm
-    _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
-    _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    
+    if (_enableProfileCutting) {
+        _result = tigl::CTiglTopoAlgorithms::CutShellAtUVParameters(faces, {}, vparams);
+        _result = ResortFaces(_result, nEdgesPerProfile, static_cast<int>(vparams.size()-1));
+        _result = tigl::CTiglTopoAlgorithms::CutShellAtKinks(_result);
+    } else {
+        // For untrimmed loft, use faces directly without cutting
+        _result = faces;
+    }
+    
     CloseShape();
 }
 
 void CTiglMakeLoft::CloseShape()
 {
+    int nFacesResult = 0;
+    for (TopExp_Explorer exp(_result, TopAbs_FACE); exp.More(); exp.Next()) {
+        nFacesResult++;
+    }
     tigl::CTiglPatchShell patcher(_result, _myTolerance);
     Standard_Boolean vClosed = (profiles[0].IsSame(profiles.back()));
     if ( !vClosed && _makeSolid ) {

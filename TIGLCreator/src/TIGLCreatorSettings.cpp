@@ -21,12 +21,13 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include "TIGLCreatorMaterials.h"
 #include <QCoreApplication>
 #include <qglobal.h>
 #include "TIGLCreatorSettings.h"
 
-const double DEFAULT_TESSELATION_ACCURACY = 0.000316;
+const double DEFAULT_TESSELATION_ACCURACY = 0.000778;
 const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
 const QColor DEFAULT_BGCOLOR(169,237,255);
 const QColor DEFAULT_SHAPE_COLOR(0, 170 ,255, 255);
@@ -112,6 +113,23 @@ void TIGLCreatorSettings::setDefaultMaterial(const QString& material)
         return;
     }
     _defaultMaterial = tiglMaterials::materialMap[material];
+}
+
+double TIGLCreatorSettings::tesselationDeviationAngle() const
+{
+    // Map current tesselation accuracy (linear) to an angular deviation using the same logarithmic mapping
+    // NOTE: intentionally decoupled from the dialog slider endpoints. The angle
+    // is a pure function of the accuracy value, so keeping these fixed means a
+    // given accuracy always yields the same angle regardless of slider remapping.
+    const double WORST_TESSELATION = 0.01;
+    const double BEST_TESSELATION  = 0.000002;
+    const double WORST_ANGLE = 0.15; // rad (~8.6°) coarse
+    const double BEST_ANGLE  = 0.012; // rad (~0.69°) fine
+    double t = std::log(WORST_TESSELATION / _tesselationAccuracy) /
+               std::log(WORST_TESSELATION / BEST_TESSELATION);
+    t = std::max(0.0, std::min(1.0, t));
+    // Interpolate angle in log-space
+    return WORST_ANGLE * std::pow(BEST_ANGLE / WORST_ANGLE, t);
 }
 
 double TIGLCreatorSettings::tesselationAccuracy() const

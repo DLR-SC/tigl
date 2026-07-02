@@ -47,6 +47,7 @@ public:
     void setTriangulationAccuracy(double);
 
     double tesselationAccuracy() const;
+    double tesselationDeviationAngle() const;
     double triangulationAccuracy() const;
 
     void setBGColor(const QColor&);
