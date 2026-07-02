@@ -108,6 +108,7 @@ protected:
     // Build the loft
     PNamedShape BuildLoft() const override;
 
+    void BuildLoftImpl(PNamedShape& cache, bool trim) const;
     void BuildLoftUntrimmed(PNamedShape& cache) const;
     void BuildLoftTrimmed(PNamedShape& cache) const;
 
