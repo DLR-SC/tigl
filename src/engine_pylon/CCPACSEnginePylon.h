@@ -50,6 +50,7 @@ protected:
     virtual PNamedShape BuildLoft() const override;
 
     // New API – trimmed/untrimmed caches
+    void BuildLoftImpl(PNamedShape& cache, bool trim) const;
     void BuildLoftTrimmed(PNamedShape& cache) const;
     void BuildLoftUntrimmed(PNamedShape& cache) const;
 

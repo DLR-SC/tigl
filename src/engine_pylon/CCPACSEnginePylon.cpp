@@ -52,16 +52,20 @@ PNamedShape CCPACSEnginePylon::BuildLoft() const
     return *loftUntrimmed;
 }
 
+void CCPACSEnginePylon::BuildLoftImpl(PNamedShape& cache, bool trim) const
+{
+    CTiglEnginePylonBuilder builder(*this, trim);
+    cache = builder.BuildShape();
+}
+
 void CCPACSEnginePylon::BuildLoftUntrimmed(PNamedShape& cache) const
 {
-    CTiglEnginePylonBuilder builder(*this, false);
-    cache = builder.BuildShape();
+    BuildLoftImpl(cache, false);
 }
 
 void CCPACSEnginePylon::BuildLoftTrimmed(PNamedShape& cache) const
 {
-    CTiglEnginePylonBuilder builder(*this, true);
-    cache = builder.BuildShape();
+    BuildLoftImpl(cache, true);
 }
 
 PNamedShape CCPACSEnginePylon::GetTrimmedLoft() const
