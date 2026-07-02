@@ -661,7 +661,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoD
     myContext->SetTransparency(shape, transparency, Standard_False);
     myContext->SetWidth(shape, 3, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
-    //shape->SetOwnDeviationAngle(settings.tesselationDeviationAngle());
+    shape->SetOwnDeviationAngle(settings.tesselationDeviationAngle());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6, 7, 0)
     if (!myShader.IsNull()) {
