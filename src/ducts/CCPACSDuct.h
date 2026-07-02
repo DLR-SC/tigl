@@ -58,8 +58,9 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
-    void SetFaceTraitsTrimmed (PNamedShape loft) const;
-    void SetFaceTraitsUntrimmed (PNamedShape loft) const;
+    // Names the loft's faces. nSegments controls whether the aerodynamic faces
+    // are grouped per segment (trimmed loft) or as a single group (untrimmed loft).
+    void SetFaceTraits (PNamedShape loft, int nSegments) const;
 
     std::vector<std::function<void()>> invalidationCallbacks;
 
@@ -68,6 +69,7 @@ private:
 
     void BuildLoftTrimmed(PNamedShape& cache) const;
     void BuildLoftUntrimmed(PNamedShape& cache) const;
+    void BuildLoftImpl(PNamedShape& cache, bool trim) const;
 };
 
 }

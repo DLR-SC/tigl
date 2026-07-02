@@ -63,29 +63,15 @@ PNamedShape CCPACSDuct::BuildLoft() const
 
 void CCPACSDuct::BuildLoftUntrimmed(PNamedShape& cache) const
 {
-    TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
-    Standard_Boolean smooth = (cont == ::C0? false : true);
-
-    CTiglMakeLoft lofter;
-    lofter.setMakeSolid(true);
-    lofter.setMakeSmooth(smooth);
-
-    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
-    }
-    lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
-
-    lofter.addGuides(m_segments.GetGuideCurveWires());
-
-    TopoDS_Shape loftShape = lofter.Shape();
-
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
-    SetFaceTraitsUntrimmed(cache);
+    BuildLoftImpl(cache, false);
 }
 
 void CCPACSDuct::BuildLoftTrimmed(PNamedShape& cache) const
+{
+    BuildLoftImpl(cache, true);
+}
+
+void CCPACSDuct::BuildLoftImpl(PNamedShape& cache, bool trim) const
 {
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
@@ -93,7 +79,9 @@ void CCPACSDuct::BuildLoftTrimmed(PNamedShape& cache) const
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
-    lofter.setEnableProfileCutting(true);
+    // Only the trimmed loft is cut at the profiles; the untrimmed loft is a
+    // single continuous surface.
+    lofter.setEnableProfileCutting(trim);
 
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
@@ -107,7 +95,10 @@ void CCPACSDuct::BuildLoftTrimmed(PNamedShape& cache) const
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
-    SetFaceTraitsTrimmed(cache);
+
+    // The trimmed loft has one face group per segment, whereas the untrimmed
+    // loft's aerodynamic faces form a single continuous group.
+    SetFaceTraits(cache, trim ? m_segments.GetSegmentCount() : 1);
 }
 
 // get short name for loft
@@ -128,35 +119,12 @@ std::string CCPACSDuct::GetShortShapeName() const
     return "UNKNOWN";
 }
 
-void CCPACSDuct::SetFaceTraitsUntrimmed(PNamedShape loft) const
+void CCPACSDuct::SetFaceTraits(PNamedShape loft, int nSegments) const
 {
-    int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
-
-    std::vector<std::string> names;
-    names.push_back(loft->Name());
-    names.push_back("symmetry");
-    names.push_back("Front");
-    names.push_back("Rear");
-
-    int iFaceTotal = 0;
-    int nSymmetryFaces = (int) hasSymmetryPlane;
-
-    loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
-    if (nSymmetryFaces > 0) {
-        loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
-    }
-
-    int iFace = 2;
-    for (;iFaceTotal < nFacesTotal; ++iFaceTotal, ++iFace) {
-        if (iFace < (int)names.size()) {
-            loft->FaceTraits(iFaceTotal).SetName(names[iFace].c_str());
-        }
-    }
-}
-
-void CCPACSDuct::SetFaceTraitsTrimmed(PNamedShape loft) const
-{
+    // Face layout: [aerodynamic faces][optional symmetry faces][front/rear caps].
+    // For the trimmed loft the aerodynamic (and symmetry) faces are grouped per
+    // segment (nSegments > 1); for the untrimmed loft they form a single group
+    // (nSegments == 1).
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
     int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
@@ -174,7 +142,6 @@ void CCPACSDuct::SetFaceTraitsTrimmed(PNamedShape loft) const
           nFacesAero-=1;
     }
 
-    int nSegments = m_segments.GetSegmentCount();
     int facesPerSegment = FacesPerSegment(nFacesAero, nSegments);
 
     int iFaceTotal = 0;
