@@ -819,31 +819,7 @@ gp_Pnt CCPACSFuselageSegment::GetPointOnXPlane(double eta, double xpos, int poin
 TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
 {
     PNamedShape loft;
-    try {
-        loft = GetLoft();
-    }
-    catch (const tigl::CTiglError& e) {
-        throw;
-    }
-    catch (const std::exception& e) {
-        throw;
-    }
-    catch (...) {
-        throw;
-    }
-    TopoDS_Shape s;
-    try {
-        s = GetFacesByName(loft, GetUID());
-    }
-    catch (const tigl::CTiglError& e) {
-        throw;
-    }
-    catch (const std::exception& e) {
-        throw;
-    }
-    catch (...) {
-        throw;
-    }
+    TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
 
     BRepBuilderAPI_MakeWire wireMaker;
     for(TopExp_Explorer faceExplorer(s, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
