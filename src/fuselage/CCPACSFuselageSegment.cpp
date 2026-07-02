@@ -423,7 +423,6 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
         TopoDS_Wire endWire  = GetEndWire();
 
         CTiglPatchShell patcher(loftShell);
-        patcher.SetMakeSolid(true);
         patcher.AddSideCap(startWire);
         patcher.AddSideCap(endWire);
         loftShape = patcher.PatchedShape();
