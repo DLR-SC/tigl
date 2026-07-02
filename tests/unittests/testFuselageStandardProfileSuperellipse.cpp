@@ -141,7 +141,7 @@ TEST_F(FuselageStandardProfileSuperEllipse, UntrimmedLoftFaceNames_MultipleAeroF
     //
     // The guides model produces an untrimmed loft with several aerodynamic faces
     // (one per guide-curve sector) followed by the Front/Rear cap faces. The old
-    // SetFaceTraitsUntrimmed assumed a single aero face and cycled the cap names
+    // untrimmed face-naming assumed a single aero face and cycled the cap names
     // (loftName, "symmetry", "Front", "Rear") over every remaining face, which
     // mislabeled aero faces as Front/Rear/symmetry and gave the caps wrong names.
     //

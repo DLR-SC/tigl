@@ -272,11 +272,19 @@ public:
      */
     TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
-    TIGL_EXPORT void SetFaceTraitsUntrimmed(PNamedShape loft) const;
-    TIGL_EXPORT void SetFaceTraitsTrimmed(PNamedShape loft) const;
-
 protected:
 
+    /**
+     * @brief Names the faces of the fuselage loft.
+     *
+     * The face layout is [aero faces][optional symmetry face] repeated @p nSegments
+     * times, followed by the optional front/rear cap faces. Pass nSegments == 1 for
+     * the untrimmed loft (one continuous aero/symmetry group) and the actual segment
+     * count for the trimmed loft (one group per segment).
+     */
+    void SetFaceTraits(PNamedShape loft, int nSegments) const;
+
+    void BuildCleanLoftImpl(PNamedShape& cache, bool trim) const;
     void BuildCleanLoftUntrimmed(PNamedShape& cache) const;
     void BuildCleanLoftTrimmed(PNamedShape& cache) const;
 

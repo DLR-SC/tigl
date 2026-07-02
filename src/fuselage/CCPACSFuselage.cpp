@@ -233,54 +233,7 @@ std::string CCPACSFuselage::GetShortShapeName () const
     return "UNKNOWN";
 }
 
-void CCPACSFuselage::SetFaceTraitsUntrimmed (PNamedShape loft) const
-{
-    int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
-
-    std::vector<std::string> names;
-    names.push_back(loft->Name());
-    names.push_back("symmetry");
-    names.push_back("Front");
-    names.push_back("Rear");
-
-    // The untrimmed loft is not cut at the profiles, but it may still consist of
-    // several aerodynamic faces (e.g. one face per guide curve sector). These aero
-    // faces come first, followed by an optional symmetry face and finally the
-    // front/rear cap faces that close the solid. A cap is only present if the
-    // corresponding end profile is not degenerated to a point.
-    int nCaps = 0;
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
-        ++nCaps;
-    }
-    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
-        ++nCaps;
-    }
-
-    int nSymmetryFaces = (int) hasSymmetryPlane;
-    int nAeroFaces     = nFacesTotal - nSymmetryFaces - nCaps;
-    if (nAeroFaces < 1) {
-        LOG(WARNING) << "Faces of the untrimmed fuselage loft cannot be named properly.";
-        nAeroFaces     = nFacesTotal;
-        nSymmetryFaces = 0;
-        nCaps          = 0;
-    }
-
-    int iFaceTotal = 0;
-    for (int iFace = 0; iFace < nAeroFaces; ++iFace) {
-        loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
-    }
-    for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
-        loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
-    }
-    // set the caps (front first, then rear)
-    int iCapName = 2;
-    for (; iFaceTotal < nFacesTotal; ++iFaceTotal) {
-        loft->FaceTraits(iFaceTotal).SetName(names[iCapName++].c_str());
-    }
-}
-
-void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
+void CCPACSFuselage::SetFaceTraits (PNamedShape loft, int nSegments) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
     int nFacesAero = nFacesTotal;
@@ -292,6 +245,8 @@ void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
+    // Count and strip the front/rear cap faces that close the solid. A cap is only
+    // present if the corresponding end profile is not degenerated to a point.
     if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
           nFacesAero-=1;
     }
@@ -299,11 +254,23 @@ void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
           nFacesAero-=1;
     }
 
-    int nSegments = this->GetSegmentCount();
+    int nSymmetryFaces = (int) hasSymmetryPlane;
+
+    // The remaining faces are the aerodynamic faces plus (per segment) an optional
+    // symmetry face. The untrimmed loft is not cut at the profiles, so it forms a
+    // single group (nSegments == 1) that may still contain several aero faces (e.g.
+    // one per guide curve sector); the trimmed loft has one group per segment.
+    if (nFacesAero < nSegments * (1 + nSymmetryFaces)) {
+        LOG(WARNING) << "Faces of the fuselage loft cannot be named properly.";
+        for (int iFace = 0; iFace < nFacesTotal; ++iFace) {
+            loft->FaceTraits(iFace).SetName(names[0].c_str());
+        }
+        return;
+    }
+
     int facesPerSegment = FacesPerSegment(nFacesAero, nSegments);
 
     int iFaceTotal = 0;
-    int nSymmetryFaces = (int) hasSymmetryPlane;
     for (int iSegment = 0; iSegment < nSegments; ++iSegment) {
         for (int iFace = 0; iFace < facesPerSegment - nSymmetryFaces; ++iFace) {
             loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
@@ -313,9 +280,10 @@ void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
         }
     }
 
-    int iFace = 2;
+    // set the caps (front first, then rear)
+    int iCapName = 2;
     for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
-        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+        loft->FaceTraits(iFaceTotal).SetName(names[iCapName++].c_str());
     }
 }
 
@@ -345,7 +313,7 @@ PNamedShape CCPACSFuselage::GetTrimmedLoft() const
     return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoftTrimmed, GetUID());
 }
 
-void CCPACSFuselage::BuildCleanLoftUntrimmed(PNamedShape& cache) const
+void CCPACSFuselage::BuildCleanLoftImpl(PNamedShape& cache, bool trim) const
 {
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
@@ -353,6 +321,7 @@ void CCPACSFuselage::BuildCleanLoftUntrimmed(PNamedShape& cache) const
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
+    lofter.setEnableProfileCutting(trim);
 
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
@@ -366,32 +335,17 @@ void CCPACSFuselage::BuildCleanLoftUntrimmed(PNamedShape& cache) const
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
-    SetFaceTraitsUntrimmed(cache);
+    SetFaceTraits(cache, trim ? m_segments.GetSegmentCount() : 1);
+}
+
+void CCPACSFuselage::BuildCleanLoftUntrimmed(PNamedShape& cache) const
+{
+    BuildCleanLoftImpl(cache, false);
 }
 
 void CCPACSFuselage::BuildCleanLoftTrimmed(PNamedShape& cache) const
 {
-    TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
-    Standard_Boolean smooth = (cont == ::C0? false : true);
-
-    CTiglMakeLoft lofter;
-    lofter.setMakeSolid(true);
-    lofter.setMakeSmooth(smooth);
-    lofter.setEnableProfileCutting(true);
-
-    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
-        lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
-    }
-    lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
-
-    lofter.addGuides(m_segments.GetGuideCurveWires());
-
-    TopoDS_Shape loftShape =  lofter.Shape();
-
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
-    SetFaceTraitsTrimmed(cache);
+    BuildCleanLoftImpl(cache, true);
 }
 
 // Get the positioning transformation for a given section index
