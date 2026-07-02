@@ -64,8 +64,8 @@ private:
     void InvalidateImpl(const boost::optional<std::string>& source) const override;
 
     // Caches for trimmed/untrimmed geometry
-    mutable Cache<PNamedShape, CCPACSEnginePylon> loftTrimmed;
-    mutable Cache<PNamedShape, CCPACSEnginePylon> loftUntrimmed;
+    mutable Cache<PNamedShape, CCPACSEnginePylon> loftUntrimmed;   /**< Engine pylon surface, untrimmed (without UV cuts at profiles) */
+    mutable Cache<PNamedShape, CCPACSEnginePylon> loftTrimmed;     /**< Engine pylon surface, trimmed (with UV cuts at profiles) */
 
 };
 

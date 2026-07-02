@@ -31,8 +31,8 @@ namespace tigl {
 CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuct(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
-  , loftTrimmed(*this, &CCPACSDuct::BuildLoftTrimmed)
   , loftUntrimmed(*this, &CCPACSDuct::BuildLoftUntrimmed)
+  , loftTrimmed(*this, &CCPACSDuct::BuildLoftTrimmed)
 {}
 
 CCPACSConfiguration& CCPACSDuct::GetConfiguration() const

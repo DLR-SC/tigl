@@ -64,8 +64,8 @@ private:
 
     std::vector<std::function<void()>> invalidationCallbacks;
 
-    mutable Cache<PNamedShape, CCPACSDuct> loftTrimmed;
-    mutable Cache<PNamedShape, CCPACSDuct> loftUntrimmed;
+    mutable Cache<PNamedShape, CCPACSDuct> loftUntrimmed;   /**< Duct surface, untrimmed (without UV cuts at profiles) */
+    mutable Cache<PNamedShape, CCPACSDuct> loftTrimmed;     /**< Duct surface, trimmed (with UV cuts at profiles) */
 
     void BuildLoftTrimmed(PNamedShape& cache) const;
     void BuildLoftUntrimmed(PNamedShape& cache) const;

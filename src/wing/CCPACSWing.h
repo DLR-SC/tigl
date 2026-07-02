@@ -664,8 +664,8 @@ private:
     Cache<LocatedGuideCurves, CCPACSWing> guideCurves;
 
     Cache<PNamedShape, CCPACSWing> wingShapeWithCutouts;     /**< Wing without flaps / flaps removed */
-    Cache<PNamedShape, CCPACSWing> wingCleanShapeTrimmed;    /**< Clean wing surface, trimmed (with UV cuts at profiles) */
     Cache<PNamedShape, CCPACSWing> wingCleanShapeUntrimmed;  /**< Clean wing surface, untrimmed (without UV cuts at profiles) */
+    Cache<PNamedShape, CCPACSWing> wingCleanShapeTrimmed;    /**< Clean wing surface, trimmed (with UV cuts at profiles) */
     mutable bool                   rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
     mutable bool                   rebuildShells;
     bool                           buildFlaps;               /**< Indicates if the wing's loft shall include flaps */

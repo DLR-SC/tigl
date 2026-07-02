@@ -27,8 +27,8 @@ namespace tigl
 CCPACSEnginePylon::CCPACSEnginePylon(CCPACSEnginePylons* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSEnginePylon(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation, &m_symmetry)
-    , loftTrimmed(*this, &CCPACSEnginePylon::BuildLoftTrimmed)
     , loftUntrimmed(*this, &CCPACSEnginePylon::BuildLoftUntrimmed)
+    , loftTrimmed(*this, &CCPACSEnginePylon::BuildLoftTrimmed)
 {
 }
 
