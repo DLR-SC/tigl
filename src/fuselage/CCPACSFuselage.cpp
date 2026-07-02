@@ -299,10 +299,9 @@ PNamedShape CCPACSFuselage::BuildLoft() const
 
 PNamedShape CCPACSFuselage::GetUntrimmedLoft() const
 {
-    if (!GetConfiguration().HasDucts()) {
-        return *cleanLoftUntrimmed;
-    }
-    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoftUntrimmed, GetUID());
+    // GetLoft() already returns the untrimmed loft (with duct cutouts applied
+    // if present), so this is the untrimmed loft by definition.
+    return GetLoft();
 }
 
 PNamedShape CCPACSFuselage::GetTrimmedLoft() const

@@ -1786,6 +1786,10 @@ PNamedShape CCPACSWing::GetTrimmedWingCleanShape() const
 
 PNamedShape CCPACSWing::GetUntrimmedLoft() const
 {
+    // Note: unlike other components, the wing's GetLoft() folds in flaps and
+    // duct cutouts, so it is not suitable here. We return the raw untrimmed
+    // clean shape, parallel to GetTrimmedLoft() which returns the raw trimmed
+    // clean shape.
     return *wingCleanShapeUntrimmed;
 }
 

@@ -165,7 +165,9 @@ void CCPACSDuct::SetFaceTraits(PNamedShape loft, int nSegments) const
 
 PNamedShape CCPACSDuct::GetUntrimmedLoft() const
 {
-    return *loftUntrimmed;
+    // GetLoft() returns the untrimmed loft, so this is the untrimmed loft by
+    // definition.
+    return GetLoft();
 }
 
 PNamedShape CCPACSDuct::GetTrimmedLoft() const
