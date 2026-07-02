@@ -134,9 +134,6 @@ const CFaceTraits& CNamedShape::GetFaceTraits(unsigned int iFace) const
 
 CFaceTraits& CNamedShape::FaceTraits(unsigned int iFace)
 {
-    if (iFace >= _myfaceTraits.size()) {
-        throw std::out_of_range("CFaceTraits index out of range");
-    }
     return  _myfaceTraits.at(iFace);
 }
 
