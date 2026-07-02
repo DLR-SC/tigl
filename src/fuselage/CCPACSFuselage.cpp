@@ -300,10 +300,7 @@ void CCPACSFuselage::SetFaceTraitsTrimmed (PNamedShape loft) const
     }
 
     int nSegments = this->GetSegmentCount();
-    int facesPerSegment = (nFacesAero + nSegments - 1) / nSegments;
-    if (facesPerSegment == 0) {
-        facesPerSegment = 1;
-    }
+    int facesPerSegment = FacesPerSegment(nFacesAero, nSegments);
 
     int iFaceTotal = 0;
     int nSymmetryFaces = (int) hasSymmetryPlane;

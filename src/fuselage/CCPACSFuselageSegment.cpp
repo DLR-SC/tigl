@@ -980,10 +980,6 @@ TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
           nfaces-=1;
     }
 
-    int facesPerSegment = (nfaces + nSegments - 1) / nSegments;
-    if (facesPerSegment == 0) {
-        facesPerSegment = 1;
-    }
-    return facesPerSegment;
+    return FacesPerSegment(nfaces, nSegments);
 }
 } // end namespace tigl
