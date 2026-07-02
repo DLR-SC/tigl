@@ -809,7 +809,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
             }
 
             if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
-PNamedShape loft = component.GetLoft();
+                PNamedShape loft = component.GetLoft();
 
                 if (loft) {
                     double opacity = 0;
@@ -839,8 +839,8 @@ PNamedShape loft = component.GetLoft();
                     throw tigl::CTiglError("No object found for component with uid \"" + uid.toStdString() + "\"");
                     return;
                 }
-                if (objects[0]->Shape() != component.GetLoft()->Shape()) { 
-                    objects[0]->SetShape(component.GetLoft()->Shape()); 
+                if (objects[0]->Shape() != component.GetLoft()->Shape()) {
+                    objects[0]->SetShape(component.GetLoft()->Shape());
                 }
                 if (objects.size() > 1) {
                     auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
@@ -1640,7 +1640,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
             continue;
         }
 
-app->getScene()->displayShape(wing.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(wing.GetLoft(), true, getDefaultShapeColor());
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
