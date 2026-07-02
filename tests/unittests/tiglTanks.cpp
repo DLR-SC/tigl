@@ -32,6 +32,10 @@
 #include "CCPACSVessel.h"
 #include "CNamedShape.h"
 
+#include <TopExp.hxx>
+#include <TopAbs.hxx>
+#include <TopExp_Explorer.hxx>
+
 namespace
 {
 // Error message constants for exception tests
@@ -39,6 +43,20 @@ constexpr const char* tankTypeExceptionString =
     "This method is only available for vessels with segments. No segment found.";
 constexpr const char* invalidIndexMessage    = "Invalid index in CCPACSFuselageSections::GetSection";
 constexpr const char* wrongSectionUIDMessage = "GetSectionFace: Could not find a fuselage section for the given UID";
+
+int countFaces(PNamedShape shape)
+{
+    if (!shape) {
+        return 0;
+    }
+    int count = 0;
+    TopExp_Explorer explorer(shape->Shape(), TopAbs_FACE);
+    while (explorer.More()) {
+        ++count;
+        explorer.Next();
+    }
+    return count;
+}
 } // anonymous namespace
 
 // Dummy class for exception handling tests
@@ -402,4 +420,15 @@ TEST_F(FuelTanks, structure)
     EXPECT_DOUBLE_EQ(p.X(), 14.5);
     EXPECT_DOUBLE_EQ(p.Y(), -1);
     EXPECT_DOUBLE_EQ(p.Z(), -0.2);
+}
+
+TEST_F(FuelTanks, vessel_parametric_trimmed_fallback)
+{
+    // vessel_torispherical is a parametric vessel (no segments), so GetTrimmedLoft() should fall back to GetUntrimmedLoft()
+    auto tank4 = vessel_torispherical;
+    auto trimmed = tank4->GetTrimmedLoft();
+    auto untrimmed = tank4->GetUntrimmedLoft();
+
+    EXPECT_TRUE(trimmed != nullptr);
+    EXPECT_EQ(countFaces(trimmed), countFaces(untrimmed));
 }

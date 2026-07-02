@@ -458,3 +458,31 @@ TEST(TiglCommonFunctions, TiglAxisToCTiglPoint )
     EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Y_AXIS) == tigl::CTiglPoint(0,1,0));
     EXPECT_TRUE(TiglAxisToCTiglPoint(TIGL_Z_AXIS) == tigl::CTiglPoint(0,0,1));
 }
+
+TEST(TiglCommonFunctions, FacesPerSegment)
+{
+    // Normal exact division
+    EXPECT_EQ(FacesPerSegment(6, 3), 2);
+
+    // Ceil (non-divisible)
+    EXPECT_EQ(FacesPerSegment(7, 3), 3);
+    EXPECT_EQ(FacesPerSegment(4, 3), 2);
+    EXPECT_EQ(FacesPerSegment(5, 2), 3);
+    EXPECT_EQ(FacesPerSegment(10, 4), 3);
+
+    // nSegments <= 0 guard
+    EXPECT_EQ(FacesPerSegment(6, 0), 1);
+    EXPECT_EQ(FacesPerSegment(6, -1), 1);
+    EXPECT_EQ(FacesPerSegment(6, -5), 1);
+
+    // nFaces == 0 clamp
+    EXPECT_EQ(FacesPerSegment(0, 3), 1);
+
+    // nFaces negative clamp
+    EXPECT_EQ(FacesPerSegment(-5, 3), 1);
+
+    // Single segment
+    EXPECT_EQ(FacesPerSegment(5, 1), 5);
+    EXPECT_EQ(FacesPerSegment(1, 1), 1);
+    EXPECT_EQ(FacesPerSegment(100, 1), 100);
+}
