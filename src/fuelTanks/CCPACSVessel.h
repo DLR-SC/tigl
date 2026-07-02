@@ -96,7 +96,9 @@ public:
     // Check whether the vessel has isotensoid dome
     TIGL_EXPORT bool HasIsotensoidDome() const;
 
-    // Returns the trimmed loft (empty if IsVesselViaDesignParameters == true)
+    // Returns the trimmed loft. For vessels specified via design parameters
+    // (IsVesselViaDesignParameters == true) no trimmed loft exists, so this
+    // falls back to the untrimmed loft and always returns a valid shape.
     TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
     // Retunrs the untrimmed loft (delegates to GetLoft)

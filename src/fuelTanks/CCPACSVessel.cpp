@@ -628,7 +628,15 @@ PNamedShape CCPACSVessel::BuildLoft() const
 
 PNamedShape CCPACSVessel::GetTrimmedLoft() const
 {
-    return *loftTrimmed;
+    PNamedShape trimmedLoft = *loftTrimmed;
+    if (!trimmedLoft) {
+        // Vessels specified via parametric design parameters (i.e. not built from
+        // segments) have no trimmed loft (see BuildLoftTrimmed). Fall back to the
+        // untrimmed loft so that callers always receive a valid shape and never a
+        // null PNamedShape.
+        return GetUntrimmedLoft();
+    }
+    return trimmedLoft;
 }
 
 PNamedShape CCPACSVessel::GetUntrimmedLoft() const
