@@ -440,7 +440,12 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             if (GetUID() == ws.GetUID()) {
                 for(int i=0; i<nFacesPerSegment; ++i) {
                     int faceIndex = (j-1)*nFacesPerSegment + i + 1;
-                    faceIndex = (faceIndex - 1) % nFaces + 1;
+                    if (faceIndex < 1 || faceIndex > nFaces) {
+                        LOG(ERROR) << "CCPACSWingSegment::BuildLoft: computed face index " << faceIndex
+                                   << " is out of range [1, " << nFaces << "] for segment \"" << GetUID()
+                                   << "\". The trimmed parent loft does not contain the expected number of faces.";
+                        throw CTiglError("CCPACSWingSegment::BuildLoft: face index out of range for segment \"" + GetUID() + "\".", TIGL_ERROR);
+                    }
                     BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex))); // guides
                 }
                 break;
