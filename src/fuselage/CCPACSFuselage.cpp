@@ -236,7 +236,6 @@ std::string CCPACSFuselage::GetShortShapeName () const
 void CCPACSFuselage::SetFaceTraitsUntrimmed (PNamedShape loft) const
 {
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
-    int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
 
     std::vector<std::string> names;
@@ -245,20 +244,39 @@ void CCPACSFuselage::SetFaceTraitsUntrimmed (PNamedShape loft) const
     names.push_back("Front");
     names.push_back("Rear");
 
-    int iFaceTotal = 0;
-    int nSymmetryFaces = (int) hasSymmetryPlane;
+    // The untrimmed loft is not cut at the profiles, but it may still consist of
+    // several aerodynamic faces (e.g. one face per guide curve sector). These aero
+    // faces come first, followed by an optional symmetry face and finally the
+    // front/rear cap faces that close the solid. A cap is only present if the
+    // corresponding end profile is not degenerated to a point.
+    int nCaps = 0;
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(1).GetStartWire())) {
+        ++nCaps;
+    }
+    if (!CTiglTopoAlgorithms::IsDegenerated(GetSegment(GetSegmentCount()).GetEndWire())) {
+        ++nCaps;
+    }
 
-    loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+    int nSymmetryFaces = (int) hasSymmetryPlane;
+    int nAeroFaces     = nFacesTotal - nSymmetryFaces - nCaps;
+    if (nAeroFaces < 1) {
+        LOG(WARNING) << "Faces of the untrimmed fuselage loft cannot be named properly.";
+        nAeroFaces     = nFacesTotal;
+        nSymmetryFaces = 0;
+        nCaps          = 0;
+    }
+
+    int iFaceTotal = 0;
+    for (int iFace = 0; iFace < nAeroFaces; ++iFace) {
+        loft->FaceTraits(iFaceTotal++).SetName(names[0].c_str());
+    }
     for (int iFace = 0; iFace < nSymmetryFaces; ++iFace) {
         loft->FaceTraits(iFaceTotal++).SetName(names[1].c_str());
     }
-
-    // set the caps
-    int iFace = 2;
-    for (;iFaceTotal < nFacesTotal; ++iFaceTotal, ++iFace) {
-        if (!names.empty()) {
-            loft->FaceTraits(iFaceTotal).SetName(names[iFace % names.size()].c_str());
-        }
+    // set the caps (front first, then rear)
+    int iCapName = 2;
+    for (; iFaceTotal < nFacesTotal; ++iFaceTotal) {
+        loft->FaceTraits(iFaceTotal).SetName(names[iCapName++].c_str());
     }
 }
 
