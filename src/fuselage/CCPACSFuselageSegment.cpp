@@ -417,10 +417,6 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
             faceIndex = (faceIndex - 1) % nfaces + 1;
             BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex)));
         }
-        int nFacesInShell = 0;
-        for (TopExp_Explorer exp(loftShell, TopAbs_FACE); exp.More(); exp.Next()) {
-            nFacesInShell++;
-        }
 
         //close the shell with sidecaps and make them a solid
         TopoDS_Wire startWire = GetStartWire();
