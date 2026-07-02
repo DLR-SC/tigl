@@ -54,9 +54,6 @@
 #include "CPACSElementGeometry.h"
 #include "CPACSElementMass.h"
 
-#include "CCPACSFuselage.h"
-#include "CCPACSWing.h"
-
 #include "CNamedShape.h"
 
 namespace tigl
