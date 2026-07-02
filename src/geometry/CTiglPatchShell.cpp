@@ -178,7 +178,7 @@ void CTiglPatchShell::Perform()
 
 namespace {
 
- TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
+TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
 {
     if (shell.IsNull()) {
         throw tigl::CTiglError("Loft is not build", TIGL_ERROR);
