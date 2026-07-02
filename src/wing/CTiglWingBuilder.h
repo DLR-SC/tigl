@@ -28,7 +28,7 @@ namespace tigl
 class CTiglWingBuilder
 {
 public:
-    CTiglWingBuilder(const CCPACSWing& wing, bool enableProfileCutting = true);
+    CTiglWingBuilder(const CCPACSWing& wing, bool enableProfileCutting = false);
 
 
     operator PNamedShape();
