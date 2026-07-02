@@ -272,8 +272,8 @@ public:
      */
     TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
 
-    void SetFaceTraitsUntrimmed(PNamedShape loft) const;
-    void SetFaceTraitsTrimmed(PNamedShape loft) const;
+    TIGL_EXPORT void SetFaceTraitsUntrimmed(PNamedShape loft) const;
+    TIGL_EXPORT void SetFaceTraitsTrimmed(PNamedShape loft) const;
 
 protected:
 
