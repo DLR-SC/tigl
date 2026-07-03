@@ -27,7 +27,7 @@
 #include <qglobal.h>
 #include "TIGLCreatorSettings.h"
 
-const double DEFAULT_TESSELATION_ACCURACY = 0.000778;
+const double DEFAULT_TESSELATION_ACCURACY = 0.004;
 const double DEFAULT_TRIANGULATION_ACCURACY = 0.00070;
 const QColor DEFAULT_BGCOLOR(169,237,255);
 const QColor DEFAULT_SHAPE_COLOR(0, 170 ,255, 255);
