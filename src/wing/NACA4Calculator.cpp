@@ -264,56 +264,36 @@ namespace tigl{
             }
             else if(series_ == Series::NACA5){
                 double s = this->max_camber;
-                //std::cerr << "s " << s<< std::endl;
+
                 double p = this->max_camber_position;
-                //std::cerr << "p " << p<< std::endl;
+
                 double q = this->reflex;
-                //std::cerr << "q " << q<< std::endl;
+
                 double k1 = k1_const(s, p, q);
-                //std::cerr << "k1 " << k1<< std::endl;
+
                 double m = m_const(s, p, q);
-                //std::cerr << "m " << m<< std::endl;
-                
-                //std::cerr << "frack2k1 " << frack2k1<< std::endl; //als konstanten machen
+
                 if(q == 0){
-                     //std::cerr << "x " << x<< std::endl;
 
                     if(p == 0){
                         return 0;
                     }
                     if(0 <= x && x <= m){
                         double result = (k1/6)*(x*x*x-3*m*x*x+m*m*(3-m)*x); 
-                        //std::cerr << "result okay " << result << std::endl;
-                        //std::cerr << "m " << m<< std::endl;
-                        //double yt = profile_thickness(x); 
-                        //std::cerr << "yt " << yt<< std::endl;
-                        //double yc = camberline(x);
-                        //std::cerr << "camberline " << yc<< std::endl;
                         return result;
                     }
                     else if(x > m){ 
                         double result3 = ((k1*m*m*m)/6)*(1-x);
-                        //std::cerr << "result3 " << result3 << std::endl;
-                         //std::cerr << "p " << p<< std::endl;
-                        //double yt = profile_thickness(x); 
-                        //double yc = camberline(x);
-                        //std::cerr << "camberline " << yc<< std::endl;
-                        
                         return result3;
                     }
                 }
                 else if(q == 1){
                     double frack2k1 = k2k1_const(s,p,q);
-                        //std::cerr << "x " << x<< std::endl;
 
                     if(p == 0){
                         return 0.0;
                     }
                     if(0 <= x && x <= m){
-                    
-                    
-                        //double result1 = ((k1/6)*(((x-m)*(x-m)*(x-m))-(frack2k1*((1-m)*(1-m)*(1-m))*x)- ((m*m*m)*x+(m*m*m)))); 
-                        //double result1 = ((((k1/6)*(pow(x-m, 3)))-(frack2k1*(pow(1-m,3))*x)- (pow(m,3)*x+pow(m,3)))); 
                         double result1 = (k1/6)*(pow(x-m, 3) - frack2k1*pow(1-m, 3)*x - pow(m,3)*x + pow(m,3)); 
                         //getloft funktion mit timeit laufzeit rausfinden -> auf cache achten, das der nicht gespeichert wird
                         
@@ -322,11 +302,6 @@ namespace tigl{
                     else if(x > m){ 
                     
                         double result2 = (k1/6)*(frack2k1*((x-m)*(x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))*x-(m*m*m)*x+(m*m*m));
-                        //std::cerr << "x>p " << x<< std::endl;
-                        //std::cerr << "result2 " << frack2k1 << std::endl;
-                        //std::cerr << "p " << p<< std::endl;
-                        //double yt = profile_thickness(x); 
-                        //std::cerr << "yt " << yt<< std::endl;
                         return result2;
                     }
                     }
@@ -340,17 +315,10 @@ namespace tigl{
 
         
         gp_Vec2d NACA4Calculator::upper_curve(double x) const{
-            //std::cerr << "x \t  " << x;
             double yt = profile_thickness(x); 
-            //std::cerr << "\t profile thickness \t  " << yt;
             double yc = camberline(x);
-            //std::cerr << "\t camberline \t " << yc << std::endl;
             auto point = gp_Vec2d{x, yc};
-            //std::cerr << "\t point.x \t " << point.X();
-            //std::cerr << "\t point.y \t " << point.Y() << std::endl;
             gp_Vec2d point_calculated = point + yt*normal(x);
-            //std::cerr << "\t point_calculatedX \t " << point_calculated.X();
-            //std::cerr << "\t point_calculatedY \t " << point_calculated.Y() << "\n\n";
             return point + yt*normal(x);
         }
         
