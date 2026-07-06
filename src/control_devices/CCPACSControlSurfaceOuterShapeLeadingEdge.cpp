@@ -25,11 +25,12 @@
 #include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include "CBopCommon.h"
+#include "CTiglError.h"
 #include "Debugging.h"
 
 #include <BRepOffsetAPI_ThruSections.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <TopoDS.hxx>
 
 namespace tigl
 {
@@ -46,32 +47,18 @@ PNamedShape CCPACSControlSurfaceOuterShapeLeadingEdge::GetLoft(PNamedShape wingC
     PNamedShape shapeBox = CutoutShape(wingCleanShape, upDir);
     assert(shapeBox);
 
-    // perform the boolean intersection of the flap box with the wing
-
-    // Workaround for OpenCASCADE boolean intersection issues on LEDs:
-    // OCC seems to fail to create correct side faces when LEDs and the wing intersect
-    // along tangential or very thin regions (typical for LEDs).
-    // TED intersections seem to work fine.
-    // 
-    // Solution: apply a small inward offset (epsilon) to the device box
-    // before performing the boolean intersection.
-    
-    gp_Vec epsilonVec = upDir;       
-    epsilonVec *= -1e-6;             
-    gp_Trsf trsf;
-    trsf.SetTranslation(epsilonVec);
-
-    BRepBuilderAPI_Transform transformer(shapeBox->Shape(), trsf, true);
-    TopoDS_Shape offsetBox = transformer.Shape();
-
-    PNamedShape shapeBoxOffset(new CNamedShape(offsetBox, shapeBox->Name().c_str()));
-
-
-    BRepAlgoAPI_Common common(wingCleanShape->Shape(), shapeBoxOffset->Shape());;
-    common.Build();
-
-    TopoDS_Shape outerShapeTopo = common.Shape();
-    PNamedShape outerShape(new CNamedShape(outerShapeTopo, shapeBox->Name().c_str()));
+    PNamedShape outerShape;
+    try {
+        outerShape = CBopCommon(wingCleanShape, shapeBox);
+        if (!outerShape || outerShape->Shape().IsNull() || !BRepCheck_Analyzer(outerShape->Shape()).IsValid()) {
+            LOG(WARNING) << "CBopCommon produced null/invalid result for LED " << _uid << ", falling back to cutout box";
+            outerShape.reset();
+        }
+    }
+    catch (const tigl::CTiglError&) {
+        LOG(WARNING) << "CBopCommon threw for LED " << _uid << ", falling back to cutout box";
+        outerShape.reset();
+    }
 
     if (NeedsWingIntersection()) {
         return ControlSurfaceDeviceHelper::outerShapeGetLoft(shapeBox, outerShape, _uid);

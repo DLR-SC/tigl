@@ -24,6 +24,9 @@
 #include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include "CBopCommon.h"
+#include "CTiglError.h"
+#include "BRepCheck_Analyzer.hxx"
+#include <TopoDS.hxx>
 #include "Debugging.h"
 #include "ControlSurfaceDeviceHelper.h"
 
@@ -43,8 +46,18 @@ PNamedShape CCPACSControlSurfaceOuterShapeTrailingEdge::GetLoft(PNamedShape wing
     PNamedShape shapeBox = CutoutShape(wingCleanShape, upDir);
     assert(shapeBox);
 
-    // perform the boolean intersection of the flap box with the wing
-    PNamedShape outerShape = CBopCommon(wingCleanShape, shapeBox);
+    PNamedShape outerShape;
+    try {
+        outerShape = CBopCommon(wingCleanShape, shapeBox);
+        if (!outerShape || outerShape->Shape().IsNull() || !BRepCheck_Analyzer(outerShape->Shape()).IsValid()) {
+            LOG(WARNING) << "CBopCommon produced null/invalid result for TED " << _uid << ", falling back to cutout box";
+            outerShape.reset();
+        }
+    }
+    catch (const tigl::CTiglError&) {
+        LOG(WARNING) << "CBopCommon threw for TED " << _uid << ", falling back to cutout box";
+        outerShape.reset();
+    }
 
     if (NeedsWingIntersection()) {
         return ControlSurfaceDeviceHelper::outerShapeGetLoft(shapeBox, outerShape, _uid);

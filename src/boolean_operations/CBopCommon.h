@@ -38,14 +38,17 @@ public:
     TIGL_EXPORT void Perform();
     TIGL_EXPORT const PNamedShape NamedShape();
 
+    TIGL_EXPORT void SetFuzzyValue(double fuzzyValue);
+
 protected:
-    void PrepareFiller();
+    void PrepareFiller(double fuzzyValue);
 
     bool _hasPerformed;
 
     PNamedShape _resultshape, _tool, _source;
     BOPAlgo_PaveFiller* _dsfiller;
     bool _fillerAllocated;
+    double _fuzzyValue;
 
 };
 

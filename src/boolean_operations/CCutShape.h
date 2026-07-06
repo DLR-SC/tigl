@@ -35,12 +35,14 @@ public:
     TIGL_EXPORT operator PNamedShape ();
 
     TIGL_EXPORT void Perform();
-    
+
     /**
      * @brief NamedShape returns the result of the cutting operation.
      * @return PNamedShape
      */
     TIGL_EXPORT const PNamedShape NamedShape();
+
+    TIGL_EXPORT void SetFuzzyValue(double fuzzyValue);
 
 protected:
     void PrepareFiller();
@@ -50,6 +52,7 @@ protected:
     PNamedShape _resultshape, _tool, _source;
     BOPAlgo_PaveFiller* _dsfiller;
     bool _fillerAllocated;
+    double _fuzzyValue;
 
 };
 

@@ -23,6 +23,7 @@
 #include <Standard_Version.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
+#include <Precision.hxx>
 
 #include "CBooleanOperTools.h"
 #include "CTrimShape.h"
@@ -33,6 +34,7 @@
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool)
     :  _resultshape(), _tool(cuttingTool), _source(shape), _dsfiller(NULL)
+    , _fuzzyValue(Precision::Confusion())
 {
     _fillerAllocated = false;
     _hasPerformed = false;
@@ -40,10 +42,16 @@ CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool)
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller & filler)
     :  _resultshape(), _tool(cuttingTool), _source(shape)
+    , _fuzzyValue(Precision::Confusion())
 {
     _fillerAllocated = false;
     _hasPerformed = false;
     _dsfiller = (BOPAlgo_PaveFiller*) &filler;
+}
+
+void CCutShape::SetFuzzyValue(double fuzzyValue)
+{
+    _fuzzyValue = fuzzyValue;
 }
 
 CCutShape::~CCutShape()
@@ -91,6 +99,9 @@ void CCutShape::Perform()
         }
 
         PrepareFiller();
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        _dsfiller->SetFuzzyValue(_fuzzyValue);
+#endif
 #ifdef USE_OWN_ALGO
         CTrimShape trim1(_source, _tool, *_dsfiller, EXCLUDE);
         PNamedShape shape1 = trim1.NamedShape();

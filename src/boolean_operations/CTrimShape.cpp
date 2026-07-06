@@ -23,13 +23,17 @@
 #include "BOPBuilderShapeToBRepBuilderShapeAdapter.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglError.h"
+#include "CTiglLogging.h"
 #include "CNamedShape.h"
 
 #include <cassert>
+#include <sstream>
 #include <string>
 
 #include <BOPAlgo_PaveFiller.hxx>
-
+#include <BRepCheck_Analyzer.hxx>
+#include <Standard_Version.hxx>
+#include <Standard_Failure.hxx>
 #include <Precision.hxx>
 
 #include <TopTools_IndexedMapOfShape.hxx>
@@ -163,6 +167,7 @@ namespace
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation op)
     : _operation(op), _resultshape(), _tool(trimmingTool), _source(shape), _dsfiller(NULL)
+    , _fuzzyValue(Precision::Confusion())
 {
     _fillerAllocated = false;
     _hasPerformed = false;
@@ -170,10 +175,16 @@ CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, 
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller & filler, TrimOperation op)
     : _operation(op), _resultshape(), _tool(trimmingTool), _source(shape)
+    , _fuzzyValue(Precision::Confusion())
 {
     _fillerAllocated = false;
     _hasPerformed = false;
     _dsfiller = (BOPAlgo_PaveFiller*) &filler;
+}
+
+void CTrimShape::SetFuzzyValue(double fuzzyValue)
+{
+    _fuzzyValue = fuzzyValue;
 }
 
 CTrimShape::~CTrimShape()
@@ -189,27 +200,36 @@ CTrimShape::operator PNamedShape()
     return NamedShape();
 }
 
-void CTrimShape::PrepareFiller()
+void CTrimShape::PrepareFiller(double fuzzyValue)
 {
     if (!_tool || !_source) {
         return;
     }
 
-    if (!_dsfiller) {
-#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,3,0)
-        TopTools_ListOfShape aLS;
-#else
-        BOPCol_ListOfShape aLS;
-#endif
-        aLS.Append(_tool->Shape());
-        aLS.Append(_source->Shape());
-
-        _dsfiller = new BOPAlgo_PaveFiller;
-        _fillerAllocated = true;
-
-        _dsfiller->SetArguments(aLS);
-        _dsfiller->Perform();
+    if (_dsfiller) {
+        if (_fillerAllocated) {
+            delete _dsfiller;
+            _dsfiller = nullptr;
+        }
+        _dsfiller = nullptr;
     }
+
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(7,3,0)
+    BOPCol_ListOfShape aLS;
+#else
+    TopTools_ListOfShape aLS;
+#endif
+    aLS.Append(_tool->Shape());
+    aLS.Append(_source->Shape());
+
+    _dsfiller = new BOPAlgo_PaveFiller;
+    _fillerAllocated = true;
+
+    _dsfiller->SetArguments(aLS);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+    _dsfiller->SetFuzzyValue(fuzzyValue);
+#endif
+    _dsfiller->Perform();
 }
 
 void CTrimShape::Perform()
@@ -230,31 +250,101 @@ void CTrimShape::Perform()
             WriteDebugShape(_tool->Shape(), "tool");
         }
 
-        PrepareFiller();
-        GEOMAlgo_Splitter splitter;
-        BOPBuilderShapeToBRepBuilderShapeAdapter splitAdapter(splitter);
-        splitter.AddArgument(_source->Shape());
-        splitter.AddTool(_tool->Shape());
-        splitter.PerformWithFiller(*_dsfiller);
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+        const int c_tries = 3;
+        double fuzzyValue = _fuzzyValue;
+#endif
 
-        if (debug) {
-            WriteDebugShape(splitter.Shape(), "split");
+        for (int i = 0;; i++) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+            PrepareFiller(fuzzyValue);
+#else
+            PrepareFiller(_fuzzyValue);
+#endif
+
+            GEOMAlgo_Splitter splitter;
+            BOPBuilderShapeToBRepBuilderShapeAdapter splitAdapter(splitter);
+            splitter.AddArgument(_source->Shape());
+            splitter.AddTool(_tool->Shape());
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+            splitter.SetFuzzyValue(fuzzyValue);
+#endif
+
+            try {
+                splitter.PerformWithFiller(*_dsfiller);
+
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
+                if (splitter.HasErrors()) {
+                    if (i < c_tries - 1) {
+                        fuzzyValue *= 10;
+                        LOG(WARNING) << "CTrimShape splitter failed, retrying with fuzzyValue: " << fuzzyValue;
+                        continue;
+                    }
+
+                    std::ostringstream oss;
+                    splitter.GetReport()->Dump(oss);
+                    LOG(ERROR) << "CTrimShape splitter failed after " << c_tries << " attempts: " << oss.str();
+                    throw tigl::CTiglError("CTrimShape splitter failed: " + oss.str());
+                }
+#elif OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+                if (splitter.ErrorStatus() != 0) {
+                    if (i < c_tries - 1) {
+                        fuzzyValue *= 10;
+                        LOG(WARNING) << "CTrimShape splitter failed, retrying with fuzzyValue: " << fuzzyValue;
+                        continue;
+                    }
+
+                    LOG(ERROR) << "CTrimShape splitter failed after " << c_tries << " attempts!";
+                    throw tigl::CTiglError("CTrimShape splitter failed!");
+                }
+#endif
+
+                if (debug) {
+                    WriteDebugShape(splitter.Shape(), "split");
+                }
+
+                TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source->Shape(), splitter.Shape(), _tool->Shape(), _operation);
+
+                if (trimmedShape.IsNull() || !BRepCheck_Analyzer(trimmedShape).IsValid()) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+                    if (i < c_tries - 1) {
+                        fuzzyValue *= 10;
+                        LOG(WARNING) << "CTrimShape produced invalid result, retrying with fuzzyValue: " << fuzzyValue;
+                        continue;
+                    }
+#endif
+                    LOG(ERROR) << "CTrimShape produced invalid result after all retries";
+                    throw tigl::CTiglError("CTrimShape produced invalid result");
+                }
+
+                _resultshape = PNamedShape(new CNamedShape(trimmedShape, _source->Name()));
+                CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
+                CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
+
+                _resultshape = CBooleanOperTools::Shellify(_resultshape);
+
+                if (debug) {
+                    WriteDebugShape(_resultshape->Shape(), "result");
+                }
+
+                itrim++;
+                _hasPerformed = true;
+                return;
+            }
+            catch (const Standard_Failure& f) {
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,9,0)
+                if (i < c_tries - 1) {
+                    fuzzyValue *= 10;
+                    LOG(WARNING) << "CTrimShape threw exception, retrying with fuzzyValue: " << fuzzyValue << " — " << f.GetMessageString();
+                    continue;
+                }
+#endif
+                std::string msg = "CTrimShape exception: ";
+                msg += f.GetMessageString();
+                LOG(ERROR) << msg;
+                throw tigl::CTiglError(msg);
+            }
         }
-
-        TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source->Shape(), splitter.Shape(), _tool->Shape(), _operation);
-        _resultshape = PNamedShape(new CNamedShape(trimmedShape, _source->Name()));
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
-
-        // create shell
-        _resultshape = CBooleanOperTools::Shellify(_resultshape);
-
-        if (debug) {
-            WriteDebugShape(_resultshape->Shape(), "result");
-        }
-
-        itrim++;
-        _hasPerformed = true;
     }
 }
 
