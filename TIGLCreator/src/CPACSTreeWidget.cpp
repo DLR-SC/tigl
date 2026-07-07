@@ -122,6 +122,9 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
 
     if (filterModel->isValid()) {
         cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
+        if (!newSelectedItem) {
+            return;
+        }
         last_selected_uid = newSelectedItem->getUid();
         emit newSelectedTreeItem(newSelectedItem);
     }
@@ -215,7 +218,10 @@ void CPACSTreeWidget::refresh()
 void CPACSTreeWidget::setSelectedUID(const QString& uid)
 {
     QModelIndex idxToSelect = filterModel->getIdxForUID(uid);
-    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::Select);
+    if (!idxToSelect.isValid()) {
+        return;
+    }
+    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::ClearAndSelect);
 }
 
 QString CPACSTreeWidget::getSelectedUID()

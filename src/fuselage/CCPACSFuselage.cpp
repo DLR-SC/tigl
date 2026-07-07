@@ -607,26 +607,33 @@ void CCPACSFuselage::SetLength(double newLength)
     // Remark the saving in tixi is not done, it should be perform by the user using "WriteCPACS" function
 }
 
-double CCPACSFuselage::GetMaximalHeight()
+BoundingBoxHeightWidth CCPACSFuselage::GetBoundingBoxHeightWidth()
 {
-    // Todo: evaluate the possiblity to use the a cache for this operation in fuselageHelper
-
-    // First compute the rotation to bring the fuselage in the standard direction
-    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
+    // First, compute the rotation to bring the fuselage in the standard direction
+    // We do not invert the fuselage transformation, because we want to keep the scaling apply by it
     CTiglTransformation fuselageRot;
     fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
     CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
 
-    // Then comput the loft in this coordinate system
-    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
+    // Then compute the loft in this coordinate system
+    PNamedShape loftCopy = GetLoft()->DeepCopy(); // deep copy because we gonna to transform it
     TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
-    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.001);   // tessellate the loft to have a more accurate bounding box.
+    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.003); // tessellate the loft to have a more accurate bounding box.
 
     Bnd_Box boundingBox;
-    BRepBndLib::Add(transformedLoft, boundingBox);
+    BRepBndLib::AddOptimal(transformedLoft, boundingBox);
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-    return zmax - zmin;
+
+    return {
+        zmax - zmin,    // height
+        ymax - ymin     // width
+    };
+}
+
+double CCPACSFuselage::GetMaximalHeight()
+{
+    return GetBoundingBoxHeightWidth().maxHeight;
 }
 
 void CCPACSFuselage::SetMaxHeight(double newHeight)
@@ -677,23 +684,7 @@ void CCPACSFuselage::SetMaxHeight(double newHeight)
 
 double CCPACSFuselage::GetMaximalWidth()
 {
-
-    // First compute the rotation to bring the fuselage in the standard direction
-    // We do not invert the fuselage transformation, because we want to keep the the scaling apply by it
-    CTiglTransformation fuselageRot;
-    fuselageRot.AddRotationIntrinsicXYZ(GetRotation().x,GetRotation().y, GetRotation().z) ;
-    CTiglTransformation fuselageRotInv = fuselageRot.Inverted();
-
-    // Then comput the loft in this coordinate system
-    PNamedShape loftCopy = GetLoft()->DeepCopy(); // make a deep copy because we gonna to transform it
-    TopoDS_Shape transformedLoft = fuselageRotInv.Transform(loftCopy->Shape());
-    BRepMesh_IncrementalMesh mesh(transformedLoft, 0.001); // tessellate the loft to have a more accurate bounding box.
-
-    Bnd_Box boundingBox;
-    BRepBndLib::Add(transformedLoft, boundingBox);
-    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-    return ymax - ymin;
+    return GetBoundingBoxHeightWidth().maxWidth;
 }
 
 void CCPACSFuselage::SetMaxWidth(double newWidth)
