@@ -128,7 +128,6 @@ void ModificatorModel::writeCPACS()
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
-
     // todo try catch on dispatch
     if ((!configurationIsSet()) || (!item->isInitialized())) {
         modificatorContainerWidget->hideAllSpecializedWidgets();
@@ -155,7 +154,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
         modificatorContainerWidget->setFuselageModificator(fuselage);
-        highlight(fuselage.GetCTiglElements());
+        highlightShape(fuselage.GetUID());
     }
     else if (item->getType() == "fuselages") {
         modificatorContainerWidget->setFuselagesModificator();
@@ -164,7 +163,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
         modificatorContainerWidget->setWingModificator(wing);
-        highlight(wing.GetCTiglElements());
+        highlightShape(wing.GetUID());
     }
     else if (item->getType() == "wings") {
         modificatorContainerWidget->setWingsModificator();
@@ -190,6 +189,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             modificatorContainerWidget->setElementModificator(*sectionElement);
             std::vector<tigl::CTiglSectionElement*> elements;
             elements.push_back(sectionElement);
+            scene->getContext()->ClearSelected(Standard_False);
+            scene->getContext()->UpdateCurrentViewer();
             highlight(elements);
         }
         else {
@@ -227,6 +228,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         }
 
         if (isEditable) {
+            scene->getContext()->ClearSelected(Standard_False);
+            scene->getContext()->UpdateCurrentViewer();
             highlight(cTiglElements);
             modificatorContainerWidget->setSectionModificator(qCTiglElements);
         }
@@ -269,6 +272,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
             return;
         }
+        scene->getContext()->ClearSelected(Standard_False);
+        scene->getContext()->UpdateCurrentViewer();
         highlight(positioning, parentTransformation);
         
     }
@@ -943,6 +948,17 @@ void ModificatorModel::onDeleteFuselageRequested()
     if (deleteDialog.exec() == QDialog::Accepted) {
         std::string uid = deleteDialog.getUIDToDelete().toStdString();
         deleteFuselage(uid);
+    }
+}
+
+void ModificatorModel::highlightShape(std::string name){
+
+    auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
+
+    if (iobjects.size() > 0) {
+        scene->getContext()->ClearSelected(Standard_False);
+        scene->getContext()->SetSelected(iobjects[0], Standard_True);
+        scene->getContext()->UpdateCurrentViewer();
     }
 }
 
