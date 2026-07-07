@@ -342,6 +342,13 @@ TEST(NACA4Calculator, naca2412_LePoint_TePoint){
     EXPECT_FALSE(lower.IsNull());
     EXPECT_FALSE(te.IsNull());
 
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
+
 }
 
 TEST(NACA4Calculator, naca0012_LePoint_TePoint){
@@ -375,6 +382,13 @@ TEST(NACA4Calculator, naca0012_LePoint_TePoint){
     EXPECT_FALSE(upper.IsNull());
     EXPECT_FALSE(lower.IsNull());
     EXPECT_FALSE(te.IsNull());
+
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
 
 }
 
@@ -516,4 +530,30 @@ TEST(NACA4Calculator, naca24112_export_bsplines2){
     for(double x =0; x<1; x+=0.05){
         auto z = NACA4.upper_curve(x);
     }
+}
+
+TEST(NACA4Calculator, naca2412_getUpperLowerWire) {
+    tigl::CTiglUIDManager uidMgr;
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(std::string("2412")));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(0.15));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
+
+    EXPECT_TRUE(profile.HasBluntTE());
+
+    Standard_Real u1, u2;
+    Handle(Geom_Curve) ulCurve = BRep_Tool::Curve(ul, u1, u2);
+    ASSERT_FALSE(ulCurve.IsNull());
 }

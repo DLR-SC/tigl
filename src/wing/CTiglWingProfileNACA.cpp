@@ -34,6 +34,8 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Geom_Line.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <CWireToCurve.h>
 
 
 namespace tigl
@@ -84,6 +86,11 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
     } else {
         cache.trailingEdge = TopoDS_Edge();
     }
+
+    BRepBuilderAPI_MakeWire ulWireMaker(cache.lowerWire, cache.upperWire);
+    TopoDS_Wire ulWire = ulWireMaker.Wire();
+    Handle(Geom_Curve) ulCurve = CWireToCurve(ulWire).curve();
+    cache.upperLowerWire = BRepBuilderAPI_MakeEdge(ulCurve);
 }
 
 
@@ -107,9 +114,9 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-
-    throw CTiglError("UpperLower wire is not implemented.");
+    return wireCache->upperLowerWire;
 }
+
 
 // get trailing edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetTrailingEdge(TiglShapeModifier mod) const
