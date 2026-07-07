@@ -112,6 +112,7 @@ signals:
     void mouseMoved   ( Standard_Real X, Standard_Real Y, Standard_Real Z );
     void pointClicked ( Standard_Real X, Standard_Real Y, Standard_Real Z );
     void sendStatus   ( QString aMessage );
+    void shapeSelected(const QString& uid);
 
     void error ( int errorCode, QString& errorDescription );
 

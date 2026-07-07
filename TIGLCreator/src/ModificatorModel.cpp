@@ -1286,6 +1286,10 @@ cpcr::CPACSTreeItem* ModificatorModel::getItemFromSelection(const QItemSelection
                                   "the model is not valid!");
     }
 
+    if (newSelection.indexes().isEmpty()) {
+        return nullptr;
+    }
+
     cpcr::CPACSTreeItem* item = getItem(newSelection.indexes().at(0));
 
     return item;
