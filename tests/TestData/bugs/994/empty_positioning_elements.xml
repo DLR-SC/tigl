@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
+  <header>
+    <name>Bug994Test</name>
+    <description>Test for bug #994: TiGL viewer crashes with empty mandatory elements</description>
+    <creator>TiGL Agent</creator>
+    <timestamp>2026-06-10T00:00:00</timestamp>
+    <version>1.0.0</version>
+    <cpacsVersion>3.0</cpacsVersion>
+  </header>
+  <aircraft>
+    <model uID="AircraftModel">
+      <fuselages>
+        <fuselage uID="Fuselage1">
+          <name>Fuselage1</name>
+          <description>Test fuselage</description>
+          <transformation>
+            <scaling uID="Fuselage1_trans_scl">
+              <x>1</x><y>1</y><z>1</z>
+            </scaling>
+            <rotation uID="Fuselage1_trans_rot">
+              <x>0</x><y>0</y><z>0</z>
+            </rotation>
+            <translation uID="Fuselage1_trans_tra">
+              <x>0</x><y>0</y><z>0</z>
+            </translation>
+          </transformation>
+          <segments>
+            <segment uID="Fuselage1_seg1">
+              <name>Segment1</name>
+              <description/>
+              <innerConnection uID="Fuselage1_seg1_inner">
+                <parentUID>Fuselage1</parentUID>
+                <sectionUID>Fuselage1_sec1</sectionUID>
+                <point/>
+              </innerConnection>
+              <outerConnection uID="Fuselage1_seg1_outer">
+                <parentUID>Fuselage1</parentUID>
+                <sectionUID>Fuselage1_sec2</sectionUID>
+                <point/>
+              </outerConnection>
+            </segment>
+          </segments>
+          <loft>
+            <profileUID>Fuselage1_prof1</profileUID>
+          </loft>
+        </fuselage>
+      </fuselages>
+      <wings>
+        <wing uID="Wing1">
+          <name>Wing1</name>
+          <description>Test wing</description>
+          <transformation>
+            <scaling uID="Wing1_trans_scl">
+              <x>1</x><y>1</y><z>1</z>
+            </scaling>
+            <rotation uID="Wing1_trans_rot">
+              <x>0</x><y>0</y><z>0</z>
+            </rotation>
+            <translation uID="Wing1_trans_tra">
+              <x>0</x><y>0</y><z>0</z>
+            </translation>
+          </transformation>
+          <sections>
+            <section uID="Wing1_sec1">
+              <name>Section1</name>
+              <transformation>
+                <scaling uID="Wing1_sec1_scl">
+                  <x>1</x><y>1</y><z>1</z>
+                </scaling>
+                <rotation uID="Wing1_sec1_rot">
+                  <x>0</x><y>0</y><z>0</z>
+                </rotation>
+                <translation uID="Wing1_sec1_tra">
+                  <x>0</x><y>0</y><z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="Wing1_sec1_elem1">
+                  <name>Element1</name>
+                  <profileUID>Wing1_prof1</profileUID>
+                  <transformation/>
+                  <castAttachment/>
+                </element>
+              </elements>
+            </section>
+            <section uID="Wing1_sec2">
+              <name>Section2</name>
+              <transformation>
+                <scaling uID="Wing1_sec2_scl">
+                  <x>1</x><y>1</y><z>1</z>
+                </scaling>
+                <rotation uID="Wing1_sec2_rot">
+                  <x>0</x><y>0</y><z>0</z>
+                </rotation>
+                <translation uID="Wing1_sec2_tra">
+                  <x>0</x><y>0</y><z>0</z>
+                </translation>
+              </transformation>
+              <elements>
+                <element uID="Wing1_sec2_elem1">
+                  <name>Element1</name>
+                  <profileUID>Wing1_prof2</profileUID>
+                  <transformation/>
+                  <castAttachment/>
+                </element>
+              </elements>
+            </section>
+          </sections>
+          <segments>
+            <segment uID="Wing1_seg1">
+              <name>Segment1</name>
+              <description/>
+              <innerConnection uID="Wing1_seg1_inner">
+                <parentUID>Wing1</parentUID>
+                <sectionUID>Wing1_sec1</sectionUID>
+                <point/>
+              </innerConnection>
+              <outerConnection uID="Wing1_seg1_outer">
+                <parentUID>Wing1</parentUID>
+                <sectionUID>Wing1_sec2</sectionUID>
+                <point/>
+              </outerConnection>
+              <positioning uID="Wing1_seg1_pos1" fromSectionUID="Wing1_sec1" toSectionUID="Wing1_sec2">
+                <sweepAngle/>
+                <dihedralAngle/>
+                <length/>
+              </positioning>
+            </segment>
+          </segments>
+          <profiles>
+            <wingProfile uID="Wing1_prof1">
+              <name>Profile1</name>
+              <description/>
+              <upperShell>
+                <skin>
+                  <material>
+                    <exteriorFinish>Paint</exteriorFinish>
+                    <color/>
+                  </material>
+                </skin>
+              </upperShell>
+              <lowerShell>
+                <skin>
+                  <material>
+                    <exteriorFinish>Paint</exteriorFinish>
+                    <color/>
+                  </material>
+                </skin>
+              </lowerShell>
+              <structure>
+                <sparPositions>
+                  <sparPosition uID="Wing1_prof1_spar1" description="" uName="">
+                    <sparCutOut/>
+                  </sparPosition>
+                </sparPositions>
+                <cells/>
+              </structure>
+              <airfoil>
+                <pointList/>
+              </airfoil>
+            </wingProfile>
+            <wingProfile uID="Wing1_prof2">
+              <name>Profile2</name>
+              <description/>
+              <upperShell>
+                <skin>
+                  <material>
+                    <exteriorFinish>Paint</exteriorFinish>
+                    <color/>
+                  </material>
+                </skin>
+              </upperShell>
+              <lowerShell>
+                <skin>
+                  <material>
+                    <exteriorFinish>Paint</exteriorFinish>
+                    <color/>
+                  </material>
+                </skin>
+              </lowerShell>
+              <structure>
+                <sparPositions/>
+                <cells/>
+              </structure>
+              <airfoil>
+                <pointList/>
+              </airfoil>
+            </wingProfile>
+          </profiles>
+        </wing>
+      </wings>
+    </model>
+  </aircraft>
+</cpacs>

@@ -19,5 +19,6 @@ endif()
 include(AddGoogleTest)
 
 add_subdirectory(common)
+add_subdirectory(python)
 add_subdirectory(unittests)
 add_subdirectory(integrationtests)

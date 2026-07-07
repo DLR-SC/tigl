@@ -1336,7 +1336,7 @@ bool TIGLCreatorWidget::makeScreenshot(const QString& filename, bool whiteBGEnab
     }
 
     if (!img.save(filename, nullptr, quality)) {
-        LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
+        LOG(ERROR) << "Unable to save screenshot to file '" << filename.toStdString() << "'";
         return false;
     }
     else {
