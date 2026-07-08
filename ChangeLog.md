@@ -20,6 +20,7 @@ Changes since last release
   - Add the new system definition introduced in CPACS v3.5
   - Add an alternative wing airfoil parametrization that allows the specification of NACA4 codes directly in CPACS (with the trailing edge thickness). This makes a preprocessing step of writing sampled NACA profiles as point lists obsolete and improves the overall surface quality by internally generating B-Splines with a fine-tuned number of control points. [#1293](https://github.com/DLR-SC/tigl/pull/1293)
   - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
+  - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 - Fixes
   - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
@@ -40,6 +41,7 @@ Changes since last release
   - Correct the icons in TIGLCreator: Add the correct icon to the "New File" and "Open File" action and add a button to the tool bar ([#1210](https://github.com/DLR-SC/tigl/issues/1210))
   - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
   - TiGLCreator: Auto-append file extension when saving a screenshot if missing, with a more informative error message ([#1296](https://github.com/DLR-SC/tigl/issues/1296))
+  - Fixed an unhandled exception in the TiGLCreator (was triggered from the UpperLower wire in CTiglWingProfileNACA)([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 Version 3.5.0-rc1
 -----------------
