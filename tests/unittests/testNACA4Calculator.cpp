@@ -455,10 +455,10 @@ TEST(CTiglNACA4Calculator, naca2412_edge_counter){
     }
 }
 
-TEST(NACA4Calculator, naca24112_export_bsplines2){
-    tigl::CTiglNACA4Calculator NACA4(2,4,12, 0.00252);
-    for(double x =0; x<1; x+=0.05){
-        auto z = NACA4.upper_curve(x);
+TEST(CTiglNACA4Calculator, upper_curve_does_not_throw_for_valid_x_range){
+    tigl::CTiglNACA4Calculator naca(2, 4, 12, 0.00252);
+    for (double x = 0.0; x <= 1.0; x += 0.05) {
+        EXPECT_NO_THROW((void)naca.upper_curve(x));
     }
 }
 
