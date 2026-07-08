@@ -278,7 +278,15 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
     }
     modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
     }
-    catch (tigl::CTiglError& ex) { LOG(ERROR) << ex.what(); } catch (...) { LOG(ERROR) << "Unknown error in dispatch"; }
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (const std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in dispatch";
+    }
 }
 
 void ModificatorModel::createUndoCommand()
