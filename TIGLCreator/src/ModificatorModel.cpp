@@ -62,7 +62,6 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
-  
     doc = newDoc;
     resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
@@ -168,9 +167,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             modificatorContainerWidget->setFuselageModificator(fuselage);
             highlight(fuselage.GetCTiglElements());
         } catch (const tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.what() << std::endl;
-            markFailedUID(item->getUid());
-            modificatorContainerWidget->setNoInterfaceWidget();
+            handleUIDError(item->getUid(), ex);
         }
     }
     else if (item->getType() == "fuselages") {
@@ -183,9 +180,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             modificatorContainerWidget->setWingModificator(wing);
             highlight(wing.GetCTiglElements());
         } catch (const tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.what() << std::endl;
-            markFailedUID(item->getUid());
-            modificatorContainerWidget->setNoInterfaceWidget();
+            handleUIDError(item->getUid(), ex);
         }
     }
     else if (item->getType() == "wings") {
@@ -219,9 +214,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 modificatorContainerWidget->setNoInterfaceWidget();
             }
         } catch (const tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.what() << std::endl;
-            markFailedUID(item->getUid());
-            modificatorContainerWidget->setNoInterfaceWidget();
+            handleUIDError(item->getUid(), ex);
         }
     }
     else if (item->getType() == "section") {
@@ -263,9 +256,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 modificatorContainerWidget->setNoInterfaceWidget();
             }
         } catch (const tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.what() << std::endl;
-            markFailedUID(item->getUid());
-            modificatorContainerWidget->setNoInterfaceWidget();
+            handleUIDError(item->getUid(), ex);
         }
     }
     else if (item->getType() == "sections" ) {
@@ -306,9 +297,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             }
             highlight(positioning, parentTransformation);
         } catch (const tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.what() << std::endl;
-            markFailedUID(item->getUid());
-            modificatorContainerWidget->setNoInterfaceWidget();
+            handleUIDError(item->getUid(), ex);
         }
     }
     else {
@@ -361,6 +350,13 @@ void ModificatorModel::validateAllUIDs()
         }
     });
     failedUIDs = std::move(failed);
+}
+
+void ModificatorModel::handleUIDError(const std::string& uid, const tigl::CTiglError& ex)
+{
+    LOG(ERROR) << ex.what() << std::endl;
+    markFailedUID(uid);
+    modificatorContainerWidget->setNoInterfaceWidget();
 }
 
 void ModificatorModel::standardize(QString uid, bool useSimpleDecomposition)
