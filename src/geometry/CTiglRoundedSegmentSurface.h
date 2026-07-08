@@ -7,7 +7,13 @@
 #include <vector>
 
 namespace tigl {
-
+/**
+ * @brief This class can be used to create a surface from a given set of profile curves,
+ * that is rounded in two seperate definable distances to each side of the profile:
+ * The 'innerRoundingDistance', and 'outerRoundingDistance'
+ * In case of an aircraft wing 'inner' refers to the direction from profile curve to fuselage,
+ * 'outer' refers to the direction from profile curve to wing tip.
+ */
 class CTiglRoundedSegmentSurface
 {
 public:
@@ -36,9 +42,12 @@ private:
 
     /**
      * @brief The RoundedSegment class
-     * A Rounded Segment is a helper container for each segment of the surface to create.
-     * It gets two profile curves and two rounding distances, and creates a vector for
-     * the poles of each dummy-profile curve from this information.
+     * A Rounded Segment is a helper container to simplify keeping the order of the profile
+     * and 'dummy-curves' when creating the required pole matrix for the lofting-algorithm.
+     *
+     * It represents one sement, with first and last profile and two rounding distances.
+     * From these parameters it takes care of creating the poles of 3 dummy-profile curves
+     * for each direction, 'inner' and 'outer', given they are greater than zero.
      */
     struct RoundedSegment
     {
@@ -132,21 +141,38 @@ private:
     TIGL_EXPORT void Invalidate() { _hasPerformed = false; }
 
 private:
-    // Rows represent profile curves (u-direction) and dummy curves, Columns define poles of curves in v-direction
+    // Rows represent the poles of the given profile curves (u-direction) and dummy curves
+    // Columns represent the poles of the curves in v-direction
     TColgp_Array2OfPnt m_pole_matrix;
 
+    // Knots and poles in u_direction are equal to the profile curves' knots and pole
     TColStd_Array1OfReal m_u_knots;
+
+    // The knots are distributed linearly, the number of knots is calculated als follows:
+    // number of poles - curve degree + 1
+    // This already takes into account: The number of multiplicities at the start
+    // and the end of the curve must be 4, else 1
+
     TColStd_Array1OfReal m_v_knots;
 
+    // Multiplicities in u_direction are equal to the profile curves' multiplicities
     TColStd_HArray1OfInteger m_u_multiplicities;
+
+    // Multiplicites in v_direction are 4 at start and end of the curve, else 1
+    // The number of multiplicities must be equal to the number of
     TColStd_HArray1OfInteger m_v_multiplicities;
 
-    //Storage of inner and outer rounding distance per segment
+    // Stores given inner and outer rounding distance per segment!
+    // This means:
+    // First Segment gets an inner rounding distance of 0. -> first entry in this list is 0.
+    // analogue: Last segment gets a outer rounding distance of 0. -> last entry in this list is 0.
     std::vector<double> m_inner_rounding_distance;
     std::vector<double> m_outer_rounding_distance;
 
-    // Store as B-spline curves internally (after conversion)
-    std::vector<Handle(Geom_BSplineCurve)> m_profileCurves; //Vector contains 1 edge per profile Wire, loft ist build edgewise
+    // The given profile curves (or list of edges of the profile curves)
+    std::vector<Handle(Geom_BSplineCurve)> m_profileCurves;
+
+    // A list of rounded segments is used to create the pole_matrix
     std::vector<RoundedSegment> m_segments;
     Handle(Geom_BSplineSurface) m_surface;
 
