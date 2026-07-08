@@ -128,7 +128,7 @@ void ModificatorModel::writeCPACS()
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
-
+    try{
     // todo try catch on dispatch
     if ((!configurationIsSet()) || (!item->isInitialized())) {
         modificatorContainerWidget->hideAllSpecializedWidgets();
@@ -277,6 +277,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
     }
     modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
+    }
+    catch (tigl::CTiglError& ex) { LOG(ERROR) << ex.what(); } catch (...) { LOG(ERROR) << "Unknown error in dispatch"; }
 }
 
 void ModificatorModel::createUndoCommand()
