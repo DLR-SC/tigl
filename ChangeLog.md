@@ -24,6 +24,7 @@ Changes since last release
 
 - Fixes
   - TiGLCreator: Fix laggy behaviour when selecting a fuselage in the CPACSTree. Additionally, only the wireframe is highlighted, not each section on its own. This also boosts performance [#1275](https://github.com/DLR-SC/tigl/issues/1275).
+  - Fix crash in `CTiglWingSectionElement`. This class stores a raw pointer to a `CCPACSWing` as parent, that is `nullptr` if the parent actually is a pylon. This null pointer is dereferenced in `CTiglWingSectionElement::GetWire`, causing a crash, e.g. when selecting a section in the CPACS tree in TiGLCreator ([#1371](https://github.com/DLR-SC/tigl/issues/1371))
   - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
   - Fix error when displaying an aircraft with pylon but without segments. Now returns null geometry gracefully instead of throwing an error
   - Fix wrong behaviour in GUI for the spinbox of the wing sweep and dihedral chord percantage ([#1327](https://github.com/DLR-SC/tigl/pull/1327))
