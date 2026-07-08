@@ -62,7 +62,7 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
- 
+  
     doc = newDoc;
     resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
@@ -72,6 +72,16 @@ void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
         connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(resetTree()));
         profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
+}
+
+bool ModificatorModel::isFailedUID(const std::string& uid) const
+{
+    return failedUIDs.find(uid) != failedUIDs.end();
+}
+
+void ModificatorModel::markFailedUID(const std::string& uid)
+{
+    failedUIDs.insert(uid);
 }
 
 void ModificatorModel::updateCpacsConfigurationFromString(std::string const& config)
@@ -153,18 +163,30 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "fuselage") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
-        modificatorContainerWidget->setFuselageModificator(fuselage);
-        highlight(fuselage.GetCTiglElements());
+        try {
+            tigl::CCPACSFuselage& fuselage = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
+            modificatorContainerWidget->setFuselageModificator(fuselage);
+            highlight(fuselage.GetCTiglElements());
+        } catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what() << std::endl;
+            markFailedUID(item->getUid());
+            modificatorContainerWidget->setNoInterfaceWidget();
+        }
     }
     else if (item->getType() == "fuselages") {
         modificatorContainerWidget->setFuselagesModificator();
     }
     else if (item->getType() == "wing") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
-        modificatorContainerWidget->setWingModificator(wing);
-        highlight(wing.GetCTiglElements());
+        try {
+            tigl::CCPACSWing& wing = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
+            modificatorContainerWidget->setWingModificator(wing);
+            highlight(wing.GetCTiglElements());
+        } catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what() << std::endl;
+            markFailedUID(item->getUid());
+            modificatorContainerWidget->setNoInterfaceWidget();
+        }
     }
     else if (item->getType() == "wings") {
         modificatorContainerWidget->setWingsModificator();
@@ -173,64 +195,76 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         // first, we need to determine whether this is a section or a fuselage element
         // then, we can retrieve the CTiglElement interface that manages the both cases.
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
-        tigl::CTiglSectionElement* sectionElement = nullptr;
-        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
-            tigl::CCPACSFuselageSectionElement& fuselageElement =
-                *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
-                sectionElement = fuselageElement.GetCTiglSectionElement();
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
-            tigl::CCPACSWingSectionElement& wingElement =
-                *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
-            sectionElement = wingElement.GetCTiglSectionElement();
-        }
+        try {
+            tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+            tigl::CTiglSectionElement* sectionElement = nullptr;
+            if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+                tigl::CCPACSFuselageSectionElement& fuselageElement =
+                    *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+                    sectionElement = fuselageElement.GetCTiglSectionElement();
+            }
+            else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+                tigl::CCPACSWingSectionElement& wingElement =
+                    *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+                sectionElement = wingElement.GetCTiglSectionElement();
+            }
 
-        if (sectionElement && sectionElement->IsValid()) {
-            modificatorContainerWidget->setElementModificator(*sectionElement);
-            std::vector<tigl::CTiglSectionElement*> elements;
-            elements.push_back(sectionElement);
-            highlight(elements);
-        }
-        else {
+            if (sectionElement && sectionElement->IsValid()) {
+                modificatorContainerWidget->setElementModificator(*sectionElement);
+                std::vector<tigl::CTiglSectionElement*> elements;
+                elements.push_back(sectionElement);
+                highlight(elements);
+            }
+            else {
+                modificatorContainerWidget->setNoInterfaceWidget();
+            }
+        } catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what() << std::endl;
+            markFailedUID(item->getUid());
             modificatorContainerWidget->setNoInterfaceWidget();
         }
     }
     else if (item->getType() == "section") {
         tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
-        std::vector<tigl::CTiglSectionElement*> cTiglElements;  // one for the highlight function
-        QList<tigl::CTiglSectionElement*> qCTiglElements;   // one for the modificator widget
-        if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
-            tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
-            // In fact for the moment multiple element is not supported by Tigl so the number of cTiglElements will allays be one
-            for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
-                cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
-                qCTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
+        try {
+            tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+            std::vector<tigl::CTiglSectionElement*> cTiglElements;  // one for the highlight function
+            QList<tigl::CTiglSectionElement*> qCTiglElements;   // one for the modificator widget
+            if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
+                tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
+                // In fact for the moment multiple element is not supported by Tigl so the number of cTiglElements will allays be one
+                for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
+                    cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
+                    qCTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
+                }
+
+            }
+            else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
+                tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+                for (int i = 1; i <= wingSection.GetSectionElementCount(); i++) {
+                    cTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+                    qCTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+                }
             }
 
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
-            tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
-            for (int i = 1; i <= wingSection.GetSectionElementCount(); i++) {
-                cTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
-                qCTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+            bool isEditable = !qCTiglElements.isEmpty();
+            for (tigl::CTiglSectionElement* element : qCTiglElements) {
+                if (!element || !element->IsValid()) {
+                    isEditable = false;
+                    break;
+                }
             }
-        }
 
-        bool isEditable = !qCTiglElements.isEmpty();
-        for (tigl::CTiglSectionElement* element : qCTiglElements) {
-            if (!element || !element->IsValid()) {
-                isEditable = false;
-                break;
+            if (isEditable) {
+                highlight(cTiglElements);
+                modificatorContainerWidget->setSectionModificator(qCTiglElements);
             }
-        }
-
-        if (isEditable) {
-            highlight(cTiglElements);
-            modificatorContainerWidget->setSectionModificator(qCTiglElements);
-        }
-        else {
+            else {
+                modificatorContainerWidget->setNoInterfaceWidget();
+            }
+        } catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what() << std::endl;
+            markFailedUID(item->getUid());
             modificatorContainerWidget->setNoInterfaceWidget();
         }
     }
@@ -249,28 +283,33 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
     }
     else if (item->getType() == "positioning" ) {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSPositioning& positioning    = uidManager.ResolveObject<tigl::CCPACSPositioning>(item->getUid());
-        tigl::CTiglTransformation parentTransformation;
+        try {
+            tigl::CCPACSPositioning& positioning = uidManager.ResolveObject<tigl::CCPACSPositioning>(item->getUid());
+            tigl::CTiglTransformation parentTransformation;
 
-        // if fact we need the wing or fuselage parent to be able to invalidate the positionigs.
-        std::string bodyUID = item->getParent()->getParent()->getUid();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
-        if (typePtr.type == &typeid(tigl::CCPACSWing)) {
-            tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
-            modificatorContainerWidget->setPositioningModificator(wing, positioning);
-            parentTransformation = wing.GetTransformationMatrix();
+            // if fact we need the wing or fuselage parent to be able to invalidate the positionigs.
+            std::string bodyUID = item->getParent()->getParent()->getUid();
+            tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
+            if (typePtr.type == &typeid(tigl::CCPACSWing)) {
+                tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
+                modificatorContainerWidget->setPositioningModificator(wing, positioning);
+                parentTransformation = wing.GetTransformationMatrix();
+            }
+            else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
+                tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
+                modificatorContainerWidget->setPositioningModificator(fuselage, positioning);
+                parentTransformation = fuselage.GetTransformationMatrix();
+            }
+            else {
+                LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
+                return;
+            }
+            highlight(positioning, parentTransformation);
+        } catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what() << std::endl;
+            markFailedUID(item->getUid());
+            modificatorContainerWidget->setNoInterfaceWidget();
         }
-        else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
-            tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
-            modificatorContainerWidget->setPositioningModificator(fuselage, positioning);
-            parentTransformation = fuselage.GetTransformationMatrix();
-        }
-        else {
-            LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
-            return;
-        }
-        highlight(positioning, parentTransformation);
-        
     }
     else {
         modificatorContainerWidget->setNoInterfaceWidget();
@@ -302,7 +341,26 @@ void ModificatorModel::resetTree()
     else {
         tree.clean();
     }
+    failedUIDs.clear();
+    validateAllUIDs();
     QAbstractItemModel::endResetModel();
+}
+
+void ModificatorModel::validateAllUIDs()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    std::set<std::string> failed;
+    tree.forEachUid([&](const std::string& uid) {
+        try {
+            uidManager.ResolveObject(uid);
+        } catch (const tigl::CTiglError&) {
+            failed.insert(uid);
+        }
+    });
+    failedUIDs = std::move(failed);
 }
 
 void ModificatorModel::standardize(QString uid, bool useSimpleDecomposition)
@@ -1011,12 +1069,28 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole) {
+    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole && role != Qt::DecorationRole && role != Qt::ToolTipRole) {
         return QVariant();
     }
 
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
+
+    if (role == Qt::DecorationRole && index.column() == 0) {
+        std::string uid = item->getUid();
+        if (!uid.empty()) {
+            if (isFailedUID(uid)) {
+                return styleIcon(QStyle::SP_MessageBoxWarning);
+            }
+        }
+    }
+
+    if (role == Qt::ToolTipRole && index.column() == 0) {
+        std::string uid = item->getUid();
+        if (!uid.empty() && isFailedUID(uid)) {
+            return QString("Invalid geometry: object not registered for uid '%1'. A possible cause could be a malformed CPACS node.").arg(uid.c_str());
+        }
+    }
 
     if (role == Qt::CheckStateRole && index.column() == 0) {
         if (!item) {

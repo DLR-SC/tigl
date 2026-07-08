@@ -22,6 +22,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "CPACSTreeItem.h"
 #include <tixi.h>
@@ -75,6 +76,8 @@ public:
     void reload();
 
     void createChildrenRecursively(CPACSTreeItem& parent);
+
+    void forEachUid(const std::function<void(const std::string&)>& callback) const;
 
 protected:
     /*
