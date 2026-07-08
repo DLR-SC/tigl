@@ -35,7 +35,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Geom_Line.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <CWireToCurve.h>
+#include "CWireToCurve.h"
 
 
 namespace tigl
