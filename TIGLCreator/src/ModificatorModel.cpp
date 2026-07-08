@@ -129,13 +129,20 @@ void ModificatorModel::writeCPACS()
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
     // todo try catch on dispatch
-    if ((!configurationIsSet()) || (!item->isInitialized())) {
+    if ( !configurationIsSet() ) {
         modificatorContainerWidget->hideAllSpecializedWidgets();
+        modificatorContainerWidget->setNoInterfaceWidget();
         LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
         return;
     }
 
-    unHighlight();
+    // Used, e.g., when a shape is selected that is not editable in the CPACSCreator
+    if ( !item->isInitialized() ) {
+        modificatorContainerWidget->hideAllSpecializedWidgets();
+        modificatorContainerWidget->setNoInterfaceWidget();
+        return;
+    }
+
     if (item->getType() == "transformation") {
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         if(item->getUid().empty()){
@@ -154,6 +161,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
         modificatorContainerWidget->setFuselageModificator(fuselage);
+        unHighlight();
         highlightShape(fuselage.GetUID());
     }
     else if (item->getType() == "fuselages") {
@@ -163,6 +171,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
         tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
         modificatorContainerWidget->setWingModificator(wing);
+        unHighlight();
         highlightShape(wing.GetUID());
     }
     else if (item->getType() == "wings") {
@@ -191,6 +200,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             elements.push_back(sectionElement);
             scene->getContext()->ClearSelected(Standard_False);
             scene->getContext()->UpdateCurrentViewer();
+            unHighlight();
             highlight(elements);
         }
         else {
@@ -230,6 +240,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         if (isEditable) {
             scene->getContext()->ClearSelected(Standard_False);
             scene->getContext()->UpdateCurrentViewer();
+            unHighlight();
             highlight(cTiglElements);
             modificatorContainerWidget->setSectionModificator(qCTiglElements);
         }
@@ -274,6 +285,7 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         }
         scene->getContext()->ClearSelected(Standard_False);
         scene->getContext()->UpdateCurrentViewer();
+        unHighlight();
         highlight(positioning, parentTransformation);
         
     }

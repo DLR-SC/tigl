@@ -865,8 +865,15 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 
         if (!shape.IsNull())
         {
-            auto shapeName = viewerContext->GetShapeManager().GetShapeFromIObject(shape)->Name();
-            emit shapeSelected(QString::fromStdString(shapeName));
+            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+
+            if (cnamedShape) {
+                auto shapeName = cnamedShape->Name();
+                emit shapeSelected(QString::fromStdString(shapeName));
+            }
+            else {
+                emit nonEditableShapeSelected();
+            }
         }
     }
     if ( nFlags & CASCADESHORTCUTKEY ) {
