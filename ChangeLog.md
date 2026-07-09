@@ -25,6 +25,7 @@ Changes since last release
   - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 - Fixes
+  - `CCPACSPositionings::CreatePositioning now sets a name to be CPACS-conform ([#1378](https://github.com/DLR-SC/tigl/issues/1378))
   - TiGLCreator: Fix laggy behaviour when selecting a fuselage in the CPACSTree. Additionally, only the wireframe is highlighted, not each section on its own. This also boosts performance [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - Fix crash in `CTiglWingSectionElement`. This class stores a raw pointer to a `CCPACSWing` as parent, that is `nullptr` if the parent actually is a pylon. This null pointer is dereferenced in `CTiglWingSectionElement::GetWire`, causing a crash, e.g. when selecting a section in the CPACS tree in TiGLCreator ([#1371](https://github.com/DLR-SC/tigl/issues/1371))
   - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
