@@ -129,7 +129,6 @@ void ModificatorModel::writeCPACS()
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
     try{
-    // todo try catch on dispatch
     if ((!configurationIsSet()) || (!item->isInitialized())) {
         modificatorContainerWidget->hideAllSpecializedWidgets();
         LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
