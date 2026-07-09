@@ -6,6 +6,7 @@ Changes since last release
 2025/09/26
 -General changes
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
+  - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
   - TIGLCreator: Add a display options tab to the editor. This enables users to change display settings for the selected component and also offers to choose the corresponding draw options. The draw options are also centralized and modified using the scene graph functionality. Therefore the configuration stays visible upon choosing a draw option like the flaps. [#1270](https://github.com/DLR-SC/tigl/pull/1270) and [#1279](https://github.com/DLR-SC/tigl/pull/1279)
   - TiGLCreator: Disable Standardize menu option, until the algorithm works reliably [#1336](https://github.com/DLR-SC/tigl/issues/1336)
   - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
