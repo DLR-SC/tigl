@@ -294,11 +294,13 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
+    void BuildBoundingBoxHeightWidth(BoundingBoxHeightWidth& cache) const;
+
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     Cache<PNamedShape, CCPACSFuselage> cleanLoft; /**< Stores the loft with cutouts (e.g. ducts) */
-
+    Cache<BoundingBoxHeightWidth, CCPACSFuselage> boundingBoxHeightWidthCache;
 
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;
