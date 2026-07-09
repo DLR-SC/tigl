@@ -71,7 +71,7 @@ public slots:
     void updateProfilesDB(QString newDBPath);
 
     // Highlighting functions
-    void highlightShape(std::string name);
+    void highlightShape(const std::string& name);
     void highlight(std::vector<tigl::CTiglSectionElement*> elements);
     void highlight(tigl::CCPACSPositioning &positioning, const tigl::CTiglTransformation& parentTransformation);
     void unHighlight();

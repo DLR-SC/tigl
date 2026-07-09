@@ -972,7 +972,7 @@ void ModificatorModel::onDeleteFuselageRequested()
     }
 }
 
-void ModificatorModel::highlightShape(std::string name){
+void ModificatorModel::highlightShape(const std::string& name){
 
     auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
 
