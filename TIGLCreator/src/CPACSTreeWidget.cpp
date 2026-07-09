@@ -127,6 +127,13 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
             // Otherwise, the CPACSEditor would still show the options of the last editable item
             cpcr::CPACSTreeItem treeItem{};
             emit newSelectedTreeItem(&treeItem);
+
+            ui->searchLineEdit->blockSignals(blockValue1);
+            ui->expertViewCheckBox->blockSignals(blockValue2);
+            if (ui->geometryNodesCheckBox) {
+                ui->geometryNodesCheckBox->blockSignals(blockValue3);
+            }
+
             return;
         }
         last_selected_uid = newSelectedItem->getUid();
