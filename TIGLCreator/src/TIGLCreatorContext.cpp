@@ -91,9 +91,11 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     myGridTenthColor = Quantity_NOC_GRAY90;
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
-    Handle(Prs3d_Drawer) whiteStyle = new Prs3d_Drawer();
-    whiteStyle->SetColor(Quantity_NOC_WHITE);
-    myContext->SetHighlightStyle(whiteStyle);
+    auto dynamic = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Dynamic);
+    auto selected = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Selected);
+
+    dynamic->SetColor(Quantity_NOC_WHITESMOKE);
+    selected->SetColor(Quantity_NOC_Highlight);
 #elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
     Handle(Graphic3d_HighlightStyle) whiteStyle = new Graphic3d_HighlightStyle;
     whiteStyle->SetColor(Quantity_NOC_WHITE);

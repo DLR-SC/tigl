@@ -128,14 +128,21 @@ void ModificatorModel::writeCPACS()
 
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
-    try{
-        if ((!configurationIsSet()) || (!item->isInitialized())) {
+    try {
+        if ( !configurationIsSet() ) {
             modificatorContainerWidget->hideAllSpecializedWidgets();
+            modificatorContainerWidget->setNoInterfaceWidget();
             LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
             return;
         }
 
-        unHighlight();
+        // Used, e.g., when a shape is selected that is not editable in the CPACSCreator
+        if ( !item->isInitialized() ) {
+            modificatorContainerWidget->hideAllSpecializedWidgets();
+            modificatorContainerWidget->setNoInterfaceWidget();
+            return;
+        }
+
         if (item->getType() == "transformation") {
             tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
             if(item->getUid().empty()){
@@ -154,7 +161,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
             tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
             modificatorContainerWidget->setFuselageModificator(fuselage);
-            highlight(fuselage.GetCTiglElements());
+            unHighlight();
+            highlightShape(fuselage.GetUID());
         }
         else if (item->getType() == "fuselages") {
             modificatorContainerWidget->setFuselagesModificator();
@@ -163,7 +171,8 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
             tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
             modificatorContainerWidget->setWingModificator(wing);
-            highlight(wing.GetCTiglElements());
+            unHighlight();
+            highlightShape(wing.GetUID());
         }
         else if (item->getType() == "wings") {
             modificatorContainerWidget->setWingsModificator();
@@ -189,6 +198,9 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 modificatorContainerWidget->setElementModificator(*sectionElement);
                 std::vector<tigl::CTiglSectionElement*> elements;
                 elements.push_back(sectionElement);
+                scene->getContext()->ClearSelected(Standard_False);
+                scene->getContext()->UpdateCurrentViewer();
+                unHighlight();
                 highlight(elements);
             }
             else {
@@ -226,6 +238,9 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             }
 
             if (isEditable) {
+                scene->getContext()->ClearSelected(Standard_False);
+                scene->getContext()->UpdateCurrentViewer();
+                unHighlight();
                 highlight(cTiglElements);
                 modificatorContainerWidget->setSectionModificator(qCTiglElements);
             }
@@ -268,8 +283,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
                 return;
             }
+            scene->getContext()->ClearSelected(Standard_False);
+            scene->getContext()->UpdateCurrentViewer();
+            unHighlight();
             highlight(positioning, parentTransformation);
-            
         }
         else {
             modificatorContainerWidget->setNoInterfaceWidget();
@@ -955,6 +972,17 @@ void ModificatorModel::onDeleteFuselageRequested()
     }
 }
 
+void ModificatorModel::highlightShape(const std::string& name){
+
+    auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
+
+    if (iobjects.size() > 0) {
+        scene->getContext()->ClearSelected(Standard_False);
+        scene->getContext()->SetSelected(iobjects[0], Standard_True);
+        scene->getContext()->UpdateCurrentViewer();
+    }
+}
+
 void ModificatorModel::highlight(std::vector<tigl::CTiglSectionElement*> elements)
 {
     try {
@@ -1277,6 +1305,10 @@ cpcr::CPACSTreeItem* ModificatorModel::getItemFromSelection(const QItemSelection
     if (!isValid()) {
         throw TIGLCreatorException("CPACSAbstractModel: getItemWithError called but "
                                   "the model is not valid!");
+    }
+
+    if (newSelection.indexes().isEmpty()) {
+        return nullptr;
     }
 
     cpcr::CPACSTreeItem* item = getItem(newSelection.indexes().at(0));
