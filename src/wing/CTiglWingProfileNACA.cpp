@@ -88,8 +88,15 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
     }
 
     BRepBuilderAPI_MakeWire ulWireMaker(cache.lowerWire, cache.upperWire);
+    ulWireMaker.Build();
+    if (!ulWireMaker.IsDone()) {
+        throw CTiglError("Error creating upper/lower wire in CTiglWingProfileNACA::BuildWires");
+    }
     TopoDS_Wire ulWire = ulWireMaker.Wire();
     Handle(Geom_Curve) ulCurve = CWireToCurve(ulWire).curve();
+    if (ulCurve.IsNull()) {
+        throw CTiglError("Error converting upper/lower wire to curve in CTiglWingProfileNACA::BuildWires");
+    }
     cache.upperLowerWire = BRepBuilderAPI_MakeEdge(ulCurve);
 }
 
