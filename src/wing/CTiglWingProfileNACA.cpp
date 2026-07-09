@@ -123,10 +123,10 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod
 {
     double te_thickness = calculator.get_trailing_edge_thickness();
     
-    if (mod == SHARP_TRAILINGEDGE && te_thickness > 0.0) {
+    if (mod == SHARP_TRAILINGEDGE && HasBluntTE()) {
         LOG(WARNING) << "Profile " << profileUID << ": SHARP_TRAILINGEDGE modifier requested but profile has blunt trailing edge (thickness: " << te_thickness << ")";
     }
-    else if (mod == BLUNT_TRAILINGEDGE && te_thickness == 0.0) {
+    else if (mod == BLUNT_TRAILINGEDGE && !HasBluntTE()) {
         LOG(WARNING) << "Profile " << profileUID << ": BLUNT_TRAILINGEDGE modifier requested but profile has sharp trailing edge";
     }
     return wireCache->upperLowerWire;
