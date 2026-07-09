@@ -231,6 +231,15 @@ void CPACSTreeWidget::setSelectedUID(const QString& uid)
         unsetSelectedUID();
         return;
     }
+
+    QModelIndex parent = idxToSelect.parent();
+    while (parent.isValid()) {
+        ui->treeView->expand(parent);
+        parent = parent.parent();
+    }
+
+    ui->treeView->scrollTo(idxToSelect, QTreeView::EnsureVisible);
+
     selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::ClearAndSelect);
 }
 
