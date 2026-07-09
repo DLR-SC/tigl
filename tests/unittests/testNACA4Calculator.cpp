@@ -342,6 +342,13 @@ TEST(CTiglNACA4Calculator, naca2412_LePoint_TePoint){
     EXPECT_FALSE(lower.IsNull());
     EXPECT_FALSE(te.IsNull());
 
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
+
 }
 
 TEST(CTiglNACA4Calculator, naca0012_LePoint_TePoint){
@@ -375,6 +382,13 @@ TEST(CTiglNACA4Calculator, naca0012_LePoint_TePoint){
     EXPECT_FALSE(upper.IsNull());
     EXPECT_FALSE(lower.IsNull());
     EXPECT_FALSE(te.IsNull());
+
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
 
 }
 
@@ -439,4 +453,39 @@ TEST(CTiglNACA4Calculator, naca2412_edge_counter){
     } else {
         EXPECT_EQ(edgeCount, 3);
     }
+}
+
+TEST(CTiglNACA4Calculator, upper_curve_does_not_throw_for_valid_x_range){
+    tigl::CTiglNACA4Calculator naca(2, 4, 12, 0.00252);
+    for (double x = 0.0; x <= 1.0; x += 0.05) {
+        EXPECT_NO_THROW((void)naca.upper_curve(x));
+    }
+}
+
+
+
+TEST(CTiglNACA4Calculator, naca2412_getUpperLowerWire) {
+    tigl::CTiglUIDManager uidMgr;
+    tigl::CCPACSWingProfile cpacsProfile(static_cast<tigl::CCPACSWingProfiles*>(nullptr), &uidMgr);
+    tigl::generated::CPACSNacaProfile nacadef(&cpacsProfile);
+
+    nacadef.SetNaca4DigitCode_choice1(boost::optional<std::string>(std::string("2412")));
+    nacadef.SetTrailingEdgeThickness(boost::optional<double>(0.15));
+
+    tigl::CTiglWingProfileNACA profile(cpacsProfile, nacadef);
+
+    TopoDS_Edge ul = profile.GetUpperLowerWire();
+    EXPECT_FALSE(ul.IsNull());
+
+    TopoDS_Edge ulSharp = profile.GetUpperLowerWire(SHARP_TRAILINGEDGE);
+    EXPECT_FALSE(ulSharp.IsNull());
+
+    TopoDS_Edge ulBlunt = profile.GetUpperLowerWire(BLUNT_TRAILINGEDGE);
+    EXPECT_FALSE(ulBlunt.IsNull());
+
+    EXPECT_TRUE(profile.HasBluntTE());
+
+    Standard_Real u1, u2;
+    Handle(Geom_Curve) ulCurve = BRep_Tool::Curve(ul, u1, u2);
+    ASSERT_FALSE(ulCurve.IsNull());
 }
