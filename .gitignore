@@ -8,3 +8,4 @@
 *.user
 *.idea
 filefilter.txt
+/debugShapes

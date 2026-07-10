@@ -48,10 +48,9 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage, P
 
     internalLength = fuselage->GetLength();
     ui->spinBoxLength->setValue(internalLength);
-    internalHeight = fuselage->GetMaximalHeight();
-    ui->spinBoxHeight->setValue(internalHeight);
-    internalWidth = fuselage->GetMaximalWidth();
-    ui->spinBoxWidth->setValue(internalWidth);
+    auto fuselageDimensions = fuselage->GetBoundingBoxHeightWidth();
+    ui->spinBoxHeight->setValue(fuselageDimensions.maxHeight);
+    ui->spinBoxWidth->setValue(fuselageDimensions.maxWidth);
 
     ui->profileComboBox->clear();
     std::vector<std::string> profilesList = fuselage->GetAllUsedProfiles();
