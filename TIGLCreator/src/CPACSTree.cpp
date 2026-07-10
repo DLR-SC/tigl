@@ -20,6 +20,7 @@
 
 #include <list>
 #include <map>
+#include <functional>
 
 #include "CTiglLogging.h"
 #include "TIGLCreatorException.h"
@@ -157,6 +158,24 @@ void CPACSTree::reload()
 {
     std::string rootXPath = getRoot()->getXPath();
     this->build(tixiHandle, rootXPath);
+}
+
+void CPACSTree::forEachUid(const std::function<void(const std::string&)>& callback) const
+{
+    if (!m_root) {
+        return;
+    }
+    std::function<void(CPACSTreeItem*)> recurse;
+    recurse = [&](CPACSTreeItem* item) {
+        std::string uid = item->getUid();
+        if (!uid.empty()) {
+            callback(uid);
+        }
+        for (CPACSTreeItem* child : item->getChildren()) {
+            recurse(child);
+        }
+    };
+    recurse(m_root.get());
 }
 
 } // end namespace cpcr

@@ -28,8 +28,11 @@
 #include "CCPACSPositioning.h"
 #include "ProfilesDBManager.h"
 #include <QAbstractItemModel>
+#include <QApplication>
+#include <QStyle>
 #include "CPACSTreeView.h"
 #include "CPACSTree.h"
+#include <set>
 
 class TIGLCreatorWindow;
 
@@ -177,9 +180,13 @@ public:
 
     // Register interactive AIS objects with a UID so the model can manage
     // appearing/disappearing without querying external managers.
- 
+
 
     bool setData(const QModelIndex& index, const QVariant& value, int role);
+
+    bool isFailedUID(const std::string& uid) const;
+    void markFailedUID(const std::string& uid);
+    void handleUIDError(const std::string& uid, const tigl::CTiglError& ex);
 
     QModelIndex getIdxForUID(std::string uid) const;
 
@@ -205,6 +212,10 @@ protected:
     }
 
 private:
+
+    QIcon styleIcon(QStyle::StandardPixmap which) const {
+        return QApplication::style()->standardIcon(which);
+    }
 
     /**
      * @brief resolve resolves the ElementModificatorInterface based on the uid
@@ -249,6 +260,9 @@ private:
     QUndoStack* myUndoStack;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
+    mutable std::set<std::string> failedUIDs;
+
+    void validateAllUIDs();
 
 };
 
