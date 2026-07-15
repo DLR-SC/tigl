@@ -53,7 +53,6 @@ public:
     TIGL_EXPORT void Invalidate();
 
 private:
-    PNamedShape FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children);
     void Perform();
 
     PNamedShape          _result;         /**< contains the result of the fusing operation >**/

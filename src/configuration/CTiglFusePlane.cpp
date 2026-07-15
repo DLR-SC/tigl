@@ -88,82 +88,68 @@ void CTiglFusePlane::Invalidate()
 }
 
 
-PNamedShape CTiglFusePlane::FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children)
-{
-    PNamedShape parentShape;
-    if (parent) {
-        parentShape = parent->GetLoft();
-        if (parentShape) {
-            if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-                PNamedShape rootShapeMirr = parent->GetMirroredLoft();
-                parentShape = CMergeShapes(parentShape, rootShapeMirr);
-            }
-        }
-    }
-
-    if (children.size() == 0) {
-        return parentShape;
-    }
-
-    ListPNamedShape childShapes;
-    for (std::vector<CTiglRelativelyPositionedComponent*>::const_iterator it = children.begin(); it != children.end(); ++it) {
-        if ((*it)->GetComponentType() != TIGL_COMPONENT_DUCT ) {
-            childShapes.push_back(FuseWithChilds(*it, (*it)->GetChildren(false)));
-        }
-    }
-    CFuseShapes fuser(parentShape, childShapes);
-    PNamedShape result = fuser.NamedShape();
-
-    // trim previous intersections
-    ListPNamedShape::iterator intIt = _intersections.begin();
-    ListPNamedShape newInts;
-    for (; intIt != _intersections.end(); ++intIt) {
-        PNamedShape inters = *intIt;
-        if (!inters) {
-            continue;
-        }
-
-        TopoDS_Shape sh = inters->Shape();
-        if (parentShape) {
-            sh = BRepAlgoAPI_Cut(sh, parentShape->Shape());
-        }
-        if (!sh.IsNull()) {
-            inters->SetShape(sh);
-            newInts.push_back(inters);
-        }
-    }
-    _intersections = newInts;
-
-    // insert intersections
-    ListPNamedShape::const_iterator it = fuser.Intersections().begin();
-    for (; it != fuser.Intersections().end(); it++) {
-        if (*it) {
-            _intersections.push_back(*it);
-        }
-    }
-    
-    return result;
-}
-
-/**
- * @todo: it would be nice if this algorithm would support
- * some progress bar interface
- */
 void CTiglFusePlane::Perform()
 {
     if (_hasPerformed) {
         return;
     }
 
-    CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
-    std::vector<CTiglRelativelyPositionedComponent*> rootComponentPtrs;
-    const RelativeComponentContainerType& rootComponents = uidManager.GetRootGeometricComponents();
-    for (RelativeComponentContainerType::const_iterator it = rootComponents.begin(); it != rootComponents.end(); ++it) {
-        if (it->second->GetComponentType() != TIGL_COMPONENT_DUCT ) {
-            rootComponentPtrs.push_back(it->second);
+    std::vector<CTiglRelativelyPositionedComponent*> allComponents;
+    const RelativeComponentContainerType& allRelComps = _myconfig.GetUIDManager().GetRelativeComponents();
+    for (RelativeComponentContainerType::const_iterator it = allRelComps.begin(); it != allRelComps.end(); ++it) {
+        if (it->second->GetComponentType() != TIGL_COMPONENT_DUCT) {
+            allComponents.push_back(it->second);
         }
     }
-    _result = FuseWithChilds(NULL, rootComponentPtrs);
+
+    PNamedShape result;
+    for (size_t i = 0; i < allComponents.size(); ++i) {
+        CTiglRelativelyPositionedComponent* comp = allComponents[i];
+
+        PNamedShape compShape = comp->GetLoft();
+        if (!compShape) {
+            continue;
+        }
+
+        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+            PNamedShape mirLoft = comp->GetMirroredLoft();
+            if (mirLoft) {
+                compShape = CMergeShapes(compShape, mirLoft);
+            }
+        }
+
+        if (!result) {
+            result = compShape;
+        }
+        else {
+            // trim existing intersections with this component
+            for (ListPNamedShape::iterator intIt = _intersections.begin(); intIt != _intersections.end(); ++intIt) {
+                PNamedShape inters = *intIt;
+                if (!inters) {
+                    continue;
+                }
+
+                TopoDS_Shape sh = inters->Shape();
+                if (!sh.IsNull()) {
+                    sh = BRepAlgoAPI_Cut(sh, compShape->Shape());
+                }
+                if (!sh.IsNull()) {
+                    inters->SetShape(sh);
+                }
+            }
+
+            CFuseShapes fuser(result, ListPNamedShape{compShape});
+            result = fuser.NamedShape();
+
+            ListPNamedShape::const_iterator it2 = fuser.Intersections().begin();
+            for (; it2 != fuser.Intersections().end(); ++it2) {
+                if (*it2) {
+                    _intersections.push_back(*it2);
+                }
+            }
+        }
+    }
+    _result = result;
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
