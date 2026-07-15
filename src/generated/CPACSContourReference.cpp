@@ -103,7 +103,7 @@ namespace generated
     void CPACSContourReference::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element airfoilUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/airfoilUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/airfoilUID")) {
             m_airfoilUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/airfoilUID");
             if (m_airfoilUID.empty()) {
                 LOG(WARNING) << "Required element airfoilUID is empty at xpath " << xpath;
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element rotX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rotX")) {
             m_rotX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotX");
         }
         else {
@@ -123,7 +123,7 @@ namespace generated
         }
 
         // read element scalY
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/scalY")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/scalY")) {
             m_scalY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/scalY");
         }
         else {
@@ -131,7 +131,7 @@ namespace generated
         }
 
         // read element scalZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/scalZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/scalZ")) {
             m_scalZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/scalZ");
         }
         else {

@@ -60,7 +60,7 @@ namespace generated
     void CPACSNacaProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element naca4DigitCode
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca4DigitCode")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/naca4DigitCode")) {
             m_naca4DigitCode_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/naca4DigitCode");
             if (m_naca4DigitCode_choice1->empty()) {
                 LOG(WARNING) << "Optional element naca4DigitCode is present but empty at xpath " << xpath;
@@ -68,7 +68,7 @@ namespace generated
         }
 
         // read element naca5DigitCode
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/naca5DigitCode")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/naca5DigitCode")) {
             m_naca5DigitCode_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/naca5DigitCode");
             if (m_naca5DigitCode_choice2->empty()) {
                 LOG(WARNING) << "Optional element naca5DigitCode is present but empty at xpath " << xpath;
@@ -76,7 +76,7 @@ namespace generated
         }
 
         // read element trailingEdgeThickness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trailingEdgeThickness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/trailingEdgeThickness")) {
             m_trailingEdgeThickness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/trailingEdgeThickness");
         }
 

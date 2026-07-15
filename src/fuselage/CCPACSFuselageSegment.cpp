@@ -43,6 +43,7 @@
 #include "CTiglMakeLoft.h"
 #include "CTiglPatchShell.h"
 #include "Debugging.h"
+#include "generated/CPACSMultiSegmentShape.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -125,9 +126,11 @@ namespace
         trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
-        if (connectionTransform)
-            trafo.PreMultiply(*connectionTransform);
+        if (connection.ParentComponentHasPositionings()) {
+            boost::optional<tigl::CTiglTransformation> connectionTransform = connection.GetPositioningTransformation();
+            if (connectionTransform)
+                trafo.PreMultiply(*connectionTransform);
+        }
 
         trafo.PreMultiply(fuselTransform);
 
@@ -150,7 +153,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent, CTi
     , CTiglAbstractSegment<CCPACSFuselageSegment>(parent->GetSegments(), parent->GetParentComponent())
     , surfacePropertiesCache(*this, &CCPACSFuselageSegment::UpdateSurfaceProperties)
     , surfaceCache(*this, &CCPACSFuselageSegment::BuildSurfaces)
-    , m_guideCurveBuilder(make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
+    , m_guideCurveBuilder(std::make_unique<CTiglFuselageSegmentGuidecurveBuilder>(*this))
 {
     Cleanup();
 }
@@ -203,6 +206,11 @@ void CCPACSFuselageSegment::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
 std::string CCPACSFuselageSegment::GetDefaultedUID() const {
     return generated::CPACSFuselageSegment::GetUID();
+}
+
+bool CCPACSFuselageSegment::IsIndependentGeometry() const
+{
+    return !m_parent->IsParent<generated::CPACSMultiSegmentShape>();
 }
 
 void CCPACSFuselageSegment::SetFromElementUID(const std::string& value) {

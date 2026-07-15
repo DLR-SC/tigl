@@ -27,7 +27,8 @@ TIGLCreatorScreenshotDialog::TIGLCreatorScreenshotDialog(QString filename, QWidg
 {
     ui->setupUi(this);
     ui->widthBox->selectAll();
-    if (QFileInfo(filename).suffix() != "jpg") {
+    QString suffix = QFileInfo(filename).suffix().toLower();
+    if (suffix != "jpg" && suffix != "jpeg") {
         // hide quality parameter box
         ui->qualityBox->setVisible(false);
     }

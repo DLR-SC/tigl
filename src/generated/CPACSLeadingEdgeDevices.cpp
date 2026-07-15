@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSLeadingEdgeDevice& CPACSLeadingEdgeDevices::AddLeadingEdgeDevice()
     {
-        m_leadingEdgeDevices.push_back(make_unique<CCPACSLeadingEdgeDevice>(this, m_uidMgr));
+        m_leadingEdgeDevices.push_back(std::make_unique<CCPACSLeadingEdgeDevice>(this, m_uidMgr));
         return *m_leadingEdgeDevices.back();
     }
 

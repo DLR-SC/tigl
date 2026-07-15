@@ -29,6 +29,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <math_Matrix.hxx>
 #include <TColStd_Array1OfInteger.hxx>
+#include <tiglcommonfunctions.h>
 
 class gp_Pnt;
 
@@ -54,18 +55,20 @@ public:
     TIGL_EXPORT void InterpolatePoint(size_t pointIndex, bool withKink=false);
 
     /// Returns the resulting curve and the fit error
-    TIGL_EXPORT CTiglApproxResult FitCurve(const std::vector<double>& initialParms = std::vector<double>()) const;
+    TIGL_EXPORT CTiglApproxResult FitCurve(const std::vector<double>& initialParms = std::vector<double>(),
+                                           CalcPointVecErrorFct calcErrorFct=calcPointVecErrorMax) const;
 
     /// Fits the curve by optimizing the parameters.
     /// Important: Parameters of points that are interpolated are not optimized
-    TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10) const;
+    TIGL_EXPORT CTiglApproxResult FitCurveOptimal(const std::vector<double>& initialParms = std::vector<double>(), int maxIter=10, CalcPointVecErrorFct calcErrorFct=calcPointVecErrorMax) const;
 
 private:
     ProjectResult projectOnCurve(const gp_Pnt& pnt, const Handle(Geom_Curve)& curve, double initial_Parm) const;
     std::vector<double> computeParameters(double alpha) const;
     void computeKnots(int ncp, const std::vector<double>& params, std::vector<double>& knots, std::vector<int>& mults) const;
 
-    CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const;
+    CTiglApproxResult solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults,
+                            CalcPointVecErrorFct calcErrorFct=calcPointVecErrorMax) const;
     math_Matrix getContinuityMatrix(int nCtrPnts, int contin_cons, const std::vector<double>& params, const TColStd_Array1OfReal& flatKnots) const;
 
     void optimizeParameters(const Handle(Geom_Curve)& curve, std::vector<double>& parms) const;

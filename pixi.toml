@@ -8,7 +8,7 @@ channel-priority = "disabled"
 
 [feature.base.dependencies]
 # Base dependencies for all builds
-tixi3 = "3.3.1.*"
+tixi3 = "3.3.2.*"
 qt = { version = "5.15.15.*", channel = "conda-forge" }
 python = "*"
 matlab-libs = "*"
@@ -27,6 +27,7 @@ setuptools = "*"
 numpy = "*"
 matplotlib = "*"
 pyqt = ">=5.15.11,<6"
+pytest = "*"
 
 [feature.opencascade-static.dependencies]
 opencascade-static = "7.6.2.*"
@@ -82,9 +83,9 @@ configure = { cmd = [
 ]}
 generate = { cmd = """
     git submodule update --init --recursive
-    && cd thirdparty/cpacs_gen
-    && cmake -GNinja -S. -Bbuild -DTIGL_PATH=../.. 
-    && cmake --build build --target generate
+    cd thirdparty/cpacs_gen
+    cmake -GNinja -S . -Bbuild -DTIGL_PATH=../.. 
+    cmake --build build --target generate
 """}
 build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
 install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
@@ -103,6 +104,7 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 "occt-static" = ["base", "opencascade-static"]
 # python-internal feature builds the internal python bindings of the C++ core using swig
 "python-internal" = ["base", "python-internal"]
+
 
 [feature.coverage.tasks]
 # The coverage feature builds in debug mode and runs the tests with coverage flags enabled
@@ -172,3 +174,10 @@ configure = { cmd = [
         { "arg" = "nightly", "default"="OFF"},
 ]}
 tiglcreator = { cmd = "tiglcreator" }
+pythontests = { cmd = "python -m pytest -v", cwd = "build/tests/python" }
+tests = [
+    {task = "unittests"},
+    {task = "integrationtests"},
+    {task = "pythontests"},
+]
+

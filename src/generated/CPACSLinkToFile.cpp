@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include "CCPACSExternalObject.h"
-#include "CPACSGenericGeometryComponent.h"
+#include "CPACSExternalGeometry.h"
 #include "CPACSLinkToFile.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,18 +28,18 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSLinkToFile::CPACSLinkToFile(CPACSExternalGeometry* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSExternalGeometry);
+    }
+
     CPACSLinkToFile::CPACSLinkToFile(CCPACSExternalObject* parent)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSExternalObject);
-    }
-
-    CPACSLinkToFile::CPACSLinkToFile(CPACSGenericGeometryComponent* parent)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CPACSGenericGeometryComponent);
     }
 
     CPACSLinkToFile::~CPACSLinkToFile()
@@ -49,11 +49,11 @@ namespace generated
     const CTiglUIDObject* CPACSLinkToFile::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSExternalGeometry>()) {
+                return GetParent<CPACSExternalGeometry>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
-            }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -62,11 +62,11 @@ namespace generated
     CTiglUIDObject* CPACSLinkToFile::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSExternalGeometry>()) {
+                return GetParent<CPACSExternalGeometry>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSExternalObject>()) {
                 return GetParent<CCPACSExternalObject>();
-            }
-            if (IsParent<CPACSGenericGeometryComponent>()) {
-                return GetParent<CPACSGenericGeometryComponent>()->GetNextUIDParent();
             }
         }
         return nullptr;
@@ -80,7 +80,7 @@ namespace generated
         }
 
         // read simpleContent 
-        if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath)) {
             m_value = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
             if (m_value.empty()) {
                 LOG(WARNING) << "Required element  is empty at xpath " << xpath;

@@ -17,7 +17,7 @@
 */
 /**
 * @file
-* @brief builds the wing profile for NACA profiles based on the NACA4Calculator and returns the upper and lower wire, the trailing edge and the leading edge point
+* @brief builds the wing profile for NACA profiles based on the CTiglNACA4Calculator and returns the upper and lower wire, the trailing edge and the leading edge point
 */
 
 
@@ -26,7 +26,7 @@
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
 #include "geometry/CFunctionToBspline.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 #include "common/tiglcommonfunctions.h"
 
 
@@ -35,7 +35,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Geom_Line.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
-#include <CWireToCurve.h>
+#include "CWireToCurve.h"
 
 
 namespace tigl
@@ -44,7 +44,7 @@ namespace tigl
 
 CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
-    , calculator(nacadef.GetNaca4DigitCode_choice1() ? NACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented."))
+    , calculator(nacadef.GetNaca4DigitCode_choice1() ? CTiglNACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.") )
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
 {
 
@@ -88,8 +88,15 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
     }
 
     BRepBuilderAPI_MakeWire ulWireMaker(cache.lowerWire, cache.upperWire);
+    ulWireMaker.Build();
+    if (!ulWireMaker.IsDone()) {
+        throw CTiglError("Error creating upper/lower wire in CTiglWingProfileNACA::BuildWires");
+    }
     TopoDS_Wire ulWire = ulWireMaker.Wire();
     Handle(Geom_Curve) ulCurve = CWireToCurve(ulWire).curve();
+    if (ulCurve.IsNull()) {
+        throw CTiglError("Error converting upper/lower wire to curve in CTiglWingProfileNACA::BuildWires");
+    }
     cache.upperLowerWire = BRepBuilderAPI_MakeEdge(ulCurve);
 }
 
@@ -114,6 +121,14 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
+    double te_thickness = calculator.get_trailing_edge_thickness();
+    
+    if (mod == SHARP_TRAILINGEDGE && HasBluntTE()) {
+        LOG(WARNING) << "Profile " << profileUID << ": SHARP_TRAILINGEDGE modifier requested but profile has blunt trailing edge (thickness: " << te_thickness << ")";
+    }
+    else if (mod == BLUNT_TRAILINGEDGE && !HasBluntTE()) {
+        LOG(WARNING) << "Profile " << profileUID << ": BLUNT_TRAILINGEDGE modifier requested but profile has sharp trailing edge";
+    }
     return wireCache->upperLowerWire;
 }
 

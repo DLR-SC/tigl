@@ -48,6 +48,7 @@
 #include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 #include "TIGLSliderDialog.h"
+#include "CNamedShape.h"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -266,7 +267,7 @@ void TIGLCreatorWidget::mousePressEvent( QMouseEvent* e )
     else if ( e->button() & Qt::RightButton ) {
         onRightButtonDown ( myKeyboardFlags, e->pos() );
     }
-    else if ( e->button() & Qt::MidButton ) {
+    else if ( e->button() & Qt::MiddleButton ) {
         onMiddleButtonDown( myKeyboardFlags, e->pos() );
     }
 }
@@ -284,7 +285,7 @@ void TIGLCreatorWidget::mouseReleaseEvent(QMouseEvent* e)
     else if ( e->button() & Qt::RightButton ) {
         onRightButtonUp ( myKeyboardFlags, e->pos() );
     }
-    else if ( e->button() & Qt::MidButton ) {
+    else if ( e->button() & Qt::MiddleButton ) {
         onMiddleButtonUp( myKeyboardFlags, e->pos() );
     }
 }
@@ -338,7 +339,7 @@ void TIGLCreatorWidget::wheelEvent ( QWheelEvent* e )
 {
     if ( !myView.IsNull() ) {
         Standard_Real currentScale = myView->Scale();
-        if (e->delta() > 0) {
+        if (e->angleDelta().y() > 0) {
             currentScale *= TIGLCREATOR_ZOOM_STEP; // +10%
         }
         else {
@@ -607,6 +608,28 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
     }
 }
 
+void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
+{
+    if (concentration < 0.0 || concentration > 1.0) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]";
+        return;
+    }
+
+    if (dx*dx + dy*dy + dz*dz < 1e8) {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector";
+        return;
+    }
+
+    Handle(V3d_Light) theLight = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
+    theLight->SetPosition(gp_Pnt(x,y,z));
+    theLight->SetDirection(gp_Dir(dx, dy, dz));
+    theLight->SetConcentration(concentration);
+
+    if (!myView.IsNull()) {
+        myView->SetLightOn(theLight);
+    }
+}
+
 void TIGLCreatorWidget::hiddenLineOff()
 {
     if (!myView.IsNull()) {
@@ -682,7 +705,21 @@ void TIGLCreatorWidget::setTransparency()
     dialog->move(mPos.x() - dialog->size().width()/2, mPos.y() - dialog->size().height());
 
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    dialog->setIntValue(0); // TODO: Include this value within the Geometry Nodes and set value to current and not a hard-wired default
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Standard_Real t = drawer->Transparency();
+                    int initTransparency = static_cast<int>(std::round(t * 100.0));
+                    dialog->setIntValue(initTransparency);
+                }
+            }
+        }
+    }
     dialog->setIntRange(0, 100);
 
     dialog->show();
@@ -696,7 +733,23 @@ void TIGLCreatorWidget::setTransparency(int transparency)
 
 void TIGLCreatorWidget::setObjectsColor()
 {
-    QColor color = QColorDialog::getColor(Qt::green, this);
+    QColor initial;
+    if (viewerContext) {
+        Handle(AIS_InteractiveContext) ctx = viewerContext->getContext();
+        if (!ctx.IsNull()) {
+            ctx->InitSelected();
+            if (ctx->MoreSelected()) {
+                Handle(AIS_InteractiveObject) obj = ctx->SelectedInteractive();
+                if (!obj.IsNull()) {
+                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
+                    Quantity_Color qc = drawer->Color();
+                    initial = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
+                }
+            }
+        }
+    }
+
+    QColor color = QColorDialog::getColor(initial, this);
     viewerContext->setObjectsColor(color);
 }
 
@@ -710,7 +763,8 @@ void TIGLCreatorWidget::setObjectsMaterial()
         items << i->first;
         i++;
     }
-    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+    int defaultIndex = 0;
+    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, defaultIndex, false, &ok);
 
     if (ok && !item.isEmpty()) {
         Graphic3d_NameOfMaterial material = tiglMaterials::materialMap[item];
@@ -803,6 +857,25 @@ void TIGLCreatorWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     setCurrentPoint(point);
+    if (viewerContext->hasSelectedShapes()) {
+
+        auto context = viewerContext->getContext();
+        context->InitSelected();
+        Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
+
+        if (!shape.IsNull())
+        {
+            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+
+            if (cnamedShape) {
+                auto shapeName = cnamedShape->Name();
+                emit shapeSelected(QString::fromStdString(shapeName));
+            }
+            else {
+                emit nonEditableShapeSelected();
+            }
+        }
+    }
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -889,7 +962,7 @@ void TIGLCreatorWidget::onMouseMove( Qt::MouseButtons buttons,
     }
     setCurrentPoint(point);
 
-    if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton ) {
+    if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MiddleButton ) {
         switch ( myMode ) {
         case CurAction3d_Nothing:
             drawRubberBand ( myStartPoint, myCurrentPoint );
@@ -958,18 +1031,16 @@ AIS_StatusOfPick TIGLCreatorWidget::dragEvent( const QPoint startPoint, const QP
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
-        pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
-                                       min (startPoint.y(), endPoint.y()),
-                                       max (startPoint.x(), endPoint.x()),
-                                       max (startPoint.y(), endPoint.y()),
-                                       myView, true );
+pick = myContext->SelectRectangle(
+    Graphic3d_Vec2i(min(startPoint.x(), endPoint.x()), min(startPoint.y(), endPoint.y())),
+    Graphic3d_Vec2i(max(startPoint.x(), endPoint.x()), max(startPoint.y(), endPoint.y())),
+    myView, AIS_SelectionScheme_XOR);
     }
     else {
-        pick = myContext->Select( min (startPoint.x(), endPoint.x()),
-                                  min (startPoint.y(), endPoint.y()),
-                                  max (startPoint.x(), endPoint.x()),
-                                  max (startPoint.y(), endPoint.y()),
-                                  myView, true );
+        pick = myContext->SelectRectangle(
+    Graphic3d_Vec2i(min(startPoint.x(), endPoint.x()), min(startPoint.y(), endPoint.y())),
+    Graphic3d_Vec2i(max(startPoint.x(), endPoint.x()), max(startPoint.y(), endPoint.y())),
+    myView, AIS_SelectionScheme_Replace);
     }
     emit selectionChanged();
     return pick;
@@ -987,10 +1058,10 @@ AIS_StatusOfPick TIGLCreatorWidget::inputEvent( bool multi )
     Handle(AIS_InteractiveContext) myContext = viewerContext->getContext();
 
     if (multi) {
-        pick = myContext->ShiftSelect(true);
+        pick = myContext->SelectDetected( AIS_SelectionScheme_XOR );
     }
     else {
-        pick = myContext->Select(true);
+        pick = myContext->SelectDetected( AIS_SelectionScheme_Replace );
     }
     if ( pick != AIS_SOP_NothingSelected ) {
         emit selectionChanged();
@@ -1272,7 +1343,7 @@ bool TIGLCreatorWidget::makeScreenshot(const QString& filename, bool whiteBGEnab
     }
 
     if (!img.save(filename, nullptr, quality)) {
-        LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
+        LOG(ERROR) << "Unable to save screenshot to file '" << filename.toStdString() << "'";
         return false;
     }
     else {

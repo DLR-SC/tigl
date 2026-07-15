@@ -69,6 +69,10 @@ CCPACSStringVector::CCPACSStringVector(CCPACSTrackJointPosition* parent)
     : generated::CPACSStringVectorBase(parent)
 {}
 
+CCPACSStringVector::CCPACSStringVector(CCPACSApproximationSettings* parent)
+    : generated::CPACSStringVectorBase(parent)
+{}
+
 void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     generated::CPACSStringVectorBase::ReadCPACS(tixiHandle, xpath);

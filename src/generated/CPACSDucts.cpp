@@ -231,7 +231,7 @@ namespace generated
 
     CCPACSDuct& CPACSDucts::AddDuct()
     {
-        m_ducts.push_back(make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
+        m_ducts.push_back(std::make_unique<CCPACSDuct>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
         return *m_ducts.back();
     }
 
@@ -248,7 +248,7 @@ namespace generated
 
     CCPACSDuctAssembly& CPACSDucts::AddDuctAssembly()
     {
-        m_ductAssemblys.push_back(make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
+        m_ductAssemblys.push_back(std::make_unique<CCPACSDuctAssembly>(reinterpret_cast<CCPACSDucts*>(this), m_uidMgr));
         return *m_ductAssemblys.back();
     }
 

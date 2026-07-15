@@ -32,6 +32,8 @@
 
 
 #include "TIGLCreatorWindow.h"
+#include "CPACSTreeWidget.h"
+#include "ModificatorContainerWidget.h"
 #include "TIGLCreatorSettingsDialog.h"
 #include "TIGLCreatorDrawVectorDialog.h"
 #include "TIGLCreatorDocument.h"
@@ -49,10 +51,13 @@
 #include "TIGLCreatorLoggerHTMLDecorator.h"
 #include "TIGLCreatorScreenshotDialog.h"
 #include "TIGLCreatorScopedCommand.h"
+#include "DrawOptionsActions.h"
 #include "tigl_config.h"
 #include "api/tigl_version.h"
+#include "TIGLCreatorMaterials.h"
 #include "CCPACSConfigurationManager.h"
 #include "TIGLCreatorNewFileDialog.h"
+#include "TIGLCreatorAddSpotlightDialog.h"
 #include "StandardizeDialog.h"
 #include <tixicpp.h>
 
@@ -123,8 +128,13 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     settingsDialog = new TIGLCreatorSettingsDialog(*tiglCreatorSettings, this);
 
     myScene  = new TIGLCreatorContext(undoStack);
+    myScene->applyGridSettings();
 
     myOCC->setContext(myScene);
+
+    // refresh display options UI when the scene reports display-attribute changes
+    connect(myScene, &TIGLCreatorContext::displayAttributesChanged,
+        this, &TIGLCreatorWindow::onSceneDisplayAttributesChanged);
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -172,11 +182,20 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     modificatorModel = new ModificatorModel(modificatorContainerWidget, myScene, undoStack, this);
     treeWidget->SetModel(modificatorModel);
 
+    connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), this, SLOT(onTreeSelectionChanged(cpcr::CPACSTreeItem*)));
+    connect(modificatorContainerWidget, SIGNAL(parametersTabRequested()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
+    connect(modificatorContainerWidget, SIGNAL(displayOptionsRequested()), this, SLOT(onDisplayOptionsRequested()));
+    connect(modificatorContainerWidget, SIGNAL(setTransparencyRequested(int)), this, SLOT(onSetTransparencyRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setRenderingModeRequested(int)), this, SLOT(onSetRenderingModeRequested(int)));
+    connect(modificatorContainerWidget, SIGNAL(setColorRequested(const QColor&)), this, SLOT(onSetColorRequested(const QColor&)));
+    connect(modificatorContainerWidget, SIGNAL(setMaterialRequested(const QString&)), this, SLOT(onSetMaterialRequested(const QString&)));
+
     // connect model visibility changes to the scene
     connect(modificatorModel, SIGNAL(componentVisibilityChanged(const QString&, bool)), this, SLOT(onComponentVisibilityChanged(const QString&, bool)));
 
     connectSignals();
     createMenus();
+    setupDrawMenus();
     updateMenus();
 
     loadSettings();
@@ -354,7 +373,7 @@ void TIGLCreatorWindow::openRecentFile()
     }
 }
 
-void TIGLCreatorWindow::openFile(const QString& fileName)
+void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_uid)
 {
     QString      fileType;
     QFileInfo    fileInfo;
@@ -376,7 +395,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName)
             TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
 
 
-            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath(), config_uid);
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
                 return;
@@ -432,7 +451,7 @@ void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
         std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
-        getScene()->GetShapeManager().clear();
+        
         modificatorModel->setCPACSConfiguration(nullptr);
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
@@ -564,6 +583,13 @@ void TIGLCreatorWindow::loadSettings()
 
     tiglCreatorSettings->loadSettings();
     settingsDialog->updateEntries();
+
+    switch (tiglCreatorSettings->gridPlane()) {
+    case TIGLCreatorSettings::GridPlane::XZ: myScene->gridXZ(); break;
+    case TIGLCreatorSettings::GridPlane::YZ: myScene->gridYZ(); break;
+    default:                                 myScene->gridXY(); break;
+    }
+
     applySettings();
 }
 
@@ -612,8 +638,7 @@ void TIGLCreatorWindow::applySettings()
 void TIGLCreatorWindow::changeSettings()
 {
     settingsDialog->updateEntries();
-    settingsDialog->exec();
-    applySettings();
+    settingsDialog->show();
 }
 
 
@@ -891,57 +916,6 @@ void TIGLCreatorWindow::connectConfiguration()
         return;
     }
 
-    // CPACS Wing Actions
-    connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
-    connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
-    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
-    connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
-    connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
-    connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
-    connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
-    connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
-    connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
-    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
-    connect(drawWingStructureAction, SIGNAL(triggered(bool)), cpacsConfiguration, SLOT(drawWingStructure()));
-    connect(drawWingFlapsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFlaps()));
-
-    // CPACS Aircraft Actions
-    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfiguration()));
-    connect(showAllWingsAndFuselageDuctCutoutsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawConfigurationWithDuctCutouts()));
-    connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
-    connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
-    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
-    connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
-    connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
-    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
-    connect(drawComponentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawComponent()));
-    connect(drawControlPointNetAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawControlPointNet()));
-
-    // CPACS Fuselage Actions
-    connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
-    connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
-    connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
-    connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
-    connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
-    connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
-
-    // CPACS RotorBlade Actions
-    connect(drawRotorProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorProfiles()));
-    connect(drawRotorBladeOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeOverlayProfilePoints()));
-    connect(drawRotorBladeGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeGuideCurves()));
-    connect(drawRotorBladesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBlade()));
-    connect(drawRotorBladeTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeTriangulation()));
-    connect(drawRotorBladeSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeSamplePoints()));
-    connect(drawFusedRotorBladeAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedRotorBlade()));
-    connect(drawRotorBladeComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegment()));
-    connect(drawRotorBladeCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegmentPoints()));
-    connect(drawRotorBladeShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeShells()));
-
-    // CPACS Rotorcraft Actions
-    connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
-    connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
-
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
@@ -990,6 +964,7 @@ void TIGLCreatorWindow::connectSignals()
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
     connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
+    connect(addSpotlightAction, SIGNAL(triggered()), this, SLOT(addSpotlight()));
 
     // Misc drawing actions
     connect(drawPointAction, SIGNAL(triggered()), this, SLOT(drawPoint()));
@@ -1060,6 +1035,9 @@ void TIGLCreatorWindow::connectSignals()
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
     connect( myOCC, SIGNAL(initialized()), this, SIGNAL(windowInitialized()));
 
+    connect( myOCC, &TIGLCreatorWidget::shapeSelected, treeWidget, &CPACSTreeWidget::setSelectedUID);
+    connect( myOCC, &TIGLCreatorWidget::nonEditableShapeSelected, treeWidget, &CPACSTreeWidget::unsetSelectedUID);
+
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
 
@@ -1074,6 +1052,13 @@ void TIGLCreatorWindow::connectSignals()
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 
     connect(standardizeAction, SIGNAL(triggered()),this, SLOT(standardizeDialog()));
+
+    //TODO: disable standardizeAction, until fixed (https://github.com/DLR-SC/tigl/issues/1202)
+    standardizeAction->setEnabled(false);
+    standardizeAction->setVisible(false);
+
+    connect(settingsDialog, SIGNAL(settingsUpdated()), myScene, SLOT(applyGridSettings()));
+    connect(myScene, SIGNAL(gridPlaneChanged(TIGLCreatorSettings::GridPlane)), settingsDialog, SLOT(updateEntries()));
 }
 
 void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool visible)
@@ -1134,18 +1119,10 @@ void TIGLCreatorWindow::updateRecentFileActions()
     myLastFolder = settings.value("lastFolder").toString();
 }
 
-void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
-{
-    auto idx = modificatorModel->getIdxForUID(treeWidget->getLastSelectedUID());
-    if (!idx.isValid()) {
-        return;
-    }
-    auto item = modificatorModel->getItem(idx);
-    if (!item) {
-        return;
-    }
-    modificatorModel->dispatch(item);
-}
+// dispatchLastSelectedItemOnConfigurationEdited is implemented later in this
+// file with improved handling for group nodes (empty UID) and a stored
+// lastSelectedTreeItem pointer. Keep that implementation and avoid the
+// duplicate definition.
 
 void TIGLCreatorWindow::updateMenus()
 {
@@ -1182,31 +1159,25 @@ void TIGLCreatorWindow::updateMenus()
 
     closeAction->setEnabled(hand > 0);
 
-    bool hasFarField = false;
-    bool hasACSystems = false;
-    bool hasDucts = false;
     int nRotorBlades = 0;
     int nRotors = 0;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
-            hasFarField = config.GetFarField().GetType() != tigl::NONE;
-            hasACSystems = config.GetGenericSystemCount() > 0;
-            if (config.GetDucts()) {
-                hasDucts = config.GetDucts()->GetDuctAssemblys().size() > 0;
-            }
             nRotorBlades = config.GetRotorBladeCount();
             nRotors = config.GetRotorCount();
         }
     }
     catch(tigl::CTiglError& ){}
-    drawFarFieldAction->setEnabled(hasFarField);
-    showAllWingsAndFuselageDuctCutoutsAction->setEnabled(hasDucts);
-    drawSystemsAction->setEnabled(hasACSystems);
-    drawRotorsAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuWings->setEnabled(nWings - nRotorBlades > 0);
+
+    updateDrawMenuAvailability(menuAircraft, getPlaneDrawOptionsActions(), false);
+    updateDrawMenuAvailability(menuWings, getWingDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuFuselages, getFuselageDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuRotorBlades, getRotorBladeDrawOptionsActions(), true);
+    updateDrawMenuAvailability(menuRotorcraft, getRotorDrawOptionsActions(), true);
 }
 
 void TIGLCreatorWindow::closeEvent(QCloseEvent* event)
@@ -1238,12 +1209,46 @@ Console* TIGLCreatorWindow::getConsole()
 
 void TIGLCreatorWindow::makeScreenShot()
 {
+    QString selectedFilter;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Screenshot"), myLastFolder,
                                                     tr("PNG-Image (*.png);;") +
-                                                    tr("JPEG-Image (*.jpg);;") +
-                                                    tr("Windows-BMP-Image (*.bmp)"));
+                                                    tr("JPEG-Image (*.jpg *.jpeg);;") +
+                                                    tr("Windows-BMP-Image (*.bmp)"),
+                                                    &selectedFilter);
 
     if (!fileName.isEmpty() && myOCC) {
+        QString suffix = QFileInfo(fileName).suffix().toLower();
+        if (!suffix.isEmpty() && suffix != "png" && suffix != "jpg" && suffix != "jpeg" && suffix != "bmp") {
+            suffix.clear();
+        }
+
+        if (suffix.isEmpty()) {
+            QString defaultExt = "png";
+            if (selectedFilter.contains("*.jpg") || selectedFilter.contains("*.jpeg")) {
+                defaultExt = "jpg";
+            }
+            else if (selectedFilter.contains("*.bmp")) {
+                defaultExt = "bmp";
+            }
+            fileName += "." + defaultExt;
+        }
+        else if (suffix == "jpeg") {
+            fileName = fileName.left(fileName.lastIndexOf('.')) + ".jpg";
+        }
+        else if (suffix != "png") {
+            QString filterExt = "png";
+            if (selectedFilter.contains("*.jpg") || selectedFilter.contains("*.jpeg")) {
+                filterExt = "jpg";
+            }
+            else if (selectedFilter.contains("*.bmp")) {
+                filterExt = "bmp";
+            }
+            if (suffix != filterExt) {
+                QMessageBox::warning(this, tr("File Extension Mismatch"),
+                    tr("You selected '%1' as the image format, but the filename ends with '.%2'. "
+                       "The file will be saved using the format indicated by the extension '.%2'.").arg(selectedFilter, suffix));
+            }
+        }
 
         TIGLCreatorScreenshotDialog dialog(fileName, this);
         dialog.setQualityValue(80);
@@ -1307,6 +1312,21 @@ void TIGLCreatorWindow::resetColorSaveButton() {
     saveAction->setIcon(QIcon(":/gfx/document-save.png"));
 }
 
+void TIGLCreatorWindow::addSpotlight()
+{
+    TIGLCreatorAddSpotlightDialog addSpotlightDialog(this);
+
+    if (addSpotlightDialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    gp_Pnt pos = addSpotlightDialog.getPosition().Get_gp_Pnt();
+    gp_Vec dir = addSpotlightDialog.getDirection().Get_gp_Pnt().XYZ();
+    double concentration = addSpotlightDialog.getConcentration();
+
+    getViewer()->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
+}
+
 /// This function is copied from QtCoreLib (>5.1)
 /// and is not available in qt4
 bool TIGLCreatorWindow::deleteEnvVar(const char * varName)
@@ -1349,4 +1369,203 @@ void TIGLCreatorWindow::standardizeDialog()
             modificatorModel->standardize(newStdDialog.useSimpleDecomposition());
         }
     }
+}
+
+void TIGLCreatorWindow::dispatchLastSelectedItemOnConfigurationEdited()
+{
+    if (!modificatorModel) return;
+    if (!treeWidget) return;
+
+    QString uid = treeWidget->getSelectedUID();
+    cpcr::CPACSTreeItem* item = nullptr;
+
+    if (!uid.isEmpty()) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr && lastSelectedTreeItem != nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    if (!item) return;
+    modificatorModel->dispatch(item);
+}
+
+void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
+{
+    if (!treeWidget) {
+        return;
+    }
+    lastSelectedTreeUID = treeWidget->getSelectedUID();
+    lastSelectedTreeItem = item;
+}
+
+void TIGLCreatorWindow::onDisplayOptionsRequested()
+{
+    cpcr::CPACSTreeItem* item = nullptr;
+    QString uid = QString();
+    if (treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+    if (!uid.isEmpty() && modificatorModel) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    modificatorContainerWidget->setDisplayOptionsFromItem(item, cpacsConfiguration, myScene);
+}
+
+void TIGLCreatorWindow::onSetTransparencyRequested(int v)
+{
+    if (myScene) {
+        myScene->setTransparency(v);
+    }
+}
+
+void TIGLCreatorWindow::onSetRenderingModeRequested(int mode)
+{
+    if (!myScene) {
+        return;
+    }
+    if (mode == 0) {
+        myScene->setObjectsWireframe();
+    }
+    else if (mode == 1) {
+        myScene->setObjectsShading();
+    }
+
+}
+
+void TIGLCreatorWindow::onSetColorRequested(const QColor &c)
+{
+    if (myScene){
+        myScene->setObjectsColor(c);
+    }
+}
+
+void TIGLCreatorWindow::onSceneDisplayAttributesChanged()
+{
+    cpcr::CPACSTreeItem* item = nullptr;
+    QString uid;
+    if (treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+    if (!uid.isEmpty() && modificatorModel) {
+        auto idx = modificatorModel->getIdxForUID(uid.toStdString());
+        if (idx.isValid()) {
+            item = modificatorModel->getItem(idx);
+        }
+    }
+
+    if (item == nullptr) {
+        item = lastSelectedTreeItem;
+    }
+
+    modificatorContainerWidget->updateDisplayOptionsIfActive(item, cpacsConfiguration, myScene);
+}
+
+void TIGLCreatorWindow::onSetMaterialRequested(const QString &m)
+{
+    if (!myScene) {
+        return;
+    }
+    auto it = tiglMaterials::materialMap.find(m);
+    if (it != tiglMaterials::materialMap.end()) {
+        myScene->setObjectsMaterial(it->second);
+    }
+}
+
+
+void TIGLCreatorWindow::populateDrawMenu(
+    QMenu* menu,
+    const std::vector<DrawOptionAction>& actions,
+    bool needsUid)
+{
+    for (const auto& action : actions) {
+        QAction* qa = new QAction(action.label, this);
+
+        connect(qa, &QAction::triggered, this,
+            [this, action, needsUid]() {
+                QString uid;
+                if (needsUid && treeWidget) {
+                    uid = treeWidget->getSelectedUID();
+                }
+                if (action.isAvailable && !action.isAvailable(cpacsConfiguration, uid)) {
+                    return;
+                }
+                action.handler(cpacsConfiguration, uid);
+            });
+
+        menu->addAction(qa);
+    }
+}
+
+void TIGLCreatorWindow::updateDrawMenuAvailability(
+    QMenu* menu,
+    const std::vector<DrawOptionAction>& actions,
+    bool needsUid)
+{
+    const QList<QAction*> menuActions = menu->actions();
+    const int actionCount = menuActions.size() < static_cast<int>(actions.size())
+        ? menuActions.size()
+        : static_cast<int>(actions.size());
+
+    QString uid;
+    if (needsUid && treeWidget) {
+        uid = treeWidget->getSelectedUID();
+    }
+
+    for (int i = 0; i < actionCount; ++i) {
+        const DrawOptionAction& drawAction = actions[static_cast<size_t>(i)];
+        const bool available = !drawAction.isAvailable || drawAction.isAvailable(cpacsConfiguration, uid);
+        menuActions[i]->setVisible(available);
+        menuActions[i]->setEnabled(available);
+    }
+}
+
+void TIGLCreatorWindow::setupDrawMenus()
+{
+    // Aircraft (plane-level, no UID needed)
+    populateDrawMenu(
+        menuAircraft,
+        getPlaneDrawOptionsActions(),
+        false
+    );
+
+    // Wings
+    populateDrawMenu(
+        menuWings,
+        getWingDrawOptionsActions(),
+        true
+    );
+
+    // Fuselages
+    populateDrawMenu(
+        menuFuselages,
+        getFuselageDrawOptionsActions(),
+        true
+    );
+
+    // Rotor blades
+    populateDrawMenu(
+        menuRotorBlades,
+        getRotorBladeDrawOptionsActions(),
+        true
+    );
+
+    // Rotors
+    populateDrawMenu(
+        menuRotorcraft,
+        getRotorDrawOptionsActions(),
+        true
+    );
 }

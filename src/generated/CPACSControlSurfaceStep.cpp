@@ -85,7 +85,7 @@ namespace generated
     void CPACSControlSurfaceStep::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element controlParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameter")) {
             m_controlParameter = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameter");
         }
         else {
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element hingeLineRotation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hingeLineRotation")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/hingeLineRotation")) {
             m_hingeLineRotation = tixi::TixiGetElement<double>(tixiHandle, xpath + "/hingeLineRotation");
         }
 

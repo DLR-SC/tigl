@@ -163,7 +163,7 @@ namespace generated
 
     CCPACSWingSparSegment& CPACSSparSegments::AddSparSegment()
     {
-        m_sparSegments.push_back(make_unique<CCPACSWingSparSegment>(reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr));
+        m_sparSegments.push_back(std::make_unique<CCPACSWingSparSegment>(reinterpret_cast<CCPACSWingSparSegments*>(this), m_uidMgr));
         return *m_sparSegments.back();
     }
 

@@ -68,7 +68,7 @@ namespace generated
     void CPACSTorisphericalDome::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element dishRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dishRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/dishRadius")) {
             m_dishRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dishRadius");
         }
         else {
@@ -76,7 +76,7 @@ namespace generated
         }
 
         // read element knuckleRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/knuckleRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/knuckleRadius")) {
             m_knuckleRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/knuckleRadius");
         }
         else {

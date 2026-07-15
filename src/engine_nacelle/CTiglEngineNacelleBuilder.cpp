@@ -16,7 +16,6 @@
 */
 
 #include "CTiglEngineNacelleBuilder.h"
-#include "UniquePtr.h"
 #include "CNamedShape.h"
 #include "TopoDS_Compound.hxx"
 #include "TopoDS_Builder.hxx"

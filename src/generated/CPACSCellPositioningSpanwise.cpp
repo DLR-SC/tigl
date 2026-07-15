@@ -81,7 +81,7 @@ namespace generated
     void CPACSCellPositioningSpanwise::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element contourCoordinate
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/contourCoordinate")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/contourCoordinate")) {
             m_contourCoordinate_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/contourCoordinate");
         }
 
@@ -108,12 +108,12 @@ namespace generated
         }
 
         // read element ribNumber
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribNumber")) {
             m_ribNumber_choice3 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ribNumber");
         }
 
         // read element ribDefinitionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribDefinitionUID")) {
             m_ribDefinitionUID_choice3 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
             if (m_ribDefinitionUID_choice3->empty()) {
                 LOG(WARNING) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;

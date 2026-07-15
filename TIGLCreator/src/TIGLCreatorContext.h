@@ -31,6 +31,7 @@
 #include "TIGLCreator.h"
 #include "TIGLCreatorColors.h"
 #include "TIGLInteractiveShapeManager.h"
+#include "TIGLCreatorSettings.h"
 #include <QMetaType>
 #include <QUndoStack>
 #include <Standard_Version.hxx>
@@ -61,7 +62,7 @@ public:
 
     void setGridOffset (Standard_Real offset);
     
-    void displayPoint(const gp_Pnt& aPoint,
+    Handle(AIS_Shape) displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
                       Standard_Boolean UpdateViewer,
                       Standard_Real anXoffset,
@@ -105,8 +106,8 @@ public:
     void removeShape( Handle(AIS_InteractiveObject) shape);
 
 public slots:
-    Handle(AIS_InteractiveObject) displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
-    Handle(AIS_InteractiveObject) displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    Handle(AIS_Shape) displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    Handle(AIS_Shape) displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
 
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
@@ -119,6 +120,7 @@ public slots:
     void gridOff    ();
     void gridRect   ();
     void gridCirc   ();
+    void applyGridSettings ();
     void wireFrame  ( bool );
     void selectAll();
     void eraseSelected();
@@ -129,11 +131,14 @@ public slots:
     void setObjectsTexture(const QString& filename);
     void setReflectionlinesEnabled(bool);
     void setObjectsColor(const QColor &color);
+    void setObjectsColorRGB(int r, int g, int b, int a = 255);
     void setFaceBoundariesEnabled(bool enabled);
 
 signals:
 
     void error (int errorCode, QString& errorDescription);
+    void displayAttributesChanged();
+    void gridPlaneChanged(TIGLCreatorSettings::GridPlane plane);
 
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();

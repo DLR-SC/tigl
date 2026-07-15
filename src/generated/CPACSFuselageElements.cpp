@@ -157,7 +157,7 @@ namespace generated
 
     CCPACSFuselageSectionElement& CPACSFuselageElements::AddElement()
     {
-        m_elements.push_back(make_unique<CCPACSFuselageSectionElement>(reinterpret_cast<CCPACSFuselageSectionElements*>(this), m_uidMgr));
+        m_elements.push_back(std::make_unique<CCPACSFuselageSectionElement>(reinterpret_cast<CCPACSFuselageSectionElements*>(this), m_uidMgr));
         return *m_elements.back();
     }
 

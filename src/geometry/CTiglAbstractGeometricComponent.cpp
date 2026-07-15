@@ -78,12 +78,16 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft() const
         trafo.AddMirroringAtYZPlane();
     }
 
-    PNamedShape mirroredShape = trafo.Transform(GetLoft());
+    PNamedShape loft = GetLoft();
+    if (!loft) {
+        return PNamedShape();
+    }
+    PNamedShape mirroredShape = trafo.Transform(loft);
 
     std::string mirrorName = mirroredShape->Name();
-    mirrorName += "M";
+    mirrorName += ":mirrored";
     std::string mirrorShortName = mirroredShape->ShortName();
-    mirrorShortName += "M";
+    mirrorShortName += ":mirrored";
     mirroredShape->SetName(mirrorName.c_str());
     mirroredShape->SetShortName(mirrorShortName.c_str());
     return mirroredShape;
@@ -91,7 +95,11 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft() const
 
 bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) const
 {
-    const TopoDS_Shape segmentShape = GetLoft()->Shape();
+    PNamedShape loft = GetLoft();
+    if (!loft) {
+        return false;
+    }
+    const TopoDS_Shape segmentShape = loft->Shape();
 
     // fast check with bounding box
     Bnd_Box boundingBox;
@@ -148,7 +156,11 @@ void CTiglAbstractGeometricComponent::BuildLoft(PNamedShape& cache) const
 
 void CTiglAbstractGeometricComponent::CalcBoundingBox(Bnd_Box& bb) const
 {
-    BRepBndLib::Add(loft->get()->Shape(), bb);
+    PNamedShape shape = *loft;
+    if (!shape) {
+        return;
+    }
+    BRepBndLib::Add(shape->Shape(), bb);
 }
 
 } // end namespace tigl

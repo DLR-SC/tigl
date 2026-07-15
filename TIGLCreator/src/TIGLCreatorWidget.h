@@ -112,6 +112,8 @@ signals:
     void mouseMoved   ( Standard_Real X, Standard_Real Y, Standard_Real Z );
     void pointClicked ( Standard_Real X, Standard_Real Y, Standard_Real Z );
     void sendStatus   ( QString aMessage );
+    void shapeSelected(const QString& uid);
+    void nonEditableShapeSelected();
 
     void error ( int errorCode, QString& errorDescription );
 
@@ -148,6 +150,7 @@ public slots:
     void setCameraPosition(double x, double y, double z);
     void setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree);
     void setCameraUpVector(double x, double y, double z);
+    void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration = 0.1);
     void setReset();
     void setTransparency();
     void setTransparency(int);

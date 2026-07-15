@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read simpleContent 
-        if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath)) {
             m_value = tixi::TixiGetElement<int>(tixiHandle, xpath);
         }
         else {

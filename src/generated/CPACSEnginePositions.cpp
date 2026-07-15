@@ -173,7 +173,7 @@ namespace generated
 
     CCPACSEnginePosition& CPACSEnginePositions::AddEngine()
     {
-        m_engines.push_back(make_unique<CCPACSEnginePosition>(reinterpret_cast<CCPACSEnginePositions*>(this), m_uidMgr));
+        m_engines.push_back(std::make_unique<CCPACSEnginePosition>(reinterpret_cast<CCPACSEnginePositions*>(this), m_uidMgr));
         return *m_engines.back();
     }
 

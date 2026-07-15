@@ -188,7 +188,7 @@ namespace generated
 
     CCPACSFrame& CPACSFramesAssembly::AddFrame()
     {
-        m_frames.push_back(make_unique<CCPACSFrame>(reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr));
+        m_frames.push_back(std::make_unique<CCPACSFrame>(reinterpret_cast<CCPACSFramesAssembly*>(this), m_uidMgr));
         return *m_frames.back();
     }
 

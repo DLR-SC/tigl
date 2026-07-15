@@ -91,9 +91,11 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     myGridTenthColor = Quantity_NOC_GRAY90;
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
-    Handle(Prs3d_Drawer) whiteStyle = new Prs3d_Drawer();
-    whiteStyle->SetColor(Quantity_NOC_WHITE);
-    myContext->SetHighlightStyle(whiteStyle);
+    auto dynamic = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Dynamic);
+    auto selected = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Selected);
+
+    dynamic->SetColor(Quantity_NOC_WHITESMOKE);
+    selected->SetColor(Quantity_NOC_Highlight);
 #elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
     Handle(Graphic3d_HighlightStyle) whiteStyle = new Graphic3d_HighlightStyle;
     whiteStyle->SetColor(Quantity_NOC_WHITE);
@@ -109,6 +111,9 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     setGridOffset (0.0);
     gridXY();
     gridOn();
+
+    connect(&TIGLCreatorSettings::Instance(), &TIGLCreatorSettings::gridPlaneChanged,
+            this, &TIGLCreatorContext::gridPlaneChanged);
 }
 
 void TIGLCreatorContext::initShaders()
@@ -214,6 +219,8 @@ void TIGLCreatorContext::gridXY  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XY);
+    applyGridSettings();
 }
 /*!
 \brief    Sets the privileged plane to the XZ Axis.
@@ -227,6 +234,8 @@ void TIGLCreatorContext::gridXZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::XZ);
+    applyGridSettings();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.
@@ -237,6 +246,8 @@ void TIGLCreatorContext::gridYZ  ( void )
     myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
     gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
     myViewer->SetPrivilegedPlane( aPlane );
+    TIGLCreatorSettings::Instance().setGridPlane(TIGLCreatorSettings::GridPlane::YZ);
+    applyGridSettings();
 }
 
 /*!
@@ -259,6 +270,29 @@ void TIGLCreatorContext::gridOn  ( void )
 {
     myViewer->ActivateGrid( myGridType , myGridMode );
     myViewer->SetGridEcho ( Standard_True );
+}
+
+void TIGLCreatorContext::applyGridSettings()
+{
+    TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
+
+    myViewer->SetRectangularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridSize(),
+        0.
+        );
+
+    myViewer->SetCircularGridValues(
+        settings.gridOriginX(),
+        settings.gridOriginY(),
+        settings.gridSize(),
+        settings.gridRadialDivisions(),
+        0.
+    );
+
+    myViewer->Redraw();
 }
 
 /*! 
@@ -330,7 +364,7 @@ void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -363,7 +397,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const TopoDS_Shap
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     if (!pshape) {
         return nullptr;
@@ -410,7 +444,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShape(const PNamedShape
 }
 
 // Displays a point on the screen
-void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
+Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      const char* aText,
                                      Standard_Boolean UpdateViewer,
                                      Standard_Real anXoffset,
@@ -419,16 +453,17 @@ void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real TextScale)
 {
     if (std::string(aText).empty()) {
-        displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
+        return displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {
         Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
         myContext->Display(aGraphicPoint,UpdateViewer);
         Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                     aPoint.Y() + anYoffset,
-                                                     aPoint.Z() + aZoffset);
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
+        return Handle(AIS_Shape)::DownCast(aGraphicPoint);
     }
 
 }
@@ -519,6 +554,7 @@ void TIGLCreatorContext::setTransparency(int tr)
             myContext->SetTransparency(myContext->SelectedInteractive(), transparency, Standard_True);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsWireframe()
@@ -528,6 +564,7 @@ void TIGLCreatorContext::setObjectsWireframe()
             myContext->SetDisplayMode(myContext->SelectedInteractive(), 0, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsShading()
@@ -537,6 +574,7 @@ void TIGLCreatorContext::setObjectsShading()
             myContext->SetDisplayMode(myContext->SelectedInteractive(), 1, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
@@ -546,6 +584,7 @@ void TIGLCreatorContext::setObjectsMaterial(Graphic3d_NameOfMaterial material)
              myContext->SetMaterial (myContext->SelectedInteractive(),  material, true);
         }
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setObjectsTexture(const QString &filename)
@@ -569,6 +608,7 @@ void TIGLCreatorContext::setObjectsTexture(const QString &filename)
         }
         QApplication::restoreOverrideCursor();
     }
+    Q_EMIT displayAttributesChanged();
 }
 
 void TIGLCreatorContext::setReflectionlinesEnabled(bool enable)
@@ -591,6 +631,12 @@ void TIGLCreatorContext::setObjectsColor(const QColor& color)
         QUndoCommand* command = new TiGLCreator::ChangeObjectsColor(myContext, selected(), color);
         myUndoStack->push(command);
     }
+    Q_EMIT displayAttributesChanged();
+}
+
+void TIGLCreatorContext::setObjectsColorRGB(int r, int g, int b, int a)
+{
+    setObjectsColor(QColor(r, g, b, a));
 }
 
 void TIGLCreatorContext::setFaceBoundariesEnabled(bool enabled) {

@@ -101,7 +101,8 @@ void CTiglBSplineApproxInterp::InterpolatePoint(size_t pointIndex, bool withKink
 {
     std::vector<size_t>::iterator it = std::find(m_indexOfApproximated.begin(), m_indexOfApproximated.end(), pointIndex);
     if (it == m_indexOfApproximated.end()) {
-        throw CTiglError("Invalid index in CTiglBSplineApproxInterp::InterpolatePoint", TIGL_INDEX_ERROR);
+        // Shift index in error message to be 1-based (internal storage is 0-based)
+        throw CTiglError("Invalid index " + std::to_string(pointIndex+1) + " in CTiglBSplineApproxInterp::InterpolatePoint", TIGL_INDEX_ERROR);
     }
     m_indexOfApproximated.erase(it);
 
@@ -208,7 +209,7 @@ void CTiglBSplineApproxInterp::computeKnots(int ncp, const std::vector<double>& 
     }
 }
 
-CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double>& initialParms) const
+CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double>& initialParms, CalcPointVecErrorFct calcErrorFct) const
 {
     std::vector<double> parms;
     // compute initial parameters, if initialParms emtpy
@@ -230,10 +231,10 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double>& 
                  knots, mults);
 
     // solve system
-    return solve(parms, OccFArray(knots)->Array1(), OccIArray(mults)->Array1());
+    return solve(parms, OccFArray(knots)->Array1(), OccIArray(mults)->Array1(), calcErrorFct);
 }
 
-CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double>& initialParms, int maxIter) const
+CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double>& initialParms, int maxIter, CalcPointVecErrorFct calcErrorFct) const
 {
     std::vector<double> parms;
     // compute initial parameters, if initialParms emtpy
@@ -261,14 +262,14 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<do
     int iteration = 0;
 
     // solve system
-    CTiglApproxResult result = solve(parms, occKnots->Array1(), occMults->Array1());
+    CTiglApproxResult result = solve(parms, occKnots->Array1(), occMults->Array1(), calcErrorFct);
     double old_error = result.error * 2.;
 
     while(result.error > 0 && (old_error - result.error) / std::max(result.error, 1e-6) > 1e-3 && iteration < maxIter) {
         old_error = result.error;
 
         optimizeParameters(result.curve, parms);
-        result = solve(parms, occKnots->Array1(), occMults->Array1());
+        result = solve(parms, occKnots->Array1(), occMults->Array1(), calcErrorFct);
 
         iteration++;
     }
@@ -347,7 +348,8 @@ math_Matrix CTiglBSplineApproxInterp::getContinuityMatrix(int nCtrPnts, int cont
     return continuity_entries;
 }
 
-CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots, const TColStd_Array1OfInteger& mults) const
+CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& params, const TColStd_Array1OfReal& knots,
+                                                  const TColStd_Array1OfInteger& mults, CalcPointVecErrorFct calcErrorFct) const
 {
 
     // compute flat knots to solve system
@@ -488,17 +490,23 @@ CTiglApproxResult CTiglBSplineApproxInterp::solve(const std::vector<double>& par
     CTiglApproxResult result;
     result.curve = new Geom_BSplineCurve(poles, knots, mults, m_degree, false);
 
-    // compute error
-    double max_error = 0.;
+    // Create gp_Pnt vectors containing the exact points and their projections on the created
+    // approximation function, respectively, to compute the approximation error
+    gp_Pnt curvePnt;
+    std::vector<gp_Pnt> pnts;
+    std::vector<gp_Pnt> curveEval;
+
     for (std::vector<size_t>::const_iterator it_idx = m_indexOfApproximated.begin(); it_idx != m_indexOfApproximated.end(); ++it_idx) {
         Standard_Integer ipnt = static_cast<Standard_Integer>(*it_idx + 1);
-        const gp_Pnt& p = m_pnts.Value(ipnt);
-        double par = params[*it_idx];
 
-        double error = result.curve->Value(par).Distance(p);
-        max_error = std::max(max_error, error);
+        pnts.push_back(m_pnts.Value(ipnt));
+
+        double param = params[*it_idx];
+        double projectedParam = projectOnCurve(pnts.back(), result.curve, param).parameter;
+        curveEval.push_back(result.curve->Value(projectedParam));
     }
-    result.error = max_error;
+
+    result.error = calcErrorFct(pnts, curveEval);
 
     return result;
 }

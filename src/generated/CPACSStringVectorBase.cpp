@@ -22,6 +22,7 @@
 #include "CCPACSPointListXYVector.h"
 #include "CCPACSRotorBladeAttachment.h"
 #include "CCPACSWingProfileCST.h"
+#include "CPACSApproximationSettings.h"
 #include "CPACSStringVectorBase.h"
 #include "CPACSTrackJointPosition.h"
 #include "CTiglError.h"
@@ -33,6 +34,13 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSStringVectorBase::CPACSStringVectorBase(CPACSApproximationSettings* parent)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSApproximationSettings);
+    }
+
     CPACSStringVectorBase::CPACSStringVectorBase(CCPACSWingProfileCST* parent)
     {
         //assert(parent != NULL);
@@ -89,6 +97,9 @@ namespace generated
     const CTiglUIDObject* CPACSStringVectorBase::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CPACSApproximationSettings>()) {
+                return GetParent<CPACSApproximationSettings>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSWingProfileCST>()) {
                 return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
             }
@@ -117,6 +128,9 @@ namespace generated
     CTiglUIDObject* CPACSStringVectorBase::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CPACSApproximationSettings>()) {
+                return GetParent<CPACSApproximationSettings>()->GetNextUIDParent();
+            }
             if (IsParent<CCPACSWingProfileCST>()) {
                 return GetParent<CCPACSWingProfileCST>()->GetNextUIDParent();
             }
@@ -209,7 +223,7 @@ namespace generated
         }
 
         // read simpleContent 
-        if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath)) {
             m_value = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
             if (m_value.empty()) {
                 LOG(WARNING) << "Required element  is empty at xpath " << xpath;

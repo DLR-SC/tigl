@@ -18,6 +18,8 @@
 
 #include "CCPACSEnginePylon.h"
 
+#include "CCPACSConfiguration.h"
+#include "CCPACSAircraftModel.h"
 #include "CTiglUIDManager.h"
 #include "CTiglEnginePylonBuilder.h"
 
@@ -72,6 +74,11 @@ CTiglTransformation CCPACSEnginePylon::GetPositioningTransformation(std::string 
         return m_positionings->GetPositioningTransformation(sectionUID);
     else
         return CTiglTransformation(); // return identity if no positioning transformation is given
+}
+
+CCPACSConfiguration& CCPACSEnginePylon::GetConfiguration()
+{
+    return GetParent()->GetParent()->GetConfiguration();
 }
 
 bool CCPACSEnginePylon::HasLoft() const

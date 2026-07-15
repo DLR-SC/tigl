@@ -163,7 +163,7 @@ namespace generated
 
     CPACSGlobalFlightPoint& CPACSFlightPoints::AddFlightPoint()
     {
-        m_flightPoints.push_back(make_unique<CPACSGlobalFlightPoint>(this, m_uidMgr));
+        m_flightPoints.push_back(std::make_unique<CPACSGlobalFlightPoint>(this, m_uidMgr));
         return *m_flightPoints.back();
     }
 

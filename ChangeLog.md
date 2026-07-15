@@ -5,12 +5,35 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
+  - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
+  - TIGLCreator: Add a display options tab to the editor. This enables users to change display settings for the selected component and also offers to choose the corresponding draw options. The draw options are also centralized and modified using the scene graph functionality. Therefore the configuration stays visible upon choosing a draw option like the flaps. [#1270](https://github.com/DLR-SC/tigl/pull/1270) and [#1279](https://github.com/DLR-SC/tigl/pull/1279)
+  - TiGLCreator: Disable Standardize menu option, until the algorithm works reliably [#1336](https://github.com/DLR-SC/tigl/issues/1336)
+  - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
+  - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
+  - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
+  - Add geometry and mass-property evaluation for fuselage decks ([#1298](https://github.com/DLR-SC/tigl/pull/1298), [CPACS#859](https://github.com/DLR-SL/CPACS/issues/859))
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
   - Always display the borders of the control surfaces on the wing
+  - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)
-  - Add NACA4Calculator (with the trailing edge thickness) [#1293](https://github.com/DLR-SC/tigl/pull/1293)
+  - TiGLCreator: Add option to set the grid resolution in the settings menu [#1269](https://github.com/DLR-SC/tigl/pull/1269)
+  - TiGLCreator: Grid origin labels (Origin X/Y) now dynamically update to reflect the current grid plane (XY, XZ, YZ). The selected grid plane is also persisted across sessions, with XY as default.
+  - Add the new system definition introduced in CPACS v3.5
+  - Add an alternative wing airfoil parametrization that allows the specification of NACA4 codes directly in CPACS (with the trailing edge thickness). This makes a preprocessing step of writing sampled NACA profiles as point lists obsolete and improves the overall surface quality by internally generating B-Splines with a fine-tuned number of control points. [#1293](https://github.com/DLR-SC/tigl/pull/1293)
+  - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
+  - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 - Fixes
+  - TiGLCreator: Fix crash when selecting objects with malformed CPACS geometry. Invalid objects are now clearly marked with a warning icon and descriptive tooltip instead of causing an unhandled exception ([#1375](https://github.com/DLR-SC/tigl/issues/1375))
+  - `CCPACSPositionings::CreatePositioning now sets a name to be CPACS-conform ([#1378](https://github.com/DLR-SC/tigl/issues/1378))
+  - TiGLCreator: Fix laggy behaviour when selecting a fuselage in the CPACSTree. Additionally, only the wireframe is highlighted, not each section on its own. This also boosts performance [#1275](https://github.com/DLR-SC/tigl/issues/1275).
+  - Fix crash in `CTiglWingSectionElement`. This class stores a raw pointer to a `CCPACSWing` as parent, that is `nullptr` if the parent actually is a pylon. This null pointer is dereferenced in `CTiglWingSectionElement::GetWire`, causing a crash, e.g. when selecting a section in the CPACS tree in TiGLCreator ([#1371](https://github.com/DLR-SC/tigl/issues/1371))
+  - Fix error when displaying an aircraft with engine but without nacelle (e.g. engine buried in fuselage). Now returns null geometry gracefully instead of throwing an error ([#779](https://github.com/DLR-SC/tigl/issues/779))
+  - Fix error when displaying an aircraft with pylon but without segments. Now returns null geometry gracefully instead of throwing an error
+  - Fix wrong behaviour in GUI for the spinbox of the wing sweep and dihedral chord percantage ([#1327](https://github.com/DLR-SC/tigl/pull/1327))
+  - Fix hard crash for invalid xml files ([#1322](https://github.com/DLR-SC/tigl/pull/1322))
+  - Fix many CMake and compiler warnings ([#1307](https://github.com/DLR-SC/tigl/pull/1307))
   - Make all shapes non-transparent again by default ([#1258](https://github.com/DLR-SC/tigl/issues/1258))
   - Update modificator widget's references after undo/redo action. Fixes ([#1240](https://github.com/DLR-SC/tigl/issues/1240))
   - Fix wrong scaling of the main application, if the screen scale is set to 150% on Windows ([#1238](https://github.com/DLR-SC/tigl/issues/1238))
@@ -23,6 +46,8 @@ Changes since last release
   - Add missing `::generated::CPACSFuselages` to internal python bindings. Without this base class, getters and setters for fuselages are not accessbile in `::CCPACSFuselage` from Python ([#1207](https://github.com/DLR-SC/tigl/issues/1207))
   - Correct the icons in TIGLCreator: Add the correct icon to the "New File" and "Open File" action and add a button to the tool bar ([#1210](https://github.com/DLR-SC/tigl/issues/1210))
   - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
+  - TiGLCreator: Auto-append file extension when saving a screenshot if missing, with a more informative error message ([#1296](https://github.com/DLR-SC/tigl/issues/1296))
+  - Fixed an unhandled exception in the TiGLCreator (was triggered from the UpperLower wire in CTiglWingProfileNACA)([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 Version 3.5.0-rc1
 -----------------

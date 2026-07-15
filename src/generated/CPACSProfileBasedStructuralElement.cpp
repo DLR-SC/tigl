@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -133,12 +133,12 @@ namespace generated
         }
 
         // read element standardProfileType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardProfileType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/standardProfileType")) {
             m_standardProfileType_choice2_1 = stringToCPACSProfileBasedStructuralElement_standardProfileType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/standardProfileType"));
         }
 
         // read element structuralProfileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralProfileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralProfileUID")) {
             m_structuralProfileUID_choice2_2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralProfileUID");
             if (m_structuralProfileUID_choice2_2->empty()) {
                 LOG(WARNING) << "Optional element structuralProfileUID is present but empty at xpath " << xpath;
@@ -152,7 +152,7 @@ namespace generated
         }
 
         // read element referencePointUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referencePointUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referencePointUID")) {
             m_referencePointUID_choice2_2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referencePointUID");
             if (m_referencePointUID_choice2_2->empty()) {
                 LOG(WARNING) << "Optional element referencePointUID is present but empty at xpath " << xpath;
@@ -516,7 +516,7 @@ namespace generated
 
     CPACSMaterialDefinitionForProfileBased& CPACSProfileBasedStructuralElement::AddSheetProperties_choice2()
     {
-        m_sheetProperties_choice2.push_back(make_unique<CPACSMaterialDefinitionForProfileBased>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
+        m_sheetProperties_choice2.push_back(std::make_unique<CPACSMaterialDefinitionForProfileBased>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
         return *m_sheetProperties_choice2.back();
     }
 
@@ -533,7 +533,7 @@ namespace generated
 
     CPACSMaterialDefinitionForProfileBasedPoint& CPACSProfileBasedStructuralElement::AddPointProperties_choice2_2()
     {
-        m_pointProperties_choice2_2.push_back(make_unique<CPACSMaterialDefinitionForProfileBasedPoint>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
+        m_pointProperties_choice2_2.push_back(std::make_unique<CPACSMaterialDefinitionForProfileBasedPoint>(reinterpret_cast<CCPACSProfileBasedStructuralElement*>(this), m_uidMgr));
         return *m_pointProperties_choice2_2.back();
     }
 

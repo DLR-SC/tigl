@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read element structuralElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementUID")) {
             m_structuralElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementUID");
             if (m_structuralElementUID.empty()) {
                 LOG(WARNING) << "Required element structuralElementUID is empty at xpath " << xpath;
@@ -113,7 +113,7 @@ namespace generated
         }
 
         // read element frameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/frameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/frameUID")) {
             m_frameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/frameUID");
             if (m_frameUID.empty()) {
                 LOG(WARNING) << "Required element frameUID is empty at xpath " << xpath;
@@ -125,7 +125,7 @@ namespace generated
         }
 
         // read element crossBeamUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/crossBeamUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/crossBeamUID")) {
             m_crossBeamUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/crossBeamUID");
             if (m_crossBeamUID.empty()) {
                 LOG(WARNING) << "Required element crossBeamUID is empty at xpath " << xpath;
@@ -137,7 +137,7 @@ namespace generated
         }
 
         // read element positionYAtCrossBeam
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionYAtCrossBeam")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/positionYAtCrossBeam")) {
             m_positionYAtCrossBeam = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionYAtCrossBeam");
         }
         else {
@@ -145,7 +145,7 @@ namespace generated
         }
 
         // read element angleX
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/angleX")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/angleX")) {
             m_angleX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/angleX");
         }
 

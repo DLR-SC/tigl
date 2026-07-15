@@ -30,8 +30,11 @@
 #include "CSharedPtr.h"
 
 #include "ui_TIGLCreatorWindow.h"
+#include "DrawOptionsActions.h"
 
 #include "ModificatorModel.h"
+
+namespace cpcr { class CPACSTreeItem; }
 
 class QAction;
 class QLabel;
@@ -73,7 +76,7 @@ signals:
      void windowInitialized();
 
 public slots:
-    void openFile(const QString& fileName);
+    void openFile(const QString& fileName, const QString& config_uid="");
     void openNewFile(const QString& templatePath);
     void openScript(const QString& scriptFileName);
     bool exportFile(const QString &fileName);
@@ -118,7 +121,15 @@ private slots:
     void drawPoint();
     void drawVector();
     void standardizeDialog();
+    void addSpotlight();
     void onComponentVisibilityChanged(const QString& uid, bool visible);
+    void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
+    void onDisplayOptionsRequested();
+    void onSetTransparencyRequested(int v);
+    void onSetRenderingModeRequested(int mode);
+    void onSetColorRequested(const QColor &c);
+    void onSetMaterialRequested(const QString &m);
+    void onSceneDisplayAttributesChanged();
 
 private:
     void connectSignals();
@@ -131,6 +142,10 @@ private:
     int dialogSaveBeforeClose();
     void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
+
+    void populateDrawMenu(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void updateDrawMenuAvailability(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void setupDrawMenus();
 
     QAction *recentFileActions[MaxRecentFiles];
 
@@ -156,8 +171,9 @@ private:
     bool suppressErrors{false};
 
     ModificatorModel* modificatorModel;
+    QString lastSelectedTreeUID;
+    cpcr::CPACSTreeItem* lastSelectedTreeItem{nullptr};
 
 };
 
 #endif
-

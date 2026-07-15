@@ -25,7 +25,7 @@
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
-#include "NACA4Calculator.h"
+#include "CTiglNACA4Calculator.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>
@@ -78,7 +78,7 @@ namespace tigl{
         TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge(TiglShapeModifier mod = UNMODIFIED_SHAPE) const override;
 
         /**
-         * @brief Get upper and lower wing profile into one edge
+         * @brief Get upper and lower wing profile into one edge.
          * 
          * @param mod 
          * @return TIGL_EXPORT const& 
@@ -126,7 +126,7 @@ namespace tigl{
 
     private:
        std::string profileUID;
-       NACA4Calculator calculator;
+        CTiglNACA4Calculator calculator;
        double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
     };

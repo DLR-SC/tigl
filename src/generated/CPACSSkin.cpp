@@ -112,7 +112,7 @@ namespace generated
     void CPACSSkin::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element standardSheetElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/standardSheetElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/standardSheetElementUID")) {
             m_standardSheetElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/standardSheetElementUID");
             if (m_standardSheetElementUID->empty()) {
                 LOG(WARNING) << "Optional element standardSheetElementUID is present but empty at xpath " << xpath;

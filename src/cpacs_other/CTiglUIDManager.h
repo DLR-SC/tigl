@@ -76,7 +76,9 @@ public:
     {
         RegisterObject(uid, &object, typeid(object)); // typeid(T) may yield a base class of object
         if (ITiglGeometricComponent* p = dynamic_cast<ITiglGeometricComponent*>(&object)) {
-            AddGeometricComponent(uid, p);
+            if (p->IsIndependentGeometry()) {
+                AddGeometricComponent(uid, p);
+            }
         }
     }
 
