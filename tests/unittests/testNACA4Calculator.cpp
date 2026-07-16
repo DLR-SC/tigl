@@ -464,7 +464,22 @@ TEST(CTiglNACA4Calculator, naca22012_le_and_te_points){
 }
 
 TEST(CTiglNACA4Calculator, naca23012_export_bsplines){
-    tigl::CTiglNACA4Calculator NACA4(2,3,0,12, 0.00252);
+    tigl::CTiglNACA4Calculator NACA4(2,2,0,18, 0.0);
+    Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
+    Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest5_22012.brep");
+
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_22012.brep");
+}
+
+TEST(CTiglNACA4Calculator, naca23012_python){
+    tigl::CTiglNACA4Calculator NACA4(2,2,0,18, 0.0);
     Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
     Handle(Geom_BSplineCurve) lowerCurve = NACA4.lower_bspline(); 
     ASSERT_FALSE(upperCurve.IsNull());

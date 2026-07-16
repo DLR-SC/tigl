@@ -44,10 +44,18 @@ namespace tigl
 
 CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
-    , calculator(nacadef.GetNaca4DigitCode_choice1() ? CTiglNACA4Calculator(*nacadef.GetNaca4DigitCode_choice1(), nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0) : throw CTiglError("ERROR in CTiglWingProfileNACA: Currently only 4 digit NACA codes implemented.") )
+    , te_thickness(nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0)
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
 {
-
+    if (nacadef.GetNaca4DigitCode_choice1()) {
+        nacacode = NACA4Code(*nacadef.GetNaca4DigitCode_choice1());
+    }
+    else if (nacadef.GetNaca5DigitCode_choice2()) {
+        nacacode = NACA5Code(*nacadef.GetNaca5DigitCode_choice2());
+    }
+    else {
+        throw CTiglError("ERROR in CTiglWingProfileNACA: No valid NACA code provided. Expected NACA 4-digit or 5-digit code.");
+    }
 }
 
 void CTiglWingProfileNACA::Invalidate() const
@@ -57,6 +65,11 @@ void CTiglWingProfileNACA::Invalidate() const
 
 void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 {
+ 
+    CTiglNACACalculator calc = std::visit(
+        [&](auto const& code) { return CTiglNACACalculator(code, te_thickness); },
+        nacacode
+    );
 
     auto upper_bspline = calculator.upper_bspline();
     auto lower_bspline = calculator.lower_bspline();
@@ -121,7 +134,7 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-    double te_thickness = calculator.get_trailing_edge_thickness();
+    //double te_thickness = calculator.get_trailing_edge_thickness();
     
     if (mod == SHARP_TRAILINGEDGE && HasBluntTE()) {
         LOG(WARNING) << "Profile " << profileUID << ": SHARP_TRAILINGEDGE modifier requested but profile has blunt trailing edge (thickness: " << te_thickness << ")";
@@ -154,7 +167,7 @@ const gp_Pnt & CTiglWingProfileNACA::GetTEPoint() const
 
 bool CTiglWingProfileNACA::HasBluntTE() const
 {
-    return calculator.get_trailing_edge_thickness() > 0.;
-
+    //return calculator.get_trailing_edge_thickness() > 0.;
+    return te_thickness > 0.;
 }
 }//namespace tigl

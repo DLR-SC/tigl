@@ -28,7 +28,26 @@
 
 namespace tigl{
 
-        
+        NACA4Code::NACA4Code(std::string const& code) {
+        if (code.size() != 4) {
+            throw CTiglError("NACA4Code: requires exactly 4 digits");
+        }
+
+        max_camber           = (code[0] - '0') / 100.0;
+        max_camber_position  = (code[1] - '0') / 10.0;
+        max_profile_thickness = std::stoi(code.substr(2, 2)) / 100.0;
+        }
+
+        NACA5Code::NACA5Code(std::string const& code) {
+            if (code.size() != 5) {
+                throw CTiglError("NACA5Code: requires exactly 5 digits");
+            }
+
+            max_camber           = (code[0] - '0') / 100.0;
+            max_camber_position  = (code[1] - '0') / 20.0;
+            reflex               = code[2] - '0';
+            max_profile_thickness = std::stoi(code.substr(3, 2)) / 100.0;
+        }
         
         CTiglNACA4Calculator::CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : series_(Series::NACA4)
@@ -52,7 +71,7 @@ namespace tigl{
          : series_(Series::NACA5)
          , max_camber(max_camber_cl/100)
          , max_camber_position(max_camber_position/20)
-         , reflex(reflex) //überprüfen, ob hier wirklich nh 0 oder1 eingegben wurde
+         , reflex(reflex) //überprüfen, ob hier wirklich nh 0 oder 1 eingegben wurde
          , max_profile_thickness(max_profile_thickness/100)
          , trailing_edge_thickness_half(trailing_edge_thickness/2) 
         {
@@ -410,8 +429,8 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-5;//war 5!!
-            int maxDepth = 10;//war 10!!
+            double tolerance=1e-3;//war 5!!
+            int maxDepth = 30;//war 10!!
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
@@ -423,8 +442,8 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-5;
-            int maxDepth = 10;
+            double tolerance=1e-3;
+            int maxDepth = 30;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();

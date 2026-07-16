@@ -29,6 +29,23 @@
 namespace tigl{
 
 
+struct NACA4Code {
+    double max_camber;
+    double max_camber_position;
+    double max_profile_thickness;
+
+    explicit NACA4Code(std::string const& code);
+};
+
+struct NACA5Code {
+    double max_camber;
+    double max_camber_position;
+    double reflex;
+    double max_profile_thickness;
+
+    explicit NACA5Code(std::string const& code); 
+};
+
 class CTiglNACA4Calculator{
 
     public:
