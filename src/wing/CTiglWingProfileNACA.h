@@ -25,7 +25,7 @@
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
-#include "CTiglNACA4Calculator.h"
+#include "CTiglNACACalculator.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>

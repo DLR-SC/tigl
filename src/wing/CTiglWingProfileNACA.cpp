@@ -17,7 +17,7 @@
 */
 /**
 * @file
-* @brief builds the wing profile for NACA profiles based on the CTiglNACA4Calculator and returns the upper and lower wire, the trailing edge and the leading edge point
+* @brief builds the wing profile for NACA profiles based on the CTiglNACACalculator and returns the upper and lower wire, the trailing edge and the leading edge point
 */
 
 
@@ -26,7 +26,7 @@
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
 #include "geometry/CFunctionToBspline.h"
-#include "CTiglNACA4Calculator.h"
+#include "CTiglNACACalculator.h"
 #include "common/tiglcommonfunctions.h"
 
 
@@ -68,8 +68,8 @@ void CTiglWingProfileNACA::Invalidate() const
 void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 {
  
-    CTiglNACA4Calculator calculator = std::visit(
-        [&](auto const& code) { return CTiglNACA4Calculator(code, te_thickness); },
+    CTiglNACACalculator calculator = std::visit(
+        [&](auto const& code) { return CTiglNACACalculator(code, te_thickness); },
         nacacode
     );
 

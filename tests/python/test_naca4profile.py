@@ -9,7 +9,7 @@ from tigl3.tigl3wrapper import Tigl3
 from tigl3.configuration import (
     CCPACSConfigurationManager_get_instance,
     CPACSNacaProfile,
-    CTiglNACA4Calculator,
+    CTiglNACACalculator,
 )
 
 
@@ -91,14 +91,14 @@ class TestNACA(unittest.TestCase):
         thickness = 9
         trailing_edge_thickness = 0.000945
 
-        calculator = CTiglNACA4Calculator(
+        calculator = CTiglNACACalculator(
             max_camber,
             camber_position,
             thickness,
             trailing_edge_thickness,
         )
 
-        self.assertIsInstance(calculator, CTiglNACA4Calculator)
+        self.assertIsInstance(calculator, CTiglNACACalculator)
 
         upper_curve_point = calculator.upper_curve(0.5)
 
