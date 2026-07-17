@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QProcessEnvironment>
 #include <QMessageBox>
+#include <Standard_Failure.hxx>
 
 
 #include "TIGLCreatorWindow.h"
@@ -1084,8 +1085,14 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
         }
         myScene->getViewer()->Update();
     }
-    catch (tigl::CTiglError& ) {
-        throw tigl::CTiglError("Error changing visibility of component with UID " + uid.toStdString());
+    catch (tigl::CTiglError& err) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": " + err.what(), "Error");
+    }
+    catch (const Standard_Failure& err) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": " + err.GetMessageString(), "Error");
+    }
+    catch (...) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": unknown error.", "Error");
     }
 }
 

@@ -35,6 +35,7 @@
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
 #include <QTimer>
+#include <Standard_Failure.hxx>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -162,6 +163,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                     modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
                 } catch (tigl::CTiglError& ex) {
                     LOG(ERROR) << ex.what() << std::endl;
+                } catch (const Standard_Failure& err) {
+                    LOG(ERROR) << err.GetMessageString() << std::endl;
+                } catch (...) {
+                    LOG(ERROR) << "Unknown error" << std::endl;
                 }
             }
         }
@@ -174,6 +179,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 highlightShape(fuselage.GetUID());
             } catch (const tigl::CTiglError& ex) {
                 handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
             }
         }
         else if (item->getType() == "fuselages") {
@@ -188,6 +197,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 highlightShape(wing.GetUID());
             } catch (const tigl::CTiglError& ex) {
                 handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
             }
         }
         else if (item->getType() == "wings") {
@@ -223,6 +236,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 }
             } catch (const tigl::CTiglError& ex) {
                 handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
             }
         }
         else if (item->getType() == "section") {
@@ -266,6 +283,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 }
             } catch (const tigl::CTiglError& ex) {
                 handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
             }
         }
         else if (item->getType() == "sections" ) {
@@ -306,6 +327,10 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
                 highlight(positioning, parentTransformation);
             } catch (const tigl::CTiglError& ex) {
                 handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
             }
         }
         else {
@@ -363,7 +388,7 @@ void ModificatorModel::validateAllUIDs()
     tree.forEachUid([&](const std::string& uid) {
         try {
             uidManager.ResolveObject(uid);
-        } catch (const tigl::CTiglError&) {
+        } catch (...) {
             failed.insert(uid);
         }
     });
@@ -372,7 +397,12 @@ void ModificatorModel::validateAllUIDs()
 
 void ModificatorModel::handleUIDError(const std::string& uid, const tigl::CTiglError& ex)
 {
-    LOG(ERROR) << ex.what() << std::endl;
+    handleUIDError(uid, std::string(ex.what()));
+}
+
+void ModificatorModel::handleUIDError(const std::string& uid, const std::string& message)
+{
+    LOG(ERROR) << message << std::endl;
     markFailedUID(uid);
     modificatorContainerWidget->setNoInterfaceWidget();
 }
@@ -550,6 +580,23 @@ void ModificatorModel::deleteSection(cpcr::CPACSTreeItem* item)
         endRemoveRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
     // apply changes to CPACSTree
@@ -648,6 +695,25 @@ void ModificatorModel::addSection(
             QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
         errDialog.exec();
         endInsertRows();
         return;
@@ -778,6 +844,23 @@ void ModificatorModel::addProfile(QString const& profileID)
         endInsertRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
 
     createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
 
@@ -830,6 +913,23 @@ void ModificatorModel::onAddWingRequested()
             endInsertRows();
             return;
         }
+        catch (const Standard_Failure& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
 
         createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
@@ -876,6 +976,23 @@ void ModificatorModel::deleteWing(std::string const& uid)
         endRemoveRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
 
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
@@ -914,6 +1031,23 @@ void ModificatorModel::deleteFuselage(std::string const& uid)
         errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.what()));
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
         errDialog.exec();
         endRemoveRows();
         return;
@@ -983,6 +1117,25 @@ void ModificatorModel::onAddFuselageRequested()
                 QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.what()));
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+        catch (const Standard_Failure& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
             errDialog.exec();
             endInsertRows();
             return;

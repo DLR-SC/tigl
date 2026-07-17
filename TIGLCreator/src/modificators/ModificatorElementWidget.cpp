@@ -20,6 +20,7 @@
 #include "ui_ModificatorElementWidget.h"
 #include "CTiglError.h"
 #include "TIGLCreatorErrorDialog.h"
+#include <Standard_Failure.hxx>
 
 ModificatorElementWidget::ModificatorElementWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -131,6 +132,23 @@ bool ModificatorElementWidget::apply()
                                          .arg(err.what()));
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+        catch (const Standard_Failure& err) {
+            TIGLCreatorErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
             errDialog.exec();
         }
 
