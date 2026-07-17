@@ -29,21 +29,21 @@
 namespace tigl{
 
 
-struct NACA4Code {
+struct NACA4DigitCode {
     double max_camber;
     double max_camber_position;
     double max_profile_thickness;
 
-    explicit NACA4Code(std::string const& code);
+    explicit NACA4DigitCode(std::string const& code);
 };
 
-struct NACA5Code {
+struct NACA5DigitCode {
     double max_camber;
     double max_camber_position;
     double reflex;
     double max_profile_thickness;
 
-    explicit NACA5Code(std::string const& code); 
+    explicit NACA5DigitCode(std::string const& code); 
 };
 
 class CTiglNACA4Calculator{
@@ -56,10 +56,12 @@ class CTiglNACA4Calculator{
         * @param max_camber_position 
         * @param max_profile_thickness 
         */
-        TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
-        TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double reflex , double max_profile_thickness, double trailing_edge_thickness);
+        TIGL_EXPORT CTiglNACA4Calculator(const NACA4DigitCode& code, double trailing_edge_thickness = 0.);
+        TIGL_EXPORT CTiglNACA4Calculator(const NACA5DigitCode& code, double trailing_edge_thickness = 0.);
+        //TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
+        //TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double reflex , double max_profile_thickness, double trailing_edge_thickness);
 
-        explicit TIGL_EXPORT CTiglNACA4Calculator(const ::std::string& naca_code, const double te_thickness);
+        //explicit TIGL_EXPORT CTiglNACA4Calculator(const ::std::string& naca_code, const double te_thickness);
 
         /**
          * @brief getter for the trailing edge thickness

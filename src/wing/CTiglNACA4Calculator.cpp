@@ -28,9 +28,9 @@
 
 namespace tigl{
 
-        NACA4Code::NACA4Code(std::string const& code) {
+        NACA4DigitCode::NACA4DigitCode(std::string const& code) { // struct constructor oder so?
         if (code.size() != 4) {
-            throw CTiglError("NACA4Code: requires exactly 4 digits");
+            throw CTiglError("NACA4DigitCode: requires exactly 4 digits");
         }
 
         max_camber           = (code[0] - '0') / 100.0;
@@ -38,9 +38,9 @@ namespace tigl{
         max_profile_thickness = std::stoi(code.substr(2, 2)) / 100.0;
         }
 
-        NACA5Code::NACA5Code(std::string const& code) {
+        NACA5DigitCode::NACA5DigitCode(std::string const& code) { // struct constructor oder so?
             if (code.size() != 5) {
-                throw CTiglError("NACA5Code: requires exactly 5 digits");
+                throw CTiglError("NACA5DigitCode: requires exactly 5 digits");
             }
 
             max_camber           = (code[0] - '0') / 100.0;
@@ -48,7 +48,47 @@ namespace tigl{
             reflex               = code[2] - '0';
             max_profile_thickness = std::stoi(code.substr(3, 2)) / 100.0;
         }
-        
+
+        CTiglNACA4Calculator::CTiglNACA4Calculator(const NACA4DigitCode& code, double trailing_edge_thickness)
+            : series_(Series::NACA4)
+            , max_camber(code.max_camber)
+            , max_camber_position(code.max_camber_position)
+            , max_profile_thickness(code.max_profile_thickness)
+            , trailing_edge_thickness_half(trailing_edge_thickness / 2.0)
+        {
+            if(this->max_camber > 1 || this->max_camber < 0){
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber must be between 0 and 9.");
+            }
+            if(this->max_camber_position > 1 || this->max_camber_position < 0){
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber_position must be between 0 and 9.");
+            }
+            if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
+                throw CTiglError("error in CTiglNACA4Calculator max_profile_thicknessmust be between 0 and 99.");
+            }
+        }
+
+        CTiglNACA4Calculator::CTiglNACA4Calculator(const NACA5DigitCode& code, double trailing_edge_thickness)
+            : series_(Series::NACA5)
+            , max_camber(code.max_camber)
+            , max_camber_position(code.max_camber_position)
+            , reflex(code.reflex)
+            , max_profile_thickness(code.max_profile_thickness)
+            , trailing_edge_thickness_half(trailing_edge_thickness / 2.0)
+        {
+            if(this->max_camber > 1 || this->max_camber < 0){
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber must be between 0 and 9.");
+            }
+            if(this->max_camber_position > 1 || this->max_camber_position < 0){
+                throw CTiglError("error in CTiglNACA4Calculator The argument max_camber_position must be between 0 and 9.");
+            }
+            if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
+                throw CTiglError("error in CTiglNACA4Calculator max_profile_thicknessmust be between 0 and 99.");
+            }
+            if(this->reflex != 0 && this->reflex != 1){
+                throw CTiglError("error in CTiglNACA4Calculator The argument reflex must be 0 or 1.");
+            }
+        }
+        /*
         CTiglNACA4Calculator::CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : series_(Series::NACA4)
          , max_camber(max_camber/100)
@@ -112,7 +152,7 @@ namespace tigl{
                 throw std::invalid_argument("error in CTiglNACA4Calculator: the naca_code format is not correct, it must to contain four or five digits and nothing else");
             }
 
-        }
+        }*/
 
         double CTiglNACA4Calculator::get_trailing_edge_thickness() const
         {

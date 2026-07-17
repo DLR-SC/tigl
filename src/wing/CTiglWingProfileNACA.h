@@ -126,7 +126,7 @@ namespace tigl{
 
     private:
        std::string profileUID;
-        CTiglNACA4Calculator calculator;
+       std::variant<NACA4DigitCode, NACA5DigitCode> nacacode;
        double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
     };

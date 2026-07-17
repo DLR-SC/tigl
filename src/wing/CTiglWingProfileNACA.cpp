@@ -36,7 +36,8 @@
 #include <Geom_Line.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include "CWireToCurve.h"
-
+#include <iostream>
+#include <variant>
 
 namespace tigl
 {
@@ -44,14 +45,15 @@ namespace tigl
 
 CTiglWingProfileNACA::CTiglWingProfileNACA(const CCPACSWingProfile& profile, const generated::CPACSNacaProfile& nacadef)
     : profileUID(profile.GetUID())
+    , nacacode(std::in_place_type_t<NACA4DigitCode>{}, "0000")
     , te_thickness(nacadef.GetTrailingEdgeThickness() ? *nacadef.GetTrailingEdgeThickness() : 0.0)
     , wireCache(*this, &CTiglWingProfileNACA::BuildWires)
 {
     if (nacadef.GetNaca4DigitCode_choice1()) {
-        nacacode = NACA4Code(*nacadef.GetNaca4DigitCode_choice1());
+        nacacode = NACA4DigitCode(*nacadef.GetNaca4DigitCode_choice1());
     }
     else if (nacadef.GetNaca5DigitCode_choice2()) {
-        nacacode = NACA5Code(*nacadef.GetNaca5DigitCode_choice2());
+        nacacode = NACA5DigitCode(*nacadef.GetNaca5DigitCode_choice2());
     }
     else {
         throw CTiglError("ERROR in CTiglWingProfileNACA: No valid NACA code provided. Expected NACA 4-digit or 5-digit code.");
@@ -66,8 +68,8 @@ void CTiglWingProfileNACA::Invalidate() const
 void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
 {
  
-    CTiglNACACalculator calc = std::visit(
-        [&](auto const& code) { return CTiglNACACalculator(code, te_thickness); },
+    CTiglNACA4Calculator calculator = std::visit(
+        [&](auto const& code) { return CTiglNACA4Calculator(code, te_thickness); },
         nacacode
     );
 
