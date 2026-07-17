@@ -2405,12 +2405,25 @@ void TIGLCreatorDocument::drawFusedAircraft()
 void TIGLCreatorDocument::drawFusedAircraftTriangulation()
 {
     START_COMMAND()
-    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
-    app->getScene()->deleteAllObjects();
-    TopoDS_Compound triangulation;
-    createShapeTriangulation(airplane, triangulation);
+    try {
+        PNamedShape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
 
-    app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+        app->getScene()->deleteAllObjects();
+        TopoDS_Compound triangulation;
+        createShapeTriangulation(airplane->Shape(), triangulation);
+
+        app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    }
+    catch (tigl::CTiglError& error) {
+        displayError(error.what());
+    }
+    catch (...) {
+        displayError("Unknown Exception");
+    }
 }
 
 void TIGLCreatorDocument::drawIntersectionLine()
