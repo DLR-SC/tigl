@@ -1245,13 +1245,17 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
 
     std::vector<Handle(Geom_BSplineCurve)> curves;
 
+    // Skip zero-length edges: at the circle limit (cornerRadius at its max) the straight sides
+    // collapse to points, and concatCurves then emits knots OCCT rejects as too close.
+    auto addLineIfNotDegenerate = [&curves](const gp_Pnt& p0, const gp_Pnt& p1) {
+        if (!p0.IsEqual(p1, Precision::Confusion())) {
+            curves.push_back(tigl::CTiglPointsToBSplineInterpolation({p0, p1}).Curve());
+        }
+    };
+
     // build half upper line from gp_points
-    std::vector<gp_Pnt> linePntsUpperRightHalf;
-    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
-    linePntsUpperRightHalf.push_back(gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
-    opencascade::handle<Geom_BSplineCurve> lowerLineRightHalf =
-            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperRightHalf).Curve();
-    curves.push_back(lowerLineRightHalf);
+    addLineIfNotDegenerate(gp_Pnt(0.,0.,0.5*heightToWidthRatio),
+                            gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
 
     if (!(cornerRadius == 0.0)){
         //build upper right arc
@@ -1263,11 +1267,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     }
 
     // build right line from gp_Pnts
-    std::vector<gp_Pnt> linePnts_right;
-    linePnts_right.push_back(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius));
-    linePnts_right.push_back(gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
-    opencascade::handle<Geom_BSplineCurve> rightLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_right).Curve();
-    curves.push_back(rightLine);
+    addLineIfNotDegenerate(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius),
+                            gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
 
     if (!(cornerRadius == 0.0)){
         //build lower right arc
@@ -1279,12 +1280,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     }
 
     // build lower line from gp_points
-    std::vector<gp_Pnt> linePnts_lower;
-    linePnts_lower.push_back(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio));
-    linePnts_lower.push_back(gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
-    opencascade::handle<Geom_BSplineCurve> lowerLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_lower).Curve();
-
-    curves.push_back(lowerLine);
+    addLineIfNotDegenerate(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio),
+                            gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
 
     if (!(cornerRadius == 0.)){
         // build lower left arc
@@ -1296,11 +1293,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     }
 
     //build left line from gp_points
-    std::vector<gp_Pnt> linePnts_left;
-    linePnts_left.push_back(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius));
-    linePnts_left.push_back(gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
-    opencascade::handle<Geom_BSplineCurve> leftLine = tigl::CTiglPointsToBSplineInterpolation(linePnts_left).Curve();
-    curves.push_back(leftLine);
+    addLineIfNotDegenerate(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius),
+                            gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
 
     if (!(cornerRadius == 0.)) {
         // build upper left arc
@@ -1312,12 +1306,8 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     }
 
     // build half upper line from gp_points
-    std::vector<gp_Pnt> linePntsUpperLeftHalf;
-    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio));
-    linePntsUpperLeftHalf.push_back(gp_Pnt(0.,0.,0.5*heightToWidthRatio));
-    opencascade::handle<Geom_BSplineCurve> upperLineLeftHalf =
-            tigl::CTiglPointsToBSplineInterpolation(linePntsUpperLeftHalf).Curve();
-    curves.push_back(upperLineLeftHalf);
+    addLineIfNotDegenerate(gp_Pnt(0.,-(0.5-cornerRadius),0.5*heightToWidthRatio),
+                            gp_Pnt(0.,0.,0.5*heightToWidthRatio));
 
     opencascade::handle<Geom_BSplineCurve> curve = tigl::CTiglBSplineAlgorithms::concatCurves(curves);
 
