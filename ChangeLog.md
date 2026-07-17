@@ -26,6 +26,7 @@ Changes since last release
 
 - Fixes
   - Fix fused CAD export (IGES/STEP/BRep) not fusing sibling components that intersect each other outside of a parent-child relationship (e.g. a horizontal and vertical tailplane both attached to the fuselage but also intersecting each other). All aircraft components are now fused together in a single Boolean operation, correctly resolving such mutual intersections between any number of components ([#939](https://github.com/DLR-SC/tigl/issues/939))
+  - TiGLCreator: Fix crash when computing/displaying geometry (e.g. loft) throws an OpenCASCADE exception instead of a `tigl::CTiglError`. All corresponding error handlers across TiGLCreator now also catch `Standard_Failure` and any other exception, showing an error dialog instead of crashing ([#1382](https://github.com/DLR-SC/tigl/issues/1382))
   - TiGLCreator: Fix crash when selecting objects with malformed CPACS geometry. Invalid objects are now clearly marked with a warning icon and descriptive tooltip instead of causing an unhandled exception ([#1375](https://github.com/DLR-SC/tigl/issues/1375))
   - `CCPACSPositionings::CreatePositioning now sets a name to be CPACS-conform ([#1378](https://github.com/DLR-SC/tigl/issues/1378))
   - TiGLCreator: Fix laggy behaviour when selecting a fuselage in the CPACSTree. Additionally, only the wireframe is highlighted, not each section on its own. This also boosts performance [#1275](https://github.com/DLR-SC/tigl/issues/1275).
