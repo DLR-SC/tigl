@@ -38,8 +38,8 @@
             <transformation uID="SimpleFuselage_transformation1">
               <scaling uID="SimpleFuselage_transformation1_scaling1">
                 <x>1.0</x>
-                <y>0.5</y>
-                <z>0.5</z>
+                <y>1.0</y>
+                <z>1.0</z>
               </scaling>
               <rotation uID="SimpleFuselage_transformation1_rotation1">
                 <x>0.0</x>

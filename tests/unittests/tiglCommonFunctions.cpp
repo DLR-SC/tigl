@@ -198,6 +198,26 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
     ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
 }
 
+TEST(TiglCommonFunctions, BuildWireRectangle_FullCircleLimit)
+{
+    // heightToWidthRatio=1, cornerRadius=0.5 is the degenerate "circle" limit
+    // of the rectangle profile (all four straight edges collapse to zero
+    // length). See TIGLCreator/data/templates/simpletest.cpacs.xml.
+    auto wire = BuildWireRectangle(1., 0.5);
+    ASSERT_TRUE(wire.Closed());
+    ASSERT_TRUE(BRepCheck_Analyzer(wire).IsValid());
+
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
+
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusInvalid)
 {
     ASSERT_THROW(BuildWireRectangle(0.5, 1.), tigl::CTiglError);
