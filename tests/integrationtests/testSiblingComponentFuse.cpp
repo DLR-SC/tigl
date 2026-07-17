@@ -15,27 +15,26 @@
  */
 
 /**
- * @file testBug939.cpp
- * @brief Regression test for GitHub issue #939: sibling component intersection fusing
+ * @file testSiblingComponentFuse.cpp
+ * @brief Regression test: fusing must resolve mutual intersections between
+ * sibling components, not just parent-child pairs (see GitHub issue #939)
  *
  * Issue #939: IGES/STEP fused export only considered parent-child relationships
- * in the CPACS tree, missing pairwise fusing of sibling components (e.g., VTP
- * and HTP both children of the fuselage). Without pairwise fusing, the VTP-HTP
- * overlap region would appear as internal geometry (faces buried inside the
- * fused solid).
+ * in the CPACS tree, missing the fusing of sibling components (e.g., VTP and
+ * HTP, both children of the fuselage, that also intersect one another and the
+ * fuselage at the same location). Fusing them one pair at a time (fuselage+wing,
+ * fuselage+HTP, fuselage+VTP, ...) instead of all at once cannot correctly
+ * resolve such a mutual/triple intersection region.
  *
  * The test CPACS file (sibling_fuse_test.xml) contains:
  *   - Fuselage (SimpleFuselage, radius 0.5 in Y and Z)
  *   - Main wing (Wing, symmetric, spans y=[0,2])
- *   - HTP (TestHTP, unsymmetric, x=[0.6,0.85], y=[0,0.7], parent=SimpleFuselage)
- *   - VTP (TestVTP, unsymmetric, rotated 90 deg around X, x=[0.6,0.85], z=[0,0.7],
- *          parent=SimpleFuselage)
+ *   - HTP (TestHTP, x-z-plane symmetric, parent=SimpleFuselage)
+ *   - VTP (TestVTP, rotated 90 deg around X, parent=SimpleFuselage)
  *
- * TestHTP and TestVTP overlap in the box x=[0.6,0.85], y=[0,0.7], z=[0,0.7].
- * Both also intersect the fuselage. The old algorithm would fuse fuselage+wing,
- * fuselage+HTP, fuselage+VTP separately, leaving the HTP-VTP overlap unfused.
- * The fixed algorithm fuses all components pairwise, properly trimming the
- * HTP-VTP intersection.
+ * TestHTP and TestVTP overlap each other near the tail, and both also
+ * intersect the fuselage in the same region, so all three components must be
+ * fused together consistently in one pass.
  */
 
 #include "test.h"
@@ -68,7 +67,7 @@ gp_Pnt GetFaceCenter(const TopoDS_Face& f)
 
 } // namespace
 
-TEST(Bug939, pairwiseSiblingFusing)
+TEST(SiblingComponentFuse, pairwiseSiblingFusing)
 {
     TiglHandleWrapper handle("TestData/sibling_fuse_test.xml", "Cpacs2Test");
 
