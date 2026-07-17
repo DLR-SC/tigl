@@ -1257,7 +1257,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     addLineIfNotDegenerate(gp_Pnt(0.,0.,0.5*heightToWidthRatio),
                             gp_Pnt(0.,0.5-cornerRadius,0.5*heightToWidthRatio));
 
-    if (!(cornerRadius == 0.0)){
+    if ( cornerRadius > Precision::Confusion() ) {
         //build upper right arc
         double y0 = 0.5 - cornerRadius;
         double z0 = 0.5 * heightToWidthRatio - cornerRadius;
@@ -1270,7 +1270,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     addLineIfNotDegenerate(gp_Pnt(0., 0.5, 0.5 * heightToWidthRatio - cornerRadius),
                             gp_Pnt(0., 0.5, -0.5 * heightToWidthRatio + cornerRadius));
 
-    if (!(cornerRadius == 0.0)){
+    if ( cornerRadius > Precision::Confusion() ) {
         //build lower right arc
         double y0 = 0.5 - cornerRadius;
         double z0 = - 0.5 * heightToWidthRatio + cornerRadius;
@@ -1283,7 +1283,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     addLineIfNotDegenerate(gp_Pnt(0.,(0.5-cornerRadius),-0.5*heightToWidthRatio),
                             gp_Pnt(0.,(-0.5+cornerRadius),-0.5*heightToWidthRatio));
 
-    if (!(cornerRadius == 0.)){
+    if ( cornerRadius > Precision::Confusion() ) {
         // build lower left arc
         double y0 = - 0.5 + cornerRadius;
         double z0 = -0.5 * heightToWidthRatio + cornerRadius;
@@ -1296,7 +1296,7 @@ TopoDS_Wire BuildWireRectangle(const double heightToWidthRatio, const double cor
     addLineIfNotDegenerate(gp_Pnt(0.,-0.5,-0.5 * heightToWidthRatio + cornerRadius),
                             gp_Pnt(0.,-0.5,0.5 * heightToWidthRatio - cornerRadius));
 
-    if (!(cornerRadius == 0.)) {
+    if ( cornerRadius > Precision::Confusion() ) {
         // build upper left arc
         double y0 = - 0.5 + cornerRadius;
         double z0 = 0.5 * heightToWidthRatio - cornerRadius;
