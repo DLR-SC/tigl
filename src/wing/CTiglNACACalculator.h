@@ -29,21 +29,21 @@
 namespace tigl{
 
 
-struct NACA4DigitCode {
+ struct NACA4DigitCode {
     double max_camber;
     double max_camber_position;
     double max_profile_thickness;
 
-    explicit NACA4DigitCode(std::string const& code);
+    TIGL_EXPORT explicit NACA4DigitCode(std::string const& code);
 };
 
-struct NACA5DigitCode {
+ struct NACA5DigitCode {
     double max_camber;
     double max_camber_position;
     double reflex;
     double max_profile_thickness;
 
-    explicit NACA5DigitCode(std::string const& code); 
+    TIGL_EXPORT explicit NACA5DigitCode(std::string const& code); 
 };
 
 class CTiglNACACalculator{
