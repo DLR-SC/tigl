@@ -26,6 +26,7 @@ Changes since last release
 
 - Fixes
   - Aircraft fusing no longer fails when a system or deck component (e.g. a lavatory or ceiling panel) has no geometry defined, since this is a valid CPACS state for elements described by mass properties only. Such components now simply contribute no shape instead of aborting the fuse. Also fix a related TiGLCreator crash: `Draw -> Aircraft -> Fused aircraft triangulation` did not catch exceptions and crashed the application ([#1388](https://github.com/DLR-SC/tigl/issues/1388))
+  - Fix `BuildWireRectangle` throwing on the "circle" limit of a fuselage/wing standard rectangle profile (`heightToWidthRatio`/`cornerRadius` combination where the straight edges degenerate to zero length), which broke geometry generation for the TIGLCreator template's fuselage profile.
   - TiGLCreator: Fix crash when computing/displaying geometry (e.g. loft) throws an OpenCASCADE exception instead of a `tigl::CTiglError`. All corresponding error handlers across TiGLCreator now also catch `Standard_Failure` and any other exception, showing an error dialog instead of crashing ([#1382](https://github.com/DLR-SC/tigl/issues/1382))
   - TiGLCreator: Fix crash when selecting objects with malformed CPACS geometry. Invalid objects are now clearly marked with a warning icon and descriptive tooltip instead of causing an unhandled exception ([#1375](https://github.com/DLR-SC/tigl/issues/1375))
   - `CCPACSPositionings::CreatePositioning now sets a name to be CPACS-conform ([#1378](https://github.com/DLR-SC/tigl/issues/1378))
