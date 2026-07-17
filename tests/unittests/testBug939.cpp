@@ -49,8 +49,10 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepTools.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
@@ -58,9 +60,9 @@ namespace {
 
 gp_Pnt GetFaceCenter(const TopoDS_Face& f)
 {
-    BRepAdaptor_Surface adaptor(f);
     double u0, u1, v0, v1;
-    adaptor.Bounds(u0, u1, v0, v1);
+    BRepTools::UVBounds(f, u0, u1, v0, v1);
+    BRepAdaptor_Surface adaptor(f);
     return adaptor.Value(0.5 * (u0 + u1), 0.5 * (v0 + v1));
 }
 
@@ -91,7 +93,7 @@ TEST(Bug939, pairwiseSiblingFusing)
     TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
 
     for (int i = 1; i <= faceMap.Extent(); ++i) {
-        TopoDS_Face face = TopoDS::Face(faceMap(i + 1));
+        TopoDS_Face face = TopoDS::Face(faceMap(i));
         gp_Pnt center = GetFaceCenter(face);
 
         BRepClass3d_SolidClassifier classifier(solid);
