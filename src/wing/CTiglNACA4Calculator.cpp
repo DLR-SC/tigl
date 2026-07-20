@@ -146,15 +146,12 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            // The thickness distribution's sqrt(x) term makes the curve's derivative
-            // unbounded at the leading edge, so the adaptive Chebyshev fit converges slowly
-            // there. maxDepth=10 used to run out before reaching `tolerance`, silently
-            // leaving segments next to the leading edge that visibly disagreed in tangent
-            // direction once concatenated. maxDepth=22 lets the fit actually converge there
-            // (verified empirically); a small residual tangent mismatch right at the leading
-            // edge is expected regardless, since the true curve is genuinely near-vertical
-            // and rapidly changing there - that is inherent to the NACA4 formula, not a bug.
-            int maxDepth = 22;
+            // CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, removing the
+            // thickness distribution's sqrt(x) derivative singularity at the leading edge,
+            // so the adaptive Chebyshev fit now converges quickly everywhere (verified
+            // empirically: converges well below this depth, leaving no measurable tangent
+            // mismatch at any internal knot, including at the leading edge).
+            int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
@@ -167,15 +164,12 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            // The thickness distribution's sqrt(x) term makes the curve's derivative
-            // unbounded at the leading edge, so the adaptive Chebyshev fit converges slowly
-            // there. maxDepth=10 used to run out before reaching `tolerance`, silently
-            // leaving segments next to the leading edge that visibly disagreed in tangent
-            // direction once concatenated. maxDepth=22 lets the fit actually converge there
-            // (verified empirically); a small residual tangent mismatch right at the leading
-            // edge is expected regardless, since the true curve is genuinely near-vertical
-            // and rapidly changing there - that is inherent to the NACA4 formula, not a bug.
-            int maxDepth = 22;
+            // CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, removing the
+            // thickness distribution's sqrt(x) derivative singularity at the leading edge,
+            // so the adaptive Chebyshev fit now converges quickly everywhere (verified
+            // empirically: converges well below this depth, leaving no measurable tangent
+            // mismatch at any internal knot, including at the leading edge).
+            int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
@@ -187,14 +181,19 @@ namespace tigl{
         {}
 
         double CTiglNACA4UpperCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            // t*t reparametrization: the thickness distribution's sqrt(x) term makes
+            // d(upper_curve)/dx unbounded at x=0. Composing with x=t*t makes
+            // sqrt(t*t)=t, i.e. linear (and smooth) in t, removing that singularity -
+            // the same technique already used by CCSTCurveBuilder's classical-airfoil
+            // case for the same reason.
+            gp_Vec2d vec = calculator.upper_curve(t*t);
             return vec.X();
         }
         double CTiglNACA4UpperCurve::valueY(double t)  {
             return 0.0;
         }
         double CTiglNACA4UpperCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            gp_Vec2d vec = calculator.upper_curve(t*t);
             return vec.Y();
         }
 
@@ -204,7 +203,8 @@ namespace tigl{
         {}
 
         double CTiglNACA4LowerCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            // see CTiglNACA4UpperCurve::valueX for why t is squared here
+            gp_Vec2d vec = calculator.lower_curve(t*t);
             return vec.X();
         }
 
@@ -213,7 +213,7 @@ namespace tigl{
         }
 
         double CTiglNACA4LowerCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            gp_Vec2d vec = calculator.lower_curve(t*t);
             return vec.Y();
         }
 

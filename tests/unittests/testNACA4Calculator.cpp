@@ -251,7 +251,9 @@ TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoo
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
-    gp_Vec2d pnt = NACA4.upper_curve(0.5);
+    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
+    // (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
@@ -259,12 +261,14 @@ TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoo
 TEST(CTiglNACA4Calculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoord){
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     tigl::CTiglNACA4LowerCurve lowerCurve(NACA4);
-    
+
     ASSERT_EQ(lowerCurve.valueY(0.), 0.);
     ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
     ASSERT_EQ(lowerCurve.valueY(1.), 0.);
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
+    // (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
@@ -274,7 +278,9 @@ TEST(CTiglNACA4Calculator, naca2212_bspline_vs_lower_curve_coord)
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // the bspline's own parameter u corresponds to x=u*u, not x=u directly (see
+    // CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-4);
@@ -498,8 +504,14 @@ TEST(CTiglNACA4Calculator, naca2412_getUpperLowerWire) {
 // sqrt(x) term makes the true tangent direction change very fast / become vertical - an
 // inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
 // honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
-TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_away_from_le_te)
+TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
 {
+    // Strongly cambered profile: exercises the adaptive multi-segment path in
+    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, which
+    // removes the thickness distribution's sqrt(x) derivative singularity at the leading
+    // edge - so unlike before that reparametrization, every internal knot (including right
+    // at the leading/trailing edge) should now be honestly C1 continuous, with no margin
+    // needed to exclude a "genuinely near-vertical" region.
     tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
 
     auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
@@ -507,14 +519,8 @@ TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_away_from_
         ASSERT_GT(curve->NbKnots(), 2);
 
         const double eps = 1e-7;
-        // exclude a small margin next to the true leading/trailing edge (u=0, u=1), where
-        // the curve's own tangent is genuinely changing very fast / near-vertical
-        const double margin = 0.01;
         for (int i = 2; i < curve->NbKnots(); ++i) {
             double u = curve->Knot(i);
-            if (u < margin || u > 1.0 - margin) {
-                continue;
-            }
 
             gp_Pnt pLeft, pRight;
             gp_Vec dLeft, dRight;
@@ -522,7 +528,7 @@ TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_away_from_
             curve->D1(u + eps, pRight, dRight);
 
             EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
-            EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-2) << "tangent kink at knot " << u;
+            EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-3) << "tangent kink at knot " << u;
         }
     };
 
