@@ -64,10 +64,28 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
+
         if (hasBluntTE != segments.GetSegment(i).GetInnerConnection().GetProfile().HasBluntTE()) {
             throw CTiglError("Cannot mix profiles with blunt and sharp trailing edges in one wing.", TIGL_ERROR);
         }
         lofter.addProfiles(startWire);
+
+        //Check if Segments are rounded, if so add distances to lofter
+        if(_wing.GetRoundedSegments()){
+            double ird,ord;
+            if(segments.GetSegment(i).GetInnerRoundingDistance()){
+                ird = *segments.GetSegment(i).GetInnerRoundingDistance();
+                lofter.addInnerRoundingDistance(ird);
+            } else {
+                lofter.addInnerRoundingDistance(0.);
+            }
+            if(segments.GetSegment(i).GetOuterRoundingDistance()){
+                ord = *segments.GetSegment(i).GetOuterRoundingDistance();
+                lofter.addOuterRoundingDistance(ord);
+            } else {
+                lofter.addOuterRoundingDistance(0.);
+            }
+        }
     }
 
     TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
