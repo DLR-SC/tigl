@@ -404,6 +404,12 @@ const RelativeComponentContainerType& CTiglUIDManager::GetRootGeometricComponent
     return rootComponents;
 }
 
+const RelativeComponentContainerType& CTiglUIDManager::GetRelativeComponents() const
+{
+    const_cast<CTiglUIDManager&>(*this).Update();
+    return relativeComponents;
+}
+
 void CTiglUIDManager::SetParentComponents()
 {
     BuildTree();
