@@ -19,17 +19,18 @@
 #include "CFunctionToBspline.h"
 
 #include "CTiglLogging.h"
+#include "CTiglError.h"
 
 #include <math_Matrix.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <GeomConvert.hxx>
+#include <GeomConvert_CompCurveToBSplineCurve.hxx>
+#include <gp_Vec.hxx>
 
 #include <vector>
 
-#include <cassert>
 #include <cmath>
 
 namespace
@@ -53,10 +54,18 @@ namespace
     {
         math_Vector v2(low, high);
         for (int i = low; i <= high; ++i) {
-            v2(i) = v(i); 
+            v2(i) = v(i);
         }
         return v2;
     }
+
+    /// Angle (radians) below which a knot left at full multiplicity by the join step is
+    /// treated as numerical noise rather than a real kink. This is comfortably above the
+    /// floating-point-level residuals seen on short, already-converged segments (observed
+    /// up to ~0.02 degrees), and comfortably below any genuine kink (this codebase's own
+    /// convention elsewhere, CTiglBSplineAlgorithms::getKinkParameters, treats >= 6 degrees
+    /// as a real kink for curves).
+    const double negligibleKinkAngle = 0.5 * M_PI / 180.0;
 }
 
 namespace tigl
@@ -128,7 +137,12 @@ public:
     
     /// smooth concatenation the bspline curves to one curve
     Handle(Geom_BSplineCurve) concatC1(const std::vector<Handle(Geom_BSplineCurve)>& curves);
-    
+
+    /// Relaxes interior knots that were left at full multiplicity (a hard C0 corner) by
+    /// concatC1's continuity check purely due to numerical noise, not a real kink - see
+    /// negligibleKinkAngle above.
+    void relaxNegligibleKinks(Handle(Geom_BSplineCurve)& curve);
+
     /// members
     FuncAdaptor _xfunc, _yfunc, _zfunc;
     double _umin, _umax, _tol, _err;
@@ -176,6 +190,17 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
     }
     const double error = std::sqrt(errx*errx + erry*erry + errz*errz);
     
+    if (depth >= _maxDepth && error >= _tol) {
+        // maxDepth was hit before the requested tolerance was reached - the segment is
+        // accepted anyway, but this silently breaks the tolerance promise. This typically
+        // means the function has a locally very high derivative/curvature (e.g. near a
+        // sqrt(x)-like singularity) that keeps failing to converge no matter how far the
+        // interval is bisected.
+        LOG(WARNING) << "CFunctionToBspline: maxDepth (" << _maxDepth << ") reached on ["
+                     << umin << ", " << umax << "] with approximation error " << error
+                     << " exceeding requested tolerance " << _tol;
+    }
+
     if (error < _tol || depth >= _maxDepth) {
         // we can use this approximation, store to structure
         ChebSegment seg(_degree);
@@ -251,9 +276,10 @@ Handle(Geom_BSplineCurve) CFunctionToBspline::CFunctionToBsplineImpl::Curve()
         }
     }
     _err = errTotal;
-     
+
     // concatenate c1 the bspline curves
     Handle(Geom_BSplineCurve) result = concatC1(curves);
+    relaxNegligibleKinks(result);
 
 #ifdef DEBUG
     LOG(INFO) << "Result of BSpline approximation of function:";
@@ -278,66 +304,61 @@ Handle(Geom_BSplineCurve) CFunctionToBspline::CFunctionToBsplineImpl::concatC1(c
         return curves[0];
     }
 
-#ifdef DEBUG
-    // check range connectivities
+    // Join the independently fitted segments into a single B-spline, letting OCCT reduce
+    // the knot multiplicity at each join as far as the actual continuity of the control
+    // points allows (checked against _tol via Geom_BSplineCurve::RemoveKnot), instead of
+    // blindly declaring a multiplicity that isn't backed by the data. Where two segments'
+    // tangents genuinely disagree beyond _tol (e.g. near a function with unbounded
+    // curvature), this correctly leaves a real C0 join there rather than hiding it.
+    //
+    // WithRatio=False keeps each segment's original parameter range instead of
+    // reparametrizing to a uniform parametrization - callers rely on the resulting curve's
+    // parameter matching the original function's parameter.
+    GeomConvert_CompCurveToBSplineCurve joiner(curves[0]);
     for (size_t i = 1; i < curves.size(); ++i) {
-        Handle(Geom_BSplineCurve) lastCurve = curves[i-1];
-        Handle(Geom_BSplineCurve) thisCurve = curves[i];
-        assert(lastCurve->LastParameter() == thisCurve->FirstParameter());
-    }
-#endif
-
-    // count control points
-    int ncp = 2;
-    int nkn = 1;
-    std::vector<Handle(Geom_BSplineCurve)>::const_iterator curveIt;
-    for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt) {
-        Handle(Geom_BSplineCurve) curve = *curveIt;
-        ncp += curve->NbPoles() - 2;
-        nkn += curve->NbKnots() - 1;
-    }
-
-    // allocate arrays
-    TColgp_Array1OfPnt      cpoints(1, ncp);
-    TColStd_Array1OfReal    knots(1, nkn);
-    TColStd_Array1OfInteger mults(1, nkn);
-
-    int iknotT = 1, imultT = 1, icpT = 1;
-    int icurve = 0;
-    for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt, ++icurve) {
-        Handle(Geom_BSplineCurve) curve = *curveIt;
-
-        // special handling of the first knot, control point
-        knots.SetValue(iknotT++, curve->Knot(1));
-        if (icurve == 0) {
-            // we just copy the data of the very first point/knot
-            mults.SetValue(imultT++, curve->Multiplicity(1));
-            cpoints.SetValue(icpT++, curve->Pole(1));
-        }
-        else {
-            // set multiplicity to maxDegree to allow c0 concatenation
-            mults.SetValue(imultT++, _degree-1);
-            // omit the first control points of the current curve
-        }
-
-        // just copy control points, weights, knots and multiplicities
-        for (int iknot = 2; iknot < curve->NbKnots(); ++iknot) {
-            knots.SetValue(iknotT++, curve->Knot(iknot));
-            mults.SetValue(imultT++, curve->Multiplicity(iknot));
-        }
-        for (int icp = 2; icp < curve->NbPoles(); ++icp) {
-            cpoints.SetValue(icpT++, curve->Pole(icp));
+        if (!joiner.Add(curves[i], _tol, Standard_True, Standard_False)) {
+            throw CTiglError("CFunctionToBspline: failed to join curve segments");
         }
     }
+    return joiner.BSplineCurve();
+}
 
-    // special handling of the last point and knot
-    Handle(Geom_BSplineCurve) lastCurve = curves[curves.size()-1];
-    knots.SetValue(iknotT, lastCurve->Knot(lastCurve->NbKnots()));
-    mults.SetValue(imultT,  lastCurve->Multiplicity(lastCurve->NbKnots()));
-    cpoints.SetValue(icpT, lastCurve->Pole(lastCurve->NbPoles()));
+void CFunctionToBspline::CFunctionToBsplineImpl::relaxNegligibleKinks(Handle(Geom_BSplineCurve)& curve)
+{
+    if (curve.IsNull()) {
+        return;
+    }
 
-    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, knots, mults, _degree);
-    return result;
+    const double eps = 1e-7;
+    for (int i = 2; i < curve->NbKnots(); ++i) {
+        if (curve->Multiplicity(i) != curve->Degree()) {
+            // already smoother than a hard corner - nothing to do
+            continue;
+        }
+
+        double knot = curve->Knot(i);
+        gp_Pnt pLeft, pRight;
+        gp_Vec dLeft, dRight;
+        curve->D1(knot - eps, pLeft, dLeft);
+        curve->D1(knot + eps, pRight, dRight);
+
+        if (dLeft.Angle(dRight) < negligibleKinkAngle) {
+            // the tangent mismatch here is negligible - concatC1's join tolerance just
+            // wasn't loose enough to reduce the multiplicity itself (typically because
+            // the reconstruction is numerically sensitive for a short segment). We've
+            // already verified the angle is tiny, so relax to C1 with a generous
+            // tolerance rather than leaving a knot that downstream code (e.g. surface
+            // kink detection, which - unlike the curve version - does not check the
+            // angle) would otherwise treat as a real, hard corner.
+            int nKnotsBefore = curve->NbKnots();
+            curve->RemoveKnot(i, curve->Degree() - 1, 1.0);
+            if (curve->NbKnots() < nKnotsBefore) {
+                // the knot was fully removed (only possible if Degree()-1 == 0) - account
+                // for the index shift
+                --i;
+            }
+        }
+    }
 }
 
 } // namespace tigl

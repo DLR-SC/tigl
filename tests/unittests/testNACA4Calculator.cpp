@@ -44,6 +44,7 @@
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "CTiglError.h"
+#include <gp_Vec.hxx>
 
 TEST(CTiglNACA4Calculator, naca2212_le_and_te_points){
     tigl::CTiglNACA4Calculator  NACA4(2,2,12, 0.00252);
@@ -488,4 +489,43 @@ TEST(CTiglNACA4Calculator, naca2412_getUpperLowerWire) {
     Standard_Real u1, u2;
     Handle(Geom_Curve) ulCurve = BRep_Tool::Curve(ul, u1, u2);
     ASSERT_FALSE(ulCurve.IsNull());
+}
+
+// Regression test for CFunctionToBspline::concatC1 (used internally by
+// CTiglNACA4Calculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
+// adaptive Chebyshev fit to produce many segments, exercising the multi-segment
+// concatenation path. Away from the leading/trailing edge (where the thickness formula's
+// sqrt(x) term makes the true tangent direction change very fast / become vertical - an
+// inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
+// honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
+TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_away_from_le_te)
+{
+    tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
+
+    auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
+        // make sure this actually exercises the multi-segment concatenation path
+        ASSERT_GT(curve->NbKnots(), 2);
+
+        const double eps = 1e-7;
+        // exclude a small margin next to the true leading/trailing edge (u=0, u=1), where
+        // the curve's own tangent is genuinely changing very fast / near-vertical
+        const double margin = 0.01;
+        for (int i = 2; i < curve->NbKnots(); ++i) {
+            double u = curve->Knot(i);
+            if (u < margin || u > 1.0 - margin) {
+                continue;
+            }
+
+            gp_Pnt pLeft, pRight;
+            gp_Vec dLeft, dRight;
+            curve->D1(u - eps, pLeft, dLeft);
+            curve->D1(u + eps, pRight, dRight);
+
+            EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
+            EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-2) << "tangent kink at knot " << u;
+        }
+    };
+
+    checkContinuity(NACA4.upper_bspline());
+    checkContinuity(NACA4.lower_bspline());
 }

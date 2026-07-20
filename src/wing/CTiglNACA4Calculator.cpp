@@ -146,7 +146,15 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            int maxDepth = 10;
+            // The thickness distribution's sqrt(x) term makes the curve's derivative
+            // unbounded at the leading edge, so the adaptive Chebyshev fit converges slowly
+            // there. maxDepth=10 used to run out before reaching `tolerance`, silently
+            // leaving segments next to the leading edge that visibly disagreed in tangent
+            // direction once concatenated. maxDepth=22 lets the fit actually converge there
+            // (verified empirically); a small residual tangent mismatch right at the leading
+            // edge is expected regardless, since the true curve is genuinely near-vertical
+            // and rapidly changing there - that is inherent to the NACA4 formula, not a bug.
+            int maxDepth = 22;
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
@@ -159,7 +167,15 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            int maxDepth = 10;
+            // The thickness distribution's sqrt(x) term makes the curve's derivative
+            // unbounded at the leading edge, so the adaptive Chebyshev fit converges slowly
+            // there. maxDepth=10 used to run out before reaching `tolerance`, silently
+            // leaving segments next to the leading edge that visibly disagreed in tangent
+            // direction once concatenated. maxDepth=22 lets the fit actually converge there
+            // (verified empirically); a small residual tangent mismatch right at the leading
+            // edge is expected regardless, since the true curve is genuinely near-vertical
+            // and rapidly changing there - that is inherent to the NACA4 formula, not a bug.
+            int maxDepth = 22;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
