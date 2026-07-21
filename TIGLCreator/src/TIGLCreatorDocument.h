@@ -26,6 +26,7 @@
 #include "TIGLCreator.h"
 #include "CCPACSConfiguration.h"
 #include "TIGLCreatorContext.h"
+#include "DocumentId.h"
 
 #include <Quantity_Color.hxx>
 
@@ -42,8 +43,12 @@ class TIGLCreatorDocument : public QObject
 
 public:
 
-    explicit TIGLCreatorDocument(TIGLCreatorWindow *parentWidget);
+    explicit TIGLCreatorDocument(TIGLCreatorWindow *parentWidget, DocumentId docId);
     ~TIGLCreatorDocument( ) override;
+
+    // Identifies this document's shapes in the shared 3D scene (see
+    // TIGLCreatorContext::GetShapeManager/deleteObjectsOfDocument).
+    DocumentId docId() const { return m_docId; }
 
     TiglReturnCode openCpacsConfigurationFromFile(const QString& fileName, const QString& config_uid="");
     TiglReturnCode openCpacsConfigurationFromString(const std::string cpacsFileContent, const QString& config_uid="");
@@ -183,8 +188,9 @@ private slots:
     QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
-private: 
+private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
+    DocumentId                               m_docId;
     TIGLCreatorWindow*                       app;
     QString                                 loadedConfigurationFileName;
     TIGLCreatorContext*                      myScene;

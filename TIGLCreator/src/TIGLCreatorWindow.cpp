@@ -343,7 +343,7 @@ void TIGLCreatorWindow::closeConfiguration()
     treeWidget->refresh();
     if (cpacsConfiguration) {
 
-        getScene()->deleteAllObjects();
+        getScene()->deleteObjectsOfDocument(myDocId);
         delete cpacsConfiguration;
         cpacsConfiguration = nullptr;
     }
@@ -352,7 +352,7 @@ void TIGLCreatorWindow::closeConfiguration()
 
     setCurrentFile("");
     undoStack->clear(); // when the document is closed, we remove all undo
-    getScene()->GetShapeManager().clear();
+    getScene()->GetShapeManager(myDocId).clear();
 }
 
 void TIGLCreatorWindow::setTiglWindowTitle(const QString &title, bool forceTitle)
@@ -393,7 +393,7 @@ void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_
         fileType = fileInfo.suffix();
 
         if (fileType.toLower() == tr("xml")) {
-            TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+            TIGLCreatorDocument* config = new TIGLCreatorDocument(this, myDocId);
 
 
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromFile(fileInfo.absoluteFilePath(), config_uid);
@@ -430,10 +430,10 @@ void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_
                 triangulation = true;
             }
             if (triangulation) {
-                success = reader.importTriangulation( fileInfo.absoluteFilePath(), format, *getScene() );
+                success = reader.importTriangulation( fileInfo.absoluteFilePath(), format, *getScene(), myDocId );
             }
             else {
-                success = reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene() );
+                success = reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene(), myDocId );
             }
         }
 
@@ -451,12 +451,12 @@ void TIGLCreatorWindow::openFile(const QString& fileName, const QString& config_
 void TIGLCreatorWindow::reopenFile()
 {
     if (currentFile.suffix().toLower() == tr("xml")){
-        std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager().GetDisplayedShapeNames();
-        
+        std::vector<std::string> displayedShapeNames = getScene()->GetShapeManager(myDocId).GetDisplayedShapeNames();
+
         modificatorModel->setCPACSConfiguration(nullptr);
         cpacsConfiguration->updateConfiguration();
         modificatorModel->setCPACSConfiguration(cpacsConfiguration);
-        getScene()->deleteAllObjects();
+        getScene()->deleteObjectsOfDocument(myDocId);
         for (const auto& name : displayedShapeNames) {
                     cpacsConfiguration->drawComponentByUID(QString::fromStdString(name));
         }
@@ -500,7 +500,7 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
             // Read CPACS template file content into string and open the CPACS configuration from that
             std::string cpacsFileContent = readFileContent(strdup((const char*)templatePath.toLatin1()));
 
-            TIGLCreatorDocument* config = new TIGLCreatorDocument(this);
+            TIGLCreatorDocument* config = new TIGLCreatorDocument(this, myDocId);
             TiglReturnCode tiglRet = config->openCpacsConfigurationFromString(cpacsFileContent);
             if (tiglRet != TIGL_SUCCESS) {
                 delete config;
@@ -1074,7 +1074,7 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
             cpacsConfiguration->drawComponentByUID(uid);
         }
         else {
-            auto& shapeManager = myScene->GetShapeManager();
+            auto& shapeManager = myScene->GetShapeManager(cpacsConfiguration->docId());
             if (shapeManager .HasShapeEntry(uid.toStdString())) {
                 auto objs = shapeManager .GetIObjectsFromShapeName(uid.toStdString());
                 for (auto& obj : objs) {
@@ -1286,7 +1286,7 @@ void TIGLCreatorWindow::drawPoint()
     gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
-    getScene()->displayPoint(point, stream.str().c_str(), Standard_True, 0, 0, 0, 1.);
+    getScene()->displayPoint(point, stream.str().c_str(), InvalidDocumentId, Standard_True, 0, 0, 0, 1.);
 }
 
 void TIGLCreatorWindow::drawVector()
@@ -1301,12 +1301,12 @@ void TIGLCreatorWindow::drawVector()
     gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
-    getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
+    getScene()->displayVector(point, dir, stream.str().c_str(), InvalidDocumentId, Standard_True, 0,0,0, 1.);
 }
 
 
 void TIGLCreatorWindow::updateScene() {
-    myScene->deleteAllObjects();
+    myScene->deleteObjectsOfDocument(cpacsConfiguration->docId());
     cpacsConfiguration->drawConfiguration();
     cpacsConfiguration->configurationModifiedSinceLastSave();
 }

@@ -121,13 +121,14 @@ double getAbsDeflection(const TopoDS_Shape& theShape, double relDeflection)
     return aDeflection;
 }
 
-TIGLCreatorDocument::TIGLCreatorDocument(TIGLCreatorWindow* parentWidget)
+TIGLCreatorDocument::TIGLCreatorDocument(TIGLCreatorWindow* parentWidget, DocumentId docId)
     : QObject(parentWidget)
     , m_flapsDialog(new TIGLCreatorSelectWingAndFlapStatusDialog(this, parentWidget))
     , modifiedSinceLastSave(false)
 {
     app           = parentWidget;
     m_cpacsHandle = -1;
+    m_docId       = docId;
 }
 
 TIGLCreatorDocument::~TIGLCreatorDocument()
@@ -333,7 +334,7 @@ void TIGLCreatorDocument::updateConfiguration()
         START_COMMAND()
         tiglCloseCPACSConfiguration(m_cpacsHandle);
         m_cpacsHandle = -1;
-        app->getScene()->deleteAllObjects();
+        app->getScene()->deleteObjectsOfDocument(m_docId);
         openCpacsConfigurationFromFile(loadedConfigurationFileName);
         emit documentUpdated(m_cpacsHandle);
     }
@@ -809,7 +810,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                 return;
             }
 
-            if (!app->getScene()->GetShapeManager().HasShapeEntry(uid.toStdString())) {
+            if (!app->getScene()->GetShapeManager(m_docId).HasShapeEntry(uid.toStdString())) {
                 PNamedShape loft = component.GetLoft();
 
                 if (loft) {
@@ -821,21 +822,21 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                         shaded = false;
                     }
 
-                    auto shape = app->getScene()->displayShape(loft, true, getDefaultShapeColor(), opacity, shaded);
-                    app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+                    auto shape = app->getScene()->displayShape(loft, m_docId, true, getDefaultShapeColor(), opacity, shaded);
+                    app->getScene()->GetShapeManager(m_docId).addObject(uid.toStdString(), shape);
 
                     auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(&component);
                     if (geometricComp) {
                         PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                         if (mirroredLoft) {
-                            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
-                            app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+                            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                            app->getScene()->GetShapeManager(m_docId).addObject(uid.toStdString(), shape);
                         }
                     }
                 }
             }
             else {
-                IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(uid.toStdString());
+                IObjectList objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(uid.toStdString());
                 if (objects.empty()) {
                     throw tigl::CTiglError("No object found for component with uid \"" + uid.toStdString() + "\"");
                     return;
@@ -968,7 +969,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
                 }
             }
 
-            app->getScene()->displayShape(control_point_net, false, Quantity_NOC_YELLOW);
+            app->getScene()->displayShape(control_point_net, m_docId, false, Quantity_NOC_YELLOW);
         }
         if (valid_face_count == 0) {
             LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces that are a B-Spline surface.";
@@ -1024,7 +1025,7 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
 
 void TIGLCreatorDocument::drawConfigurationWithDuctCutouts()
 {
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
     drawConfiguration(true);
 }
 
@@ -1105,14 +1106,14 @@ void TIGLCreatorDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 
     for (; anIter.More(); anIter.Next()) {
         const TopoDS_Shape& wire = anIter.Value();
-        app->getScene()->displayShape(wire, Standard_False, Quantity_NOC_RED);
+        app->getScene()->displayShape(wire, m_docId, Standard_False, Quantity_NOC_RED);
     }
 
     //display guide curve points (TODO: these points are not sorted and
     // there are probably duplicates)
     std::vector<gp_Pnt> points = wing.GetGuideCurvePoints();
     for (const auto& point : points) {
-        app->getScene()->displayPoint(point, "", Standard_False, 0, 0, 0, 1.);
+        app->getScene()->displayPoint(point, "", m_docId, Standard_False, 0, 0, 0, 1.);
     }
 
     app->getScene()->getContext()->UpdateCurrentViewer();
@@ -1120,7 +1121,7 @@ void TIGLCreatorDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 
 void TIGLCreatorDocument::drawFuselageProfiles()
 {
-    displayedShapeNames = app->getScene()->GetShapeManager().GetDisplayedShapeNames();
+    displayedShapeNames = app->getScene()->GetShapeManager(m_docId).GetDisplayedShapeNames();
     removeAirfoil();
     QString fuselageProfile = dlgGetFuselageProfileSelection();
     if (fuselageProfile == "") {
@@ -1128,12 +1129,12 @@ void TIGLCreatorDocument::drawFuselageProfiles()
     }
 
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
     TopoDS_Wire wire                     = profile.GetWire();
-    auto wireObj = app->getScene()->displayShape(wire, true, getDefaultShapeColor());
-    app->getScene()->GetShapeManager().addObject(std::string("airfoil"), wireObj);
+    auto wireObj = app->getScene()->displayShape(wire, m_docId, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager(m_docId).addObject(std::string("airfoil"), wireObj);
 
     if (profile.GetPointList_choice1()) {
         const std::vector<tigl::CTiglPoint>& points = profile.GetPointList_choice1()->AsVector();
@@ -1143,7 +1144,7 @@ void TIGLCreatorDocument::drawFuselageProfiles()
                 std::stringstream str;
                 str << i << ": (" << p.x << ", " << p.y << ", " << p.z << ")";
                 gp_Pnt pnt = p.Get_gp_Pnt();
-                app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+                app->getScene()->displayPoint(pnt, str.str().c_str(), m_docId, Standard_False, 0., 0., 0., 6.);
             }
         }
         else {
@@ -1152,8 +1153,7 @@ void TIGLCreatorDocument::drawFuselageProfiles()
                     gp_Pnt wirePoint = profile.GetPoint(zeta);
                     std::ostringstream text;
                     text << "PT(" << zeta << ")";
-                    app->getScene()->displayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0,
-                                                  0.0, 0.0, 2.0);
+                    app->getScene()->displayPoint(wirePoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
                     text.str("");
                 }
                 catch (tigl::CTiglError& ex) {
@@ -1192,14 +1192,14 @@ void TIGLCreatorDocument::drawFuselageGuideCurves(const QString& Uid)
 
     for (; anIter.More(); anIter.Next()) {
         const TopoDS_Shape& wire = anIter.Value();
-        app->getScene()->displayShape(wire, Standard_False, Quantity_NOC_RED);
+        app->getScene()->displayShape(wire, m_docId, Standard_False, Quantity_NOC_RED);
     }
 
     //display guide curve points (TODO: these points are not sorted and
     // there are probably duplicates)
     const std::vector<gp_Pnt>& points = fuselage.GetGuideCurvePoints();
     for (const auto& point : points) {
-        app->getScene()->displayPoint(point, "", Standard_False, 0, 0, 0, 1.);
+        app->getScene()->displayPoint(point, "", m_docId, Standard_False, 0, 0, 0, 1.);
     }
 
     app->getScene()->getContext()->UpdateCurrentViewer();
@@ -1212,9 +1212,9 @@ void TIGLCreatorDocument::drawWing(const QString& Uid, bool drawFlaps)
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     wing.SetBuildFlaps(drawFlaps);
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wingUid.toStdString());
+    auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(wingUid.toStdString());
     for (auto& obj : objects) {
-        app->getScene()->GetShapeManager().removeObject(obj);
+        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
         app->getScene()->getContext()->Remove(obj, Standard_False);
     }
     removeWingFlaps(wingUid);
@@ -1279,14 +1279,14 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 
         removeWing(QString::fromStdString(wing.GetUID()));
 
-        auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), true, getDefaultShapeColor());
-        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+        auto shape = app->getScene()->displayShape(wing.GetLoftWithCutouts(), m_docId, true, getDefaultShapeColor());
+        app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
 
         PNamedShape loftNamed(new CNamedShape(wing.GetLoftWithCutouts(), wing.GetUID().c_str()));
         PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed);
         if (mirroredLoft) {
-            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
-            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
         }
 
         for (auto& pcs : wing.GetComponentSegments()->GetComponentSegments()) {
@@ -1296,11 +1296,11 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 
             if (auto& teds = pcs->GetControlSurfaces()->GetTrailingEdgeDevices()) {
                 for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                    auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
+                    auto objs = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(ted->GetUID());
                     // remove old wireframe flap shapes
                     for (auto& obj : objs) {
                         app->getScene()->getContext()->Remove(obj, Standard_True);
-                        app->getScene()->GetShapeManager().removeObject(obj);
+                        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
                     }
                     drawWingFlap(ted->GetUID().c_str());
 
@@ -1310,11 +1310,11 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
 
             if (auto& leds = pcs->GetControlSurfaces()->GetLeadingEdgeDevices()) {
                 for (auto& led : leds->GetLeadingEdgeDevices()) {
-                    auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
+                    auto objs = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(led->GetUID());
                     // remove old wireframe flap shapes
                     for (auto& obj : objs) {
                         app->getScene()->getContext()->Remove(obj, Standard_True);
-                        app->getScene()->GetShapeManager().removeObject(obj);
+                        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
                     }
                     drawWingFlap(led->GetUID().c_str());
                 }
@@ -1386,14 +1386,14 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
 
         if (*obj.type == typeid(tigl::CCPACSTrailingEdgeDevice)) {
             auto* ted = static_cast<tigl::CCPACSTrailingEdgeDevice*>(obj.ptr);
-            app->getScene()->displayShape(ted->GetLoft(), false, Quantity_NOC_GREEN);
+            app->getScene()->displayShape(ted->GetLoft(), m_docId, false, Quantity_NOC_GREEN);
 
             // if flap has mirrored loft, display it too (not mirrored), to later update its transform and then mirror it
             PNamedShape mirrored_loft = ted->GetMirroredLoft();
             if (mirrored_loft) { 
                 PNamedShape mirror_named(new CNamedShape(ted->GetLoft()->Shape(), (ted->GetUID() + ":mirrored").c_str()));
-                auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
-                app->getScene()->GetShapeManager().addObject(ted->GetUID(), mirror_shape);
+                auto mirror_shape = app->getScene()->displayShape(mirror_named, m_docId, false, Quantity_NOC_GREEN);
+                app->getScene()->GetShapeManager(m_docId).addObject(ted->GetUID(), mirror_shape);
             }
             updateFlapTransform(ted->GetUID());
 
@@ -1401,14 +1401,14 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
 
         else if (*obj.type == typeid(tigl::CCPACSLeadingEdgeDevice)) {
             auto* led = static_cast<tigl::CCPACSLeadingEdgeDevice*>(obj.ptr);
-            app->getScene()->displayShape(led->GetLoft(), false, Quantity_NOC_GREEN);
+            app->getScene()->displayShape(led->GetLoft(), m_docId, false, Quantity_NOC_GREEN);
 
              // if flap has mirrored loft, display it too (not mirrored), to later update its transform and then mirror it
             PNamedShape mirrored_loft = led->GetMirroredLoft();
             if (mirrored_loft) { 
                 PNamedShape mirror_named(new CNamedShape(led->GetLoft()->Shape(), (led->GetUID() + ":mirrored").c_str()));
-                auto mirror_shape = app->getScene()->displayShape(mirror_named, false, Quantity_NOC_GREEN);
-                app->getScene()->GetShapeManager().addObject(led->GetUID(), mirror_shape);
+                auto mirror_shape = app->getScene()->displayShape(mirror_named, m_docId, false, Quantity_NOC_GREEN);
+                app->getScene()->GetShapeManager(m_docId).addObject(led->GetUID(), mirror_shape);
 
             }
             updateFlapTransform(led->GetUID());
@@ -1439,9 +1439,9 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
             trsf = controlSurfaceDevice->GetFlapTransform();
 
             flaps =
-                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+                app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
             mflaps =
-                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
+                app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
         }
         catch (...) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
@@ -1455,9 +1455,9 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
             trsf = controlSurfaceDevice->GetFlapTransform();
 
             flaps =
-                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
+                app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(controlSurfaceDevice->GetUID());
             mflaps =
-                app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
+                app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
         }
         catch (...) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
@@ -1501,10 +1501,10 @@ void TIGLCreatorDocument::removeWing(const QString& Uid)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
 
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(wing.GetUID());
+    auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(wing.GetUID());
     for (auto& obj : objects) {
         app->getScene()->getContext()->Remove(obj, Standard_False);
-        app->getScene()->GetShapeManager().removeObject(obj);
+        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
     }
 }
 
@@ -1524,21 +1524,21 @@ void TIGLCreatorDocument::removeWingFlaps(const QString& Uid)
 
         if (auto& teds = cs.GetControlSurfaces()->GetTrailingEdgeDevices()) {
             for (auto& ted : teds->GetTrailingEdgeDevices()) {
-                auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(ted->GetUID());
+                auto objs = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(ted->GetUID());
                 // remove flap shapes
                 for (auto& obj : objs) {
                     app->getScene()->getContext()->Remove(obj, Standard_True);
-                    app->getScene()->GetShapeManager().removeObject(obj);
+                    app->getScene()->GetShapeManager(m_docId).removeObject(obj);
                 }
             }
         }   
         if (auto& leds = cs.GetControlSurfaces()->GetLeadingEdgeDevices()) {
             for (auto& led : leds->GetLeadingEdgeDevices()) {
-                auto objs = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(led->GetUID());
+                auto objs = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(led->GetUID());
                 // remove flap shapes
                 for (auto& obj : objs) {
                     app->getScene()->getContext()->Remove(obj, Standard_True);
-                    app->getScene()->GetShapeManager().removeObject(obj);
+                    app->getScene()->GetShapeManager(m_docId).removeObject(obj);
                 }
             }
         }   
@@ -1549,10 +1549,10 @@ void TIGLCreatorDocument::removeFuselage(const QString& Uid)
                 {
                     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(Uid.toStdString());
                 
-                    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(fuselage.GetUID());
+                    auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(fuselage.GetUID());
                     for (auto& obj : objects) {
                         app->getScene()->getContext()->Remove(obj, Standard_False);
-                        app->getScene()->GetShapeManager().removeObject(obj);
+                        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
                     }
                 }
 
@@ -1572,7 +1572,7 @@ void TIGLCreatorDocument::drawFuselage(const QString& Uid)
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         // Draw segment loft
         auto& segment = (tigl::CCPACSFuselageSegment&)fuselage.GetSegment(i);
-        app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(segment.GetLoft(), m_docId, true, getDefaultShapeColor());
     }
 }
 
@@ -1613,8 +1613,8 @@ void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
     TopoDS_Compound triangulation;
     createShapeTriangulation(fusedFuselage, triangulation);
 
-    auto shape = app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
-    app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), shape);
+    auto shape = app->getScene()->displayShape(triangulation, m_docId, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager(m_docId).addObject(fuselageUid.toStdString(), shape);
 }
 
 void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
@@ -1657,8 +1657,8 @@ void TIGLCreatorDocument::drawFuselageSamplePoints(const QString& Uid)
                                      1, // TODO: we need to implement that function to use UID instead of index!
                                      segmentIndex, eta, zeta, &x, &y, &z);
 
-                auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", false, 0, 0, 0, 1.0);
-                app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), points);
+                auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, false, 0, 0, 0, 1.0);
+                app->getScene()->GetShapeManager(m_docId).addObject(fuselageUid.toStdString(), points);
             }
         }
     }
@@ -1692,13 +1692,13 @@ void TIGLCreatorDocument::drawFuselageSamplePointsAngle(const QString& Uid)
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         auto& segment = (tigl::CCPACSFuselageSegment&)fuselage.GetSegment(i);
 
-        app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(segment.GetLoft(), m_docId, true, getDefaultShapeColor());
 
         // Display the intersection point
         tiglFuselageGetPointAngle(m_cpacsHandle, fuselageIndex, i, 0.5, angle, &x, &y, &z);
 
-        auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
-        app->getScene()->GetShapeManager().addObject(fuselageUid.toStdString(), points);
+        auto points = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0., 0., 0., 1.);
+        app->getScene()->GetShapeManager(m_docId).addObject(fuselageUid.toStdString(), points);
     }
     app->getScene()->updateViewer();
 }
@@ -1706,7 +1706,7 @@ void TIGLCreatorDocument::drawFuselageSamplePointsAngle(const QString& Uid)
 void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
 {
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     // Draw all wings
     for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
@@ -1715,7 +1715,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
             continue;
         }
 
-        app->getScene()->displayShape(wing.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(wing.GetLoft(), m_docId, true, getDefaultShapeColor());
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
@@ -1723,11 +1723,11 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
                     double x, y, z;
                     tiglWingGetUpperPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0, 0, 0, 1.);
+                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0, 0, 0, 1.);
 
                     tiglWingGetLowerPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0, 0, 0, 1.);
+                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0, 0, 0, 1.);
                 }
             }
         }
@@ -1738,7 +1738,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
     for (int fuselageIndex = 1; fuselageIndex <= GetConfiguration().GetFuselageCount(); fuselageIndex++) {
         auto& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
-        app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(fuselage.GetLoft(), m_docId, true, getDefaultShapeColor());
 
         for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
             // Draw some points on the fuselage segment
@@ -1747,7 +1747,7 @@ void TIGLCreatorDocument::drawAllFuselagesAndWingsSurfacePoints()
                     double x, y, z;
                     tiglFuselageGetPoint(m_cpacsHandle, fuselageIndex, segmentIndex, eta, zeta, &x, &y, &z);
 
-                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0, 0, 0, 1.);
+                    app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0, 0, 0, 1.);
                 }
             }
         }
@@ -2317,7 +2317,7 @@ void TIGLCreatorDocument::drawFusedFuselage(const QString& Uid)
     START_COMMAND()
     removeFuselage(fuselageUid);
     auto& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    app->getScene()->displayShape(fuselage.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->displayShape(fuselage.GetLoft(), m_docId, true, getDefaultShapeColor());
 }
 
 void TIGLCreatorDocument::drawFusedWing(const QString& Uid)
@@ -2359,7 +2359,7 @@ void TIGLCreatorDocument::drawFusedAircraft()
             return;
         }
 
-        app->getScene()->deleteAllObjects();
+        app->getScene()->deleteObjectsOfDocument(m_docId);
 
         ListPNamedShape map = GroupFaces(airplane, tigl::NAMED_COMPOUNDS);
         ListPNamedShape::iterator it;
@@ -2373,7 +2373,7 @@ void TIGLCreatorDocument::drawFusedAircraft()
             }
             PNamedShape shape = *it;
             if (shape) {
-                app->getScene()->displayShape(shape, true, colors[icol++]);
+                app->getScene()->displayShape(shape, m_docId, true, colors[icol++]);
             }
         }
 
@@ -2398,11 +2398,11 @@ void TIGLCreatorDocument::drawFusedAircraftTriangulation()
 {
     START_COMMAND()
     TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
 
-    app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    app->getScene()->displayShape(triangulation, m_docId, true, getDefaultShapeColor());
 }
 
 void TIGLCreatorDocument::drawIntersectionLine()
@@ -2476,12 +2476,12 @@ void TIGLCreatorDocument::drawIntersectionLine()
     }
     // load first wire
     for (int wireID = 1; wireID <= Intersector->GetCountIntersectionLines(); ++wireID) {
-        app->getScene()->displayShape(Intersector->GetWire(wireID), true, getDefaultShapeColor());
+        app->getScene()->displayShape(Intersector->GetWire(wireID), m_docId, true, getDefaultShapeColor());
 
         /* now calculate intersection and display single points */
         for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
             gp_Pnt point = Intersector->GetPoint(eta, wireID);
-            app->getScene()->displayPoint(point, "", Standard_False, 0, 0, 0, 1);
+            app->getScene()->displayPoint(point, "", m_docId, Standard_False, 0, 0, 0, 1);
         }
     }
     app->getScene()->updateViewer();
@@ -2500,23 +2500,23 @@ void TIGLCreatorDocument::drawWingComponentSegment(const QString& Uid)
 
     auto& cs = GetConfiguration().GetUIDManager().ResolveObject<tigl::CCPACSWingComponentSegment>(csUid.toStdString());
 
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(Uid.toStdString());
+    auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(Uid.toStdString());
     for (auto& obj : objects) {
         app->getScene()->getContext()->Remove(obj, Standard_False);
-        app->getScene()->GetShapeManager().removeObject(obj);
+        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
     }
 
     removeWingFlaps(Uid);
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(Uid.toStdString());
 
     // display component segment shape with transparency
-    auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, getDefaultShapeColor());
-    app->getScene()->GetShapeManager().addObject(Uid.toStdString(), cs_shape);
+    auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), m_docId, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager(m_docId).addObject(Uid.toStdString(), cs_shape);
     PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
         if (mirroredLoft)
         {
-            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
-            app->getScene()->GetShapeManager().addObject(Uid.toStdString(), shape);
+            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager(m_docId).addObject(Uid.toStdString(), shape);
             
         }
 
@@ -2600,23 +2600,23 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
             return;
         }
         
-        auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(WingUid.toStdString());
+        auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(WingUid.toStdString());
         for (auto& obj : objects) {
             app->getScene()->getContext()->Remove(obj, Standard_False);
-            app->getScene()->GetShapeManager().removeObject(obj);
+            app->getScene()->GetShapeManager(m_docId).removeObject(obj);
         }
 
         removeWingFlaps(WingUid);
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(WingUid.toStdString());
 
         // display component segment shape with transparency
-        auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), true, Quantity_NOC_ShapeCol, 0.5);
-        app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), cs_shape);
+        auto cs_shape = app->getScene()->displayShape(cs.GetLoft(), m_docId, true, Quantity_NOC_ShapeCol, 0.5);
+        app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), cs_shape);
         PNamedShape mirroredLoft = wing.GetMirroredLoft(cs.GetLoft()); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_ShapeCol, 0.5);
-                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
+                auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, Quantity_NOC_ShapeCol, 0.5);
+                app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), shape);
                 
             }
 
@@ -2626,15 +2626,15 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
         for (int ispar = 1; ispar <= structure.GetSparSegmentCount(); ++ispar) {
             const tigl::CCPACSWingSparSegment& spar = structure.GetSparSegment(ispar);
             TopoDS_Shape sparGeom                   = spar.GetSparGeometry();
-            auto spar_shape = app->getScene()->displayShape(sparGeom, true, Quantity_NOC_RED);
-            app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), spar_shape);
+            auto spar_shape = app->getScene()->displayShape(sparGeom, m_docId, true, Quantity_NOC_RED);
+            app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), spar_shape);
 
             PNamedShape loftNamed(new CNamedShape(sparGeom, WingUid.toStdString()));
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
-                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
+                auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, Quantity_NOC_RED);
+                app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), shape);
                 
             }
         }
@@ -2643,16 +2643,16 @@ void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
         for (int irib = 1; irib <= structure.GetRibsDefinitionCount(); ++irib) {
             const tigl::CCPACSWingRibsDefinition& rib = structure.GetRibsDefinition(irib);
             TopoDS_Shape ribGeom                      = rib.GetRibsGeometry();
-            auto rib_shape = app->getScene()->displayShape(ribGeom, true, Quantity_NOC_RED);
-            app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), rib_shape);
+            auto rib_shape = app->getScene()->displayShape(ribGeom, m_docId, true, Quantity_NOC_RED);
+            app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), rib_shape);
 
             PNamedShape loftNamed(new CNamedShape(ribGeom, WingUid.toStdString()));
             tigl::CCPACSWing& wing = GetConfiguration().GetWing(WingUid.toStdString());
             PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, Quantity_NOC_RED);
-                app->getScene()->GetShapeManager().addObject(WingUid.toStdString(), shape);
+                auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, Quantity_NOC_RED);
+                app->getScene()->GetShapeManager(m_docId).addObject(WingUid.toStdString(), shape);
 
             }
         }
@@ -2690,11 +2690,10 @@ void TIGLCreatorDocument::drawSystems()
         tigl::CCPACSGenericSystem& genericSystem = GetConfiguration().GetGenericSystem(gs);
 
         try {
-            app->getScene()->displayShape(genericSystem.GetLoft(), true, getDefaultShapeColor());
+            app->getScene()->displayShape(genericSystem.GetLoft(), m_docId, true, getDefaultShapeColor());
 
             if (genericSystem.GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
-                app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), true,
-                                              getDefaultShapeSymmetryColor());
+                app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), m_docId, true, getDefaultShapeSymmetryColor());
             }
         }
         catch (const tigl::CTiglError& err) {
@@ -2918,22 +2917,22 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
 
     START_COMMAND()
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
-    if (!app->getScene()->GetShapeManager().HasShapeEntry(rotorUid.toStdString())) {
+    if (!app->getScene()->GetShapeManager(m_docId).HasShapeEntry(rotorUid.toStdString())) {
         // Draw segment loft
-        app->getScene()->displayShape(rotor.GetLoft(), true, Quantity_NOC_RotorCol);
+        app->getScene()->displayShape(rotor.GetLoft(), m_docId, true, Quantity_NOC_RotorCol);
 
         // Draw rotor disk
         TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
-        auto shape = app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
-        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
+        auto shape = app->getScene()->displayShape(rotorDisk, m_docId, true, Quantity_NOC_RotorCol, 0.9);
+        app->getScene()->GetShapeManager(m_docId).addObject(rotorUid.toStdString(), shape);
 
         if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
             return;
         }
 
         // Draw mirrored rotor
-        shape = app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), false, Quantity_NOC_MirrRotorCol);
-        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
+        shape = app->getScene()->displayShape(rotor.GetMirroredLoft()->Shape(), m_docId, false, Quantity_NOC_MirrRotorCol);
+        app->getScene()->GetShapeManager(m_docId).addObject(rotorUid.toStdString(), shape);
 
         // Draw mirrored rotor disk
         gp_Ax2 mirrorPlane;
@@ -2951,11 +2950,11 @@ void TIGLCreatorDocument::drawRotorByUID(const QString& uid)
         BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
         const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
 
-        shape = app->getScene()->displayShape(mirrRotorDisk, true, Quantity_NOC_MirrRotorCol, 0.9);
-        app->getScene()->GetShapeManager().addObject(rotorUid.toStdString(), shape);
+        shape = app->getScene()->displayShape(mirrRotorDisk, m_docId, true, Quantity_NOC_MirrRotorCol, 0.9);
+        app->getScene()->GetShapeManager(m_docId).addObject(rotorUid.toStdString(), shape);
     }
     else {
-        IObjectList objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName(rotorUid.toStdString());
+        IObjectList objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName(rotorUid.toStdString());
         for (auto& obj : objects) {
             app->getScene()->getContext()->Display(obj, Standard_False);
         }
@@ -2972,7 +2971,7 @@ void TIGLCreatorDocument::drawRotor()
     }
 
     //clear screen
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     drawRotorByUID(rotorUid);
 }
@@ -2990,11 +2989,11 @@ void TIGLCreatorDocument::drawRotorDisk(const QString& uid)
     START_COMMAND()
 
     //clear screen
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     // Draw rotor disk
     TopoDS_Shape rotorDisk = rotor.GetRotorDisk()->Shape();
-    app->getScene()->displayShape(rotorDisk, true, Quantity_NOC_RotorCol, 0.9);
+    app->getScene()->displayShape(rotorDisk, m_docId, true, Quantity_NOC_RotorCol, 0.9);
 }
 
 void TIGLCreatorDocument::showRotorProperties(const QString& uid)
@@ -3085,12 +3084,12 @@ Quantity_Color TIGLCreatorDocument::getDefaultShapeSymmetryColor()
  */
 void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 {
-    displayedShapeNames = app->getScene()->GetShapeManager().GetDisplayedShapeNames();
-    app->getScene()->deleteAllObjects();
+    displayedShapeNames = app->getScene()->GetShapeManager(m_docId).GetDisplayedShapeNames();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     TopoDS_Wire wire = profile.GetWire();
-    auto WireObj = app->getScene()->displayShape(wire, true, getDefaultShapeColor());
-    app->getScene()->GetShapeManager().addObject(std::string("airfoil"), WireObj);
+    auto WireObj = app->getScene()->displayShape(wire, m_docId, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager(m_docId).addObject(std::string("airfoil"), WireObj);
 
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
@@ -3098,10 +3097,10 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 
     std::ostringstream text;
     text << "LE(" << lePoint.X() << ", " << lePoint.Y() << ", " << lePoint.Z() << ")";
-    app->getScene()->displayPoint(lePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    app->getScene()->displayPoint(lePoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
     text.str("");
     text << "TE(" << tePoint.X() << ", " << tePoint.Y() << ", " << tePoint.Z() << ")";
-    app->getScene()->displayPoint(tePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    app->getScene()->displayPoint(tePoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
     text.str("");
 
     gp_Lin gpline = gce_MakeLin(lePoint, tePoint);
@@ -3111,7 +3110,7 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
     if (length > 0.0) {
         Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(gpline, -length * 0.2, length * 1.2);
         TopoDS_Edge le_te_edge                = BRepBuilderAPI_MakeEdge(trimmedLine);
-        app->getScene()->displayShape(le_te_edge, true, getDefaultShapeSymmetryColor());
+        app->getScene()->displayShape(le_te_edge, m_docId, true, getDefaultShapeSymmetryColor());
     }
 
     // display points in case of a few sample points
@@ -3122,7 +3121,7 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
             std::stringstream str;
             str << i << ": (" << p.x << ", " << p.y << ", " << p.z << ")";
             gp_Pnt pnt = p.Get_gp_Pnt();
-            app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+            app->getScene()->displayPoint(pnt, str.str().c_str(), m_docId, Standard_False, 0., 0., 0., 6.);
         }
     }
     else {
@@ -3132,8 +3131,7 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 gp_Pnt chordPoint = profile.GetChordPoint(xsi);
                 text << "CPT(" << xsi << ")";
                 text << "(" << chordPoint.X() << ", " << chordPoint.Y() << ", " << chordPoint.Z() << ")";
-                app->getScene()->displayPoint(chordPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0,
-                                              0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(chordPoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -3150,8 +3148,7 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 gp_Pnt upperPoint = profile.GetUpperPoint(xsi);
                 text << "UPT(" << xsi << ")";
                 text << "(" << upperPoint.X() << ", " << upperPoint.Y() << ", " << upperPoint.Z() << ")";
-                app->getScene()->displayPoint(upperPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0,
-                                              0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(upperPoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -3168,8 +3165,7 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
                 gp_Pnt lowerPoint = profile.GetLowerPoint(xsi);
                 text << "LPT(" << xsi << ")";
                 text << "(" << lowerPoint.X() << ", " << lowerPoint.Y() << ", " << lowerPoint.Z() << ")";
-                app->getScene()->displayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0,
-                                              0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -3191,15 +3187,15 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
 void TIGLCreatorDocument::removeAirfoil()
 {
 
-    auto objects = app->getScene()->GetShapeManager().GetIObjectsFromShapeName("airfoil");
+    auto objects = app->getScene()->GetShapeManager(m_docId).GetIObjectsFromShapeName("airfoil");
     for (auto& obj : objects) {
         app->getScene()->getContext()->Remove(obj, Standard_False);
-        app->getScene()->GetShapeManager().removeObject(obj);
+        app->getScene()->GetShapeManager(m_docId).removeObject(obj);
     }
     
     if (!objects.empty())
     {
-        app->getScene()->deleteAllObjects();
+        app->getScene()->deleteObjectsOfDocument(m_docId);
         for (const auto& name : displayedShapeNames) {
                     drawComponentByUID(QString::fromStdString(name));
         }
@@ -3234,8 +3230,8 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
             gp_Pnt pnt = j.Get_gp_Pnt();
             pnt        = innerT.Transform(pnt);
 
-            auto point = app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-            app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
+            auto point = app->getScene()->displayPoint(pnt, "", m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), point);
         }
 
         // Get outer profile point list
@@ -3253,8 +3249,8 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
             gp_Pnt pnt = j.Get_gp_Pnt();
             pnt        = outerT.Transform(pnt);
 
-            auto point = app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-            app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
+            auto point = app->getScene()->displayPoint(pnt, "", m_docId, Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), point);
         }
     }
     app->getScene()->updateViewer();
@@ -3267,11 +3263,11 @@ void TIGLCreatorDocument::drawWing(tigl::CCPACSWing& wing)
 {
     START_COMMAND()
 
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Draw segment loft
-        app->getScene()->displayShape(wing.GetSegment(i).GetLoft(), true, getDefaultShapeColor());
+        app->getScene()->displayShape(wing.GetSegment(i).GetLoft(), m_docId, true, getDefaultShapeColor());
     }
 }
 
@@ -3291,15 +3287,15 @@ void TIGLCreatorDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
-    auto shape = app->getScene()->displayShape(compound, true, getDefaultShapeColor());
-    app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+    auto shape = app->getScene()->displayShape(compound, m_docId, true, getDefaultShapeColor());
+    app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
 
     PNamedShape loftNamed(new CNamedShape(compound, wing.GetUID().c_str()));
     PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed); 
         if (mirroredLoft)
         {
-            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
-            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor());
+            app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
         }
     app->getScene()->updateViewer();
 }
@@ -3331,14 +3327,14 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
         // Draw segment loft
         auto& segment = (tigl::CCPACSWingSegment&)wing.GetSegment(segmentIndex);
 
-        auto shape = app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
-        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+        auto shape = app->getScene()->displayShape(segment.GetLoft(), m_docId, true, getDefaultShapeColor());
+        app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
 
         PNamedShape mirroredLoft = wing.GetMirroredLoft(segment.GetLoft()); 
             if (mirroredLoft)
             {
-                auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor());
-                app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+                auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor());
+                app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
                 
             }
         
@@ -3348,13 +3344,13 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
                 double x, y, z;
                 tiglWingGetUpperPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                auto point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
-                app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
+                auto point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0., 0., 0., 1.);
+                app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), point);
 
                 tiglWingGetLowerPoint(m_cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
 
-                point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", Standard_False, 0., 0., 0., 1.);
-                app->getScene()->GetShapeManager().addObject(wing.GetUID(), point);
+                point = app->getScene()->displayPoint(gp_Pnt(x, y, z), "", m_docId, Standard_False, 0., 0., 0., 1.);
+                app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), point);
             }
         }
     }
@@ -3367,8 +3363,8 @@ void TIGLCreatorDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
 void TIGLCreatorDocument::drawFusedWing(tigl::CCPACSWing& wing)
 {
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
-    app->getScene()->displayShape(wing.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->deleteObjectsOfDocument(m_docId);
+    app->getScene()->displayShape(wing.GetLoft(), m_docId, true, getDefaultShapeColor());
 }
 
 /*
@@ -3377,9 +3373,9 @@ void TIGLCreatorDocument::drawFusedWing(tigl::CCPACSWing& wing)
 void TIGLCreatorDocument::drawWingComponentSegment(tigl::CCPACSWingComponentSegment& segment)
 {
     START_COMMAND()
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
-    app->getScene()->displayShape(segment.GetLoft(), true, getDefaultShapeColor());
+    app->getScene()->displayShape(segment.GetLoft(), m_docId, true, getDefaultShapeColor());
 }
 
 /*
@@ -3414,7 +3410,7 @@ void TIGLCreatorDocument::drawWingComponentSegmentPoint(const std::string& csUID
     TiglReturnCode ret = tiglWingComponentSegmentGetPoint(getCpacsHandle(), csUID.c_str(), eta, xsi, &x, &y, &z);
     if (ret == TIGL_SUCCESS) {
         gp_Pnt point(x, y, z);
-        app->getScene()->displayPoint(point, "", Standard_True, 0, 0, 0, 1.0);
+        app->getScene()->displayPoint(point, "", m_docId, Standard_True, 0, 0, 0, 1.0);
     }
     else {
         displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret),
@@ -3437,14 +3433,14 @@ void TIGLCreatorDocument::drawWingShells(tigl::CCPACSWing& wing)
     Quantity_NameOfColor colors[2] = {Quantity_NOC_GREEN, Quantity_NOC_RED};
     for (int i = 0; i < 2; ++i) {
 
-        auto shape = app->getScene()->displayShape(shapes[i], true, colors[i]);
-        app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+        auto shape = app->getScene()->displayShape(shapes[i], m_docId, true, colors[i]);
+        app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
 
         PNamedShape loftNamed(new CNamedShape(shapes[i], wing.GetUID().c_str()));
         PNamedShape mirroredLoft = wing.GetMirroredLoft(loftNamed);
         if (mirroredLoft) {
-            auto shape = app->getScene()->displayShape(mirroredLoft, true, colors[i]);
-            app->getScene()->GetShapeManager().addObject(wing.GetUID(), shape);
+            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, colors[i]);
+            app->getScene()->GetShapeManager(m_docId).addObject(wing.GetUID(), shape);
         }
     }
     app->getScene()->getViewer()->Update();
@@ -3517,7 +3513,7 @@ void TIGLCreatorDocument::updateCpacsConfigurationFromString(const std::string& 
 
     tiglCloseCPACSConfiguration(m_cpacsHandle);
     m_cpacsHandle = -1;
-    app->getScene()->deleteAllObjects();
+    app->getScene()->deleteObjectsOfDocument(m_docId);
 
     QStringList configurations;
     app->getScene()->getContext()->SetDisplayMode(AIS_Shaded, Standard_False);
