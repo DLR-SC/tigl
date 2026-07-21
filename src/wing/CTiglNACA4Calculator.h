@@ -116,9 +116,10 @@ class CTiglNACA4UpperCurve : public MathFunc3d {
         /**
          * @brief Get the X coordinate of the upper curve
          *
-         * Note: t is not the chord fraction x directly - internally x=t*t is used to
-         * remove the thickness distribution's sqrt(x) derivative singularity at the
-         * leading edge (t=0 -> x=0, t=1 -> x=1, t in between maps to x=t*t).
+         * Note: t is not the chord fraction x directly - internally a leading-edge
+         * reparametrization (see leParam in CTiglNACA4Calculator.cpp) is used to remove the
+         * thickness distribution's sqrt(x) derivative singularity at the leading edge
+         * (t=0 -> x=0, t=1 -> x=1), while leaving x(t) close to identity away from t=0.
          *
          * @param t
          * @return double

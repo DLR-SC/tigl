@@ -26,8 +26,26 @@
 #include "CFunctionToBspline.h"
 #include "CTiglError.h"
 
+namespace
+{
+    // Leading-edge reparametrization: x(t) = (1+eps)*t*t/(t+eps).
+    // Removes the thickness distribution's sqrt(x) derivative singularity at the leading
+    // edge (x(0)=0, x'(0)=0, same as a plain t*t substitution close to t=0), but - unlike a
+    // plain t*t, which reshapes the parametrization over the *entire* chord - relaxes back
+    // towards the identity x(t)~=t once t significantly exceeds eps, so the curve fit away
+    // from the leading edge (and its knot placement) stays close to the original, direct-x
+    // parametrization. A plain t*t was found to shift curve representation enough at
+    // e.g. x=0.25 to break a sibling-component boolean fuse in specific geometries; eps=0.02
+    // keeps the identity-like region starting well before that.
+    double leParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
+
 namespace tigl{
-        
+
         CTiglNACA4Calculator::CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
          : max_camber(max_camber/100)
          , max_camber_position(max_camber_position/10)
@@ -146,14 +164,14 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            // CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, removing the
-            // thickness distribution's sqrt(x) derivative singularity at the leading edge,
-            // so the adaptive Chebyshev fit now converges quickly everywhere (verified
-            // empirically: converges well below this depth, leaving no measurable tangent
-            // mismatch at any internal knot, including at the leading edge).
+            // CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading edge (see
+            // leParam above), removing the thickness distribution's sqrt(x) derivative
+            // singularity there, so the adaptive Chebyshev fit now converges quickly
+            // everywhere (verified empirically: converges well below this depth, leaving no
+            // measurable tangent mismatch at any internal knot, including at the leading edge).
             int maxDepth = 10;
 
-            tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
+            tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
         }
 
@@ -164,11 +182,11 @@ namespace tigl{
             const double umax = 1.;
             int degree = 3;
             double tolerance=1e-5;
-            // CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, removing the
-            // thickness distribution's sqrt(x) derivative singularity at the leading edge,
-            // so the adaptive Chebyshev fit now converges quickly everywhere (verified
-            // empirically: converges well below this depth, leaving no measurable tangent
-            // mismatch at any internal knot, including at the leading edge).
+            // CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading edge (see
+            // leParam above), removing the thickness distribution's sqrt(x) derivative
+            // singularity there, so the adaptive Chebyshev fit now converges quickly
+            // everywhere (verified empirically: converges well below this depth, leaving no
+            // measurable tangent mismatch at any internal knot, including at the leading edge).
             int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
@@ -181,19 +199,17 @@ namespace tigl{
         {}
 
         double CTiglNACA4UpperCurve::valueX(double t)  {
-            // t*t reparametrization: the thickness distribution's sqrt(x) term makes
-            // d(upper_curve)/dx unbounded at x=0. Composing with x=t*t makes
-            // sqrt(t*t)=t, i.e. linear (and smooth) in t, removing that singularity -
-            // the same technique already used by CCSTCurveBuilder's classical-airfoil
-            // case for the same reason.
-            gp_Vec2d vec = calculator.upper_curve(t*t);
+            // see leParam above: removes the thickness distribution's unbounded
+            // d(upper_curve)/dx at the leading edge (x=0) without perturbing the
+            // parametrization away from it.
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.X();
         }
         double CTiglNACA4UpperCurve::valueY(double t)  {
             return 0.0;
         }
         double CTiglNACA4UpperCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t*t);
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.Y();
         }
 
@@ -203,8 +219,8 @@ namespace tigl{
         {}
 
         double CTiglNACA4LowerCurve::valueX(double t)  {
-            // see CTiglNACA4UpperCurve::valueX for why t is squared here
-            gp_Vec2d vec = calculator.lower_curve(t*t);
+            // see CTiglNACA4UpperCurve::valueX/leParam for why t is reparametrized here
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.X();
         }
 
@@ -213,7 +229,7 @@ namespace tigl{
         }
 
         double CTiglNACA4LowerCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t*t);
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.Y();
         }
 

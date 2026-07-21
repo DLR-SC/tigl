@@ -245,15 +245,26 @@ TEST(CTiglNACA4Calculator, naca6415_trailingedge_length){
     EXPECT_NEAR(thickness, 0.13, 1e-14);
 }
 
+namespace {
+    // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
+    // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACA4UpperCurve/LowerCurve::valueX/valueZ, so
+    // these tests can independently compute the expected reparametrized chord fraction.
+    double testLeParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
+
 TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     tigl::CTiglNACA4UpperCurve upperCurve(NACA4);
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
-    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
-    // (see CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
+    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.upper_curve(testLeParam(0.5));
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
@@ -266,9 +277,9 @@ TEST(CTiglNACA4Calculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoo
     ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
     ASSERT_EQ(lowerCurve.valueY(1.), 0.);
 
-    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
-    // (see CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
@@ -278,9 +289,9 @@ TEST(CTiglNACA4Calculator, naca2212_bspline_vs_lower_curve_coord)
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
-    // the bspline's own parameter u corresponds to x=u*u, not x=u directly (see
+    // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
     // CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-4);
@@ -507,11 +518,12 @@ TEST(CTiglNACA4Calculator, naca2412_getUpperLowerWire) {
 TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
 {
     // Strongly cambered profile: exercises the adaptive multi-segment path in
-    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, which
-    // removes the thickness distribution's sqrt(x) derivative singularity at the leading
-    // edge - so unlike before that reparametrization, every internal knot (including right
-    // at the leading/trailing edge) should now be honestly C1 continuous, with no margin
-    // needed to exclude a "genuinely near-vertical" region.
+    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading
+    // edge (see leParam in CTiglNACA4Calculator.cpp), which removes the thickness
+    // distribution's sqrt(x) derivative singularity there - so unlike before that
+    // reparametrization, every internal knot (including right at the leading/trailing edge)
+    // should now be honestly C1 continuous, with no margin needed to exclude a "genuinely
+    // near-vertical" region.
     tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
 
     auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
