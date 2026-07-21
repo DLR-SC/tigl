@@ -133,6 +133,7 @@ public slots:
     void setObjectsColor(const QColor &color);
     void setObjectsColorRGB(int r, int g, int b, int a = 255);
     void setFaceBoundariesEnabled(bool enabled);
+    void selectShape(const QString& uid);
 
 signals:
 

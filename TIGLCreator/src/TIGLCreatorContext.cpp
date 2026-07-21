@@ -350,6 +350,24 @@ void TIGLCreatorContext::selectAll()
     }
 }
 
+void TIGLCreatorContext::selectShape(const QString& uid)
+{
+    if (myContext.IsNull()) {
+        return;
+    }
+
+    IObjectList iobjects = myShapeManager.GetIObjectsFromShapeName(uid.toStdString());
+    if (iobjects.empty()) {
+        return;
+    }
+
+    myContext->ClearSelected(Standard_False);
+    for (auto& obj : iobjects) {
+        myContext->AddOrRemoveSelected(obj, Standard_False);
+    }
+    myContext->UpdateCurrentViewer();
+}
+
 void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 {
     Standard_Real radius;

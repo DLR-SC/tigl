@@ -314,7 +314,12 @@ void TIGLScriptEngine::displayHelp()
     helpString += "Draw first wing:<br/>";
     helpString += "    uid = tigl.wingGetUID(1);<br/>";
     helpString += "    drawShape(tigl.getShape(uid));<br/><br/>";
-    
+
+    helpString += "Select and recolor first wing:<br/>";
+    helpString += "    uid = tigl.wingGetUID(1);<br/>";
+    helpString += "    app.scene.selectShape(uid);<br/>";
+    helpString += "    app.scene.setObjectsColorRGB(255, 0, 0);<br/><br/>";
+
     helpString += "Show top view and fit screen:<br/>";
     helpString += "    app.viewer.viewTop();<br/>";
     helpString += "    app.viewer.fitAll();<br/><br/>";
