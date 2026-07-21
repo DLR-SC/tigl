@@ -44,6 +44,8 @@
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "CTiglError.h"
+#include <tixi.h>
+
 
 TEST(CTiglNACACalculator, naca2212_le_and_te_points){
     //tigl::CTiglNACACalculator  NACA4(2,2,12, 0.00252);
@@ -504,6 +506,7 @@ TEST(CTiglNACACalculator, naca23012_export_bsplines){
     BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_22012.brep");
 }
 
+
 TEST(CTiglNACACalculator, naca23012_python){
     //tigl::CTiglNACACalculator NACA4(2,2,0,18, 0.0);
     tigl::CTiglNACACalculator NACA5(tigl::NACA5DigitCode("22018"), 0.0);
@@ -636,4 +639,73 @@ TEST(CTiglNACACalculator, naca23012_getUpperLowerWire) {
     Standard_Real u1, u2;
     Handle(Geom_Curve) ulCurve = BRep_Tool::Curve(ul, u1, u2);
     ASSERT_FALSE(ulCurve.IsNull());
+}
+
+
+TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
+    const char* xmlfile = "/localdata2/gedl_ha/code/tigl/tests/TestData/naca_5_test.xml";
+
+    TixiDocumentHandle tixiHandle = -1;
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+
+    EXPECT_EQ(tixiOpenDocument(xmlfile, &tixiHandle), SUCCESS);
+    ASSERT_TRUE(tixiHandle >= 0);
+
+    EXPECT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle), TIGL_SUCCESS);
+
+    char* nacaCodeStr = NULL;
+    std::string xpath = "//wingAirfoil[@uID='NACA0009']/nacaProfile/naca5DigitCode";
+    EXPECT_EQ(tixiGetTextElement(tixiHandle, xpath.c_str(), &nacaCodeStr), SUCCESS);
+    ASSERT_STREQ(nacaCodeStr, "22018");
+
+    //tigl::NACA5DigitCode naca5code(std::string(nacaCodeStr));
+    tigl::CTiglNACACalculator nacaCalc(tigl::NACA5DigitCode(nacaCodeStr), 0.0);
+
+    Handle(Geom_BSplineCurve) upperCurve = nacaCalc.upper_bspline();
+    Handle(Geom_BSplineCurve) lowerCurve = nacaCalc.lower_bspline();
+
+    ASSERT_FALSE(upperCurve.IsNull());
+    ASSERT_FALSE(lowerCurve.IsNull());
+    /*
+    int nbPoles = upperCurve->NbPoles();
+    ASSERT_GE(nbPoles, 1);
+
+    std::vector<double> upperPoleX, upperPoleZ;
+    for (int i = 1; i <= nbPoles; ++i) {
+        gp_Pnt pole = upperCurve->Pole(i);
+        upperPoleX.push_back(pole.X());
+        upperPoleZ.push_back(pole.Z());
+
+        EXPECT_GE(pole.X(), 0.0);
+        EXPECT_LE(pole.X(), 1.05);
+        EXPECT_GE(pole.Z(), -0.01);
+    }
+
+    for (int i = 1; i <= lowerCurve->NbPoles(); ++i) {
+        gp_Pnt pole = lowerCurve->Pole(i);
+        EXPECT_GE(pole.X(), 0.0);
+        EXPECT_LE(pole.X(), 1.05);
+        EXPECT_LE(pole.Z(), 0.01);
+    }
+
+    EXPECT_GE(upperPoleZ.front(), 0.0);
+    EXPECT_LE(upperPoleZ.back(), 0.01);
+    EXPECT_GE(upperPoleX.front(), 0.0);
+    EXPECT_GE(upperPoleX.back(), 0.99);
+
+    EXPECT_NO_THROW((void)nacaCalc.upper_curve(0.3));
+    EXPECT_NO_THROW((void)nacaCalc.lower_curve(0.3));
+    gp_Vec2d upperPt = nacaCalc.upper_curve(0.3);
+    gp_Vec2d lowerPt = nacaCalc.lower_curve(0.3);
+    EXPECT_GT(upperPt.Y(), lowerPt.Y());
+    */
+    auto upperEdge = BRepBuilderAPI_MakeEdge(upperCurve).Edge();
+    auto lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve).Edge();
+    ASSERT_FALSE(upperEdge.IsNull());
+    ASSERT_FALSE(lowerEdge.IsNull());
+    BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_22018_fromXML.brep");
+    BRepTools::Write(lowerEdge, "TestData/export/lowerEdgeTest5_22018_fromXML.brep");
+
+    EXPECT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+    EXPECT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
 }

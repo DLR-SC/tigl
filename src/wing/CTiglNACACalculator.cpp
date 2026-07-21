@@ -24,7 +24,9 @@
 #include "tiglmathfunctions.h"
 #include "CTiglNACACalculator.h"
 #include "CFunctionToBspline.h"
+#include "CTiglBSplineApproxInterp.h"
 #include "CTiglError.h"
+#include <math.h>
 
 namespace tigl{
 
@@ -428,19 +430,19 @@ namespace tigl{
                         //std::cerr << "result6 okay " << result6 << std::endl;
                         return result6;
                     }
-                    else if(x > p){ //hier statt p au 0.3180 oder war das was anderes?
+                    else if(x > m){ //hier statt p au 0.3180 oder war das was anderes? //hier war p
                         return -((k1*m*m*m)/6);
                     }
                 }
                 else if(q==1){
-                    double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m));
+                    double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m)); //hier nicht auch die methode benutzen
                     if(0 <= x && x <= m){
                     
                         double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m));
                         //std::cerr << "result5 " << result5 << std::endl;
                         return result5;
                     }
-                    else if(x > 0.3180){
+                    else if(x > m){//0.3180
                     
                         return (k1/6)*(3*frack2k1*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
@@ -464,26 +466,68 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
 
+            int npnts = 100;
+            auto pnts = TColgp_Array1OfPnt(1, npnts);
+            for (int i=1; i<=npnts; ++i) {
+                double u = ((double)i-1)/(npnts-1);
+                //double x = 0.5 * (1.0 - cos(M_PI * u));
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
+                auto p = upper_curve(x);
+                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+                std::cout << p.X() << ", " << p.Y() << "\n";
+            }
+
+            int nControlPoints = 34;
+            int deg = 3;
+            bool continuous_if_closed = false;
+            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            builder.InterpolatePoint(0);
+            builder.InterpolatePoint(npnts-1);
+            auto result = builder.FitCurveOptimal();
+            return result.curve;
+
+
             CTiglNACA4UpperCurve upperCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-3;//war 5!!
-            int maxDepth = 30;//war 10!!
+            double tolerance=1e-5;//war 5!!
+            int maxDepth = 10;//war 10!!
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
+
+            int npnts = 100;
+            auto pnts = TColgp_Array1OfPnt(1, npnts);
+            for (int i=1; i<=npnts; ++i) {
+                double u = ((double)i-1)/(npnts-1); // cosine distribution? closer at leading edge
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
+                //double x = 0.5 * (1.0 - cos(M_PI * u));
+                auto p = lower_curve(x);
+                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+            }
+
+            int nControlPoints = 34;
+            int deg = 3;
+            bool continuous_if_closed = false;
+            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            builder.InterpolatePoint(0);
+            builder.InterpolatePoint(npnts-1);
+            auto result = builder.FitCurveOptimal();
+            return result.curve;
+
+
             CTiglNACA4LowerCurve lowerCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-3;
-            int maxDepth = 30;
+            double tolerance=1e-5;
+            int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
