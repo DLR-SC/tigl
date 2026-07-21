@@ -187,6 +187,7 @@ public:
     bool isFailedUID(const std::string& uid) const;
     void markFailedUID(const std::string& uid);
     void handleUIDError(const std::string& uid, const tigl::CTiglError& ex);
+    void handleUIDError(const std::string& uid, const std::string& message);
 
     QModelIndex getIdxForUID(std::string uid) const;
 

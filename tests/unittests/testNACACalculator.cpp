@@ -45,6 +45,7 @@
 #include "Geom_BSplineCurve.hxx"
 #include "CTiglError.h"
 #include <tixi.h>
+#include <gp_Vec.hxx>
 
 
 TEST(CTiglNACACalculator, naca2212_le_and_te_points){
@@ -270,7 +271,9 @@ TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoor
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
-    gp_Vec2d pnt = NACA4.upper_curve(0.5);
+    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
+    // (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
@@ -279,12 +282,14 @@ TEST(CTiglNACACalculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoor
     //tigl::CTiglNACACalculator NACA4(2,2,12, 15);
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
     tigl::CTiglNACA4LowerCurve lowerCurve(NACA4);
-    
+
     ASSERT_EQ(lowerCurve.valueY(0.), 0.);
     ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
     ASSERT_EQ(lowerCurve.valueY(1.), 0.);
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
+    // (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
@@ -295,7 +300,9 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // the bspline's own parameter u corresponds to x=u*u, not x=u directly (see
+    // CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); //is 1e-2 too small?
@@ -708,4 +715,41 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
 
     EXPECT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
     EXPECT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+// Regression test for CFunctionToBspline::concatC1 (used internally by
+// CTiglNACA4Calculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
+// adaptive Chebyshev fit to produce many segments, exercising the multi-segment
+// concatenation path. Away from the leading/trailing edge (where the thickness formula's
+// sqrt(x) term makes the true tangent direction change very fast / become vertical - an
+// inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
+// honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
+TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
+{
+    // Strongly cambered profile: exercises the adaptive multi-segment path in
+    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, which
+    // removes the thickness distribution's sqrt(x) derivative singularity at the leading
+    // edge - so unlike before that reparametrization, every internal knot (including right
+    // at the leading/trailing edge) should now be honestly C1 continuous, with no margin
+    // needed to exclude a "genuinely near-vertical" region.
+    tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
+
+    auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
+        // make sure this actually exercises the multi-segment concatenation path
+        ASSERT_GT(curve->NbKnots(), 2);
+
+        const double eps = 1e-7;
+        for (int i = 2; i < curve->NbKnots(); ++i) {
+            double u = curve->Knot(i);
+
+            gp_Pnt pLeft, pRight;
+            gp_Vec dLeft, dRight;
+            curve->D1(u - eps, pLeft, dLeft);
+            curve->D1(u + eps, pRight, dRight);
+
+            EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
+            EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-3) << "tangent kink at knot " << u;
+        }
+    };
+
+    checkContinuity(NACA4.upper_bspline());
+    checkContinuity(NACA4.lower_bspline());
 }
