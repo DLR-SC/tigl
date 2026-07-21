@@ -190,16 +190,20 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
     }
     const double error = std::sqrt(errx*errx + erry*erry + errz*errz);
     
+#ifdef DEBUG
     if (depth >= _maxDepth && error >= _tol) {
         // maxDepth was hit before the requested tolerance was reached - the segment is
         // accepted anyway, but this silently breaks the tolerance promise. This typically
         // means the function has a locally very high derivative/curvature (e.g. near a
         // sqrt(x)-like singularity) that keeps failing to converge no matter how far the
-        // interval is bisected.
+        // interval is bisected - callers with such functions (e.g. NACA/CST leading edges)
+        // hit this routinely, so it's a build-time developer diagnostic, not something
+        // that should reach any runtime log (console or file) in a normal build.
         LOG(WARNING) << "CFunctionToBspline: maxDepth (" << _maxDepth << ") reached on ["
                      << umin << ", " << umax << "] with approximation error " << error
                      << " exceeding requested tolerance " << _tol;
     }
+#endif
 
     if (error < _tol || depth >= _maxDepth) {
         // we can use this approximation, store to structure
