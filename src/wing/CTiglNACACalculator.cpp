@@ -28,6 +28,16 @@
 #include "CTiglError.h"
 #include <math.h>
 
+namespace{
+
+     double leParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
+
+
 namespace tigl{
 
         NACA4DigitCode::NACA4DigitCode(std::string const& code) { // struct constructor oder so?
@@ -465,7 +475,7 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
-
+            /*
             int npnts = 100;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
@@ -485,7 +495,7 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-
+            */
 
             CTiglNACA4UpperCurve upperCurve(*this);
 
@@ -500,7 +510,7 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
-
+            /*
             int npnts = 100;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
@@ -519,7 +529,7 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-
+            */
 
             CTiglNACA4LowerCurve lowerCurve(*this);
 
@@ -539,14 +549,14 @@ namespace tigl{
         {}
 
         double CTiglNACA4UpperCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.X();
         }
         double CTiglNACA4UpperCurve::valueY(double t)  {
             return 0.0;
         }
         double CTiglNACA4UpperCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.Y();
         }
 
@@ -556,7 +566,7 @@ namespace tigl{
         {}
 
         double CTiglNACA4LowerCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.X();
         }
 
@@ -565,10 +575,14 @@ namespace tigl{
         }
 
         double CTiglNACA4LowerCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.Y();
         }
 
 } //namespace tigl
+
+
+//changes: added leparam in calculator (zb namespace + zb upper_curve(leParam)) und auch in tests testLeParam namespcae dazu, wird au benutzt in manchen tests
+
 
 

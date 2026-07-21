@@ -47,6 +47,16 @@
 #include <tixi.h>
 #include <gp_Vec.hxx>
 
+namespace {
+    // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
+    // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACA4UpperCurve/LowerCurve::valueX/valueZ, so
+    // these tests can independently compute the expected reparametrized chord fraction.
+    double testLeParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
 
 TEST(CTiglNACACalculator, naca2212_le_and_te_points){
     //tigl::CTiglNACACalculator  NACA4(2,2,12, 0.00252);
@@ -273,7 +283,8 @@ TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoor
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
     // upperCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
     // (see CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
+    //gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
+    gp_Vec2d pnt = NACA4.upper_curve(testLeParam(0.5));
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
@@ -289,7 +300,8 @@ TEST(CTiglNACACalculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoor
 
     // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
     // (see CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    //gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
@@ -302,7 +314,8 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
 
     // the bspline's own parameter u corresponds to x=u*u, not x=u directly (see
     // CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    //p_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); //is 1e-2 too small?
@@ -715,14 +728,19 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
 
     EXPECT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
     EXPECT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+
+}
+
+
 // Regression test for CFunctionToBspline::concatC1 (used internally by
-// CTiglNACA4Calculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
+// CTiglNACACalculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
 // adaptive Chebyshev fit to produce many segments, exercising the multi-segment
 // concatenation path. Away from the leading/trailing edge (where the thickness formula's
 // sqrt(x) term makes the true tangent direction change very fast / become vertical - an
 // inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
 // honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
-TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
+
+TEST(CTiglNACACalculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
 {
     // Strongly cambered profile: exercises the adaptive multi-segment path in
     // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize with x=t*t, which
@@ -730,7 +748,7 @@ TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere
     // edge - so unlike before that reparametrization, every internal knot (including right
     // at the leading/trailing edge) should now be honestly C1 continuous, with no margin
     // needed to exclude a "genuinely near-vertical" region.
-    tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
+    tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("6415"), 0.13);
 
     auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
         // make sure this actually exercises the multi-segment concatenation path
