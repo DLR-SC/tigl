@@ -170,13 +170,11 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     materialCombo->setCurrentIndex(0);
 
                     if (hasSymmetry) {
-                        bool shown = true;
-                        if (sm.HasShapeEntry(uid.toStdString())) {
-                            auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-                            if (objs.size() > 1 && !objs[1].IsNull()) {
-                                shown = context->getContext()->IsDisplayed(objs[1]);
-                            }
-                        }
+                        // Read the persisted preference rather than the live AIS display state:
+                        // the latter gets reset whenever the shape is redrawn (e.g. by toggling
+                        // this component's visibility in the CPACS tree), which would otherwise
+                        // desync the checkbox from what is actually shown in the viewer.
+                        bool shown = sm.GetSymmetryVisible(uid.toStdString());
                         QSignalBlocker blocker(checkBoxShowSymmetry);
                         checkBoxShowSymmetry->setChecked(shown);
                     }
@@ -567,13 +565,15 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
         return;
     }
     auto &sm = currentContext->GetShapeManager();
+    // Reset Options should also restore the default "Show Symmetry" state.
+    sm.SetSymmetryVisible(uid.toStdString(), true);
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     auto context = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-         if (!context.IsNull() && currentDoc) {  
+         if (!context.IsNull() && currentDoc) {
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
@@ -613,9 +613,22 @@ void ModificatorDisplayOptionsWidget::onShowSymmetryToggled(bool checked)
         return;
     }
     auto &sm = currentContext->GetShapeManager();
+    // Persist the preference so it survives the mirrored shape being torn down and
+    // re-created (e.g. by toggling this component's visibility in the CPACS tree).
+    sm.SetSymmetryVisible(uid.toStdString(), checked);
+
     if (!sm.HasShapeEntry(uid.toStdString()) && currentDoc) {
         currentDoc->drawComponentByUID(uid);
     }
+
+    // If the component itself is currently hidden (visibility toggled off in the CPACS
+    // tree), don't touch the AIS display state now: showing just the mirrored shape while
+    // the main one stays hidden would look inconsistent. The preference just recorded above
+    // will be picked up once the component's visibility is toggled back on.
+    if (!sm.GetVisibility(uid.toStdString())) {
+        return;
+    }
+
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     if (objs.size() <= 1 || objs[1].IsNull()) {
         return;
