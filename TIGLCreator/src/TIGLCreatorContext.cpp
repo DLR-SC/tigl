@@ -394,7 +394,7 @@ void TIGLCreatorContext::selectShape(const QString& uid)
         return;
     }
 
-    IObjectList iobjects = myShapeManager.GetIObjectsFromShapeName(uid.toStdString());
+    IObjectList iobjects = GetIObjectsFromShapeName(uid.toStdString());
     if (iobjects.empty()) {
         LOG(WARNING) << "TIGLCreatorContext::selectShape: No shape found for UID \"" << uid.toStdString() << "\"" << std::endl;
         return;
@@ -726,6 +726,17 @@ PNamedShape TIGLCreatorContext::GetShapeFromIObject(const Handle(AIS_Shape)& obj
         }
     }
     return PNamedShape();
+}
+
+IObjectList TIGLCreatorContext::GetIObjectsFromShapeName(const std::string& name) const
+{
+    for (const auto& kv : myShapeManagers) {
+        IObjectList objects = kv.second.GetIObjectsFromShapeName(name);
+        if (!objects.empty()) {
+            return objects;
+        }
+    }
+    return IObjectList();
 }
 
 Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoDS_Shape& loft, DocumentId docId, bool updateViewer,

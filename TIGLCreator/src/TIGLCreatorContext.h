@@ -97,6 +97,12 @@ public:
     // document.
     PNamedShape GetShapeFromIObject(const Handle(AIS_Shape)& obj);
 
+    // Cross-document lookup: finds the interactive objects for a named
+    // shape, regardless of which open document owns it. Used by
+    // selectShape(), which (e.g. via the scripting console) has no
+    // document context of its own.
+    IObjectList GetIObjectsFromShapeName(const std::string& name) const;
+
     // Function used to highlight (HL) shape (used by ModificatorManager)
 
     // display the shape using highlighting settings and return the AIS_InteractiveObject
