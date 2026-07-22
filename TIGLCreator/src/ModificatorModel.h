@@ -259,7 +259,6 @@ private:
     TIGLCreatorContext* scene;
 
     QUndoStack* myUndoStack;
-    TIGLCreatorWindow* mainWindow;
     QList<Handle(AIS_InteractiveObject)> highligthteds;
     ProfilesDBManager profilesDB;
     mutable std::set<std::string> failedUIDs;

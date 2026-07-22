@@ -17,7 +17,6 @@
  */
 
 #include "ModificatorModel.h"
-#include "TIGLCreatorWindow.h"
 #include "CTiglUIDManager.h"
 #include "TIGLCreatorUndoCommands.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -50,7 +49,6 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
     this->modificatorContainerWidget->setProfilesManager( &profilesDB);
     this->myUndoStack = undoStack;
     this->scene = scene;
-    this->mainWindow = qobject_cast<TIGLCreatorWindow*>(parent);
 
     // signals:
     connect(modificatorContainerWidget, SIGNAL(undoCommandRequired()), this, SLOT(createUndoCommand()));
@@ -941,10 +939,6 @@ void ModificatorModel::onAddWingRequested()
         tree.createChildrenRecursively(*new_item);
 
         endInsertRows();
-
-        if (mainWindow) {
-            mainWindow->updateMenus();
-        }
     }
 }
 
@@ -1155,10 +1149,6 @@ void ModificatorModel::onAddFuselageRequested()
         tree.createChildrenRecursively(*new_item);
 
         endInsertRows();
-
-        if (mainWindow) {
-            mainWindow->updateMenus();
-        }
     }
 }
 
