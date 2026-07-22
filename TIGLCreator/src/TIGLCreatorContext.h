@@ -140,6 +140,7 @@ signals:
     void error (int errorCode, QString& errorDescription);
     void displayAttributesChanged();
     void gridPlaneChanged(TIGLCreatorSettings::GridPlane plane);
+    void shapeSelected(const QString& uid);
 
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();

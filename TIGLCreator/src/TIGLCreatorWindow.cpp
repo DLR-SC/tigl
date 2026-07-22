@@ -1038,6 +1038,7 @@ void TIGLCreatorWindow::connectSignals()
 
     connect( myOCC, &TIGLCreatorWidget::shapeSelected, treeWidget, &CPACSTreeWidget::setSelectedUID);
     connect( myOCC, &TIGLCreatorWidget::nonEditableShapeSelected, treeWidget, &CPACSTreeWidget::unsetSelectedUID);
+    connect( myScene, &TIGLCreatorContext::shapeSelected, treeWidget, &CPACSTreeWidget::setSelectedUID);
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
