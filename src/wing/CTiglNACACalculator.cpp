@@ -502,9 +502,9 @@ namespace tigl{
 
             const double umin = 0.;
             const double umax = 1.;
-            int degree = 3;
-            double tolerance=1e-7;//war 5!!
-            int maxDepth = 20;//war 10!!
+            int degree = 10;
+            double tolerance=1e-5;//war 5!!
+            int maxDepth = 10;//war 10!!
 
             tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
             return converter.Curve();
@@ -537,9 +537,9 @@ namespace tigl{
 
             const double umin = 0.;
             const double umax = 1.;
-            int degree = 3;
-            double tolerance=1e-7;
-            int maxDepth = 20;
+            int degree = 10;
+            double tolerance=1e-5;
+            int maxDepth = 10;
 
             tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
             return converter.Curve();
