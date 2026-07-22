@@ -12,6 +12,7 @@ Changes since last release
   - TiGLCreator: Disable Standardize menu option, until the algorithm works reliably [#1336](https://github.com/DLR-SC/tigl/issues/1336)
   - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
   - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
+  - Add `app.scene.selectShape` function to the TiGLCreator scripting console, to select a shape by its CPACS UID (e.g. for per-shape color customization via `setObjectsColor`/`setObjectsColorRGB`) ([#1316](https://github.com/DLR-SC/tigl/issues/1316))
   - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
   - Add geometry and mass-property evaluation for fuselage decks ([#1298](https://github.com/DLR-SC/tigl/pull/1298), [CPACS#859](https://github.com/DLR-SL/CPACS/issues/859))
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)

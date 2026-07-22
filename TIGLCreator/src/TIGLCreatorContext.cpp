@@ -32,6 +32,7 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 #include "PNamedShape.h"
+#include "CTiglLogging.h"
 
 #include "ISession_Point.h"
 #include "ISession_Text.h"
@@ -348,6 +349,27 @@ void TIGLCreatorContext::selectAll()
         }
         myContext->UpdateCurrentViewer();
     }
+}
+
+void TIGLCreatorContext::selectShape(const QString& uid)
+{
+    if (myContext.IsNull()) {
+        return;
+    }
+
+    IObjectList iobjects = myShapeManager.GetIObjectsFromShapeName(uid.toStdString());
+    if (iobjects.empty()) {
+        LOG(WARNING) << "TIGLCreatorContext::selectShape: No shape found for UID \"" << uid.toStdString() << "\"" << std::endl;
+        return;
+    }
+
+    myContext->ClearSelected(Standard_False);
+    for (auto& obj : iobjects) {
+        myContext->AddOrRemoveSelected(obj, Standard_False);
+    }
+    myContext->UpdateCurrentViewer();
+
+    emit shapeSelected(uid);
 }
 
 void TIGLCreatorContext::setGridOffset (Standard_Real offset)
