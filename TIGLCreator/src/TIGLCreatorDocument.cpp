@@ -2396,9 +2396,31 @@ void TIGLCreatorDocument::drawFusedAircraft()
 
 void TIGLCreatorDocument::drawFusedAircraftTriangulation()
 {
+    FuseDialog dialog(app);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if (!dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if (dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if (dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
     START_COMMAND()
     try {
-        PNamedShape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->FusedPlane();
         if (!airplane) {
             displayError("Error computing fused aircraft");
             return;
