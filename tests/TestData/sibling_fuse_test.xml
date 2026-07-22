@@ -2,21 +2,42 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
   <header>
     <name>Cpacs2Test</name>
-    <version>0.2.0</version>
-    <versionInfos>
-      <versionInfo version="0.1.0">
-	<cpacsVersion>3.0</cpacsVersion>
-	<creator>Martin Siggel</creator>
-	<description>Simple Wing for unit testing</description>
-	<timestamp>2012-10-09T15:12:47</timestamp>
-      </versionInfo>
-      <versionInfo version="0.2.0">
-        <cpacsVersion>3.0</cpacsVersion>
+    <description>Simple Wing for unit testing</description>
+    <creator>Martin Siggel</creator>
+    <timestamp>2012-10-09T15:12:47</timestamp>
+    <version>0.5.0</version>
+    <cpacsVersion>3.2</cpacsVersion>
+    <updates>
+      <update>
+        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
         <creator>cpacs2to3</creator>
-        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <timestamp>2018-01-15T09:22:57</timestamp>
-      </versionInfo>
-    </versionInfos>
+        <version>0.2</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Added missing UIDs.</modification>
+        <creator>fix_errors.py</creator>
+        <timestamp>2019-04-29T20:48:26</timestamp>
+        <version>0.3.0</version>
+        <cpacsVersion>3.0</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2020-04-26T02:01:33</timestamp>
+        <version>0.4.0</version>
+        <cpacsVersion>3.1</cpacsVersion>
+      </update>
+      <update>
+        <modification>Converted to CPACS 3.2 using cpacs2to3</modification>
+        <creator>cpacs2to3</creator>
+        <timestamp>2021-04-23T18:02:00</timestamp>
+        <version>0.5.0</version>
+        <cpacsVersion>3.2</cpacsVersion>
+      </update>
+    </updates>
+    <versionInfos/>
   </header>
   <vehicles>
     <aircraft>
@@ -25,7 +46,7 @@
         <reference>
           <area>1</area>
           <length>1</length>
-          <point>
+          <point uID="Cpacs2Test_point1">
             <x>0</x>
             <y>0</y>
             <z>0</z>
@@ -37,19 +58,19 @@
             <description>description</description>
             <transformation uID="SimpleFuselage_transformation1">
               <scaling uID="SimpleFuselage_transformation1_scaling1">
-                <x>1.0</x>
-                <y>1.0</y>
-                <z>1.0</z>
+                <x>1</x>
+                <y>0.5</y>
+                <z>0.5</z>
               </scaling>
               <rotation uID="SimpleFuselage_transformation1_rotation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
               </rotation>
               <translation refType="absLocal" uID="SimpleFuselage_transformation1_translation1">
-                <x>0.0</x>
-                <y>0.0</y>
-                <z>0.0</z>
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
               </translation>
             </transformation>
             <sections>
@@ -57,14 +78,14 @@
                 <name>D150_Fuselage_1Section1</name>
                 <transformation uID="D150_Fuselage_1Section1ID_transformation1">
                   <scaling uID="D150_Fuselage_1Section1ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
                   </scaling>
                   <rotation uID="D150_Fuselage_1Section1ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
                   </rotation>
                   <translation refType="absLocal" uID="D150_Fuselage_1Section1ID_transformation1_translation1">
                     <x>0</x>
@@ -78,9 +99,9 @@
                     <profileUID>fuselageCircleProfileuID</profileUID>
                     <transformation uID="D150_Fuselage_1Section1IDElement1_transformation1">
                       <scaling uID="D150_Fuselage_1Section1IDElement1_transformation1_scaling1">
-                        <x>1.0</x>
-                        <y>1.0</y>
-                        <z>1.0</z>
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
                       </scaling>
                       <rotation uID="D150_Fuselage_1Section1IDElement1_transformation1_rotation1">
                         <x>0</x>
@@ -100,14 +121,14 @@
                 <name>D150_Fuselage_1Section2</name>
                 <transformation uID="D150_Fuselage_1Section2ID_transformation1">
                   <scaling uID="D150_Fuselage_1Section2ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
                   </scaling>
                   <rotation uID="D150_Fuselage_1Section2ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
                   </rotation>
                   <translation refType="absLocal" uID="D150_Fuselage_1Section2ID_transformation1_translation1">
                     <x>0.5</x>
@@ -143,14 +164,14 @@
                 <name>D150_Fuselage_1Section3</name>
                 <transformation uID="D150_Fuselage_1Section3ID_transformation1">
                   <scaling uID="D150_Fuselage_1Section3ID_transformation1_scaling1">
-                    <x>1.0</x>
-                    <y>1.0</y>
-                    <z>1.0</z>
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
                   </scaling>
                   <rotation uID="D150_Fuselage_1Section3ID_transformation1_rotation1">
-                    <x>0.0</x>
-                    <y>0.0</y>
-                    <z>0.0</z>
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
                   </rotation>
                   <translation refType="absLocal" uID="D150_Fuselage_1Section3ID_transformation1_translation1">
                     <x>0</x>
@@ -425,7 +446,7 @@
                     <skin>
                       <material>
                         <materialUID>MySkinMat</materialUID>
-                        <thickness>0.0</thickness>
+                        <thickness>0</thickness>
                       </material>
                     </skin>
                     <cells>
@@ -433,7 +454,7 @@
                         <skin>
                           <material>
                             <materialUID>MyCellMat</materialUID>
-                            <thickness>0.0</thickness>
+                            <thickness>0</thickness>
                           </material>
                         </skin>
                         <positioningLeadingEdge>
@@ -441,8 +462,8 @@
                           <xsi2>0.8</xsi2>
                         </positioningLeadingEdge>
                         <positioningTrailingEdge>
-                          <xsi1>1.0</xsi1>
-                          <xsi2>1.0</xsi2>
+                          <xsi1>1</xsi1>
+                          <xsi2>1</xsi2>
                         </positioningTrailingEdge>
                         <positioningInnerBorder>
                           <eta1>
@@ -478,6 +499,275 @@
               </componentSegment>
             </componentSegments>
           </wing>
+          <!-- HTP: wing along fuselage Y-axis; trailing edge at y=0.8 is outside fuselage (radius 0.5) -->
+          <wing uID="TestHTP" symmetry="x-z-plane">
+            <name>TestHTP</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation uID="TestHTP_transformation1">
+              <scaling uID="TestHTP_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="TestHTP_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="TestHTP_transformation1_translation1">
+                <x>1.4</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="TestHTP_Sec1">
+                <transformation uID="TestHTP_Sec1_transformation1">
+                  <scaling uID="TestHTP_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="TestHTP_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="TestHTP_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="TestHTP_Sec1_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="TestHTP_Sec1_El1_transformation1">
+                      <scaling uID="TestHTP_Sec1_El1_transformation1_scaling1">
+                        <x>0.25</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="TestHTP_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="TestHTP_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                    <name></name>
+                  </element>
+                </elements>
+                <name></name>
+              </section>
+              <section uID="TestHTP_Sec2">
+                <transformation uID="TestHTP_Sec2_transformation1">
+                  <scaling uID="TestHTP_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="TestHTP_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="TestHTP_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="TestHTP_Sec2_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="TestHTP_Sec2_El1_transformation1">
+                      <scaling uID="TestHTP_Sec2_El1_transformation1_scaling1">
+                        <x>0.25</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="TestHTP_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="TestHTP_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                    <name></name>
+                  </element>
+                </elements>
+                <name></name>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="TestHTP_pos1">
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>TestHTP_Sec1</toSectionUID>
+                <name></name>
+              </positioning>
+              <positioning uID="TestHTP_pos2">
+                <length>0.7</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>TestHTP_Sec1</fromSectionUID>
+                <toSectionUID>TestHTP_Sec2</toSectionUID>
+                <name></name>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="TestHTP_Seg1">
+                <fromElementUID>TestHTP_Sec1_El1</fromElementUID>
+                <toElementUID>TestHTP_Sec2_El1</toElementUID>
+                <name></name>
+              </segment>
+            </segments>
+          </wing>
+          <!-- VTP: unsymmetric wing rotated 90 deg around X; spans fuselage Z-axis.
+               Intersects both fuselage (z-radius 0.5) and TestHTP (z vs y overlap region). -->
+          <wing uID="TestVTP" symmetry="none">
+            <name>TestVTP</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <transformation uID="TestVTP_transformation1">
+              <scaling uID="TestVTP_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="TestVTP_transformation1_rotation1">
+                <x>90</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="TestVTP_transformation1_translation1">
+                <x>1.4</x>
+                <y>0</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="TestVTP_Sec1">
+                <transformation uID="TestVTP_Sec1_transformation1">
+                  <scaling uID="TestVTP_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="TestVTP_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="TestVTP_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="TestVTP_Sec1_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="TestVTP_Sec1_El1_transformation1">
+                      <scaling uID="TestVTP_Sec1_El1_transformation1_scaling1">
+                        <x>0.25</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="TestVTP_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="TestVTP_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                    <name></name>
+                  </element>
+                </elements>
+                <name></name>
+              </section>
+              <section uID="TestVTP_Sec2">
+                <transformation uID="TestVTP_Sec2_transformation1">
+                  <scaling uID="TestVTP_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="TestVTP_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="TestVTP_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="TestVTP_Sec2_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="TestVTP_Sec2_El1_transformation1">
+                      <scaling uID="TestVTP_Sec2_El1_transformation1_scaling1">
+                        <x>0.25</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="TestVTP_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="TestVTP_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                    <name></name>
+                  </element>
+                </elements>
+                <name></name>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="TestVTP_pos1">
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>TestVTP_Sec1</toSectionUID>
+                <name></name>
+              </positioning>
+              <positioning uID="TestVTP_pos2">
+                <length>0.7</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>TestVTP_Sec1</fromSectionUID>
+                <toSectionUID>TestVTP_Sec2</toSectionUID>
+                <name></name>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="TestVTP_Seg1">
+                <fromElementUID>TestVTP_Sec1_El1</fromElementUID>
+                <toElementUID>TestVTP_Sec2_El1</toElementUID>
+                <name></name>
+              </segment>
+            </segments>
+          </wing>
         </wings>
       </model>
     </aircraft>
@@ -495,23 +785,13 @@
         <fuselageProfile uID="fuselageCircleProfileuID">
           <name>Circle</name>
           <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
-          <standardProfile>
-            <rectangle>
-                <heightToWidthRatio>1</heightToWidthRatio>
-                <cornerRadius>0.5</cornerRadius>
-            </rectangle>
-          </standardProfile>
+          <pointList>
+            <x mapType="vector">0;0;0;0;0</x>
+            <y mapType="vector">0;1;0;-1;0</y>
+            <z mapType="vector">1;0;-1;0;1</z>
+          </pointList>
         </fuselageProfile>
       </fuselageProfiles>
     </profiles>
   </vehicles>
-  <toolspecific>
-    <cFD>
-      <farField>
-        <type>halfCube</type>
-        <referenceLength>10.0</referenceLength>
-        <multiplier>1.</multiplier>
-      </farField>
-    </cFD>
-  </toolspecific>
 </cpacs>

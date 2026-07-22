@@ -46,7 +46,7 @@ bool hasControlSurfaces(TIGLCreatorDocument* doc, const QString& uid)
             }
         }
     }
-    catch (const tigl::CTiglError&) {
+    catch (...) {
         return false;
     }
 
@@ -84,7 +84,7 @@ bool hasStructure(TIGLCreatorDocument* doc, const QString& uid)
                 }
         }
     }
-      catch (const tigl::CTiglError&) {
+      catch (...) {
         return false;
     }
 

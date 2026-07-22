@@ -35,6 +35,7 @@
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
 #include <QTimer>
+#include <Standard_Failure.hxx>
 
 ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContainerWidget,
                                        TIGLCreatorContext* scene,
@@ -62,7 +63,6 @@ ModificatorModel::ModificatorModel(ModificatorContainerWidget* modificatorContai
 
 void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
 {
- 
     doc = newDoc;
     resetTree();
     modificatorContainerWidget->setNoInterfaceWidget();
@@ -72,6 +72,16 @@ void ModificatorModel::setCPACSConfiguration(TIGLCreatorDocument* newDoc)
         connect(doc, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), this, SLOT(resetTree()));
         profilesDB.setConfigProfiles(doc->GetConfiguration().GetProfiles());
     }
+}
+
+bool ModificatorModel::isFailedUID(const std::string& uid) const
+{
+    return failedUIDs.find(uid) != failedUIDs.end();
+}
+
+void ModificatorModel::markFailedUID(const std::string& uid)
+{
+    failedUIDs.insert(uid);
 }
 
 void ModificatorModel::updateCpacsConfigurationFromString(std::string const& config)
@@ -125,158 +135,219 @@ void ModificatorModel::writeCPACS()
         throw tigl::CTiglError(errMsg.toStdString());
     }
 }
-
 void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
 {
-
-    // todo try catch on dispatch
-    if ((!configurationIsSet()) || (!item->isInitialized())) {
-        modificatorContainerWidget->hideAllSpecializedWidgets();
-        LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
-        return;
-    }
-
-    unHighlight();
-    if (item->getType() == "transformation") {
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        if(item->getUid().empty()){
-            LOG(WARNING) << "The 'transformation'-element you are trying to access has no UID and is not editable. If you want to be able to edit add UID." << std::endl;
-        } else {
-            try{
-                tigl::CCPACSTransformation& transformation =
-                    uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
-                modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
-            } catch (tigl::CTiglError& ex) {
-                LOG(ERROR) << ex.what() << std::endl;
-            }
-        }
-    }
-    else if (item->getType() == "fuselage") {
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSFuselage& fuselage    = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
-        modificatorContainerWidget->setFuselageModificator(fuselage);
-        highlight(fuselage.GetCTiglElements());
-    }
-    else if (item->getType() == "fuselages") {
-        modificatorContainerWidget->setFuselagesModificator();
-    }
-    else if (item->getType() == "wing") {
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSWing& wing            = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
-        modificatorContainerWidget->setWingModificator(wing);
-        highlight(wing.GetCTiglElements());
-    }
-    else if (item->getType() == "wings") {
-        modificatorContainerWidget->setWingsModificator();
-    }
-    else if (item->getType() == "element") {
-        // first, we need to determine whether this is a section or a fuselage element
-        // then, we can retrieve the CTiglElement interface that manages the both cases.
-        tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
-        tigl::CTiglSectionElement* sectionElement = nullptr;
-        if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
-            tigl::CCPACSFuselageSectionElement& fuselageElement =
-                *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
-                sectionElement = fuselageElement.GetCTiglSectionElement();
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
-            tigl::CCPACSWingSectionElement& wingElement =
-                *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
-            sectionElement = wingElement.GetCTiglSectionElement();
-        }
-
-        if (sectionElement && sectionElement->IsValid()) {
-            modificatorContainerWidget->setElementModificator(*sectionElement);
-            std::vector<tigl::CTiglSectionElement*> elements;
-            elements.push_back(sectionElement);
-            highlight(elements);
-        }
-        else {
+    try {
+        if ( !configurationIsSet() ) {
+            modificatorContainerWidget->hideAllSpecializedWidgets();
             modificatorContainerWidget->setNoInterfaceWidget();
-        }
-    }
-    else if (item->getType() == "section") {
-        tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
-        std::vector<tigl::CTiglSectionElement*> cTiglElements;  // one for the highlight function
-        QList<tigl::CTiglSectionElement*> qCTiglElements;   // one for the modificator widget
-        if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
-            tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
-            // In fact for the moment multiple element is not supported by Tigl so the number of cTiglElements will allays be one
-            for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
-                cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
-                qCTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
-            }
-
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
-            tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
-            for (int i = 1; i <= wingSection.GetSectionElementCount(); i++) {
-                cTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
-                qCTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
-            }
-        }
-
-        bool isEditable = !qCTiglElements.isEmpty();
-        for (tigl::CTiglSectionElement* element : qCTiglElements) {
-            if (!element || !element->IsValid()) {
-                isEditable = false;
-                break;
-            }
-        }
-
-        if (isEditable) {
-            highlight(cTiglElements);
-            modificatorContainerWidget->setSectionModificator(qCTiglElements);
-        }
-        else {
-            modificatorContainerWidget->setNoInterfaceWidget();
-        }
-    }
-    else if (item->getType() == "sections" ) {
-
-        cpcr::CPACSTreeItem* parent = item->getParent();
-
-        if (parent && (parent->getType() == "wing" || parent->getType() == "fuselage")) {
-            std::string bodyUID = parent->getUid(); // return the fuselage or wing uid
-            auto element        = resolve(bodyUID);
-            modificatorContainerWidget->setSectionsModificator(std::move(element));
-        }
-        else {
-            modificatorContainerWidget->setNoInterfaceWidget();
-        }
-    }
-    else if (item->getType() == "positioning" ) {
-        tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
-        tigl::CCPACSPositioning& positioning    = uidManager.ResolveObject<tigl::CCPACSPositioning>(item->getUid());
-        tigl::CTiglTransformation parentTransformation;
-
-        // if fact we need the wing or fuselage parent to be able to invalidate the positionigs.
-        std::string bodyUID = item->getParent()->getParent()->getUid();
-        tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
-        if (typePtr.type == &typeid(tigl::CCPACSWing)) {
-            tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
-            modificatorContainerWidget->setPositioningModificator(wing, positioning);
-            parentTransformation = wing.GetTransformationMatrix();
-        }
-        else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
-            tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
-            modificatorContainerWidget->setPositioningModificator(fuselage, positioning);
-            parentTransformation = fuselage.GetTransformationMatrix();
-        }
-        else {
-            LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
+            LOG(ERROR) << "MODIFICATOR MANAGER IS NOT READY";
             return;
         }
-        highlight(positioning, parentTransformation);
-        
+
+        // Used, e.g., when a shape is selected that is not editable in the CPACSCreator
+        if ( !item->isInitialized() ) {
+            modificatorContainerWidget->hideAllSpecializedWidgets();
+            modificatorContainerWidget->setNoInterfaceWidget();
+            return;
+        }
+
+        if (item->getType() == "transformation") {
+            tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+            if(item->getUid().empty()){
+                LOG(WARNING) << "The 'transformation'-element you are trying to access has no UID and is not editable. If you want to be able to edit add UID." << std::endl;
+            } else {
+                try{
+                    tigl::CCPACSTransformation& transformation =
+                        uidManager.ResolveObject<tigl::CCPACSTransformation>(item->getUid());
+                    modificatorContainerWidget->setTransformationModificator(transformation, doc->GetConfiguration());
+                } catch (tigl::CTiglError& ex) {
+                    LOG(ERROR) << ex.what() << std::endl;
+                } catch (const Standard_Failure& err) {
+                    LOG(ERROR) << err.GetMessageString() << std::endl;
+                } catch (...) {
+                    LOG(ERROR) << "Unknown error" << std::endl;
+                }
+            }
+        }
+        else if (item->getType() == "fuselage") {
+            tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+            try {
+                tigl::CCPACSFuselage& fuselage = uidManager.ResolveObject<tigl::CCPACSFuselage>(item->getUid());
+                modificatorContainerWidget->setFuselageModificator(fuselage);
+                unHighlight();
+                highlightShape(fuselage.GetUID());
+            } catch (const tigl::CTiglError& ex) {
+                handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
+            }
+        }
+        else if (item->getType() == "fuselages") {
+            modificatorContainerWidget->setFuselagesModificator();
+        }
+        else if (item->getType() == "wing") {
+            tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+            try {
+               tigl::CCPACSWing& wing = uidManager.ResolveObject<tigl::CCPACSWing>(item->getUid());
+                modificatorContainerWidget->setWingModificator(wing);
+                unHighlight();
+                highlightShape(wing.GetUID());
+            } catch (const tigl::CTiglError& ex) {
+                handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
+            }
+        }
+        else if (item->getType() == "wings") {
+            modificatorContainerWidget->setWingsModificator();
+        }
+        else if (item->getType() == "element") {
+            tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
+            try {
+                tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+                tigl::CTiglSectionElement* sectionElement = nullptr;
+                if (typePtr.type == &typeid(tigl::CCPACSFuselageSectionElement)) {
+                    tigl::CCPACSFuselageSectionElement& fuselageElement =
+                        *reinterpret_cast<tigl::CCPACSFuselageSectionElement*>(typePtr.ptr);
+                        sectionElement = fuselageElement.GetCTiglSectionElement();
+                }
+                else if (typePtr.type == &typeid(tigl::CCPACSWingSectionElement)) {
+                    tigl::CCPACSWingSectionElement& wingElement =
+                        *reinterpret_cast<tigl::CCPACSWingSectionElement*>(typePtr.ptr);
+                    sectionElement = wingElement.GetCTiglSectionElement();
+                }
+
+                if (sectionElement && sectionElement->IsValid()) {
+                    modificatorContainerWidget->setElementModificator(*sectionElement);
+                    std::vector<tigl::CTiglSectionElement*> elements;
+                    elements.push_back(sectionElement);
+                    scene->getContext()->ClearSelected(Standard_False);
+                    scene->getContext()->UpdateCurrentViewer();
+                    unHighlight();
+                    highlight(elements);
+                }
+                else {
+                    modificatorContainerWidget->setNoInterfaceWidget();
+                }
+            } catch (const tigl::CTiglError& ex) {
+                handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
+            }
+        }
+        else if (item->getType() == "section") {
+            tigl::CTiglUIDManager& uidManager       = doc->GetConfiguration().GetUIDManager();
+            try {
+                tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(item->getUid());
+                std::vector<tigl::CTiglSectionElement*> cTiglElements;
+                QList<tigl::CTiglSectionElement*> qCTiglElements;
+                if (typePtr.type == &typeid(tigl::CCPACSFuselageSection)) {
+                    tigl::CCPACSFuselageSection& fuselageSection = *reinterpret_cast<tigl::CCPACSFuselageSection*>(typePtr.ptr);
+                    for (int i = 1; i <= fuselageSection.GetSectionElementCount(); i++) {
+                        cTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
+                        qCTiglElements.push_back(fuselageSection.GetSectionElement(i).GetCTiglSectionElement());
+                    }
+                }
+                else if (typePtr.type == &typeid(tigl::CCPACSWingSection)) {
+                    tigl::CCPACSWingSection& wingSection = *reinterpret_cast<tigl::CCPACSWingSection*>(typePtr.ptr);
+                    for (int i = 1; i <= wingSection.GetSectionElementCount(); i++) {
+                        cTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+                        qCTiglElements.push_back(wingSection.GetSectionElement(i).GetCTiglSectionElement());
+                    }
+                }
+
+                bool isEditable = !qCTiglElements.isEmpty();
+                for (tigl::CTiglSectionElement* element : qCTiglElements) {
+                    if (!element || !element->IsValid()) {
+                        isEditable = false;
+                        break;
+                    }
+                }
+
+                if (isEditable) {
+                    scene->getContext()->ClearSelected(Standard_False);
+                    scene->getContext()->UpdateCurrentViewer();
+                    unHighlight();
+                    highlight(cTiglElements);
+                    modificatorContainerWidget->setSectionModificator(qCTiglElements);
+                }
+                else {
+                    modificatorContainerWidget->setNoInterfaceWidget();
+                }
+            } catch (const tigl::CTiglError& ex) {
+                handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
+            }
+        }
+        else if (item->getType() == "sections" ) {
+            cpcr::CPACSTreeItem* parent = item->getParent();
+            if (parent && (parent->getType() == "wing" || parent->getType() == "fuselage")) {
+                std::string bodyUID = parent->getUid();
+                auto element        = resolve(bodyUID);
+                modificatorContainerWidget->setSectionsModificator(std::move(element));
+            }
+            else {
+                modificatorContainerWidget->setNoInterfaceWidget();
+            }
+        }
+        else if (item->getType() == "positioning" ) {
+            tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+            try {
+                tigl::CCPACSPositioning& positioning = uidManager.ResolveObject<tigl::CCPACSPositioning>(item->getUid());
+                tigl::CTiglTransformation parentTransformation;
+                std::string bodyUID = item->getParent()->getParent()->getUid();
+                tigl::CTiglUIDManager::TypedPtr typePtr = uidManager.ResolveObject(bodyUID);
+                if (typePtr.type == &typeid(tigl::CCPACSWing)) {
+                    tigl::CCPACSWing &wing = *reinterpret_cast<tigl::CCPACSWing *>(typePtr.ptr);
+                    modificatorContainerWidget->setPositioningModificator(wing, positioning);
+                    parentTransformation = wing.GetTransformationMatrix();
+                }
+                else if (typePtr.type == &typeid(tigl::CCPACSFuselage)) {
+                    tigl::CCPACSFuselage &fuselage = *reinterpret_cast<tigl::CCPACSFuselage *>(typePtr.ptr);
+                    modificatorContainerWidget->setPositioningModificator(fuselage, positioning);
+                    parentTransformation = fuselage.GetTransformationMatrix();
+                }
+                else {
+                    LOG(ERROR) << "ModificatorManager:: Unable to find expected parent for the uid type!";
+                    return;
+                }
+                scene->getContext()->ClearSelected(Standard_False);
+                scene->getContext()->UpdateCurrentViewer();
+                unHighlight();
+                highlight(positioning, parentTransformation);
+            } catch (const tigl::CTiglError& ex) {
+                handleUIDError(item->getUid(), ex);
+            } catch (const Standard_Failure& err) {
+                handleUIDError(item->getUid(), std::string(err.GetMessageString()));
+            } catch (...) {
+                handleUIDError(item->getUid(), std::string("Unknown error."));
+            }
+        }
+        else {
+            modificatorContainerWidget->setNoInterfaceWidget();
+            LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
+        }
+        modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
     }
-    else {
-        modificatorContainerWidget->setNoInterfaceWidget();
-        LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
+    catch (const tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what();
     }
-    modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
+    catch (const std::exception& ex) {
+        LOG(ERROR) << ex.what();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in dispatch";
+    }
 }
 
 void ModificatorModel::createUndoCommand()
@@ -302,7 +373,38 @@ void ModificatorModel::resetTree()
     else {
         tree.clean();
     }
+    failedUIDs.clear();
+    validateAllUIDs();
     QAbstractItemModel::endResetModel();
+}
+
+void ModificatorModel::validateAllUIDs()
+{
+    if (!configurationIsSet()) {
+        return;
+    }
+    tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
+    std::set<std::string> failed;
+    tree.forEachUid([&](const std::string& uid) {
+        try {
+            uidManager.ResolveObject(uid);
+        } catch (...) {
+            failed.insert(uid);
+        }
+    });
+    failedUIDs = std::move(failed);
+}
+
+void ModificatorModel::handleUIDError(const std::string& uid, const tigl::CTiglError& ex)
+{
+    handleUIDError(uid, std::string(ex.what()));
+}
+
+void ModificatorModel::handleUIDError(const std::string& uid, const std::string& message)
+{
+    LOG(ERROR) << message << std::endl;
+    markFailedUID(uid);
+    modificatorContainerWidget->setNoInterfaceWidget();
 }
 
 void ModificatorModel::standardize(QString uid, bool useSimpleDecomposition)
@@ -478,6 +580,23 @@ void ModificatorModel::deleteSection(cpcr::CPACSTreeItem* item)
         endRemoveRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the section (aka connected element)").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
     // apply changes to CPACSTree
@@ -576,6 +695,25 @@ void ModificatorModel::addSection(
             QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.what()));
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(
+            QString("<b>%1</b><br /><br />%2").arg("Fail to create the new connected element ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
         errDialog.exec();
         endInsertRows();
         return;
@@ -706,6 +844,23 @@ void ModificatorModel::addProfile(QString const& profileID)
         endInsertRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endInsertRows();
+        return;
+    }
 
     createUndoCommand(); // this is a bit unfortunate: if a profile has to be added, we have an additional undo command
 
@@ -758,6 +913,23 @@ void ModificatorModel::onAddWingRequested()
             endInsertRows();
             return;
         }
+        catch (const Standard_Failure& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to create the wing ").arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
 
         createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
@@ -804,6 +976,23 @@ void ModificatorModel::deleteWing(std::string const& uid)
         endRemoveRows();
         return;
     }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the wing ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
 
     createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
@@ -842,6 +1031,23 @@ void ModificatorModel::deleteFuselage(std::string const& uid)
         errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.what()));
         errDialog.setWindowTitle("Error");
         errDialog.setDetailsText(err.what());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (const Standard_Failure& err) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg(err.GetMessageString()));
+        errDialog.setWindowTitle("Error");
+        errDialog.setDetailsText(err.GetMessageString());
+        errDialog.exec();
+        endRemoveRows();
+        return;
+    }
+    catch (...) {
+        TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+        errDialog.setMessage(QString("<b>%1</b><br /><br />%2").arg("Fail to delete the fuselage ").arg("Unknown error."));
+        errDialog.setWindowTitle("Error");
         errDialog.exec();
         endRemoveRows();
         return;
@@ -915,6 +1121,25 @@ void ModificatorModel::onAddFuselageRequested()
             endInsertRows();
             return;
         }
+        catch (const Standard_Failure& err) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(modificatorContainerWidget);
+            errDialog.setMessage(
+                QString("<b>%1</b><br /><br />%2").arg("Fail to create the fuselage ").arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
+            errDialog.exec();
+            endInsertRows();
+            return;
+        }
 
         createUndoCommand(); // invokes writeCPACS, which is needed to correctly modify the CPACSTree
 
@@ -943,6 +1168,17 @@ void ModificatorModel::onDeleteFuselageRequested()
     if (deleteDialog.exec() == QDialog::Accepted) {
         std::string uid = deleteDialog.getUIDToDelete().toStdString();
         deleteFuselage(uid);
+    }
+}
+
+void ModificatorModel::highlightShape(const std::string& name){
+
+    auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
+
+    if (iobjects.size() > 0) {
+        scene->getContext()->ClearSelected(Standard_False);
+        scene->getContext()->SetSelected(iobjects[0], Standard_True);
+        scene->getContext()->UpdateCurrentViewer();
     }
 }
 
@@ -1011,12 +1247,28 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole) {
+    if (role != Qt::DisplayRole && role != Qt::UserRole && role != Qt::CheckStateRole && role != Qt::DecorationRole && role != Qt::ToolTipRole) {
         return QVariant();
     }
 
     cpcr::CPACSTreeItem* item = getItem(index);
     QVariant data;
+
+    if (role == Qt::DecorationRole && index.column() == 0) {
+        std::string uid = item->getUid();
+        if (!uid.empty() && isFailedUID(uid)) {
+            return styleIcon(QStyle::SP_MessageBoxWarning);
+        }
+        return QVariant();
+    }
+
+    if (role == Qt::ToolTipRole && index.column() == 0) {
+        std::string uid = item->getUid();
+        if (!uid.empty() && isFailedUID(uid)) {
+            return QString("Invalid geometry: object not registered for uid '%1'. A possible cause could be a malformed CPACS node.").arg(uid.c_str());
+        }
+        return QVariant();
+    }
 
     if (role == Qt::CheckStateRole && index.column() == 0) {
         if (!item) {
@@ -1268,6 +1520,10 @@ cpcr::CPACSTreeItem* ModificatorModel::getItemFromSelection(const QItemSelection
     if (!isValid()) {
         throw TIGLCreatorException("CPACSAbstractModel: getItemWithError called but "
                                   "the model is not valid!");
+    }
+
+    if (newSelection.indexes().isEmpty()) {
+        return nullptr;
     }
 
     cpcr::CPACSTreeItem* item = getItem(newSelection.indexes().at(0));

@@ -47,6 +47,11 @@ namespace tigl
 class CCPACSConfiguration;
 class CCPACSFuselageStringerFramePosition;
 
+struct BoundingBoxHeightWidth {
+    double maxHeight;
+    double maxWidth;
+};
+
 class CCPACSFuselage : public generated::CPACSFuselage, public CTiglRelativelyPositionedComponent
 {
 public:
@@ -148,8 +153,11 @@ public:
     // Set the total length of this fuselage. (The noise keeps its position.)
     TIGL_EXPORT void SetLength(double newLength);
 
+    // Return the bounding box dimensions of the fuselage
+    // The bounding box height and width are computed by reverting the fuselage rotation and building a bounding box around the fuselage
+    TIGL_EXPORT BoundingBoxHeightWidth GetBoundingBoxHeightWidth();
+
     // Return the maximal height of the fuselage
-    // The height is computed by reverting the fuselage rotation and building a bounding box around the fuselage
     TIGL_EXPORT double GetMaximalHeight();
 
     // Set the maximal height of the fuselage by
@@ -309,12 +317,14 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
+    void BuildBoundingBoxHeightWidth(BoundingBoxHeightWidth& cache) const;
+
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     Cache<PNamedShape, CCPACSFuselage> cleanLoftUntrimmed;   /**< Clean fuselage surface, untrimmed (without UV cuts at profiles) */
     Cache<PNamedShape, CCPACSFuselage> cleanLoftTrimmed;     /**< Clean fuselage surface, trimmed (with UV cuts at profiles) */
-
+    Cache<BoundingBoxHeightWidth, CCPACSFuselage> boundingBoxHeightWidthCache;
 
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;

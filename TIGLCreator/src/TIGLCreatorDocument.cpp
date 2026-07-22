@@ -51,6 +51,7 @@
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
+#include <Standard_Failure.hxx>
 
 // TIGLCreator includes
 #include "CPACSProfileGeometry.h"
@@ -862,6 +863,12 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
     catch (tigl::CTiglError& err) {
         displayError("Cannot display \"" + uid + "\": " + err.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError("Cannot display \"" + uid + "\": " + err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Cannot display \"" + uid + "\": unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawControlPointNet()
@@ -1007,6 +1014,12 @@ void TIGLCreatorDocument::drawConfiguration(bool withDuctCutouts)
     catch (tigl::CTiglError& err) {
         displayError(err.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawConfigurationWithDuctCutouts()
@@ -1026,6 +1039,12 @@ void TIGLCreatorDocument::drawWingProfiles()
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
@@ -1038,6 +1057,12 @@ void TIGLCreatorDocument::drawWingOverlayProfilePoints(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -1055,6 +1080,12 @@ void TIGLCreatorDocument::drawWingGuideCurves(const QString& uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what(), "Error");
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString(), "Error");
+    }
+    catch (...) {
+        displayError("Unknown error.", "Error");
     }
 }
 
@@ -1127,6 +1158,12 @@ void TIGLCreatorDocument::drawFuselageProfiles()
                 }
                 catch (tigl::CTiglError& ex) {
                     displayError(ex.what());
+                }
+                catch (const Standard_Failure& err) {
+                    displayError(err.GetMessageString());
+                }
+                catch (...) {
+                    displayError("Unknown error.");
                 }
             }
         }
@@ -1209,6 +1246,12 @@ void TIGLCreatorDocument::drawWingFlaps(const QString& Uid)
     catch (tigl::CTiglError& ex) {
         displayError(ex.what(), "Error");
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString(), "Error");
+    }
+    catch (...) {
+        displayError("Unknown error.", "Error");
+    }
 }
 
 bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
@@ -1284,6 +1327,14 @@ bool TIGLCreatorDocument::drawWingFlaps(tigl::CCPACSWing& wing)
         displayError(ex.what(), "Error");
         return false;
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString(), "Error");
+        return false;
+    }
+    catch (...) {
+        displayError("Unknown error.", "Error");
+        return false;
+    }
 
     return true;
 }
@@ -1316,6 +1367,12 @@ void TIGLCreatorDocument::drawFlapsOverlay()
         }
     catch (tigl::CTiglError& err) {
         displayError(err.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -1360,6 +1417,12 @@ void TIGLCreatorDocument::drawWingFlap(const QString& uid)
     catch (const tigl::CTiglError& ex) {
         displayError(ex.what(), "Error");
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString(), "Error");
+    }
+    catch (...) {
+        displayError("Unknown error.", "Error");
+    }
 }
 
 void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
@@ -1380,7 +1443,7 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
             mflaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
         }
-        catch (const tigl::CTiglError&) {
+        catch (...) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
                          QString("Error"));
         }
@@ -1396,7 +1459,7 @@ void TIGLCreatorDocument::updateFlapTransform(const std::string& controlUID)
             mflaps =
                 app->getScene()->GetShapeManager().GetIObjectsFromShapeName(controlSurfaceDevice->GetUID()+":mirrored");
         }
-        catch (const tigl::CTiglError&) {
+        catch (...) {
             displayError(QString("Error computing control surface device '%1'").arg(controlUID.c_str()),
             QString("Error"));
         }
@@ -1524,6 +1587,12 @@ void TIGLCreatorDocument::drawWingTriangulation(const QString& Uid)
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawFuselageTriangulation(const QString& Uid)
@@ -1558,6 +1627,12 @@ void TIGLCreatorDocument::drawWingSamplePoints(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -2302,14 +2377,6 @@ void TIGLCreatorDocument::drawFusedAircraft()
             }
         }
 
-        const ListPNamedShape& ints = fuser->Intersections();
-        auto it2                    = ints.begin();
-        for (; it2 != ints.end(); ++it2) {
-            if (*it2) {
-                app->getScene()->displayShape((*it2), true, getDefaultShapeColor());
-            }
-        }
-
         // get far field if available
         PNamedShape ff = fuser->FarField();
         if (ff) {
@@ -2484,6 +2551,12 @@ void TIGLCreatorDocument::drawWingShells(const QString& Uid)
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawWingStructure(const QString& Uid)
@@ -2628,6 +2701,14 @@ void TIGLCreatorDocument::drawSystems()
             const QString uid = QString::fromStdString(genericSystem.GetUID());
             displayError("Cannot display \"" + uid + "\": " + err.what());
         }
+        catch (const Standard_Failure& err) {
+            const QString uid = QString::fromStdString(genericSystem.GetUID());
+            displayError("Cannot display \"" + uid + "\": " + err.GetMessageString());
+        }
+        catch (...) {
+            const QString uid = QString::fromStdString(genericSystem.GetUID());
+            displayError("Cannot display \"" + uid + "\": unknown error.");
+        }
     }
 }
 
@@ -2656,6 +2737,12 @@ void TIGLCreatorDocument::drawRotorProfiles()
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints(const QString& Uid)
@@ -2668,6 +2755,12 @@ void TIGLCreatorDocument::drawRotorBladeOverlayProfilePoints(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -2696,6 +2789,12 @@ void TIGLCreatorDocument::drawRotorBlade(const QString& Uid)
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawRotorBladeTriangulation(const QString& Uid)
@@ -2708,6 +2807,12 @@ void TIGLCreatorDocument::drawRotorBladeTriangulation(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -2722,6 +2827,12 @@ void TIGLCreatorDocument::drawRotorBladeSamplePoints(const QString& Uid)
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
     }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
+    }
 }
 
 void TIGLCreatorDocument::drawFusedRotorBlade(const QString& Uid)
@@ -2734,6 +2845,12 @@ void TIGLCreatorDocument::drawFusedRotorBlade(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -2782,6 +2899,12 @@ void TIGLCreatorDocument::drawRotorBladeShells(const QString& Uid)
     }
     catch (tigl::CTiglError& ex) {
         displayError(ex.what());
+    }
+    catch (const Standard_Failure& err) {
+        displayError(err.GetMessageString());
+    }
+    catch (...) {
+        displayError("Unknown error.");
     }
 }
 
@@ -3016,6 +3139,12 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
             catch (tigl::CTiglError& ex) {
                 displayError(ex.what());
             }
+            catch (const Standard_Failure& err) {
+                displayError(err.GetMessageString());
+            }
+            catch (...) {
+                displayError("Unknown error.");
+            }
 
             try {
                 gp_Pnt upperPoint = profile.GetUpperPoint(xsi);
@@ -3028,6 +3157,12 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
             catch (tigl::CTiglError& ex) {
                 displayError(ex.what());
             }
+            catch (const Standard_Failure& err) {
+                displayError(err.GetMessageString());
+            }
+            catch (...) {
+                displayError("Unknown error.");
+            }
 
             try {
                 gp_Pnt lowerPoint = profile.GetLowerPoint(xsi);
@@ -3039,6 +3174,12 @@ void TIGLCreatorDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
             }
             catch (tigl::CTiglError& ex) {
                 displayError(ex.what());
+            }
+            catch (const Standard_Failure& err) {
+                displayError(err.GetMessageString());
+            }
+            catch (...) {
+                displayError("Unknown error.");
             }
         }
     }

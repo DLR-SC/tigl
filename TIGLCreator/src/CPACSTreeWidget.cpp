@@ -122,6 +122,20 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
 
     if (filterModel->isValid()) {
         cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
+        if (!newSelectedItem) {
+            // Pass an empty tree item so that the CPACSEditor is hidden and reset inside
+            // Otherwise, the CPACSEditor would still show the options of the last editable item
+            cpcr::CPACSTreeItem treeItem{};
+            emit newSelectedTreeItem(&treeItem);
+
+            ui->searchLineEdit->blockSignals(blockValue1);
+            ui->expertViewCheckBox->blockSignals(blockValue2);
+            if (ui->geometryNodesCheckBox) {
+                ui->geometryNodesCheckBox->blockSignals(blockValue3);
+            }
+
+            return;
+        }
         last_selected_uid = newSelectedItem->getUid();
         emit newSelectedTreeItem(newSelectedItem);
     }
@@ -212,10 +226,19 @@ void CPACSTreeWidget::refresh()
     setExpertView();
 }
 
+void CPACSTreeWidget::unsetSelectedUID()
+{
+    selectionModel->clear();
+}
+
 void CPACSTreeWidget::setSelectedUID(const QString& uid)
 {
     QModelIndex idxToSelect = filterModel->getIdxForUID(uid);
-    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::Select);
+    if (!idxToSelect.isValid()) {
+        unsetSelectedUID();
+        return;
+    }
+    selectionModel->setCurrentIndex(idxToSelect, QItemSelectionModel::ClearAndSelect);
 }
 
 QString CPACSTreeWidget::getSelectedUID()

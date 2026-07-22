@@ -23,6 +23,8 @@
 #include "Cache.h"
 #include "tigl_internal.h"
 
+namespace tigl { class CCPACSConfiguration; }
+
 namespace tigl
 {
 
@@ -42,6 +44,8 @@ public:
     TIGL_EXPORT void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value) override;
 
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
+
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 
     TIGL_EXPORT bool HasLoft() const;
 

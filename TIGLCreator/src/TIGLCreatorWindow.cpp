@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QProcessEnvironment>
 #include <QMessageBox>
+#include <Standard_Failure.hxx>
 
 
 #include "TIGLCreatorWindow.h"
@@ -1011,6 +1012,7 @@ void TIGLCreatorWindow::connectSignals()
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateScene()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(changeColorSaveButton()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
+    connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateMenus()));
 
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
     connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
@@ -1034,6 +1036,10 @@ void TIGLCreatorWindow::connectSignals()
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
     connect( myOCC, SIGNAL(initialized()), this, SIGNAL(windowInitialized()));
+
+    connect( myOCC, &TIGLCreatorWidget::shapeSelected, treeWidget, &CPACSTreeWidget::setSelectedUID);
+    connect( myOCC, &TIGLCreatorWidget::nonEditableShapeSelected, treeWidget, &CPACSTreeWidget::unsetSelectedUID);
+    connect( myScene, &TIGLCreatorContext::shapeSelected, treeWidget, &CPACSTreeWidget::setSelectedUID);
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
@@ -1081,8 +1087,14 @@ void TIGLCreatorWindow::onComponentVisibilityChanged(const QString& uid, bool vi
         }
         myScene->getViewer()->Update();
     }
-    catch (tigl::CTiglError& ) {
-        throw tigl::CTiglError("Error changing visibility of component with UID " + uid.toStdString());
+    catch (tigl::CTiglError& err) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": " + err.what(), "Error");
+    }
+    catch (const Standard_Failure& err) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": " + err.GetMessageString(), "Error");
+    }
+    catch (...) {
+        displayErrorMessage("Error changing visibility of component with UID " + uid + ": unknown error.", "Error");
     }
 }
 
