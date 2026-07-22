@@ -2396,13 +2396,48 @@ void TIGLCreatorDocument::drawFusedAircraft()
 
 void TIGLCreatorDocument::drawFusedAircraftTriangulation()
 {
-    START_COMMAND()
-    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
-    app->getScene()->deleteAllObjects();
-    TopoDS_Compound triangulation;
-    createShapeTriangulation(airplane, triangulation);
+    FuseDialog dialog(app);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
 
-    app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if (!dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if (dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if (dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
+    START_COMMAND()
+    try {
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
+
+        app->getScene()->deleteAllObjects();
+        TopoDS_Compound triangulation;
+        createShapeTriangulation(airplane->Shape(), triangulation);
+
+        app->getScene()->displayShape(triangulation, true, getDefaultShapeColor());
+    }
+    catch (tigl::CTiglError& error) {
+        displayError(error.what());
+    }
+    catch (...) {
+        displayError("Unknown Exception");
+    }
 }
 
 void TIGLCreatorDocument::drawIntersectionLine()
