@@ -350,11 +350,11 @@ PNamedShape GetParentLoft(const CCPACSWingSegment& segment)
 {
     if (segment.GetParent()->IsParent<CCPACSWing>()) {
         const CCPACSWing* wing = segment.GetParent()->GetParent<CCPACSWing>();
-        return wing->GetWingCleanShape();
+        return wing->GetTrimmedLoft();
     }
-    else if (segment.GetParent()->IsParent<CCPACSWing>()) {
+    else if (segment.GetParent()->IsParent<CCPACSEnginePylon>()) {
         const CCPACSEnginePylon* pylon = segment.GetParent()->GetParent<CCPACSEnginePylon>();
-        return pylon->GetLoft();
+        return pylon->GetTrimmedLoft();
     }
     else {
         throw CTiglError("Invalid parent type");
@@ -428,7 +428,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
         int nFaces = faceMap.Extent();
         int nSegments = segments->GetSegmentCount();
-        int nFacesPerSegment = (nFaces - 2)/nSegments;
+        int nFacesPerSegment = FacesPerSegment(nFaces - 2, nSegments);
 
         // determine index of segment to retrieve the correct subshapes of the wing
         // Here we explicitly require the subshapes to be ordered consistently
@@ -436,7 +436,14 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
             const CCPACSWingSegment& ws = segments->GetSegment(j);
             if (GetUID() == ws.GetUID()) {
                 for(int i=0; i<nFacesPerSegment; ++i) {
-                    BB.Add(loftShell, TopoDS::Face(faceMap((j-1)*nFacesPerSegment + i + 1))); // guides
+                    int faceIndex = (j-1)*nFacesPerSegment + i + 1;
+                    if (faceIndex < 1 || faceIndex > nFaces) {
+                        LOG(ERROR) << "CCPACSWingSegment::BuildLoft: computed face index " << faceIndex
+                                   << " is out of range [1, " << nFaces << "] for segment \"" << GetUID()
+                                   << "\". The trimmed parent loft does not contain the expected number of faces.";
+                        throw CTiglError("CCPACSWingSegment::BuildLoft: face index out of range for segment \"" + GetUID() + "\".", TIGL_ERROR);
+                    }
+                    BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex))); // guides
                 }
                 break;
             }
@@ -460,7 +467,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
     if (GetGuideCurves()) {
         guideCurveParams = GetGuideCurves()->GetRelativeCircumferenceParameters();
     }
-    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE());
+    CTiglWingBuilder::SetFaceTraits(guideCurveParams,  GetUID(), loft, innerConnection.GetProfile().HasBluntTE(), false);
     return loft;
 }
 

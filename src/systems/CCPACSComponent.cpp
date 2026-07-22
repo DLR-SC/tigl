@@ -269,6 +269,18 @@ PNamedShape CCPACSComponent::BuildLoft() const
     return GetTransformationMatrix().Transform(BuildLocalLoft());
 }
 
+PNamedShape CCPACSComponent::GetUntrimmedLoft() const
+{
+    // Default to current behavior (no trimming support for generic components)
+    return GetLoft();
+}
+
+PNamedShape CCPACSComponent::GetTrimmedLoft() const
+{
+    // Default to current behavior (no trimming support for generic components)
+    return GetLoft();
+}
+
 void CCPACSComponent::BuildMass(MassCache& cache) const
 {
     const auto* massPtr = GetMassDescription(*m_uidMgr, GetSystemElementUID());

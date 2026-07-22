@@ -396,6 +396,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, boo
     myContext->SetTransparency(shape, transparency, Standard_False);
     myContext->SetDisplayMode(shape, shaded, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    shape->SetOwnDeviationAngle(settings.tesselationDeviationAngle());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     if (!myShader.IsNull()) {
@@ -433,6 +434,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bo
     myContext->SetTransparency(shape, transparency, Standard_False);
     myContext->SetDisplayMode(shape, shaded, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    shape->SetOwnDeviationAngle(settings.tesselationDeviationAngle());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
     if (!myShader.IsNull()) {
@@ -683,6 +685,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoD
     myContext->SetTransparency(shape, transparency, Standard_False);
     myContext->SetWidth(shape, 3, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    shape->SetOwnDeviationAngle(settings.tesselationDeviationAngle());
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6, 7, 0)
     if (!myShader.IsNull()) {

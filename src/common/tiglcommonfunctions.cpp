@@ -185,6 +185,18 @@ unsigned int GetNumberOfFaces(const TopoDS_Shape& shape)
     return iFaces;
 }
 
+int FacesPerSegment(int nFaces, int nSegments)
+{
+    if (nSegments <= 0) {
+        return 1;
+    }
+    int facesPerSegment = (nFaces + nSegments - 1) / nSegments;
+    if (facesPerSegment < 1) {
+        facesPerSegment = 1;
+    }
+    return facesPerSegment;
+}
+
 unsigned int GetNumberOfSubshapes(const TopoDS_Shape &shape)
 {
     if (shape.ShapeType() == TopAbs_COMPOUND) {

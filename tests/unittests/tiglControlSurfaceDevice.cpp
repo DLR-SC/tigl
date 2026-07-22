@@ -390,3 +390,46 @@ TEST_F(TiglControlSurfaceDeviceSimple, bug_780_reference_segment)
     EXPECT_NEAR(min.Y(), 1.25, 1e-2);
     EXPECT_NEAR(max.Y(), 1.75, 1e-2);
 }
+
+// Regression test: leading edge device flap geometry must not be empty.
+//
+// The flap and cutout geometry of control surface devices is constructed via
+// boolean operations against the wing loft. When the devices were switched to
+// build against the untrimmed wing clean shape, the boolean intersection used
+// by leading edge devices returned an empty shape, so the leading edge device
+// flap geometry silently disappeared (no error, no visual). Trailing edge
+// devices were unaffected. The fix builds device geometry from the trimmed wing
+// clean shape (GetTrimmedWingCleanShape), which has robust face topology.
+TEST_F(TiglControlSurfaceDeviceSimple, leadingEdgeDeviceFlapShapeNotEmpty)
+{
+    auto& manager          = tigl::CCPACSConfigurationManager::GetInstance();
+    auto& config           = manager.GetConfiguration(tiglHandle);
+    auto& wing             = config.GetWing(1);
+    auto& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    auto& cs               = *componentSegment.GetControlSurfaces();
+
+    auto countFaces = [](const TopoDS_Shape& s) {
+        int n = 0;
+        for (TopExp_Explorer e(s, TopAbs_FACE); e.More(); e.Next()) {
+            ++n;
+        }
+        return n;
+    };
+
+    // Trailing edge device flaps must have geometry (regression guard).
+    auto& teds = *cs.GetTrailingEdgeDevices();
+    ASSERT_EQ(teds.GetTrailingEdgeDeviceCount(), 2);
+    for (int i = 1; i <= teds.GetTrailingEdgeDeviceCount(); ++i) {
+        auto flap = teds.GetTrailingEdgeDevice(i).GetFlapShape()->Shape();
+        EXPECT_FALSE(flap.IsNull());
+        EXPECT_GT(countFaces(flap), 0) << "trailing edge device flap shape is empty";
+    }
+
+    // Leading edge device flap must have geometry. Before the fix this was an
+    // empty compound (0 faces).
+    auto& leds = *cs.GetLeadingEdgeDevices();
+    ASSERT_EQ(leds.GetLeadingEdgeDeviceCount(), 1);
+    auto ledFlap = leds.GetLeadingEdgeDevice(1).GetFlapShape()->Shape();
+    EXPECT_FALSE(ledFlap.IsNull());
+    EXPECT_GT(countFaces(ledFlap), 0) << "leading edge device flap shape is empty (regression)";
+}

@@ -31,6 +31,8 @@ namespace tigl {
 CCPACSDuct::CCPACSDuct(CCPACSDucts* parent, CTiglUIDManager* uidMgr)
   : generated::CPACSDuct(parent, uidMgr)
   , CTiglRelativelyPositionedComponent(static_cast<std::string*>(nullptr), &m_transformation, &m_symmetry)
+  , loftUntrimmed(*this, &CCPACSDuct::BuildLoftUntrimmed)
+  , loftTrimmed(*this, &CCPACSDuct::BuildLoftTrimmed)
 {}
 
 CCPACSConfiguration& CCPACSDuct::GetConfiguration() const
@@ -56,30 +58,47 @@ TiglGeometricComponentIntent CCPACSDuct::GetComponentIntent() const
 
 PNamedShape CCPACSDuct::BuildLoft() const
 {
+    return *loftUntrimmed;
+}
+
+void CCPACSDuct::BuildLoftUntrimmed(PNamedShape& cache) const
+{
+    BuildLoftImpl(cache, false);
+}
+
+void CCPACSDuct::BuildLoftTrimmed(PNamedShape& cache) const
+{
+    BuildLoftImpl(cache, true);
+}
+
+void CCPACSDuct::BuildLoftImpl(PNamedShape& cache, bool trim) const
+{
     TiglContinuity cont = m_segments.GetSegment(1).GetContinuity();
     Standard_Boolean smooth = (cont == ::C0? false : true);
 
     CTiglMakeLoft lofter;
-    // add profiles
+    lofter.setMakeSolid(true);
+    lofter.setMakeSmooth(smooth);
+    // Only the trimmed loft is cut at the profiles; the untrimmed loft is a
+    // single continuous surface.
+    lofter.setEnableProfileCutting(trim);
+
     for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
         lofter.addProfiles(m_segments.GetSegment(i).GetStartWire());
     }
     lofter.addProfiles(m_segments.GetSegment(m_segments.GetSegmentCount()).GetEndWire());
 
-    // add guides
     lofter.addGuides(m_segments.GetGuideCurveWires());
 
-    lofter.setMakeSolid(true);
-    lofter.setMakeSmooth(smooth);
-
-    TopoDS_Shape loftShape =  lofter.Shape();
+    TopoDS_Shape loftShape = lofter.Shape();
 
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft);
+    cache = std::make_shared<CNamedShape>(loftShape, loftName.c_str(), loftShortName.c_str());
 
-    return loft;
+    // The trimmed loft has one face group per segment, whereas the untrimmed
+    // loft's aerodynamic faces form a single continuous group.
+    SetFaceTraits(cache, trim ? m_segments.GetSegmentCount() : 1);
 }
 
 // get short name for loft
@@ -100,8 +119,12 @@ std::string CCPACSDuct::GetShortShapeName() const
     return "UNKNOWN";
 }
 
-void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
+void CCPACSDuct::SetFaceTraits(PNamedShape loft, int nSegments) const
 {
+    // Face layout: [aerodynamic faces][optional symmetry faces][front/rear caps].
+    // For the trimmed loft the aerodynamic (and symmetry) faces are grouped per
+    // segment (nSegments > 1); for the untrimmed loft they form a single group
+    // (nSegments == 1).
     int nFacesTotal = GetNumberOfFaces(loft->Shape());
     int nFacesAero = nFacesTotal;
     bool hasSymmetryPlane = GetNumberOfEdges(m_segments.GetSegment(1).GetEndWire()) > 1;
@@ -119,10 +142,7 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
           nFacesAero-=1;
     }
 
-    // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = m_segments.GetSegmentCount();
-
-    int facesPerSegment = nFacesAero/ nSegments;
+    int facesPerSegment = FacesPerSegment(nFacesAero, nSegments);
 
     int iFaceTotal = 0;
     int nSymmetryFaces = (int) hasSymmetryPlane;
@@ -135,11 +155,24 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
         }
     }
 
-    // set the caps
     int iFace = 2;
-    for (;iFaceTotal < nFacesTotal; ++iFaceTotal) {
-        loft->FaceTraits(iFaceTotal).SetName(names[iFace++].c_str());
+    for (;iFaceTotal < nFacesTotal; ++iFaceTotal, ++iFace) {
+        if (iFace < (int)names.size()) {
+            loft->FaceTraits(iFaceTotal).SetName(names[iFace].c_str());
+        }
     }
+}
+
+PNamedShape CCPACSDuct::GetUntrimmedLoft() const
+{
+    // GetLoft() returns the untrimmed loft, so this is the untrimmed loft by
+    // definition.
+    return GetLoft();
+}
+
+PNamedShape CCPACSDuct::GetTrimmedLoft() const
+{
+    return *loftTrimmed;
 }
 
 void CCPACSDuct::RegisterInvalidationCallback(std::function<void()> const& fn){
@@ -148,6 +181,8 @@ void CCPACSDuct::RegisterInvalidationCallback(std::function<void()> const& fn){
 
 void CCPACSDuct::InvalidateImpl(const boost::optional<std::string>&) const
 {
+    loftTrimmed.clear();
+    loftUntrimmed.clear();
     CTiglAbstractGeometricComponent::Reset();
     for (auto const& invalidator: invalidationCallbacks) {
         invalidator();

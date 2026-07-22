@@ -45,8 +45,9 @@ namespace tigl
 {
 
 
-CTiglWingBuilder::CTiglWingBuilder(const CCPACSWing& wing)
+CTiglWingBuilder::CTiglWingBuilder(const CCPACSWing& wing, bool enableProfileCutting)
     : _wing(wing)
+    , _enableProfileCutting(enableProfileCutting)
 {
 }
 
@@ -61,6 +62,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
+    lofter.setEnableProfileCutting(_enableProfileCutting);
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
@@ -83,7 +85,7 @@ PNamedShape CTiglWingBuilder::BuildShape()
     std::string loftName = _wing.GetUID();
     std::string loftShortName = _wing.GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(_wing.GetGuideCurveStartParameters(), _wing.GetUID(), loft, hasBluntTE);
+    SetFaceTraits(_wing.GetGuideCurveStartParameters(), _wing.GetUID(), loft, hasBluntTE, _enableProfileCutting);
     return loft;
 }
 
@@ -93,7 +95,7 @@ CTiglWingBuilder::operator PNamedShape()
     return BuildShape();
 }
 // Set the name of each wing face
-void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUID, PNamedShape shape, bool hasBluntTE)
+void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParams, const std::string& shapeUID, PNamedShape shape, bool hasBluntTE, bool enableProfileCutting)
 {
     auto params = guideCurveParams;
     assert(std::is_sorted(std::begin(params), std::end(params)));
@@ -151,14 +153,19 @@ void CTiglWingBuilder::SetFaceTraits (const std::vector<double>& guideCurveParam
     }
 
     if ((nFaces - 2) % nFacesPerSegment != 0) {
-        LOG(ERROR) << "CCPACSWingBuilder: Unable to determine wing face names from wing loft.";
-        return;
+        if (enableProfileCutting) {
+            LOG(WARNING) << "CCPACSWingBuilder: Face count mismatch in profile-cut loft. Expected (nFaces-2) to be divisible by " << nFacesPerSegment << ", got " << (nFaces-2) << ". Profile cutting may have altered face structure. Proceeding with sequential naming.";
+        } else {
+            LOG(WARNING) << "CCPACSWingBuilder: Unable to determine wing face names from wing loft.";
+        }
     }
 
     // assign "Top" and "Bottom" to face traits
     for (unsigned int i = 0; i < nFaces-2; i++) {
         CFaceTraits traits = shape->GetFaceTraits(i);
-        traits.SetName(names[i%names.size()]);
+        if (!names.empty()) {
+            traits.SetName(names[i%names.size()]);
+        }
         shape->SetFaceTraits(i, traits);
     }
 

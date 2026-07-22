@@ -18,6 +18,7 @@
 
 #include "CTiglPatchShell.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 
 #include <cassert>
@@ -45,8 +46,8 @@ namespace
 namespace tigl {
 
 CTiglPatchShell::CTiglPatchShell(TopoDS_Shape const& shell, double tol)
- : _inputShell(shell)
- , _tolerance(tol)
+  : _inputShell(shell)
+  , _tolerance(tol)
 {}
 
 void CTiglPatchShell::AddSideCap(TopoDS_Wire const& boundaryWire)
@@ -112,6 +113,11 @@ TopoDS_Shape CTiglPatchShell::PatchedShape()
 
 void CTiglPatchShell::Perform()
 {
+    int nFacesInput = GetNumberOfFaces(_inputShell);
+    if (nFacesInput == 0) {
+        throw CTiglError("Cannot patch a shape with no faces", TIGL_ERROR);
+    }
+    
     TopoDS_Shape shell = MakeShells(_inputShell, _tolerance);
 
     if (_sidecaps.size()>0) {
@@ -144,6 +150,12 @@ void CTiglPatchShell::Perform()
             throw CTiglError("Cannot make a solid out of the shell. Is the base type correct?", TIGL_ERROR);
         }
 
+        // Check if solid is empty
+        TopExp_Explorer exp(solid, TopAbs_SHELL);
+        if (!exp.More()) {
+            throw CTiglError("Cannot make a solid from an empty shell", TIGL_ERROR);
+        }
+
         // verify the orientation of the solid
         BRepClass3d_SolidClassifier clas3d(solid);
         clas3d.PerformInfinitePoint(Precision::Confusion());
@@ -171,7 +183,28 @@ TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
     if (shell.IsNull()) {
         throw tigl::CTiglError("Loft is not build", TIGL_ERROR);
     }
-
+    
+    // Count faces in shell
+    int nFaces = 0;
+    for (TopExp_Explorer exp(shell, TopAbs_FACE); exp.More(); exp.Next()) {
+        nFaces++;
+    }
+    
+    if (nFaces == 0) {
+        BRep_Builder B;
+        TopoDS_Shell shellFinal;
+        B.MakeShell(shellFinal);
+        return shellFinal;
+    }
+    
+    if (nFaces == 1) {
+        BRep_Builder B;
+        TopoDS_Shell shellFinal;
+        B.MakeShell(shellFinal);
+        B.Add(shellFinal, TopoDS::Face(TopExp_Explorer(shell, TopAbs_FACE).Current()));
+        return shellFinal;
+    }
+    
     try {
         BRepBuilderAPI_Sewing BB(tol);
         BB.Add(shell);
@@ -182,6 +215,18 @@ TopoDS_Shell MakeShells(TopoDS_Shape const& shell, const Standard_Real tol)
         if ( shellClosed.ShapeType() != TopAbs_SHELL ) {
 
             if ( shellClosed.ShapeType() != TopAbs_FACE) {
+                if ( shellClosed.ShapeType() == TopAbs_COMPOUND ) {
+                    BRep_Builder B;
+                    TopoDS_Shell shellFinal;
+                    B.MakeShell(shellFinal);
+                    TopExp_Explorer exp(shellClosed, TopAbs_FACE);
+                    int faceCount = 0;
+                    for (; exp.More(); exp.Next()) {
+                        B.Add(shellFinal, TopoDS::Face(exp.Current()));
+                        faceCount++;
+                    }
+                    return shellFinal;
+                }
                 throw tigl::CTiglError("Cannot patch a shape that is neither a shell nor a face");
             }
 
