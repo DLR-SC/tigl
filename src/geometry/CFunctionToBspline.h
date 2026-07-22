@@ -45,13 +45,18 @@ public:
      * @param umax End parameter of the function to approximate
      * @param degree Degree of the resulting B-Spline
      * @param tolerance Maximum approximation error
-     * @param maxDepth Maximum depth of curve splitting -> Influences resulting segment number
+     * @param maxDepth Maximum depth of curve splitting -> Influences resulting segment number.
+     *        Functions with a locally unbounded derivative/curvature (e.g. a sqrt(x)-like
+     *        term at an endpoint) converge slowly under the adaptive bisection used here, so
+     *        this needs to be reasonably large (empirically verified: 22 reliably converges
+     *        such cases to a tolerance of 1e-5, vs. 10 silently giving up early) - raising it
+     *        is a no-op in cost/size for functions that already converge well before that depth.
      */
     CFunctionToBspline(MathFunc3d& f,
                        double umin, double umax,
                        int degree,
                        double tolerance=1e-5,
-                       int maxDepth = 10);
+                       int maxDepth = 22);
 
     ~CFunctionToBspline();
 

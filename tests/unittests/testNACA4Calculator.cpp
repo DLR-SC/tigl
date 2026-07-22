@@ -44,6 +44,7 @@
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "CTiglError.h"
+#include <gp_Vec.hxx>
 
 TEST(CTiglNACA4Calculator, naca2212_le_and_te_points){
     tigl::CTiglNACA4Calculator  NACA4(2,2,12, 0.00252);
@@ -244,13 +245,26 @@ TEST(CTiglNACA4Calculator, naca6415_trailingedge_length){
     EXPECT_NEAR(thickness, 0.13, 1e-14);
 }
 
+namespace {
+    // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
+    // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACA4UpperCurve/LowerCurve::valueX/valueZ, so
+    // these tests can independently compute the expected reparametrized chord fraction.
+    double testLeParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
+
 TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     tigl::CTiglNACA4UpperCurve upperCurve(NACA4);
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
-    gp_Vec2d pnt = NACA4.upper_curve(0.5);
+    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.upper_curve(testLeParam(0.5));
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(upperCurve.valueZ(0.5), pnt.Y());
 }
@@ -258,12 +272,14 @@ TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoo
 TEST(CTiglNACA4Calculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoord){
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     tigl::CTiglNACA4LowerCurve lowerCurve(NACA4);
-    
+
     ASSERT_EQ(lowerCurve.valueY(0.), 0.);
     ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
     ASSERT_EQ(lowerCurve.valueY(1.), 0.);
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
@@ -273,7 +289,9 @@ TEST(CTiglNACA4Calculator, naca2212_bspline_vs_lower_curve_coord)
     tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
-    gp_Vec2d pnt = NACA4.lower_curve(0.5);
+    // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
+    // CTiglNACA4UpperCurve::valueX)
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-4);
@@ -488,4 +506,44 @@ TEST(CTiglNACA4Calculator, naca2412_getUpperLowerWire) {
     Standard_Real u1, u2;
     Handle(Geom_Curve) ulCurve = BRep_Tool::Curve(ul, u1, u2);
     ASSERT_FALSE(ulCurve.IsNull());
+}
+
+// Regression test for CFunctionToBspline::concatC1 (used internally by
+// CTiglNACA4Calculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
+// adaptive Chebyshev fit to produce many segments, exercising the multi-segment
+// concatenation path. Away from the leading/trailing edge (where the thickness formula's
+// sqrt(x) term makes the true tangent direction change very fast / become vertical - an
+// inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
+// honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
+TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
+{
+    // Strongly cambered profile: exercises the adaptive multi-segment path in
+    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading
+    // edge (see leParam in CTiglNACA4Calculator.cpp), which removes the thickness
+    // distribution's sqrt(x) derivative singularity there - so unlike before that
+    // reparametrization, every internal knot (including right at the leading/trailing edge)
+    // should now be honestly C1 continuous, with no margin needed to exclude a "genuinely
+    // near-vertical" region.
+    tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
+
+    auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
+        // make sure this actually exercises the multi-segment concatenation path
+        ASSERT_GT(curve->NbKnots(), 2);
+
+        const double eps = 1e-7;
+        for (int i = 2; i < curve->NbKnots(); ++i) {
+            double u = curve->Knot(i);
+
+            gp_Pnt pLeft, pRight;
+            gp_Vec dLeft, dRight;
+            curve->D1(u - eps, pLeft, dLeft);
+            curve->D1(u + eps, pRight, dRight);
+
+            EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
+            EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-3) << "tangent kink at knot " << u;
+        }
+    };
+
+    checkContinuity(NACA4.upper_bspline());
+    checkContinuity(NACA4.lower_bspline());
 }
