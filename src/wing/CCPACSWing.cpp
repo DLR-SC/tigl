@@ -57,10 +57,11 @@
 #include "BRepTools.hxx"
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
-#include "CCutShape.h"
+#include "CBooleanOperTools.h"
 #include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
 #include "CNamedShape.h"
@@ -465,26 +466,42 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         return;
     }
 
-    TopoDS_Compound allFlapPrisms;
-    BRep_Builder compoundBuilderFlaps;
-    compoundBuilderFlaps.MakeCompound(allFlapPrisms);
-
-    PNamedShape fusedBoxes;
-    bool first = true;
+    ListPNamedShape cutoutShapes;
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
-        
+
         const CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
         if (!componentSegment.GetControlSurfaces().is_initialized()) {
             continue;
         }
-        
-        componentSegment.GetControlSurfaces()->GetFusedControlSurfaceCutOutShape(fusedBoxes);
-        
+
+        componentSegment.GetControlSurfaces()->GetControlSurfaceCutOutShapes(cutoutShapes);
     }
 
-    CCutShape cutter(*wingCleanShape, fusedBoxes);
-    cutter.Perform();
-    result = cutter.NamedShape();
+    // Cut the wing by all control-surface cutout shapes in a single n-ary
+    // Boolean operation (one shared PaveFiller covering the wing and all n
+    // cutout tools), mirroring CTiglFusePlane::Perform()'s multi-argument
+    // BRepAlgoAPI pattern, instead of fusing the n cutouts pairwise into one
+    // complex tool and then cutting once.
+    TopTools_ListOfShape objects, tools;
+    objects.Append((*wingCleanShape)->Shape());
+    for (const auto& cutoutShape : cutoutShapes) {
+        tools.Append(cutoutShape->Shape());
+    }
+
+    BRepAlgoAPI_Cut cutter;
+    cutter.SetArguments(objects);
+    cutter.SetTools(tools);
+    cutter.Build();
+    if (!cutter.IsDone()) {
+        throw CTiglError("Error cutting control surfaces from wing '" + GetUID() + "'");
+    }
+
+    result = PNamedShape(new CNamedShape(cutter.Shape(), (*wingCleanShape)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShape, result);
+    for (const auto& cutoutShape : cutoutShapes) {
+        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, cutoutShape, result);
+    }
+
     for (int iFace = 0; iFace < static_cast<int>(result->GetFaceCount()); ++iFace) {
         CFaceTraits ft = result->GetFaceTraits(iFace);
         ft.SetOrigin(*wingCleanShape);
