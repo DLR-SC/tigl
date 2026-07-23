@@ -859,7 +859,7 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                         }
                     }
                 }
-                bool symmetryVisible = app->getScene()->GetShapeManager().GetSymmetryVisible(uid.toStdString());
+                bool symmetryVisible = app->getScene()->GetShapeManager(m_docId).GetSymmetryVisible(uid.toStdString());
                 for (std::size_t i = 0; i < objects.size(); ++i) {
                     auto& obj = objects[i];
                     // objects[1], if present, is the mirrored/symmetry shape (see addObject() calls

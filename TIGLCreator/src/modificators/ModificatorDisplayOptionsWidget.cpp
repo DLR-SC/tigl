@@ -612,7 +612,7 @@ void ModificatorDisplayOptionsWidget::onShowSymmetryToggled(bool checked)
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     // Persist the preference so it survives the mirrored shape being torn down and
     // re-created (e.g. by toggling this component's visibility in the CPACS tree).
     sm.SetSymmetryVisible(uid.toStdString(), checked);
