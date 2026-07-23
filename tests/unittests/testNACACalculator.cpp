@@ -283,6 +283,8 @@ TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoor
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
     // upperCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
     // (see CTiglNACA4UpperCurve::valueX)
+    // upperCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
     //gp_Vec2d pnt = NACA4.upper_curve(0.5*0.5);
     gp_Vec2d pnt = NACA4.upper_curve(testLeParam(0.5));
     ASSERT_EQ(upperCurve.valueX(0.5), pnt.X());
@@ -300,6 +302,8 @@ TEST(CTiglNACACalculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoor
 
     // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at x=t*t, not x=t directly
     // (see CTiglNACA4UpperCurve::valueX)
+    // lowerCurve.valueX/valueZ(t) evaluate the analytic curve at a reparametrized chord
+    // fraction x(t) = testLeParam(t), not x=t directly (see CTiglNACA4UpperCurve::valueX)
     //gp_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
     ASSERT_EQ(lowerCurve.valueX(0.5), pnt.X());
@@ -312,7 +316,7 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
     Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
 
-    // the bspline's own parameter u corresponds to x=u*u, not x=u directly (see
+    // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
     // CTiglNACA4UpperCurve::valueX)
     //p_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
     gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));

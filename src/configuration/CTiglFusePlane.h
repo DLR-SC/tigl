@@ -53,8 +53,9 @@ public:
     TIGL_EXPORT void Invalidate();
 
 private:
-    PNamedShape FuseWithChilds(CTiglRelativelyPositionedComponent* parent, const std::vector<CTiglRelativelyPositionedComponent*>& children);
     void Perform();
+    void PerformIntersections();
+    ListPNamedShape CollectComponentShapes() const;
 
     PNamedShape          _result;         /**< contains the result of the fusing operation >**/
     ListPNamedShape      _intersections;  /**< contains the shape shape intersections >**/
@@ -62,6 +63,7 @@ private:
     CCPACSConfiguration& _myconfig;       /**< Ref to CPACS config >**/
     TiglFuseResultMode    _mymode;
     bool _hasPerformed;
+    bool _hasComputedIntersections;
 };
 
 } // namespace tigl

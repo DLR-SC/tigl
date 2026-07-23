@@ -21,7 +21,6 @@
 #include <variant>
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
-#include "CFuseShapes.h"
 
 namespace tigl
 {

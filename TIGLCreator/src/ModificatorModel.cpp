@@ -1256,11 +1256,10 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
 
     if (role == Qt::DecorationRole && index.column() == 0) {
         std::string uid = item->getUid();
-        if (!uid.empty()) {
-            if (isFailedUID(uid)) {
-                return styleIcon(QStyle::SP_MessageBoxWarning);
-            }
+        if (!uid.empty() && isFailedUID(uid)) {
+            return styleIcon(QStyle::SP_MessageBoxWarning);
         }
+        return QVariant();
     }
 
     if (role == Qt::ToolTipRole && index.column() == 0) {
@@ -1268,6 +1267,7 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         if (!uid.empty() && isFailedUID(uid)) {
             return QString("Invalid geometry: object not registered for uid '%1'. A possible cause could be a malformed CPACS node.").arg(uid.c_str());
         }
+        return QVariant();
     }
 
     if (role == Qt::CheckStateRole && index.column() == 0) {

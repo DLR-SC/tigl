@@ -2377,14 +2377,6 @@ void TIGLCreatorDocument::drawFusedAircraft()
             }
         }
 
-        const ListPNamedShape& ints = fuser->Intersections();
-        auto it2                    = ints.begin();
-        for (; it2 != ints.end(); ++it2) {
-            if (*it2) {
-                app->getScene()->displayShape((*it2), true, getDefaultShapeColor());
-            }
-        }
-
         // get far field if available
         PNamedShape ff = fuser->FarField();
         if (ff) {

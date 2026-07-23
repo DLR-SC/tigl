@@ -58,7 +58,6 @@
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
 #include "CCutShape.h"
-#include "CFuseShapes.h"
 #include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>

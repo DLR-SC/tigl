@@ -141,6 +141,9 @@ public:
     // Returns the container with all root components of the geometric topology that have children.
     TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
 
+    // Returns all registered relative (geometric) components.
+    TIGL_EXPORT const RelativeComponentContainerType& GetRelativeComponents() const;
+
     // Resolves all CTiglRelativelyPositionedComponent's parentUid to the actual objects
     TIGL_EXPORT void SetParentComponents();
 
