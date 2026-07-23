@@ -724,6 +724,8 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
 
     EXPECT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
     EXPECT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+}
+
 // Regression test for CFunctionToBspline::concatC1 (used internally by
 // CTiglNACA4Calculator::upper_bspline/lower_bspline). A strongly cambered profile forces the
 // adaptive Chebyshev fit to produce many segments, exercising the multi-segment
@@ -740,7 +742,7 @@ TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere
     // reparametrization, every internal knot (including right at the leading/trailing edge)
     // should now be honestly C1 continuous, with no margin needed to exclude a "genuinely
     // near-vertical" region.
-    tigl::CTiglNACA4Calculator NACA4(6, 4, 15, 0.13);
+    tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("6415"), 0.13);
 
     auto checkContinuity = [](const Handle(Geom_BSplineCurve)& curve) {
         // make sure this actually exercises the multi-segment concatenation path
