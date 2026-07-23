@@ -660,7 +660,6 @@ TEST(CTiglNACACalculator, naca23012_getUpperLowerWire) {
 
 TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
     const char* xmlfile = "/localdata2/gedl_ha/code/tigl/tests/TestData/naca_5_test.xml";
-
     TixiDocumentHandle tixiHandle = -1;
     TiglCPACSConfigurationHandle tiglHandle = -1;
 
@@ -733,7 +732,7 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
 // sqrt(x) term makes the true tangent direction change very fast / become vertical - an
 // inherent feature of the NACA4 shape, not a bug), every internal knot join should now be
 // honestly continuous, since concatC1 checks continuity instead of blindly declaring it.
-TEST(CTiglNACA4Calculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
+TEST(CTiglNACACalculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
 {
     // Strongly cambered profile: exercises the adaptive multi-segment path in
     // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading
