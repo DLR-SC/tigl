@@ -31,8 +31,12 @@
 #include "../TIGLCreatorContext.h"
 #include "ui_ModificatorDisplayOptionsWidget.h"
 #include <QFileDialog>
+#include <QCheckBox>
+#include <QSignalBlocker>
 #include "TIGLCreatorWindow.h"
 #include "../DrawOptionsActions.h"
+#include "CTiglAbstractGeometricComponent.h"
+#include "TiglSymmetryAxis.h"
 
 #define BTN_STYLE "#%2 {background-color: %1; color: black; border: 1px solid black; border-radius: 5px;} #%2:hover {border: 1px solid white;}"
 
@@ -54,6 +58,8 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     buttonColorChoser = ui->buttonColorChoser;
     buttonResetOptions = ui->buttonResetOptions;
     materialCombo = ui->materialCombo;
+    labelSymmetry = ui->labelSymmetry;
+    checkBoxShowSymmetry = ui->checkBoxShowSymmetry;
 
     renderingModeCombo->addItem("Wireframe", 0);
     renderingModeCombo->addItem("Shaded", 1);
@@ -70,6 +76,7 @@ ModificatorDisplayOptionsWidget::ModificatorDisplayOptionsWidget(QWidget* parent
     connect(materialCombo, SIGNAL(currentTextChanged(const QString &)), this, SLOT(onMaterialChanged(const QString &)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChosen()));
     connect(buttonResetOptions, SIGNAL(clicked()), this, SLOT(onResetOptions()));
+    connect(checkBoxShowSymmetry, SIGNAL(toggled(bool)), this, SLOT(onShowSymmetryToggled(bool)));
 
 }
 
@@ -98,6 +105,8 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             ui->buttonResetOptions->setVisible(false);
             ui->labelDrawOptions->setVisible(false);
             ui->drawOptionsCombo->setVisible(false);
+            ui->labelSymmetry->setVisible(false);
+            ui->checkBoxShowSymmetry->setVisible(false);
         }
         currentItem = nullptr;
         return;
@@ -111,6 +120,9 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
             if (it != shapes.end() && it->second != nullptr) {
                 tigl::ITiglGeometricComponent* comp = it->second;
                 if (comp->GetComponentType() != TIGL_COMPONENT_PLANE && comp->GetComponentType() != TIGL_COMPONENT_CROSS_BEAM_STRUT) {
+                    // "Show Symmetry" checkbox: only relevant for components with a symmetry axis
+                    auto* geometricComp = dynamic_cast<tigl::CTiglAbstractGeometricComponent*>(comp);
+                    bool hasSymmetry = geometricComp && geometricComp->GetSymmetryAxis() != TIGL_NO_SYMMETRY;
                     if (ui) {
                         ui->infoLabel->setVisible(false);
                         ui->labelTransparency->setVisible(true);
@@ -124,8 +136,10 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->buttonResetOptions->setVisible(true);
                         ui->labelDrawOptions->setVisible(true);
                         ui->drawOptionsCombo->setVisible(true);
+                        ui->labelSymmetry->setVisible(hasSymmetry);
+                        ui->checkBoxShowSymmetry->setVisible(hasSymmetry);
                     }
-                
+
                     // get current values
                     auto &sm = context->GetShapeManager();
                     if (sm.HasShapeEntry(uid.toStdString())) {
@@ -141,7 +155,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
 
                         if (!obj.IsNull()) {
                             Handle(Prs3d_Drawer) drawer = obj->Attributes();
-                            transparency = drawer->Transparency(); 
+                            transparency = drawer->Transparency();
                             displayMode = drawer->DisplayMode();
                             Quantity_Color qc = drawer->Color();
                             color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
@@ -154,6 +168,16 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     }
 
                     materialCombo->setCurrentIndex(0);
+
+                    if (hasSymmetry) {
+                        // Read the persisted preference rather than the live AIS display state:
+                        // the latter gets reset whenever the shape is redrawn (e.g. by toggling
+                        // this component's visibility in the CPACS tree), which would otherwise
+                        // desync the checkbox from what is actually shown in the viewer.
+                        bool shown = sm.GetSymmetryVisible(uid.toStdString());
+                        QSignalBlocker blocker(checkBoxShowSymmetry);
+                        checkBoxShowSymmetry->setChecked(shown);
+                    }
                 }
                 else if (comp->GetComponentType() == TIGL_COMPONENT_PLANE) {
                     if (ui) {
@@ -169,6 +193,8 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                         ui->buttonResetOptions->setVisible(false);
                         ui->labelDrawOptions->setVisible(true);
                         ui->drawOptionsCombo->setVisible(true);
+                        ui->labelSymmetry->setVisible(false);
+                        ui->checkBoxShowSymmetry->setVisible(false);
                     }
                 }
             }
@@ -185,6 +211,8 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                 ui->labelMaterial->setVisible(false);
                 ui->materialCombo->setVisible(false);
                 ui->buttonResetOptions->setVisible(false);
+                ui->labelSymmetry->setVisible(false);
+                ui->checkBoxShowSymmetry->setVisible(false);
                 ui->labelDrawOptions->setVisible(false);
                 ui->drawOptionsCombo->setVisible(false);
             }
@@ -311,12 +339,17 @@ bool ModificatorDisplayOptionsWidget::apply()
                     if (obj.IsNull()) {
                         continue;
                     }
+                    // Skip objects hidden via the "Show Symmetry" toggle so they don't get
+                    // implicitly redisplayed by an unrelated property change.
+                    if (!context.IsNull() && !context->IsDisplayed(obj)) {
+                        continue;
+                    }
                     if (!context.IsNull()) {
                         // transparency
                         context->SetTransparency(obj, transparency, Standard_True);
                         // display mode
                         context->SetDisplayMode(obj, displayMode, Standard_True);
-                        
+
                         // color
                         if (haveColor) {
                             context->SetColor(obj, qcolor, Standard_True);
@@ -369,6 +402,9 @@ void ModificatorDisplayOptionsWidget::onTransparencyChanged(int value)
         if (obj.IsNull()) {
             continue;
         }
+        if (!context.IsNull() && !context->IsDisplayed(obj)) {
+            continue;
+        }
         if (!context.IsNull()) {
             context->SetTransparency(obj, tr, Standard_True);
         }
@@ -407,6 +443,9 @@ void ModificatorDisplayOptionsWidget::onRenderingModeChanged(int displayMode)
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     for (auto &obj : objs) {
         if (obj.IsNull()) {
+            continue;
+        }
+        if (!context.IsNull() && !context->IsDisplayed(obj)) {
             continue;
         }
         if (!context.IsNull()) {
@@ -453,6 +492,12 @@ void ModificatorDisplayOptionsWidget::onColorChosen()
     Quantity_Color qcolor(color.redF(), color.greenF(), color.blueF(), Quantity_TOC_RGB);
     auto context = currentContext->getContext();
     for (auto &obj : objs) {
+        if (obj.IsNull()) {
+            continue;
+        }
+        if (!context.IsNull() && !context->IsDisplayed(obj)) {
+            continue;
+        }
         if (!context.IsNull()) {
             context->SetColor(obj, qcolor, Standard_True);
         }
@@ -495,6 +540,9 @@ void ModificatorDisplayOptionsWidget::onMaterialChanged(const QString &mat)
         if (obj.IsNull()) {
             continue;
         }
+        if (!context.IsNull() && !context->IsDisplayed(obj)) {
+            continue;
+        }
         if (!context.IsNull()) {
             context->SetMaterial(obj, it->second, Standard_True);
         }
@@ -517,13 +565,15 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
         return;
     }
     auto &sm = currentContext->GetShapeManager();
+    // Reset Options should also restore the default "Show Symmetry" state.
+    sm.SetSymmetryVisible(uid.toStdString(), true);
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     auto context = currentContext->getContext();
     for (auto &obj : objs) {
         if (obj.IsNull()) {
             continue;
         }
-         if (!context.IsNull() && currentDoc) {  
+         if (!context.IsNull() && currentDoc) {
             // redraw component to reset options (necessary to reset different colors on mirrored components)
             context->Remove(obj, Standard_False);
             sm.removeObject(obj);
@@ -548,4 +598,50 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
     }
 
     setFromItem(currentItem, currentDoc, currentContext);
+}
+
+void ModificatorDisplayOptionsWidget::onShowSymmetryToggled(bool checked)
+{
+    if (!currentContext) {
+        return;
+    }
+    if (!currentItem) {
+        return;
+    }
+    const QString uid = QString::fromStdString(currentItem->getUid());
+    if (uid.isEmpty()) {
+        return;
+    }
+    auto &sm = currentContext->GetShapeManager();
+    // Persist the preference so it survives the mirrored shape being torn down and
+    // re-created (e.g. by toggling this component's visibility in the CPACS tree).
+    sm.SetSymmetryVisible(uid.toStdString(), checked);
+
+    if (!sm.HasShapeEntry(uid.toStdString()) && currentDoc) {
+        currentDoc->drawComponentByUID(uid);
+    }
+
+    // If the component itself is currently hidden (visibility toggled off in the CPACS
+    // tree), don't touch the AIS display state now: showing just the mirrored shape while
+    // the main one stays hidden would look inconsistent. The preference just recorded above
+    // will be picked up once the component's visibility is toggled back on.
+    if (!sm.GetVisibility(uid.toStdString())) {
+        return;
+    }
+
+    auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
+    if (objs.size() <= 1 || objs[1].IsNull()) {
+        return;
+    }
+    auto context = currentContext->getContext();
+    if (context.IsNull()) {
+        return;
+    }
+    if (checked) {
+        context->Display(objs[1], Standard_True);
+    }
+    else {
+        context->Erase(objs[1], Standard_True);
+    }
+    currentContext->updateViewer();
 }
