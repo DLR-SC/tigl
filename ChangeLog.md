@@ -5,6 +5,7 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - Draw the flaps by using fusing a list with OCC's BRepAlgoAPI_Fuse instaed of fusing all together and creating a computational expensive cut. 
   - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
