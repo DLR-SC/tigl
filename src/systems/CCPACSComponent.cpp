@@ -184,7 +184,15 @@ TiglGeometricComponentIntent CCPACSComponent::GetComponentIntent() const
 
 CTiglPoint CCPACSComponent::GetCentroidLocal() const
 {
-    const TopoDS_Shape shape = BuildLocalLoft()->Shape();
+    const PNamedShape loft = BuildLocalLoft();
+    if (!loft) {
+        std::string uid = "unknown";
+        if (const auto* parent = GetElementGeometry().GetNextUIDParent()) {
+            uid = parent->GetObjectUID().get_value_or(uid);
+        }
+        throw CTiglError("No geometry primitives defined for uID=\"" + uid + "\"");
+    }
+    const TopoDS_Shape shape = loft->Shape();
 
     GProp_GProps props;
     BRepGProp::VolumeProperties(shape, props);
@@ -279,7 +287,10 @@ void CCPACSComponent::BuildMass(MassCache& cache) const
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    CTiglElementMassBuilder builder(massDef, GetSystemElementUID(), BuildLocalLoft()->Shape());
+    const PNamedShape loft   = BuildLocalLoft();
+    const TopoDS_Shape shape = loft ? loft->Shape() : TopoDS_Shape();
+
+    CTiglElementMassBuilder builder(massDef, GetSystemElementUID(), shape);
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;

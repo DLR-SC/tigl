@@ -46,6 +46,8 @@
 #include "CTiglError.h"
 #include <tixi.h>
 #include <gp_Vec.hxx>
+#include <gp_Vec.hxx>
+
 
 namespace {
     // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
@@ -273,6 +275,7 @@ TEST(CTiglNACACalculator, naca6415_trailingedge_length){
 
     EXPECT_NEAR(thickness, 0.13, 1e-14);
 }
+
 
 TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     //tigl::CTiglNACACalculator NACA4(2,2,12, 15);

@@ -22,10 +22,12 @@
 
 #include <boost/optional/optional_io.hpp>
 
+#include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSDeck.h"
 #include "CCPACSDeckComponentBase.h"
 #include "CCPACSFuselageSegment.h"
+#include "CTiglFusePlane.h"
 
 #include "CNamedShape.h"
 #include <TopExp_Explorer.hxx>
@@ -49,9 +51,14 @@ protected:
         tixiHandle = -1;
     }
 
+    tigl::CCPACSConfiguration& GetConfiguration() const
+    {
+        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    }
+
     const tigl::CTiglUIDManager& GetUIDManager() const
     {
-        return tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+        return GetConfiguration().GetUIDManager();
     }
 
     const tigl::CCPACSDeck& GetDeck(const std::string& uid) const
@@ -327,6 +334,29 @@ TEST_F(Decks, InternalSegmentRegistration)
     // The instantiated deck component remains regular geometry.
     EXPECT_TRUE(uidManager.HasGeometricComponent("galley"));
     EXPECT_NO_THROW(GetComponent("galley").GetLoft());
+}
+
+TEST_F(Decks, ComponentWithoutGeometryHasNoLoft)
+{
+    // A deck component described only by mass properties (no <geometry> primitives at all)
+    // is a valid CPACS state. Building its loft must not throw, it should simply yield no
+    // shape (see https://github.com/DLR-SC/tigl/issues/1388).
+    const auto& comp = GetComponent("lavatoryNoGeometry");
+    EXPECT_FALSE(comp.GetLoft());
+}
+
+TEST_F(Decks, FusingToleratesComponentWithoutGeometry)
+{
+    // Regression test for https://github.com/DLR-SC/tigl/issues/1388: fusing the aircraft
+    // (e.g. for "Fused aircraft triangulation" in TiGLCreator) must not fail just because a
+    // deck component such as a lavatory has no geometry defined. It should simply contribute
+    // no shape to the fused result instead of aborting the whole operation.
+    tigl::PTiglFusePlane fuser;
+    ASSERT_NO_THROW(fuser = GetConfiguration().AircraftFusingAlgo());
+
+    PNamedShape airplane;
+    ASSERT_NO_THROW(airplane = fuser->FusedPlane());
+    EXPECT_TRUE(airplane);
 }
 
 class InvalidDecks : public ::testing::Test

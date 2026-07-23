@@ -240,6 +240,16 @@
                                             </translation>
                                         </transformation>
                                     </lavatory>
+                                    <lavatory uID="lavatoryNoGeometry">
+                                        <name>Lavatory without geometry (mass-only)</name>
+                                        <deckElementUID>predLavatoryElementNoGeometry</deckElementUID>
+                                        <transformation>
+                                            <translation>
+                                                <x>12</x>
+                                                <y>-2</y>
+                                            </translation>
+                                        </transformation>
+                                    </lavatory>
                                 </lavatories>
                                 <genericFloorModules>
                                     <genericFloorModule uID="floorModule">
@@ -653,6 +663,17 @@
                             </external>
                         </externals>
                     </geometry>
+                </lavatoryElement>
+                <lavatoryElement uID="predLavatoryElementNoGeometry">
+                    <name>Predefined lavatory element without geometry (mass-only)</name>
+                    <mass>
+                        <mass>15.</mass>
+                        <location>
+                            <x>0.1</x>
+                            <y>0.2</y>
+                            <z>0.3</z>
+                        </location>
+                    </mass>
                 </lavatoryElement>
             </lavatoryElements>
             <genericFloorElements>
