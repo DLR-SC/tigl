@@ -44,11 +44,8 @@
 #include "Geom_Curve.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "CTiglError.h"
-<<<<<<< HEAD:tests/unittests/testNACACalculator.cpp
 #include <tixi.h>
-=======
 #include <gp_Vec.hxx>
->>>>>>> main:tests/unittests/testNACA4Calculator.cpp
 
 
 TEST(CTiglNACACalculator, naca2212_le_and_te_points){
@@ -266,12 +263,6 @@ TEST(CTiglNACACalculator, naca6415_trailingedge_length){
 
     EXPECT_NEAR(thickness, 0.13, 1e-14);
 }
-
-<<<<<<< HEAD:tests/unittests/testNACACalculator.cpp
-TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
-    //tigl::CTiglNACACalculator NACA4(2,2,12, 15);
-    tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
-=======
 namespace {
     // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
     // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACA4UpperCurve/LowerCurve::valueX/valueZ, so
@@ -282,10 +273,9 @@ namespace {
         return (1. + eps) * t * t / (t + eps);
     }
 }
-
-TEST(CTiglNACA4Calculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
-    tigl::CTiglNACA4Calculator NACA4(2,2,12, 15);
->>>>>>> main:tests/unittests/testNACA4Calculator.cpp
+TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
+    //tigl::CTiglNACACalculator NACA4(2,2,12, 15);
+    tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
     tigl::CTiglNACA4UpperCurve upperCurve(NACA4);
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
