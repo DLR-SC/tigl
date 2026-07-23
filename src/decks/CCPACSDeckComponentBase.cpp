@@ -282,7 +282,10 @@ void CCPACSDeckComponentBase::BuildMass(MassCache& cache) const
 
     const CCPACSElementMass& massDef = massPtr->get();
 
-    CTiglElementMassBuilder builder(massDef, m_deckElementUID, BuildLocalLoft()->Shape());
+    const PNamedShape loft   = BuildLocalLoft();
+    const TopoDS_Shape shape = loft ? loft->Shape() : TopoDS_Shape();
+
+    CTiglElementMassBuilder builder(massDef, m_deckElementUID, shape);
 
     const auto result  = builder.EvaluateMass();
     cache.mass         = result.mass;

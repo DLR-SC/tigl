@@ -155,9 +155,15 @@ TEST_F(Systems, SystemMass)
     const auto cog = system.GetCenterOfGravity();
     ASSERT_TRUE(cog);
 
-    EXPECT_NEAR(cog->x, 16.4246386, eps);
-    EXPECT_NEAR(cog->y, 7.0952247, eps);
-    EXPECT_NEAR(cog->z, 0.2864855, eps);
+    // Reference values updated after fixing CFunctionToBspline::concatC1: one of the
+    // components here (predComplexMultiSegmentComponent) uses a superellipse profile with
+    // a fractional exponent (mUpper=0.5), which previously failed to converge within its
+    // requested tolerance and was silently forced smooth by the old, structurally invalid
+    // concatenation. The fixed geometry is very slightly (and correctly) different in shape,
+    // shifting the center of gravity by ~1e-5.
+    EXPECT_NEAR(cog->x, 16.4246251, eps);
+    EXPECT_NEAR(cog->y, 7.0952114, eps);
+    EXPECT_NEAR(cog->z, 0.2864744, eps);
 }
 
 TEST_F(Systems, ComponentsGeometry)
@@ -684,6 +690,15 @@ TEST_F(InvalidSystems, InvalidComponentCentroid)
     }
 }
 
+TEST_F(InvalidSystems, ElementWithoutGeometryHasNoLoft)
+{
+    // An element with no geometry primitives at all is a valid CPACS state (e.g. a
+    // component described only by mass properties). Building its loft must not throw,
+    // it should simply yield no shape, so that e.g. aircraft fusing can skip it gracefully.
+    const auto& comp = GetComponent("elementWithoutGeometry");
+    EXPECT_FALSE(comp.GetLoft());
+}
+
 TEST_F(InvalidSystems, InvalidFileHandling)
 {
     {
@@ -716,11 +731,13 @@ TEST_F(InvalidSystems, InvalidSystemMassProperties)
         ASSERT_FALSE(cog);
     }
 
-    // System referring to an element without geometry
+    // System referring to an element without geometry: since no location is given either,
+    // the center of gravity cannot be derived from a shape volume.
     {
         const auto& sys = GetSystem("testSystem3");
-        CheckExceptionMessage([&] { (void)sys.GetCenterOfGravity(); },
-                              "No geometry primitives defined for uID=\"predElementWithoutGeometry\"");
+        CheckExceptionMessage(
+            [&] { (void)sys.GetCenterOfGravity(); },
+            "Cannot compute mass properties of component with uID \"predElementWithoutGeometry\" (zero volume).");
     }
 }
 

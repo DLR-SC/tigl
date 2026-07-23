@@ -829,8 +829,13 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     if (geometricComp) {
                         PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                         if (mirroredLoft) {
-                            auto shape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor(), opacity, shaded);
-                            app->getScene()->GetShapeManager(m_docId).addObject(uid.toStdString(), shape);
+                            auto mirroredShape = app->getScene()->displayShape(mirroredLoft, m_docId, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                            app->getScene()->GetShapeManager(m_docId).addObject(uid.toStdString(), mirroredShape);
+                            // Respect a previously chosen "Show Symmetry" preference (e.g. from the
+                            // Display Options panel), which must survive this shape being re-created.
+                            if (!app->getScene()->GetShapeManager(m_docId).GetSymmetryVisible(uid.toStdString())) {
+                                app->getScene()->getContext()->Erase(mirroredShape, Standard_False);
+                            }
                         }
                     }
                 }
@@ -854,8 +859,17 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                         }
                     }
                 }
-                for (auto& obj : objects) {
-                    app->getScene()->getContext()->Display(obj, Standard_False);
+                bool symmetryVisible = app->getScene()->GetShapeManager().GetSymmetryVisible(uid.toStdString());
+                for (std::size_t i = 0; i < objects.size(); ++i) {
+                    auto& obj = objects[i];
+                    // objects[1], if present, is the mirrored/symmetry shape (see addObject() calls
+                    // above): keep it hidden if the user turned off "Show Symmetry" for this uid.
+                    if (i == 1 && !symmetryVisible) {
+                        app->getScene()->getContext()->Erase(obj, Standard_False);
+                    }
+                    else {
+                        app->getScene()->getContext()->Display(obj, Standard_False);
+                    }
                 }
                 app->getScene()->getViewer()->Update();
             }
@@ -2396,13 +2410,48 @@ void TIGLCreatorDocument::drawFusedAircraft()
 
 void TIGLCreatorDocument::drawFusedAircraftTriangulation()
 {
-    START_COMMAND()
-    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
-    app->getScene()->deleteObjectsOfDocument(m_docId);
-    TopoDS_Compound triangulation;
-    createShapeTriangulation(airplane, triangulation);
+    FuseDialog dialog(app);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
 
-    app->getScene()->displayShape(triangulation, m_docId, true, getDefaultShapeColor());
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if (!dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if (dialog.TrimWithFarField() && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if (dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
+    START_COMMAND()
+    try {
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
+
+        app->getScene()->deleteObjectsOfDocument(m_docId);
+        TopoDS_Compound triangulation;
+        createShapeTriangulation(airplane->Shape(), triangulation);
+
+        app->getScene()->displayShape(triangulation, m_docId, true, getDefaultShapeColor());
+    }
+    catch (tigl::CTiglError& error) {
+        displayError(error.what());
+    }
+    catch (...) {
+        displayError("Unknown Exception");
+    }
 }
 
 void TIGLCreatorDocument::drawIntersectionLine()

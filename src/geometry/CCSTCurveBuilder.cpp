@@ -122,7 +122,16 @@ Handle(Geom_BSplineCurve) CCSTCurveBuilder::Curve()
     CSTFunction function(this);
     if (_algo == Algorithm::Piecewise_Chebychev_Approximation)
     {
-        CFunctionToBspline approximator(function, 0., 1., _degree, _tol, 10);
+        // A class function exponent N < 0.5 leaves an unbounded derivative at the leading
+        // edge even after the x=t*t reparametrization above (x^N = t^(2N) is only C1 at
+        // t=0 once 2N >= 1). maxDepth=10 was too shallow to shrink the segment there far
+        // enough for the true local kink to fall inside concatC1's join tolerance - the
+        // old, unconditional concatC1 masked this by always declaring C1 regardless of
+        // the actual control points. maxDepth=22 (matching the analogous NACA leading-edge
+        // fix in CTiglNACA4Calculator) shrinks the segment down to ~2^-21, at which point
+        // even the worst case in this codebase's test data (N1=0.1) converges from a
+        // genuine ~180 degree kink to a ~1e-6 degree residual - verified empirically.
+        CFunctionToBspline approximator(function, 0., 1., _degree, _tol, 22);
         return approximator.Curve();
     }
     else if (_algo == Algorithm::GeomAPI_PointsToBSpline) {
