@@ -476,19 +476,19 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
             
-            int npnts = 100;
+            int npnts = 50;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
                 double u = ((double)i-1)/(npnts-1);
                 //double x = 0.5 * (1.0 - cos(M_PI * u));
-                //double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
                 //auto p = upper_curve(x);
-                auto p = upper_curve(u);
+                auto p = upper_curve(x);
                 pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
                 std::cout << p.X() << ", " << p.Y() << "\n";
             }
 
-            int nControlPoints =34;
+            int nControlPoints =14;
             int deg = 3;
             bool continuous_if_closed = false;
             auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
@@ -512,18 +512,18 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
             
-            int npnts = 100;
+            int npnts = 50;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
                 double u = ((double)i-1)/(npnts-1); // cosine distribution? closer at leading edge
-                //double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
                 //double x = 0.5 * (1.0 - cos(M_PI * u));
                 //auto p = lower_curve(x);
-                auto p = lower_curve(u);
+                auto p = lower_curve(x);
                 pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
             }
 
-            int nControlPoints = 34;
+            int nControlPoints = 14;
             int deg = 3;
             bool continuous_if_closed = false;
             auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
