@@ -34,6 +34,8 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <Standard_Failure.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Vec.hxx>
 
 #include <list>
 
@@ -166,6 +168,32 @@ TEST(TiglCommonFuctions, ApproximateArcOfCircleToRationalBSpline)
 
 }
 
+// Regression test for CFunctionToBspline::concatC1 (used internally by
+// ApproximateArcOfCircleToRationalBSpline): a circle is analytic/smooth everywhere, so with
+// a tight tolerance that forces multiple adaptively-fitted segments, every internal knot
+// join should be honestly continuous in tangent direction (no visible kinks). Unlike a NACA
+// airfoil's leading edge, there is no singularity here, so this should hold everywhere.
+TEST(TiglCommonFunctions, ApproximateArcOfCircleToRationalBSpline_C1ContinuousAtInternalKnots)
+{
+    Handle(Geom_BSplineCurve) curve = ApproximateArcOfCircleToRationalBSpline(1., 0., 6., 1.e-8, 0., 0.);
+
+    // make sure this actually exercises the multi-segment concatenation path
+    ASSERT_GT(curve->NbKnots(), 2);
+
+    const double eps = 1e-7;
+    for (int i = 2; i < curve->NbKnots(); ++i) {
+        double u = curve->Knot(i);
+
+        gp_Pnt pLeft, pRight;
+        gp_Vec dLeft, dRight;
+        curve->D1(u - eps, pLeft, dLeft);
+        curve->D1(u + eps, pRight, dRight);
+
+        EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
+        EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-3) << "tangent kink at knot " << u;
+    }
+}
+
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
 {
     auto wire = BuildWireRectangle(1., 0.);
@@ -187,6 +215,26 @@ TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusOK)
 {
     auto wire = BuildWireRectangle(0.5, 0.14);
     ASSERT_TRUE(wire.Closed());
+    auto trafo = gp_Trsf();
+    auto vec = gp_Vec(-1.,0.,0.);
+    trafo.SetTranslation(vec);
+    auto wire2 = BRepBuilderAPI_Transform(wire, trafo).Shape();
+    ASSERT_TRUE(wire2.Closed());
+    auto loft = CTiglMakeLoft();
+    loft.addProfiles(wire);
+    loft.addProfiles(wire2);
+    ASSERT_TRUE(BRepCheck_Analyzer(loft.Shape()).IsValid());
+}
+
+TEST(TiglCommonFunctions, BuildWireRectangle_FullCircleLimit)
+{
+    // heightToWidthRatio=1, cornerRadius=0.5 is the degenerate "circle" limit
+    // of the rectangle profile (all four straight edges collapse to zero
+    // length). See TIGLCreator/data/templates/simpletest.cpacs.xml.
+    auto wire = BuildWireRectangle(1., 0.5);
+    ASSERT_TRUE(wire.Closed());
+    ASSERT_TRUE(BRepCheck_Analyzer(wire).IsValid());
+
     auto trafo = gp_Trsf();
     auto vec = gp_Vec(-1.,0.,0.);
     trafo.SetTranslation(vec);

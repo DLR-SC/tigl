@@ -129,11 +129,12 @@ PNamedShape CTiglElementGeometryBuilder::BuildShape() const
     }
 
     if (shapes.empty()) {
-        std::string uid = "unknown";
-        if (const auto* parent = geom.GetNextUIDParent()) {
-            uid = parent->GetObjectUID().get_value_or(uid);
-        }
-        throw CTiglError("No geometry primitives defined for uID=\"" + uid + "\"");
+        // No geometry primitives are defined. This is a valid CPACS state (all primitive
+        // lists in <geometry> are optional, e.g. for elements that are described by mass
+        // properties only), so this is not treated as an error here. Callers that actually
+        // require a shape (e.g. centroid/mass-from-volume computations) must check for and
+        // report the missing geometry themselves.
+        return PNamedShape();
     }
 
     // build a base/compound shape from all parts

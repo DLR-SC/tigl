@@ -5,12 +5,14 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
   - TIGLCreator: Add a display options tab to the editor. This enables users to change display settings for the selected component and also offers to choose the corresponding draw options. The draw options are also centralized and modified using the scene graph functionality. Therefore the configuration stays visible upon choosing a draw option like the flaps. [#1270](https://github.com/DLR-SC/tigl/pull/1270) and [#1279](https://github.com/DLR-SC/tigl/pull/1279)
   - TiGLCreator: Disable Standardize menu option, until the algorithm works reliably [#1336](https://github.com/DLR-SC/tigl/issues/1336)
   - TiGL is now able to approximate profile point lists. The user can define an index list refering to points that should still be interpolated [#1276](https://github.com/DLR-SC/tigl/issues/1276).
   - Add `Color` class and `setObjectsColor`/`setObjectsColorRGB` functions to the TiGLCreator scripting console to set object colors without needing a native QColor object ([#1222](https://github.com/DLR-SC/tigl/issues/1222))
+  - Add `app.scene.selectShape` function to the TiGLCreator scripting console, to select a shape by its CPACS UID (e.g. for per-shape color customization via `setObjectsColor`/`setObjectsColorRGB`) ([#1316](https://github.com/DLR-SC/tigl/issues/1316))
   - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
   - Add geometry and mass-property evaluation for fuselage decks ([#1298](https://github.com/DLR-SC/tigl/pull/1298), [CPACS#859](https://github.com/DLR-SL/CPACS/issues/859))
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
@@ -25,6 +27,10 @@ Changes since last release
   - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 - Fixes
+  - Aircraft fusing no longer fails when a system or deck component (e.g. a lavatory or ceiling panel) has no geometry defined, since this is a valid CPACS state for elements described by mass properties only. Such components now simply contribute no shape instead of aborting the fuse. Also fix a related TiGLCreator crash: `Draw -> Aircraft -> Fused aircraft triangulation` did not catch exceptions and crashed the application. Additionally, this draw option now shows the same symmetries/far-field dialog as `Draw -> Aircraft -> Complete aircraft fused (slow)` instead of always reusing whatever fuse mode happened to be cached from a previous action ([#1388](https://github.com/DLR-SC/tigl/issues/1388))
+  - Fix fused CAD export (IGES/STEP/BRep) not fusing sibling components that intersect each other outside of a parent-child relationship (e.g. a horizontal and vertical tailplane both attached to the fuselage but also intersecting each other). All aircraft components are now fused together in a single Boolean operation, correctly resolving such mutual intersections between any number of components ([#939](https://github.com/DLR-SC/tigl/issues/939))
+  - Fix `BuildWireRectangle` throwing on the "circle" limit of a fuselage/wing standard rectangle profile (`heightToWidthRatio`/`cornerRadius` combination where the straight edges degenerate to zero length), which broke geometry generation for the TIGLCreator template's fuselage profile.
+  - TiGLCreator: Fix crash when computing/displaying geometry (e.g. loft) throws an OpenCASCADE exception instead of a `tigl::CTiglError`. All corresponding error handlers across TiGLCreator now also catch `Standard_Failure` and any other exception, showing an error dialog instead of crashing ([#1382](https://github.com/DLR-SC/tigl/issues/1382))
   - TiGLCreator: Fix crash when selecting objects with malformed CPACS geometry. Invalid objects are now clearly marked with a warning icon and descriptive tooltip instead of causing an unhandled exception ([#1375](https://github.com/DLR-SC/tigl/issues/1375))
   - `CCPACSPositionings::CreatePositioning now sets a name to be CPACS-conform ([#1378](https://github.com/DLR-SC/tigl/issues/1378))
   - TiGLCreator: Fix laggy behaviour when selecting a fuselage in the CPACSTree. Additionally, only the wireframe is highlighted, not each section on its own. This also boosts performance [#1275](https://github.com/DLR-SC/tigl/issues/1275).
