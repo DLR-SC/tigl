@@ -28,6 +28,25 @@
 #include "CTiglError.h"
 #include <math.h>
 
+
+namespace
+{
+    // Leading-edge reparametrization: x(t) = (1+eps)*t*t/(t+eps).
+    // Removes the thickness distribution's sqrt(x) derivative singularity at the leading
+    // edge (x(0)=0, x'(0)=0, same as a plain t*t substitution close to t=0), but - unlike a
+    // plain t*t, which reshapes the parametrization over the *entire* chord - relaxes back
+    // towards the identity x(t)~=t once t significantly exceeds eps, so the curve fit away
+    // from the leading edge (and its knot placement) stays close to the original, direct-x
+    // parametrization. A plain t*t was found to shift curve representation enough at
+    // e.g. x=0.25 to break a sibling-component boolean fuse in specific geometries; eps=0.02
+    // keeps the identity-like region starting well before that.
+    double leParam(double t)
+    {
+        const double eps = 0.02;
+        return (1. + eps) * t * t / (t + eps);
+    }
+}
+
 namespace tigl{
 
         NACA4DigitCode::NACA4DigitCode(std::string const& code) { // struct constructor oder so?
@@ -539,14 +558,14 @@ namespace tigl{
         {}
 
         double CTiglNACA4UpperCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.X();
         }
         double CTiglNACA4UpperCurve::valueY(double t)  {
             return 0.0;
         }
         double CTiglNACA4UpperCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.upper_curve(t);
+            gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.Y();
         }
 
@@ -556,7 +575,7 @@ namespace tigl{
         {}
 
         double CTiglNACA4LowerCurve::valueX(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.X();
         }
 
@@ -565,7 +584,7 @@ namespace tigl{
         }
 
         double CTiglNACA4LowerCurve::valueZ(double t)  {
-            gp_Vec2d vec = calculator.lower_curve(t);
+            gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.Y();
         }
 
