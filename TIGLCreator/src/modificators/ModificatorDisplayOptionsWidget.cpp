@@ -141,7 +141,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                     }
 
                     // get current values
-                    auto &sm = context->GetShapeManager();
+                    auto &sm = context->GetShapeManager(currentDoc->docId());
                     if (sm.HasShapeEntry(uid.toStdString())) {
                         auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
                         if (objs.empty()) {
@@ -308,7 +308,7 @@ bool ModificatorDisplayOptionsWidget::apply()
     if (currentItem) {
         const QString uid = QString::fromStdString(currentItem->getUid());
         if (!uid.isEmpty()) {
-            auto &sm = currentContext->GetShapeManager();
+            auto &sm = currentContext->GetShapeManager(currentDoc->docId());
             if (sm.HasShapeEntry(uid.toStdString())) {
                 auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
                 
@@ -391,7 +391,7 @@ void ModificatorDisplayOptionsWidget::onTransparencyChanged(int value)
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     if (!sm.HasShapeEntry(uid.toStdString()) && currentDoc) {
         currentDoc->drawComponentByUID(uid);
     }
@@ -439,7 +439,7 @@ void ModificatorDisplayOptionsWidget::onRenderingModeChanged(int displayMode)
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     for (auto &obj : objs) {
         if (obj.IsNull()) {
@@ -468,7 +468,7 @@ void ModificatorDisplayOptionsWidget::onColorChosen()
     }
     QColor initial;
     const QString uid = QString::fromStdString(currentItem->getUid());
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
 
     if (!objs.empty()) {
@@ -529,7 +529,7 @@ void ModificatorDisplayOptionsWidget::onMaterialChanged(const QString &mat)
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
     auto it = tiglMaterials::materialMap.find(mat);
     if (it == tiglMaterials::materialMap.end()) {
@@ -564,7 +564,7 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     // Reset Options should also restore the default "Show Symmetry" state.
     sm.SetSymmetryVisible(uid.toStdString(), true);
     auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
@@ -612,7 +612,7 @@ void ModificatorDisplayOptionsWidget::onShowSymmetryToggled(bool checked)
     if (uid.isEmpty()) {
         return;
     }
-    auto &sm = currentContext->GetShapeManager();
+    auto &sm = currentContext->GetShapeManager(currentDoc->docId());
     // Persist the preference so it survives the mirrored shape being torn down and
     // re-created (e.g. by toggling this component's visibility in the CPACS tree).
     sm.SetSymmetryVisible(uid.toStdString(), checked);

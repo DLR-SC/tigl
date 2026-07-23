@@ -210,6 +210,43 @@ void TIGLCreatorContext::deleteAllObjects()
         myContext->Remove( aListIterator.Value(), Standard_False);
     }
     myContext->UpdateCurrentViewer();
+
+    myDocumentObjects.clear();
+    myShapeManagers.clear();
+}
+
+void TIGLCreatorContext::trackDocumentObject(DocumentId docId, const Handle(AIS_InteractiveObject)& obj)
+{
+    if (docId == InvalidDocumentId || obj.IsNull()) {
+        return;
+    }
+    myDocumentObjects[docId].push_back(obj);
+}
+
+void TIGLCreatorContext::trackDisplayedObject(DocumentId docId, const Handle(AIS_InteractiveObject)& obj)
+{
+    trackDocumentObject(docId, obj);
+}
+
+void TIGLCreatorContext::deleteObjectsOfDocument(DocumentId docId)
+{
+    // Mirrors the pre-existing (global) deleteAllObjects(): removes AIS
+    // objects only. It intentionally does NOT clear the document's named
+    // shape manager entries (see GetShapeManager) - callers that redraw a
+    // document rely on stale-but-present entries (e.g. HasShapeEntry checks
+    // guarding "draw only if not already displayed"). Callers that are
+    // closing a document for good should also clear its shape manager
+    // explicitly.
+    auto it = myDocumentObjects.find(docId);
+    if (it != myDocumentObjects.end()) {
+        for (const auto& obj : it->second) {
+            if (!obj.IsNull()) {
+                myContext->Remove(obj, Standard_False);
+            }
+        }
+        myDocumentObjects.erase(it);
+    }
+    myContext->UpdateCurrentViewer();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.  
@@ -357,7 +394,7 @@ void TIGLCreatorContext::selectShape(const QString& uid)
         return;
     }
 
-    IObjectList iobjects = myShapeManager.GetIObjectsFromShapeName(uid.toStdString());
+    IObjectList iobjects = GetIObjectsFromShapeName(uid.toStdString());
     if (iobjects.empty()) {
         LOG(WARNING) << "TIGLCreatorContext::selectShape: No shape found for UID \"" << uid.toStdString() << "\"" << std::endl;
         return;
@@ -386,7 +423,7 @@ void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, DocumentId docId, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     TIGLCreatorSettings& settings = TIGLCreatorSettings::Instance();
     Handle(AIS_TexturedShape) shape = new AIS_TexturedShape(loft);
@@ -404,7 +441,8 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, boo
 #endif
 
     myContext->Display(shape, updateViewer);
-    
+    trackDocumentObject(docId, shape);
+
     if (settings.enumerateFaces()) {
         TopTools_IndexedMapOfShape shapeMap;
         TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
@@ -412,14 +450,14 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const TopoDS_Shape& loft, boo
             const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
             gp_Pnt p = GetCentralFacePoint(face);
             QString s = QString("%1").arg(i);
-            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+            displayPoint(p, s.toStdString().c_str(), docId, false, 0., 0., 0., 10.);
         }
     }
     return shape;
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
+Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, DocumentId docId, bool updateViewer, Quantity_Color color, double transparency, bool shaded)
 {
     if (!pshape) {
         return nullptr;
@@ -445,6 +483,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bo
     //myUndoStack->push(command);
     myContext->Display(shape, Standard_False);
     myContext->UpdateCurrentViewer();
+    trackDocumentObject(docId, shape);
 
 
     if (settings.enumerateFaces()) {
@@ -458,16 +497,17 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bo
             }
             gp_Pnt p = GetCentralFacePoint(face);
             QString s = QString("%1 - %2").arg(i).arg(faceName.c_str());
-            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+            displayPoint(p, s.toStdString().c_str(), docId, false, 0., 0., 0., 10.);
         }
     }
-    GetShapeManager().addObject(pshape, shape);
+    GetShapeManager(docId).addObject(pshape, shape);
     return shape;
 }
 
 // Displays a point on the screen
 Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      const char* aText,
+                                     DocumentId docId,
                                      Standard_Boolean UpdateViewer,
                                      Standard_Real anXoffset,
                                      Standard_Real anYoffset,
@@ -475,31 +515,34 @@ Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real TextScale)
 {
     if (std::string(aText).empty()) {
-        return displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
+        return displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), docId, UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {
         Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
         myContext->Display(aGraphicPoint,UpdateViewer);
+        trackDocumentObject(docId, aGraphicPoint);
         Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
                                                  aPoint.Y() + anYoffset,
                                                  aPoint.Z() + aZoffset);
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
+        trackDocumentObject(docId, aGraphicText);
         return Handle(AIS_Shape)::DownCast(aGraphicPoint);
     }
 
 }
 
 // convenience wrapper
-void TIGLCreatorContext::drawPoint(double x, double y, double z)
+void TIGLCreatorContext::drawPoint(double x, double y, double z, DocumentId docId)
 {
-    displayPoint(gp_Pnt(x,y,z), "", Standard_True, 0,0,0, 1.0);
+    displayPoint(gp_Pnt(x,y,z), "", docId, Standard_True, 0,0,0, 1.0);
 }
 
 // Displays a vector on the screen
 void TIGLCreatorContext::displayVector(const gp_Pnt& aPoint,
                                       const gp_Vec& aVec,
                                       const char* aText,
+                                      DocumentId docId,
                                       Standard_Boolean UpdateViewer,
                                       Standard_Real anXoffset,
                                       Standard_Real anYoffset,
@@ -508,11 +551,13 @@ void TIGLCreatorContext::displayVector(const gp_Pnt& aPoint,
 {
     Handle(ISession_Direction) aGraphicDirection = new ISession_Direction(aPoint, aVec);
     myContext->Display(aGraphicDirection,UpdateViewer);
+    trackDocumentObject(docId, aGraphicDirection);
     Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
                                                  aPoint.Y() + anYoffset,
                                                  aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
     myContext->Display(aGraphicText,UpdateViewer);
+    trackDocumentObject(docId, aGraphicText);
 }
 
 bool TIGLCreatorContext::hasSelectedShapes() const
@@ -539,9 +584,9 @@ void TIGLCreatorContext::updateViewer()
 }
 
 // convenience wrapper
-void TIGLCreatorContext::drawVector(double x, double y, double z, double dirx, double diry, double dirz)
+void TIGLCreatorContext::drawVector(double x, double y, double z, double dirx, double diry, double dirz, DocumentId docId)
 {
-    displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", Standard_True, 0,0,0, 1.0);
+    displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", docId, Standard_True, 0,0,0, 1.0);
 }
 
 std::vector<Handle(AIS_InteractiveObject)> TIGLCreatorContext::selected()
@@ -667,12 +712,34 @@ void TIGLCreatorContext::setFaceBoundariesEnabled(bool enabled) {
     }
 }
 
-InteractiveShapeManager& TIGLCreatorContext::GetShapeManager()
+InteractiveShapeManager& TIGLCreatorContext::GetShapeManager(DocumentId docId)
 {
-    return myShapeManager;
+    return myShapeManagers[docId];
 }
 
-Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoDS_Shape& loft, bool updateViewer,
+PNamedShape TIGLCreatorContext::GetShapeFromIObject(const Handle(AIS_Shape)& obj)
+{
+    for (auto& kv : myShapeManagers) {
+        PNamedShape shape = kv.second.GetShapeFromIObject(obj);
+        if (shape) {
+            return shape;
+        }
+    }
+    return PNamedShape();
+}
+
+IObjectList TIGLCreatorContext::GetIObjectsFromShapeName(const std::string& name) const
+{
+    for (const auto& kv : myShapeManagers) {
+        IObjectList objects = kv.second.GetIObjectsFromShapeName(name);
+        if (!objects.empty()) {
+            return objects;
+        }
+    }
+    return IObjectList();
+}
+
+Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoDS_Shape& loft, DocumentId docId, bool updateViewer,
                                                                     Quantity_Color color, double transparency)
 {
     TIGLCreatorSettings& settings    = TIGLCreatorSettings::Instance();
@@ -691,6 +758,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoD
 #endif
 
     myContext->Display(shape, true);
+    trackDocumentObject(docId, shape);
 
     if (settings.enumerateFaces()) {
         TopTools_IndexedMapOfShape shapeMap;
@@ -699,14 +767,15 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoD
             const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
             gp_Pnt p                = GetCentralFacePoint(face);
             QString s               = QString("%1").arg(i);
-            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+            displayPoint(p, s.toStdString().c_str(), docId, false, 0., 0., 0., 10.);
         }
     }
     return shape;
 }
 
 Handle(AIS_InteractiveObject) TIGLCreatorContext::displayLineHLMode(double Ax, double Ay, double Az, double Bx,
-                                                                   double By, double Bz, bool updateViewer,
+                                                                   double By, double Bz, DocumentId docId,
+                                                                   bool updateViewer,
                                                                    Quantity_Color color, double transparency)
 {
     gp_Pnt aPoint(Ax, Ay, Az);
@@ -718,7 +787,7 @@ Handle(AIS_InteractiveObject) TIGLCreatorContext::displayLineHLMode(double Ax, d
     }
     TopoDS_Edge aEdge1 = BRepBuilderAPI_MakeEdge(aPoint, bPoint);
     TopoDS_Wire wire   = BRepBuilderAPI_MakeWire(aEdge1);
-    return displayShapeHLMode(wire, updateViewer, color, transparency);
+    return displayShapeHLMode(wire, docId, updateViewer, color, transparency);
 }
 
 void TIGLCreatorContext::removeShape(Handle(AIS_InteractiveObject) shape)

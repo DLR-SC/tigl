@@ -32,9 +32,11 @@
 #include "TIGLCreatorColors.h"
 #include "TIGLInteractiveShapeManager.h"
 #include "TIGLCreatorSettings.h"
+#include "DocumentId.h"
 #include <QMetaType>
 #include <QUndoStack>
 #include <Standard_Version.hxx>
+#include <map>
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,7,0)
   #include <Graphic3d_ShaderProgram.hxx>
 #endif
@@ -64,15 +66,17 @@ public:
     
     Handle(AIS_Shape) displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
+                      DocumentId docId,
                       Standard_Boolean UpdateViewer,
                       Standard_Real anXoffset,
                       Standard_Real anYoffset,
                       Standard_Real aZoffset,
                       Standard_Real TextScale);
-    
+
     void displayVector(const gp_Pnt& aPoint,
                        const gp_Vec& aVec,
                        const char* aText,
+                       DocumentId docId,
                        Standard_Boolean UpdateViewer,
                        Standard_Real anXoffset,
                        Standard_Real anYoffset,
@@ -83,12 +87,27 @@ public:
 
     void updateViewer();
 
-    InteractiveShapeManager& GetShapeManager();
+    // Returns the shape manager tracking the named/UID shapes belonging to
+    // one document. Created on first access.
+    InteractiveShapeManager& GetShapeManager(DocumentId docId);
+
+    // Cross-document lookup: resolves a picked AIS object back to its named
+    // shape, regardless of which open document owns it. Used for 3D-view
+    // picking, where the shared viewport can show shapes from any open
+    // document.
+    PNamedShape GetShapeFromIObject(const Handle(AIS_Shape)& obj);
+
+    // Cross-document lookup: finds the interactive objects for a named
+    // shape, regardless of which open document owns it. Used by
+    // selectShape(), which (e.g. via the scripting console) has no
+    // document context of its own.
+    IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
     // Function used to highlight (HL) shape (used by ModificatorManager)
 
     // display the shape using highlighting settings and return the AIS_InteractiveObject
     Handle(AIS_InteractiveObject)   displayShapeHLMode( const TopoDS_Shape &loft,
+                                                        DocumentId docId,
                                                         bool updateViewer = Standard_True,
                                                         Quantity_Color color = Quantity_NOC_Highlight,
                                                         double transparency = 0.);
@@ -99,18 +118,31 @@ public:
                                                         double Bx,
                                                         double By,
                                                         double Bz,
+                                                        DocumentId docId,
                                                         bool updateViewer = Standard_True,
                                                         Quantity_Color color = Quantity_NOC_Highlight,
                                                         double transparency = 0.);
     // remove the shape referenced by shape of the scene
     void removeShape( Handle(AIS_InteractiveObject) shape);
 
-public slots:
-    Handle(AIS_Shape) displayShape(const PNamedShape& pshape, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
-    Handle(AIS_Shape) displayShape(const TopoDS_Shape& loft, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    // Removes all objects (named and unnamed) belonging to one document from
+    // the scene, without touching shapes owned by other open documents.
+    void deleteObjectsOfDocument(DocumentId docId);
 
-    void drawPoint(double x, double y, double z);
-    void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
+    // Registers an AIS object that was displayed outside of the
+    // displayShape()/displayPoint()/... helpers (e.g. imported geometry
+    // shown directly via getContext()->Display()) as belonging to a
+    // document, so it participates in deleteObjectsOfDocument() scoping.
+    void trackDisplayedObject(DocumentId docId, const Handle(AIS_InteractiveObject)& obj);
+
+public slots:
+    Handle(AIS_Shape) displayShape(const PNamedShape& pshape, DocumentId docId, bool updateViewer, Quantity_Color color= Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+    Handle(AIS_Shape) displayShape(const TopoDS_Shape& loft, DocumentId docId, bool updateViewer, Quantity_Color color = Quantity_NOC_ShapeCol, double transparency=0., bool shaded = true);
+
+    void drawPoint(double x, double y, double z, DocumentId docId = InvalidDocumentId);
+    void drawVector(double x, double y, double z, double dirx, double diry, double dirz, DocumentId docId = InvalidDocumentId);
+    // Removes all objects from the scene, across all open documents. Used
+    // when shutting down the scene entirely (e.g. no documents left open).
     void deleteAllObjects();
     void gridXY     ();
     void gridXZ     ();
@@ -155,7 +187,16 @@ private:
     Handle(Graphic3d_ShaderProgram) myShader;
 #endif
     QUndoStack* myUndoStack;
-    InteractiveShapeManager         myShapeManager;
+
+    // Named/UID shape lookup, scoped per document. Entries are created
+    // lazily on first GetShapeManager(docId) access.
+    std::map<DocumentId, InteractiveShapeManager> myShapeManagers;
+    // Every AIS object displayed for a given document (named or not), used
+    // to scope deleteObjectsOfDocument() without affecting other open
+    // documents' shapes in the shared scene.
+    std::map<DocumentId, std::vector<Handle(AIS_InteractiveObject)>> myDocumentObjects;
+
+    void trackDocumentObject(DocumentId docId, const Handle(AIS_InteractiveObject)& obj);
 
     void initShaders();
 };
