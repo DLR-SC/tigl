@@ -7,7 +7,7 @@ from OCC.Core.TopoDS import TopoDS_Edge
 from tixi3.tixi3wrapper import Tixi3
 from tigl3.tigl3wrapper import Tigl3
 from tigl3.configuration import (
-    CCPACSConfigurationManager_get_instance,
+    CCPACSConfigurationManager,
     CPACSNacaProfile,
     CTiglNACA4Calculator,
 )
@@ -42,7 +42,7 @@ class TestNACA(unittest.TestCase):
             raise AssertionError(f"Tigl3.open() unexpectedly returned {tigl_result!r}")
         cls._tigl_is_open = True
 
-        manager = CCPACSConfigurationManager_get_instance()
+        manager = CCPACSConfigurationManager.get_instance()
         cls.aircraft_config = manager.get_configuration(cls.tigl._handle.value)
 
         profiles = cls.aircraft_config.get_wing_profiles()
