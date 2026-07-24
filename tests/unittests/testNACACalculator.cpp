@@ -322,7 +322,9 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
     // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
     // CTiglNACA4UpperCurve::valueX)
     //p_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
-    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
+    //gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
+    double x = (0.5 * (1.0 - cos(M_PI * 0.5)), 0.5);
+    gp_Vec2d pnt = NACA4.lower_curve(x);
     gp_Pnt pnt2;
     lower_spline->D0(0.5, pnt2);
     ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); //is 1e-2 too small?
@@ -670,8 +672,8 @@ TEST(CTiglNACACalculator, naca23012_getUpperLowerWire) {
 
 
 TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
-    const char* xmlfile = "/localdata2/gedl_ha/code/tigl/tests/TestData/naca_5_test.xml";
-
+    //const char* xmlfile = "/localdata2/gedl_ha/code/tigl/tests/TestData/naca_5_test.xml";
+    const char* xmlfile = "/localdata2/gedl_ha/code/praxisphase3/naca_test.cpacs.xml";
     TixiDocumentHandle tixiHandle = -1;
     TiglCPACSConfigurationHandle tiglHandle = -1;
 
@@ -681,10 +683,11 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
     EXPECT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle), TIGL_SUCCESS);
 
     char* nacaCodeStr = NULL;
-    std::string xpath = "//wingAirfoil[@uID='NACA0009']/nacaProfile/naca5DigitCode";
+    //std::string xpath = "//wingAirfoil[@uID='NACA0009']/nacaProfile/naca5DigitCode";
+    std::string xpath = "//wingAirfoil[@uID='NACA21011']/naca/naca5DigitCode";
     EXPECT_EQ(tixiGetTextElement(tixiHandle, xpath.c_str(), &nacaCodeStr), SUCCESS);
-    ASSERT_STREQ(nacaCodeStr, "22018");
-
+    //ASSERT_STREQ(nacaCodeStr, "22018");
+    ASSERT_STREQ(nacaCodeStr, "21011");
     //tigl::NACA5DigitCode naca5code(std::string(nacaCodeStr));
     tigl::CTiglNACACalculator nacaCalc(tigl::NACA5DigitCode(nacaCodeStr), 0.0);
 
