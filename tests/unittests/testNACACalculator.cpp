@@ -322,14 +322,18 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
     // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
     // CTiglNACA4UpperCurve::valueX)
     //p_Vec2d pnt = NACA4.lower_curve(0.5*0.5);
-    //gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
-    double x = (0.5 * (1.0 - cos(M_PI * 0.5)), 0.5);
-    gp_Vec2d pnt = NACA4.lower_curve(x);
+    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
+    //double x = (0.5 * (1.0 - cos(M_PI * 0.5)), 0.5);
+    //gp_Vec2d pnt = NACA4.lower_curve(x);
+    double u = (2.0/M_PI) * acos(1.0 - 2.0*testLeParam(0.5));
     gp_Pnt pnt2;
-    lower_spline->D0(0.5, pnt2);
-    ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); //is 1e-2 too small?
+    lower_spline->D0(u, pnt2);
+    ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); 
     ASSERT_NEAR(pnt2.Z(), pnt.Y(), 1e-2);
+
+    
 }
+
 
 TEST(CTiglNACACalculator, naca2212_export_bsplines){
     //tigl::CTiglNACACalculator NACA4(2,2,12, .15);

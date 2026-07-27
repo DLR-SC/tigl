@@ -475,7 +475,7 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
-            
+            /*
             int npnts = 100;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
@@ -488,7 +488,7 @@ namespace tigl{
                 std::cout << p.X() << ", " << p.Y() << "\n";
             }
 
-            int nControlPoints =44;
+            int nControlPoints =68;
             int deg = 3;
             bool continuous_if_closed = false;
             auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
@@ -496,13 +496,13 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-            
+            */
 
             CTiglNACA4UpperCurve upperCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
-            int degree = 1;
+            int degree = 3;
             double tolerance=1e-5;//war 5!!
             int maxDepth = 10;//war 10!!
 
@@ -511,7 +511,7 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
-            
+            /*
             int npnts = 100;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
@@ -523,7 +523,7 @@ namespace tigl{
                 pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
             }
 
-            int nControlPoints = 44;
+            int nControlPoints = 68;
             int deg = 3;
             bool continuous_if_closed = false;
             auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
@@ -531,13 +531,13 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-            
+            */
 
             CTiglNACA4LowerCurve lowerCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
-            int degree = 1;
+            int degree = 3;
             double tolerance=1e-5;
             int maxDepth = 10;
 
