@@ -828,8 +828,13 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                     if (geometricComp) {
                         PNamedShape mirroredLoft = geometricComp->GetMirroredLoft();
                         if (mirroredLoft) {
-                            auto shape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
-                            app->getScene()->GetShapeManager().addObject(uid.toStdString(), shape);
+                            auto mirroredShape = app->getScene()->displayShape(mirroredLoft, true, getDefaultShapeSymmetryColor(), opacity, shaded);
+                            app->getScene()->GetShapeManager().addObject(uid.toStdString(), mirroredShape);
+                            // Respect a previously chosen "Show Symmetry" preference (e.g. from the
+                            // Display Options panel), which must survive this shape being re-created.
+                            if (!app->getScene()->GetShapeManager().GetSymmetryVisible(uid.toStdString())) {
+                                app->getScene()->getContext()->Erase(mirroredShape, Standard_False);
+                            }
                         }
                     }
                 }
@@ -853,8 +858,17 @@ void TIGLCreatorDocument::drawComponentByUID(const QString& uid)
                         }
                     }
                 }
-                for (auto& obj : objects) {
-                    app->getScene()->getContext()->Display(obj, Standard_False);
+                bool symmetryVisible = app->getScene()->GetShapeManager().GetSymmetryVisible(uid.toStdString());
+                for (std::size_t i = 0; i < objects.size(); ++i) {
+                    auto& obj = objects[i];
+                    // objects[1], if present, is the mirrored/symmetry shape (see addObject() calls
+                    // above): keep it hidden if the user turned off "Show Symmetry" for this uid.
+                    if (i == 1 && !symmetryVisible) {
+                        app->getScene()->getContext()->Erase(obj, Standard_False);
+                    }
+                    else {
+                        app->getScene()->getContext()->Display(obj, Standard_False);
+                    }
                 }
                 app->getScene()->getViewer()->Update();
             }
