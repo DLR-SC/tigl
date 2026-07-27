@@ -423,10 +423,10 @@ namespace tigl{
                 if(p == 0){
                     return 0;
                 }
-                if(0 <= x && x <= m){ //beim git merge hatte ich als altenative das hier statt m p ist
+                if(0 <= x && x <= p){ 
                     return (2*p - 2*x)*m/(p*p);
                 }
-                else if(x > m){ //beim git merge hatte ich als altenative das hier statt m p ist
+                else if(x > p){ 
                     return ( 2*p - 2*x)*m/((1-p)*(1-p));;
                 }
                 else{
