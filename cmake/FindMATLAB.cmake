@@ -99,9 +99,27 @@
  if (NOT MATLAB_DIR)
    if (NOT $ENV{MATLABDIR} STREQUAL "")
      set (MATLAB_DIR "$ENV{MATLABDIR}"  CACHE PATH "Installation prefix for MATLAB." FORCE)
-   else ()
+   elseif (NOT $ENV{MATLAB_DIR} STREQUAL "")
      set (MATLAB_DIR "$ENV{MATLAB_DIR}" CACHE PATH "Installation prefix for MATLAB." FORCE)
    endif ()
+ endif ()
+
+ # No real MATLAB installation configured: fall back to the vendored MATLAB SDK headers and
+ # import-stub libraries (mex.h, matrix.h, libmex/libmx/libmat) under thirdparty/matlab-sdk.
+ # These are the same files previously shipped by the dlr-sc "matlab-libs" conda package -- there
+ # is no conda-forge equivalent, so they're committed in-repo instead. Only win-64 and osx-64 are
+ # vendored: on Linux, MATLAB ships "mex"/"make" itself, so users compile against their own
+ # installation (see doc/installation.md).
+ if (NOT MATLAB_DIR)
+   if (WIN32)
+     set (_TIGL_MATLAB_SDK_DIR "${CMAKE_SOURCE_DIR}/thirdparty/matlab-sdk/win-64")
+   elseif (APPLE)
+     set (_TIGL_MATLAB_SDK_DIR "${CMAKE_SOURCE_DIR}/thirdparty/matlab-sdk/osx-64")
+   endif ()
+   if (_TIGL_MATLAB_SDK_DIR AND EXISTS "${_TIGL_MATLAB_SDK_DIR}/extern/include/mex.h")
+     set (MATLAB_DIR "${_TIGL_MATLAB_SDK_DIR}" CACHE PATH "Installation prefix for MATLAB." FORCE)
+   endif ()
+   unset (_TIGL_MATLAB_SDK_DIR)
  endif ()
  
  if(NOT MATLAB_LIB_DIR)

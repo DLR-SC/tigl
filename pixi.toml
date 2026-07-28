@@ -1,40 +1,30 @@
 [workspace]
 authors = ["Jan Kleinert <jan.kleinert@dlr.de>"]
-channels = ["dlr-sc", "dlr-sc/label/tigl-dev", "conda-forge"]
+channels = ["conda-forge"]
 name = "tigl-bld"
 platforms = ["win-64", "linux-64", "osx-64"]
 version = "3.4.1"
-channel-priority = "disabled"
 
 [feature.base.dependencies]
-# Base dependencies for all builds
-tixi3 = "3.3.2.*"
-qt = { version = "5.15.15.*", channel = "conda-forge" }
-python = "*"
-matlab-libs = "*"
 ninja = ">=1.10.0"
-doxygen = "1.8.15.*"
+occt = { version = "7.8.1.*", build = "novtk*" }
+tixi = "3.3.2.*"
+qt = { version = "5.15.15.*", channel = "conda-forge" }
+python = ">=3.10,<3.13"
+setuptools = "*"
+doxygen = "*"
 
-[feature.opencascade.dependencies]
-opencascade = "7.6.2.*"
-freeimageplus = "*"
 
 [feature.python-internal.dependencies]
 swig = ">=3.0.11,<4.1"
-pythonocc-core = "7.6.2.*"
-setuptools = "*"
+# Keep in sync with the occt version above and the pinned tag of the vendored
+# thirdparty/pythonocc-core submodule (see cmake/FindPythonOCC.cmake).
+pythonocc-core = { version = "7.8.1.*", build = "novtk*" }
+pyqt = ">=5.15.11,<6"
+pytest = "*"
 # these are optional, but needed for some of the python examples:
 numpy = "*"
 matplotlib = "*"
-pyqt = ">=5.15.11,<6"
-pytest = "*"
-
-[feature.opencascade-static.dependencies]
-opencascade-static = "7.6.2.*"
-freetype-static = "*"
-freeimageplus-static = "*"
-tbb-devel = "2019.5.*"
-tbb = "2019.5.*"
 
 [target.linux-64.dependencies]
 libgl-devel = "*"
@@ -97,11 +87,9 @@ tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
 # The environments define some common build configurations for TiGL or configurations used in CI
 [environments]
 # default is the default build configuration
-"default" = ["base","opencascade"]
+"default" = ["base"]
 # coverage feature builds in debug mode and runs the tests with coverage flags enabled
-"coverage" = ["base", "coverage", "opencascade"]
-# occt-static feature builds with static OpenCASCADE libraries
-"occt-static" = ["base", "opencascade-static"]
+"coverage" = ["base", "coverage"]
 # python-internal feature builds the internal python bindings of the C++ core using swig
 "python-internal" = ["base", "python-internal"]
 
@@ -123,34 +111,13 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=ON",
     "-D", "TIGL_CREATOR=OFF",
-    "-D", "OCE_STATIC_LIBS=ON",
+    "-D", "OCE_STATIC_LIBS=OFF",
 ], args = [
         { "arg" = "config", "default"="Debug"},
         { "arg" = "nightly", "default"="ON"},
 ]}
 unittests = { cmd = "cmake --build build --target coverage-unittests/fast"}
 integrationtests = { cmd = "cmake --build build --target coverage-integrationtests/fast"}
-
-[feature.opencascade-static.tasks]
-configure = { cmd = [
-    "cmake", 
-    "-G", "Ninja", 
-    "-S", ".", 
-    "-B", "build", 
-    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
-    "-D", "CMAKE_BUILD_TYPE={{ config }}",
-    "-D", "TIGL_NIGHTLY={{ nightly }}",
-    "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
-    "-D", "TIGL_BUILD_TESTS=ON",
-    "-D", "TIGL_BINDINGS_PYTHON_INTERNAL=OFF",
-    "-D", "TIGL_BINDINGS_PYTHON=ON",
-    "-D", "TIGL_BINDINGS_MATLAB=ON",
-    "-D", "TIGL_CREATOR=ON",
-    "-D", "OCE_STATIC_LIBS=ON",
-], args = [
-        { "arg" = "config", "default"="Release"},
-        { "arg" = "nightly", "default"="ON"},
-]}
 
 [feature.python-internal.tasks]
 configure = { cmd = [
