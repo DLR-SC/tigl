@@ -124,6 +124,7 @@ private slots:
     void addSpotlight();
     void onComponentVisibilityChanged(const QString& uid, bool visible);
     void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
+    void onModificatorModelReset();
     void onDisplayOptionsRequested();
     void onSetTransparencyRequested(int v);
     void onSetRenderingModeRequested(int mode);
