@@ -41,6 +41,12 @@ gcovr = "*"
 [target.linux-64.activation.env]
 # this is needed to correctly set the RPATH of tiglcreator
 LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+# conda-forge's occt exports TKOpenGl/TKService with bare "GL"/"X11"/"fontconfig" library names
+# (not full paths) in their INTERFACE_LINK_LIBRARIES, instead of e.g. freeimage/freetype which use
+# full conda paths. The linker only resolves those via its default search dirs unless
+# $CONDA_PREFIX/lib is added to LIBRARY_PATH (the link-time counterpart to LD_LIBRARY_PATH above) --
+# without it, link fails with "cannot find -lGL" on hosts that don't have a system-wide libGL.so.
+LIBRARY_PATH = "$CONDA_PREFIX/lib:$LIBRARY_PATH"
 
 [target.osx-64.activation.env]
 # this is needed to correctly find freeimage and freetype
