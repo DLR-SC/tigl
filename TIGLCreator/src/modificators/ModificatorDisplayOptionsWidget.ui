@@ -128,6 +128,30 @@
       </item>
      </layout>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_symmetry">
+      <item>
+       <widget class="QLabel" name="labelSymmetry">
+        <property name="text">
+         <string>Show Symmetry:</string>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxShowSymmetry">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
   <item>
    <widget class="QPushButton" name="buttonResetOptions">
     <property name="sizePolicy">

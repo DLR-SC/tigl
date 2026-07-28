@@ -1014,6 +1014,11 @@ void TIGLCreatorWindow::connectSignals()
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(dispatchLastSelectedItemOnConfigurationEdited()));
     connect(modificatorModel, SIGNAL(configurationEdited()), this, SLOT(updateMenus()));
 
+    // modificatorModel rebuilds/destroys its CPACSTree whenever the tree is reset (e.g. on
+    // closing/opening a configuration). Any cached raw pointer into the old tree, such as
+    // lastSelectedTreeItem, would otherwise dangle, so clear it here.
+    connect(modificatorModel, SIGNAL(modelReset()), this, SLOT(onModificatorModelReset()));
+
     connect(treeWidget, SIGNAL(newSelectedTreeItem(cpcr::CPACSTreeItem*)), modificatorModel, SLOT(dispatch(cpcr::CPACSTreeItem*)));
     connect(treeWidget, &CPACSTreeWidget::deleteSectionRequested, modificatorModel, &ModificatorModel::deleteSection);
     connect(treeWidget, SIGNAL(addSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)), modificatorModel, SLOT(onAddSectionRequested(CPACSTreeView::Where,cpcr::CPACSTreeItem*)));
@@ -1410,6 +1415,14 @@ void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
     }
     lastSelectedTreeUID = treeWidget->getSelectedUID();
     lastSelectedTreeItem = item;
+}
+
+void TIGLCreatorWindow::onModificatorModelReset()
+{
+    // The CPACSTree behind modificatorModel was just rebuilt/destroyed, so any previously
+    // selected item is gone. Clear the cached pointer to avoid dangling references.
+    lastSelectedTreeItem = nullptr;
+    lastSelectedTreeUID.clear();
 }
 
 void TIGLCreatorWindow::onDisplayOptionsRequested()

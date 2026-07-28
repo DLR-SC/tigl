@@ -98,13 +98,19 @@ void CTiglFusePlane::Invalidate()
 }
 
 // Collects the loft (with mirror geometry merged in, if applicable) of every
-// non-duct component that makes up the aircraft.
+// component that makes up the aircraft's outer geometry.
 ListPNamedShape CTiglFusePlane::CollectComponentShapes() const
 {
     std::vector<CTiglRelativelyPositionedComponent*> allComponents;
     const RelativeComponentContainerType& allRelComps = _myconfig.GetUIDManager().GetRelativeComponents();
     for (RelativeComponentContainerType::const_iterator it = allRelComps.begin(); it != allRelComps.end(); ++it) {
-        if (it->second->GetComponentType() != TIGL_COMPONENT_DUCT) {
+        TiglGeometricComponentType type = it->second->GetComponentType();
+        // Ducts are fused separately by their parent segment. Decks and deck components
+        // (seats, galleys, lavatories, ...) are mass/CG bookkeeping helpers, not part of
+        // the aircraft's outer shape: their shapes may be non-solid (e.g. a deck's floor
+        // is a bare face/shell), which BRepAlgoAPI_Fuse below refuses to combine with the
+        // solid aircraft components (BOPAlgo_AlertBOPNotAllowed).
+        if (type != TIGL_COMPONENT_DUCT && type != TIGL_COMPONENT_DECK && type != TIGL_COMPONENT_DECK_COMPONENT) {
             allComponents.push_back(it->second);
         }
     }

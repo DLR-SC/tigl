@@ -34,6 +34,8 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <Standard_Failure.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <gp_Vec.hxx>
 
 #include <list>
 
@@ -164,6 +166,32 @@ TEST(TiglCommonFuctions, ApproximateArcOfCircleToRationalBSpline)
     //multiple traversion
     ASSERT_THROW(ApproximateArcOfCircleToRationalBSpline(1., 0., 20., 1.e-5, 0., 0.), tigl::CTiglError);
 
+}
+
+// Regression test for CFunctionToBspline::concatC1 (used internally by
+// ApproximateArcOfCircleToRationalBSpline): a circle is analytic/smooth everywhere, so with
+// a tight tolerance that forces multiple adaptively-fitted segments, every internal knot
+// join should be honestly continuous in tangent direction (no visible kinks). Unlike a NACA
+// airfoil's leading edge, there is no singularity here, so this should hold everywhere.
+TEST(TiglCommonFunctions, ApproximateArcOfCircleToRationalBSpline_C1ContinuousAtInternalKnots)
+{
+    Handle(Geom_BSplineCurve) curve = ApproximateArcOfCircleToRationalBSpline(1., 0., 6., 1.e-8, 0., 0.);
+
+    // make sure this actually exercises the multi-segment concatenation path
+    ASSERT_GT(curve->NbKnots(), 2);
+
+    const double eps = 1e-7;
+    for (int i = 2; i < curve->NbKnots(); ++i) {
+        double u = curve->Knot(i);
+
+        gp_Pnt pLeft, pRight;
+        gp_Vec dLeft, dRight;
+        curve->D1(u - eps, pLeft, dLeft);
+        curve->D1(u + eps, pRight, dRight);
+
+        EXPECT_NEAR(pLeft.Distance(pRight), 0.0, 1e-6) << "position jump at knot " << u;
+        EXPECT_NEAR(dLeft.Angle(dRight), 0.0, 1e-3) << "tangent kink at knot " << u;
+    }
 }
 
 TEST(TiglCommonFunctions, BuildWireRectangle_CornerRadiusZero)
