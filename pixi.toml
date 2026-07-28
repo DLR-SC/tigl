@@ -9,7 +9,7 @@ version = "3.4.1"
 ninja = ">=1.10.0"
 occt = { version = "7.9.3.*", build = "novtk*" }
 tixi = "3.3.2.*"
-qt = { version = "5.15.15.*", channel = "conda-forge" }
+qt = "5.15.15.*"
 python = ">=3.10,<3.13"
 setuptools = "*"
 doxygen = "*"
