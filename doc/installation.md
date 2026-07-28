@@ -129,7 +129,9 @@ Two dependencies that aren't (fully) available as conda-forge packages are vendo
   full MATLAB installation. No conda-forge equivalent exists. Not needed on Linux, where MATLAB itself
   provides `mex`/`make` for building the bindings against a real local installation (see @ref matlab).
   `cmake/FindMATLAB.cmake` uses these automatically as a fallback when `MATLAB_DIR`/`MATLABDIR` aren't
-  set to a real MATLAB installation.
+  set to a real MATLAB installation. Only an Intel (`osx-64`) SDK is vendored — on Apple Silicon
+  (`osx-arm64`) the MATLAB bindings are skipped entirely (`MATLAB_FOUND` stays false) unless you point
+  `MATLAB_DIR` at your own Apple Silicon MATLAB installation.
 
 @subsection cmakeoptions CMake Options
 

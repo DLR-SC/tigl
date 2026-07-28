@@ -107,13 +107,15 @@
  # No real MATLAB installation configured: fall back to the vendored MATLAB SDK headers and
  # import-stub libraries (mex.h, matrix.h, libmex/libmx/libmat) under thirdparty/matlab-sdk.
  # These are the same files previously shipped by the dlr-sc "matlab-libs" conda package -- there
- # is no conda-forge equivalent, so they're committed in-repo instead. Only win-64 and osx-64 are
- # vendored: on Linux, MATLAB ships "mex"/"make" itself, so users compile against their own
- # installation (see doc/installation.md).
+ # is no conda-forge equivalent, so they're committed in-repo instead. Only win-64 and osx-64
+ # (Intel) are vendored: on Linux, MATLAB ships "mex"/"make" itself, so users compile against
+ # their own installation (see doc/installation.md); on osx-arm64 (Apple Silicon) there is no
+ # vendored SDK at all, so MATLAB bindings are simply skipped there (MATLAB_FOUND stays false)
+ # unless the user points MATLAB_DIR at their own Apple Silicon MATLAB installation.
  if (NOT MATLAB_DIR)
    if (WIN32)
      set (_TIGL_MATLAB_SDK_DIR "${CMAKE_SOURCE_DIR}/thirdparty/matlab-sdk/win-64")
-   elseif (APPLE)
+   elseif (APPLE AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" AND NOT CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
      set (_TIGL_MATLAB_SDK_DIR "${CMAKE_SOURCE_DIR}/thirdparty/matlab-sdk/osx-64")
    endif ()
    if (_TIGL_MATLAB_SDK_DIR AND EXISTS "${_TIGL_MATLAB_SDK_DIR}/extern/include/mex.h")
@@ -143,8 +145,15 @@ IF(UNIX)
             SET( MATLAB_ARCH maci )
             SET( MATLAB_MEX_SUFFIX .mexmaci CACHE STRING "Mex shared library file suffix" )
             SET( MATLAB_CXX_FLAGS
-                    "${CMAKE_CXX_FLAGS} -flat_namespace -undefined suppress" CACHE INTERNAL 
+                    "${CMAKE_CXX_FLAGS} -flat_namespace -undefined suppress" CACHE INTERNAL
                     "extra CFLAGS to suppress linker errors in Mac OS X" )
+        # Apple Silicon: either explicitly cross-compiling for arm64, or a native (non-cross)
+        # build where CMAKE_OSX_ARCHITECTURES is unset and CMAKE_SYSTEM_PROCESSOR reflects the
+        # host. MATLAB only added native arm64 support (mexmaca64) in R2023a; this find module
+        # predates that, so without this branch it silently mislabels arm64 builds as maci64.
+        ELSEIF( CMAKE_OSX_ARCHITECTURES MATCHES "arm64" OR (NOT CMAKE_OSX_ARCHITECTURES AND (CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")) )
+            SET( MATLAB_ARCH maca64 )
+            SET( MATLAB_MEX_SUFFIX .mexmaca64)
         ELSE()
             SET( MATLAB_ARCH maci64 )
             SET( MATLAB_MEX_SUFFIX .mexmaci64)
