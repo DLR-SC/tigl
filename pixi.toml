@@ -2,12 +2,12 @@
 authors = ["Jan Kleinert <jan.kleinert@dlr.de>"]
 channels = ["conda-forge"]
 name = "tigl-bld"
-platforms = ["win-64", "linux-64", "osx-64"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 version = "3.4.1"
 
 [feature.base.dependencies]
 ninja = ">=1.10.0"
-occt = { version = "7.8.1.*", build = "novtk*" }
+occt = { version = "7.9.3.*", build = "novtk*" }
 tixi = "3.3.2.*"
 qt = { version = "5.15.15.*", channel = "conda-forge" }
 python = ">=3.10,<3.13"
@@ -16,10 +16,16 @@ doxygen = "*"
 
 
 [feature.python-internal.dependencies]
-swig = ">=3.0.11,<4.1"
+# Must match the swig version conda-forge's pythonocc-core package was actually built with
+# (verified via its embedded recipe metadata: 7.8.1 -> swig 4.2.1, 7.9.3 -> swig 4.4.1). SWIG's
+# cross-module runtime type sharing breaks silently across large swig version gaps: TiGL's own
+# functions returning e.g. TopoDS_Face/gp_Pnt fall back to raw, un-destructed SwigPyObject
+# pointers instead of proper OCC.Core.* instances if the swig major/minor generation differs too
+# much from what pythonocc-core itself was built with.
+swig = "4.4.*"
 # Keep in sync with the occt version above and the pinned tag of the vendored
 # thirdparty/pythonocc-core submodule (see cmake/FindPythonOCC.cmake).
-pythonocc-core = { version = "7.8.1.*", build = "novtk*" }
+pythonocc-core = { version = "7.9.3.*", build = "novtk*" }
 pyqt = ">=5.15.11,<6"
 pytest = "*"
 # these are optional, but needed for some of the python examples:
@@ -49,6 +55,10 @@ LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 LIBRARY_PATH = "$CONDA_PREFIX/lib:$LIBRARY_PATH"
 
 [target.osx-64.activation.env]
+# this is needed to correctly find freeimage and freetype
+CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
+
+[target.osx-arm64.activation.env]
 # this is needed to correctly find freeimage and freetype
 CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
 
