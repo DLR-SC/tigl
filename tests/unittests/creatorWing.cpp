@@ -1255,13 +1255,16 @@ TEST_F(creatorWing, section_order)
     }
 }
 
-// The expectedArea golden value was computed against the dlr-sc OpenCASCADE 7.6.2 build, which
-// includes a G2-continuous Coons-patch patch (GeomFill_CoonsC2Style) that conda-forge's stock OCCT
-// doesn't have (HAVE_OCE_COONS_PATCHED undefined; the loft falls back to GeomFill_CoonsStyle).
-// Against conda-forge's occt 7.8.1 (novtk build; conda-forge has no unpatched 7.6.2 build usable
-// alongside the "tixi" package, so an exact isolation of patch-vs-version-bump wasn't possible),
-// the computed area differs by ~1%, exceeding this test's tolerance.
-TEST_F(creatorWing, DISABLED_wingCreateSectionInsideWithParam)
+// expectedArea was captured in Aug 2025 (commit fabae5307). It does NOT test the dlr-sc Coons-C2
+// patch: NACA0012 here is a legacy <pointList> profile (see TestData/simpletest_modified.cpacs.xml),
+// so this goes through CTiglWingProfilePointList -- CreateNewConnectedElementBetween only
+// linearly interpolates center/width/height/rotation, and GetArea() is a plain transformed-wire
+// area, with no lofting/GeomFill anywhere on the path. Since Aug 2025, CTiglWingProfilePointList's
+// wire construction was reworked from interpolation to approximation (starting 533f4e497, Nov 2025,
+// ~20 commits), which legitimately shifts enclosed area while leaving bounding-box width/center
+// unaffected -- exactly the pattern below (width and center still pass; only area moved). Refreshed
+// against occt 7.9.3 with the current point-list approximation code: GetArea() == 0.1840184995461778.
+TEST_F(creatorWing, wingCreateSectionInsideWithParam)
 {
     tigl::CTiglSectionElement* newElement;
     tigl::CTiglPoint expectedCenter, currentCenter;
@@ -1271,7 +1274,7 @@ TEST_F(creatorWing, DISABLED_wingCreateSectionInsideWithParam)
 
     wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378, "Cpacs2Test_Wing_Sec2Bis");
 
-    expectedArea = 0.185723;
+    expectedArea = 0.1840184995461778;
     expectedWidth = 0.81102;
     expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");

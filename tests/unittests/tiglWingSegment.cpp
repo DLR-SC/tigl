@@ -1309,10 +1309,16 @@ TEST_F(WingSegmentSimple, segmentIndexFromUID)
 
 // The golden value below was computed against the dlr-sc OpenCASCADE 7.6.2 build, which includes a
 // G2-continuous Coons-patch patch (GeomFill_CoonsC2Style) that conda-forge's stock OCCT doesn't
-// have (HAVE_OCE_COONS_PATCHED undefined; guide-curve lofts fall back to GeomFill_CoonsStyle).
-// Against conda-forge's occt 7.8.1 (novtk build; conda-forge has no unpatched 7.6.2 build usable
-// alongside the "tixi" package, so an exact isolation of patch-vs-version-bump wasn't possible),
-// the computed area shifts just past this test's tight (1e-8) tolerance.
+// have (HAVE_OCE_COONS_PATCHED undefined; guide-curve lofts fall back to GeomFill_CoonsStyle --
+// see the #ifdef in CTiglMakeLoft.cpp). Unlike creatorWing.wingCreateSectionInsideWithParam, this
+// test's value genuinely depends on the missing patch: tiglWingGetSegmentUpperSurfaceAreaTrimmed
+// -> CCPACSWingSegment::GetSurfaceArea() reads the cached segment loft surface directly, which for
+// a guide-curve wing is built through CTiglMakeLoft's GeomFill_CoonsC2Style/GeomFill_CoonsStyle
+// branch. Re-measured against conda-forge's occt 7.9.3 (the version currently pinned in pixi.toml):
+// upperArea == 0.036535101981178063 vs. the golden 0.036530682797528628, a difference of
+// ~4.42e-6 (~0.012% relative). Small in relative terms, but still ~440x past this test's
+// deliberately tight 1e-8 tolerance, so it's left disabled rather than the tolerance being
+// loosened to paper over a real (if small) geometric difference from the missing Coons-C2 patch.
 TEST_F(WingSegmentGuideCurves, DISABLED_tiglWingGetSegmentUpperSurfaceAreaTrimmed)
 {
     double upperArea;
