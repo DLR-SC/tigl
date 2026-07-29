@@ -177,6 +177,22 @@ jobs:
       - name: Run unit tests
         run: pixi run -e ${{ inputs.pixienv }} unittests
 
+      # Temporary debugging aid: the macOS arm64 runners currently die with a
+      # silent SIGABRT in the unit tests (no libc++abi/assert message reaches the
+      # log), which cannot be reproduced locally without Apple Silicon hardware.
+      # Re-run the suite under lldb to capture a backtrace of the abort.
+      - name: Collect crash backtrace (macOS)
+        if: ${{ failure() && startsWith(inputs.os, 'macos') }}
+        run: |
+          pixi run -e ${{ inputs.pixienv }} bash -c '
+            cd build/tests/unittests &&
+            lldb --batch \
+              -o "run" \
+              -k "thread backtrace all" \
+              -k "quit" \
+              -- ./TiGL-unittests --gtest_filter="makeLoft.*"
+          '
+
       - name: Run integration tests
         run: pixi run -e ${{ inputs.pixienv }} integrationtests
 
