@@ -11,6 +11,7 @@ Changes since last release
   - Build system: widened the `python` version cap to `<3.15` (was `<3.13`) now that conda-forge has 3.14 builds for all of TiGL's dependencies; still resolves to python 3.12 by default.
   - Build system: fixed a Linux `-lGL` link error and a nightly-build version-string corruption bug (packed git refs after `git gc`).
   - `WingSegmentGuideCurves.DISABLED_tiglWingGetSegmentUpperSurfaceAreaTrimmed` remains disabled: its golden value depends on the dlr-sc Coons-C2 patch conda-forge's OCCT lacks.
+  - Fixed a crash (`Standard_NullObject`/abort) in `MakePatches::BuildSurface` (`src/contrib/MakePatches.cxx`) when a guide-curve loft's boundary curves don't form a closed quad within tolerance, surfaced by `osx-arm64` CI; now returns null (existing convention for malformed input) instead of dereferencing an unset `Handle`.
   - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
