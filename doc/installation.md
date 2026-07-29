@@ -70,23 +70,21 @@ Will build and install TiGL using cmake and ninja. This will be done using the t
 
 will invoke unit tests and integration tests
 
-    pixi run tiglcreator
+    pixi run -e default tiglcreator
 
 will start the TiGLCreator from the install directory.
 
-To use another environment than `default`, we need to invoke the command like this:
+To build and run tests, use the `default` environment:
 
-    pixi run -e occt-static configure
-    pixi run install
-    pixi run unittests
-
- This command configures TiGL for a Release build that statically links against OpenCascade, installs TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
+    pixi run -e default configure
+    pixi run -e default install
+    pixi run -e default unittests
 
 The `configure` task has additional arguments. For instance
 
-    pixi run -e occt-static configure Debug
+    pixi run -e default configure Debug
 
-will configure a Debug build of TiGL that links in OCCT statically.
+will configure a Debug build of TiGL.
 
 @subsection internalpython Internal Python bindings
 
@@ -122,16 +120,19 @@ Two dependencies that aren't (fully) available as conda-forge packages are vendo
 - `thirdparty/pythonocc-core` (git submodule): the pythonocc-core SWIG interface files used by TiGL's
   internal Python bindings (`TIGL_BINDINGS_PYTHON_INTERNAL`) to reuse OCCT type wrappers. The
   conda-forge `pythonocc-core` package only ships the compiled `OCC` Python module, not these sources.
-  Init with `git submodule update --init --recursive`; keep the pinned tag in sync with the
-  `pythonocc-core`/`occt` versions in `pixi.toml`.
+  The pixi `generate` and `python-internal configure` tasks initialize this submodule automatically.
+  When building without pixi, run `git submodule update --init --recursive` before configuring.
+  **Important**: keep the submodule's pinned tag in sync with the `pythonocc-core` and `occt` versions
+  in `pixi.toml` (see the pinned version comments there). SWIG's cross-module runtime type sharing
+  breaks silently across large version gaps.
 - `thirdparty/matlab-sdk/{win-64,osx-64}`: MATLAB's `extern/include` headers and `mex`/`mx`/`mat`
   import-stub libraries needed to build the MATLAB (MEX) bindings (`TIGL_BINDINGS_MATLAB`) without a
   full MATLAB installation. No conda-forge equivalent exists. Not needed on Linux, where MATLAB itself
   provides `mex`/`make` for building the bindings against a real local installation (see @ref matlab).
   `cmake/FindMATLAB.cmake` uses these automatically as a fallback when `MATLAB_DIR`/`MATLABDIR` aren't
   set to a real MATLAB installation. Only an Intel (`osx-64`) SDK is vendored — on Apple Silicon
-  (`osx-arm64`) the MATLAB bindings are skipped entirely (`MATLAB_FOUND` stays false) unless you point
-  `MATLAB_DIR` at your own Apple Silicon MATLAB installation.
+  (`osx-arm64`) the MATLAB bindings are skipped with a CMake warning unless you point `MATLAB_DIR`
+  at your own Apple Silicon MATLAB installation.
 
 @subsection cmakeoptions CMake Options
 
