@@ -35,23 +35,18 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 
-#include <fstream>
-
-using std::ifstream;
-
+// These tests use the filename overload of BRepTools::Read: passing a
+// test-constructed std::istream into the conda-forge occt libraries crashes on
+// macOS when the test binary and occt link different libc++ runtimes (system
+// vs. conda), as TopTools_ShapeSet::Read manipulates the stream's std::locale.
 TEST(makeLoft, nacelleInverted)
 {
     TopoDS_Shape guides;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuidesInverted.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuidesInverted.brep", b);
+
     TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfiles.brep", b);
     CTiglMakeLoft loftMaker;
     loftMaker.addProfiles(profiles);
     loftMaker.addGuides(guides);
@@ -66,15 +61,10 @@ TEST(makeLoft, nacelleClosedInverted)
 {
     TopoDS_Shape guides;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuidesInverted.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuidesInverted.brep", b);
+
     TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfilesClosed.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfilesClosed.brep", b);
     CTiglMakeLoft loftMaker;
     loftMaker.addProfiles(profiles);
     loftMaker.addGuides(guides);
@@ -88,15 +78,10 @@ TEST(makeLoft, nacelleClosed)
 {
     TopoDS_Shape guides;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuides.brep", b);
+
     TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfilesClosed.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfilesClosed.brep", b);
     CTiglMakeLoft loftMaker;
     loftMaker.addProfiles(profiles);
     loftMaker.addGuides(guides);
