@@ -17,6 +17,15 @@ IF(NOT PythonOCC_SOURCE_DIR)
     )
 ENDIF()
 
+IF(NOT PythonOCC_SOURCE_DIR)
+    MESSAGE(WARNING
+        "pythonocc-core SWIG sources not found under ${CMAKE_SOURCE_DIR}/thirdparty/pythonocc-core. "
+        "This is a git submodule and is not populated by a plain 'git clone' -- run "
+        "'git submodule update --init --recursive' from the repository root and reconfigure. "
+        "(pixi's 'configure' task does this automatically; only needed manually if configuring outside of pixi.)"
+    )
+ENDIF()
+
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonOCC
                                   REQUIRED_VARS PythonOCC_SOURCE_DIR)

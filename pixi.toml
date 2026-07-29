@@ -67,13 +67,18 @@ CMAKE_PREFIX_PATH = "$CONDA_PREFIX"
 CMAKE_PREFIX_PATH = "%CONDA_PREFIX%/Library"
 
 [tasks]
-# depends-on omitted to avoid rebuild in CI
+# git submodule update is idempotent/offline once initialized, so depending on it from every
+# configure task is cheap; it's split out here rather than duplicated so cpacs_gen (needed by
+# `generate`) and pythonocc-core (needed by the python-internal `configure`, see
+# cmake/FindPythonOCC.cmake) both stay in sync without extra typing.
+init-submodules = { cmd = "git submodule update --init --recursive" }
+# depends-on (besides init-submodules) omitted to avoid rebuild in CI
 configure = { cmd = [
-    "cmake", 
-    "-G", "Ninja", 
-    "-S", ".", 
-    "-B", "build", 
-    "-D", "CMAKE_INSTALL_PREFIX=build/install", 
+    "cmake",
+    "-G", "Ninja",
+    "-S", ".",
+    "-B", "build",
+    "-D", "CMAKE_INSTALL_PREFIX=build/install",
     "-D", "CMAKE_BUILD_TYPE={{ config }}",
     "-D", "TIGL_NIGHTLY={{ nightly }}",
     "-D", "TIGL_CONCAT_GENERATED_FILES={{ nightly }}",
@@ -83,16 +88,15 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_MATLAB=ON",
     "-D", "TIGL_CREATOR=ON",
     "-D", "OCE_STATIC_LIBS=OFF",
-], args = [
+], depends-on = ["init-submodules"], args = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="ON"},
 ]}
 generate = { cmd = """
-    git submodule update --init --recursive
     cd thirdparty/cpacs_gen
-    cmake -GNinja -S . -Bbuild -DTIGL_PATH=../.. 
+    cmake -GNinja -S . -Bbuild -DTIGL_PATH=../..
     cmake --build build --target generate
-"""}
+""", depends-on = ["init-submodules"]}
 build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
 install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
@@ -128,7 +132,7 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_MATLAB=ON",
     "-D", "TIGL_CREATOR=OFF",
     "-D", "OCE_STATIC_LIBS=OFF",
-], args = [
+], depends-on = ["init-submodules"], args = [
         { "arg" = "config", "default"="Debug"},
         { "arg" = "nightly", "default"="ON"},
 ]}
@@ -152,7 +156,7 @@ configure = { cmd = [
     "-D", "TIGL_BINDINGS_PYTHON=ON",
     "-D", "TIGL_BINDINGS_MATLAB=OFF",
     "-D", "OCE_STATIC_LIBS=OFF",
-], args = [
+], depends-on = ["init-submodules"], args = [
         { "arg" = "config", "default"="Release"},
         { "arg" = "nightly", "default"="OFF"},
 ]}
