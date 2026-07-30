@@ -24,6 +24,7 @@
 #include "CPACSSysElemElectricDrivenPumps.h"
 #include "CPACSSysElemGenericConversionElements.h"
 #include "CPACSSysElemHydraulicDrivenPumps.h"
+#include "CPACSSysElemHydraulicPowerPackages.h"
 #include "CPACSSysElemMechanicalDrivenPumps.h"
 #include "CPACSSysElemPneumaticDrivenPumps.h"
 #include "CPACSSysElemPowerTransferUnits.h"
@@ -81,6 +82,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSSysElemHydraulicDrivenPumps>& GetHydraulicDrivenPumps() const;
         TIGL_EXPORT virtual boost::optional<CPACSSysElemHydraulicDrivenPumps>& GetHydraulicDrivenPumps();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemHydraulicPowerPackages>& GetHydraulicPowerPackages() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemHydraulicPowerPackages>& GetHydraulicPowerPackages();
+
         TIGL_EXPORT virtual const boost::optional<CPACSSysElemPowerTransferUnits>& GetPowerTransferUnits() const;
         TIGL_EXPORT virtual boost::optional<CPACSSysElemPowerTransferUnits>& GetPowerTransferUnits();
 
@@ -98,6 +102,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSSysElemHydraulicDrivenPumps& GetHydraulicDrivenPumps(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveHydraulicDrivenPumps();
+
+        TIGL_EXPORT virtual CPACSSysElemHydraulicPowerPackages& GetHydraulicPowerPackages(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveHydraulicPowerPackages();
 
         TIGL_EXPORT virtual CPACSSysElemPowerTransferUnits& GetPowerTransferUnits(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePowerTransferUnits();
@@ -121,6 +128,9 @@ namespace generated
 
         /// Library of predefined hydraulic driven pumps.
         boost::optional<CPACSSysElemHydraulicDrivenPumps>      m_hydraulicDrivenPumps;
+
+        /// Library of predefined hydraulic power packages.
+        boost::optional<CPACSSysElemHydraulicPowerPackages>    m_hydraulicPowerPackages;
 
         /// Library of predefined power-transfer units.
         boost::optional<CPACSSysElemPowerTransferUnits>        m_powerTransferUnits;

@@ -82,6 +82,7 @@
 #include "CPACSSysElemHumidifiers.h"
 #include "CPACSSysElemHydraulicActuators.h"
 #include "CPACSSysElemHydraulicDrivenPumps.h"
+#include "CPACSSysElemHydraulicPowerPackages.h"
 #include "CPACSSysElemInductors.h"
 #include "CPACSSysElemInteriorLights.h"
 #include "CPACSSysElemIsolationValves.h"
@@ -728,6 +729,15 @@ namespace generated
         m_parentType = &typeid(CPACSSysElemHydraulicDrivenPumps);
     }
 
+    CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSSysElemHydraulicPowerPackages* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+        , m_geometry(this, m_uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemHydraulicPowerPackages);
+    }
+
     CPACSVehicleElementBase::CPACSVehicleElementBase(CPACSSysElemInductors* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
         , m_geometry(this, m_uidMgr)
@@ -1312,6 +1322,9 @@ namespace generated
             if (IsParent<CPACSSysElemHydraulicDrivenPumps>()) {
                 return GetParent<CPACSSysElemHydraulicDrivenPumps>()->GetNextUIDParent();
             }
+            if (IsParent<CPACSSysElemHydraulicPowerPackages>()) {
+                return GetParent<CPACSSysElemHydraulicPowerPackages>()->GetNextUIDParent();
+            }
             if (IsParent<CPACSSysElemInductors>()) {
                 return GetParent<CPACSSysElemInductors>()->GetNextUIDParent();
             }
@@ -1642,6 +1655,9 @@ namespace generated
             }
             if (IsParent<CPACSSysElemHydraulicDrivenPumps>()) {
                 return GetParent<CPACSSysElemHydraulicDrivenPumps>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemHydraulicPowerPackages>()) {
+                return GetParent<CPACSSysElemHydraulicPowerPackages>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSysElemInductors>()) {
                 return GetParent<CPACSSysElemInductors>()->GetNextUIDParent();

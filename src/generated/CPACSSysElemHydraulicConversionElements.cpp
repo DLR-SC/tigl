@@ -138,6 +138,17 @@ namespace generated
             }
         }
 
+        // read element hydraulicPowerPackages
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/hydraulicPowerPackages")) {
+            m_hydraulicPowerPackages = boost::in_place(this, m_uidMgr);
+            try {
+                m_hydraulicPowerPackages->ReadCPACS(tixiHandle, xpath + "/hydraulicPowerPackages");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read hydraulicPowerPackages at xpath " << xpath << ": " << e.what();
+                m_hydraulicPowerPackages = boost::none;
+            }
+        }
+
         // read element powerTransferUnits
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/powerTransferUnits")) {
             m_powerTransferUnits = boost::in_place(this, m_uidMgr);
@@ -208,6 +219,17 @@ namespace generated
             }
         }
 
+        // write element hydraulicPowerPackages
+        if (m_hydraulicPowerPackages) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/hydraulicPowerPackages");
+            m_hydraulicPowerPackages->WriteCPACS(tixiHandle, xpath + "/hydraulicPowerPackages");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/hydraulicPowerPackages")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/hydraulicPowerPackages");
+            }
+        }
+
         // write element powerTransferUnits
         if (m_powerTransferUnits) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/powerTransferUnits");
@@ -269,6 +291,16 @@ namespace generated
     boost::optional<CPACSSysElemHydraulicDrivenPumps>& CPACSSysElemHydraulicConversionElements::GetHydraulicDrivenPumps()
     {
         return m_hydraulicDrivenPumps;
+    }
+
+    const boost::optional<CPACSSysElemHydraulicPowerPackages>& CPACSSysElemHydraulicConversionElements::GetHydraulicPowerPackages() const
+    {
+        return m_hydraulicPowerPackages;
+    }
+
+    boost::optional<CPACSSysElemHydraulicPowerPackages>& CPACSSysElemHydraulicConversionElements::GetHydraulicPowerPackages()
+    {
+        return m_hydraulicPowerPackages;
     }
 
     const boost::optional<CPACSSysElemPowerTransferUnits>& CPACSSysElemHydraulicConversionElements::GetPowerTransferUnits() const
@@ -339,6 +371,18 @@ namespace generated
     void CPACSSysElemHydraulicConversionElements::RemoveHydraulicDrivenPumps()
     {
         m_hydraulicDrivenPumps = boost::none;
+    }
+
+    CPACSSysElemHydraulicPowerPackages& CPACSSysElemHydraulicConversionElements::GetHydraulicPowerPackages(CreateIfNotExistsTag)
+    {
+        if (!m_hydraulicPowerPackages)
+            m_hydraulicPowerPackages = boost::in_place(this, m_uidMgr);
+        return *m_hydraulicPowerPackages;
+    }
+
+    void CPACSSysElemHydraulicConversionElements::RemoveHydraulicPowerPackages()
+    {
+        m_hydraulicPowerPackages = boost::none;
     }
 
     CPACSSysElemPowerTransferUnits& CPACSSysElemHydraulicConversionElements::GetPowerTransferUnits(CreateIfNotExistsTag)
