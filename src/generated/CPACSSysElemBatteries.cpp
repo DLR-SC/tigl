@@ -17,8 +17,8 @@
 
 #include <cassert>
 #include "CPACSSysElemBatteries.h"
-#include "CPACSSysElemBattery.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemElectricalStorageElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemBatteries::CPACSSysElemBatteries(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemBatteries::CPACSSysElemBatteries(CPACSSysElemElectricalStorageElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemBatteries::GetParent() const
+    const CPACSSysElemElectricalStorageElements* CPACSSysElemBatteries::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemBatteries::GetParent()
+    CPACSSysElemElectricalStorageElements* CPACSSysElemBatteries::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemBattery>>& CPACSSysElemBatteries::GetBatterys() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemBatteries::GetBatterys() const
     {
         return m_batterys;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemBattery>>& CPACSSysElemBatteries::GetBatterys()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemBatteries::GetBatterys()
     {
         return m_batterys;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemBatteries::GetBatteryIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemBattery& CPACSSysElemBatteries::GetBattery(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemBatteries::GetBattery(size_t index)
     {
         if (index < 1 || index > GetBatteryCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemBattery>>::GetBattery", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetBattery", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_batterys[index];
     }
 
-    const CPACSSysElemBattery& CPACSSysElemBatteries::GetBattery(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemBatteries::GetBattery(size_t index) const
     {
         if (index < 1 || index > GetBatteryCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemBattery>>::GetBattery", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetBattery", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_batterys[index];
     }
 
-    CPACSSysElemBattery& CPACSSysElemBatteries::GetBattery(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemBatteries::GetBattery(const std::string& UID)
     {
         for (auto& elem : m_batterys ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemBatteries::GetBattery. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemBattery& CPACSSysElemBatteries::GetBattery(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemBatteries::GetBattery(const std::string& UID) const
     {
         for (auto& elem : m_batterys ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemBattery& CPACSSysElemBatteries::AddBattery()
+    CPACSVehicleElementBase& CPACSSysElemBatteries::AddBattery()
     {
-        m_batterys.push_back(std::make_unique<CPACSSysElemBattery>(this, m_uidMgr));
+        m_batterys.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_batterys.back();
     }
 
-    void CPACSSysElemBatteries::RemoveBattery(CPACSSysElemBattery& ref)
+    void CPACSSysElemBatteries::RemoveBattery(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_batterys.size(); i++) {
             if (m_batterys[i].get() == &ref) {

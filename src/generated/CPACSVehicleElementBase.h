@@ -42,7 +42,107 @@ namespace generated
     class CPACSLavatoryElements;
     class CPACSLuggageCompartmentElements;
     class CPACSSidewallPanelElements;
-    class CPACSSysElemGenericComponents;
+    class CPACSSysElemACACConverters;
+    class CPACSSysElemACDCConverters;
+    class CPACSSysElemACGenerators;
+    class CPACSSysElemAccumulators;
+    class CPACSSysElemAirCycleMachines;
+    class CPACSSysElemAuxiliaryPowerGasTurbines;
+    class CPACSSysElemBatteries;
+    class CPACSSysElemBusBars;
+    class CPACSSysElemCables;
+    class CPACSSysElemCapacitors;
+    class CPACSSysElemCheckValves;
+    class CPACSSysElemCircuitBreakers;
+    class CPACSSysElemClutches;
+    class CPACSSysElemCompressors;
+    class CPACSSysElemCondensers;
+    class CPACSSysElemContactors;
+    class CPACSSysElemConverters;
+    class CPACSSysElemCouplings;
+    class CPACSSysElemDCACConverters;
+    class CPACSSysElemDCDCConverters;
+    class CPACSSysElemDCGenerators;
+    class CPACSSysElemDampers;
+    class CPACSSysElemDiffusers;
+    class CPACSSysElemDisplays;
+    class CPACSSysElemDriveShafts;
+    class CPACSSysElemElectricActuators;
+    class CPACSSysElemElectricDrivenCompressors;
+    class CPACSSysElemElectricDrivenFans;
+    class CPACSSysElemElectricDrivenPumps;
+    class CPACSSysElemElectricHeaters;
+    class CPACSSysElemElectricMachines;
+    class CPACSSysElemElectricMotors;
+    class CPACSSysElemEvaporators;
+    class CPACSSysElemExpansionTurbines;
+    class CPACSSysElemExpansionValves;
+    class CPACSSysElemExteriorLights;
+    class CPACSSysElemFans;
+    class CPACSSysElemFilters;
+    class CPACSSysElemFittings;
+    class CPACSSysElemFuelCellStacks;
+    class CPACSSysElemFuses;
+    class CPACSSysElemGearBoxes;
+    class CPACSSysElemGenerators;
+    class CPACSSysElemGenericConsumerElements;
+    class CPACSSysElemGenericControlElements;
+    class CPACSSysElemGenericConversionElements;
+    class CPACSSysElemGenericDistributionElements;
+    class CPACSSysElemGenericElectricalElements;
+    class CPACSSysElemGenericElements;
+    class CPACSSysElemGenericHydraulicElements;
+    class CPACSSysElemGenericMechanicalElements;
+    class CPACSSysElemGenericPneumaticElements;
+    class CPACSSysElemGenericStorageElements;
+    class CPACSSysElemGenericThermoFluidElements;
+    class CPACSSysElemGroundConnectors;
+    class CPACSSysElemHeatExchangers;
+    class CPACSSysElemHumidifiers;
+    class CPACSSysElemHydraulicActuators;
+    class CPACSSysElemHydraulicDrivenPumps;
+    class CPACSSysElemInductors;
+    class CPACSSysElemInteriorLights;
+    class CPACSSysElemIsolationValves;
+    class CPACSSysElemJetPumps;
+    class CPACSSysElemJoiners;
+    class CPACSSysElemLights;
+    class CPACSSysElemMechanicalDrivenCompressors;
+    class CPACSSysElemMechanicalDrivenFans;
+    class CPACSSysElemMechanicalDrivenPumps;
+    class CPACSSysElemMixingUnits;
+    class CPACSSysElemNozzles;
+    class CPACSSysElemOzoneConverters;
+    class CPACSSysElemPhaseSeparators;
+    class CPACSSysElemPiccoloTubes;
+    class CPACSSysElemPipeBallJoints;
+    class CPACSSysElemPipeBellows;
+    class CPACSSysElemPipes;
+    class CPACSSysElemPneumaticAirConditioningKits;
+    class CPACSSysElemPneumaticDrivenPumps;
+    class CPACSSysElemPowerCables;
+    class CPACSSysElemPowerDistributionUnits;
+    class CPACSSysElemPowerTransferUnits;
+    class CPACSSysElemPressureReliefValves;
+    class CPACSSysElemPressureSensors;
+    class CPACSSysElemQuantitySensors;
+    class CPACSSysElemRamAirTurbines;
+    class CPACSSysElemRelays;
+    class CPACSSysElemReservoirs;
+    class CPACSSysElemShutOffValves;
+    class CPACSSysElemSignalCables;
+    class CPACSSysElemSockets;
+    class CPACSSysElemSplitters;
+    class CPACSSysElemSprings;
+    class CPACSSysElemSuperCapacitors;
+    class CPACSSysElemSwitches;
+    class CPACSSysElemTemperatureSensors;
+    class CPACSSysElemTransformers;
+    class CPACSSysElemTurbines;
+    class CPACSSysElemVacuumPumps;
+    class CPACSSysElemValves;
+    class CPACSSysElemWaterExtractors;
+    class CPACSSysElemWaterInjectors;
 
     // This class is used in:
     // CPACSCargoContainerElements
@@ -52,7 +152,107 @@ namespace generated
     // CPACSLavatoryElements
     // CPACSLuggageCompartmentElements
     // CPACSSidewallPanelElements
-    // CPACSSysElemGenericComponents
+    // CPACSSysElemACACConverters
+    // CPACSSysElemACDCConverters
+    // CPACSSysElemACGenerators
+    // CPACSSysElemAccumulators
+    // CPACSSysElemAirCycleMachines
+    // CPACSSysElemAuxiliaryPowerGasTurbines
+    // CPACSSysElemBatteries
+    // CPACSSysElemBusBars
+    // CPACSSysElemCables
+    // CPACSSysElemCapacitors
+    // CPACSSysElemCheckValves
+    // CPACSSysElemCircuitBreakers
+    // CPACSSysElemClutches
+    // CPACSSysElemCompressors
+    // CPACSSysElemCondensers
+    // CPACSSysElemContactors
+    // CPACSSysElemConverters
+    // CPACSSysElemCouplings
+    // CPACSSysElemDCACConverters
+    // CPACSSysElemDCDCConverters
+    // CPACSSysElemDCGenerators
+    // CPACSSysElemDampers
+    // CPACSSysElemDiffusers
+    // CPACSSysElemDisplays
+    // CPACSSysElemDriveShafts
+    // CPACSSysElemElectricActuators
+    // CPACSSysElemElectricDrivenCompressors
+    // CPACSSysElemElectricDrivenFans
+    // CPACSSysElemElectricDrivenPumps
+    // CPACSSysElemElectricHeaters
+    // CPACSSysElemElectricMachines
+    // CPACSSysElemElectricMotors
+    // CPACSSysElemEvaporators
+    // CPACSSysElemExpansionTurbines
+    // CPACSSysElemExpansionValves
+    // CPACSSysElemExteriorLights
+    // CPACSSysElemFans
+    // CPACSSysElemFilters
+    // CPACSSysElemFittings
+    // CPACSSysElemFuelCellStacks
+    // CPACSSysElemFuses
+    // CPACSSysElemGearBoxes
+    // CPACSSysElemGenerators
+    // CPACSSysElemGenericConsumerElements
+    // CPACSSysElemGenericControlElements
+    // CPACSSysElemGenericConversionElements
+    // CPACSSysElemGenericDistributionElements
+    // CPACSSysElemGenericElectricalElements
+    // CPACSSysElemGenericElements
+    // CPACSSysElemGenericHydraulicElements
+    // CPACSSysElemGenericMechanicalElements
+    // CPACSSysElemGenericPneumaticElements
+    // CPACSSysElemGenericStorageElements
+    // CPACSSysElemGenericThermoFluidElements
+    // CPACSSysElemGroundConnectors
+    // CPACSSysElemHeatExchangers
+    // CPACSSysElemHumidifiers
+    // CPACSSysElemHydraulicActuators
+    // CPACSSysElemHydraulicDrivenPumps
+    // CPACSSysElemInductors
+    // CPACSSysElemInteriorLights
+    // CPACSSysElemIsolationValves
+    // CPACSSysElemJetPumps
+    // CPACSSysElemJoiners
+    // CPACSSysElemLights
+    // CPACSSysElemMechanicalDrivenCompressors
+    // CPACSSysElemMechanicalDrivenFans
+    // CPACSSysElemMechanicalDrivenPumps
+    // CPACSSysElemMixingUnits
+    // CPACSSysElemNozzles
+    // CPACSSysElemOzoneConverters
+    // CPACSSysElemPhaseSeparators
+    // CPACSSysElemPiccoloTubes
+    // CPACSSysElemPipeBallJoints
+    // CPACSSysElemPipeBellows
+    // CPACSSysElemPipes
+    // CPACSSysElemPneumaticAirConditioningKits
+    // CPACSSysElemPneumaticDrivenPumps
+    // CPACSSysElemPowerCables
+    // CPACSSysElemPowerDistributionUnits
+    // CPACSSysElemPowerTransferUnits
+    // CPACSSysElemPressureReliefValves
+    // CPACSSysElemPressureSensors
+    // CPACSSysElemQuantitySensors
+    // CPACSSysElemRamAirTurbines
+    // CPACSSysElemRelays
+    // CPACSSysElemReservoirs
+    // CPACSSysElemShutOffValves
+    // CPACSSysElemSignalCables
+    // CPACSSysElemSockets
+    // CPACSSysElemSplitters
+    // CPACSSysElemSprings
+    // CPACSSysElemSuperCapacitors
+    // CPACSSysElemSwitches
+    // CPACSSysElemTemperatureSensors
+    // CPACSSysElemTransformers
+    // CPACSSysElemTurbines
+    // CPACSSysElemVacuumPumps
+    // CPACSSysElemValves
+    // CPACSSysElemWaterExtractors
+    // CPACSSysElemWaterInjectors
 
     /// @brief System element
     /// 
@@ -67,7 +267,107 @@ namespace generated
         TIGL_EXPORT CPACSVehicleElementBase(CPACSLavatoryElements* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSVehicleElementBase(CPACSLuggageCompartmentElements* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSVehicleElementBase(CPACSSidewallPanelElements* parent, CTiglUIDManager* uidMgr);
-        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericComponents* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemACACConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemACDCConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemACGenerators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemAccumulators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemAirCycleMachines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemAuxiliaryPowerGasTurbines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemBatteries* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemBusBars* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCables* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCapacitors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCheckValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCircuitBreakers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemClutches* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCompressors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCondensers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemContactors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemCouplings* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDCACConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDCDCConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDCGenerators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDampers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDiffusers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDisplays* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemDriveShafts* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricActuators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricDrivenCompressors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricDrivenFans* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricDrivenPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricHeaters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricMachines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemElectricMotors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemEvaporators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemExpansionTurbines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemExpansionValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemExteriorLights* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemFans* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemFilters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemFittings* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemFuelCellStacks* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemFuses* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGearBoxes* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenerators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericConsumerElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericControlElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericConversionElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericDistributionElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericElectricalElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericHydraulicElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericMechanicalElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericPneumaticElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericStorageElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGenericThermoFluidElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemGroundConnectors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemHeatExchangers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemHumidifiers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemHydraulicActuators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemHydraulicDrivenPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemInductors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemInteriorLights* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemIsolationValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemJetPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemJoiners* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemLights* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemMechanicalDrivenCompressors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemMechanicalDrivenFans* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemMechanicalDrivenPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemMixingUnits* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemNozzles* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemOzoneConverters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPhaseSeparators* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPiccoloTubes* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPipeBallJoints* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPipeBellows* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPipes* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPneumaticAirConditioningKits* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPneumaticDrivenPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPowerCables* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPowerDistributionUnits* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPowerTransferUnits* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPressureReliefValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemPressureSensors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemQuantitySensors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemRamAirTurbines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemRelays* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemReservoirs* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemShutOffValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSignalCables* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSockets* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSplitters* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSprings* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSuperCapacitors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemSwitches* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemTemperatureSensors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemTransformers* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemTurbines* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemVacuumPumps* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemValves* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemWaterExtractors* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSVehicleElementBase(CPACSSysElemWaterInjectors* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSVehicleElementBase();
 
@@ -80,7 +380,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemGenericComponents>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
+            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemACACConverters>::value || std::is_same<P, CPACSSysElemACDCConverters>::value || std::is_same<P, CPACSSysElemACGenerators>::value || std::is_same<P, CPACSSysElemAccumulators>::value || std::is_same<P, CPACSSysElemAirCycleMachines>::value || std::is_same<P, CPACSSysElemAuxiliaryPowerGasTurbines>::value || std::is_same<P, CPACSSysElemBatteries>::value || std::is_same<P, CPACSSysElemBusBars>::value || std::is_same<P, CPACSSysElemCables>::value || std::is_same<P, CPACSSysElemCapacitors>::value || std::is_same<P, CPACSSysElemCheckValves>::value || std::is_same<P, CPACSSysElemCircuitBreakers>::value || std::is_same<P, CPACSSysElemClutches>::value || std::is_same<P, CPACSSysElemCompressors>::value || std::is_same<P, CPACSSysElemCondensers>::value || std::is_same<P, CPACSSysElemContactors>::value || std::is_same<P, CPACSSysElemConverters>::value || std::is_same<P, CPACSSysElemCouplings>::value || std::is_same<P, CPACSSysElemDCACConverters>::value || std::is_same<P, CPACSSysElemDCDCConverters>::value || std::is_same<P, CPACSSysElemDCGenerators>::value || std::is_same<P, CPACSSysElemDampers>::value || std::is_same<P, CPACSSysElemDiffusers>::value || std::is_same<P, CPACSSysElemDisplays>::value || std::is_same<P, CPACSSysElemDriveShafts>::value || std::is_same<P, CPACSSysElemElectricActuators>::value || std::is_same<P, CPACSSysElemElectricDrivenCompressors>::value || std::is_same<P, CPACSSysElemElectricDrivenFans>::value || std::is_same<P, CPACSSysElemElectricDrivenPumps>::value || std::is_same<P, CPACSSysElemElectricHeaters>::value || std::is_same<P, CPACSSysElemElectricMachines>::value || std::is_same<P, CPACSSysElemElectricMotors>::value || std::is_same<P, CPACSSysElemEvaporators>::value || std::is_same<P, CPACSSysElemExpansionTurbines>::value || std::is_same<P, CPACSSysElemExpansionValves>::value || std::is_same<P, CPACSSysElemExteriorLights>::value || std::is_same<P, CPACSSysElemFans>::value || std::is_same<P, CPACSSysElemFilters>::value || std::is_same<P, CPACSSysElemFittings>::value || std::is_same<P, CPACSSysElemFuelCellStacks>::value || std::is_same<P, CPACSSysElemFuses>::value || std::is_same<P, CPACSSysElemGearBoxes>::value || std::is_same<P, CPACSSysElemGenerators>::value || std::is_same<P, CPACSSysElemGenericConsumerElements>::value || std::is_same<P, CPACSSysElemGenericControlElements>::value || std::is_same<P, CPACSSysElemGenericConversionElements>::value || std::is_same<P, CPACSSysElemGenericDistributionElements>::value || std::is_same<P, CPACSSysElemGenericElectricalElements>::value || std::is_same<P, CPACSSysElemGenericElements>::value || std::is_same<P, CPACSSysElemGenericHydraulicElements>::value || std::is_same<P, CPACSSysElemGenericMechanicalElements>::value || std::is_same<P, CPACSSysElemGenericPneumaticElements>::value || std::is_same<P, CPACSSysElemGenericStorageElements>::value || std::is_same<P, CPACSSysElemGenericThermoFluidElements>::value || std::is_same<P, CPACSSysElemGroundConnectors>::value || std::is_same<P, CPACSSysElemHeatExchangers>::value || std::is_same<P, CPACSSysElemHumidifiers>::value || std::is_same<P, CPACSSysElemHydraulicActuators>::value || std::is_same<P, CPACSSysElemHydraulicDrivenPumps>::value || std::is_same<P, CPACSSysElemInductors>::value || std::is_same<P, CPACSSysElemInteriorLights>::value || std::is_same<P, CPACSSysElemIsolationValves>::value || std::is_same<P, CPACSSysElemJetPumps>::value || std::is_same<P, CPACSSysElemJoiners>::value || std::is_same<P, CPACSSysElemLights>::value || std::is_same<P, CPACSSysElemMechanicalDrivenCompressors>::value || std::is_same<P, CPACSSysElemMechanicalDrivenFans>::value || std::is_same<P, CPACSSysElemMechanicalDrivenPumps>::value || std::is_same<P, CPACSSysElemMixingUnits>::value || std::is_same<P, CPACSSysElemNozzles>::value || std::is_same<P, CPACSSysElemOzoneConverters>::value || std::is_same<P, CPACSSysElemPhaseSeparators>::value || std::is_same<P, CPACSSysElemPiccoloTubes>::value || std::is_same<P, CPACSSysElemPipeBallJoints>::value || std::is_same<P, CPACSSysElemPipeBellows>::value || std::is_same<P, CPACSSysElemPipes>::value || std::is_same<P, CPACSSysElemPneumaticAirConditioningKits>::value || std::is_same<P, CPACSSysElemPneumaticDrivenPumps>::value || std::is_same<P, CPACSSysElemPowerCables>::value || std::is_same<P, CPACSSysElemPowerDistributionUnits>::value || std::is_same<P, CPACSSysElemPowerTransferUnits>::value || std::is_same<P, CPACSSysElemPressureReliefValves>::value || std::is_same<P, CPACSSysElemPressureSensors>::value || std::is_same<P, CPACSSysElemQuantitySensors>::value || std::is_same<P, CPACSSysElemRamAirTurbines>::value || std::is_same<P, CPACSSysElemRelays>::value || std::is_same<P, CPACSSysElemReservoirs>::value || std::is_same<P, CPACSSysElemShutOffValves>::value || std::is_same<P, CPACSSysElemSignalCables>::value || std::is_same<P, CPACSSysElemSockets>::value || std::is_same<P, CPACSSysElemSplitters>::value || std::is_same<P, CPACSSysElemSprings>::value || std::is_same<P, CPACSSysElemSuperCapacitors>::value || std::is_same<P, CPACSSysElemSwitches>::value || std::is_same<P, CPACSSysElemTemperatureSensors>::value || std::is_same<P, CPACSSysElemTransformers>::value || std::is_same<P, CPACSSysElemTurbines>::value || std::is_same<P, CPACSSysElemVacuumPumps>::value || std::is_same<P, CPACSSysElemValves>::value || std::is_same<P, CPACSSysElemWaterExtractors>::value || std::is_same<P, CPACSSysElemWaterInjectors>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -90,7 +390,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemGenericComponents>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
+            static_assert(std::is_same<P, CPACSCargoContainerElements>::value || std::is_same<P, CPACSCeilingPanelElements>::value || std::is_same<P, CPACSClassDividerElements>::value || std::is_same<P, CPACSGenericFloorElements>::value || std::is_same<P, CPACSLavatoryElements>::value || std::is_same<P, CPACSLuggageCompartmentElements>::value || std::is_same<P, CPACSSidewallPanelElements>::value || std::is_same<P, CPACSSysElemACACConverters>::value || std::is_same<P, CPACSSysElemACDCConverters>::value || std::is_same<P, CPACSSysElemACGenerators>::value || std::is_same<P, CPACSSysElemAccumulators>::value || std::is_same<P, CPACSSysElemAirCycleMachines>::value || std::is_same<P, CPACSSysElemAuxiliaryPowerGasTurbines>::value || std::is_same<P, CPACSSysElemBatteries>::value || std::is_same<P, CPACSSysElemBusBars>::value || std::is_same<P, CPACSSysElemCables>::value || std::is_same<P, CPACSSysElemCapacitors>::value || std::is_same<P, CPACSSysElemCheckValves>::value || std::is_same<P, CPACSSysElemCircuitBreakers>::value || std::is_same<P, CPACSSysElemClutches>::value || std::is_same<P, CPACSSysElemCompressors>::value || std::is_same<P, CPACSSysElemCondensers>::value || std::is_same<P, CPACSSysElemContactors>::value || std::is_same<P, CPACSSysElemConverters>::value || std::is_same<P, CPACSSysElemCouplings>::value || std::is_same<P, CPACSSysElemDCACConverters>::value || std::is_same<P, CPACSSysElemDCDCConverters>::value || std::is_same<P, CPACSSysElemDCGenerators>::value || std::is_same<P, CPACSSysElemDampers>::value || std::is_same<P, CPACSSysElemDiffusers>::value || std::is_same<P, CPACSSysElemDisplays>::value || std::is_same<P, CPACSSysElemDriveShafts>::value || std::is_same<P, CPACSSysElemElectricActuators>::value || std::is_same<P, CPACSSysElemElectricDrivenCompressors>::value || std::is_same<P, CPACSSysElemElectricDrivenFans>::value || std::is_same<P, CPACSSysElemElectricDrivenPumps>::value || std::is_same<P, CPACSSysElemElectricHeaters>::value || std::is_same<P, CPACSSysElemElectricMachines>::value || std::is_same<P, CPACSSysElemElectricMotors>::value || std::is_same<P, CPACSSysElemEvaporators>::value || std::is_same<P, CPACSSysElemExpansionTurbines>::value || std::is_same<P, CPACSSysElemExpansionValves>::value || std::is_same<P, CPACSSysElemExteriorLights>::value || std::is_same<P, CPACSSysElemFans>::value || std::is_same<P, CPACSSysElemFilters>::value || std::is_same<P, CPACSSysElemFittings>::value || std::is_same<P, CPACSSysElemFuelCellStacks>::value || std::is_same<P, CPACSSysElemFuses>::value || std::is_same<P, CPACSSysElemGearBoxes>::value || std::is_same<P, CPACSSysElemGenerators>::value || std::is_same<P, CPACSSysElemGenericConsumerElements>::value || std::is_same<P, CPACSSysElemGenericControlElements>::value || std::is_same<P, CPACSSysElemGenericConversionElements>::value || std::is_same<P, CPACSSysElemGenericDistributionElements>::value || std::is_same<P, CPACSSysElemGenericElectricalElements>::value || std::is_same<P, CPACSSysElemGenericElements>::value || std::is_same<P, CPACSSysElemGenericHydraulicElements>::value || std::is_same<P, CPACSSysElemGenericMechanicalElements>::value || std::is_same<P, CPACSSysElemGenericPneumaticElements>::value || std::is_same<P, CPACSSysElemGenericStorageElements>::value || std::is_same<P, CPACSSysElemGenericThermoFluidElements>::value || std::is_same<P, CPACSSysElemGroundConnectors>::value || std::is_same<P, CPACSSysElemHeatExchangers>::value || std::is_same<P, CPACSSysElemHumidifiers>::value || std::is_same<P, CPACSSysElemHydraulicActuators>::value || std::is_same<P, CPACSSysElemHydraulicDrivenPumps>::value || std::is_same<P, CPACSSysElemInductors>::value || std::is_same<P, CPACSSysElemInteriorLights>::value || std::is_same<P, CPACSSysElemIsolationValves>::value || std::is_same<P, CPACSSysElemJetPumps>::value || std::is_same<P, CPACSSysElemJoiners>::value || std::is_same<P, CPACSSysElemLights>::value || std::is_same<P, CPACSSysElemMechanicalDrivenCompressors>::value || std::is_same<P, CPACSSysElemMechanicalDrivenFans>::value || std::is_same<P, CPACSSysElemMechanicalDrivenPumps>::value || std::is_same<P, CPACSSysElemMixingUnits>::value || std::is_same<P, CPACSSysElemNozzles>::value || std::is_same<P, CPACSSysElemOzoneConverters>::value || std::is_same<P, CPACSSysElemPhaseSeparators>::value || std::is_same<P, CPACSSysElemPiccoloTubes>::value || std::is_same<P, CPACSSysElemPipeBallJoints>::value || std::is_same<P, CPACSSysElemPipeBellows>::value || std::is_same<P, CPACSSysElemPipes>::value || std::is_same<P, CPACSSysElemPneumaticAirConditioningKits>::value || std::is_same<P, CPACSSysElemPneumaticDrivenPumps>::value || std::is_same<P, CPACSSysElemPowerCables>::value || std::is_same<P, CPACSSysElemPowerDistributionUnits>::value || std::is_same<P, CPACSSysElemPowerTransferUnits>::value || std::is_same<P, CPACSSysElemPressureReliefValves>::value || std::is_same<P, CPACSSysElemPressureSensors>::value || std::is_same<P, CPACSSysElemQuantitySensors>::value || std::is_same<P, CPACSSysElemRamAirTurbines>::value || std::is_same<P, CPACSSysElemRelays>::value || std::is_same<P, CPACSSysElemReservoirs>::value || std::is_same<P, CPACSSysElemShutOffValves>::value || std::is_same<P, CPACSSysElemSignalCables>::value || std::is_same<P, CPACSSysElemSockets>::value || std::is_same<P, CPACSSysElemSplitters>::value || std::is_same<P, CPACSSysElemSprings>::value || std::is_same<P, CPACSSysElemSuperCapacitors>::value || std::is_same<P, CPACSSysElemSwitches>::value || std::is_same<P, CPACSSysElemTemperatureSensors>::value || std::is_same<P, CPACSSysElemTransformers>::value || std::is_same<P, CPACSSysElemTurbines>::value || std::is_same<P, CPACSSysElemVacuumPumps>::value || std::is_same<P, CPACSSysElemValves>::value || std::is_same<P, CPACSSysElemWaterExtractors>::value || std::is_same<P, CPACSSysElemWaterInjectors>::value, "template argument for P is not a parent class of CPACSVehicleElementBase");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -160,5 +460,105 @@ using CCPACSGenericFloorElements = generated::CPACSGenericFloorElements;
 using CCPACSLavatoryElements = generated::CPACSLavatoryElements;
 using CCPACSLuggageCompartmentElements = generated::CPACSLuggageCompartmentElements;
 using CCPACSSidewallPanelElements = generated::CPACSSidewallPanelElements;
-using CCPACSSysElemGenericComponents = generated::CPACSSysElemGenericComponents;
+using CCPACSSysElemACACConverters = generated::CPACSSysElemACACConverters;
+using CCPACSSysElemACDCConverters = generated::CPACSSysElemACDCConverters;
+using CCPACSSysElemACGenerators = generated::CPACSSysElemACGenerators;
+using CCPACSSysElemAccumulators = generated::CPACSSysElemAccumulators;
+using CCPACSSysElemAirCycleMachines = generated::CPACSSysElemAirCycleMachines;
+using CCPACSSysElemAuxiliaryPowerGasTurbines = generated::CPACSSysElemAuxiliaryPowerGasTurbines;
+using CCPACSSysElemBatteries = generated::CPACSSysElemBatteries;
+using CCPACSSysElemBusBars = generated::CPACSSysElemBusBars;
+using CCPACSSysElemCables = generated::CPACSSysElemCables;
+using CCPACSSysElemCapacitors = generated::CPACSSysElemCapacitors;
+using CCPACSSysElemCheckValves = generated::CPACSSysElemCheckValves;
+using CCPACSSysElemCircuitBreakers = generated::CPACSSysElemCircuitBreakers;
+using CCPACSSysElemClutches = generated::CPACSSysElemClutches;
+using CCPACSSysElemCompressors = generated::CPACSSysElemCompressors;
+using CCPACSSysElemCondensers = generated::CPACSSysElemCondensers;
+using CCPACSSysElemContactors = generated::CPACSSysElemContactors;
+using CCPACSSysElemConverters = generated::CPACSSysElemConverters;
+using CCPACSSysElemCouplings = generated::CPACSSysElemCouplings;
+using CCPACSSysElemDCACConverters = generated::CPACSSysElemDCACConverters;
+using CCPACSSysElemDCDCConverters = generated::CPACSSysElemDCDCConverters;
+using CCPACSSysElemDCGenerators = generated::CPACSSysElemDCGenerators;
+using CCPACSSysElemDampers = generated::CPACSSysElemDampers;
+using CCPACSSysElemDiffusers = generated::CPACSSysElemDiffusers;
+using CCPACSSysElemDisplays = generated::CPACSSysElemDisplays;
+using CCPACSSysElemDriveShafts = generated::CPACSSysElemDriveShafts;
+using CCPACSSysElemElectricActuators = generated::CPACSSysElemElectricActuators;
+using CCPACSSysElemElectricDrivenCompressors = generated::CPACSSysElemElectricDrivenCompressors;
+using CCPACSSysElemElectricDrivenFans = generated::CPACSSysElemElectricDrivenFans;
+using CCPACSSysElemElectricDrivenPumps = generated::CPACSSysElemElectricDrivenPumps;
+using CCPACSSysElemElectricHeaters = generated::CPACSSysElemElectricHeaters;
+using CCPACSSysElemElectricMachines = generated::CPACSSysElemElectricMachines;
+using CCPACSSysElemElectricMotors = generated::CPACSSysElemElectricMotors;
+using CCPACSSysElemEvaporators = generated::CPACSSysElemEvaporators;
+using CCPACSSysElemExpansionTurbines = generated::CPACSSysElemExpansionTurbines;
+using CCPACSSysElemExpansionValves = generated::CPACSSysElemExpansionValves;
+using CCPACSSysElemExteriorLights = generated::CPACSSysElemExteriorLights;
+using CCPACSSysElemFans = generated::CPACSSysElemFans;
+using CCPACSSysElemFilters = generated::CPACSSysElemFilters;
+using CCPACSSysElemFittings = generated::CPACSSysElemFittings;
+using CCPACSSysElemFuelCellStacks = generated::CPACSSysElemFuelCellStacks;
+using CCPACSSysElemFuses = generated::CPACSSysElemFuses;
+using CCPACSSysElemGearBoxes = generated::CPACSSysElemGearBoxes;
+using CCPACSSysElemGenerators = generated::CPACSSysElemGenerators;
+using CCPACSSysElemGenericConsumerElements = generated::CPACSSysElemGenericConsumerElements;
+using CCPACSSysElemGenericControlElements = generated::CPACSSysElemGenericControlElements;
+using CCPACSSysElemGenericConversionElements = generated::CPACSSysElemGenericConversionElements;
+using CCPACSSysElemGenericDistributionElements = generated::CPACSSysElemGenericDistributionElements;
+using CCPACSSysElemGenericElectricalElements = generated::CPACSSysElemGenericElectricalElements;
+using CCPACSSysElemGenericElements = generated::CPACSSysElemGenericElements;
+using CCPACSSysElemGenericHydraulicElements = generated::CPACSSysElemGenericHydraulicElements;
+using CCPACSSysElemGenericMechanicalElements = generated::CPACSSysElemGenericMechanicalElements;
+using CCPACSSysElemGenericPneumaticElements = generated::CPACSSysElemGenericPneumaticElements;
+using CCPACSSysElemGenericStorageElements = generated::CPACSSysElemGenericStorageElements;
+using CCPACSSysElemGenericThermoFluidElements = generated::CPACSSysElemGenericThermoFluidElements;
+using CCPACSSysElemGroundConnectors = generated::CPACSSysElemGroundConnectors;
+using CCPACSSysElemHeatExchangers = generated::CPACSSysElemHeatExchangers;
+using CCPACSSysElemHumidifiers = generated::CPACSSysElemHumidifiers;
+using CCPACSSysElemHydraulicActuators = generated::CPACSSysElemHydraulicActuators;
+using CCPACSSysElemHydraulicDrivenPumps = generated::CPACSSysElemHydraulicDrivenPumps;
+using CCPACSSysElemInductors = generated::CPACSSysElemInductors;
+using CCPACSSysElemInteriorLights = generated::CPACSSysElemInteriorLights;
+using CCPACSSysElemIsolationValves = generated::CPACSSysElemIsolationValves;
+using CCPACSSysElemJetPumps = generated::CPACSSysElemJetPumps;
+using CCPACSSysElemJoiners = generated::CPACSSysElemJoiners;
+using CCPACSSysElemLights = generated::CPACSSysElemLights;
+using CCPACSSysElemMechanicalDrivenCompressors = generated::CPACSSysElemMechanicalDrivenCompressors;
+using CCPACSSysElemMechanicalDrivenFans = generated::CPACSSysElemMechanicalDrivenFans;
+using CCPACSSysElemMechanicalDrivenPumps = generated::CPACSSysElemMechanicalDrivenPumps;
+using CCPACSSysElemMixingUnits = generated::CPACSSysElemMixingUnits;
+using CCPACSSysElemNozzles = generated::CPACSSysElemNozzles;
+using CCPACSSysElemOzoneConverters = generated::CPACSSysElemOzoneConverters;
+using CCPACSSysElemPhaseSeparators = generated::CPACSSysElemPhaseSeparators;
+using CCPACSSysElemPiccoloTubes = generated::CPACSSysElemPiccoloTubes;
+using CCPACSSysElemPipeBallJoints = generated::CPACSSysElemPipeBallJoints;
+using CCPACSSysElemPipeBellows = generated::CPACSSysElemPipeBellows;
+using CCPACSSysElemPipes = generated::CPACSSysElemPipes;
+using CCPACSSysElemPneumaticAirConditioningKits = generated::CPACSSysElemPneumaticAirConditioningKits;
+using CCPACSSysElemPneumaticDrivenPumps = generated::CPACSSysElemPneumaticDrivenPumps;
+using CCPACSSysElemPowerCables = generated::CPACSSysElemPowerCables;
+using CCPACSSysElemPowerDistributionUnits = generated::CPACSSysElemPowerDistributionUnits;
+using CCPACSSysElemPowerTransferUnits = generated::CPACSSysElemPowerTransferUnits;
+using CCPACSSysElemPressureReliefValves = generated::CPACSSysElemPressureReliefValves;
+using CCPACSSysElemPressureSensors = generated::CPACSSysElemPressureSensors;
+using CCPACSSysElemQuantitySensors = generated::CPACSSysElemQuantitySensors;
+using CCPACSSysElemRamAirTurbines = generated::CPACSSysElemRamAirTurbines;
+using CCPACSSysElemRelays = generated::CPACSSysElemRelays;
+using CCPACSSysElemReservoirs = generated::CPACSSysElemReservoirs;
+using CCPACSSysElemShutOffValves = generated::CPACSSysElemShutOffValves;
+using CCPACSSysElemSignalCables = generated::CPACSSysElemSignalCables;
+using CCPACSSysElemSockets = generated::CPACSSysElemSockets;
+using CCPACSSysElemSplitters = generated::CPACSSysElemSplitters;
+using CCPACSSysElemSprings = generated::CPACSSysElemSprings;
+using CCPACSSysElemSuperCapacitors = generated::CPACSSysElemSuperCapacitors;
+using CCPACSSysElemSwitches = generated::CPACSSysElemSwitches;
+using CCPACSSysElemTemperatureSensors = generated::CPACSSysElemTemperatureSensors;
+using CCPACSSysElemTransformers = generated::CPACSSysElemTransformers;
+using CCPACSSysElemTurbines = generated::CPACSSysElemTurbines;
+using CCPACSSysElemVacuumPumps = generated::CPACSSysElemVacuumPumps;
+using CCPACSSysElemValves = generated::CPACSSysElemValves;
+using CCPACSSysElemWaterExtractors = generated::CPACSSysElemWaterExtractors;
+using CCPACSSysElemWaterInjectors = generated::CPACSSysElemWaterInjectors;
 } // namespace tigl

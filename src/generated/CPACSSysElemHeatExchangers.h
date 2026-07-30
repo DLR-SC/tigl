@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemHeatExchanger;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemThermoFluidConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemThermoFluidConversionElements
 
     /// @brief Heat exchangers
     /// 
+    /// Container for reusable heat exchangers. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemHeatExchangers
     {
     public:
-        TIGL_EXPORT CPACSSysElemHeatExchangers(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemHeatExchangers(CPACSSysElemThermoFluidConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemHeatExchangers();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemThermoFluidConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemThermoFluidConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>& GetHeatExchangers() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>& GetHeatExchangers();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetHeatExchangers() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetHeatExchangers();
 
         TIGL_EXPORT virtual size_t GetHeatExchangerCount() const;
         TIGL_EXPORT virtual size_t GetHeatExchangerIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemHeatExchanger& GetHeatExchanger(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemHeatExchanger& GetHeatExchanger(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetHeatExchanger(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetHeatExchanger(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemHeatExchanger& GetHeatExchanger(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemHeatExchanger& GetHeatExchanger(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetHeatExchanger(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetHeatExchanger(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemHeatExchanger& AddHeatExchanger();
-        TIGL_EXPORT virtual void RemoveHeatExchanger(CPACSSysElemHeatExchanger& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddHeatExchanger();
+        TIGL_EXPORT virtual void RemoveHeatExchanger(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemThermoFluidConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>> m_heatExchangers;
+        /// Transfers heat between two media without intentionally mixing them.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_heatExchangers;
 
     private:
         CPACSSysElemHeatExchangers(const CPACSSysElemHeatExchangers&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemHeatExchangers = generated::CPACSSysElemHeatExchangers;
-using CCPACSSysElemHeatExchanger = generated::CPACSSysElemHeatExchanger;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemThermoFluidConversionElements = generated::CPACSSysElemThermoFluidConversionElements;
 } // namespace tigl
