@@ -187,6 +187,21 @@ void InteractiveShapeManager::clear()
 {
     _shapeEntries.clear();
     _names.clear();
+    _symmetryVisible.clear();
+}
+
+bool InteractiveShapeManager::GetSymmetryVisible(const std::string& uid) const
+{
+    auto it = _symmetryVisible.find(uid);
+    if (it == _symmetryVisible.end()) {
+        return true;
+    }
+    return it->second;
+}
+
+void InteractiveShapeManager::SetSymmetryVisible(const std::string& uid, bool visible)
+{
+    _symmetryVisible[uid] = visible;
 }
 
 void InteractiveShapeManager::addObject(PNamedShape shape, Handle(AIS_Shape) iObject)

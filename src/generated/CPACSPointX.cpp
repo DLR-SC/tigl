@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element x
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/x")) {
             m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
         }
         else {

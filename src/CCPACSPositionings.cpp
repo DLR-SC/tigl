@@ -190,7 +190,8 @@ CCPACSPositioning& CCPACSPositionings::CreatePositioning(const std::string& from
     newPos.SetFromSectionUID(fromUID);
     newPos.SetToSectionUID(toUID);
     newPos.SetParametersFromVector(delta);
-    newPos.SetUID(GetUIDManager().MakeUIDUnique(toUID + "GenPos")); 
+    newPos.SetUID(GetUIDManager().MakeUIDUnique(toUID + "GenPos"));
+    newPos.SetName("Generated positioning to section " + toUID);
     return newPos;
 }
 

@@ -68,7 +68,7 @@ namespace generated
     void CPACSCutOutControlPoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element relHeight
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relHeight")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/relHeight")) {
             m_relHeight = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relHeight");
         }
         else {
@@ -76,7 +76,7 @@ namespace generated
         }
 
         // read element xsi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsi")) {
             m_xsi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi");
         }
         else {

@@ -90,7 +90,7 @@ namespace generated
     void CPACSNacelleGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element guideCurveProfileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/guideCurveProfileUID")) {
             m_guideCurveProfileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
             if (m_guideCurveProfileUID.empty()) {
                 LOG(WARNING) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
@@ -121,7 +121,7 @@ namespace generated
         }
 
         // read element startSectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startSectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startSectionUID")) {
             m_startSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startSectionUID");
             if (m_startSectionUID.empty()) {
                 LOG(WARNING) << "Required element startSectionUID is empty at xpath " << xpath;
@@ -133,7 +133,7 @@ namespace generated
         }
 
         // read element fromZeta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromZeta")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromZeta")) {
             m_fromZeta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromZeta");
         }
         else {
@@ -141,7 +141,7 @@ namespace generated
         }
 
         // read element toZeta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toZeta")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toZeta")) {
             m_toZeta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toZeta");
         }
         else {

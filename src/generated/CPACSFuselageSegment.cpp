@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -110,7 +110,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -118,7 +118,7 @@ namespace generated
         }
 
         // read element fromElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromElementUID")) {
             m_fromElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromElementUID");
             if (m_fromElementUID.empty()) {
                 LOG(WARNING) << "Required element fromElementUID is empty at xpath " << xpath;
@@ -130,7 +130,7 @@ namespace generated
         }
 
         // read element toElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toElementUID")) {
             m_toElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toElementUID");
             if (m_toElementUID.empty()) {
                 LOG(WARNING) << "Required element toElementUID is empty at xpath " << xpath;

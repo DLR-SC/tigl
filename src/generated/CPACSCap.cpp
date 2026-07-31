@@ -155,7 +155,7 @@ namespace generated
     void CPACSCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element area
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/area")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/area")) {
             m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
         }
         else {

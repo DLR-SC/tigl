@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd">
+  <header>
+    <name>CpacsTestEngineNoNacelle</name>
+    <description>Test case for engine without nacelle</description>
+    <creator>TiGL Test</creator>
+    <timestamp>2021-03-15T00:00:00</timestamp>
+    <version>1.0.0</version>
+    <cpacsVersion>3.2</cpacsVersion>
+  </header>
+  <vehicles>
+    <engines>
+      <engine uID="TestEngine">
+        <name>TestEngine</name>
+      </engine>
+    </engines>
+    <aircraft>
+      <model uID="TestModel">
+        <name>TestModel</name>
+        <reference>
+          <area>1</area>
+          <length>1</length>
+        </reference>
+        <wings>
+          <wing uID="Wing">
+            <name>Wing</name>
+            <sections>
+              <section uID="Wing_Sec1">
+                <elements>
+                  <element uID="Wing_Sec1_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                  </element>
+                </elements>
+              </section>
+              <section uID="Wing_Sec2">
+                <elements>
+                  <element uID="Wing_Sec2_El1">
+                    <airfoilUID>NACA0012</airfoilUID>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="Wing_Seg1">
+                <fromElementUID>Wing_Sec1_El1</fromElementUID>
+                <toElementUID>Wing_Sec2_El1</toElementUID>
+              </segment>
+            </segments>
+          </wing>
+        </wings>
+        <engines>
+          <engine uID="TestEnginePosition">
+            <name>TestEnginePosition</name>
+            <engineUID>TestEngine</engineUID>
+            <parentUID>Wing</parentUID>
+          </engine>
+        </engines>
+      </model>
+    </aircraft>
+    <profiles>
+      <wingAirfoils>
+        <wingAirfoil uID="NACA0012">
+          <name>NACA0.00.00.12</name>
+          <pointList>
+            <x mapType="vector">1.0;0.5;0.0;0.5;1.0</x>
+            <y mapType="vector">0.0;0.0;0.0;0.0;0.0</y>
+            <z mapType="vector">-0.06;-0.1;0.0;0.1;0.06</z>
+          </pointList>
+        </wingAirfoil>
+      </wingAirfoils>
+    </profiles>
+  </vehicles>
+</cpacs>

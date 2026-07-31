@@ -27,14 +27,14 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
+class CCPACSDeckComponentBase;
 
 namespace generated
 {
     class CPACSDeckStructuralMount;
-    class CPACSDeckComponent2DBase;
 
     // This class is used in:
-    // CPACSDeckComponent2DBase
+    // CPACSDeckComponentBase
 
     /// @brief Structural mounts
     /// 
@@ -43,13 +43,13 @@ namespace generated
     class CPACSDeckStructuralMounts
     {
     public:
-        TIGL_EXPORT CPACSDeckStructuralMounts(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckStructuralMounts();
 
-        TIGL_EXPORT CPACSDeckComponent2DBase* GetParent();
+        TIGL_EXPORT CCPACSDeckComponentBase* GetParent();
 
-        TIGL_EXPORT const CPACSDeckComponent2DBase* GetParent() const;
+        TIGL_EXPORT const CCPACSDeckComponentBase* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -76,7 +76,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveStructuralMount(CPACSDeckStructuralMount& ref);
 
     protected:
-        CPACSDeckComponent2DBase* m_parent;
+        CCPACSDeckComponentBase* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -94,5 +94,4 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSDeckStructuralMounts = generated::CPACSDeckStructuralMounts;
 using CCPACSDeckStructuralMount = generated::CPACSDeckStructuralMount;
-using CCPACSDeckComponent2DBase = generated::CPACSDeckComponent2DBase;
 } // namespace tigl

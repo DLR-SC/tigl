@@ -89,12 +89,12 @@ namespace generated
     void CPACSStrut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element radius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radius")) {
             m_radius_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radius");
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element materialUID is present but empty at xpath " << xpath;
@@ -103,12 +103,12 @@ namespace generated
         }
 
         // read element innerRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/innerRadius")) {
             m_innerRadius_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/innerRadius");
         }
 
         // read element structuralElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementUID")) {
             m_structuralElementUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementUID");
             if (m_structuralElementUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element structuralElementUID is present but empty at xpath " << xpath;
@@ -128,7 +128,7 @@ namespace generated
         }
 
         // read element length
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/length")) {
             m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
         else {

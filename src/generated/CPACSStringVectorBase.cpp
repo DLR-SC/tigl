@@ -223,7 +223,7 @@ namespace generated
         }
 
         // read simpleContent 
-        if (tixi::TixiCheckElement(tixiHandle, xpath)) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath)) {
             m_value = tixi::TixiGetElement<std::string>(tixiHandle, xpath);
             if (m_value.empty()) {
                 LOG(WARNING) << "Required element  is empty at xpath " << xpath;

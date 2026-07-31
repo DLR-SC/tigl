@@ -98,7 +98,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element segmentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/segmentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/segmentUID")) {
             m_segmentUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/segmentUID");
             if (m_segmentUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element segmentUID is present but empty at xpath " << xpath;
@@ -126,17 +126,17 @@ namespace generated
         }
 
         // read element massFraction
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/massFraction")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/massFraction")) {
             m_massFraction_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/massFraction");
         }
 
         // read element fuelFraction
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelFraction")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fuelFraction")) {
             m_fuelFraction_choice3 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fuelFraction");
         }
 
         // read element typeOfPointPerformance
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/typeOfPointPerformance")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/typeOfPointPerformance")) {
             m_typeOfPointPerformance = stringToCPACSPointPerformanceDefinition_typeOfPointPerformance(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/typeOfPointPerformance"));
         }
         else {

@@ -96,7 +96,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element offset
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/offset")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/offset")) {
             m_offset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/offset");
         }
 

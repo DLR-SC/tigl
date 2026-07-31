@@ -5,6 +5,7 @@
 #include "CCPACSWingProfile.h"
 #include "CTiglMakeLoft.h"
 #include "CNamedShape.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -15,7 +16,7 @@ PNamedShape CTiglEnginePylonBuilder::BuildShape()
     const boost::optional<CCPACSWingSegments>& segments = m_pylon.GetSegments();
 
     if (!segments.is_initialized()) {
-        throw CTiglError("No pylon geometry defined for pylon \"" + m_pylon.GetDefaultedUID() + "\".");
+        return PNamedShape();
     }
 
 

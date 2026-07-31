@@ -150,6 +150,18 @@ const bool tiglInitialized = tiglInit();
 /* Public visible functions.                                                 */
 /*****************************************************************************/
 
+TIGL_COMMON_EXPORT const char* tiglGeometryRepresentationToString(TiglGeometryRepresentationFlags representation)
+{
+    switch (representation) {
+    case TIGL_GEOMREP_PHYSICAL:
+        return "physical";
+    case TIGL_GEOMREP_ENVELOPE:
+        return "envelope";
+    default:
+        return nullptr;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     tiglInit();

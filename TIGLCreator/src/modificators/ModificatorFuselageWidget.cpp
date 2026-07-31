@@ -20,6 +20,7 @@
 #include "ui_ModificatorFuselageWidget.h"
 #include "CCPACSConfiguration.h"
 #include "TIGLCreatorErrorDialog.h"
+#include <Standard_Failure.hxx>
 
 ModificatorFuselageWidget::ModificatorFuselageWidget(QWidget* parent)
     : ModificatorWidget(parent)
@@ -48,10 +49,9 @@ void ModificatorFuselageWidget::setFuselage(tigl::CCPACSFuselage& newFuselage, P
 
     internalLength = fuselage->GetLength();
     ui->spinBoxLength->setValue(internalLength);
-    internalHeight = fuselage->GetMaximalHeight();
-    ui->spinBoxHeight->setValue(internalHeight);
-    internalWidth = fuselage->GetMaximalWidth();
-    ui->spinBoxWidth->setValue(internalWidth);
+    auto fuselageDimensions = fuselage->GetBoundingBoxHeightWidth();
+    ui->spinBoxHeight->setValue(fuselageDimensions.maxHeight);
+    ui->spinBoxWidth->setValue(fuselageDimensions.maxWidth);
 
     ui->profileComboBox->clear();
     std::vector<std::string> profilesList = fuselage->GetAllUsedProfiles();
@@ -128,6 +128,23 @@ bool ModificatorFuselageWidget::apply()
                                          .arg(err.what()));
             errDialog.setWindowTitle("Error");
             errDialog.setDetailsText(err.what());
+            errDialog.exec();
+        }
+        catch (const Standard_Failure &err) {
+            TIGLCreatorErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg(err.GetMessageString()));
+            errDialog.setWindowTitle("Error");
+            errDialog.setDetailsText(err.GetMessageString());
+            errDialog.exec();
+        }
+        catch (...) {
+            TIGLCreatorErrorDialog errDialog(this);
+            errDialog.setMessage(QString("<b>%1</b><br /><br />%2")
+                                         .arg("Fail to set the profile")
+                                         .arg("Unknown error."));
+            errDialog.setWindowTitle("Error");
             errDialog.exec();
         }
     }

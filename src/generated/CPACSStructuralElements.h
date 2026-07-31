@@ -26,7 +26,6 @@
 #include "CPACSPressureBulkheads.h"
 #include "CPACSProfileBasedStructuralElements.h"
 #include "CPACSRivets.h"
-#include "CPACSSeatModules.h"
 #include "CPACSSheetBasedStructuralElements.h"
 #include "CPACSStructuralWallElements.h"
 #include "CPACSWindows.h"
@@ -91,9 +90,6 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSDoorSurroundStructuresAssembly>& GetDoorSurroundStructures() const;
         TIGL_EXPORT virtual boost::optional<CPACSDoorSurroundStructuresAssembly>& GetDoorSurroundStructures();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSeatModules>& GetSeatModules() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSeatModules>& GetSeatModules();
-
         TIGL_EXPORT virtual const boost::optional<CPACSRivets>& GetRivets() const;
         TIGL_EXPORT virtual boost::optional<CPACSRivets>& GetRivets();
 
@@ -118,9 +114,6 @@ namespace generated
         TIGL_EXPORT virtual CPACSDoorSurroundStructuresAssembly& GetDoorSurroundStructures(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDoorSurroundStructures();
 
-        TIGL_EXPORT virtual CPACSSeatModules& GetSeatModules(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveSeatModules();
-
         TIGL_EXPORT virtual CPACSRivets& GetRivets(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRivets();
 
@@ -130,22 +123,12 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         boost::optional<CPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
-
         boost::optional<CPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
-
         boost::optional<CPACSStructuralWallElements>         m_structuralWallElements;
-
         boost::optional<CPACSPressureBulkheads>              m_pressureBulkheads;
-
         boost::optional<CPACSWindows>                        m_windows;
-
         boost::optional<CPACSDoors>                          m_doors;
-
         boost::optional<CPACSDoorSurroundStructuresAssembly> m_doorSurroundStructures;
-
-        /// Seat elements (Deprecation warning: This element will soon be removed from the official CPACS. Use the new seat modules located at cpacs/vehicles/deckElements!)
-        boost::optional<CPACSSeatModules>                    m_seatModules;
-
         boost::optional<CPACSRivets>                         m_rivets;
 
     private:

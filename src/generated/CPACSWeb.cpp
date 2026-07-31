@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element relPos
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relPos")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/relPos")) {
             m_relPos = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relPos");
         }
         else {

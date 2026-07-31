@@ -53,6 +53,22 @@ CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const
     , m_interpolatedPointsIndices(interpolatedPointsIndices)
 {}
 
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(int nrControlPoints, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices, std::vector<double> initialParams)
+    : continuity(_C0)
+    , m_approximationSettings(nrControlPoints)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+    , m_initialParams(initialParams)
+{}
+
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire(double tolerance, const std::string approxErrStr, std::vector<double> interpolatedPointsIndices, std::vector<double> initialParams)
+    : continuity(_C0)
+    , m_approximationSettings(tolerance)
+    , m_approxErrStr(approxErrStr)
+    , m_interpolatedPointsIndices(interpolatedPointsIndices)
+    , m_initialParams(initialParams)
+{}
+
 // Destructor
 CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire()
 {
@@ -139,9 +155,11 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
             approx.InterpolatePoint(idxInt-1, false);
         }
 
-        CTiglApproxResult approxResult = approx.FitCurve(std::vector<double>(), approxErrFct);
+        int max_iter = 5;
+        CTiglApproxResult approxResult = approx.FitCurveOptimal(m_initialParams, max_iter, approxErrFct);
 
         hcurve = approxResult.curve;
+
         m_approxErr = approxResult.error;
         m_usedNrPoles = hcurve->NbPoles();
 

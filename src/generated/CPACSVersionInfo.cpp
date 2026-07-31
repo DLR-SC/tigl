@@ -78,7 +78,7 @@ namespace generated
         }
 
         // read element cpacsVersion
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cpacsVersion")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/cpacsVersion")) {
             m_cpacsVersion = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/cpacsVersion");
             if (m_cpacsVersion.empty()) {
                 LOG(WARNING) << "Required element cpacsVersion is empty at xpath " << xpath;
@@ -89,7 +89,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description.empty()) {
                 LOG(WARNING) << "Required element description is empty at xpath " << xpath;
@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element timestamp
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/timestamp")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/timestamp")) {
             m_timestamp = tixi::TixiGetElement<std::time_t>(tixiHandle, xpath + "/timestamp");
         }
         else {
@@ -108,7 +108,7 @@ namespace generated
         }
 
         // read element creator
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/creator")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/creator")) {
             m_creator = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/creator");
             if (m_creator.empty()) {
                 LOG(WARNING) << "Required element creator is empty at xpath " << xpath;

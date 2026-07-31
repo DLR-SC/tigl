@@ -93,7 +93,7 @@ namespace generated
         }
 
         // read element xOffset
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xOffset")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xOffset")) {
             m_xOffset = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xOffset");
         }
         else {
@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read element curveUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/curveUID")) {
             m_curveUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/curveUID");
             if (m_curveUID.empty()) {
                 LOG(WARNING) << "Required element curveUID is empty at xpath " << xpath;

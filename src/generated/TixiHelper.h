@@ -175,6 +175,20 @@ namespace tixi
         TixiSaveElementsInternal(tixiHandle, xpath, children, writer);
     }
 
+    inline bool TixiCheckElementHasTextContent(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    {
+        if (!TixiCheckElement(tixiHandle, xpath)) {
+            return false;
+        }
+        try {
+            std::string text = TixiGetTextElement(tixiHandle, xpath);
+            return !text.empty();
+        }
+        catch (const TixiError&) {
+            return false;
+        }
+    }
+
     inline void TixiCreateSequenceElementIfNotExists(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::vector<std::string>& childElemOrder)
     {
         // in case element already exists, nothing left to do

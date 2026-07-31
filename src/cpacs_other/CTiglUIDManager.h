@@ -76,7 +76,9 @@ public:
     {
         RegisterObject(uid, &object, typeid(object)); // typeid(T) may yield a base class of object
         if (ITiglGeometricComponent* p = dynamic_cast<ITiglGeometricComponent*>(&object)) {
-            AddGeometricComponent(uid, p);
+            if (p->IsIndependentGeometry()) {
+                AddGeometricComponent(uid, p);
+            }
         }
     }
 
@@ -138,6 +140,9 @@ public:
 
     // Returns the container with all root components of the geometric topology that have children.
     TIGL_EXPORT const RelativeComponentContainerType& GetRootGeometricComponents() const;
+
+    // Returns all registered relative (geometric) components.
+    TIGL_EXPORT const RelativeComponentContainerType& GetRelativeComponents() const;
 
     // Resolves all CTiglRelativelyPositionedComponent's parentUid to the actual objects
     TIGL_EXPORT void SetParentComponents();

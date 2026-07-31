@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element trackType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trackType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/trackType")) {
             m_trackType = stringToCPACSControlSurfaceTrackType_trackType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/trackType"));
         }
         else {
@@ -112,7 +112,7 @@ namespace generated
         }
 
         // read element trackSubType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/trackSubType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/trackSubType")) {
             m_trackSubType = stringToCPACSControlSurfaceTrackType_trackSubType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/trackSubType"));
         }
 

@@ -159,6 +159,8 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() const override { return TIGL_COMPONENT_FUSELSEGMENT; }
     TIGL_EXPORT TiglGeometricComponentIntent GetComponentIntent() const override { return  TIGL_INTENT_LOGICAL; }
 
+    TIGL_EXPORT bool IsIndependentGeometry() const override;
+
     // Returns the number of faces in the loft. This depends on the number of guide curves as well as if the fuselage has a symmetry plane.
     TIGL_EXPORT int GetNumberOfLoftFaces() const;
 

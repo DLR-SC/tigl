@@ -98,7 +98,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -114,12 +114,12 @@ namespace generated
         }
 
         // read element filletRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/filletRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/filletRadius")) {
             m_filletRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/filletRadius");
         }
 
         // read element dssDesignUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dssDesignUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/dssDesignUID")) {
             m_dssDesignUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/dssDesignUID");
             if (m_dssDesignUID->empty()) {
                 LOG(WARNING) << "Optional element dssDesignUID is present but empty at xpath " << xpath;

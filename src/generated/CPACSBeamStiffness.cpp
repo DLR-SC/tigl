@@ -96,7 +96,7 @@ namespace generated
         }
 
         // read element EA
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/EA")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/EA")) {
             m_EA = tixi::TixiGetElement<double>(tixiHandle, xpath + "/EA");
         }
         else {
@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element EIxx
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/EIxx")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/EIxx")) {
             m_EIxx = tixi::TixiGetElement<double>(tixiHandle, xpath + "/EIxx");
         }
         else {
@@ -112,7 +112,7 @@ namespace generated
         }
 
         // read element EIyy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/EIyy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/EIyy")) {
             m_EIyy = tixi::TixiGetElement<double>(tixiHandle, xpath + "/EIyy");
         }
         else {
@@ -120,7 +120,7 @@ namespace generated
         }
 
         // read element EIxy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/EIxy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/EIxy")) {
             m_EIxy = tixi::TixiGetElement<double>(tixiHandle, xpath + "/EIxy");
         }
         else {
@@ -128,7 +128,7 @@ namespace generated
         }
 
         // read element GIt
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/GIt")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/GIt")) {
             m_GIt = tixi::TixiGetElement<double>(tixiHandle, xpath + "/GIt");
         }
         else {
@@ -136,7 +136,7 @@ namespace generated
         }
 
         // read element G
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/G")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/G")) {
             m_G = tixi::TixiGetElement<double>(tixiHandle, xpath + "/G");
         }
         else {
@@ -144,7 +144,7 @@ namespace generated
         }
 
         // read element It
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/It")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/It")) {
             m_It = tixi::TixiGetElement<double>(tixiHandle, xpath + "/It");
         }
         else {

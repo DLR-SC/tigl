@@ -62,7 +62,7 @@ namespace generated
     void CPACSLandingGearExtensionFunctionStep::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element stepType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/stepType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/stepType")) {
             m_stepType = stringToCPACSLandingGearExtensionFunctionStep_stepType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/stepType"));
         }
         else {
@@ -70,7 +70,7 @@ namespace generated
         }
 
         // read element controlParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameter")) {
             m_controlParameter = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameter");
         }
         else {
@@ -78,7 +78,7 @@ namespace generated
         }
 
         // read element extensionAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/extensionAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/extensionAngle")) {
             m_extensionAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/extensionAngle");
         }
         else {

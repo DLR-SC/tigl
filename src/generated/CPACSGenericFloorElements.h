@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetGenericFloorElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetGenericFloorElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGenericFloorElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGenericFloorElements();
 
         TIGL_EXPORT virtual size_t GetGenericFloorElementCount() const;
         TIGL_EXPORT virtual size_t GetGenericFloorElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetGenericFloorElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetGenericFloorElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGenericFloorElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGenericFloorElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetGenericFloorElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetGenericFloorElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGenericFloorElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGenericFloorElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddGenericFloorElement();
-        TIGL_EXPORT virtual void RemoveGenericFloorElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddGenericFloorElement();
+        TIGL_EXPORT virtual void RemoveGenericFloorElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Generic floor element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_genericFloorElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericFloorElements;
 
     private:
         CPACSGenericFloorElements(const CPACSGenericFloorElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSGenericFloorElements = generated::CPACSGenericFloorElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

@@ -84,6 +84,7 @@ namespace tigl
 
 const double CTiglWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CTiglWingProfilePointList::c_blendingDistance = 0.1;
+const double CTiglWingProfilePointList::c_prescribedLEParam = 0.5;
 
 // Constructor
 CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSCurvePointListXYZ& cpacsPointList)
@@ -126,13 +127,41 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             interpPointsIndices.push_back(lePointIdx+1);
         }
 
+        Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(coordinates.size()));
+        for (size_t i = 0; i < coordinates.size(); ++i) {
+            hpoints->SetValue(static_cast<Standard_Integer>(i + 1), coordinates[i].Get_gp_Pnt());
+        }
+
+        ParamMap paramsMap;
+        auto le_idx = static_cast<unsigned int>(lePointIdx);
+        auto le_in_params_map = false;
+        if (cpacsPointList.GetParameterMap()) {
+            const auto& cpacsMap = cpacsPointList.GetParameterMap().value();
+            auto params = cpacsMap.GetParamAsVector();
+            auto idx = cpacsMap.GetPointIndexAsVector();
+            if (idx.size() != params.size()) {
+                throw CTiglError("Number of parameters does not match number of indices");
+            }
+            for (size_t i = 0; i < params.size(); ++i) {
+                if (idx[i] == le_idx) {
+                    le_in_params_map = true;
+                }
+                paramsMap[idx[i]] = params[i];
+            }
+        }
+        if (!le_in_params_map) {
+            paramsMap[le_idx] = c_prescribedLEParam;
+        }
+
+        m_initialParams = computeParams(hpoints, paramsMap, c_prescribedLEParam);
+
         if (approxSettings->GetControlPointNumber_choice1()) {
             int nrControlPoints = *(approxSettings->GetControlPointNumber_choice1());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(nrControlPoints, approxErrStr, interpPointsIndices, m_initialParams);
         }
         else if (approxSettings->GetMaximumError_choice2()) {
             double tolerance = *(approxSettings->GetMaximumError_choice2());
-            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, approxErrStr, interpPointsIndices);
+            profileWireAlgo = std::make_unique<CTiglApproximateBsplineWire>(tolerance, approxErrStr, interpPointsIndices, m_initialParams);
         }
         else {
             throw CTiglError("CTiglWingProfilePointList: Invalid Definition of approximationSettings in profile " + profileUID);
@@ -254,7 +283,14 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
     curve = new Geom_TrimmedCurve(curve, u1, u2);
 
     // Get Leading edge parameter on curve
-    double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+    // Use stored initial param for consistent lofting (avoids projection variability between profiles)
+    double lep_par;
+    if (!m_initialParams.empty() && lePointIdx < m_initialParams.size()) {
+        lep_par = m_initialParams[lePointIdx];
+    }
+    else {
+        lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+    }
 
     // upper and lower curve
     Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);

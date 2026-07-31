@@ -96,7 +96,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -104,7 +104,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -120,7 +120,7 @@ namespace generated
         }
 
         // read element type
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/type")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/type")) {
             m_type = stringToCPACSRotorHubHinge_type(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/type"));
         }
         else {
@@ -128,22 +128,22 @@ namespace generated
         }
 
         // read element neutralPosition
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/neutralPosition")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/neutralPosition")) {
             m_neutralPosition = tixi::TixiGetElement<double>(tixiHandle, xpath + "/neutralPosition");
         }
 
         // read element staticStiffness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/staticStiffness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/staticStiffness")) {
             m_staticStiffness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/staticStiffness");
         }
 
         // read element dynamicStiffness
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dynamicStiffness")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/dynamicStiffness")) {
             m_dynamicStiffness = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dynamicStiffness");
         }
 
         // read element damping
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/damping")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/damping")) {
             m_damping = tixi::TixiGetElement<double>(tixiHandle, xpath + "/damping");
         }
 

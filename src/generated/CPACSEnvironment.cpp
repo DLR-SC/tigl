@@ -75,7 +75,7 @@ namespace generated
     void CPACSEnvironment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element atmosphericModel
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/atmosphericModel")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/atmosphericModel")) {
             m_atmosphericModel = stringToCPACSAtmosphericModel(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/atmosphericModel"));
         }
         else {
@@ -83,7 +83,7 @@ namespace generated
         }
 
         // read element deltaTemperature
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/deltaTemperature")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deltaTemperature")) {
             m_deltaTemperature = tixi::TixiGetElement<double>(tixiHandle, xpath + "/deltaTemperature");
         }
 

@@ -82,7 +82,7 @@ namespace generated
     void CPACSLandingGearStrutAttachment::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element sparSegmentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparSegmentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sparSegmentUID")) {
             m_sparSegmentUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sparSegmentUID");
             if (m_sparSegmentUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element sparSegmentUID is present but empty at xpath " << xpath;
@@ -124,7 +124,7 @@ namespace generated
         }
 
         // read element ribDefinitionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribDefinitionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribDefinitionUID")) {
             m_ribDefinitionUID_choice5 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribDefinitionUID");
             if (m_ribDefinitionUID_choice5->empty()) {
                 LOG(WARNING) << "Optional element ribDefinitionUID is present but empty at xpath " << xpath;
@@ -133,7 +133,7 @@ namespace generated
         }
 
         // read element ribNumber
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribNumber")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribNumber")) {
             m_ribNumber_choice5 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ribNumber");
         }
 

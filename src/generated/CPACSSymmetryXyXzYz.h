@@ -34,7 +34,6 @@ namespace generated
     // CPACSFuelTank
     // CPACSFuselage
     // CPACSGenericGeometricComponent
-    // CPACSGenericSystem
     // CPACSGuideCurveProfileGeometry
     // CPACSLandingGearBase
     // CPACSProfileGeometry

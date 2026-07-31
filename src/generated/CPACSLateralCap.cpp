@@ -92,7 +92,7 @@ namespace generated
     void CPACSLateralCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element area
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/area")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/area")) {
             m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
         }
         else {
@@ -108,7 +108,7 @@ namespace generated
         }
 
         // read element placement
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/placement")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/placement")) {
             m_placement = stringToCPACSLateralCap_placement(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/placement"));
         }
         else {

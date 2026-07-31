@@ -27,6 +27,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSSystemArchitectures.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -99,6 +100,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures();
+
         TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
 
@@ -117,30 +121,35 @@ namespace generated
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystems();
 
+        TIGL_EXPORT virtual CPACSSystemArchitectures& GetSystemArchitectures(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSystemArchitectures();
+
     protected:
         CPACSRotorcraft* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                            m_uID;
+        std::string                               m_uID;
 
         /// Name of rotorcraft model
-        std::string                            m_name;
+        std::string                               m_name;
 
         /// Description of rotorcraft model
-        boost::optional<std::string>           m_description;
+        boost::optional<std::string>              m_description;
 
-        boost::optional<CCPACSFuselages>       m_fuselages;
+        boost::optional<CCPACSFuselages>          m_fuselages;
 
-        boost::optional<CCPACSWings>           m_wings;
+        boost::optional<CCPACSWings>              m_wings;
 
-        boost::optional<CCPACSRotors>          m_rotors;
+        boost::optional<CCPACSRotors>             m_rotors;
 
-        boost::optional<CCPACSRotorBlades>     m_rotorBlades;
+        boost::optional<CCPACSRotorBlades>        m_rotorBlades;
 
-        boost::optional<CCPACSEnginePositions> m_engines;
+        boost::optional<CCPACSEnginePositions>    m_engines;
 
-        boost::optional<CCPACSACSystems>       m_systems;
+        boost::optional<CCPACSACSystems>          m_systems;
+
+        boost::optional<CPACSSystemArchitectures> m_systemArchitectures;
 
     private:
         CPACSRotorcraftModel(const CPACSRotorcraftModel&) = delete;

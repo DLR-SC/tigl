@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSCargoContainerElement;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,27 +60,27 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSCargoContainerElement>>& GetCargoContainerElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSCargoContainerElement>>& GetCargoContainerElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCargoContainerElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCargoContainerElements();
 
         TIGL_EXPORT virtual size_t GetCargoContainerElementCount() const;
         TIGL_EXPORT virtual size_t GetCargoContainerElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSCargoContainerElement& GetCargoContainerElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSCargoContainerElement& GetCargoContainerElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCargoContainerElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCargoContainerElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSCargoContainerElement& GetCargoContainerElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSCargoContainerElement& GetCargoContainerElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCargoContainerElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCargoContainerElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSCargoContainerElement& AddCargoContainerElement();
-        TIGL_EXPORT virtual void RemoveCargoContainerElement(CPACSCargoContainerElement& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddCargoContainerElement();
+        TIGL_EXPORT virtual void RemoveCargoContainerElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSCargoContainerElement>> m_cargoContainerElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_cargoContainerElements;
 
     private:
         CPACSCargoContainerElements(const CPACSCargoContainerElements&) = delete;
@@ -93,6 +93,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSCargoContainerElements = generated::CPACSCargoContainerElements;
-using CCPACSCargoContainerElement = generated::CPACSCargoContainerElement;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

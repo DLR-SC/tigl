@@ -88,7 +88,7 @@ namespace generated
     void CPACSAircraftControlElement::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element controlDeviceUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlDeviceUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlDeviceUID")) {
             m_controlDeviceUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/controlDeviceUID");
             if (m_controlDeviceUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element controlDeviceUID is present but empty at xpath " << xpath;
@@ -97,12 +97,12 @@ namespace generated
         }
 
         // read element controlParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameter")) {
             m_controlParameter_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameter");
         }
 
         // read element controlDistributorUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlDistributorUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlDistributorUID")) {
             m_controlDistributorUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/controlDistributorUID");
             if (m_controlDistributorUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element controlDistributorUID is present but empty at xpath " << xpath;
@@ -111,7 +111,7 @@ namespace generated
         }
 
         // read element commandInput
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/commandInput")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/commandInput")) {
             m_commandInput_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/commandInput");
         }
 

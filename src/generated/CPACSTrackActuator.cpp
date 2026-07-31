@@ -93,7 +93,7 @@ namespace generated
         }
 
         // read element actuatorUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/actuatorUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/actuatorUID")) {
             m_actuatorUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/actuatorUID");
             if (m_actuatorUID.empty()) {
                 LOG(WARNING) << "Required element actuatorUID is empty at xpath " << xpath;

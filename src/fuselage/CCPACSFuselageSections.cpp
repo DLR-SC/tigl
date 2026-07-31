@@ -35,6 +35,11 @@ CCPACSFuselageSections::CCPACSFuselageSections(CCPACSDuct* parent, CTiglUIDManag
 CCPACSFuselageSections::CCPACSFuselageSections(CCPACSVessel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSFuselageSections(parent, uidMgr) {}
 
+CCPACSFuselageSections::CCPACSFuselageSections(CCPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSFuselageSections(parent, uidMgr)
+{
+}
+
 
 CCPACSFuselageSection&  CCPACSFuselageSections::CreateSection(const std::string& sectionUID, const std::string& profileUID)
 {

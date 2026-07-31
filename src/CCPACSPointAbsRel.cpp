@@ -28,6 +28,11 @@ CCPACSPointAbsRel::CCPACSPointAbsRel(CCPACSTransformation* parent, CTiglUIDManag
 {
 }
 
+CCPACSPointAbsRel::CCPACSPointAbsRel(CCPACSTransformationSE3* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSPointAbsRel(parent, uidMgr)
+{
+}
+
 CCPACSPointAbsRel::CCPACSPointAbsRel(CCPACSStrutAssembly* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSPointAbsRel(parent, uidMgr)
 {

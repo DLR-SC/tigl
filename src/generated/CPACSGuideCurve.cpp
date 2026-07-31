@@ -98,7 +98,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element guideCurveProfileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/guideCurveProfileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/guideCurveProfileUID")) {
             m_guideCurveProfileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/guideCurveProfileUID");
             if (m_guideCurveProfileUID.empty()) {
                 LOG(WARNING) << "Required element guideCurveProfileUID is empty at xpath " << xpath;
@@ -128,7 +128,7 @@ namespace generated
         }
 
         // read element fromGuideCurveUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromGuideCurveUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromGuideCurveUID")) {
             m_fromGuideCurveUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromGuideCurveUID");
             if (m_fromGuideCurveUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element fromGuideCurveUID is present but empty at xpath " << xpath;
@@ -137,17 +137,17 @@ namespace generated
         }
 
         // read element continuity
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/continuity")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/continuity")) {
             m_continuity_choice1 = stringToCPACSGuideCurve_continuity(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/continuity"));
         }
 
         // read element fromRelativeCircumference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRelativeCircumference")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromRelativeCircumference")) {
             m_fromRelativeCircumference_choice2_1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromRelativeCircumference");
         }
 
         // read element fromParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromParameter")) {
             m_fromParameter_choice2_2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/fromParameter");
         }
 
@@ -163,12 +163,12 @@ namespace generated
         }
 
         // read element toRelativeCircumference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRelativeCircumference")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toRelativeCircumference")) {
             m_toRelativeCircumference_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toRelativeCircumference");
         }
 
         // read element toParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toParameter")) {
             m_toParameter_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/toParameter");
         }
 

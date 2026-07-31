@@ -101,7 +101,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element sheetElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sheetElementUID")) {
             m_sheetElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sheetElementUID");
             if (m_sheetElementUID.empty()) {
                 LOG(WARNING) << "Required element sheetElementUID is empty at xpath " << xpath;
@@ -129,12 +129,12 @@ namespace generated
         }
 
         // read element reinforcementNumberVertical
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/reinforcementNumberVertical")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/reinforcementNumberVertical")) {
             m_reinforcementNumberVertical_choice1 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/reinforcementNumberVertical");
         }
 
         // read element structuralElementVerticalUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementVerticalUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementVerticalUID")) {
             m_structuralElementVerticalUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementVerticalUID");
             if (m_structuralElementVerticalUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element structuralElementVerticalUID is present but empty at xpath " << xpath;
@@ -143,12 +143,12 @@ namespace generated
         }
 
         // read element reinforcementNumberHorizontal
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/reinforcementNumberHorizontal")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/reinforcementNumberHorizontal")) {
             m_reinforcementNumberHorizontal_choice1 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/reinforcementNumberHorizontal");
         }
 
         // read element structuralElementHorizontalUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementHorizontalUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementHorizontalUID")) {
             m_structuralElementHorizontalUID_choice1 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementHorizontalUID");
             if (m_structuralElementHorizontalUID_choice1->empty()) {
                 LOG(WARNING) << "Optional element structuralElementHorizontalUID is present but empty at xpath " << xpath;
@@ -157,22 +157,22 @@ namespace generated
         }
 
         // read element bulkheadCalotteRadiusAtFrame
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/bulkheadCalotteRadiusAtFrame")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/bulkheadCalotteRadiusAtFrame")) {
             m_bulkheadCalotteRadiusAtFrame_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/bulkheadCalotteRadiusAtFrame");
         }
 
         // read element maxFlectionDepth
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxFlectionDepth")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/maxFlectionDepth")) {
             m_maxFlectionDepth_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maxFlectionDepth");
         }
 
         // read element reinforcementNumberRadial
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/reinforcementNumberRadial")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/reinforcementNumberRadial")) {
             m_reinforcementNumberRadial_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/reinforcementNumberRadial");
         }
 
         // read element structuralElementRadialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementRadialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementRadialUID")) {
             m_structuralElementRadialUID_choice2 = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementRadialUID");
             if (m_structuralElementRadialUID_choice2->empty()) {
                 LOG(WARNING) << "Optional element structuralElementRadialUID is present but empty at xpath " << xpath;

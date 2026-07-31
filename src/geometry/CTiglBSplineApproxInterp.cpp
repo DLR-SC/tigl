@@ -234,7 +234,7 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurve(const std::vector<double>& 
     return solve(parms, OccFArray(knots)->Array1(), OccIArray(mults)->Array1(), calcErrorFct);
 }
 
-CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double>& initialParms, int maxIter) const
+CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<double>& initialParms, int maxIter, CalcPointVecErrorFct calcErrorFct) const
 {
     std::vector<double> parms;
     // compute initial parameters, if initialParms emtpy
@@ -262,14 +262,14 @@ CTiglApproxResult CTiglBSplineApproxInterp::FitCurveOptimal(const std::vector<do
     int iteration = 0;
 
     // solve system
-    CTiglApproxResult result = solve(parms, occKnots->Array1(), occMults->Array1());
+    CTiglApproxResult result = solve(parms, occKnots->Array1(), occMults->Array1(), calcErrorFct);
     double old_error = result.error * 2.;
 
     while(result.error > 0 && (old_error - result.error) / std::max(result.error, 1e-6) > 1e-3 && iteration < maxIter) {
         old_error = result.error;
 
         optimizeParameters(result.curve, parms);
-        result = solve(parms, occKnots->Array1(), occMults->Array1());
+        result = solve(parms, occKnots->Array1(), occMults->Array1(), calcErrorFct);
 
         iteration++;
     }

@@ -88,7 +88,7 @@ namespace generated
     void CPACSTrackStrut::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = stringToCPACSTrackStrut_name(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name"));
         }
         else {
@@ -96,7 +96,7 @@ namespace generated
         }
 
         // read element materialUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/materialUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/materialUID")) {
             m_materialUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/materialUID");
             if (m_materialUID.empty()) {
                 LOG(WARNING) << "Required element materialUID is empty at xpath " << xpath;
@@ -108,7 +108,7 @@ namespace generated
         }
 
         // read element profileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/profileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/profileUID")) {
             m_profileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/profileUID");
             if (m_profileUID.empty()) {
                 LOG(WARNING) << "Required element profileUID is empty at xpath " << xpath;

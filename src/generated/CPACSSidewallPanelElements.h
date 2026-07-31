@@ -30,7 +30,7 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSDeckElementBase;
+    class CPACSVehicleElementBase;
     class CPACSDeckElements;
 
     // This class is used in:
@@ -60,20 +60,20 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetSidewallPanelElements() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSDeckElementBase>>& GetSidewallPanelElements();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetSidewallPanelElements() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetSidewallPanelElements();
 
         TIGL_EXPORT virtual size_t GetSidewallPanelElementCount() const;
         TIGL_EXPORT virtual size_t GetSidewallPanelElementIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetSidewallPanelElement(size_t index) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetSidewallPanelElement(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetSidewallPanelElement(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetSidewallPanelElement(size_t index);
 
-        TIGL_EXPORT virtual const CPACSDeckElementBase& GetSidewallPanelElement(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSDeckElementBase& GetSidewallPanelElement(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetSidewallPanelElement(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetSidewallPanelElement(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSDeckElementBase& AddSidewallPanelElement();
-        TIGL_EXPORT virtual void RemoveSidewallPanelElement(CPACSDeckElementBase& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddSidewallPanelElement();
+        TIGL_EXPORT virtual void RemoveSidewallPanelElement(CPACSVehicleElementBase& ref);
 
     protected:
         CPACSDeckElements* m_parent;
@@ -81,7 +81,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Sidewall panel element for use in the decks
-        std::vector<std::unique_ptr<CPACSDeckElementBase>> m_sidewallPanelElements;
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_sidewallPanelElements;
 
     private:
         CPACSSidewallPanelElements(const CPACSSidewallPanelElements&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSidewallPanelElements = generated::CPACSSidewallPanelElements;
-using CCPACSDeckElementBase = generated::CPACSDeckElementBase;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
 using CCPACSDeckElements = generated::CPACSDeckElements;
 } // namespace tigl

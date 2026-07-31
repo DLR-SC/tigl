@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeckComponent2DBase.h"
+#include "CCPACSDeckComponentBase.h"
 #include "CPACSDeckStructuralMount.h"
 #include "CPACSDeckStructuralMounts.h"
 #include "CTiglError.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CPACSDeckComponent2DBase* parent, CTiglUIDManager* uidMgr)
+    CPACSDeckStructuralMounts::CPACSDeckStructuralMounts(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSDeckComponent2DBase* CPACSDeckStructuralMounts::GetParent() const
+    const CCPACSDeckComponentBase* CPACSDeckStructuralMounts::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDeckComponent2DBase* CPACSDeckStructuralMounts::GetParent()
+    CCPACSDeckComponentBase* CPACSDeckStructuralMounts::GetParent()
     {
         return m_parent;
     }

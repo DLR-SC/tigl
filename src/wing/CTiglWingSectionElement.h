@@ -22,6 +22,9 @@
 
 #include "CTiglSectionElement.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSEnginePylon.h"
+
+#include <variant>
 
 namespace tigl
 {
@@ -29,6 +32,7 @@ namespace tigl
 class CCPACSWing;
 class CCPACSWingSectionElement;
 class CCPACSWingSection;
+class CCPACSConfiguration;
 
 class CTiglWingSectionElement: public CTiglSectionElement
 {
@@ -98,7 +102,8 @@ protected:
 private:
     CCPACSWingSectionElement* element;
     CCPACSWingSection* section;
-    CCPACSWing* wing;
+    std::variant<CCPACSWing*, CCPACSEnginePylon*> parent;
+    CCPACSConfiguration* config;
 
 };
 

@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element fromRib
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fromRib")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/fromRib")) {
             m_fromRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/fromRib");
             if (m_fromRib.empty()) {
                 LOG(WARNING) << "Required element fromRib is empty at xpath " << xpath;
@@ -110,7 +110,7 @@ namespace generated
         }
 
         // read element toRib
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/toRib")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/toRib")) {
             m_toRib = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/toRib");
             if (m_toRib.empty()) {
                 LOG(WARNING) << "Required element toRib is empty at xpath " << xpath;

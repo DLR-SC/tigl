@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element structuralElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/structuralElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/structuralElementUID")) {
             m_structuralElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/structuralElementUID");
             if (m_structuralElementUID.empty()) {
                 LOG(WARNING) << "Required element structuralElementUID is empty at xpath " << xpath;
@@ -112,7 +112,7 @@ namespace generated
         }
 
         // read element frameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/frameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/frameUID")) {
             m_frameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/frameUID");
             if (m_frameUID.empty()) {
                 LOG(WARNING) << "Required element frameUID is empty at xpath " << xpath;
@@ -124,7 +124,7 @@ namespace generated
         }
 
         // read element positionZ
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/positionZ")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/positionZ")) {
             m_positionZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/positionZ");
         }
         else {

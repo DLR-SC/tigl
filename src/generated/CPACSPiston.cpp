@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element length
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/length")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/length")) {
             m_length = tixi::TixiGetElement<double>(tixiHandle, xpath + "/length");
         }
         else {
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element maxSpringDeflection
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/maxSpringDeflection")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/maxSpringDeflection")) {
             m_maxSpringDeflection = tixi::TixiGetElement<double>(tixiHandle, xpath + "/maxSpringDeflection");
         }
         else {
@@ -123,7 +123,7 @@ namespace generated
         }
 
         // read element compressedExternalLength
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/compressedExternalLength")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/compressedExternalLength")) {
             m_compressedExternalLength = tixi::TixiGetElement<double>(tixiHandle, xpath + "/compressedExternalLength");
         }
         else {

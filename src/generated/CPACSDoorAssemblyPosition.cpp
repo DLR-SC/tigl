@@ -102,7 +102,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -110,7 +110,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -118,12 +118,12 @@ namespace generated
         }
 
         // read element doorType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/doorType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/doorType")) {
             m_doorType = stringToCPACSDoorAssemblyPosition_doorType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/doorType"));
         }
 
         // read element doorElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/doorElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/doorElementUID")) {
             m_doorElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/doorElementUID");
             if (m_doorElementUID.empty()) {
                 LOG(WARNING) << "Required element doorElementUID is empty at xpath " << xpath;
@@ -135,7 +135,7 @@ namespace generated
         }
 
         // read element startFrameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startFrameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startFrameUID")) {
             m_startFrameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startFrameUID");
             if (m_startFrameUID.empty()) {
                 LOG(WARNING) << "Required element startFrameUID is empty at xpath " << xpath;
@@ -147,7 +147,7 @@ namespace generated
         }
 
         // read element endFrameUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endFrameUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endFrameUID")) {
             m_endFrameUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endFrameUID");
             if (m_endFrameUID.empty()) {
                 LOG(WARNING) << "Required element endFrameUID is empty at xpath " << xpath;
@@ -159,7 +159,7 @@ namespace generated
         }
 
         // read element startStringerUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startStringerUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startStringerUID")) {
             m_startStringerUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/startStringerUID");
             if (m_startStringerUID.empty()) {
                 LOG(WARNING) << "Required element startStringerUID is empty at xpath " << xpath;
@@ -171,7 +171,7 @@ namespace generated
         }
 
         // read element endStringerUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endStringerUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endStringerUID")) {
             m_endStringerUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/endStringerUID");
             if (m_endStringerUID.empty()) {
                 LOG(WARNING) << "Required element endStringerUID is empty at xpath " << xpath;
@@ -183,22 +183,22 @@ namespace generated
         }
 
         // read element zBase
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/zBase")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/zBase")) {
             m_zBase = tixi::TixiGetElement<double>(tixiHandle, xpath + "/zBase");
         }
 
         // read element minWidth
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/minWidth")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/minWidth")) {
             m_minWidth = tixi::TixiGetElement<double>(tixiHandle, xpath + "/minWidth");
         }
 
         // read element minHeight
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/minHeight")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/minHeight")) {
             m_minHeight = tixi::TixiGetElement<double>(tixiHandle, xpath + "/minHeight");
         }
 
         // read element ySign
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ySign")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ySign")) {
             m_ySign = tixi::TixiGetElement<int>(tixiHandle, xpath + "/ySign");
         }
 

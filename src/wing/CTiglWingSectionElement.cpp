@@ -24,6 +24,7 @@
 #include "CCPACSWingSections.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
+#include "CPACSAircraftModel.h"
 #include "tiglmathfunctions.h"
 
 #include "tiglcommonfunctions.h"
@@ -35,10 +36,10 @@
 
 tigl::CTiglWingSectionElement::CTiglWingSectionElement()
         : CTiglSectionElement()
+        , config(nullptr)
 {
     element  = nullptr;
     section  = nullptr;
-    wing = nullptr;
 }
 
 tigl::CTiglWingSectionElement::CTiglWingSectionElement(tigl::CCPACSWingSectionElement* inElement)
@@ -53,19 +54,24 @@ void tigl::CTiglWingSectionElement::SetAssociateElement(tigl::CCPACSWingSectionE
         return;
     }
 
-    // set only if parent is a wing
     CCPACSWingSection* theSection = element->GetParent()->GetParent();
-
     if (!theSection) {
         return;
     }
 
-    if (theSection->GetParent()->IsParent<CCPACSWing>()) {
-        this->element = element;
-        section       = theSection;
-        wing          = theSection->GetParent()->GetParent<CCPACSWing>();
-    }
+    this->element = element;
+    section       = theSection;
 
+    if (theSection->GetParent()->IsParent<CCPACSWing>()) {
+        CCPACSWing* w = theSection->GetParent()->GetParent<CCPACSWing>();
+        parent = w;
+        config = &w->GetConfiguration();
+    }
+    else if (theSection->GetParent()->IsParent<CCPACSEnginePylon>()) {
+        CCPACSEnginePylon* pylon = theSection->GetParent()->GetParent<CCPACSEnginePylon>();
+        parent = pylon;
+        config = &pylon->GetConfiguration();
+    }
 }
 
 std::string tigl::CTiglWingSectionElement::GetSectionUID() const
@@ -86,8 +92,7 @@ std::string tigl::CTiglWingSectionElement::GetProfileUID() const
 
 void tigl::CTiglWingSectionElement::SetProfileUID(const std::string& newProfileUID)
 {
-    CCPACSConfiguration& config = wing->GetConfiguration();
-    if ( ! config.GetWingProfiles()->HasProfile(newProfileUID) ) {
+    if (!config || !config->GetWingProfiles()->HasProfile(newProfileUID)) {
         throw CTiglError("CTiglWingSectionElement::SetProfileUID: The given profile seems not to be present in the profile list.");
     }
     element->SetAirfoilUID(newProfileUID);
@@ -96,8 +101,7 @@ void tigl::CTiglWingSectionElement::SetProfileUID(const std::string& newProfileU
 // Returns the Wing profile referenced by this connection
 tigl::CCPACSWingProfile& tigl::CTiglWingSectionElement::GetProfile()
 {
-    CCPACSConfiguration& config = wing->GetConfiguration();
-    return (config.GetWingProfile(GetProfileUID()));
+    return config->GetWingProfile(GetProfileUID());
 }
 
 const tigl::CCPACSWingProfile& tigl::CTiglWingSectionElement::GetProfile() const
@@ -105,16 +109,14 @@ const tigl::CCPACSWingProfile& tigl::CTiglWingSectionElement::GetProfile() const
     return const_cast<CTiglWingSectionElement&>(*this).GetProfile();
 }
 
-// Returns the positioning transformation for the referenced section
 tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetPositioningTransformation() const
 {
-    boost::optional<CTiglTransformation> transformation = wing->GetPositioningTransformation(section->GetUID());
-    if (transformation) {
-        return transformation.value();
-    }
-    else {
+    return std::visit([&, this](auto* p) -> CTiglTransformation {
+        if (p) {
+            return p->GetPositioningTransformation(section->GetUID());
+        }
         return CTiglTransformation();
-    }
+    }, parent);
 }
 
 // Returns the section matrix referenced by this connection
@@ -136,8 +138,9 @@ tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetParentTransformation
 
 tigl::CTiglTransformation tigl::CTiglWingSectionElement::GetWingTransformation() const
 {
-
-    return wing->GetTransformation().getTransformationMatrix();
+    return std::visit([](auto* p) {
+        return p->GetTransformation().getTransformationMatrix();
+    }, parent);
 }
 
 TopoDS_Wire tigl::CTiglWingSectionElement::GetWire(TiglCoordinateSystem referenceCS) const
@@ -179,10 +182,7 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetNormal(TiglCoordinateSystem r
 
 bool tigl::CTiglWingSectionElement::IsValid() const
 {
-    if (element != nullptr && section != nullptr && wing != nullptr) {
-        return true;
-    }
-    return false;
+    return element != nullptr && section != nullptr && config != nullptr;
 }
 
 tigl::CTiglPoint tigl::CTiglWingSectionElement::GetChordPoint(double xsi, TiglCoordinateSystem referenceCS) const
@@ -222,7 +222,9 @@ tigl::CTiglPoint tigl::CTiglWingSectionElement::GetStdDirForProfileUnitZ(TiglCoo
 
 tigl::CCPACSPositionings& tigl::CTiglWingSectionElement::GetPositionings()
 {
-    return wing->GetPositionings(CreateIfNotExistsTag());
+    return std::visit([](auto* p) -> CCPACSPositionings& {
+        return p->GetPositionings(CreateIfNotExistsTag());
+    }, parent);
 }
 
 void tigl::CTiglWingSectionElement::SetChordPoint(double xsi, tigl::CTiglPoint newChordPoint,

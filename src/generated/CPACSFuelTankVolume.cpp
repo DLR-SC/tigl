@@ -61,7 +61,7 @@ namespace generated
     void CPACSFuelTankVolume::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element optimalVolume
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/optimalVolume")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/optimalVolume")) {
             m_optimalVolume = tixi::TixiGetElement<double>(tixiHandle, xpath + "/optimalVolume");
         }
         else {
@@ -69,22 +69,22 @@ namespace generated
         }
 
         // read element usableVolume
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/usableVolume")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/usableVolume")) {
             m_usableVolume_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/usableVolume");
         }
 
         // read element realVolume
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/realVolume")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/realVolume")) {
             m_realVolume_choice1 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/realVolume");
         }
 
         // read element useableVolumeFactor
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/useableVolumeFactor")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/useableVolumeFactor")) {
             m_useableVolumeFactor_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/useableVolumeFactor");
         }
 
         // read element realVolumeFactor
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/realVolumeFactor")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/realVolumeFactor")) {
             m_realVolumeFactor_choice2 = tixi::TixiGetElement<double>(tixiHandle, xpath + "/realVolumeFactor");
         }
 

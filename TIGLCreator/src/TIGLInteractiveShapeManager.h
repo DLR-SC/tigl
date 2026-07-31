@@ -59,6 +59,12 @@ public:
 
     std::vector<std::string> GetDisplayedShapeNames() const;
 
+    // Persistent per-uid "show symmetry" preference. Unlike GetVisibility(), this is not
+    // derived from the live AIS display state, so it survives Remove()/Display() cycles
+    // triggered e.g. by toggling the component's visibility in the CPACS tree.
+    bool GetSymmetryVisible(const std::string& uid) const;
+    void SetSymmetryVisible(const std::string& uid, bool visible);
+
 private:
     ShapeEntry& GetShapeEntry(const std::string& name);
 
@@ -67,6 +73,7 @@ private:
     typedef ShapeMap::iterator ShapeIterator;
     std::map<Handle(AIS_Shape), std::string> _names;
     typedef std::map<Handle(AIS_Shape), std::string>::iterator NameIterator;
+    std::map<std::string, bool> _symmetryVisible;
 };
 
 #endif // TIGLINTERACTIVESHAPEMANAGER_H

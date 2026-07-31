@@ -35,6 +35,9 @@ class QButtonGroup;
 class QPushButton;
 class QComboBox;
 class QColor;
+// callbacks used for draw options (avoid direct QAction dependency)
+#include <vector>
+#include <functional>
 
 class ModificatorDisplayOptionsWidget : public CpacsEditorBase
 {
@@ -55,6 +58,7 @@ private slots:
     void onColorChosen();
     void onMaterialChanged(const QString& mat);
     void onResetOptions();
+    void onShowSymmetryToggled(bool checked);
 
 signals:
     void setTransparencyRequested(int value);
@@ -73,6 +77,11 @@ private:
     QPushButton* buttonColorChoser{nullptr};
     QComboBox* materialCombo{nullptr};
     QPushButton* buttonResetOptions{nullptr};
+    QLabel* labelSymmetry{nullptr};
+    QCheckBox* checkBoxShowSymmetry{nullptr};
+
+    // Callbacks mapped to indices of ui->drawOptionsCombo (used for wing draw options)
+    std::vector<std::function<void()>> drawCallbacks;
 
     cpcr::CPACSTreeItem* currentItem{nullptr};
     TIGLCreatorDocument* currentDoc{nullptr};

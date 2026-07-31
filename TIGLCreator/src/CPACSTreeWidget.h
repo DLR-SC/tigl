@@ -88,6 +88,7 @@ public:
    */
     void clear();
 
+    void unsetSelectedUID();
     void setSelectedUID(const QString & uid);
 
     QString getSelectedUID();

@@ -150,7 +150,7 @@ namespace generated
         }
 
         // read element rotation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotation")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rotation")) {
             m_rotation = tixi::TixiGetElement<double>(tixiHandle, xpath + "/rotation");
         }
         else {

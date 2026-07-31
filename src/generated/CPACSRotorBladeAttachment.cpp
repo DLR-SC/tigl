@@ -98,7 +98,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -125,7 +125,7 @@ namespace generated
         }
 
         // read element numberOfBlades
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/numberOfBlades")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/numberOfBlades")) {
             m_numberOfBlades_choice2 = tixi::TixiGetElement<int>(tixiHandle, xpath + "/numberOfBlades");
         }
 
@@ -141,7 +141,7 @@ namespace generated
         }
 
         // read element rotorBladeUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/rotorBladeUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/rotorBladeUID")) {
             m_rotorBladeUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/rotorBladeUID");
             if (m_rotorBladeUID.empty()) {
                 LOG(WARNING) << "Required element rotorBladeUID is empty at xpath " << xpath;

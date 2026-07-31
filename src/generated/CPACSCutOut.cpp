@@ -95,7 +95,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -103,7 +103,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -111,7 +111,7 @@ namespace generated
         }
 
         // read element width
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/width")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/width")) {
             m_width = tixi::TixiGetElement<double>(tixiHandle, xpath + "/width");
         }
         else {
@@ -119,7 +119,7 @@ namespace generated
         }
 
         // read element height
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/height")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/height")) {
             m_height = tixi::TixiGetElement<double>(tixiHandle, xpath + "/height");
         }
         else {
@@ -127,7 +127,7 @@ namespace generated
         }
 
         // read element filletRadius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/filletRadius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/filletRadius")) {
             m_filletRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/filletRadius");
         }
         else {
@@ -135,7 +135,7 @@ namespace generated
         }
 
         // read element reinforcementElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/reinforcementElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/reinforcementElementUID")) {
             m_reinforcementElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/reinforcementElementUID");
             if (m_reinforcementElementUID->empty()) {
                 LOG(WARNING) << "Optional element reinforcementElementUID is present but empty at xpath " << xpath;

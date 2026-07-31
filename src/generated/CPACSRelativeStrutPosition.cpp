@@ -82,7 +82,7 @@ namespace generated
     void CPACSRelativeStrutPosition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element strutUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/strutUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/strutUID")) {
             m_strutUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/strutUID");
             if (m_strutUID.empty()) {
                 LOG(WARNING) << "Required element strutUID is empty at xpath " << xpath;
@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element relativePosition
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relativePosition")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/relativePosition")) {
             m_relativePosition = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relativePosition");
         }
         else {

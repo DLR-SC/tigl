@@ -833,6 +833,20 @@ tigl::CTiglTransformation tigl::CTiglTransformation::GetRotationFromAxisRotation
     return R;
 }
 
+double CTiglTransformation::GetLinearDeterminant() const
+{
+    gp_XYZ col1(GetValue(0, 0), GetValue(1, 0), GetValue(2, 0));
+    gp_XYZ col2(GetValue(0, 1), GetValue(1, 1), GetValue(2, 1));
+    gp_XYZ col3(GetValue(0, 2), GetValue(1, 2), GetValue(2, 2));
+
+    gp_Mat M(col1, col2, col3);
+    return M.Determinant();
+}
+
+double CTiglTransformation::GetVolumeScaleFactor() const
+{
+    return std::abs(GetLinearDeterminant());
+}
 
 std::ostream& operator<<(std::ostream& os, const CTiglTransformation& t)
 {

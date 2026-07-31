@@ -67,7 +67,7 @@ namespace generated
     void CPACSRibRotation::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element ribRotationReference
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ribRotationReference")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/ribRotationReference")) {
             m_ribRotationReference = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/ribRotationReference");
             if (m_ribRotationReference->empty()) {
                 LOG(WARNING) << "Optional element ribRotationReference is present but empty at xpath " << xpath;
@@ -75,7 +75,7 @@ namespace generated
         }
 
         // read element z
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/z")) {
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
         else {

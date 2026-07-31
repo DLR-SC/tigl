@@ -97,7 +97,7 @@ namespace generated
         }
 
         // read element referenceSectionUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceSectionUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceSectionUID")) {
             m_referenceSectionUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceSectionUID");
             if (m_referenceSectionUID.empty()) {
                 LOG(WARNING) << "Required element referenceSectionUID is empty at xpath " << xpath;
@@ -109,7 +109,7 @@ namespace generated
         }
 
         // read element startZeta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startZeta")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startZeta")) {
             m_startZeta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/startZeta");
         }
         else {
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element endZeta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endZeta")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endZeta")) {
             m_endZeta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/endZeta");
         }
         else {
@@ -125,7 +125,7 @@ namespace generated
         }
 
         // read element startZetaBlending
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/startZetaBlending")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/startZetaBlending")) {
             m_startZetaBlending = tixi::TixiGetElement<double>(tixiHandle, xpath + "/startZetaBlending");
         }
         else {
@@ -133,7 +133,7 @@ namespace generated
         }
 
         // read element endZetaBlending
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/endZetaBlending")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/endZetaBlending")) {
             m_endZetaBlending = tixi::TixiGetElement<double>(tixiHandle, xpath + "/endZetaBlending");
         }
         else {
@@ -141,7 +141,7 @@ namespace generated
         }
 
         // read element curveProfileUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/curveProfileUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/curveProfileUID")) {
             m_curveProfileUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/curveProfileUID");
             if (m_curveProfileUID.empty()) {
                 LOG(WARNING) << "Required element curveProfileUID is empty at xpath " << xpath;

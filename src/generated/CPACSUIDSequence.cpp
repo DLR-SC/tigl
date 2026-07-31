@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
+#include "CCPACSComponent.h"
 #include "CCPACSDuctAssembly.h"
 #include "CPACSLandingGearStrutAttachment.h"
 #include "CPACSUIDSequence.h"
@@ -29,6 +30,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSUIDSequence::CPACSUIDSequence(CCPACSComponent* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSComponent);
+    }
+
     CPACSUIDSequence::CPACSUIDSequence(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
@@ -57,6 +66,9 @@ namespace generated
     const CTiglUIDObject* CPACSUIDSequence::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSComponent>()) {
+                return GetParent<CCPACSComponent>();
+            }
             if (IsParent<CCPACSDuctAssembly>()) {
                 return GetParent<CCPACSDuctAssembly>();
             }
@@ -70,6 +82,9 @@ namespace generated
     CTiglUIDObject* CPACSUIDSequence::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSComponent>()) {
+                return GetParent<CCPACSComponent>();
+            }
             if (IsParent<CCPACSDuctAssembly>()) {
                 return GetParent<CCPACSDuctAssembly>();
             }

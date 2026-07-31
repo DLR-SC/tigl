@@ -99,7 +99,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name->empty()) {
                 LOG(WARNING) << "Optional element name is present but empty at xpath " << xpath;
@@ -107,7 +107,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -115,7 +115,7 @@ namespace generated
         }
 
         // read element framesGapFront
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/framesGapFront")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/framesGapFront")) {
             m_framesGapFront = tixi::TixiGetElement<int>(tixiHandle, xpath + "/framesGapFront");
         }
         else {
@@ -123,7 +123,7 @@ namespace generated
         }
 
         // read element framesGapRear
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/framesGapRear")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/framesGapRear")) {
             m_framesGapRear = tixi::TixiGetElement<int>(tixiHandle, xpath + "/framesGapRear");
         }
         else {
@@ -131,7 +131,7 @@ namespace generated
         }
 
         // read element stringersGapPrimary
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringersGapPrimary")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/stringersGapPrimary")) {
             m_stringersGapPrimary = tixi::TixiGetElement<int>(tixiHandle, xpath + "/stringersGapPrimary");
         }
         else {
@@ -139,7 +139,7 @@ namespace generated
         }
 
         // read element stringersGapSecondary
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/stringersGapSecondary")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/stringersGapSecondary")) {
             m_stringersGapSecondary = tixi::TixiGetElement<int>(tixiHandle, xpath + "/stringersGapSecondary");
         }
         else {

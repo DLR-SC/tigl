@@ -79,7 +79,7 @@ namespace generated
     void CPACSLeadingEdgeHollow::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element relHeightTE
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/relHeightTE")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/relHeightTE")) {
             m_relHeightTE = tixi::TixiGetElement<double>(tixiHandle, xpath + "/relHeightTE");
         }
         else {
@@ -87,7 +87,7 @@ namespace generated
         }
 
         // read element xsiTE
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsiTE")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsiTE")) {
             m_xsiTE = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsiTE");
         }
         else {

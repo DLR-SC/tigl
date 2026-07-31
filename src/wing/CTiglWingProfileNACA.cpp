@@ -34,6 +34,8 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Geom_Line.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include "CWireToCurve.h"
 
 
 namespace tigl
@@ -84,6 +86,18 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
     } else {
         cache.trailingEdge = TopoDS_Edge();
     }
+
+    BRepBuilderAPI_MakeWire ulWireMaker(cache.lowerWire, cache.upperWire);
+    ulWireMaker.Build();
+    if (!ulWireMaker.IsDone()) {
+        throw CTiglError("Error creating upper/lower wire in CTiglWingProfileNACA::BuildWires");
+    }
+    TopoDS_Wire ulWire = ulWireMaker.Wire();
+    Handle(Geom_Curve) ulCurve = CWireToCurve(ulWire).curve();
+    if (ulCurve.IsNull()) {
+        throw CTiglError("Error converting upper/lower wire to curve in CTiglWingProfileNACA::BuildWires");
+    }
+    cache.upperLowerWire = BRepBuilderAPI_MakeEdge(ulCurve);
 }
 
 
@@ -107,9 +121,17 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-
-    throw CTiglError("UpperLower wire is not implemented.");
+    double te_thickness = calculator.get_trailing_edge_thickness();
+    
+    if (mod == SHARP_TRAILINGEDGE && HasBluntTE()) {
+        LOG(WARNING) << "Profile " << profileUID << ": SHARP_TRAILINGEDGE modifier requested but profile has blunt trailing edge (thickness: " << te_thickness << ")";
+    }
+    else if (mod == BLUNT_TRAILINGEDGE && !HasBluntTE()) {
+        LOG(WARNING) << "Profile " << profileUID << ": BLUNT_TRAILINGEDGE modifier requested but profile has sharp trailing edge";
+    }
+    return wireCache->upperLowerWire;
 }
+
 
 // get trailing edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetTrailingEdge(TiglShapeModifier mod) const

@@ -45,6 +45,9 @@ public:
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentIntent GetComponentIntent() const = 0;
 
+    // Returns whether this component represents independently accessible geometry
+    virtual bool IsIndependentGeometry() const { return true; }
+
     virtual ~ITiglGeometricComponent(){}
 };
 

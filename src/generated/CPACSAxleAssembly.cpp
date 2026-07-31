@@ -94,7 +94,7 @@ namespace generated
         }
 
         // read element posOnBogie
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/posOnBogie")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/posOnBogie")) {
             m_posOnBogie = tixi::TixiGetElement<double>(tixiHandle, xpath + "/posOnBogie");
         }
         else {

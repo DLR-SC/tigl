@@ -92,7 +92,7 @@ namespace generated
         }
 
         // read element sheetElementUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sheetElementUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/sheetElementUID")) {
             m_sheetElementUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/sheetElementUID");
             if (m_sheetElementUID.empty()) {
                 LOG(WARNING) << "Required element sheetElementUID is empty at xpath " << xpath;

@@ -175,6 +175,14 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const std::string& uid);
 
     /**
+     * @brief Returns the mirrored loft at the wings symmetry plane. 
+     * Note (not CPACS compliant): This can be a used to create the mirrored loft of components, which 
+     * don't have a mirrored loft according to CPACS definition, but should be mirrored according to the wing symmetry. If no input shape is given, the loft of the whole wing will be mirrored.
+     * @param input_shape Shape to be mirrored with the wings symmetry
+     * @return PNamedShape
+     */
+    TIGL_EXPORT PNamedShape GetMirroredLoft(PNamedShape input_shape = nullptr) const;
+    /**
      * @brief Returns the positioning transformation for a given section uid
      * @param sectionUID
      * @return CTiglTransformation

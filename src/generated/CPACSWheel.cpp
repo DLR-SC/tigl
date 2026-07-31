@@ -92,7 +92,7 @@ namespace generated
         }
 
         // read element radius
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/radius")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radius")) {
             m_radius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radius");
         }
         else {
@@ -100,7 +100,7 @@ namespace generated
         }
 
         // read element width
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/width")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/width")) {
             m_width = tixi::TixiGetElement<double>(tixiHandle, xpath + "/width");
         }
         else {
@@ -108,7 +108,7 @@ namespace generated
         }
 
         // read element braked
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/braked")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/braked")) {
             m_braked = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/braked");
         }
         else {

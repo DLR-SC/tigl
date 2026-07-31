@@ -32,6 +32,7 @@
 #include "tiglcommonfunctions.h"
 #include "CNamedShape.h"
 #include "PNamedShape.h"
+#include "CTiglLogging.h"
 
 #include "ISession_Point.h"
 #include "ISession_Text.h"
@@ -91,9 +92,11 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     myGridTenthColor = Quantity_NOC_GRAY90;
 
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,2,0)
-    Handle(Prs3d_Drawer) whiteStyle = new Prs3d_Drawer();
-    whiteStyle->SetColor(Quantity_NOC_WHITE);
-    myContext->SetHighlightStyle(whiteStyle);
+    auto dynamic = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Dynamic);
+    auto selected = myContext->HighlightStyle(Prs3d_TypeOfHighlight_Selected);
+
+    dynamic->SetColor(Quantity_NOC_WHITESMOKE);
+    selected->SetColor(Quantity_NOC_Highlight);
 #elif OCC_VERSION_HEX >= VERSION_HEX_CODE(7,1,0)
     Handle(Graphic3d_HighlightStyle) whiteStyle = new Graphic3d_HighlightStyle;
     whiteStyle->SetColor(Quantity_NOC_WHITE);
@@ -348,6 +351,27 @@ void TIGLCreatorContext::selectAll()
     }
 }
 
+void TIGLCreatorContext::selectShape(const QString& uid)
+{
+    if (myContext.IsNull()) {
+        return;
+    }
+
+    IObjectList iobjects = myShapeManager.GetIObjectsFromShapeName(uid.toStdString());
+    if (iobjects.empty()) {
+        LOG(WARNING) << "TIGLCreatorContext::selectShape: No shape found for UID \"" << uid.toStdString() << "\"" << std::endl;
+        return;
+    }
+
+    myContext->ClearSelected(Standard_False);
+    for (auto& obj : iobjects) {
+        myContext->AddOrRemoveSelected(obj, Standard_False);
+    }
+    myContext->UpdateCurrentViewer();
+
+    emit shapeSelected(uid);
+}
+
 void TIGLCreatorContext::setGridOffset (Standard_Real offset)
 {
     Standard_Real radius;
@@ -442,7 +466,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayShape(const PNamedShape& pshape, bo
 }
 
 // Displays a point on the screen
-void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
+Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      const char* aText,
                                      Standard_Boolean UpdateViewer,
                                      Standard_Real anXoffset,
@@ -451,16 +475,17 @@ void TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                      Standard_Real TextScale)
 {
     if (std::string(aText).empty()) {
-        displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
+        return displayShape(BRepBuilderAPI_MakeVertex(gp_Pnt(aPoint.X() + anXoffset, aPoint.Y() + anYoffset, aPoint.Z() + aZoffset)), UpdateViewer, Quantity_NOC_YELLOW);
     }
     else {
         Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
         myContext->Display(aGraphicPoint,UpdateViewer);
         Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                     aPoint.Y() + anYoffset,
-                                                     aPoint.Z() + aZoffset);
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
+        return Handle(AIS_Shape)::DownCast(aGraphicPoint);
     }
 
 }

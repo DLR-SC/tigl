@@ -20,14 +20,7 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglError.h"
 #include "CNamedShape.h"
-
-namespace tigl
-{
-namespace external_object_private
-{
-    std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath);
-}
-}
+#include "tiglexternalfilehelpers.h"
 
 class TiglExternalComponent : public ::testing::Test
 {
@@ -40,7 +33,7 @@ protected:
         tixiHandle = -1;
 
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE (tixiRet == SUCCESS);
+        ASSERT_TRUE(tixiRet == SUCCESS);
     }
     void TearDown() override
     {
@@ -48,15 +41,14 @@ protected:
         tixiHandle = -1;
     }
 
-
-    TixiDocumentHandle           tixiHandle;
+    TixiDocumentHandle tixiHandle;
 };
 
 TEST_F(TiglExternalComponent, getFileNameRelative)
 {
     tigl::CCPACSExternalObject object(NULL, NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
-    
+
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
 }
 
@@ -64,7 +56,7 @@ TEST_F(TiglExternalComponent, getShape)
 {
     tigl::CCPACSExternalObject object(NULL, NULL);
     object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
-    
+
     PNamedShape shape = object.GetLoft();
     ASSERT_TRUE(shape != NULL);
     ASSERT_STREQ("nacelle", shape->Name().c_str());
@@ -76,34 +68,36 @@ TEST_F(TiglExternalComponent, invalidFiletype)
     ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[2]"), tigl::CTiglError);
 }
 
-TEST(TiglExternalComponentInternal, getPathRelativeToApp)
+TEST(TiglExternalFileHelpers, ResolveFilePath)
 {
     std::string resultPath;
-    using tigl::external_object_private::getPathRelativeToApp;
 
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("TestData\\aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("TestData\\aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
 
     // check some absolute paths
 #ifdef _WIN32
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:/nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "c:/nacelle.stp");
     ASSERT_STREQ("c:/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:\\nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "c:\\nacelle.stp");
     ASSERT_STREQ("c:\\nacelle.stp", resultPath.c_str());
 #else
-    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "/data/nacelle.stp");
+    resultPath = ResolveFilePath("TestData/aircraft.xml", "/data/nacelle.stp");
     ASSERT_STREQ("/data/nacelle.stp", resultPath.c_str());
 #endif
 
     // check, if cpacs path not available
-    resultPath = getPathRelativeToApp("", "mydata/nacelle.stp");
+    resultPath = ResolveFilePath("", "mydata/nacelle.stp");
     ASSERT_STREQ("mydata/nacelle.stp", resultPath.c_str());
 
-    resultPath = getPathRelativeToApp("aircraft.xml", "nacelle.stp");
+    resultPath = ResolveFilePath("aircraft.xml", "nacelle.stp");
     ASSERT_STREQ("nacelle.stp", resultPath.c_str());
-}
 
+    // evaluate if file exists
+    EXPECT_NO_THROW(CheckFileIsReadable(ResolveFilePath("TestData/aircraft.xml", "nacelle.stp")));
+    EXPECT_THROW(CheckFileIsReadable(ResolveFilePath("TestData/aircraft.xml", "doesNotExist.stp")), tigl::CTiglError);
+}

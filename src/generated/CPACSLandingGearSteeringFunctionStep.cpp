@@ -62,7 +62,7 @@ namespace generated
     void CPACSLandingGearSteeringFunctionStep::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element stepType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/stepType")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/stepType")) {
             m_stepType = stringToCPACSLandingGearSteeringFunctionStep_stepType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/stepType"));
         }
         else {
@@ -70,7 +70,7 @@ namespace generated
         }
 
         // read element controlParameter
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/controlParameter")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/controlParameter")) {
             m_controlParameter = tixi::TixiGetElement<double>(tixiHandle, xpath + "/controlParameter");
         }
         else {
@@ -78,7 +78,7 @@ namespace generated
         }
 
         // read element steeringAngle
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/steeringAngle")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/steeringAngle")) {
             m_steeringAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/steeringAngle");
         }
         else {

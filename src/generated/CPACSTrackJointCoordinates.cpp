@@ -68,7 +68,7 @@ namespace generated
     void CPACSTrackJointCoordinates::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = stringToCPACSTrackJointCoordinates_name(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name"));
         }
         else {
@@ -76,7 +76,7 @@ namespace generated
         }
 
         // read element x
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/x")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/x")) {
             m_x = tixi::TixiGetElement<double>(tixiHandle, xpath + "/x");
         }
         else {
@@ -84,12 +84,12 @@ namespace generated
         }
 
         // read element dy
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/dy")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/dy")) {
             m_dy = tixi::TixiGetElement<double>(tixiHandle, xpath + "/dy");
         }
 
         // read element z
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/z")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/z")) {
             m_z = tixi::TixiGetElement<double>(tixiHandle, xpath + "/z");
         }
         else {

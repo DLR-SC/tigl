@@ -62,7 +62,7 @@ public:
 
     void setGridOffset (Standard_Real offset);
     
-    void displayPoint(const gp_Pnt& aPoint,
+    Handle(AIS_Shape) displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
                       Standard_Boolean UpdateViewer,
                       Standard_Real anXoffset,
@@ -133,12 +133,14 @@ public slots:
     void setObjectsColor(const QColor &color);
     void setObjectsColorRGB(int r, int g, int b, int a = 255);
     void setFaceBoundariesEnabled(bool enabled);
+    void selectShape(const QString& uid);
 
 signals:
 
     void error (int errorCode, QString& errorDescription);
     void displayAttributesChanged();
     void gridPlaneChanged(TIGLCreatorSettings::GridPlane plane);
+    void shapeSelected(const QString& uid);
 
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();

@@ -106,7 +106,7 @@ namespace generated
         }
 
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -117,7 +117,7 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
@@ -125,7 +125,7 @@ namespace generated
         }
 
         // read element parentUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/parentUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/parentUID")) {
             m_parentUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/parentUID");
             if (m_parentUID->empty()) {
                 LOG(WARNING) << "Optional element parentUID is present but empty at xpath " << xpath;
@@ -187,6 +187,17 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read compartments at xpath " << xpath << ": " << e.what();
                 m_compartments = boost::none;
+            }
+        }
+
+        // read element decks
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/decks")) {
+            m_decks = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+            try {
+                m_decks->ReadCPACS(tixiHandle, xpath + "/decks");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read decks at xpath " << xpath << ": " << e.what();
+                m_decks = boost::none;
             }
         }
 
@@ -276,6 +287,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/compartments")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/compartments");
+            }
+        }
+
+        // write element decks
+        if (m_decks) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/decks");
+            m_decks->WriteCPACS(tixiHandle, xpath + "/decks");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/decks")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/decks");
             }
         }
 
@@ -403,6 +425,16 @@ namespace generated
         return m_compartments;
     }
 
+    const boost::optional<CPACSDecks>& CPACSFuselage::GetDecks() const
+    {
+        return m_decks;
+    }
+
+    boost::optional<CPACSDecks>& CPACSFuselage::GetDecks()
+    {
+        return m_decks;
+    }
+
     CCPACSPositionings& CPACSFuselage::GetPositionings(CreateIfNotExistsTag)
     {
         if (!m_positionings)
@@ -437,6 +469,18 @@ namespace generated
     void CPACSFuselage::RemoveCompartments()
     {
         m_compartments = boost::none;
+    }
+
+    CPACSDecks& CPACSFuselage::GetDecks(CreateIfNotExistsTag)
+    {
+        if (!m_decks)
+            m_decks = boost::in_place(reinterpret_cast<CCPACSFuselage*>(this), m_uidMgr);
+        return *m_decks;
+    }
+
+    void CPACSFuselage::RemoveDecks()
+    {
+        m_decks = boost::none;
     }
 
     const CTiglUIDObject* CPACSFuselage::GetNextUIDObject() const

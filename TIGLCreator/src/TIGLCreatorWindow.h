@@ -30,6 +30,7 @@
 #include "CSharedPtr.h"
 
 #include "ui_TIGLCreatorWindow.h"
+#include "DrawOptionsActions.h"
 
 #include "ModificatorModel.h"
 
@@ -123,6 +124,7 @@ private slots:
     void addSpotlight();
     void onComponentVisibilityChanged(const QString& uid, bool visible);
     void onTreeSelectionChanged(cpcr::CPACSTreeItem* item);
+    void onModificatorModelReset();
     void onDisplayOptionsRequested();
     void onSetTransparencyRequested(int v);
     void onSetRenderingModeRequested(int mode);
@@ -141,6 +143,10 @@ private:
     int dialogSaveBeforeClose();
     void closeEvent(QCloseEvent* event) override;
     bool deleteEnvVar(const char* varname);
+
+    void populateDrawMenu(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void updateDrawMenuAvailability(QMenu* menu, const std::vector<DrawOptionAction>& actions, bool needsUid);
+    void setupDrawMenus();
 
     QAction *recentFileActions[MaxRecentFiles];
 
@@ -172,4 +178,3 @@ private:
 };
 
 #endif
-

@@ -26,6 +26,8 @@
 #include "CTiglUIDManager.h"
 #include "CTiglEngineNacelleBuilder.h"
 #include "generated/CPACSEngine.h"
+#include "engine_nacelle/CCPACSEnginePosition.h"
+#include "engine_pylon/CCPACSEnginePylon.h"
 
 /******************************************************************************/
 
@@ -116,6 +118,84 @@ TEST_F(EngineNacelleBuilderSimple, integrationTest)
     boost::optional<tigl::CCPACSEngineNacelle>& nacelle = engine.GetNacelle();
     tigl::CTiglEngineNacelleBuilder builder(*nacelle);
     PNamedShape shape = builder.BuildShape();
+}
+
+class EngineNoNacelle : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/simpletest-engine-no-nacelle.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(tixiRet, SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "TestModel", &tiglHandle);
+        ASSERT_EQ(tiglRet, TIGL_SUCCESS);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TEST_F(EngineNoNacelle, engineWithoutNacelleReturnsNullLoft)
+{
+    tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    tigl::CCPACSEnginePosition& enginePos = (*config.GetEnginePositions()).GetEnginePosition("TestEnginePosition");
+    tigl::CCPACSEngine& engine = config.GetEngine("TestEngine");
+    ASSERT_FALSE(engine.GetNacelle());
+    PNamedShape loft = enginePos.GetLoft();
+    EXPECT_FALSE(loft);
+}
+
+class PylonNoSegments : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        const char* filename = "TestData/simpletest-pylon-no-segments.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ(tixiRet, SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "TestModel", &tiglHandle);
+        ASSERT_EQ(tiglRet, TIGL_SUCCESS);
+    }
+
+    void TearDown() override
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TEST_F(PylonNoSegments, pylonWithoutSegmentsReturnsNullLoft)
+{
+    tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    tigl::CCPACSEnginePylon& pylon = (*config.GetEnginePylons()).GetEnginePylon("TestPylon");
+    PNamedShape loft = pylon.GetLoft();
+    EXPECT_FALSE(loft);
 }
 
 

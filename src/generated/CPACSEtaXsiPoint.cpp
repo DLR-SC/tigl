@@ -118,7 +118,7 @@ namespace generated
     void CPACSEtaXsiPoint::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read element eta
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/eta")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/eta")) {
             m_eta = tixi::TixiGetElement<double>(tixiHandle, xpath + "/eta");
         }
         else {
@@ -126,7 +126,7 @@ namespace generated
         }
 
         // read element xsi
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/xsi")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/xsi")) {
             m_xsi = tixi::TixiGetElement<double>(tixiHandle, xpath + "/xsi");
         }
         else {
@@ -134,7 +134,7 @@ namespace generated
         }
 
         // read element referenceUID
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/referenceUID")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/referenceUID")) {
             m_referenceUID = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/referenceUID");
             if (m_referenceUID.empty()) {
                 LOG(WARNING) << "Required element referenceUID is empty at xpath " << xpath;

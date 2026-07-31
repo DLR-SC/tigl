@@ -29,7 +29,6 @@ namespace generated
 {
     CPACSGenericSystem::CPACSGenericSystem(CCPACSGenericSystems* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
@@ -95,13 +94,8 @@ namespace generated
             LOG(ERROR) << "Required attribute uID is missing at xpath " << xpath;
         }
 
-        // read attribute symmetry
-        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-            m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
-        }
-
         // read element name
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/name")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/name")) {
             m_name = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/name");
             if (m_name.empty()) {
                 LOG(WARNING) << "Required element name is empty at xpath " << xpath;
@@ -112,24 +106,22 @@ namespace generated
         }
 
         // read element description
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/description")) {
             m_description = tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/description");
             if (m_description->empty()) {
                 LOG(WARNING) << "Optional element description is present but empty at xpath " << xpath;
             }
         }
 
-        // read element geometricBaseType
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/geometricBaseType")) {
-            m_geometricBaseType = stringToCPACSGenericSystem_geometricBaseType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/geometricBaseType"));
-        }
-
-        // read element transformation
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/transformation")) {
-            m_transformation.ReadCPACS(tixiHandle, xpath + "/transformation");
-        }
-        else {
-            LOG(ERROR) << "Required element transformation is missing at xpath " << xpath;
+        // read element components
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
+            m_components = boost::in_place(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr);
+            try {
+                m_components->ReadCPACS(tixiHandle, xpath + "/components");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read components at xpath " << xpath << ": " << e.what();
+                m_components = boost::none;
+            }
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
@@ -139,16 +131,6 @@ namespace generated
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
-
-        // write attribute symmetry
-        if (m_symmetry) {
-            tixi::TixiSaveAttribute(tixiHandle, xpath, "symmetry", TiglSymmetryAxisToString(*m_symmetry));
-        }
-        else {
-            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
-                tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
-            }
-        }
 
         // write element name
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/name");
@@ -165,20 +147,16 @@ namespace generated
             }
         }
 
-        // write element geometricBaseType
-        if (m_geometricBaseType) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/geometricBaseType");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/geometricBaseType", CPACSGenericSystem_geometricBaseTypeToString(*m_geometricBaseType));
+        // write element components
+        if (m_components) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/components");
+            m_components->WriteCPACS(tixiHandle, xpath + "/components");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/geometricBaseType")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/geometricBaseType");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/components")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/components");
             }
         }
-
-        // write element transformation
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/transformation");
-        m_transformation.WriteCPACS(tixiHandle, xpath + "/transformation");
 
     }
 
@@ -198,16 +176,6 @@ namespace generated
             }
         }
         m_uID = value;
-    }
-
-    const boost::optional<TiglSymmetryAxis>& CPACSGenericSystem::GetSymmetry() const
-    {
-        return m_symmetry;
-    }
-
-    void CPACSGenericSystem::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
-    {
-        m_symmetry = value;
     }
 
     const std::string& CPACSGenericSystem::GetName() const
@@ -230,24 +198,26 @@ namespace generated
         m_description = value;
     }
 
-    const boost::optional<CPACSGenericSystem_geometricBaseType>& CPACSGenericSystem::GetGeometricBaseType() const
+    const boost::optional<CPACSComponents>& CPACSGenericSystem::GetComponents() const
     {
-        return m_geometricBaseType;
+        return m_components;
     }
 
-    void CPACSGenericSystem::SetGeometricBaseType(const boost::optional<CPACSGenericSystem_geometricBaseType>& value)
+    boost::optional<CPACSComponents>& CPACSGenericSystem::GetComponents()
     {
-        m_geometricBaseType = value;
+        return m_components;
     }
 
-    const CCPACSTransformation& CPACSGenericSystem::GetTransformation() const
+    CPACSComponents& CPACSGenericSystem::GetComponents(CreateIfNotExistsTag)
     {
-        return m_transformation;
+        if (!m_components)
+            m_components = boost::in_place(reinterpret_cast<CCPACSGenericSystem*>(this), m_uidMgr);
+        return *m_components;
     }
 
-    CCPACSTransformation& CPACSGenericSystem::GetTransformation()
+    void CPACSGenericSystem::RemoveComponents()
     {
-        return m_transformation;
+        m_components = boost::none;
     }
 
 } // namespace generated
