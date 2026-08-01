@@ -92,7 +92,9 @@ public:
      *
      * The representation is obtained from the referenced element geometry definition.
      * It is returned as one of the TiGL constants
-     * @c TIGL_GEOMREP_PHYSICAL (1) or @c TIGL_GEOMREP_ENVELOPE (2).
+     * @c TIGL_GEOMREP_PHYSICAL (1),
+     * or @c TIGL_GEOMREP_ENVELOPE (2), 
+     * or @c TIGL_GEOMREP_PLACEHOLDER (4).
      * If no explicit representation is given in CPACS,
      * @c TIGL_GEOMREP_PHYSICAL (1) is returned.
      *
@@ -101,11 +103,12 @@ public:
     TIGL_EXPORT TiglGeometryRepresentation GetComponentRepresentation() const;
 
     /**
-     * @brief Returns the geometry representation of the referenced system element as string.
+     * @brief Returns the geometry representation of the referenced deck element as string.
      *
      * Possible return values are:
      * - @c "physical"
      * - @c "envelope"
+     * - @c "placeholder"
      *
      * If no explicit representation is given in CPACS, @c "physical" is returned.
      *

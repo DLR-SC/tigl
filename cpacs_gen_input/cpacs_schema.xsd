@@ -36299,6 +36299,17 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:enumeration>
+            <xsd:enumeration value="placeholder">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The geometry is a simplified placeholder used only for visualization when the
+                        actual geometry of the system element is not yet known. It does not represent
+                        the intended physical shape or installation envelope and should not be used
+                        for the evaluation of geometric properties such as volume, mass, center of
+                        gravity, or clearance.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
         </xsd:restriction>
     </xsd:simpleType>
 

@@ -556,7 +556,7 @@
                 </genericElement>
                 <genericElement uID="predWedge_2">
                     <name>Predefined wedge 2</name>
-                    <geometry>
+                    <geometry representation="placeholder">
                         <cuboids>
                             <cuboid>
                                 <lengthX>1.</lengthX>
