@@ -36276,15 +36276,15 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
 	
 	<xsd:simpleType name="geometryRepresentationType">
         <xsd:annotation>
-			<xsd:documentation>
-				Specifies the semantic meaning of the provided geometry representation.
-			</xsd:documentation>
-		</xsd:annotation>
+            <xsd:documentation>
+                Specifies the semantic meaning of the provided geometry representation.
+            </xsd:documentation>
+        </xsd:annotation>
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="physical">
                 <xsd:annotation>
                     <xsd:documentation>
-                        The geometry represents the intended physical shape of the system element.
+                        The geometry represents the intended physical shape of the element.
                         It may be used for visualization and, if applicable, for the evaluation of
                         geometric properties such as volume, mass, or center of gravity.
                     </xsd:documentation>
@@ -36294,7 +36294,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                 <xsd:annotation>
                     <xsd:documentation>
                         The geometry represents an enclosing or simplified outer envelope of the
-                        system element rather than its detailed physical shape. It is primarily
+                        element rather than its detailed physical shape. It is primarily
                         intended for installation space, packaging, and clearance considerations.
                     </xsd:documentation>
                 </xsd:annotation>
@@ -36302,11 +36302,10 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
             <xsd:enumeration value="placeholder">
                 <xsd:annotation>
                     <xsd:documentation>
-                        The geometry is a simplified placeholder used only for visualization when the
-                        actual geometry of the system element is not yet known. It does not represent
-                        the intended physical shape or installation envelope and should not be used
-                        for the evaluation of geometric properties such as volume, mass, center of
-                        gravity, or clearance.
+                        The geometry is a simplified placeholder intended primarily for visualization
+                        when the actual geometry of the element is not yet known. Consumers should not
+                        use it as an authoritative representation of the physical shape or installation
+                        envelope.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:enumeration>

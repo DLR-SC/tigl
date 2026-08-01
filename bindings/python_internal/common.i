@@ -168,7 +168,7 @@ enum TiglGeometryRepresentationFlags
 {
     TIGL_GEOMREP_PHYSICAL = 1,   /**< The geometry represents the intended physical shape of the component */
     TIGL_GEOMREP_ENVELOPE = 2,   /**< The geometry represents an enclosing envelope of the component */
-	TIGL_GEOMREP_PLACEHOLDER = 4 /**< The geometry is a visualization-only placeholder used when the actual shape is not yet known */
+    TIGL_GEOMREP_PLACEHOLDER = 4 /**< The geometry is a visualization-only placeholder used when the actual shape is not yet known */
 };
 
 typedef enum TiglGeometryRepresentationFlags TiglGeometryRepresentationFlags;
