@@ -484,8 +484,8 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
-            /*
-            int npnts = 100;
+            
+            int npnts = 25;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
                 double u = ((double)i-1)/(npnts-1);
@@ -504,7 +504,7 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-            */
+            
 
             CTiglNACA4UpperCurve upperCurve(*this);
 
@@ -519,8 +519,8 @@ namespace tigl{
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
-            /*
-            int npnts = 100;
+            
+            int npnts = 25;
             auto pnts = TColgp_Array1OfPnt(1, npnts);
             for (int i=1; i<=npnts; ++i) {
                 double u = ((double)i-1)/(npnts-1); // cosine distribution? closer at leading edge
@@ -538,7 +538,7 @@ namespace tigl{
             builder.InterpolatePoint(npnts-1);
             auto result = builder.FitCurveOptimal();
             return result.curve;
-            */
+            
 
             CTiglNACA4LowerCurve lowerCurve(*this);
 
