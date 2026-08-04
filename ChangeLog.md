@@ -5,6 +5,7 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+  - Add new function tiglWingInterpolateExtrapolateXsi() to TiGL API to extend existing functionality of tiglWingInterpolateXsi() without breaking its behaviour. The intersection point may now also lie outside of the two defining points to extrapolate from these two [#1412](https://github.com/DLR-SC/tigl/issues/1412).
   - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
