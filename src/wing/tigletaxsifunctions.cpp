@@ -219,7 +219,8 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
                     const std::string& refUID2, const EtaXsi& etaXsi2,
                     const std::string& targetUID, double eta,
                     const CTiglUIDManager& uidMgr,
-                    double &xsi, double& errorDistance)
+                    double &xsi, double& errorDistance,
+                    bool allowExtrapolation)
 {
     if (eta > 1 + Precision::Confusion() || eta < - Precision::Confusion()) {
         throw CTiglError("Eta not in range [0,1] in InterpolateXsi.", TIGL_MATH_ERROR);
@@ -310,13 +311,17 @@ void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
    Extrema_POnCurv pOnLine, pOnEtaLine;
    minimizer.Points(1, pOnLine, pOnEtaLine);
 
-   // If parameter on Line is < 0 or larger than
-   // Length of Line, there is not actual intersection,
-   // i.e. the Line is chosen too small
-   // We use a tolerance here, to account for small user errors
-   double tol = 1e-5;
-   if (pOnLine.Parameter() < -tol || pOnLine.Parameter() > p1.Distance(p2) + tol) {
-       throw CTiglError("(Component) segment line does not intersect iso eta line of segment.", TIGL_MATH_ERROR);
+   // If allowExtrapolation is true, then the intersection point may also lie outside of the two defining points
+   // That way, also extrapolation of xsi is allowed
+   if (!allowExtrapolation) {
+       // If parameter on Line is < 0 or larger than
+       // Length of Line segment, there is not actual intersection,
+       // i.e. the Line segment is chosen too small
+       // We use a tolerance here, to account for small user errors
+       double tol = 1e-5;
+       if (pOnLine.Parameter() < -tol || pOnLine.Parameter() > p1.Distance(p2) + tol) {
+           throw CTiglError("(Component) segment line does not intersect iso eta line of segment.", TIGL_MATH_ERROR);
+       }
    }
 
    xsi = pOnEtaLine.Parameter()/chordDepth;
