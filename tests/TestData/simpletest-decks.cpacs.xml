@@ -679,7 +679,7 @@
             <genericFloorElements>
                 <genericFloorElement uID="predGenericFloorElement">
                     <name>Predefined floor element</name>
-                    <geometry>
+                    <geometry representation="placeholder">
                         <cones>
                             <cone>
                                 <lowerRadius>0.5</lowerRadius>

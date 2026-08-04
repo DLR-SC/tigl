@@ -305,6 +305,13 @@ TEST_F(Systems, Representation)
         EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
         EXPECT_EQ(component.GetComponentRepresentationAsString(), "physical");
     }
+
+    // wedge_2 is explicitly set to "placeholder"
+    {
+        const auto& component = GetComponent("wedge_2");
+        EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PLACEHOLDER);
+        EXPECT_EQ(component.GetComponentRepresentationAsString(), "placeholder");
+    }
 }
 
 TEST_F(Systems, ComponentMasses)

@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemConverter.h"
 #include "CPACSSysElemConverters.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemElectricalConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemConverters::CPACSSysElemConverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemConverters::CPACSSysElemConverters(CPACSSysElemElectricalConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemConverters::GetParent() const
+    const CPACSSysElemElectricalConversionElements* CPACSSysElemConverters::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemConverters::GetParent()
+    CPACSSysElemElectricalConversionElements* CPACSSysElemConverters::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemConverter>>& CPACSSysElemConverters::GetConverters() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemConverters::GetConverters() const
     {
         return m_converters;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemConverter>>& CPACSSysElemConverters::GetConverters()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemConverters::GetConverters()
     {
         return m_converters;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemConverters::GetConverterIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemConverter& CPACSSysElemConverters::GetConverter(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemConverters::GetConverter(size_t index)
     {
         if (index < 1 || index > GetConverterCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemConverter>>::GetConverter", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetConverter", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_converters[index];
     }
 
-    const CPACSSysElemConverter& CPACSSysElemConverters::GetConverter(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemConverters::GetConverter(size_t index) const
     {
         if (index < 1 || index > GetConverterCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemConverter>>::GetConverter", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetConverter", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_converters[index];
     }
 
-    CPACSSysElemConverter& CPACSSysElemConverters::GetConverter(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemConverters::GetConverter(const std::string& UID)
     {
         for (auto& elem : m_converters ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemConverters::GetConverter. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemConverter& CPACSSysElemConverters::GetConverter(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemConverters::GetConverter(const std::string& UID) const
     {
         for (auto& elem : m_converters ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemConverter& CPACSSysElemConverters::AddConverter()
+    CPACSVehicleElementBase& CPACSSysElemConverters::AddConverter()
     {
-        m_converters.push_back(std::make_unique<CPACSSysElemConverter>(this, m_uidMgr));
+        m_converters.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_converters.back();
     }
 
-    void CPACSSysElemConverters::RemoveConverter(CPACSSysElemConverter& ref)
+    void CPACSSysElemConverters::RemoveConverter(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_converters.size(); i++) {
             if (m_converters[i].get() == &ref) {

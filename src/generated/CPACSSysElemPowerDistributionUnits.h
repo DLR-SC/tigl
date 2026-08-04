@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemPowerDistributionUnit;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemElectricalDistributionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemElectricalDistributionElements
 
     /// @brief Power-distribution units
     /// 
+    /// Container for reusable power-distribution units. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemPowerDistributionUnits
     {
     public:
-        TIGL_EXPORT CPACSSysElemPowerDistributionUnits(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemPowerDistributionUnits(CPACSSysElemElectricalDistributionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemPowerDistributionUnits();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemElectricalDistributionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemElectricalDistributionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>& GetPowerDistributionUnits() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>& GetPowerDistributionUnits();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetPowerDistributionUnits() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetPowerDistributionUnits();
 
         TIGL_EXPORT virtual size_t GetPowerDistributionUnitCount() const;
         TIGL_EXPORT virtual size_t GetPowerDistributionUnitIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemPowerDistributionUnit& GetPowerDistributionUnit(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemPowerDistributionUnit& GetPowerDistributionUnit(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetPowerDistributionUnit(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetPowerDistributionUnit(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemPowerDistributionUnit& GetPowerDistributionUnit(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemPowerDistributionUnit& GetPowerDistributionUnit(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetPowerDistributionUnit(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetPowerDistributionUnit(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemPowerDistributionUnit& AddPowerDistributionUnit();
-        TIGL_EXPORT virtual void RemovePowerDistributionUnit(CPACSSysElemPowerDistributionUnit& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddPowerDistributionUnit();
+        TIGL_EXPORT virtual void RemovePowerDistributionUnit(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemElectricalDistributionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>> m_powerDistributionUnits;
+        /// Receives and distributes electrical power to multiple downstream circuits.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_powerDistributionUnits;
 
     private:
         CPACSSysElemPowerDistributionUnits(const CPACSSysElemPowerDistributionUnits&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemPowerDistributionUnits = generated::CPACSSysElemPowerDistributionUnits;
-using CCPACSSysElemPowerDistributionUnit = generated::CPACSSysElemPowerDistributionUnit;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemElectricalDistributionElements = generated::CPACSSysElemElectricalDistributionElements;
 } // namespace tigl
