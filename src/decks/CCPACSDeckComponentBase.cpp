@@ -194,6 +194,9 @@ TiglGeometryRepresentation CCPACSDeckComponentBase::GetComponentRepresentation()
     if (representation == CPACSGeomRep::envelope) {
         return TIGL_GEOMREP_ENVELOPE;
     }
+    if (representation == CPACSGeomRep::placeholder) {
+        return TIGL_GEOMREP_PLACEHOLDER;
+    }
 
     throw CTiglError("Invalid geometry representation for component with uID \"" +
                      GetObjectUID().get_value_or("unnamed") + "\".");
