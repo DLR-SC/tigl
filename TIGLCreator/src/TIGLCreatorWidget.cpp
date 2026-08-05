@@ -865,7 +865,7 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 
         if (!shape.IsNull())
         {
-            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+            auto cnamedShape = viewerContext->GetShapeFromIObject(shape);
 
             if (cnamedShape) {
                 auto shapeName = cnamedShape->Name();

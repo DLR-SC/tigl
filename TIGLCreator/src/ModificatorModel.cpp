@@ -1173,7 +1173,7 @@ void ModificatorModel::onDeleteFuselageRequested()
 
 void ModificatorModel::highlightShape(const std::string& name){
 
-    auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
+    auto iobjects = scene->GetShapeManager(doc->docId()).GetIObjectsFromShapeName(name);
 
     if (iobjects.size() > 0) {
         scene->getContext()->ClearSelected(Standard_False);
@@ -1186,7 +1186,7 @@ void ModificatorModel::highlight(std::vector<tigl::CTiglSectionElement*> element
 {
     try {
         for (size_t i = 0; i < elements.size(); i++) {
-            Handle(AIS_InteractiveObject) shape = scene->displayShapeHLMode(elements[i]->GetWire());
+            Handle(AIS_InteractiveObject) shape = scene->displayShapeHLMode(elements[i]->GetWire(), doc->docId());
             highligthteds.push_back(shape);
         }
     } catch (...) {
@@ -1204,8 +1204,7 @@ void ModificatorModel::highlight(tigl::CCPACSPositioning &positioning, const tig
         tigl::CTiglPoint bPoint = positioning.GetToPoint();
         aPoint = parentTransformation * aPoint;
         bPoint = parentTransformation * bPoint;
-        Handle(AIS_InteractiveObject) shape = scene->displayLineHLMode(aPoint.x, aPoint.y, aPoint.z, bPoint.x, bPoint.y,
-                                                                       bPoint.z);
+        Handle(AIS_InteractiveObject) shape = scene->displayLineHLMode(aPoint.x, aPoint.y, aPoint.z, bPoint.x, bPoint.y, bPoint.z, doc->docId());
         highligthteds.push_back(shape);
     } catch (...) {
         LOG(ERROR) << "ModificatorManager::highlight: Error, No highlighting!";
@@ -1283,7 +1282,7 @@ QVariant ModificatorModel::data(const QModelIndex& index, int role) const
         // get visibility state and check or uncheck accordingly
         std::string uid = item->getUid();
         if (!uid.empty() && doc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid)) {
-            bool vis = scene->GetShapeManager().GetVisibility(uid);
+            bool vis = scene->GetShapeManager(doc->docId()).GetVisibility(uid);
             return vis ? Qt::Checked : Qt::Unchecked;
         }
         
@@ -1358,7 +1357,7 @@ bool ModificatorModel::setData(const QModelIndex& index, const QVariant& value, 
             if (!node) {
                 return; 
             }
-            if (scene->GetShapeManager().GetVisibility(node->getUid())) {
+            if (scene->GetShapeManager(doc->docId()).GetVisibility(node->getUid())) {
                 mark_as_changed(node);
             }
             for (auto* child : node->getChildren()) {

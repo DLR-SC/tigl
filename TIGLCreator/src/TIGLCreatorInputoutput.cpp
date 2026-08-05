@@ -38,7 +38,8 @@
 
 bool TIGLCreatorInputOutput::importModel( const QString& fileName,
                                          const FileFormat format,
-                                         TIGLCreatorContext& scene )
+                                         TIGLCreatorContext& scene,
+                                         DocumentId docId )
 {
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -51,14 +52,15 @@ bool TIGLCreatorInputOutput::importModel( const QString& fileName,
     }
 
     for ( int i = 1; i <= shapes->Length(); i++ ) {
-        scene.displayShape(shapes->Value(i), true);
+        scene.displayShape(shapes->Value(i), docId, true);
     }
     return true;
 }
 
 bool TIGLCreatorInputOutput::importTriangulation( const QString& fileName,
                                                  const FileFormat format,
-                                                 TIGLCreatorContext& scene )
+                                                 TIGLCreatorContext& scene,
+                                                 DocumentId docId )
 {
     Handle(AIS_InteractiveContext) ic = scene.getContext();
     Handle(Poly_Triangulation) triangulation;
@@ -90,6 +92,7 @@ bool TIGLCreatorInputOutput::importTriangulation( const QString& fileName,
     shape->SetDisplayMode(AIS_Shaded);
     ic->Display(shape,Standard_False);
     ic->UpdateCurrentViewer();
+    scene.trackDisplayedObject(docId, shape);
 
     return true;
 }
