@@ -33,7 +33,8 @@ namespace generated
     enum CPACSGeometryRepresentation
     {
         physical,
-        envelope
+        envelope,
+        placeholder
     };
 
     inline std::string CPACSGeometryRepresentationToString(const CPACSGeometryRepresentation& value)
@@ -41,6 +42,7 @@ namespace generated
         switch(value) {
         case physical: return "physical";
         case envelope: return "envelope";
+        case placeholder: return "placeholder";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSGeometryRepresentation");
         }
     }
@@ -49,6 +51,7 @@ namespace generated
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
         if (toLower(value) == "physical") { return physical; }
         if (toLower(value) == "envelope") { return envelope; }
+        if (toLower(value) == "placeholder") { return placeholder; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSGeometryRepresentation");
     }
 } // namespace generated

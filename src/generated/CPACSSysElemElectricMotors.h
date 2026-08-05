@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemElectricMotor;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemMechanicalConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemMechanicalConversionElements
 
     /// @brief Electric motors
     /// 
+    /// Container for reusable electric motors. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemElectricMotors
     {
     public:
-        TIGL_EXPORT CPACSSysElemElectricMotors(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemElectricMotors(CPACSSysElemMechanicalConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemElectricMotors();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemMechanicalConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemMechanicalConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemElectricMotor>>& GetElectricMotors() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemElectricMotor>>& GetElectricMotors();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetElectricMotors() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetElectricMotors();
 
         TIGL_EXPORT virtual size_t GetElectricMotorCount() const;
         TIGL_EXPORT virtual size_t GetElectricMotorIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemElectricMotor& GetElectricMotor(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemElectricMotor& GetElectricMotor(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetElectricMotor(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetElectricMotor(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemElectricMotor& GetElectricMotor(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemElectricMotor& GetElectricMotor(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetElectricMotor(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetElectricMotor(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemElectricMotor& AddElectricMotor();
-        TIGL_EXPORT virtual void RemoveElectricMotor(CPACSSysElemElectricMotor& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddElectricMotor();
+        TIGL_EXPORT virtual void RemoveElectricMotor(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemMechanicalConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemElectricMotor>> m_electricMotors;
+        /// Converts electrical input power into mechanical shaft power.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricMotors;
 
     private:
         CPACSSysElemElectricMotors(const CPACSSysElemElectricMotors&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemElectricMotors = generated::CPACSSysElemElectricMotors;
-using CCPACSSysElemElectricMotor = generated::CPACSSysElemElectricMotor;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemMechanicalConversionElements = generated::CPACSSysElemMechanicalConversionElements;
 } // namespace tigl

@@ -234,6 +234,8 @@ TIGL_COMMON_EXPORT const char* tiglGeometryRepresentationToString(TiglGeometryRe
         return "physical";
     case TIGL_GEOMREP_ENVELOPE:
         return "envelope";
+    case TIGL_GEOMREP_PLACEHOLDER:
+        return "placeholder";
     default:
         return nullptr;
     }

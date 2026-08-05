@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemConverter;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemElectricalConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemElectricalConversionElements
 
     /// @brief Converters
     /// 
+    /// Container for reusable converters. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemConverters
     {
     public:
-        TIGL_EXPORT CPACSSysElemConverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemConverters(CPACSSysElemElectricalConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemConverters();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemElectricalConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemElectricalConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemConverter>>& GetConverters() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemConverter>>& GetConverters();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetConverters() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetConverters();
 
         TIGL_EXPORT virtual size_t GetConverterCount() const;
         TIGL_EXPORT virtual size_t GetConverterIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemConverter& GetConverter(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemConverter& GetConverter(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetConverter(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetConverter(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemConverter& GetConverter(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemConverter& GetConverter(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetConverter(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetConverter(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemConverter& AddConverter();
-        TIGL_EXPORT virtual void RemoveConverter(CPACSSysElemConverter& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddConverter();
+        TIGL_EXPORT virtual void RemoveConverter(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemElectricalConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemConverter>> m_converters;
+        /// Converts electrical power between voltage, current, frequency, phase, or waveform characteristics.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_converters;
 
     private:
         CPACSSysElemConverters(const CPACSSysElemConverters&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemConverters = generated::CPACSSysElemConverters;
-using CCPACSSysElemConverter = generated::CPACSSysElemConverter;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemElectricalConversionElements = generated::CPACSSysElemElectricalConversionElements;
 } // namespace tigl

@@ -21,26 +21,12 @@
 #include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "CPACSSysElemBatteries.h"
-#include "CPACSSysElemCables.h"
-#include "CPACSSysElemCompressors.h"
-#include "CPACSSysElemConverters.h"
-#include "CPACSSysElemDCDCConverters.h"
-#include "CPACSSysElemElectricMachines.h"
-#include "CPACSSysElemElectricMotors.h"
-#include "CPACSSysElemFuelCells.h"
-#include "CPACSSysElemGearBoxes.h"
-#include "CPACSSysElemGenerators.h"
-#include "CPACSSysElemGenericComponents.h"
-#include "CPACSSysElemHeatExchangers.h"
-#include "CPACSSysElemInverters.h"
-#include "CPACSSysElemPowerDistributionUnits.h"
-#include "CPACSSysElemPowerElectronics.h"
-#include "CPACSSysElemPumps.h"
-#include "CPACSSysElemRectifiers.h"
-#include "CPACSSysElemReservoirs.h"
-#include "CPACSSysElemSwitchgearContainer.h"
-#include "CPACSSysElemTurboGenerators.h"
+#include "CPACSSysElemElectricalElements.h"
+#include "CPACSSysElemGenericElements.h"
+#include "CPACSSysElemHydraulicElements.h"
+#include "CPACSSysElemMechanicalElements.h"
+#include "CPACSSysElemPneumaticElements.h"
+#include "CPACSSysElemThermoFluidElements.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -58,17 +44,9 @@ namespace generated
 
     /// @brief System elements
     /// 
-    /// This node provides a library of predefined explicit system elements at vehicle level.
-    /// It contains a selected set of dedicated element classes such as electricMotors or heatExchangers .
-    /// All predefined elements follow the same basic principle: they are based on common base definitions
-    /// describing geometry and mass properties. This includes, for example, a geometric representation by simple
-    /// primitive shapes or external CAD-based geometry, as well as mass-related information such as mass,
-    /// center of gravity, inertia, density, or geometry representation. On top of these common base definitions,
-    /// each explicit element type may introduce dedicated extension nodes for component-specific data, such as
-    /// performance maps, electrical or thermodynamic properties, or further physical characteristics.
-    /// The elements defined here are only predefined.
-    /// They become physically instantiated only when they are referenced, for example via systemElementUID ,
-    /// by components in an aircraft or rotorcraft genericSystem definition.
+    /// Provides the vehicle-level library of reusable system element definitions.
+    /// Elements are organized first by their principal physical output or transported quantity and then by functional role: storage, conversion, distribution, control, or consumption. The driving input does not determine the branch. For example, electricMotor is located under mechanical conversion elements because it produces mechanical power.
+    /// Each singular library element inherits a required uID from vehicleElementBaseType and can be referenced by instantiated system components.
     /// 
     class CPACSSystemElements
     {
@@ -90,151 +68,64 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemBatteries>& GetBatteries() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemBatteries>& GetBatteries();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemGenericElements>& GetGenericElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemGenericElements>& GetGenericElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemCables>& GetCables() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemCables>& GetCables();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemElectricalElements>& GetElectricalElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemElectricalElements>& GetElectricalElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemCompressors>& GetCompressors() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemCompressors>& GetCompressors();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemMechanicalElements>& GetMechanicalElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemMechanicalElements>& GetMechanicalElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemConverters>& GetConverters() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemConverters>& GetConverters();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemPneumaticElements>& GetPneumaticElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemPneumaticElements>& GetPneumaticElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemDCDCConverters>& GetDcdcConverters() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemDCDCConverters>& GetDcdcConverters();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemHydraulicElements>& GetHydraulicElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemHydraulicElements>& GetHydraulicElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemElectricMachines>& GetElectricMachines() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemElectricMachines>& GetElectricMachines();
+        TIGL_EXPORT virtual const boost::optional<CPACSSysElemThermoFluidElements>& GetThermoFluidElements() const;
+        TIGL_EXPORT virtual boost::optional<CPACSSysElemThermoFluidElements>& GetThermoFluidElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemElectricMotors>& GetElectricMotors() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemElectricMotors>& GetElectricMotors();
+        TIGL_EXPORT virtual CPACSSysElemGenericElements& GetGenericElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveGenericElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemFuelCells>& GetFuelCells() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemFuelCells>& GetFuelCells();
+        TIGL_EXPORT virtual CPACSSysElemElectricalElements& GetElectricalElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveElectricalElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemGearBoxes>& GetGearBoxes() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemGearBoxes>& GetGearBoxes();
+        TIGL_EXPORT virtual CPACSSysElemMechanicalElements& GetMechanicalElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveMechanicalElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemGenerators>& GetGenerators() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemGenerators>& GetGenerators();
+        TIGL_EXPORT virtual CPACSSysElemPneumaticElements& GetPneumaticElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemovePneumaticElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemGenericComponents>& GetGenericComponents() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemGenericComponents>& GetGenericComponents();
+        TIGL_EXPORT virtual CPACSSysElemHydraulicElements& GetHydraulicElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveHydraulicElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemHeatExchangers>& GetHeatExchangers() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemHeatExchangers>& GetHeatExchangers();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemInverters>& GetInverteres() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemInverters>& GetInverteres();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemPowerDistributionUnits>& GetPowerDistributionUnits() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemPowerDistributionUnits>& GetPowerDistributionUnits();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemPowerElectronics>& GetPowerElectronics() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemPowerElectronics>& GetPowerElectronics();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemPumps>& GetPumps() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemPumps>& GetPumps();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemRectifiers>& GetRectifiers() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemRectifiers>& GetRectifiers();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemReservoirs>& GetReservoirs() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemReservoirs>& GetReservoirs();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemSwitchgearContainer>& GetSwitchgear() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemSwitchgearContainer>& GetSwitchgear();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSSysElemTurboGenerators>& GetTurboGenerators() const;
-        TIGL_EXPORT virtual boost::optional<CPACSSysElemTurboGenerators>& GetTurboGenerators();
-
-        TIGL_EXPORT virtual CPACSSysElemBatteries& GetBatteries(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveBatteries();
-
-        TIGL_EXPORT virtual CPACSSysElemCables& GetCables(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveCables();
-
-        TIGL_EXPORT virtual CPACSSysElemCompressors& GetCompressors(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveCompressors();
-
-        TIGL_EXPORT virtual CPACSSysElemConverters& GetConverters(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveConverters();
-
-        TIGL_EXPORT virtual CPACSSysElemDCDCConverters& GetDcdcConverters(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveDcdcConverters();
-
-        TIGL_EXPORT virtual CPACSSysElemElectricMachines& GetElectricMachines(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveElectricMachines();
-
-        TIGL_EXPORT virtual CPACSSysElemElectricMotors& GetElectricMotors(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveElectricMotors();
-
-        TIGL_EXPORT virtual CPACSSysElemFuelCells& GetFuelCells(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveFuelCells();
-
-        TIGL_EXPORT virtual CPACSSysElemGearBoxes& GetGearBoxes(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveGearBoxes();
-
-        TIGL_EXPORT virtual CPACSSysElemGenerators& GetGenerators(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveGenerators();
-
-        TIGL_EXPORT virtual CPACSSysElemGenericComponents& GetGenericComponents(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveGenericComponents();
-
-        TIGL_EXPORT virtual CPACSSysElemHeatExchangers& GetHeatExchangers(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveHeatExchangers();
-
-        TIGL_EXPORT virtual CPACSSysElemInverters& GetInverteres(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveInverteres();
-
-        TIGL_EXPORT virtual CPACSSysElemPowerDistributionUnits& GetPowerDistributionUnits(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemovePowerDistributionUnits();
-
-        TIGL_EXPORT virtual CPACSSysElemPowerElectronics& GetPowerElectronics(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemovePowerElectronics();
-
-        TIGL_EXPORT virtual CPACSSysElemPumps& GetPumps(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemovePumps();
-
-        TIGL_EXPORT virtual CPACSSysElemRectifiers& GetRectifiers(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveRectifiers();
-
-        TIGL_EXPORT virtual CPACSSysElemReservoirs& GetReservoirs(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveReservoirs();
-
-        TIGL_EXPORT virtual CPACSSysElemSwitchgearContainer& GetSwitchgear(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveSwitchgear();
-
-        TIGL_EXPORT virtual CPACSSysElemTurboGenerators& GetTurboGenerators(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveTurboGenerators();
+        TIGL_EXPORT virtual CPACSSysElemThermoFluidElements& GetThermoFluidElements(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveThermoFluidElements();
 
     protected:
         CPACSVehicles* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        boost::optional<CPACSSysElemBatteries>              m_batteries;
-        boost::optional<CPACSSysElemCables>                 m_cables;
-        boost::optional<CPACSSysElemCompressors>            m_compressors;
-        boost::optional<CPACSSysElemConverters>             m_converters;
-        boost::optional<CPACSSysElemDCDCConverters>         m_dcdcConverters;
-        boost::optional<CPACSSysElemElectricMachines>       m_electricMachines;
-        boost::optional<CPACSSysElemElectricMotors>         m_electricMotors;
-        boost::optional<CPACSSysElemFuelCells>              m_fuelCells;
-        boost::optional<CPACSSysElemGearBoxes>              m_gearBoxes;
-        boost::optional<CPACSSysElemGenerators>             m_generators;
-        boost::optional<CPACSSysElemGenericComponents>      m_genericComponents;
-        boost::optional<CPACSSysElemHeatExchangers>         m_heatExchangers;
-        boost::optional<CPACSSysElemInverters>              m_inverteres;
-        boost::optional<CPACSSysElemPowerDistributionUnits> m_powerDistributionUnits;
-        boost::optional<CPACSSysElemPowerElectronics>       m_powerElectronics;
-        boost::optional<CPACSSysElemPumps>                  m_pumps;
-        boost::optional<CPACSSysElemRectifiers>             m_rectifiers;
-        boost::optional<CPACSSysElemReservoirs>             m_reservoirs;
-        boost::optional<CPACSSysElemSwitchgearContainer>    m_switchgear;
-        boost::optional<CPACSSysElemTurboGenerators>        m_turboGenerators;
+        /// Library of predefined generic elements.
+        boost::optional<CPACSSysElemGenericElements>     m_genericElements;
+
+        /// Electrical system elements.
+        boost::optional<CPACSSysElemElectricalElements>  m_electricalElements;
+
+        /// Mechanical system elements.
+        boost::optional<CPACSSysElemMechanicalElements>  m_mechanicalElements;
+
+        /// Pneumatic system elements.
+        boost::optional<CPACSSysElemPneumaticElements>   m_pneumaticElements;
+
+        /// Hydraulic system elements.
+        boost::optional<CPACSSysElemHydraulicElements>   m_hydraulicElements;
+
+        /// Thermo-fluid system elements.
+        boost::optional<CPACSSysElemThermoFluidElements> m_thermoFluidElements;
 
     private:
         CPACSSystemElements(const CPACSSystemElements&) = delete;

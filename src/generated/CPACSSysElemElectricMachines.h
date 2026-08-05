@@ -30,27 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemElectricMachine;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemMechanicalConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemMechanicalConversionElements
 
     /// @brief Electric machines
     /// 
-    /// This element can be used when electric machines are to be specified in general terms, without the exact breakdown into electricMotors or generators being known.
-    /// Otherwise, for a more detailed level of modeling, the elements electricMotors and generators can be used directly instead of electricMachines .
+    /// Container for reusable electric machines. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemElectricMachines
     {
     public:
-        TIGL_EXPORT CPACSSysElemElectricMachines(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemElectricMachines(CPACSSysElemMechanicalConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemElectricMachines();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemMechanicalConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemMechanicalConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -61,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>& GetElectricMachines() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>& GetElectricMachines();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetElectricMachines() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetElectricMachines();
 
         TIGL_EXPORT virtual size_t GetElectricMachineCount() const;
         TIGL_EXPORT virtual size_t GetElectricMachineIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemElectricMachine& GetElectricMachine(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemElectricMachine& GetElectricMachine(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetElectricMachine(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetElectricMachine(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemElectricMachine& GetElectricMachine(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemElectricMachine& GetElectricMachine(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetElectricMachine(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetElectricMachine(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemElectricMachine& AddElectricMachine();
-        TIGL_EXPORT virtual void RemoveElectricMachine(CPACSSysElemElectricMachine& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddElectricMachine();
+        TIGL_EXPORT virtual void RemoveElectricMachine(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemMechanicalConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemElectricMachine>> m_electricMachines;
+        /// Converts between electrical and mechanical power without prescribing motor or generator operation.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricMachines;
 
     private:
         CPACSSysElemElectricMachines(const CPACSSysElemElectricMachines&) = delete;
@@ -94,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemElectricMachines = generated::CPACSSysElemElectricMachines;
-using CCPACSSysElemElectricMachine = generated::CPACSSysElemElectricMachine;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemMechanicalConversionElements = generated::CPACSSysElemMechanicalConversionElements;
 } // namespace tigl
