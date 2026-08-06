@@ -94,12 +94,12 @@ void CTiglMakeLoft::addProfiles(const TopoDS_Shape &profiles)
     }
 }
 
-void CTiglMakeLoft::addInnerRoundingDistance(const double innerRoundingDistance){
-    m_innerRoundingDistance.push_back(innerRoundingDistance);
+void CTiglMakeLoft::setInnerRoundingDistance(std::vector<double> innerRoundingDistance){
+    m_innerRoundingDistance = innerRoundingDistance;
 }
 
-void CTiglMakeLoft::addOuterRoundingDistance(const double outerRoundingDistance){
-    m_outerRoundingDistance.push_back(outerRoundingDistance);
+void CTiglMakeLoft::setOuterRoundingDistance(std::vector<double> outerRoundingDistance){
+    m_outerRoundingDistance = outerRoundingDistance;
 }
 
 void CTiglMakeLoft::addGuides(const TopoDS_Shape &guides)

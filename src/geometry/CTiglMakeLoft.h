@@ -45,21 +45,21 @@ public:
     /**
      * @brief If the class is used to create a loft with rounded segments, you can add
      *  inner/outer rounding distances as a vector. Make sure to add a value for each
-     *  segment. If no rounding distance is given, add '0.'
+     *  segment. If no rounding distance is given the value must be '0.'
      *
-     * @param innerRoundingDistance This is a distance relative to 1. Make sure to
-     *  provide a value for each segment.
+     * @param innerRoundingDistance This is a set of distances relative to 1
+     *  for each segment of a surface. Make sure to provide a value for each segment.
      */
-    TIGL_EXPORT void addInnerRoundingDistance(const double innerRoundingDistance);
+    TIGL_EXPORT void setInnerRoundingDistance(std::vector<double> innerRoundingDistance);
 
     /**
      * @brief If the class is used to create a loft with rounded segments, you can add
      *  inner/outer rounding distances as a vector. Make sure to add a value for each
-     *  segment. If no rounding distance is given, add '0.'
-     * @param outerRoundingDistance  This is a distance relative to 1. Make sure to
-     *  provide a value for each segment.
+     *  segment. If no rounding distance is given the value must be '0.'
+     * @param outerRoundingDistance  This is a set of distances relative to 1
+     *  for each segment of a surface. Make sure to provide a value for each segment.
      */
-    TIGL_EXPORT void addOuterRoundingDistance(const double outerRoundingDistance);
+    TIGL_EXPORT void setOuterRoundingDistance(std::vector<double> outerRoundingDistance);
 
     /** 
      * This function may be called to add guide curves to

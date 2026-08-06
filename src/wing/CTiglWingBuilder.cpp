@@ -61,6 +61,8 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
+    std::vector<double> innerRoundingDistance;
+    std::vector<double> outerRoundingDistance;
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
@@ -75,17 +77,21 @@ PNamedShape CTiglWingBuilder::BuildShape()
             double ird,ord;
             if(segments.GetSegment(i).GetInnerRoundingDistance()){
                 ird = *segments.GetSegment(i).GetInnerRoundingDistance();
-                lofter.addInnerRoundingDistance(ird);
+                innerRoundingDistance.push_back(ird);
             } else {
-                lofter.addInnerRoundingDistance(0.);
+                innerRoundingDistance.push_back(0.);
             }
             if(segments.GetSegment(i).GetOuterRoundingDistance()){
                 ord = *segments.GetSegment(i).GetOuterRoundingDistance();
-                lofter.addOuterRoundingDistance(ord);
+                outerRoundingDistance.push_back(ord);
             } else {
-                lofter.addOuterRoundingDistance(0.);
+                outerRoundingDistance.push_back(0.);
             }
         }
+
+        lofter.setInnerRoundingDistance(innerRoundingDistance);
+        lofter.setOuterRoundingDistance(outerRoundingDistance);
+
     }
 
     TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
