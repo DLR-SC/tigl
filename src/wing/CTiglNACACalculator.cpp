@@ -49,7 +49,7 @@ namespace
 
 namespace tigl{
 
-        NACA4DigitCode::NACA4DigitCode(std::string const& code) { // struct constructor oder so?
+        NACA4DigitCode::NACA4DigitCode(std::string const& code) { 
         if (code.size() != 4) {
             throw CTiglError("NACA4DigitCode: requires exactly 4 digits");
         }
@@ -59,7 +59,7 @@ namespace tigl{
         max_profile_thickness = std::stoi(code.substr(2, 2)) / 100.0;
         }
 
-        NACA5DigitCode::NACA5DigitCode(std::string const& code) { // struct constructor oder so?
+        NACA5DigitCode::NACA5DigitCode(std::string const& code) { 
             if (code.size() != 5) {
                 throw CTiglError("NACA5DigitCode: requires exactly 5 digits");
             }
@@ -109,71 +109,6 @@ namespace tigl{
                 throw CTiglError("error in CTiglNACACalculator The argument reflex must be 0 or 1.");
             }
         }
-        /*
-        CTiglNACACalculator::CTiglNACACalculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness)
-         : series_(Series::NACA4)
-         , max_camber(max_camber/100)
-         , max_camber_position(max_camber_position/10)
-         , max_profile_thickness(max_profile_thickness/100)
-         , trailing_edge_thickness_half(trailing_edge_thickness/2) 
-        {
-            if(this->max_camber > 1 || this->max_camber < 0){
-                throw CTiglError("error in CTiglNACACalculator The argument max_camber must be between 0 and 9.");
-            }
-            if(this->max_camber_position > 1 || this->max_camber_position < 0){
-                throw CTiglError("error in CTiglNACACalculator The argument max_camber_position must be between 0 and 9.");
-            }
-            if(this->max_profile_thickness > 1 || this->max_profile_thickness < 0){
-                throw CTiglError("error in CTiglNACACalculator max_profile_thicknessmust be between 0 and 99.");
-            }
-        }
-
-        CTiglNACACalculator::CTiglNACACalculator(double max_camber_cl, double max_camber_position, double reflex, double max_profile_thickness, double trailing_edge_thickness)
-         : series_(Series::NACA5)
-         , max_camber(max_camber_cl/100)
-         , max_camber_position(max_camber_position/20)
-         , reflex(reflex) //überprüfen, ob hier wirklich nh 0 oder 1 eingegben wurde
-         , max_profile_thickness(max_profile_thickness/100)
-         , trailing_edge_thickness_half(trailing_edge_thickness/2) 
-        {
-            
-        }
-
-        CTiglNACACalculator::CTiglNACACalculator(::std::string const& naca_code , const double te_thickness)
-            : CTiglNACACalculator(0.0,
-                              0.0,
-                              0.0,
-                              te_thickness)
-        {
-            if (naca_code.size() == 4){
-                try{
-                    double m = static_cast<double>(naca_code[0] - '0');
-                    double p = static_cast<double>(naca_code[1] - '0');
-                    double t = static_cast<double>(std::stoi(naca_code.substr(2,2)));
-
-                    *this = CTiglNACACalculator(m, p, t, te_thickness);
-                }
-                catch(...){
-                    throw CTiglError("error in CTiglNACACalculator: the naca_code format is not correct, it must to contain four digits and nothing else");
-                }}
-            else if (naca_code.size() == 5){
-                try{
-                    double s = static_cast<double>(naca_code[0] - '0');
-                    double p = static_cast<double>(naca_code[1] - '0');
-                    double q = static_cast<double>(naca_code[2] - '0');
-                    double tt = static_cast<double>(std::stoi(naca_code.substr(3,2)));
-
-                    *this = CTiglNACACalculator(s, p, q, tt, te_thickness);
-                }
-                catch(...){
-                throw CTiglError("error in CTiglNACACalculator: the naca_code format is not correct, it must to contain four digits and nothing else");
-            }
-            }
-            else{
-                throw std::invalid_argument("error in CTiglNACACalculator: the naca_code format is not correct, it must to contain four or five digits and nothing else");
-            }
-
-        }*/
 
         double CTiglNACACalculator::get_trailing_edge_thickness() const
         {
@@ -185,7 +120,6 @@ namespace tigl{
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
             int reflex_int = static_cast<int>(reflex);
             double k1;
-            //alles von chapter 8 table 8-6
             std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
             int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
@@ -205,7 +139,7 @@ namespace tigl{
                     k1 = 3.230;
                     break;
                 case 211:
-                    throw ::std::logic_error("error in CTiglNACACalculator::k1: this profile does not provide a constant for k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::k1: this profile does not provide a constant for k1."); 
                     break;
                 case 221:
                     k1 = 51.99;
@@ -220,7 +154,7 @@ namespace tigl{
                     k1 = 3.191;
                     break;
                 default:
-                    throw ::std::logic_error("error in CTiglNACACalculator::k1: this profile does not provide a constant for k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::k1: this profile does not provide a constant for k1."); 
                     break;
                 }
             return k1; 
@@ -231,7 +165,6 @@ namespace tigl{
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
             int reflex_int = static_cast<int>(reflex);
             double m;
-            //alles von chapter 8 table 8-6 und von https://ntrs.nasa.gov/api/citations/19970008124/downloads/19970008124.pdf
             std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
             int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
@@ -251,7 +184,7 @@ namespace tigl{
                     m = 0.3910;
                     break;
                 case 211:
-                    throw ::std::logic_error("error in CTiglNACACalculator::m: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::m: this profile does not provide a constant for m."); 
                     break;
                 case 221:
                     m = 0.1300;
@@ -266,7 +199,7 @@ namespace tigl{
                     m = 0.4410;
                     break;
                 default:
-                    throw ::std::logic_error("error in CTiglNACACalculator::m: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::m: this profile does not provide a constant for m."); 
                     break;
                 }
             return m; 
@@ -277,7 +210,6 @@ namespace tigl{
             int max_camber_position_whole = static_cast<int>(max_camber_position*20);
             int reflex_int = static_cast<int>(reflex);
             double k2k1;
-            //alles von chapter 8 table 8-6 und von https://ntrs.nasa.gov/api/citations/19970008124/downloads/19970008124.pdf
             std::string meanline_designation_str = std::to_string(max_camber_cl_whole) + std::to_string(max_camber_position_whole) + std::to_string(reflex_int);
             int meanline_designation = std::stoi(meanline_designation_str);
             switch(meanline_designation){
@@ -297,7 +229,7 @@ namespace tigl{
                     throw ::std::logic_error("error in CTiglNACACalculator::k2k1: this profile does not provide a constant for k2/k1.");
                     break;
                 case 211:
-                    throw ::std::logic_error("error in CTiglNACACalculator::k2k1: this profile does not provide a constant for k2/k1."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::k2k1: this profile does not provide a constant for k2/k1."); 
                     break;
                 case 221:
                     k2k1 = 0.000764;
@@ -312,7 +244,7 @@ namespace tigl{
                     k2k1 = 0.1355;
                     break;
                 default:
-                    throw ::std::logic_error("error in CTiglNACACalculator::k2k1: this profile does not provide a constant for m."); //gibts hier nh ander elösung, mit dem ich rechnen kann?
+                    throw ::std::logic_error("error in CTiglNACACalculator::k2k1: this profile does not provide a constant for m."); 
                     break;
                 }
             return k2k1; 
@@ -374,7 +306,6 @@ namespace tigl{
                     }
                     if(0 <= x && x <= m){
                         double result1 = (k1/6)*(pow(x-m, 3) - frack2k1*pow(1-m, 3)*x - pow(m,3)*x + pow(m,3)); 
-                        //getloft funktion mit timeit laufzeit rausfinden -> auf cache achten, das der nicht gespeichert wird
                         
                         return result1;
                     }
@@ -446,22 +377,20 @@ namespace tigl{
                 if(q == 0){
                     if(0 <= x && x <= m){
                         double result6 = (k1/6)*(3*x*x-6*m*x+m*m*(3-m));
-                        //std::cerr << "result6 okay " << result6 << std::endl;
                         return result6;
                     }
-                    else if(x > m){ //hier statt p au 0.3180 oder war das was anderes? //hier war p
+                    else if(x > m){ 
                         return -((k1*m*m*m)/6);
                     }
                 }
                 else if(q==1){
-                    double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m)); //hier nicht auch die methode benutzen
+                    double frack2k1 = (3*((m-p)*(m-p))-m*m*m)/((1-m)*(1-m)*(1-m)); 
                     if(0 <= x && x <= m){
                     
                         double result5 = ((k1/6)*(3*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m));
-                        //std::cerr << "result5 " << result5 << std::endl;
                         return result5;
                     }
-                    else if(x > m){//0.3180
+                    else if(x > m){
                     
                         return (k1/6)*(3*frack2k1*((x-m)*(x-m))-frack2k1*((1-m)*(1-m)*(1-m))-m*m*m);
                     }
@@ -485,25 +414,25 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
             
-            int npnts = 25;
-            auto pnts = TColgp_Array1OfPnt(1, npnts);
-            for (int i=1; i<=npnts; ++i) {
-                double u = ((double)i-1)/(npnts-1);
+            //int npnts = 200;
+            //auto pnts = TColgp_Array1OfPnt(1, npnts);
+            //for (int i=1; i<=npnts; ++i) {
+            //    double u = ((double)i-1)/(npnts-1);
                 //double x = 0.5 * (1.0 - cos(M_PI * u));
-                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
-                auto p = upper_curve(x);
-                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
-                std::cout << p.X() << ", " << p.Y() << "\n";
-            }
+            //    double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
+            //    auto p = upper_curve(x);
+            //    pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+            //    std::cout << p.X() << ", " << p.Y() << "\n";
+            //}
 
-            int nControlPoints = 34;
-            int deg = 3;
-            bool continuous_if_closed = false;
-            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
-            builder.InterpolatePoint(0);
-            builder.InterpolatePoint(npnts-1);
-            auto result = builder.FitCurveOptimal();
-            return result.curve;
+            //int nControlPoints = 34;
+            //int deg = 3;
+            //bool continuous_if_closed = false;
+            //auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            //builder.InterpolatePoint(0);
+            //builder.InterpolatePoint(npnts-1);
+            //auto result = builder.FitCurveOptimal();
+            //return result.curve;
             
 
             CTiglNACA4UpperCurve upperCurve(*this);
@@ -511,33 +440,33 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-5;//war 5!!
-            int maxDepth = 10;//war 10!!
+            double tolerance=1e-5;
+            int maxDepth = 10;
 
-            tigl::CFunctionToBspline converter(upperCurve, umin, umax, degree, tolerance, maxDepth); 
-            return converter.Curve();
+            tigl::CFunctionToBspline conv(upperCurve, umin, umax, degree, tolerance, maxDepth); 
+            return conv.Curve();
         }
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
             
-            int npnts = 25;
-            auto pnts = TColgp_Array1OfPnt(1, npnts);
-            for (int i=1; i<=npnts; ++i) {
-                double u = ((double)i-1)/(npnts-1); // cosine distribution? closer at leading edge
-                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); //more clustering (bc of the pow)
-                //double x = 0.5 * (1.0 - cos(M_PI * u));
-                auto p = lower_curve(x);
-                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
-            }
+            //int npnts = 200;
+            //auto pnts = TColgp_Array1OfPnt(1, npnts);
+            //for (int i=1; i<=npnts; ++i) {
+            //    double u = ((double)i-1)/(npnts-1); 
+            //    double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
+            //    //double x = 0.5 * (1.0 - cos(M_PI * u));
+            //    auto p = lower_curve(x);
+            //    pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+            //}
 
-            int nControlPoints = 34;
-            int deg = 3;
-            bool continuous_if_closed = false;
-            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
-            builder.InterpolatePoint(0);
-            builder.InterpolatePoint(npnts-1);
-            auto result = builder.FitCurveOptimal();
-            return result.curve;
+            //int nControlPoints = 34;
+            //int deg = 3;
+            //bool continuous_if_closed = false;
+            //auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            //builder.InterpolatePoint(0);
+            //builder.InterpolatePoint(npnts-1);
+            //auto result = builder.FitCurveOptimal();
+            //return result.curve;
             
 
             CTiglNACA4LowerCurve lowerCurve(*this);
@@ -548,8 +477,8 @@ namespace tigl{
             double tolerance=1e-5;
             int maxDepth = 10;
 
-            tigl::CFunctionToBspline converter(lowerCurve, umin, umax, degree, tolerance, maxDepth);
-            return converter.Curve();
+            tigl::CFunctionToBspline conv(lowerCurve, umin, umax, degree, tolerance, maxDepth);
+            return conv.Curve();
         }
 
         CTiglNACA4UpperCurve::CTiglNACA4UpperCurve( CTiglNACACalculator const& calculator)

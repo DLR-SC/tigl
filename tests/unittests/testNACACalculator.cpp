@@ -83,7 +83,7 @@ TEST(CTiglNACACalculator, naca2212_le_and_te_points_with_class_lowerCurve){
     EXPECT_NEAR(result4.Y(), (0.0), 1e-7);
 }
 
-TEST(CTiglNACACalculator, naca0012_random_point){
+TEST(CTiglNACACalculator, naca0012_at05_and0){
     //tigl::CTiglNACACalculator NACA4(0,0,12, 0.00252);
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("0012"), 0.00252);
     ASSERT_TRUE(NACA4.profile_thickness(0.5) >= 0);
@@ -318,7 +318,7 @@ TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
     ASSERT_NEAR(pnt2.Z(), pnt.Y(), 1e-2);
 }
 
-TEST(CTiglNACACalculator, naca2212_export_bsplines){
+TEST(CTiglNACACalculator, naca2212_assert_and_export_bsplines){
     //tigl::CTiglNACACalculator NACA4(2,2,12, .15);
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), .15);
     Handle(Geom_BSplineCurve) upperCurve = NACA4.upper_bspline(); 
