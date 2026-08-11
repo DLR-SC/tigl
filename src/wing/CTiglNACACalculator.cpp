@@ -414,25 +414,25 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::upper_bspline() const{
             
-            //int npnts = 200;
-            //auto pnts = TColgp_Array1OfPnt(1, npnts);
-            //for (int i=1; i<=npnts; ++i) {
-            //    double u = ((double)i-1)/(npnts-1);
+            int npnts = 200;
+            auto pnts = TColgp_Array1OfPnt(1, npnts);
+            for (int i=1; i<=npnts; ++i) {
+                double u = ((double)i-1)/(npnts-1);
                 //double x = 0.5 * (1.0 - cos(M_PI * u));
-            //    double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
-            //    auto p = upper_curve(x);
-            //    pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
-            //    std::cout << p.X() << ", " << p.Y() << "\n";
-            //}
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
+                auto p = upper_curve(x);
+                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+                std::cout << p.X() << ", " << p.Y() << "\n";
+            }
 
-            //int nControlPoints = 34;
-            //int deg = 3;
-            //bool continuous_if_closed = false;
-            //auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
-            //builder.InterpolatePoint(0);
-            //builder.InterpolatePoint(npnts-1);
-            //auto result = builder.FitCurveOptimal();
-            //return result.curve;
+            int nControlPoints = 34;
+            int deg = 3;
+            bool continuous_if_closed = false;
+            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            builder.InterpolatePoint(0);
+            builder.InterpolatePoint(npnts-1);
+            auto result = builder.FitCurveOptimal();
+            return result.curve;
             
 
             CTiglNACA4UpperCurve upperCurve(*this);
@@ -449,24 +449,24 @@ namespace tigl{
 
         Handle(Geom_BSplineCurve) CTiglNACACalculator::lower_bspline() const{
             
-            //int npnts = 200;
-            //auto pnts = TColgp_Array1OfPnt(1, npnts);
-            //for (int i=1; i<=npnts; ++i) {
-            //    double u = ((double)i-1)/(npnts-1); 
-            //    double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
-            //    //double x = 0.5 * (1.0 - cos(M_PI * u));
-            //    auto p = lower_curve(x);
-            //    pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
-            //}
+            int npnts = 200;
+            auto pnts = TColgp_Array1OfPnt(1, npnts);
+            for (int i=1; i<=npnts; ++i) {
+                double u = ((double)i-1)/(npnts-1); 
+                double x = pow(0.5 * (1.0 - cos(M_PI * u)), 0.5); 
+                //double x = 0.5 * (1.0 - cos(M_PI * u));
+                auto p = lower_curve(x);
+                pnts.SetValue(i, gp_Pnt(p.X(), 0., p.Y()));
+            }
 
-            //int nControlPoints = 34;
-            //int deg = 3;
-            //bool continuous_if_closed = false;
-            //auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
-            //builder.InterpolatePoint(0);
-            //builder.InterpolatePoint(npnts-1);
-            //auto result = builder.FitCurveOptimal();
-            //return result.curve;
+            int nControlPoints = 34;
+            int deg = 3;
+            bool continuous_if_closed = false;
+            auto builder = CTiglBSplineApproxInterp(pnts, nControlPoints, deg, continuous_if_closed);
+            builder.InterpolatePoint(0);
+            builder.InterpolatePoint(npnts-1);
+            auto result = builder.FitCurveOptimal();
+            return result.curve;
             
 
             CTiglNACA4LowerCurve lowerCurve(*this);

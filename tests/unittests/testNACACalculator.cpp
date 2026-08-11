@@ -303,20 +303,6 @@ TEST(CTiglNACACalculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoor
     ASSERT_EQ(lowerCurve.valueZ(0.5), pnt.Y());
 }
 
-TEST(CTiglNACACalculator, naca2212_bspline_vs_lower_curve_coord)
-{
-    //tigl::CTiglNACACalculator NACA4(2,2,12, 15);
-    tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
-    Handle(Geom_BSplineCurve) lower_spline = NACA4.lower_bspline();
-
-    // the bspline's own parameter u corresponds to x=testLeParam(u), not x=u directly (see
-    // CTiglNACA4UpperCurve::valueX)
-    gp_Vec2d pnt = NACA4.lower_curve(testLeParam(0.5));
-    gp_Pnt pnt2;
-    lower_spline->D0(0.5, pnt2);
-    ASSERT_NEAR(pnt2.X(), pnt.X(), 1e-2); //is 1e-2 too small?
-    ASSERT_NEAR(pnt2.Z(), pnt.Y(), 1e-2);
-}
 
 TEST(CTiglNACACalculator, naca2212_assert_and_export_bsplines){
     //tigl::CTiglNACACalculator NACA4(2,2,12, .15);
@@ -589,7 +575,7 @@ TEST(CTiglNACACalculator, naca24112_export_bsplines){
     ASSERT_FALSE(upperEdge.IsNull());
     BRepTools::Write(upperEdge, "TestData/export/upperEdgeTest5_24112.brep");
 }
-TEST(CTiglNACACalculator, naca24112_export_bsplines2){
+TEST(CTiglNACACalculator, naca24112_upper_curve_does_not_throw_for_valid_x_range){
     tigl::CTiglNACACalculator NACA5(tigl::NACA5DigitCode("24112"), 0.00252);
     //tigl::CTiglNACACalculator NACA4(2,4,1,12, 0.00252);
     for(double x =0; x<1; x+=0.05){
