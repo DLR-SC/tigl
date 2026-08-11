@@ -79,10 +79,10 @@ namespace generated
         /// 2. MaxError: Maximum Error
         boost::optional<std::string>        m_errorComputationMethod;
 
-        /// Defines the number of control points that should be used for approximating the given points with a b-spline curve.
+        /// Defines the number of control points that should be used for approximating the given points with a B-spline curve. The minimal value is 4.
         boost::optional<int>                m_controlPointNumber_choice1;
 
-        /// Instead of specifying the number of control points, the upper bound for the error of the approximation is provided.
+        /// Instead of specifying the number of control points, the positive upper bound for the error of the approximation is provided.
         /// The number of control points is increased automatically until the approximation error lies below the given maximum approximation error.
         boost::optional<double>             m_maximumError_choice2;
 

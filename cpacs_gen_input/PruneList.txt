@@ -61,6 +61,7 @@ CPACSWindowsAssembly
 // in wing
 CPACSDynamicAircraftModel
 CPACSWingExplicitStringers
+CPACSWingCutOuts
 
 // in component segment
 CPACSComponentSegmentPath

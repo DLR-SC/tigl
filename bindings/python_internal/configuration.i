@@ -157,7 +157,7 @@
 #include "generated/CPACSNacaProfile.h"
 #include "CTiglNACA4Calculator.h"
 #include "CPACSNacaProfile.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "generated/CPACSDecks.h"
 #include "generated/CPACSCabinGeometryContour.h"
 #include "CCPACSDeckComponentBase.h"
@@ -474,8 +474,8 @@ namespace tigl
 %include "generated/CPACSDeckDoors.h"
 %include "CCPACSDeckComponentBase.h"
 
-%include "generated/CPACSDeck.h"
-%include "CCPACSDeck.h"
+%include "generated/CPACSDecksDeck.h"
+%include "CCPACSDecksDeck.h"
 
 // --------------- Fuselage tanks -----------------//
 %boost_optional(tigl::generated::CPACSVessels)
@@ -785,7 +785,7 @@ class CCPACSSystemElements;
          tigl::CCPACSFuelTank,
          tigl::CCPACSVessel,
          tigl::CCPACSComponent,
-         tigl::CCPACSDeck,
+         tigl::CCPACSDecksDeck,
          tigl::CCPACSDeckComponentBase
 );
 

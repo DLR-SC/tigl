@@ -49,7 +49,7 @@ namespace generated
     /// model (Geometry and all specific data). The rotorcraftModelType
     /// is basically a copy of the aircraftModelType with the following
     /// additional elements: rotors, rotorBlades, driveSystems.
-    /// Furthermore the folowing elements have been adapted for
+    /// Furthermore the following elements have been adapted for
     /// rotorcraft: global and analyses (aeroPerformance and
     /// massBreakdown).
     /// 

@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include <CCPACSDeck.h>
+#include <CCPACSDecksDeck.h>
 #include "CCPACSFuselage.h"
 #include "CPACSDecks.h"
 #include "CTiglError.h"
@@ -92,12 +92,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CCPACSDeck>>& CPACSDecks::GetDecks() const
+    const std::vector<std::unique_ptr<CCPACSDecksDeck>>& CPACSDecks::GetDecks() const
     {
         return m_decks;
     }
 
-    std::vector<std::unique_ptr<CCPACSDeck>>& CPACSDecks::GetDecks()
+    std::vector<std::unique_ptr<CCPACSDecksDeck>>& CPACSDecks::GetDecks()
     {
         return m_decks;
     }
@@ -118,25 +118,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSDecks::GetDeckIndex", TIGL_UID_ERROR);
     }
 
-    CCPACSDeck& CPACSDecks::GetDeck(size_t index)
+    CCPACSDecksDeck& CPACSDecks::GetDeck(size_t index)
     {
         if (index < 1 || index > GetDeckCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeck>>::GetDeck", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDecksDeck>>::GetDeck", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_decks[index];
     }
 
-    const CCPACSDeck& CPACSDecks::GetDeck(size_t index) const
+    const CCPACSDecksDeck& CPACSDecks::GetDeck(size_t index) const
     {
         if (index < 1 || index > GetDeckCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDeck>>::GetDeck", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CCPACSDecksDeck>>::GetDeck", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_decks[index];
     }
 
-    CCPACSDeck& CPACSDecks::GetDeck(const std::string& UID)
+    CCPACSDecksDeck& CPACSDecks::GetDeck(const std::string& UID)
     {
         for (auto& elem : m_decks ) {
             if (elem->GetUID() == UID)
@@ -145,7 +145,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSDecks::GetDeck. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CCPACSDeck& CPACSDecks::GetDeck(const std::string& UID) const
+    const CCPACSDecksDeck& CPACSDecks::GetDeck(const std::string& UID) const
     {
         for (auto& elem : m_decks ) {
             if (elem->GetUID() == UID)
@@ -155,13 +155,13 @@ namespace generated
     }
 
 
-    CCPACSDeck& CPACSDecks::AddDeck()
+    CCPACSDecksDeck& CPACSDecks::AddDeck()
     {
-        m_decks.push_back(std::make_unique<CCPACSDeck>(this, m_uidMgr));
+        m_decks.push_back(std::make_unique<CCPACSDecksDeck>(this, m_uidMgr));
         return *m_decks.back();
     }
 
-    void CPACSDecks::RemoveDeck(CCPACSDeck& ref)
+    void CPACSDecks::RemoveDeck(CCPACSDecksDeck& ref)
     {
         for (std::size_t i = 0; i < m_decks.size(); i++) {
             if (m_decks[i].get() == &ref) {

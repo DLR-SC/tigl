@@ -28,6 +28,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CPACSLoftContinuity.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "CTiglUIDObject.h"
@@ -59,7 +60,7 @@ namespace generated
     /// of the wing is defined by airfoils that are placed within the 3D
     /// space. Two airfoils are combined to one wing segment within the
     /// segments. For the definition of the positions of the airfoils,
-    /// differnt sections are defined. Within each section one or more
+    /// different sections are defined. Within each section one or more
     /// elements are defined. The airfoil shape is defined within the
     /// elements. If the wings outer shape should e.g. have a step it is
     /// possible to define two different airfoils in one section by
@@ -127,6 +128,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CPACSLoftContinuity>& GetLoftContinuity() const;
+        TIGL_EXPORT virtual void SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value);
+
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
@@ -166,6 +170,8 @@ namespace generated
         std::string                                  m_uID;
 
         boost::optional<TiglSymmetryAxis>            m_symmetry;
+
+        boost::optional<CPACSLoftContinuity>         m_loftContinuity;
 
         /// Name of the wing.
         std::string                                  m_name;

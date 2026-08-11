@@ -28,7 +28,7 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSDeck
+    // CPACSDecksDeck
 
     enum CPACSDeck_deckType
     {

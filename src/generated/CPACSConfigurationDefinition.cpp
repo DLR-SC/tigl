@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSVehicleConfiguration.h"
-#include "CPACSVehicleConfigurations.h"
+#include "CPACSConfigurationDefinition.h"
+#include "CPACSConfigurationDefinitions.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,29 +27,29 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSVehicleConfiguration::CPACSVehicleConfiguration(CPACSVehicleConfigurations* parent, CTiglUIDManager* uidMgr)
+    CPACSConfigurationDefinition::CPACSConfigurationDefinition(CPACSConfigurationDefinitions* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSVehicleConfiguration::~CPACSVehicleConfiguration()
+    CPACSConfigurationDefinition::~CPACSConfigurationDefinition()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
     }
 
-    const CPACSVehicleConfigurations* CPACSVehicleConfiguration::GetParent() const
+    const CPACSConfigurationDefinitions* CPACSConfigurationDefinition::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSVehicleConfigurations* CPACSVehicleConfiguration::GetParent()
+    CPACSConfigurationDefinitions* CPACSConfigurationDefinition::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSVehicleConfiguration::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSConfigurationDefinition::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -57,7 +57,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSVehicleConfiguration::GetNextUIDParent()
+    CTiglUIDObject* CPACSConfigurationDefinition::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -65,7 +65,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSVehicleConfiguration::GetUIDManager()
+    CTiglUIDManager& CPACSConfigurationDefinition::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -73,7 +73,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSVehicleConfiguration::GetUIDManager() const
+    const CTiglUIDManager& CPACSConfigurationDefinition::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -81,7 +81,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSVehicleConfiguration::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSConfigurationDefinition::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -124,21 +124,21 @@ namespace generated
             }
         }
 
-        // read element internalPressures
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/internalPressures")) {
-            m_internalPressures = boost::in_place(this, m_uidMgr);
+        // read element energyCarriers
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/energyCarriers")) {
+            m_energyCarriers = boost::in_place(this, m_uidMgr);
             try {
-                m_internalPressures->ReadCPACS(tixiHandle, xpath + "/internalPressures");
+                m_energyCarriers->ReadCPACS(tixiHandle, xpath + "/energyCarriers");
             } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read internalPressures at xpath " << xpath << ": " << e.what();
-                m_internalPressures = boost::none;
+                LOG(ERROR) << "Failed to read energyCarriers at xpath " << xpath << ": " << e.what();
+                m_energyCarriers = boost::none;
             }
         }
 
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
-    void CPACSVehicleConfiguration::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSConfigurationDefinition::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -169,25 +169,25 @@ namespace generated
             }
         }
 
-        // write element internalPressures
-        if (m_internalPressures) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/internalPressures");
-            m_internalPressures->WriteCPACS(tixiHandle, xpath + "/internalPressures");
+        // write element energyCarriers
+        if (m_energyCarriers) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/energyCarriers");
+            m_energyCarriers->WriteCPACS(tixiHandle, xpath + "/energyCarriers");
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/internalPressures")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/internalPressures");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/energyCarriers")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/energyCarriers");
             }
         }
 
     }
 
-    const std::string& CPACSVehicleConfiguration::GetUID() const
+    const std::string& CPACSConfigurationDefinition::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSVehicleConfiguration::SetUID(const std::string& value)
+    void CPACSConfigurationDefinition::SetUID(const std::string& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (m_uID.empty()) {
@@ -200,68 +200,68 @@ namespace generated
         m_uID = value;
     }
 
-    const std::string& CPACSVehicleConfiguration::GetName() const
+    const std::string& CPACSConfigurationDefinition::GetName() const
     {
         return m_name;
     }
 
-    void CPACSVehicleConfiguration::SetName(const std::string& value)
+    void CPACSConfigurationDefinition::SetName(const std::string& value)
     {
         m_name = value;
     }
 
-    const boost::optional<std::string>& CPACSVehicleConfiguration::GetDescription() const
+    const boost::optional<std::string>& CPACSConfigurationDefinition::GetDescription() const
     {
         return m_description;
     }
 
-    void CPACSVehicleConfiguration::SetDescription(const boost::optional<std::string>& value)
+    void CPACSConfigurationDefinition::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
     }
 
-    const boost::optional<CPACSAircraftControlElements>& CPACSVehicleConfiguration::GetControlElements() const
+    const boost::optional<CPACSAircraftControlElements>& CPACSConfigurationDefinition::GetControlElements() const
     {
         return m_controlElements;
     }
 
-    boost::optional<CPACSAircraftControlElements>& CPACSVehicleConfiguration::GetControlElements()
+    boost::optional<CPACSAircraftControlElements>& CPACSConfigurationDefinition::GetControlElements()
     {
         return m_controlElements;
     }
 
-    const boost::optional<CPACSInternalPressures>& CPACSVehicleConfiguration::GetInternalPressures() const
+    const boost::optional<CPACSStoredEnergyCarriers>& CPACSConfigurationDefinition::GetEnergyCarriers() const
     {
-        return m_internalPressures;
+        return m_energyCarriers;
     }
 
-    boost::optional<CPACSInternalPressures>& CPACSVehicleConfiguration::GetInternalPressures()
+    boost::optional<CPACSStoredEnergyCarriers>& CPACSConfigurationDefinition::GetEnergyCarriers()
     {
-        return m_internalPressures;
+        return m_energyCarriers;
     }
 
-    CPACSAircraftControlElements& CPACSVehicleConfiguration::GetControlElements(CreateIfNotExistsTag)
+    CPACSAircraftControlElements& CPACSConfigurationDefinition::GetControlElements(CreateIfNotExistsTag)
     {
         if (!m_controlElements)
             m_controlElements = boost::in_place(this, m_uidMgr);
         return *m_controlElements;
     }
 
-    void CPACSVehicleConfiguration::RemoveControlElements()
+    void CPACSConfigurationDefinition::RemoveControlElements()
     {
         m_controlElements = boost::none;
     }
 
-    CPACSInternalPressures& CPACSVehicleConfiguration::GetInternalPressures(CreateIfNotExistsTag)
+    CPACSStoredEnergyCarriers& CPACSConfigurationDefinition::GetEnergyCarriers(CreateIfNotExistsTag)
     {
-        if (!m_internalPressures)
-            m_internalPressures = boost::in_place(this, m_uidMgr);
-        return *m_internalPressures;
+        if (!m_energyCarriers)
+            m_energyCarriers = boost::in_place(this, m_uidMgr);
+        return *m_energyCarriers;
     }
 
-    void CPACSVehicleConfiguration::RemoveInternalPressures()
+    void CPACSConfigurationDefinition::RemoveEnergyCarriers()
     {
-        m_internalPressures = boost::none;
+        m_energyCarriers = boost::none;
     }
 
 } // namespace generated

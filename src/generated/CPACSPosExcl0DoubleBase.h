@@ -44,7 +44,7 @@ namespace generated
     /// attributes)
     /// The double base type can include optional uncertainty
     /// information. The description of uncertainties is placed in
-    /// addtional attributes. First, it is described by an attribute
+    /// additional attributes. First, it is described by an attribute
     /// that describes the type of uncertainty function called
     /// functionName. The functionName attribute includes the tag name
     /// of the distribution function which is listened in the table

@@ -47,7 +47,7 @@ namespace generated
     /// @brief Structure of the wing
     /// 
     /// wingComponentSegmentStructure type, containing the
-    /// whole structue (skins, ribs, spars...) of the wing.
+    /// whole structure (skins, ribs, spars...) of the wing.
     /// 
     class CPACSWingComponentSegmentStructure
     {

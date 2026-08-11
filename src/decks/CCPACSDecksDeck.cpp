@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "generated/CPACSDecks.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSDeckComponentBase.h"
@@ -29,52 +29,52 @@ namespace tigl
 {
 
 // Constructor
-CCPACSDeck::CCPACSDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr)
-    : generated::CPACSDeck(parent, uidMgr)
+CCPACSDecksDeck::CCPACSDecksDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSDecksDeck(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(&m_parentUID, &m_transformation)
 {
 }
 
 // Destructor
-CCPACSDeck::~CCPACSDeck()
+CCPACSDecksDeck::~CCPACSDecksDeck()
 {
 }
 
-void CCPACSDeck::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+void CCPACSDecksDeck::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Reset();
-    generated::CPACSDeck::ReadCPACS(tixiHandle, xpath);
+    generated::CPACSDecksDeck::ReadCPACS(tixiHandle, xpath);
 
     // Default parent: if no explicit parentUID is given, place the deck
     // relative to the surrounding fuselage.
     if ((!m_parentUID || m_parentUID->empty()) && m_parent && m_parent->GetParent()) {
-        generated::CPACSDeck::SetParentUID(boost::optional<std::string>(m_parent->GetParent()->GetUID()));
+        generated::CPACSDecksDeck::SetParentUID(boost::optional<std::string>(m_parent->GetParent()->GetUID()));
     }
 }
 
-std::string CCPACSDeck::GetDefaultedUID() const
+std::string CCPACSDecksDeck::GetDefaultedUID() const
 {
     return GetUID();
 }
 
 // Returns the parent configuration
-CCPACSConfiguration const& CCPACSDeck::GetConfiguration() const
+CCPACSConfiguration const& CCPACSDecksDeck::GetConfiguration() const
 {
     return m_parent->GetParent()->GetConfiguration();
 }
 
-TiglGeometricComponentType CCPACSDeck::GetComponentType() const
+TiglGeometricComponentType CCPACSDecksDeck::GetComponentType() const
 {
     return TIGL_COMPONENT_DECK;
 }
 
-TiglGeometricComponentIntent CCPACSDeck::GetComponentIntent() const
+TiglGeometricComponentIntent CCPACSDecksDeck::GetComponentIntent() const
 {
     return TIGL_INTENT_PHYSICAL;
 }
 
 // build loft
-PNamedShape CCPACSDeck::BuildLoft() const
+PNamedShape CCPACSDecksDeck::BuildLoft() const
 {
     ListPNamedShape shapes;
 
@@ -130,7 +130,7 @@ PNamedShape CCPACSDeck::BuildLoft() const
 }
 
 // get short name for loft
-std::string CCPACSDeck::GetShortShapeName() const
+std::string CCPACSDecksDeck::GetShortShapeName() const
 {
     unsigned int i = 0;
 

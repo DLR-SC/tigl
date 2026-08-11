@@ -42,8 +42,8 @@ namespace generated
     /// 
     /// SparWeb type, containing the cross section area of the
     /// spar web and the material properties.
-    /// Pleas find below a picture where all spar cross
-    /// section parameters as well as the orientation refereneces for
+    /// Please find below a picture where all spar cross
+    /// section parameters as well as the orientation references for
     /// the material definition can be found:
     /// @see spars2
     /// 

@@ -46,7 +46,7 @@ namespace generated
     /// 
     /// PointAbsRel type, containing an xyz data triplet. Each
     /// of the components is optional. The refType attribute defines,
-    /// whether coordinates are absolute in the global ccordinate system
+    /// whether coordinates are absolute in the global coordinate system
     /// [absGlobal], absolute in the parent element's local coordinate
     /// system [absLocal]. If the object does not have a
     /// parent, only [absGlobal] is permitted.

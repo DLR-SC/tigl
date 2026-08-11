@@ -27,11 +27,11 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSConfigurationDefinitions.h"
 #include "CPACSEnginePylons.h"
 #include "CPACSFuelTanks.h"
 #include "CPACSLandingGears.h"
 #include "CPACSSystemArchitectures.h"
-#include "CPACSVehicleConfigurations.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -49,12 +49,11 @@ namespace generated
 
     /// @brief Aircraft model
     /// 
-    /// The aircraftModelType contains the geometric aircraft
-    /// model and associated data.
+    /// The aircraftModelType contains the geometric aircraft model and associated data.
     /// Elements specifying the geometry of the aircraft are fuselages , wings , engines (referenced via uID ), enginePylons , landingGear , systems (to some extend) and genericGeometryComponents .
-    /// Other elements are dedicated to additional data associated to this aircraft model. Brief and concise analysis results are stored
-    /// in the global node. The analysis node contains
-    /// extensive results from multidisciplinary analysis modules.
+    /// Other elements are dedicated to additional data associated to this aircraft model.
+    /// Brief and concise analysis results are stored in the global node.
+    /// The analysis node contains extensive results from multidisciplinary analysis modules.
     /// In the current CPACS version requirements only refer to the aircraft performance and are therefore specified in the performanceRequirements node.
     /// 
     class CPACSAircraftModel : public CTiglReqUIDObject
@@ -86,6 +85,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CPACSConfigurationDefinitions>& GetConfigurationDefinitions() const;
+        TIGL_EXPORT virtual boost::optional<CPACSConfigurationDefinitions>& GetConfigurationDefinitions();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
         TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
 
@@ -113,11 +115,11 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents() const;
         TIGL_EXPORT virtual boost::optional<CCPACSExternalObjects>& GetGenericGeometryComponents();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSVehicleConfigurations>& GetConfigurations() const;
-        TIGL_EXPORT virtual boost::optional<CPACSVehicleConfigurations>& GetConfigurations();
-
         TIGL_EXPORT virtual const boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures() const;
         TIGL_EXPORT virtual boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures();
+
+        TIGL_EXPORT virtual CPACSConfigurationDefinitions& GetConfigurationDefinitions(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveConfigurationDefinitions();
 
         TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveDucts();
@@ -146,9 +148,6 @@ namespace generated
         TIGL_EXPORT virtual CCPACSExternalObjects& GetGenericGeometryComponents(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveGenericGeometryComponents();
 
-        TIGL_EXPORT virtual CPACSVehicleConfigurations& GetConfigurations(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveConfigurations();
-
         TIGL_EXPORT virtual CPACSSystemArchitectures& GetSystemArchitectures(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystemArchitectures();
 
@@ -157,35 +156,35 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        std::string                                 m_uID;
+        std::string                                    m_uID;
 
         /// Name of the aircraft model
-        std::string                                 m_name;
+        std::string                                    m_name;
 
         /// Description of the aircraft model
-        boost::optional<std::string>                m_description;
+        boost::optional<std::string>                   m_description;
 
-        boost::optional<CCPACSDucts>                m_ducts;
+        boost::optional<CPACSConfigurationDefinitions> m_configurationDefinitions;
 
-        boost::optional<CCPACSFuselages>            m_fuselages;
+        boost::optional<CCPACSDucts>                   m_ducts;
 
-        boost::optional<CCPACSWings>                m_wings;
+        boost::optional<CCPACSFuselages>               m_fuselages;
 
-        boost::optional<CCPACSEnginePositions>      m_engines;
+        boost::optional<CCPACSWings>                   m_wings;
 
-        boost::optional<CPACSEnginePylons>          m_enginePylons;
+        boost::optional<CCPACSEnginePositions>         m_engines;
 
-        boost::optional<CPACSLandingGears>          m_landingGears;
+        boost::optional<CPACSEnginePylons>             m_enginePylons;
 
-        boost::optional<CPACSFuelTanks>             m_fuelTanks;
+        boost::optional<CPACSLandingGears>             m_landingGears;
 
-        boost::optional<CCPACSACSystems>            m_systems;
+        boost::optional<CPACSFuelTanks>                m_fuelTanks;
 
-        boost::optional<CCPACSExternalObjects>      m_genericGeometryComponents;
+        boost::optional<CCPACSACSystems>               m_systems;
 
-        boost::optional<CPACSVehicleConfigurations> m_configurations;
+        boost::optional<CCPACSExternalObjects>         m_genericGeometryComponents;
 
-        boost::optional<CPACSSystemArchitectures>   m_systemArchitectures;
+        boost::optional<CPACSSystemArchitectures>      m_systemArchitectures;
 
     private:
         CPACSAircraftModel(const CPACSAircraftModel&) = delete;

@@ -45,7 +45,7 @@ namespace generated
 
     /// @brief stringerFramePositionType
     /// 
-    /// Description of individual stringer / frame postions
+    /// Description of individual stringer / frame positions
     /// @see stringerFramePositioning
     /// 
     class CPACSStringerFramePosition : public CTiglReqUIDObject, public ITiglUIDRefObject
@@ -161,7 +161,7 @@ namespace generated
         boost::optional<CPACSContinuity>           m_continuity;
 
         /// Definition of interpolation between different
-        /// profiles: 0= no interpolation 1= interpolation of strcutural
+        /// profiles: 0= no interpolation 1= interpolation of structural
         /// profile
         boost::optional<CPACSInterpolation>        m_interpolation;
 

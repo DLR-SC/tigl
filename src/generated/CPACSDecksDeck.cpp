@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSDeck.h"
 #include "CPACSDecks.h"
+#include "CPACSDecksDeck.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -27,15 +27,15 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSDeck::CPACSDeck(CPACSDecks* parent, CTiglUIDManager* uidMgr)
+    CPACSDecksDeck::CPACSDecksDeck(CPACSDecks* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_transformation(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr)
+        , m_transformation(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSDeck::~CPACSDeck()
+    CPACSDecksDeck::~CPACSDecksDeck()
     {
         if (m_uidMgr) m_uidMgr->TryUnregisterObject(m_uID);
         if (m_uidMgr) {
@@ -44,17 +44,17 @@ namespace generated
         }
     }
 
-    const CPACSDecks* CPACSDeck::GetParent() const
+    const CPACSDecks* CPACSDecksDeck::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSDecks* CPACSDeck::GetParent()
+    CPACSDecks* CPACSDecksDeck::GetParent()
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSDeck::GetNextUIDParent() const
+    const CTiglUIDObject* CPACSDecksDeck::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -62,7 +62,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSDeck::GetNextUIDParent()
+    CTiglUIDObject* CPACSDecksDeck::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -70,7 +70,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSDeck::GetUIDManager()
+    CTiglUIDManager& CPACSDecksDeck::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -78,7 +78,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSDeck::GetUIDManager() const
+    const CTiglUIDManager& CPACSDecksDeck::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -86,7 +86,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSDeck::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSDecksDeck::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
         // read attribute uID
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
@@ -146,7 +146,7 @@ namespace generated
 
         // read element deckType
         if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/deckType")) {
-            m_deckType = stringToCPACSDeck_deckType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/deckType"));
+            m_deckType = stringToCPACSDecksDeck_deckType(tixi::TixiGetElement<std::string>(tixiHandle, xpath + "/deckType"));
         }
         else {
             LOG(ERROR) << "Required element deckType is missing at xpath " << xpath;
@@ -154,7 +154,7 @@ namespace generated
 
         // read element cabinGeometry
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cabinGeometry")) {
-            m_cabinGeometry = boost::in_place(reinterpret_cast<CCPACSDeck*>(this));
+            m_cabinGeometry = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this));
             try {
                 m_cabinGeometry->ReadCPACS(tixiHandle, xpath + "/cabinGeometry");
             } catch(const std::exception& e) {
@@ -165,7 +165,7 @@ namespace generated
 
         // read element seatModules
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/seatModules")) {
-            m_seatModules = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_seatModules = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_seatModules->ReadCPACS(tixiHandle, xpath + "/seatModules");
             } catch(const std::exception& e) {
@@ -176,7 +176,7 @@ namespace generated
 
         // read element aisles
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/aisles")) {
-            m_aisles = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_aisles = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_aisles->ReadCPACS(tixiHandle, xpath + "/aisles");
             } catch(const std::exception& e) {
@@ -187,7 +187,7 @@ namespace generated
 
         // read element spaces
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/spaces")) {
-            m_spaces = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_spaces = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_spaces->ReadCPACS(tixiHandle, xpath + "/spaces");
             } catch(const std::exception& e) {
@@ -198,7 +198,7 @@ namespace generated
 
         // read element sidewallPanels
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/sidewallPanels")) {
-            m_sidewallPanels = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_sidewallPanels = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_sidewallPanels->ReadCPACS(tixiHandle, xpath + "/sidewallPanels");
             } catch(const std::exception& e) {
@@ -209,7 +209,7 @@ namespace generated
 
         // read element luggageCompartments
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/luggageCompartments")) {
-            m_luggageCompartments = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_luggageCompartments = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_luggageCompartments->ReadCPACS(tixiHandle, xpath + "/luggageCompartments");
             } catch(const std::exception& e) {
@@ -220,7 +220,7 @@ namespace generated
 
         // read element ceilingPanels
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ceilingPanels")) {
-            m_ceilingPanels = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_ceilingPanels = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_ceilingPanels->ReadCPACS(tixiHandle, xpath + "/ceilingPanels");
             } catch(const std::exception& e) {
@@ -231,7 +231,7 @@ namespace generated
 
         // read element galleys
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/galleys")) {
-            m_galleys = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_galleys = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_galleys->ReadCPACS(tixiHandle, xpath + "/galleys");
             } catch(const std::exception& e) {
@@ -242,7 +242,7 @@ namespace generated
 
         // read element genericFloorModules
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/genericFloorModules")) {
-            m_genericFloorModules = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_genericFloorModules = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_genericFloorModules->ReadCPACS(tixiHandle, xpath + "/genericFloorModules");
             } catch(const std::exception& e) {
@@ -253,7 +253,7 @@ namespace generated
 
         // read element lavatories
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/lavatories")) {
-            m_lavatories = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_lavatories = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_lavatories->ReadCPACS(tixiHandle, xpath + "/lavatories");
             } catch(const std::exception& e) {
@@ -264,7 +264,7 @@ namespace generated
 
         // read element classDividers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/classDividers")) {
-            m_classDividers = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_classDividers = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_classDividers->ReadCPACS(tixiHandle, xpath + "/classDividers");
             } catch(const std::exception& e) {
@@ -275,7 +275,7 @@ namespace generated
 
         // read element cargoContainers
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/cargoContainers")) {
-            m_cargoContainers = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_cargoContainers = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_cargoContainers->ReadCPACS(tixiHandle, xpath + "/cargoContainers");
             } catch(const std::exception& e) {
@@ -286,7 +286,7 @@ namespace generated
 
         // read element deckDoors
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/deckDoors")) {
-            m_deckDoors = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_deckDoors = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
             try {
                 m_deckDoors->ReadCPACS(tixiHandle, xpath + "/deckDoors");
             } catch(const std::exception& e) {
@@ -298,7 +298,7 @@ namespace generated
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
     }
 
-    void CPACSDeck::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSDecksDeck::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         // write attribute uID
         tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", m_uID);
@@ -346,7 +346,7 @@ namespace generated
 
         // write element deckType
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/deckType");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/deckType", CPACSDeck_deckTypeToString(m_deckType));
+        tixi::TixiSaveElement(tixiHandle, xpath + "/deckType", CPACSDecksDeck_deckTypeToString(m_deckType));
 
         // write element cabinGeometry
         if (m_cabinGeometry) {
@@ -493,12 +493,12 @@ namespace generated
 
     }
 
-    const std::string& CPACSDeck::GetUID() const
+    const std::string& CPACSDecksDeck::GetUID() const
     {
         return m_uID;
     }
 
-    void CPACSDeck::SetUID(const std::string& value)
+    void CPACSDecksDeck::SetUID(const std::string& value)
     {
         if (m_uidMgr && value != m_uID) {
             if (m_uID.empty()) {
@@ -511,32 +511,32 @@ namespace generated
         m_uID = value;
     }
 
-    const std::string& CPACSDeck::GetName() const
+    const std::string& CPACSDecksDeck::GetName() const
     {
         return m_name;
     }
 
-    void CPACSDeck::SetName(const std::string& value)
+    void CPACSDecksDeck::SetName(const std::string& value)
     {
         m_name = value;
     }
 
-    const boost::optional<std::string>& CPACSDeck::GetDescription() const
+    const boost::optional<std::string>& CPACSDecksDeck::GetDescription() const
     {
         return m_description;
     }
 
-    void CPACSDeck::SetDescription(const boost::optional<std::string>& value)
+    void CPACSDecksDeck::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
     }
 
-    const boost::optional<std::string>& CPACSDeck::GetParentUID() const
+    const boost::optional<std::string>& CPACSDecksDeck::GetParentUID() const
     {
         return m_parentUID;
     }
 
-    void CPACSDeck::SetParentUID(const boost::optional<std::string>& value)
+    void CPACSDecksDeck::SetParentUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr) {
             if (m_parentUID && !m_parentUID->empty()) m_uidMgr->TryUnregisterReference(*m_parentUID, *this);
@@ -545,12 +545,12 @@ namespace generated
         m_parentUID = value;
     }
 
-    const boost::optional<std::string>& CPACSDeck::GetFloorStructureUID() const
+    const boost::optional<std::string>& CPACSDecksDeck::GetFloorStructureUID() const
     {
         return m_floorStructureUID;
     }
 
-    void CPACSDeck::SetFloorStructureUID(const boost::optional<std::string>& value)
+    void CPACSDecksDeck::SetFloorStructureUID(const boost::optional<std::string>& value)
     {
         if (m_uidMgr) {
             if (m_floorStructureUID && !m_floorStructureUID->empty()) m_uidMgr->TryUnregisterReference(*m_floorStructureUID, *this);
@@ -559,318 +559,318 @@ namespace generated
         m_floorStructureUID = value;
     }
 
-    const CCPACSTransformation& CPACSDeck::GetTransformation() const
+    const CCPACSTransformation& CPACSDecksDeck::GetTransformation() const
     {
         return m_transformation;
     }
 
-    CCPACSTransformation& CPACSDeck::GetTransformation()
+    CCPACSTransformation& CPACSDecksDeck::GetTransformation()
     {
         return m_transformation;
     }
 
-    const CPACSDeck_deckType& CPACSDeck::GetDeckType() const
+    const CPACSDecksDeck_deckType& CPACSDecksDeck::GetDeckType() const
     {
         return m_deckType;
     }
 
-    void CPACSDeck::SetDeckType(const CPACSDeck_deckType& value)
+    void CPACSDecksDeck::SetDeckType(const CPACSDecksDeck_deckType& value)
     {
         m_deckType = value;
     }
 
-    const boost::optional<CPACSCabinGeometry>& CPACSDeck::GetCabinGeometry() const
+    const boost::optional<CPACSCabinGeometry>& CPACSDecksDeck::GetCabinGeometry() const
     {
         return m_cabinGeometry;
     }
 
-    boost::optional<CPACSCabinGeometry>& CPACSDeck::GetCabinGeometry()
+    boost::optional<CPACSCabinGeometry>& CPACSDecksDeck::GetCabinGeometry()
     {
         return m_cabinGeometry;
     }
 
-    const boost::optional<CPACSSeatModules>& CPACSDeck::GetSeatModules() const
+    const boost::optional<CPACSSeatModules>& CPACSDecksDeck::GetSeatModules() const
     {
         return m_seatModules;
     }
 
-    boost::optional<CPACSSeatModules>& CPACSDeck::GetSeatModules()
+    boost::optional<CPACSSeatModules>& CPACSDecksDeck::GetSeatModules()
     {
         return m_seatModules;
     }
 
-    const boost::optional<CPACSCabinAisles>& CPACSDeck::GetAisles() const
+    const boost::optional<CPACSCabinAisles>& CPACSDecksDeck::GetAisles() const
     {
         return m_aisles;
     }
 
-    boost::optional<CPACSCabinAisles>& CPACSDeck::GetAisles()
+    boost::optional<CPACSCabinAisles>& CPACSDecksDeck::GetAisles()
     {
         return m_aisles;
     }
 
-    const boost::optional<CPACSCabinSpaces>& CPACSDeck::GetSpaces() const
+    const boost::optional<CPACSCabinSpaces>& CPACSDecksDeck::GetSpaces() const
     {
         return m_spaces;
     }
 
-    boost::optional<CPACSCabinSpaces>& CPACSDeck::GetSpaces()
+    boost::optional<CPACSCabinSpaces>& CPACSDecksDeck::GetSpaces()
     {
         return m_spaces;
     }
 
-    const boost::optional<CPACSSidewallPanels>& CPACSDeck::GetSidewallPanels() const
+    const boost::optional<CPACSSidewallPanels>& CPACSDecksDeck::GetSidewallPanels() const
     {
         return m_sidewallPanels;
     }
 
-    boost::optional<CPACSSidewallPanels>& CPACSDeck::GetSidewallPanels()
+    boost::optional<CPACSSidewallPanels>& CPACSDecksDeck::GetSidewallPanels()
     {
         return m_sidewallPanels;
     }
 
-    const boost::optional<CPACSLuggageCompartments>& CPACSDeck::GetLuggageCompartments() const
+    const boost::optional<CPACSLuggageCompartments>& CPACSDecksDeck::GetLuggageCompartments() const
     {
         return m_luggageCompartments;
     }
 
-    boost::optional<CPACSLuggageCompartments>& CPACSDeck::GetLuggageCompartments()
+    boost::optional<CPACSLuggageCompartments>& CPACSDecksDeck::GetLuggageCompartments()
     {
         return m_luggageCompartments;
     }
 
-    const boost::optional<CPACSCeilingPanels>& CPACSDeck::GetCeilingPanels() const
+    const boost::optional<CPACSCeilingPanels>& CPACSDecksDeck::GetCeilingPanels() const
     {
         return m_ceilingPanels;
     }
 
-    boost::optional<CPACSCeilingPanels>& CPACSDeck::GetCeilingPanels()
+    boost::optional<CPACSCeilingPanels>& CPACSDecksDeck::GetCeilingPanels()
     {
         return m_ceilingPanels;
     }
 
-    const boost::optional<CPACSGalleys>& CPACSDeck::GetGalleys() const
+    const boost::optional<CPACSGalleys>& CPACSDecksDeck::GetGalleys() const
     {
         return m_galleys;
     }
 
-    boost::optional<CPACSGalleys>& CPACSDeck::GetGalleys()
+    boost::optional<CPACSGalleys>& CPACSDecksDeck::GetGalleys()
     {
         return m_galleys;
     }
 
-    const boost::optional<CPACSGenericFloorModules>& CPACSDeck::GetGenericFloorModules() const
+    const boost::optional<CPACSGenericFloorModules>& CPACSDecksDeck::GetGenericFloorModules() const
     {
         return m_genericFloorModules;
     }
 
-    boost::optional<CPACSGenericFloorModules>& CPACSDeck::GetGenericFloorModules()
+    boost::optional<CPACSGenericFloorModules>& CPACSDecksDeck::GetGenericFloorModules()
     {
         return m_genericFloorModules;
     }
 
-    const boost::optional<CPACSLavatories>& CPACSDeck::GetLavatories() const
+    const boost::optional<CPACSLavatories>& CPACSDecksDeck::GetLavatories() const
     {
         return m_lavatories;
     }
 
-    boost::optional<CPACSLavatories>& CPACSDeck::GetLavatories()
+    boost::optional<CPACSLavatories>& CPACSDecksDeck::GetLavatories()
     {
         return m_lavatories;
     }
 
-    const boost::optional<CPACSClassDividers>& CPACSDeck::GetClassDividers() const
+    const boost::optional<CPACSClassDividers>& CPACSDecksDeck::GetClassDividers() const
     {
         return m_classDividers;
     }
 
-    boost::optional<CPACSClassDividers>& CPACSDeck::GetClassDividers()
+    boost::optional<CPACSClassDividers>& CPACSDecksDeck::GetClassDividers()
     {
         return m_classDividers;
     }
 
-    const boost::optional<CPACSCargoContainers>& CPACSDeck::GetCargoContainers() const
+    const boost::optional<CPACSCargoContainers>& CPACSDecksDeck::GetCargoContainers() const
     {
         return m_cargoContainers;
     }
 
-    boost::optional<CPACSCargoContainers>& CPACSDeck::GetCargoContainers()
+    boost::optional<CPACSCargoContainers>& CPACSDecksDeck::GetCargoContainers()
     {
         return m_cargoContainers;
     }
 
-    const boost::optional<CPACSDeckDoors>& CPACSDeck::GetDeckDoors() const
+    const boost::optional<CPACSDeckDoors>& CPACSDecksDeck::GetDeckDoors() const
     {
         return m_deckDoors;
     }
 
-    boost::optional<CPACSDeckDoors>& CPACSDeck::GetDeckDoors()
+    boost::optional<CPACSDeckDoors>& CPACSDecksDeck::GetDeckDoors()
     {
         return m_deckDoors;
     }
 
-    CPACSCabinGeometry& CPACSDeck::GetCabinGeometry(CreateIfNotExistsTag)
+    CPACSCabinGeometry& CPACSDecksDeck::GetCabinGeometry(CreateIfNotExistsTag)
     {
         if (!m_cabinGeometry)
-            m_cabinGeometry = boost::in_place(reinterpret_cast<CCPACSDeck*>(this));
+            m_cabinGeometry = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this));
         return *m_cabinGeometry;
     }
 
-    void CPACSDeck::RemoveCabinGeometry()
+    void CPACSDecksDeck::RemoveCabinGeometry()
     {
         m_cabinGeometry = boost::none;
     }
 
-    CPACSSeatModules& CPACSDeck::GetSeatModules(CreateIfNotExistsTag)
+    CPACSSeatModules& CPACSDecksDeck::GetSeatModules(CreateIfNotExistsTag)
     {
         if (!m_seatModules)
-            m_seatModules = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_seatModules = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_seatModules;
     }
 
-    void CPACSDeck::RemoveSeatModules()
+    void CPACSDecksDeck::RemoveSeatModules()
     {
         m_seatModules = boost::none;
     }
 
-    CPACSCabinAisles& CPACSDeck::GetAisles(CreateIfNotExistsTag)
+    CPACSCabinAisles& CPACSDecksDeck::GetAisles(CreateIfNotExistsTag)
     {
         if (!m_aisles)
-            m_aisles = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_aisles = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_aisles;
     }
 
-    void CPACSDeck::RemoveAisles()
+    void CPACSDecksDeck::RemoveAisles()
     {
         m_aisles = boost::none;
     }
 
-    CPACSCabinSpaces& CPACSDeck::GetSpaces(CreateIfNotExistsTag)
+    CPACSCabinSpaces& CPACSDecksDeck::GetSpaces(CreateIfNotExistsTag)
     {
         if (!m_spaces)
-            m_spaces = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_spaces = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_spaces;
     }
 
-    void CPACSDeck::RemoveSpaces()
+    void CPACSDecksDeck::RemoveSpaces()
     {
         m_spaces = boost::none;
     }
 
-    CPACSSidewallPanels& CPACSDeck::GetSidewallPanels(CreateIfNotExistsTag)
+    CPACSSidewallPanels& CPACSDecksDeck::GetSidewallPanels(CreateIfNotExistsTag)
     {
         if (!m_sidewallPanels)
-            m_sidewallPanels = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_sidewallPanels = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_sidewallPanels;
     }
 
-    void CPACSDeck::RemoveSidewallPanels()
+    void CPACSDecksDeck::RemoveSidewallPanels()
     {
         m_sidewallPanels = boost::none;
     }
 
-    CPACSLuggageCompartments& CPACSDeck::GetLuggageCompartments(CreateIfNotExistsTag)
+    CPACSLuggageCompartments& CPACSDecksDeck::GetLuggageCompartments(CreateIfNotExistsTag)
     {
         if (!m_luggageCompartments)
-            m_luggageCompartments = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_luggageCompartments = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_luggageCompartments;
     }
 
-    void CPACSDeck::RemoveLuggageCompartments()
+    void CPACSDecksDeck::RemoveLuggageCompartments()
     {
         m_luggageCompartments = boost::none;
     }
 
-    CPACSCeilingPanels& CPACSDeck::GetCeilingPanels(CreateIfNotExistsTag)
+    CPACSCeilingPanels& CPACSDecksDeck::GetCeilingPanels(CreateIfNotExistsTag)
     {
         if (!m_ceilingPanels)
-            m_ceilingPanels = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_ceilingPanels = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_ceilingPanels;
     }
 
-    void CPACSDeck::RemoveCeilingPanels()
+    void CPACSDecksDeck::RemoveCeilingPanels()
     {
         m_ceilingPanels = boost::none;
     }
 
-    CPACSGalleys& CPACSDeck::GetGalleys(CreateIfNotExistsTag)
+    CPACSGalleys& CPACSDecksDeck::GetGalleys(CreateIfNotExistsTag)
     {
         if (!m_galleys)
-            m_galleys = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_galleys = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_galleys;
     }
 
-    void CPACSDeck::RemoveGalleys()
+    void CPACSDecksDeck::RemoveGalleys()
     {
         m_galleys = boost::none;
     }
 
-    CPACSGenericFloorModules& CPACSDeck::GetGenericFloorModules(CreateIfNotExistsTag)
+    CPACSGenericFloorModules& CPACSDecksDeck::GetGenericFloorModules(CreateIfNotExistsTag)
     {
         if (!m_genericFloorModules)
-            m_genericFloorModules = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_genericFloorModules = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_genericFloorModules;
     }
 
-    void CPACSDeck::RemoveGenericFloorModules()
+    void CPACSDecksDeck::RemoveGenericFloorModules()
     {
         m_genericFloorModules = boost::none;
     }
 
-    CPACSLavatories& CPACSDeck::GetLavatories(CreateIfNotExistsTag)
+    CPACSLavatories& CPACSDecksDeck::GetLavatories(CreateIfNotExistsTag)
     {
         if (!m_lavatories)
-            m_lavatories = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_lavatories = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_lavatories;
     }
 
-    void CPACSDeck::RemoveLavatories()
+    void CPACSDecksDeck::RemoveLavatories()
     {
         m_lavatories = boost::none;
     }
 
-    CPACSClassDividers& CPACSDeck::GetClassDividers(CreateIfNotExistsTag)
+    CPACSClassDividers& CPACSDecksDeck::GetClassDividers(CreateIfNotExistsTag)
     {
         if (!m_classDividers)
-            m_classDividers = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_classDividers = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_classDividers;
     }
 
-    void CPACSDeck::RemoveClassDividers()
+    void CPACSDecksDeck::RemoveClassDividers()
     {
         m_classDividers = boost::none;
     }
 
-    CPACSCargoContainers& CPACSDeck::GetCargoContainers(CreateIfNotExistsTag)
+    CPACSCargoContainers& CPACSDecksDeck::GetCargoContainers(CreateIfNotExistsTag)
     {
         if (!m_cargoContainers)
-            m_cargoContainers = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_cargoContainers = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_cargoContainers;
     }
 
-    void CPACSDeck::RemoveCargoContainers()
+    void CPACSDecksDeck::RemoveCargoContainers()
     {
         m_cargoContainers = boost::none;
     }
 
-    CPACSDeckDoors& CPACSDeck::GetDeckDoors(CreateIfNotExistsTag)
+    CPACSDeckDoors& CPACSDecksDeck::GetDeckDoors(CreateIfNotExistsTag)
     {
         if (!m_deckDoors)
-            m_deckDoors = boost::in_place(reinterpret_cast<CCPACSDeck*>(this), m_uidMgr);
+            m_deckDoors = boost::in_place(reinterpret_cast<CCPACSDecksDeck*>(this), m_uidMgr);
         return *m_deckDoors;
     }
 
-    void CPACSDeck::RemoveDeckDoors()
+    void CPACSDecksDeck::RemoveDeckDoors()
     {
         m_deckDoors = boost::none;
     }
 
-    const CTiglUIDObject* CPACSDeck::GetNextUIDObject() const
+    const CTiglUIDObject* CPACSDecksDeck::GetNextUIDObject() const
     {
         return this;
     }
 
-    void CPACSDeck::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
+    void CPACSDecksDeck::NotifyUIDChange(const std::string& oldUid, const std::string& newUid)
     {
         if (m_parentUID && *m_parentUID == oldUid) {
             m_parentUID = newUid;
