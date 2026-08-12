@@ -135,9 +135,9 @@ class CTiglNACACalculator{
         Series series_ = Series::Unknown;
 };
 
-class CTiglNACA4UpperCurve : public MathFunc3d {
+class CTiglNACAUpperCurve : public MathFunc3d {
     public: 
-        TIGL_EXPORT explicit CTiglNACA4UpperCurve( CTiglNACACalculator const& calculator);
+        TIGL_EXPORT explicit CTiglNACAUpperCurve( CTiglNACACalculator const& calculator);
 
         /**
          * @brief Get the X coordinate of the upper curve
@@ -171,14 +171,14 @@ class CTiglNACA4UpperCurve : public MathFunc3d {
          CTiglNACACalculator const& calculator;
 };
 
-class CTiglNACA4LowerCurve : public MathFunc3d {
+class CTiglNACALowerCurve : public MathFunc3d {
     public: 
-        TIGL_EXPORT explicit CTiglNACA4LowerCurve( CTiglNACACalculator const& calculator);
+        TIGL_EXPORT explicit CTiglNACALowerCurve( CTiglNACACalculator const& calculator);
 
         /**
          * @brief Get the X coordinate of the lower curve
          *
-         * Note: t is not the chord fraction x directly - see CTiglNACA4UpperCurve::valueX.
+         * Note: t is not the chord fraction x directly - see CTiglNACAUpperCurve::valueX.
          *
          * @param t
          * @return double

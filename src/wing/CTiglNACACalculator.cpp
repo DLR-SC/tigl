@@ -430,7 +430,7 @@ namespace tigl{
             return result.curve;
             */
 
-            CTiglNACA4UpperCurve upperCurve(*this);
+            CTiglNACAUpperCurve upperCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
@@ -464,7 +464,7 @@ namespace tigl{
             return result.curve;
             */
 
-            CTiglNACA4LowerCurve lowerCurve(*this);
+            CTiglNACALowerCurve lowerCurve(*this);
 
             const double umin = 0.;
             const double umax = 1.;
@@ -476,38 +476,38 @@ namespace tigl{
             return conv.Curve();
         }
 
-        CTiglNACA4UpperCurve::CTiglNACA4UpperCurve( CTiglNACACalculator const& calculator)
+        CTiglNACAUpperCurve::CTiglNACAUpperCurve( CTiglNACACalculator const& calculator)
             : MathFunc3d(), 
             calculator(calculator)
         {}
 
-        double CTiglNACA4UpperCurve::valueX(double t)  {
+        double CTiglNACAUpperCurve::valueX(double t)  {
             gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.X();
         }
-        double CTiglNACA4UpperCurve::valueY(double t)  {
+        double CTiglNACAUpperCurve::valueY(double t)  {
             return 0.0;
         }
-        double CTiglNACA4UpperCurve::valueZ(double t)  {
+        double CTiglNACAUpperCurve::valueZ(double t)  {
             gp_Vec2d vec = calculator.upper_curve(leParam(t));
             return vec.Y();
         }
 
-        CTiglNACA4LowerCurve::CTiglNACA4LowerCurve( CTiglNACACalculator const& calculator)
+        CTiglNACALowerCurve::CTiglNACALowerCurve( CTiglNACACalculator const& calculator)
             : MathFunc3d(), 
             calculator(calculator)
         {}
 
-        double CTiglNACA4LowerCurve::valueX(double t)  {
+        double CTiglNACALowerCurve::valueX(double t)  {
             gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.X();
         }
 
-        double CTiglNACA4LowerCurve::valueY(double t)  {
+        double CTiglNACALowerCurve::valueY(double t)  {
             return 0.0;
         }
 
-        double CTiglNACA4LowerCurve::valueZ(double t)  {
+        double CTiglNACALowerCurve::valueZ(double t)  {
             gp_Vec2d vec = calculator.lower_curve(leParam(t));
             return vec.Y();
         }

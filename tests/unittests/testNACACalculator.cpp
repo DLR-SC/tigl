@@ -69,7 +69,7 @@ TEST(CTiglNACACalculator, naca2212_le_and_te_points){
 
 TEST(CTiglNACACalculator, naca2212_le_and_te_points_with_class_lowerCurve){
     tigl::CTiglNACACalculator  NACA4(tigl::NACA4DigitCode("2212"), 0.00252);  
-    tigl::CTiglNACA4LowerCurve lowerCurve(NACA4);
+    tigl::CTiglNACALowerCurve lowerCurve(NACA4);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.999937), 1e-6); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
     EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125843), 1e-8);
@@ -248,7 +248,7 @@ TEST(CTiglNACACalculator, naca6415_trailingedge_length){
 }
 namespace {
     // Mirrors leParam() in CTiglNACA4Calculator.cpp: the leading-edge reparametrization
-    // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACA4UpperCurve/LowerCurve::valueX/valueZ, so
+    // x(t) = (1+eps)*t*t/(t+eps) used by CTiglNACAUpperCurve/LowerCurve::valueX/valueZ, so
     // these tests can independently compute the expected reparametrized chord fraction.
     double testLeParam(double t)
     {
@@ -258,7 +258,7 @@ namespace {
 }
 TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoord){
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
-    tigl::CTiglNACA4UpperCurve upperCurve(NACA4);
+    tigl::CTiglNACAUpperCurve upperCurve(NACA4);
     ASSERT_EQ(upperCurve.valueY(0.), 0.);
     ASSERT_EQ(upperCurve.valueY(0.5), 0.);
     ASSERT_EQ(upperCurve.valueY(1.), 0.);
@@ -269,7 +269,7 @@ TEST(CTiglNACACalculator, naca2212_upperCurve_ycoord_and_upper_curve_x_and_zcoor
 
 TEST(CTiglNACACalculator, naca2212_lowerCurve_ycoord_and_lower_curve_x_and_zcoord){
     tigl::CTiglNACACalculator NACA4(tigl::NACA4DigitCode("2212"), 15);
-    tigl::CTiglNACA4LowerCurve lowerCurve(NACA4);
+    tigl::CTiglNACALowerCurve lowerCurve(NACA4);
 
     ASSERT_EQ(lowerCurve.valueY(0.), 0.);
     ASSERT_EQ(lowerCurve.valueY(0.5), 0.);
@@ -492,7 +492,7 @@ TEST(CTiglNACACalculator, naca23012_python){
 
 TEST(CTiglNACACalculator, naca22112_le_and_te_points_with_class_lowerCurve){
     tigl::CTiglNACACalculator  NACA5(tigl::NACA5DigitCode("22112"), 0.00252); 
-    tigl::CTiglNACA4LowerCurve lowerCurve(NACA5);
+    tigl::CTiglNACALowerCurve lowerCurve(NACA5);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
     EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125997), 1e-7);//value from airfooilttols.com
@@ -500,7 +500,7 @@ TEST(CTiglNACACalculator, naca22112_le_and_te_points_with_class_lowerCurve){
 
 TEST(CTiglNACACalculator, naca24112_le_and_te_points_with_class_lowerCurve){
     tigl::CTiglNACACalculator  NACA5(tigl::NACA5DigitCode("24112"), 0.00252); 
-    tigl::CTiglNACA4LowerCurve lowerCurve(NACA5);
+    tigl::CTiglNACALowerCurve lowerCurve(NACA5);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.99999999), 1e-6); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
     EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00126000), 1e-6);
@@ -646,7 +646,7 @@ TEST(CTiglNACACalculator, naca5digit_22018_bsplinePoles_fromXML) {
 TEST(CTiglNACACalculator, naca6415_upper_lower_bspline_c1_continuous_everywhere)
 {
     // Strongly cambered profile: exercises the adaptive multi-segment path in
-    // CFunctionToBspline. CTiglNACA4UpperCurve/LowerCurve reparametrize near the leading
+    // CFunctionToBspline. CTiglNACAUpperCurve/LowerCurve reparametrize near the leading
     // edge (see leParam in CTiglNACA4Calculator.cpp), which removes the thickness
     // distribution's sqrt(x) derivative singularity there - so unlike before that
     // reparametrization, every internal knot (including right at the leading/trailing edge)
