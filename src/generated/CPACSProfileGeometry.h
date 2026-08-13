@@ -66,7 +66,7 @@ namespace generated
     /// upper side back to the trailing edge.
     /// Example 2: For a fuselage, the coordinates are
     /// typically given in y and z with x set to "0". Starting point of
-    /// the profile sould be the lowest point (typically in the symmetry
+    /// the profile should be the lowest point (typically in the symmetry
     /// plane), then upwards on the positive y-side up to the highest
     /// point (again, typically in the symmetry plane). Depending on,
     /// whether the fuselage shall be specified with symmetry condition

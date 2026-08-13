@@ -71,9 +71,10 @@ namespace generated
     protected:
         CPACSVersionInfos* m_parent;
 
+        /// Reference to the <version> element in the <header> node, for which additional metadata is specified. The <version> element follows Semantic Versioning 2.0.0 standard, as does the corresponding attribute link.
         std::string m_version;
 
-        /// CPACS version of the dataset
+        /// CPACS version of the dataset according to the Semantic Versioning 2.0.0 standard.
         std::string m_cpacsVersion;
 
         /// Description of CPACS dataset

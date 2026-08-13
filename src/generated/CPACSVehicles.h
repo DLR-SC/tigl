@@ -23,6 +23,7 @@
 #include <tixi.h>
 #include "CPACSAircraft.h"
 #include "CPACSDeckElements.h"
+#include "CPACSEnergyCarriers.h"
 #include "CPACSEngines.h"
 #include "CPACSFlightPoints.h"
 #include "CPACSGlobalPerformanceCases.h"
@@ -48,10 +49,9 @@ namespace generated
 
     /// @brief Vehicles
     /// 
-    /// The vehiclesType contains all vehicle-specific
-    /// data.
-    /// This includes the vehicle itself (i.e. aircraft and rotorcraft ). Furhtermore, components
-    /// (e.g. engines , structuralElements , etc.)
+    /// The vehiclesType contains all vehicle-specific data.
+    /// This includes the vehicle itself (i.e. aircraft and rotorcraft ).
+    /// Furthermore, components (e.g. engines , structuralElements , etc.)
     /// as well as physical properties of materials and fuels can be predefined for easy and consistent reuse via uID -references.
     /// 
     class CPACSVehicles
@@ -80,14 +80,14 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSRotorcraft>& GetRotorcraft() const;
         TIGL_EXPORT virtual boost::optional<CPACSRotorcraft>& GetRotorcraft();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSEngines>& GetEngines() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEngines>& GetEngines();
+
         TIGL_EXPORT virtual const boost::optional<CPACSGlobalPerformanceCases>& GetPerformanceCases() const;
         TIGL_EXPORT virtual boost::optional<CPACSGlobalPerformanceCases>& GetPerformanceCases();
 
         TIGL_EXPORT virtual const boost::optional<CPACSFlightPoints>& GetFlightPoints() const;
         TIGL_EXPORT virtual boost::optional<CPACSFlightPoints>& GetFlightPoints();
-
-        TIGL_EXPORT virtual const boost::optional<CPACSEngines>& GetEngines() const;
-        TIGL_EXPORT virtual boost::optional<CPACSEngines>& GetEngines();
 
         TIGL_EXPORT virtual const boost::optional<CPACSProfiles>& GetProfiles() const;
         TIGL_EXPORT virtual boost::optional<CPACSProfiles>& GetProfiles();
@@ -104,20 +104,23 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSMaterials>& GetMaterials() const;
         TIGL_EXPORT virtual boost::optional<CPACSMaterials>& GetMaterials();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSEnergyCarriers>& GetEnergyCarriers() const;
+        TIGL_EXPORT virtual boost::optional<CPACSEnergyCarriers>& GetEnergyCarriers();
+
         TIGL_EXPORT virtual CPACSAircraft& GetAircraft(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveAircraft();
 
         TIGL_EXPORT virtual CPACSRotorcraft& GetRotorcraft(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveRotorcraft();
 
+        TIGL_EXPORT virtual CPACSEngines& GetEngines(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEngines();
+
         TIGL_EXPORT virtual CPACSGlobalPerformanceCases& GetPerformanceCases(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemovePerformanceCases();
 
         TIGL_EXPORT virtual CPACSFlightPoints& GetFlightPoints(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFlightPoints();
-
-        TIGL_EXPORT virtual CPACSEngines& GetEngines(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveEngines();
 
         TIGL_EXPORT virtual CPACSProfiles& GetProfiles(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveProfiles();
@@ -134,6 +137,9 @@ namespace generated
         TIGL_EXPORT virtual CPACSMaterials& GetMaterials(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveMaterials();
 
+        TIGL_EXPORT virtual CPACSEnergyCarriers& GetEnergyCarriers(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEnergyCarriers();
+
     protected:
         CPACSCpacs* m_parent;
 
@@ -141,14 +147,15 @@ namespace generated
 
         boost::optional<CPACSAircraft>               m_aircraft;
         boost::optional<CPACSRotorcraft>             m_rotorcraft;
+        boost::optional<CPACSEngines>                m_engines;
         boost::optional<CPACSGlobalPerformanceCases> m_performanceCases;
         boost::optional<CPACSFlightPoints>           m_flightPoints;
-        boost::optional<CPACSEngines>                m_engines;
         boost::optional<CPACSProfiles>               m_profiles;
         boost::optional<CPACSStructuralElements>     m_structuralElements;
         boost::optional<CPACSDeckElements>           m_deckElements;
         boost::optional<CPACSSystemElements>         m_systemElements;
         boost::optional<CPACSMaterials>              m_materials;
+        boost::optional<CPACSEnergyCarriers>         m_energyCarriers;
 
     private:
         CPACSVehicles(const CPACSVehicles&) = delete;

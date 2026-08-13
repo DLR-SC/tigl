@@ -38,7 +38,7 @@ namespace generated
     /// @brief pressureBulkheadAssemblyType
     /// 
     /// PressureBulkheadAssembly type, containing pressure
-    /// bulkhead assemblys
+    /// bulkhead assemblies
     /// 
     class CPACSPressureBulkheadAssembly
     {

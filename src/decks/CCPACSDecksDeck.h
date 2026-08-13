@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "generated/CPACSDeck.h"
+#include "generated/CPACSDecksDeck.h"
 #include "CTiglRelativelyPositionedComponent.h"
 
 namespace tigl
@@ -26,14 +26,14 @@ namespace tigl
 
 class CCPACSConfiguration;
 
-class CCPACSDeck : public generated::CPACSDeck, public CTiglRelativelyPositionedComponent
+class CCPACSDecksDeck : public generated::CPACSDecksDeck, public CTiglRelativelyPositionedComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDecksDeck(CCPACSDecks* parent, CTiglUIDManager* uidMgr);
 
     // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSDeck();
+    TIGL_EXPORT virtual ~CCPACSDecksDeck();
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 

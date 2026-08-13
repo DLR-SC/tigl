@@ -55,7 +55,7 @@ namespace generated
     /// In principal a componentSegment can combine any number
     /// of segments. But if in one section two elements are defined, the
     /// componentSegment has to start/end there as no well-defined
-    /// relative coordinats can be defined if steps in the wing occure.
+    /// relative coordinates can be defined if steps in the wing occur.
     /// An example for wing componentSegments can be found in
     /// the picture below:
     /// @see wingcomponentsegments
@@ -70,7 +70,7 @@ namespace generated
     /// mid chord lines of all the segments are used.
     /// The beginning of this line at from-element equals eta = 0, while the end of this line
     /// at the to-element equals eta = 1. All wing positions that lie on the same
-    /// element (segment border) have the same eta coordinate. The points inbetween
+    /// element (segment border) have the same eta coordinate. The points in between
     /// two elements are defined by the iso xsi lines of the segment eta xsi space.
     /// An example for the definition of the relative axes can
     /// be found in the picture below:

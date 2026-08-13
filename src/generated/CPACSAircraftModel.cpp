@@ -113,6 +113,17 @@ namespace generated
             }
         }
 
+        // read element configurationDefinitions
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurationDefinitions")) {
+            m_configurationDefinitions = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+            try {
+                m_configurationDefinitions->ReadCPACS(tixiHandle, xpath + "/configurationDefinitions");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read configurationDefinitions at xpath " << xpath << ": " << e.what();
+                m_configurationDefinitions = boost::none;
+            }
+        }
+
         // read element ducts
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
             m_ducts = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -212,17 +223,6 @@ namespace generated
             }
         }
 
-        // read element configurations
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
-            m_configurations = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
-            try {
-                m_configurations->ReadCPACS(tixiHandle, xpath + "/configurations");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read configurations at xpath " << xpath << ": " << e.what();
-                m_configurations = boost::none;
-            }
-        }
-
         // read element systemArchitectures
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systemArchitectures")) {
             m_systemArchitectures = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
@@ -254,6 +254,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
+            }
+        }
+
+        // write element configurationDefinitions
+        if (m_configurationDefinitions) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/configurationDefinitions");
+            m_configurationDefinitions->WriteCPACS(tixiHandle, xpath + "/configurationDefinitions");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurationDefinitions")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/configurationDefinitions");
             }
         }
 
@@ -356,17 +367,6 @@ namespace generated
             }
         }
 
-        // write element configurations
-        if (m_configurations) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/configurations");
-            m_configurations->WriteCPACS(tixiHandle, xpath + "/configurations");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/configurations")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/configurations");
-            }
-        }
-
         // write element systemArchitectures
         if (m_systemArchitectures) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/systemArchitectures");
@@ -416,6 +416,16 @@ namespace generated
     void CPACSAircraftModel::SetDescription(const boost::optional<std::string>& value)
     {
         m_description = value;
+    }
+
+    const boost::optional<CPACSConfigurationDefinitions>& CPACSAircraftModel::GetConfigurationDefinitions() const
+    {
+        return m_configurationDefinitions;
+    }
+
+    boost::optional<CPACSConfigurationDefinitions>& CPACSAircraftModel::GetConfigurationDefinitions()
+    {
+        return m_configurationDefinitions;
     }
 
     const boost::optional<CCPACSDucts>& CPACSAircraftModel::GetDucts() const
@@ -508,16 +518,6 @@ namespace generated
         return m_genericGeometryComponents;
     }
 
-    const boost::optional<CPACSVehicleConfigurations>& CPACSAircraftModel::GetConfigurations() const
-    {
-        return m_configurations;
-    }
-
-    boost::optional<CPACSVehicleConfigurations>& CPACSAircraftModel::GetConfigurations()
-    {
-        return m_configurations;
-    }
-
     const boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures() const
     {
         return m_systemArchitectures;
@@ -526,6 +526,18 @@ namespace generated
     boost::optional<CPACSSystemArchitectures>& CPACSAircraftModel::GetSystemArchitectures()
     {
         return m_systemArchitectures;
+    }
+
+    CPACSConfigurationDefinitions& CPACSAircraftModel::GetConfigurationDefinitions(CreateIfNotExistsTag)
+    {
+        if (!m_configurationDefinitions)
+            m_configurationDefinitions = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
+        return *m_configurationDefinitions;
+    }
+
+    void CPACSAircraftModel::RemoveConfigurationDefinitions()
+    {
+        m_configurationDefinitions = boost::none;
     }
 
     CCPACSDucts& CPACSAircraftModel::GetDucts(CreateIfNotExistsTag)
@@ -634,18 +646,6 @@ namespace generated
     void CPACSAircraftModel::RemoveGenericGeometryComponents()
     {
         m_genericGeometryComponents = boost::none;
-    }
-
-    CPACSVehicleConfigurations& CPACSAircraftModel::GetConfigurations(CreateIfNotExistsTag)
-    {
-        if (!m_configurations)
-            m_configurations = boost::in_place(reinterpret_cast<CCPACSAircraftModel*>(this), m_uidMgr);
-        return *m_configurations;
-    }
-
-    void CPACSAircraftModel::RemoveConfigurations()
-    {
-        m_configurations = boost::none;
     }
 
     CPACSSystemArchitectures& CPACSAircraftModel::GetSystemArchitectures(CreateIfNotExistsTag)

@@ -38,7 +38,7 @@ namespace generated
     /// @brief cargoDoorsAssemblyType
     /// 
     /// CargoDoorsAssembly type, containing cargo door
-    /// assemblys
+    /// assemblies
     /// 
     class CPACSCargoDoorsAssembly
     {

@@ -50,7 +50,7 @@ CPACSFuselageSections              CCPACSFuselageSections
 CPACSFuselageElement               CCPACSFuselageSectionElement
 CPACSFuselageElements              CCPACSFuselageSectionElements
 
-CPACSDeck                          CCPACSDeck
+CPACSDecksDeck                     CCPACSDecksDeck
 CPACSDeckComponentBase             CCPACSDeckComponentBase
 CPACSDeckComponent2DBase           CCPACSDeckComponent2DBase
 

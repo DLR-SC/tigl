@@ -17,7 +17,7 @@
 
 #include <cassert>
 #include <CCPACSDeckComponentBase.h>
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "CPACSLavatories.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSLavatories::CPACSLavatories(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
+    CPACSLavatories::CPACSLavatories(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSDeck* CPACSLavatories::GetParent() const
+    const CCPACSDecksDeck* CPACSLavatories::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSDeck* CPACSLavatories::GetParent()
+    CCPACSDecksDeck* CPACSLavatories::GetParent()
     {
         return m_parent;
     }

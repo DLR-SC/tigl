@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief compositeLayerType
     /// 
-    /// CompositeLayer type, conatining data of a composite
+    /// CompositeLayer type, containing data of a composite
     /// layer
     /// 
     class CPACSCompositeLayer : public ITiglUIDRefObject

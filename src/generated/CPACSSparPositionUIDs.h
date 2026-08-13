@@ -42,11 +42,11 @@ namespace generated
     /// uIDs. The order of the sparPositionUIDs must be the same as the
     /// order of the points on the real spar (from root to tip or from
     /// tip to root).
-    /// Pleas note: orientation of a spar must be allways
-    /// outbound or allways inbound. A zigzag spar orientation where
+    /// Please note: orientation of a spar must be always
+    /// outbound or always inbound. A zigzag spar orientation where
     /// e.g. the spar starts at the root, goes to the tip and goes back
     /// to another point at the root is not allowed.
-    /// Pleas find below a picture for an example definition
+    /// Please find below a picture for an example definition
     /// of 3 spars in one wing, by using spar position points and spar
     /// segments:
     /// @see spars1

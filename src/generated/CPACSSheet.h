@@ -114,7 +114,7 @@ namespace generated
         std::string                         m_fromPointUID;
 
         /// Continuity definition for profile geometry
-        /// generation. 0= C0 (allows sharp edges, deafault), 1= C1 (defines
+        /// generation. 0= C0 (allows sharp edges, default), 1= C1 (defines
         /// tangential continuity), 2= C2 (defines curvature continuity)
         /// 2=all
         boost::optional<CPACSContinuityAtP> m_continuityAtP1;
@@ -126,7 +126,7 @@ namespace generated
         std::string                         m_toPointUID;
 
         /// Continuity definition for profile geometry
-        /// generation. 0= C0 (allows sharp edges, deafault), 1= C1 (defines
+        /// generation. 0= C0 (allows sharp edges, default), 1= C1 (defines
         /// tangential continuity), 2= C2 (defines curvature continuity)
         /// 2=all
         boost::optional<CPACSContinuityAtP> m_continuityAtP2;
