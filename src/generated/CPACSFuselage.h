@@ -29,6 +29,7 @@
 #include <tixi.h>
 #include "CPACSCompartments.h"
 #include "CPACSDecks.h"
+#include "CPACSLoftContinuity.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -75,6 +76,9 @@ namespace generated
 
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+
+        TIGL_EXPORT virtual const boost::optional<CPACSLoftContinuity>& GetLoftContinuity() const;
+        TIGL_EXPORT virtual void SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value);
 
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
@@ -126,6 +130,8 @@ namespace generated
         std::string                              m_uID;
 
         boost::optional<TiglSymmetryAxis>        m_symmetry;
+
+        boost::optional<CPACSLoftContinuity>     m_loftContinuity;
 
         /// Name of fuselage
         std::string                              m_name;

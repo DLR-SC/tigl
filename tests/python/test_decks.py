@@ -79,7 +79,7 @@ class TestDeckBindings(unittest.TestCase):
         )
         self.assertIsInstance(
             self.deck,
-            configuration.CCPACSDeck,
+            configuration.CCPACSDecksDeck,
         )
         self.assertIsInstance(
             self.component,

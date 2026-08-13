@@ -77,7 +77,7 @@ namespace generated
         /// Frame to which bulkhead is attached to
         std::string m_frameUID;
 
-        /// UID of bulkhead element desription
+        /// UID of bulkhead element description
         std::string m_pressureBulkheadElementUID;
 
     private:

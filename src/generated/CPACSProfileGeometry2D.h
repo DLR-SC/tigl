@@ -66,7 +66,7 @@ namespace generated
     /// +y-profile -> -z_global
     /// Example 2: For a fuselage, the coordinates are
     /// also given in x and z with x as the normalized fuselage height.
-    /// Starting point of the profile sould be the lowest point
+    /// Starting point of the profile should be the lowest point
     /// (typically in the symmetry plane), then upwards on the positive x-side up to the highest
     /// point (again, typically in the symmetry plane). Depending on,
     /// whether the fuselage shall be specified with symmetry condition

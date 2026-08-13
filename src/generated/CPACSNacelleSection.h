@@ -44,11 +44,12 @@ namespace generated
     /// Note : In the current CPACS release, transformations are still labeled as Cartesian coordinates.
     /// It is current work in progress to explicitly introduce cylindrical coordinates.
     /// Until this is implemented in a future CPACS release, the implicit conventions listed below apply:
-    /// Translation component Cylindrical coordinate equivalent Description x ϑ Rotation angle around x y h Horizontal translation z r Radial translation The following example illustrates the setup of a nacelle with 4 sections.
+    /// Translation component Cylindrical coordinate equivalent Description x ϑ Rotation angle around x  y h Horizontal translation z r Radial translation The following example illustrates the setup of a nacelle with 4 sections.
     /// These are rotated by 0, 120, 180 and 240 degrees around the x -axis (given by translation/x ).
     /// To illustrate the possible transformations, the profile of the upper section is shifted slightly further in the negative x -direction ( translation/y ), while the lower section has a smaller radial distance from the rotation axis ( translation/z ).
     /// In addition, the sections are scaled differently ( transformation/scaling ; not shown in the example figures) in order to create a straight trailing edge and to realize a flattened profile near the ground.
-    /// The following example also shows the profile cut-outs due to the radially symmetric inner region of the nacelle defined by the rotationCurve . For detailed information, please refer to the documentation of the rotationCurve element.
+    /// The following example also shows the profile cut-outs due to the radially symmetric inner region of the nacelle defined by the rotationCurve .
+    /// For detailed information, please refer to the documentation of the rotationCurve element.
     /// @see nacelle_sections
     /// The first section is not rotated ( x=ϑ=0 ), but shifted vertically in negative direction ( y=h=-0.257 ).
     /// The radial distance is given by z=r=0.365 :

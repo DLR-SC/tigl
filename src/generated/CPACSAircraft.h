@@ -39,7 +39,7 @@ namespace generated
     /// @brief Aircraft
     /// 
     /// The aircraftType contains a list of aircraft models.
-    /// Note: Since there is no distinction between plural and singular in English, aircraft refers to plural form, while a single aircraft itself is referened as model .
+    /// Note: Since there is no distinction between plural and singular in English, aircraft refers to plural form, while a single aircraft itself is referenced as model .
     /// 
     class CPACSAircraft
     {

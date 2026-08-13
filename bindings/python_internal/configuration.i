@@ -157,10 +157,12 @@
 #include "generated/CPACSNacaProfile.h"
 #include "CTiglNACA4Calculator.h"
 #include "CPACSNacaProfile.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "generated/CPACSDecks.h"
 #include "generated/CPACSCabinGeometryContour.h"
 #include "CCPACSDeckComponentBase.h"
+#include "generated/CPACSFuselageStructuralMounts.h"
+#include "generated/CPACSLoftContinuity.h"
 %}
 
 %feature("autodoc", "3");
@@ -221,12 +223,16 @@
 %boost_optional(tigl::CCPACSCurvePointListXYZ)
 %boost_optional(tigl::CTiglMassInertia)
 %boost_optional(tigl::CTiglPoint)
+%boost_optional(tigl::generated::CPACSFuselageStructuralMounts)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
 %boost_optional(tigl::CCPACSMaterialDefinition)
 %boost_optional(tigl::CCPACSEtaXsiPoint)
 %boost_optional(tigl::CCPACSCurvePoint)
+// Rename due to naming conflict between enums TiglContinuity and generated CPACSLoftContinuity
+%rename(CPACSLoftContinuity_C0) tigl::generated::C0;
+%rename(CPACSLoftContinuity_C2) tigl::generated::C2;
 
 %include "generated/CPACSXsiIsoLine.h"
 %include "generated/CPACSEtaIsoLine.h"
@@ -407,6 +413,7 @@ namespace tigl
 %include "CCPACSStringersAssembly.h"
 %include "generated/CPACSSkinSegments.h"
 %include "generated/CPACSSkin.h"
+%include "generated/CPACSFuselageStructuralMounts.h"
 %include "generated/CPACSFuselageStructure.h"
 %include "CCPACSFuselageStructure.h"
 %include "generated/CPACSFuselageSegments.h"
@@ -414,6 +421,7 @@ namespace tigl
 %include "generated/CPACSFuselageSections.h"
 %include "CCPACSFuselageSections.h"
 %include "generated/CPACSMultiSegmentShape.h"
+%include "generated/CPACSLoftContinuity.h"
 
 %include "generated/CPACSWingSkin.h"
 %include "CPACSRotor_type.h"
@@ -445,7 +453,7 @@ namespace tigl
 %include "generated/CPACSCabinGeometryContour.h"
 %include "generated/CPACSCabinGeometryContours.h"
 %include "generated/CPACSCabinGeometry.h"
-%include "generated/CPACSDeck_deckType.h"
+%include "generated/CPACSDecksDeck_deckType.h"
 
 %ignore tigl::generated::CPACSSeatModules::GetSeatModules;
 %ignore tigl::generated::CPACSCabinAisles::GetCabinAisles;
@@ -474,8 +482,8 @@ namespace tigl
 %include "generated/CPACSDeckDoors.h"
 %include "CCPACSDeckComponentBase.h"
 
-%include "generated/CPACSDeck.h"
-%include "CCPACSDeck.h"
+%include "generated/CPACSDecksDeck.h"
+%include "CCPACSDecksDeck.h"
 
 // --------------- Fuselage tanks -----------------//
 %boost_optional(tigl::generated::CPACSVessels)
@@ -785,7 +793,7 @@ class CCPACSSystemElements;
          tigl::CCPACSFuelTank,
          tigl::CCPACSVessel,
          tigl::CCPACSComponent,
-         tigl::CCPACSDeck,
+         tigl::CCPACSDecksDeck,
          tigl::CCPACSDeckComponentBase
 );
 

@@ -41,19 +41,16 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTracks
 
-    /// @brief Control surface tracks (mechnaical link between control
-    /// surface and parent).
+    /// @brief Control surface tracks (mechnaical link between control surface and parent).
     /// 
-    /// A track generally describes the structural connection between a control surface and a wing (or parent element). For example, a track can be a flap track, a revolute joint connecting an aileron or spoiler, or the kinematics of slats on a wing.
+    /// A track generally describes the structural connection between a control surface and a wing (or parent element).
+    /// For example, a track can be a flap track, a revolute joint connecting an aileron or spoiler, or the kinematics of slats on a wing.
     /// The spanwise position of the track is defined by etaPosition , which refers to the control surface dimensions.
-    /// The structural properties of the track (e.g.
-    /// materials) are defined in trackStructure .
-    /// If an actuator is included into the the track, a
-    /// reference is given in actuator .
-    /// The principal kinematic of the track is defined by
-    /// setting the trackType and trackSubType . Please refer to the
-    /// tables below for setting the trackType and trackSubType parameter. Note, those tables are not final - they are extended
-    /// continuously.
+    /// The structural properties of the track (e.g. materials) are defined in trackStructure .
+    /// If an actuator is included into the the track, a reference is given in actuator .
+    /// The principal kinematic of the track is defined by setting the trackType and trackSubType .
+    /// Please refer to the tables below for setting the trackType and trackSubType parameter.
+    /// Note, those tables are not final - they are extended continuously.
     /// Trailing edge track types
     /// trackType picture description trackSubType picture description 1@see TrackType1
     /// Revolute joint; no actuators; the revolute joint is on TED hinge line. 1@see TrackType1

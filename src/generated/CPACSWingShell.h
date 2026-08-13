@@ -45,7 +45,7 @@ namespace generated
     /// defined. If different skin or stringer properties should be
     /// defined in a special region of the wing this can be done within
     /// 'cells'.
-    /// If the stringer should not be defined explicite, they
+    /// If the stringer should not be defined explicitly, they
     /// can be defined implizite by defining an equivalent material layer
     /// and using a composite as material.
     /// 

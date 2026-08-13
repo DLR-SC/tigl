@@ -49,7 +49,7 @@ namespace generated
     /// Optional. Definition of the parents structure cut out
     /// due to a control surface. The cut out is split into three parts:
     /// cut out of the upper and lower skin and the definition of an
-    /// profile conecting the cut out of the upper and lower skin.
+    /// profile connecting the cut out of the upper and lower skin.
     /// An example for wing cut outs can be found in the
     /// picture below:
     /// @see wingCutOut

@@ -48,7 +48,7 @@ namespace generated
     /// relative to the componentSegment. The WingCutOut defines the area
     /// of the skin that is removed by the LED. Structure is similar to
     /// the wing structure. The mechanical links between the LED and the
-    /// parrent are defined in tracks. The deflection path is described
+    /// parent are defined in tracks. The deflection path is described
     /// in path. Additional actuators, that are not included into a
     /// track, can be defined in actuators.
     /// Leading and trailing edge are defined by the outer

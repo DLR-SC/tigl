@@ -65,7 +65,7 @@ CCPACSTransformation::CCPACSTransformation(CCPACSFuselageSection* parent, CTiglU
 {
 }
 
-CCPACSTransformation::CCPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
+CCPACSTransformation::CCPACSTransformation(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformation(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformation::updateMatrix)
 {

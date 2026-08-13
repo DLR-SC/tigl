@@ -26,12 +26,14 @@
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSWingSparPosition;
 class CCPACSWingRibExplicitPositioning;
 class CCPACSWingRibsPositioning;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSSparPosition
     // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
@@ -43,6 +45,7 @@ namespace generated
     class CPACSCurvePoint
     {
     public:
+        TIGL_EXPORT CPACSCurvePoint(CCPACSWingSparPosition* parent);
         TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent);
         TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibsPositioning* parent);
 
@@ -57,7 +60,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
+            static_assert(std::is_same<P, CCPACSWingSparPosition>::value || std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -67,7 +70,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
+            static_assert(std::is_same<P, CCPACSWingSparPosition>::value || std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }

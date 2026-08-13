@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemPowerDistributionUnit.h"
+#include "CPACSSysElemElectricalDistributionElements.h"
 #include "CPACSSysElemPowerDistributionUnits.h"
-#include "CPACSSystemElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemPowerDistributionUnits::CPACSSysElemPowerDistributionUnits(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemPowerDistributionUnits::CPACSSysElemPowerDistributionUnits(CPACSSysElemElectricalDistributionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemPowerDistributionUnits::GetParent() const
+    const CPACSSysElemElectricalDistributionElements* CPACSSysElemPowerDistributionUnits::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemPowerDistributionUnits::GetParent()
+    CPACSSysElemElectricalDistributionElements* CPACSSysElemPowerDistributionUnits::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnits() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnits() const
     {
         return m_powerDistributionUnits;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnits()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnits()
     {
         return m_powerDistributionUnits;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnitIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(size_t index)
     {
         if (index < 1 || index > GetPowerDistributionUnitCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>::GetPowerDistributionUnit", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetPowerDistributionUnit", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_powerDistributionUnits[index];
     }
 
-    const CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(size_t index) const
     {
         if (index < 1 || index > GetPowerDistributionUnitCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemPowerDistributionUnit>>::GetPowerDistributionUnit", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetPowerDistributionUnit", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_powerDistributionUnits[index];
     }
 
-    CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(const std::string& UID)
     {
         for (auto& elem : m_powerDistributionUnits ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemPowerDistributionUnits::GetPowerDistributionUnit(const std::string& UID) const
     {
         for (auto& elem : m_powerDistributionUnits ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemPowerDistributionUnit& CPACSSysElemPowerDistributionUnits::AddPowerDistributionUnit()
+    CPACSVehicleElementBase& CPACSSysElemPowerDistributionUnits::AddPowerDistributionUnit()
     {
-        m_powerDistributionUnits.push_back(std::make_unique<CPACSSysElemPowerDistributionUnit>(this, m_uidMgr));
+        m_powerDistributionUnits.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_powerDistributionUnits.back();
     }
 
-    void CPACSSysElemPowerDistributionUnits::RemovePowerDistributionUnit(CPACSSysElemPowerDistributionUnit& ref)
+    void CPACSSysElemPowerDistributionUnits::RemovePowerDistributionUnit(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_powerDistributionUnits.size(); i++) {
             if (m_powerDistributionUnits[i].get() == &ref) {

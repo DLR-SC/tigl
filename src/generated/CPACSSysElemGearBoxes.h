@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemGearBox;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemMechanicalConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemMechanicalConversionElements
 
     /// @brief Gear boxes
     /// 
+    /// Container for reusable gear boxes. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemGearBoxes
     {
     public:
-        TIGL_EXPORT CPACSSysElemGearBoxes(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemGearBoxes(CPACSSysElemMechanicalConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemGearBoxes();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemMechanicalConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemMechanicalConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemGearBox>>& GetGearBoxs() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemGearBox>>& GetGearBoxs();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGearBoxs() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetGearBoxs();
 
         TIGL_EXPORT virtual size_t GetGearBoxCount() const;
         TIGL_EXPORT virtual size_t GetGearBoxIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemGearBox& GetGearBox(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemGearBox& GetGearBox(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGearBox(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGearBox(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemGearBox& GetGearBox(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemGearBox& GetGearBox(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetGearBox(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetGearBox(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemGearBox& AddGearBox();
-        TIGL_EXPORT virtual void RemoveGearBox(CPACSSysElemGearBox& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddGearBox();
+        TIGL_EXPORT virtual void RemoveGearBox(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemMechanicalConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemGearBox>> m_gearBoxs;
+        /// Transforms mechanical speed and torque through a geared transmission.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_gearBoxs;
 
     private:
         CPACSSysElemGearBoxes(const CPACSSysElemGearBoxes&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemGearBoxes = generated::CPACSSysElemGearBoxes;
-using CCPACSSysElemGearBox = generated::CPACSSysElemGearBox;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemMechanicalConversionElements = generated::CPACSSysElemMechanicalConversionElements;
 } // namespace tigl
