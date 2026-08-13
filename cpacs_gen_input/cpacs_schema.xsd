@@ -38594,7 +38594,7 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                                 </xsd:restriction>
                             </xsd:simpleContent>
                         </xsd:complexType>
-                    </xsd:element>
+                   </xsd:element>
                     <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType">
                         <xsd:annotation>
                             <xsd:documentation>Optional control devices defining connection-specific operating states</xsd:documentation>
