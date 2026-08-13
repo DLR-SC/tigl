@@ -80,6 +80,10 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
           environments: ${{ inputs.pixienv }}
 
+      - name: Check CPACS schema
+        run: pixi run -e default check-schema
+        if: inputs.os == "ubuntu-latest" && config == "Debug"
+
       # configure, build and install tigl3
       - name: Configure TiGL (Linux, MacOS)
         run: pixi run -e ${{ inputs.pixienv }} configure ${{ inputs.config }} ${{ inputs.nightly }}
