@@ -31,7 +31,7 @@ class CCPACSAircraftModel;
 
 namespace generated
 {
-    class CPACSVehicleConfiguration;
+    class CPACSConfigurationDefinition;
 
     // This class is used in:
     // CPACSAircraftModel
@@ -40,12 +40,12 @@ namespace generated
     /// 
     /// List of vehicle configurations (e.g., setting of control surfaces, landing gear, etc.)
     /// 
-    class CPACSVehicleConfigurations
+    class CPACSConfigurationDefinitions
     {
     public:
-        TIGL_EXPORT CPACSVehicleConfigurations(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSConfigurationDefinitions(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSVehicleConfigurations();
+        TIGL_EXPORT virtual ~CPACSConfigurationDefinitions();
 
         TIGL_EXPORT CCPACSAircraftModel* GetParent();
 
@@ -60,38 +60,38 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleConfiguration>>& GetConfigurations() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleConfiguration>>& GetConfigurations();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSConfigurationDefinition>>& GetConfigurationDefinitions() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSConfigurationDefinition>>& GetConfigurationDefinitions();
 
-        TIGL_EXPORT virtual size_t GetConfigurationCount() const;
-        TIGL_EXPORT virtual size_t GetConfigurationIndex(const std::string& UID) const;
+        TIGL_EXPORT virtual size_t GetConfigurationDefinitionCount() const;
+        TIGL_EXPORT virtual size_t GetConfigurationDefinitionIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSVehicleConfiguration& GetConfiguration(size_t index) const;
-        TIGL_EXPORT virtual CPACSVehicleConfiguration& GetConfiguration(size_t index);
+        TIGL_EXPORT virtual const CPACSConfigurationDefinition& GetConfigurationDefinition(size_t index) const;
+        TIGL_EXPORT virtual CPACSConfigurationDefinition& GetConfigurationDefinition(size_t index);
 
-        TIGL_EXPORT virtual const CPACSVehicleConfiguration& GetConfiguration(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSVehicleConfiguration& GetConfiguration(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSConfigurationDefinition& GetConfigurationDefinition(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSConfigurationDefinition& GetConfigurationDefinition(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSVehicleConfiguration& AddConfiguration();
-        TIGL_EXPORT virtual void RemoveConfiguration(CPACSVehicleConfiguration& ref);
+        TIGL_EXPORT virtual CPACSConfigurationDefinition& AddConfigurationDefinition();
+        TIGL_EXPORT virtual void RemoveConfigurationDefinition(CPACSConfigurationDefinition& ref);
 
     protected:
         CCPACSAircraftModel* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSVehicleConfiguration>> m_configurations;
+        std::vector<std::unique_ptr<CPACSConfigurationDefinition>> m_configurationDefinitions;
 
     private:
-        CPACSVehicleConfigurations(const CPACSVehicleConfigurations&) = delete;
-        CPACSVehicleConfigurations& operator=(const CPACSVehicleConfigurations&) = delete;
+        CPACSConfigurationDefinitions(const CPACSConfigurationDefinitions&) = delete;
+        CPACSConfigurationDefinitions& operator=(const CPACSConfigurationDefinitions&) = delete;
 
-        CPACSVehicleConfigurations(CPACSVehicleConfigurations&&) = delete;
-        CPACSVehicleConfigurations& operator=(CPACSVehicleConfigurations&&) = delete;
+        CPACSConfigurationDefinitions(CPACSConfigurationDefinitions&&) = delete;
+        CPACSConfigurationDefinitions& operator=(CPACSConfigurationDefinitions&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSVehicleConfigurations = generated::CPACSVehicleConfigurations;
-using CCPACSVehicleConfiguration = generated::CPACSVehicleConfiguration;
+using CCPACSConfigurationDefinitions = generated::CPACSConfigurationDefinitions;
+using CCPACSConfigurationDefinition = generated::CPACSConfigurationDefinition;
 } // namespace tigl

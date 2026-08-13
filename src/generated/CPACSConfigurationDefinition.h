@@ -22,7 +22,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSAircraftControlElements.h"
-#include "CPACSInternalPressures.h"
+#include "CPACSStoredEnergyCarriers.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -33,25 +33,24 @@ class CTiglUIDManager;
 
 namespace generated
 {
-    class CPACSVehicleConfigurations;
+    class CPACSConfigurationDefinitions;
 
     // This class is used in:
-    // CPACSVehicleConfigurations
+    // CPACSConfigurationDefinitions
 
-    /// @brief Vehicle configurations
+    /// @brief Vehicle configuration
     /// 
-    /// List of vehicle configurations (e.g., setting of control surfaces, landing gear, etc.)
     /// 
-    class CPACSVehicleConfiguration : public CTiglReqUIDObject
+    class CPACSConfigurationDefinition : public CTiglReqUIDObject
     {
     public:
-        TIGL_EXPORT CPACSVehicleConfiguration(CPACSVehicleConfigurations* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSConfigurationDefinition(CPACSConfigurationDefinitions* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSVehicleConfiguration();
+        TIGL_EXPORT virtual ~CPACSConfigurationDefinition();
 
-        TIGL_EXPORT CPACSVehicleConfigurations* GetParent();
+        TIGL_EXPORT CPACSConfigurationDefinitions* GetParent();
 
-        TIGL_EXPORT const CPACSVehicleConfigurations* GetParent() const;
+        TIGL_EXPORT const CPACSConfigurationDefinitions* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -74,17 +73,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSAircraftControlElements>& GetControlElements() const;
         TIGL_EXPORT virtual boost::optional<CPACSAircraftControlElements>& GetControlElements();
 
-        TIGL_EXPORT virtual const boost::optional<CPACSInternalPressures>& GetInternalPressures() const;
-        TIGL_EXPORT virtual boost::optional<CPACSInternalPressures>& GetInternalPressures();
+        TIGL_EXPORT virtual const boost::optional<CPACSStoredEnergyCarriers>& GetEnergyCarriers() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStoredEnergyCarriers>& GetEnergyCarriers();
 
         TIGL_EXPORT virtual CPACSAircraftControlElements& GetControlElements(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveControlElements();
 
-        TIGL_EXPORT virtual CPACSInternalPressures& GetInternalPressures(CreateIfNotExistsTag);
-        TIGL_EXPORT virtual void RemoveInternalPressures();
+        TIGL_EXPORT virtual CPACSStoredEnergyCarriers& GetEnergyCarriers(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveEnergyCarriers();
 
     protected:
-        CPACSVehicleConfigurations* m_parent;
+        CPACSConfigurationDefinitions* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -98,19 +97,18 @@ namespace generated
 
         boost::optional<CPACSAircraftControlElements> m_controlElements;
 
-        /// Deck configurations
-        boost::optional<CPACSInternalPressures>       m_internalPressures;
+        boost::optional<CPACSStoredEnergyCarriers>    m_energyCarriers;
 
     private:
-        CPACSVehicleConfiguration(const CPACSVehicleConfiguration&) = delete;
-        CPACSVehicleConfiguration& operator=(const CPACSVehicleConfiguration&) = delete;
+        CPACSConfigurationDefinition(const CPACSConfigurationDefinition&) = delete;
+        CPACSConfigurationDefinition& operator=(const CPACSConfigurationDefinition&) = delete;
 
-        CPACSVehicleConfiguration(CPACSVehicleConfiguration&&) = delete;
-        CPACSVehicleConfiguration& operator=(CPACSVehicleConfiguration&&) = delete;
+        CPACSConfigurationDefinition(CPACSConfigurationDefinition&&) = delete;
+        CPACSConfigurationDefinition& operator=(CPACSConfigurationDefinition&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSVehicleConfiguration = generated::CPACSVehicleConfiguration;
-using CCPACSVehicleConfigurations = generated::CPACSVehicleConfigurations;
+using CCPACSConfigurationDefinition = generated::CPACSConfigurationDefinition;
+using CCPACSConfigurationDefinitions = generated::CPACSConfigurationDefinitions;
 } // namespace tigl

@@ -28,22 +28,20 @@
 namespace tigl
 {
 class CTiglUIDObject;
-class CCPACSDeck;
+class CCPACSDecksDeck;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSDeck
+    // CPACSDecksDeck
 
     /// @brief Geometry
     /// 
-    /// [ WARNING: This type is known to be susceptible to
-    /// inconsistencies and might therefore be removed in a future version of CPACS]
+    /// [ WARNING : This type is known to be susceptible to inconsistencies and might therefore be removed in a future version of CPACS]
     /// The geometry of the cabin roughly corresponds to the available design space in the cabin.
     /// It is given in terms of constant height contour lines.
     /// The lines all share a common x -vector.
-    /// The y vector provides the lateral
-    /// contour at Z-coordinate provided by the constant value z .
+    /// The y vector provides the lateral contour at z-coordinate provided by the constant value z .
     /// One or more contour lines can be given.
     /// The cabin geometry is assumed to be symmetric.
     /// @see deckContours
@@ -51,13 +49,13 @@ namespace generated
     class CPACSCabinGeometry
     {
     public:
-        TIGL_EXPORT CPACSCabinGeometry(CCPACSDeck* parent);
+        TIGL_EXPORT CPACSCabinGeometry(CCPACSDecksDeck* parent);
 
         TIGL_EXPORT virtual ~CPACSCabinGeometry();
 
-        TIGL_EXPORT CCPACSDeck* GetParent();
+        TIGL_EXPORT CCPACSDecksDeck* GetParent();
 
-        TIGL_EXPORT const CCPACSDeck* GetParent() const;
+        TIGL_EXPORT const CCPACSDecksDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -78,7 +76,7 @@ namespace generated
         TIGL_EXPORT virtual CPACSDoubleVectorBase& GetX();
 
     protected:
-        CCPACSDeck* m_parent;
+        CCPACSDecksDeck* m_parent;
 
         /// Name
         std::string                  m_name;

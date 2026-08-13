@@ -24,7 +24,7 @@
 
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "CCPACSDeckComponentBase.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglFusePlane.h"
@@ -61,9 +61,9 @@ protected:
         return GetConfiguration().GetUIDManager();
     }
 
-    const tigl::CCPACSDeck& GetDeck(const std::string& uid) const
+    const tigl::CCPACSDecksDeck& GetDeck(const std::string& uid) const
     {
-        return GetUIDManager().ResolveObject<tigl::CCPACSDeck>(uid);
+        return GetUIDManager().ResolveObject<tigl::CCPACSDecksDeck>(uid);
     }
 
     const tigl::CCPACSDeckComponentBase& GetComponent(const std::string& uid) const

@@ -34,7 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSElementMass
 
-    /// @brief Mass intertia
+    /// @brief Mass inertia
     /// 
     /// massInertiaType
     /// 

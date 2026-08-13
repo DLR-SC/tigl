@@ -38,7 +38,7 @@ namespace generated
     /// @brief cargoCrossBeamStrutsAssemblyType
     /// 
     /// CargoCrossBeamStrutsAssembly type, containing cargo
-    /// crossBeam strut assemblys
+    /// crossBeam strut assemblies
     /// 
     class CPACSCargoCrossBeamStrutsAssembly
     {
