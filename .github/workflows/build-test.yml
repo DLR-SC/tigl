@@ -82,7 +82,7 @@ jobs:
 
       - name: Check CPACS schema
         run: pixi run -e default check-schema
-        if: inputs.os == "ubuntu-latest" && config == "Debug"
+        if: ${{inputs.os == 'ubuntu-latest' && inputs.config == 'Debug' }}
 
       # configure, build and install tigl3
       - name: Configure TiGL (Linux, MacOS)
