@@ -221,6 +221,7 @@
 %boost_optional(tigl::CCPACSCurvePointListXYZ)
 %boost_optional(tigl::CTiglMassInertia)
 %boost_optional(tigl::CTiglPoint)
+%boost_optional(tigl::generated::CPACSFuselageStructuralMounts)
 
 // ---------------- Other ------------------------------//
 %boost_optional(tigl::CCPACSEtaIsoLine)
