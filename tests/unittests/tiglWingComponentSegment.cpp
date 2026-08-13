@@ -768,8 +768,7 @@ TEST_F(WingComponentSegmentSimple, wingInterpolateXsiArgsCheck)
                            "WING_CS1", eta1, xsi1,
                            "WING_CS1", eta2, xsi2,
                            "Cpacs2Test_Wing_Seg_1_2", wantedEta,
-                           intersectionXsi, hasWarning
-    );
+                           intersectionXsi, hasWarning);
     ASSERT_EQ(return_code, TIGL_MATH_ERROR);
 
     // Extrapolation should create correct result
@@ -777,8 +776,7 @@ TEST_F(WingComponentSegmentSimple, wingInterpolateXsiArgsCheck)
                            "WING_CS1", eta1, xsi1,
                            "WING_CS1", eta2, xsi2,
                            "Cpacs2Test_Wing_Seg_1_2", wantedEta,
-                           intersectionXsi, hasWarning
-    );
+                           intersectionXsi, hasWarning);
     ASSERT_EQ(return_code, TIGL_SUCCESS);
     ASSERT_NEAR(*intersectionXsi, 0.64621125123532097, 1e-5);
 
