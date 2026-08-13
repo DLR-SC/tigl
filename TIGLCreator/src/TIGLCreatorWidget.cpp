@@ -857,25 +857,7 @@ void TIGLCreatorWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     setCurrentPoint(point);
-    if (viewerContext->hasSelectedShapes()) {
 
-        auto context = viewerContext->getContext();
-        context->InitSelected();
-        Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
-
-        if (!shape.IsNull())
-        {
-            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
-
-            if (cnamedShape) {
-                auto shapeName = cnamedShape->Name();
-                emit shapeSelected(QString::fromStdString(shapeName));
-            }
-            else {
-                emit nonEditableShapeSelected();
-            }
-        }
-    }
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -924,6 +906,26 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
             break;
         }
     }
+
+    // Process selected shapes after selection is complete
+    if (viewerContext->hasSelectedShapes()) {
+        auto context = viewerContext->getContext();
+        context->InitSelected();
+        Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
+
+        if (!shape.IsNull()) {
+            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+
+            if (cnamedShape) {
+                std::string shapeName = cnamedShape->Name();
+                emit shapeSelected(QString::fromStdString(shapeName));
+            }
+            else {
+                emit nonEditableShapeSelected();
+            }
+        }
+    }
+
     emit selectionChanged();
 }
 
