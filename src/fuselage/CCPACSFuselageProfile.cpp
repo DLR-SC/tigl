@@ -250,8 +250,8 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
             double errApproxCalc = -1.;
             if (approxSettings->GetControlPointNumber_choice1()) {
                 int nrControlPoints = approxSettings->GetControlPointNumber_choice1().value();
-                if (nrControlPoints < 3) {
-                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: controlPointNumber must be 3 or larger");
+                if (nrControlPoints < 4) {
+                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: controlPointNumber must be 4 or larger");
                 }
 
                 CTiglBSplineApproxInterp approx(*occPoints, nrControlPoints, 3, true);
