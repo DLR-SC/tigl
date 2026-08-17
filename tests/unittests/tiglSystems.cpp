@@ -809,6 +809,26 @@ TEST_F(InvalidSystems, InvalidShapes)
                               "Invalid ellipsoid diskAngle: must be in range (0, 2*pi].");
     }
 
+    {
+        const auto& invalidShape = GetComponent("invalidTorus");
+        CheckExceptionMessage(
+            [&] { (void)invalidShape.GetLoft(); },
+            "Invalid torus parameters for uID=\"invalidPredTorus\": majorRadius and minorRadius must be positive.");
+    }
+
+    {
+        const auto& invalidShape = GetComponent("spindleTorus");
+        CheckExceptionMessage(
+            [&] { (void)invalidShape.GetLoft(); },
+            "Invalid torus parameters for uID=\"predSpindleTorus\": minorRadius must be smaller than majorRadius.");
+    }
+
+    {
+        const auto& invalidShape = GetComponent("zeroVolumeTorus");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
+                              "Invalid torus diskAngle: must be in range (0, 2*pi].");
+    }
+
     // It's ok to build a cone as cylinder (ToDo: checking the warning would be nice)
     {
         const auto& cylinder = GetComponent("cylinderCone");
