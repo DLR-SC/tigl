@@ -251,7 +251,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
             if (approxSettings->GetControlPointNumber_choice1()) {
                 int nrControlPoints = approxSettings->GetControlPointNumber_choice1().value();
                 if (nrControlPoints < 4) {
-                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: controlPointNumber must be 4 or larger");
+                    throw CTiglError("CCPACSFuselageProfile::BuildWiresPointList: To construct a valid b-spline of degree 3, at least 4 (degree+1) control points are required.");
                 }
 
                 CTiglBSplineApproxInterp approx(*occPoints, nrControlPoints, 3, true);
