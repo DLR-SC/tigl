@@ -371,7 +371,7 @@
                         <ellipsoids>
                             <ellipsoid>
                                 <radiusX>1.</radiusX>
-                                <diskAngle>0.</diskAngle>
+                                <revolutionAngle>0.</revolutionAngle>
                             </ellipsoid>
                         </ellipsoids>
                     </geometry>
@@ -467,7 +467,7 @@
                             <torus>
                                 <majorRadius>1.</majorRadius>
                                 <minorRadius>0.25</minorRadius>
-                                <diskAngle>0.</diskAngle>
+                                <revolutionAngle>0.</revolutionAngle>
                             </torus>
                         </tori>
                     </geometry>

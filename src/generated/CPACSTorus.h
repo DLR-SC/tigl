@@ -42,7 +42,7 @@ namespace generated
     /// The local component coordinate system of the torus is centered at its
     /// geometric center. The symmetry axis coincides with the local z-axis, the
     /// reference circle lies in the plane z = 0.
-    /// The optional diskAngle defines the revolution angle about the local
+    /// The optional revolutionAngle defines the angle of revolution about the local
     /// z-axis. If not specified, it defaults to 2*pi, resulting in a full torus.
     /// 
     class CPACSTorus
@@ -71,8 +71,8 @@ namespace generated
         TIGL_EXPORT virtual const double& GetMinorRadius() const;
         TIGL_EXPORT virtual void SetMinorRadius(const double& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetDiskAngle() const;
-        TIGL_EXPORT virtual void SetDiskAngle(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetRevolutionAngle() const;
+        TIGL_EXPORT virtual void SetRevolutionAngle(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformationSE3>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformationSE3>& GetTransformation();
@@ -95,7 +95,7 @@ namespace generated
 
         /// Revolution angle about the local z-axis
         /// [rad] (if not defined: equals 2*pi)
-        boost::optional<double>                  m_diskAngle;
+        boost::optional<double>                  m_revolutionAngle;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;
 

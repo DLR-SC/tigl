@@ -301,7 +301,7 @@ TEST_F(Systems, TorusGeometry)
 {
     const double eps = 1e-6;
 
-    // torus_1 -> full torus, R = 1.0, r = 0.25, diskAngle defaulted to 2*pi
+    // torus_1 -> full torus, R = 1.0, r = 0.25, revolutionAngle defaulted to 2*pi
     {
         const auto& component = GetComponent("torus_1");
         PNamedShape shape     = component.GetLoft();
@@ -336,7 +336,7 @@ TEST_F(Systems, TorusGeometry)
         EXPECT_NEAR(centroidGlobal->z, 0.0, eps);
     }
 
-    // torus_2 -> R = 1.0, r = 0.25, diskAngle = pi/2
+    // torus_2 -> R = 1.0, r = 0.25, revolutionAngle = pi/2
     {
         const auto& component = GetComponent("torus_2");
         PNamedShape shape     = component.GetLoft();
@@ -355,7 +355,7 @@ TEST_F(Systems, TorusGeometry)
         EXPECT_NEAR(ymax - ymin, 1.25, eps);
         EXPECT_NEAR(zmax - zmin, 0.5, eps);
 
-        // V = diskAngle * R * pi * r^2
+        // V = revolutionAngle * R * pi * r^2
         EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.3084251375340424, eps);
 
         // Centroid on the bisector u = pi/4 at distance R * sin(pi/4) / (pi/4),
@@ -372,7 +372,7 @@ TEST_F(Systems, TorusGeometry)
         EXPECT_NEAR(centroidGlobal->z, 0.0, eps);
     }
 
-    // torus_3 -> R = 0.5, r = 0.45, diskAngle = pi.
+    // torus_3 -> R = 0.5, r = 0.45, revolutionAngle = pi.
     // Near-limit radius ratio: the remaining hole radius is only R - r = 0.05.
     {
         const auto& component = GetComponent("torus_3");
@@ -398,7 +398,7 @@ TEST_F(Systems, TorusGeometry)
         EXPECT_NEAR(centroidLocal.z, 0.0, eps);
     }
 
-    // torus_4 -> R = 1.0, r = 0.25, diskAngle = 3*pi/2, rotated by 90 deg about x
+    // torus_4 -> R = 1.0, r = 0.25, revolutionAngle = 3*pi/2, rotated by 90 deg about x
     {
         const auto& component = GetComponent("torus_4");
         PNamedShape shape     = component.GetLoft();
@@ -806,7 +806,7 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         const auto& invalidShape = GetComponent("zeroVolumeEllipsoid");
         CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
-                              "Invalid ellipsoid diskAngle: must be in range (0, 2*pi].");
+                              "Invalid ellipsoid revolutionAngle: must be in range (0, 2*pi].");
     }
 
     {
@@ -826,7 +826,7 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         const auto& invalidShape = GetComponent("zeroVolumeTorus");
         CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
-                              "Invalid torus diskAngle: must be in range (0, 2*pi].");
+                              "Invalid torus revolutionAngle: must be in range (0, 2*pi].");
     }
 
     // It's ok to build a cone as cylinder (ToDo: checking the warning would be nice)

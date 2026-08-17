@@ -101,9 +101,9 @@ namespace generated
             LOG(ERROR) << "Required element minorRadius is missing at xpath " << xpath;
         }
 
-        // read element diskAngle
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/diskAngle")) {
-            m_diskAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/diskAngle");
+        // read element revolutionAngle
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/revolutionAngle")) {
+            m_revolutionAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/revolutionAngle");
         }
 
         // read element transformation
@@ -129,14 +129,14 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/minorRadius");
         tixi::TixiSaveElement(tixiHandle, xpath + "/minorRadius", m_minorRadius);
 
-        // write element diskAngle
-        if (m_diskAngle) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/diskAngle");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/diskAngle", *m_diskAngle);
+        // write element revolutionAngle
+        if (m_revolutionAngle) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/revolutionAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/revolutionAngle", *m_revolutionAngle);
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/diskAngle");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/revolutionAngle")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/revolutionAngle");
             }
         }
 
@@ -173,14 +173,14 @@ namespace generated
         m_minorRadius = value;
     }
 
-    const boost::optional<double>& CPACSTorus::GetDiskAngle() const
+    const boost::optional<double>& CPACSTorus::GetRevolutionAngle() const
     {
-        return m_diskAngle;
+        return m_revolutionAngle;
     }
 
-    void CPACSTorus::SetDiskAngle(const boost::optional<double>& value)
+    void CPACSTorus::SetRevolutionAngle(const boost::optional<double>& value)
     {
-        m_diskAngle = value;
+        m_revolutionAngle = value;
     }
 
     const boost::optional<CCPACSTransformationSE3>& CPACSTorus::GetTransformation() const

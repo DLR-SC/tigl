@@ -759,7 +759,7 @@
                             <torus>
                                 <majorRadius>1.</majorRadius>
                                 <minorRadius>0.25</minorRadius>
-                                <diskAngle>1.5707963267949</diskAngle>
+                                <revolutionAngle>1.5707963267949</revolutionAngle>
                             </torus>
                         </tori>
                     </geometry>
@@ -771,7 +771,7 @@
                             <torus>
                                 <majorRadius>0.5</majorRadius>
                                 <minorRadius>0.45</minorRadius>
-                                <diskAngle>3.14159265358979</diskAngle>
+                                <revolutionAngle>3.14159265358979</revolutionAngle>
                             </torus>
                         </tori>
                     </geometry>
@@ -783,7 +783,7 @@
                             <torus>
                                 <majorRadius>1.</majorRadius>
                                 <minorRadius>0.25</minorRadius>
-                                <diskAngle>4.71238898038469</diskAngle>
+                                <revolutionAngle>4.71238898038469</revolutionAngle>
                                 <transformation>
                                     <rotation>
                                         <x>90</x>
@@ -1066,7 +1066,7 @@
                                 <radiusX>0.25</radiusX>
                                 <radiusY>1</radiusY>
                                 <radiusZ>0.25</radiusZ>
-                                <diskAngle>3.14159265359</diskAngle>
+                                <revolutionAngle>3.14159265359</revolutionAngle>
                             </ellipsoid>
                         </ellipsoids>
                         <cylinders>

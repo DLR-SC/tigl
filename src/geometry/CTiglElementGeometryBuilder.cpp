@@ -263,14 +263,14 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
     const double radiusX = e.GetRadiusX();
     const double radiusY = e.GetRadiusY().get_value_or(radiusX);
     const double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
-    const double angle   = e.GetDiskAngle().get_value_or(2.0 * M_PI);
+    const double angle   = e.GetRevolutionAngle().get_value_or(2.0 * M_PI);
 
     if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
         throw tigl::CTiglError("Invalid ellipsoid parameters: All radii must be positive.", TIGL_INVALID_VALUE);
     }
 
     if (angle <= 0.0 || angle > 2.0 * M_PI) {
-        throw tigl::CTiglError("Invalid ellipsoid diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+        throw tigl::CTiglError("Invalid ellipsoid revolutionAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
     }
 
     const TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0, angle).Shape();
@@ -295,7 +295,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildTorusShape(const CCPACSTorus& t) 
 {
     const double majorRadius = t.GetMajorRadius();
     const double minorRadius = t.GetMinorRadius();
-    const double diskAngle   = t.GetDiskAngle().get_value_or(2.0 * M_PI);
+    const double revolAngle  = t.GetRevolutionAngle().get_value_or(2.0 * M_PI);
 
     if (majorRadius <= 0.0 || minorRadius <= 0.0) {
         const auto uID = t.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
@@ -312,11 +312,11 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildTorusShape(const CCPACSTorus& t) 
                                TIGL_INVALID_VALUE);
     }
 
-    if (diskAngle <= 0.0 || diskAngle > 2.0 * M_PI) {
-        throw tigl::CTiglError("Invalid torus diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+    if (revolAngle <= 0.0 || revolAngle > 2.0 * M_PI) {
+        throw tigl::CTiglError("Invalid torus revolutionAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
     }
 
-    TopoDS_Shape shape = BRepPrimAPI_MakeTorus(majorRadius, minorRadius, diskAngle).Shape();
+    TopoDS_Shape shape = BRepPrimAPI_MakeTorus(majorRadius, minorRadius, revolAngle).Shape();
 
     // apply transformation if present
     const auto& optTr = t.GetTransformation();
