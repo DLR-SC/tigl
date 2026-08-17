@@ -358,8 +358,9 @@ TEST_F(Systems, TorusGeometry)
         // V = revolutionAngle * R * pi * r^2
         EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.3084251375340424, eps);
 
-        // Centroid on the bisector u = pi/4 at distance R * sin(pi/4) / (pi/4),
-        // which yields 2/pi in both x and y.
+        // Centroid on the bisector u = pi/4 at distance R_eff * sin(pi/4) / (pi/4),
+        // with R_eff = R + r^2 / (4 R): outer parts of the cross section sweep more
+        // volume than inner ones.
         const auto centroidLocal = component.GetCentroidLocal();
         EXPECT_NEAR(centroidLocal.x, 0.6465669563108248, eps);
         EXPECT_NEAR(centroidLocal.y, 0.6465669563108248, eps);
@@ -391,7 +392,8 @@ TEST_F(Systems, TorusGeometry)
 
         EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.9992974456102975, eps);
 
-        // Bisector u = pi/2, distance R * sin(pi/2) / (pi/2) = 1/pi
+        // Bisector u = pi/2, distance R_eff * sin(pi/2) / (pi/2)
+        // with R_eff = R + r^2 / (4 R) = 0.60125
         const auto centroidLocal = component.GetCentroidLocal();
         EXPECT_NEAR(centroidLocal.x, 0.0, eps);
         EXPECT_NEAR(centroidLocal.y, 0.3827676381360083, eps);
