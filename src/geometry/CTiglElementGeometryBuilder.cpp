@@ -29,6 +29,7 @@
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 
@@ -109,6 +110,13 @@ PNamedShape CTiglElementGeometryBuilder::BuildShape() const
         for (size_t i = 1; i <= ellipsoids.GetEllipsoidCount(); ++i) {
             const auto& e = ellipsoids.GetEllipsoid(i);
             addPart("ellipsoid", BuildEllipsoidShape(e), i);
+        }
+    }
+
+    if (const auto& toriOpt = geom.GetTori(); toriOpt) {
+        const auto& tori = *toriOpt;
+        for (size_t i = 1; i <= tori.GetTorusCount(); ++i) {
+            addPart("torus", BuildTorusShape(tori.GetTorus(i)), i);
         }
     }
 
@@ -275,6 +283,43 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
 
     // apply transformation if present
     const auto& optTr = e.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
+}
+
+TopoDS_Shape CTiglElementGeometryBuilder::BuildTorusShape(const CCPACSTorus& t) const
+{
+    const double majorRadius = t.GetMajorRadius();
+    const double minorRadius = t.GetMinorRadius();
+    const double diskAngle   = t.GetDiskAngle().get_value_or(2.0 * M_PI);
+
+    if (majorRadius <= 0.0 || minorRadius <= 0.0) {
+        const auto uID = t.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        throw tigl::CTiglError("Invalid torus parameters for uID=\"" + uID +
+                                   "\": majorRadius and minorRadius must be positive.",
+                               TIGL_INVALID_VALUE);
+    }
+
+    // gp_Torus raises Standard_ConstructionError for a self-intersecting (spindle) torus
+    if (minorRadius >= majorRadius) {
+        const auto uID = t.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        throw tigl::CTiglError("Invalid torus parameters for uID=\"" + uID +
+                                   "\": minorRadius must be smaller than majorRadius.",
+                               TIGL_INVALID_VALUE);
+    }
+
+    if (diskAngle <= 0.0 || diskAngle > 2.0 * M_PI) {
+        throw tigl::CTiglError("Invalid torus diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+    }
+
+    TopoDS_Shape shape = BRepPrimAPI_MakeTorus(majorRadius, minorRadius, diskAngle).Shape();
+
+    // apply transformation if present
+    const auto& optTr = t.GetTransformation();
     if (optTr) {
         const CTiglTransformation tr = optTr->getTransformationMatrix();
         shape                        = tr.Transform(shape);

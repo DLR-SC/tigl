@@ -12848,6 +12848,7 @@ cpacs@dlr.de
                     <xsd:element name="cylinders" minOccurs="0" type="cylindersType"/>
                     <xsd:element name="cones" minOccurs="0" type="conesType"/>
                     <xsd:element name="ellipsoids" minOccurs="0" type="ellipsoidsType"/>
+                    <xsd:element name="tori" minOccurs="0" type="toriType"/>
                     <xsd:element name="multiSegmentShapes" minOccurs="0" type="multiSegmentShapesType"/>
                     <xsd:element name="externals" minOccurs="0" type="externalGeometriesType"/>
                     <xsd:element name="transformation" minOccurs="0" type="transformationType"/>
@@ -39170,6 +39171,71 @@ The fuel tank volume type should also be used for the wing fuel tank</xsd:docume
                             <xsd:documentation>R2: knuckle radius</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="toriType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Tori</ddue:para>
+                    </ddue:summary>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:sequence>
+                    <xsd:element name="torus" maxOccurs="unbounded" type="torusType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="torusType">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <sd:schemaDoc>
+                    <ddue:summary>
+                        <ddue:para>Torus</ddue:para>
+                    </ddue:summary>
+                    <ddue:remarks>
+                        <ddue:content>
+                            <ddue:para>The local component coordinate system of the torus is centered at its
+                            geometric center. The symmetry axis coincides with the local z-axis, the
+                            reference circle lies in the plane z = 0.</ddue:para>
+                            <ddue:para>The optional diskAngle defines the revolution angle about the local
+                            z-axis. If not specified, it defaults to 2*pi, resulting in a full torus.</ddue:para>
+                        </ddue:content>
+                    </ddue:remarks>
+                </sd:schemaDoc>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="complexBaseType">
+                <xsd:all>
+                    <xsd:element name="majorRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Distance from the local z-axis to the
+                            center of the tube [m]</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="minorRadius" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Radius of the tube cross section
+                            [m]</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="diskAngle" minOccurs="0" type="doubleBaseType">
+                        <xsd:annotation>
+                            <xsd:documentation>Revolution angle about the local z-axis
+                            [rad] (if not defined: equals 2*pi)</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="transformation" minOccurs="0" type="transformationSE3Type"/>
                 </xsd:all>
             </xsd:extension>
         </xsd:complexContent>
