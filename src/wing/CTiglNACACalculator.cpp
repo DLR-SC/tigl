@@ -435,7 +435,7 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-9;
+            double tolerance=1e-5;
             int maxDepth = 10;
 
             tigl::CFunctionToBspline conv(upperCurve, umin, umax, degree, tolerance, maxDepth); 
@@ -469,7 +469,7 @@ namespace tigl{
             const double umin = 0.;
             const double umax = 1.;
             int degree = 3;
-            double tolerance=1e-9;
+            double tolerance=1e-5;
             int maxDepth = 10;
 
             tigl::CFunctionToBspline conv(lowerCurve, umin, umax, degree, tolerance, maxDepth);
