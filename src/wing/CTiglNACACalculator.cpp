@@ -31,15 +31,7 @@
 
 namespace
 {
-    // Leading-edge reparametrization: x(t) = (1+eps)*t*t/(t+eps).
-    // Removes the thickness distribution's sqrt(x) derivative singularity at the leading
-    // edge (x(0)=0, x'(0)=0, same as a plain t*t substitution close to t=0), but - unlike a
-    // plain t*t, which reshapes the parametrization over the *entire* chord - relaxes back
-    // towards the identity x(t)~=t once t significantly exceeds eps, so the curve fit away
-    // from the leading edge (and its knot placement) stays close to the original, direct-x
-    // parametrization. A plain t*t was found to shift curve representation enough at
-    // e.g. x=0.25 to break a sibling-component boolean fuse in specific geometries; eps=0.02
-    // keeps the identity-like region starting well before that.
+    // Reparametrization x(t) = (1+eps)*t²/(t+eps) removes the leading-edge thickness singularity without distorting the rest of the chord like a plain t² would.
     double leParam(double t)
     {
         const double eps = 0.02;

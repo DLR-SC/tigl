@@ -86,7 +86,6 @@ void CTiglWingProfileNACA::BuildWires(WireCache& cache) const
     cache.lePoint = gp_Pnt(le_pnt.X(), 0.0, le_pnt.Y());
     cache.tePoint = gp_Pnt(te_pnt.X(), 0.0, te_pnt.Y());
 
-    // build trailing edge
     if (HasBluntTE()) {
 
         double upper_x_coord = upper_coord.X();
@@ -136,7 +135,6 @@ const TopoDS_Edge& CTiglWingProfileNACA::GetLowerWire(TiglShapeModifier mod) con
 // gets the upper and lower wing profile into on edge
 const TopoDS_Edge& CTiglWingProfileNACA::GetUpperLowerWire(TiglShapeModifier mod) const
 {
-    //double te_thickness = calculator.get_trailing_edge_thickness();
     
     if (mod == SHARP_TRAILINGEDGE && HasBluntTE()) {
         LOG(WARNING) << "Profile " << profileUID << ": SHARP_TRAILINGEDGE modifier requested but profile has blunt trailing edge (thickness: " << te_thickness << ")";
@@ -169,7 +167,6 @@ const gp_Pnt & CTiglWingProfileNACA::GetTEPoint() const
 
 bool CTiglWingProfileNACA::HasBluntTE() const
 {
-    //return calculator.get_trailing_edge_thickness() > 0.;
     return te_thickness > 0.;
 }
 }//namespace tigl

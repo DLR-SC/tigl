@@ -412,7 +412,6 @@ TEST(CTiglNACACalculator, naca2412_edge_counter){
 TEST(CTiglNACACalculator, naca22012_le_and_te_points){
     tigl::CTiglNACACalculator  NACA5(tigl::NACA5DigitCode("22112"), 0.00252);
     gp_Vec2d result1 = NACA5.upper_curve(1);
-    //EXPECT_NEAR(result1.X(), (0.30103296264314128), 1e-3); 
     EXPECT_NEAR(result1.Y(), (0.00125923), 1e-6);
 }
 
@@ -450,7 +449,7 @@ TEST(CTiglNACACalculator, naca22112_le_and_te_points_with_class_lowerCurve){
     tigl::CTiglNACALowerCurve lowerCurve(NACA5);
     EXPECT_NEAR(lowerCurve.valueX(1), (0.99999099), 1e-5); 
     EXPECT_NEAR(lowerCurve.valueY(1), 0.0, 1e-8);
-    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125997), 1e-7);//value from airfooilttols.com
+    EXPECT_NEAR(lowerCurve.valueZ(1), (-0.00125997), 1e-7);/
 }
 
 TEST(CTiglNACACalculator, naca24112_le_and_te_points_with_class_lowerCurve){
