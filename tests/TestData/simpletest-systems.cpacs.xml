@@ -292,12 +292,56 @@
                                         </translation>
                                     </transformation>
                                 </component>
+                                <component uID="torus_1">
+                                    <name>Installed torus 1</name>
+                                    <systemElementUID>predTorus_1</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>0</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="torus_2">
+                                    <name>Installed torus 2</name>
+                                    <systemElementUID>predTorus_2</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>5</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="torus_3">
+                                    <name>Installed torus 3</name>
+                                    <systemElementUID>predTorus_3</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>10</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
+                                <component uID="torus_4">
+                                    <name>Installed torus 4</name>
+                                    <systemElementUID>predTorus_4</systemElementUID>
+                                    <transformation>
+                                        <translation>
+                                            <x>20</x>
+                                            <y>15</y>
+                                            <z>0</z>
+                                        </translation>
+                                    </transformation>
+                                </component>
                                 <component uID="electricMotor">
                                     <name>Installed electric motor</name>
                                     <systemElementUID>predElectricMotor</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>20</x>
+                                            <x>25</x>
                                             <y>0</y>
                                             <z>0</z>
                                         </translation>
@@ -308,7 +352,7 @@
                                     <systemElementUID>predExternal</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>20</x>
+                                            <x>25</x>
                                             <y>5</y>
                                             <z>0</z>
                                         </translation>
@@ -322,7 +366,7 @@
                                     <systemElementUID>predCombinedComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>20</x>
+                                            <x>25</x>
                                             <y>10</y>
                                             <z>0</z>
                                         </translation>
@@ -333,7 +377,7 @@
                                     <systemElementUID>predMultiSegmentComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>25</x>
+                                            <x>30</x>
                                             <y>0</y>
                                             <z>0</z>
                                         </translation>
@@ -344,7 +388,7 @@
                                     <systemElementUID>predMultiSegmentComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>25</x>
+                                            <x>30</x>
                                             <y>5</y>
                                             <z>0</z>
                                         </translation>
@@ -358,7 +402,7 @@
                                     <systemElementUID>predComplexMultiSegmentComponent</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>25</x>
+                                            <x>30</x>
                                             <y>10</y>
                                             <z>0</z>
                                         </translation>
@@ -369,7 +413,7 @@
                                     <systemElementUID>predWing</systemElementUID>
                                     <transformation>
                                         <translation>
-                                            <x>25</x>
+                                            <x>30</x>
                                             <y>15</y>
                                             <z>0</z>
                                         </translation>
@@ -697,6 +741,58 @@
                         </ellipsoids>
                     </geometry>
                 </genericElement>
+                <genericElement uID="predTorus_1">
+                    <name>Predefined torus 1</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predTorus_2">
+                    <name>Predefined torus 2</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                                <revolutionAngle>1.5707963267949</revolutionAngle>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predTorus_3">
+                    <name>Predefined torus 3</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>0.5</majorRadius>
+                                <minorRadius>0.45</minorRadius>
+                                <revolutionAngle>3.14159265358979</revolutionAngle>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predTorus_4">
+                    <name>Predefined torus 4</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                                <revolutionAngle>4.71238898038469</revolutionAngle>
+                                <transformation>
+                                    <rotation>
+                                        <x>90</x>
+                                    </rotation>
+                                </transformation>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
                 <genericElement uID="predExternal">
                     <name>Predefined external element</name>
                     <geometry>
@@ -970,7 +1066,7 @@
                                 <radiusX>0.25</radiusX>
                                 <radiusY>1</radiusY>
                                 <radiusZ>0.25</radiusZ>
-                                <diskAngle>3.14159265359</diskAngle>
+                                <revolutionAngle>3.14159265359</revolutionAngle>
                             </ellipsoid>
                         </ellipsoids>
                         <cylinders>

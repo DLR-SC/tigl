@@ -30,6 +30,7 @@
 #include "CPACSExternalGeometries.h"
 #include "CPACSGeometryRepresentation.h"
 #include "CPACSMultiSegmentShapes.h"
+#include "CPACSTori.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "tigl_internal.h"
@@ -112,6 +113,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSEllipsoids>& GetEllipsoids() const;
         TIGL_EXPORT virtual boost::optional<CPACSEllipsoids>& GetEllipsoids();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSTori>& GetTori() const;
+        TIGL_EXPORT virtual boost::optional<CPACSTori>& GetTori();
+
         TIGL_EXPORT virtual const boost::optional<CPACSMultiSegmentShapes>& GetMultiSegmentShapes() const;
         TIGL_EXPORT virtual boost::optional<CPACSMultiSegmentShapes>& GetMultiSegmentShapes();
 
@@ -132,6 +136,9 @@ namespace generated
 
         TIGL_EXPORT virtual CPACSEllipsoids& GetEllipsoids(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEllipsoids();
+
+        TIGL_EXPORT virtual CPACSTori& GetTori(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveTori();
 
         TIGL_EXPORT virtual CPACSMultiSegmentShapes& GetMultiSegmentShapes(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveMultiSegmentShapes();
@@ -159,6 +166,8 @@ namespace generated
         boost::optional<CPACSCones>                  m_cones;
 
         boost::optional<CPACSEllipsoids>             m_ellipsoids;
+
+        boost::optional<CPACSTori>                   m_tori;
 
         boost::optional<CPACSMultiSegmentShapes>     m_multiSegmentShapes;
 
