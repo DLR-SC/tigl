@@ -139,8 +139,8 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         int nrControlPoints = std::get<int>(m_approximationSettings);
         double errApproxCalc = -1.;
 
-        if (nrControlPoints < 3) {
-            throw CTiglError("CTiglApproximateBsplineWire::BuildWire: controlPointNumber must be 3 or larger");
+        if (nrControlPoints < 4) {
+            throw CTiglError("CTiglApproximateBsplineWire::BuildWire: To construct a valid b-spline of degree 3, at least 4 (degree+1) control points are required.");
         }
 
         CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, endTangency);
