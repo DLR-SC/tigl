@@ -58,10 +58,7 @@ class CTiglNACACalculator{
         */
         TIGL_EXPORT CTiglNACACalculator(const NACA4DigitCode& code, double trailing_edge_thickness = 0.);
         TIGL_EXPORT CTiglNACACalculator(const NACA5DigitCode& code, double trailing_edge_thickness = 0.);
-        //TIGL_EXPORT CTiglNACACalculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
-        //TIGL_EXPORT CTiglNACACalculator(double max_camber, double max_camber_position, double reflex , double max_profile_thickness, double trailing_edge_thickness);
 
-        //explicit TIGL_EXPORT CTiglNACACalculator(const ::std::string& naca_code, const double te_thickness);
 
         /**
          * @brief getter for the trailing edge thickness

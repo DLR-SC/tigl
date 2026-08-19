@@ -111,12 +111,12 @@ namespace tigl{
 
         private:
     struct WireCache {
-        TopoDS_Edge               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Edge               lowerWire;      /**< wire of the lower wing profile */
+        TopoDS_Edge               upperWire;      
+        TopoDS_Edge               lowerWire;  
         TopoDS_Edge               trailingEdge; 
         TopoDS_Edge               upperLowerWire;
-        gp_Pnt                    lePoint;              /**< Leading edge point */
-        gp_Pnt                    tePoint;              /**< Trailing edge point */
+        gp_Pnt                    lePoint;              
+        gp_Pnt                    tePoint;              
     };
 
     void InvalidateParent() const;
