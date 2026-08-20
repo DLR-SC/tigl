@@ -37,6 +37,8 @@ class TestFuelTanks(unittest.TestCase):
     TORISPHERICAL_VESSEL_UID = "tank4_torisphericalDome"
     ISOTENSOID_VESSEL_UID = "tank5_isotensoidDome"
 
+    DUCT_UID = "tankDuct_through"
+
     GEOMETRY_TOLERANCE = 1e-2
     POINT_TOLERANCE = 1e-5
 
@@ -382,6 +384,53 @@ class TestFuelTanks(unittest.TestCase):
             str(context.exception),
             self.INVALID_VESSEL_TYPE_MESSAGE,
         )
+
+    def test_ducts_binding(self) -> None:
+        # CCPACSDucts is reachable from the configuration and exposes the enabled flag.
+        self.assertTrue(self.aircraft_config.has_ducts())
+
+        ducts = self.aircraft_config.get_ducts()
+
+        self.assertIsInstance(ducts, configuration.CCPACSDucts)
+        self.assertFalse(ducts.is_enabled())
+        self.assertIsInstance(
+            ducts.get_duct(self.DUCT_UID),
+            configuration.CCPACSDuct,
+        )
+
+    def test_loft_with_duct_cutouts_binding(self) -> None:
+        # Both overloads must be callable, the second one with a Python list of uIDs.
+        ducts = self.aircraft_config.get_ducts()
+        clean_loft = self.segment_vessel.get_loft()
+
+        self.assertIsNotNone(
+            ducts.loft_with_duct_cutouts(clean_loft, self.SEGMENT_VESSEL_UID)
+        )
+        self.assertIsNotNone(
+            ducts.loft_with_duct_cutouts(
+                clean_loft, [self.SEGMENT_VESSEL_UID, self.TANK_UID]
+            )
+        )
+
+    def test_duct_cutout_flag_binding(self) -> None:
+        # The flag is exposed both via the TiGL API and via CCPACSDucts.
+        ducts = self.aircraft_config.get_ducts()
+
+        try:
+            self.tigl.configurationSetWithDuctCutouts(True)
+
+            self.assertTrue(ducts.is_enabled())
+            self.assertTrue(self.tigl.configurationGetWithDuctCutouts())
+
+            # The vessel loft reacts to the flag.
+            self.assertLess(
+                self.segment_vessel.get_geometric_volume(),
+                6.57,
+            )
+        finally:
+            self.tigl.configurationSetWithDuctCutouts(False)
+
+        self.assertFalse(ducts.is_enabled())
 
     def test_structure(self) -> None:
         # Vessel structures expose optional frame, stringer, and wall assemblies.
