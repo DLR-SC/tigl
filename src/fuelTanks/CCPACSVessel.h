@@ -26,6 +26,8 @@
 #include "generated/CPACSVessel.h"
 #include "CTiglRelativelyPositionedComponent.h"
 #include "CCPACSConfiguration.h"
+#include "Cache.h"
+#include "PNamedShape.h"
 
 #include <BRepBuilderAPI_MakeWire.hxx>
 
@@ -39,6 +41,7 @@ public:
 
     // Get the parent configuration
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 
     // Get the default uID
     TIGL_EXPORT std::string GetDefaultedUID() const override;
@@ -97,14 +100,19 @@ public:
     TIGL_EXPORT bool HasIsotensoidDome() const;
 
 protected:
-    // Build the loft
+    // Build the loft, including duct cutouts if ducts are present and enabled
     PNamedShape BuildLoft() const override;
+    // Build the loft without any duct cutouts
+    void BuildCleanLoft(PNamedShape& cache) const;
 
     // Set the face traits
     void SetFaceTraitsFromSegments(PNamedShape loft) const;
     void SetFaceTraitsFromParams(PNamedShape loft) const;
 
 private:
+    // Cached loft without duct cutouts
+    Cache<PNamedShape, CCPACSVessel> cleanLoft;
+
     void InvalidateImpl(const boost::optional<std::string>&) const override;
 
     inline static const std::string _vesselTypeException =

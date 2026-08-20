@@ -28,6 +28,7 @@
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSFuelTank.h"
+#include "CCPACSDucts.h"
 #include "generated/CPACSFuelTanks.h"
 #include "generated/CPACSDomeType.h"
 #include "generated/CPACSEllipsoidDome.h"
@@ -50,20 +51,35 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 
+#include <utility>
+
 namespace tigl
 {
 
 CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSVessel(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
+    , cleanLoft(*this, &CCPACSVessel::BuildCleanLoft)
 {
     m_transformation.setScalingType(ABS_LOCAL);
     m_transformation.setRotationType(ABS_LOCAL);
+
+    // Register invalidation in CCPACSDucts, so that the vessel loft is rebuilt
+    // whenever a duct changes or the duct cutout flag is toggled.
+    auto& config = GetConfiguration();
+    if (config.HasDucts()) {
+        config.GetDucts()->RegisterInvalidationCallback([this]() { this->Invalidate(); });
+    }
 }
 
 CCPACSConfiguration const& CCPACSVessel::GetConfiguration() const
 {
     return GetParent()->GetParent()->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSVessel::GetConfiguration()
+{
+    return const_cast<CCPACSConfiguration&>(std::as_const(*this).GetConfiguration());
 }
 
 std::string CCPACSVessel::GetDefaultedUID() const
@@ -581,7 +597,7 @@ void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
     loftShape = TransformedShape;
 }
 
-PNamedShape CCPACSVessel::BuildLoft() const
+void CCPACSVessel::BuildCleanLoft(PNamedShape& cache) const
 {
     TopoDS_Shape loftShape;
     std::string loftName      = GetUID();
@@ -591,19 +607,30 @@ PNamedShape CCPACSVessel::BuildLoft() const
         BuildShapeFromSegments(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraitsFromSegments(loft);
-        return loft;
+        cache = loft;
     }
     else if (m_domeType_choice2) {
         BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraitsFromParams(loft);
-        return loft;
+        cache = loft;
     }
     else {
         throw CTiglError("No valid combination of segments and sections or parametric specification for lofting of "
                          "tank vessel available.",
                          TIGL_ERROR);
     }
+}
+
+PNamedShape CCPACSVessel::BuildLoft() const
+{
+    if (!GetConfiguration().HasDucts()) {
+        return *cleanLoft;
+    }
+
+    // A duct may be excluded either on vessel level or on fuel tank level
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoft,
+                                                              {GetUID(), GetParent()->GetParent()->GetUID()});
 }
 
 CCPACSGuideCurve& CCPACSVessel::GetGuideCurveSegment(std::string uid)
@@ -734,6 +761,7 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
 void CCPACSVessel::InvalidateImpl(const boost::optional<std::string>&) const
 {
     loft.clear();
+    cleanLoft.clear();
     if (m_segments_choice1) {
         m_segments_choice1.get().Invalidate();
     }
