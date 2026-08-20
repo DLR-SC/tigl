@@ -18,6 +18,207 @@
     <aircraft>
       <model uID="testAircraft">
         <name>Test aircraft</name>
+        <ducts>
+          <duct uID="tankDuct_through">
+            <name>Duct through the vessels</name>
+            <description>Duct on the fuselage axis, running through tank1_outerVessel and tank3_sphericalDome and protruding on both ends of each. Cross section radius 0.3.</description>
+            <transformation>
+              <translation>
+                <x>0.5</x>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="tankDuct_through_section1">
+                <name>Section 1</name>
+                <transformation/>
+                <elements>
+                  <element uID="tankDuct_through_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.3</y>
+                        <z>0.3</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="tankDuct_through_section2">
+                <name>Section 2</name>
+                <transformation>
+                  <translation>
+                    <x>10.5</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="tankDuct_through_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.3</y>
+                        <z>0.3</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="tankDuct_through_segment1">
+                <name>Segment 1</name>
+                <fromElementUID>tankDuct_through_section1_element1</fromElementUID>
+                <toElementUID>tankDuct_through_section2_element1</toElementUID>
+              </segment>
+            </segments>
+          </duct>
+          <duct uID="tankDuct_excludedVessel">
+            <name>Duct excluded on vessel level</name>
+            <description>Duct inside tank1_outerVessel only, offset radially. Excluded by its assembly via the vessel uID, so it must not change any geometry.</description>
+            <transformation>
+              <translation>
+                <x>0.5</x>
+                <y>0.6</y>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="tankDuct_excludedVessel_section1">
+                <name>Section 1</name>
+                <transformation/>
+                <elements>
+                  <element uID="tankDuct_excludedVessel_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.2</y>
+                        <z>0.2</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="tankDuct_excludedVessel_section2">
+                <name>Section 2</name>
+                <transformation>
+                  <translation>
+                    <x>3.0</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="tankDuct_excludedVessel_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.2</y>
+                        <z>0.2</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="tankDuct_excludedVessel_segment1">
+                <name>Segment 1</name>
+                <fromElementUID>tankDuct_excludedVessel_section1_element1</fromElementUID>
+                <toElementUID>tankDuct_excludedVessel_section2_element1</toElementUID>
+              </segment>
+            </segments>
+          </duct>
+          <duct uID="tankDuct_excludedFuelTank">
+            <name>Duct excluded on fuel tank level</name>
+            <description>Duct inside tank3_sphericalDome only, offset radially. Excluded by its assembly via the fuel tank uID, so it must not change any geometry.</description>
+            <transformation>
+              <translation>
+                <x>5.0</x>
+                <y>0.6</y>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="tankDuct_excludedFuelTank_section1">
+                <name>Section 1</name>
+                <transformation/>
+                <elements>
+                  <element uID="tankDuct_excludedFuelTank_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.2</y>
+                        <z>0.2</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="tankDuct_excludedFuelTank_section2">
+                <name>Section 2</name>
+                <transformation>
+                  <translation>
+                    <x>6.0</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="tankDuct_excludedFuelTank_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>fuselageCircleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.2</y>
+                        <z>0.2</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="tankDuct_excludedFuelTank_segment1">
+                <name>Segment 1</name>
+                <fromElementUID>tankDuct_excludedFuelTank_section1_element1</fromElementUID>
+                <toElementUID>tankDuct_excludedFuelTank_section2_element1</toElementUID>
+              </segment>
+            </segments>
+          </duct>
+          <ductAssembly uID="tankDuctAssembly_through">
+            <name>Assembly cutting the vessels</name>
+            <description>Cuts both the section based and the parametric vessel.</description>
+            <transformation/>
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+            </excludeObjectUIDs>
+            <ductUIDs>
+              <uID>tankDuct_through</uID>
+            </ductUIDs>
+          </ductAssembly>
+          <ductAssembly uID="tankDuctAssembly_excludedVessel">
+            <name>Assembly excluded on vessel level</name>
+            <description>Excludes the section based vessel by its own uID.</description>
+            <transformation/>
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+              <uID>tank1_outerVessel</uID>
+            </excludeObjectUIDs>
+            <ductUIDs>
+              <uID>tankDuct_excludedVessel</uID>
+            </ductUIDs>
+          </ductAssembly>
+          <ductAssembly uID="tankDuctAssembly_excludedFuelTank">
+            <name>Assembly excluded on fuel tank level</name>
+            <description>Excludes the parametric vessel by the uID of its parent fuel tank.</description>
+            <transformation/>
+            <excludeObjectUIDs>
+              <uID>SimpleFuselage</uID>
+              <uID>tank3</uID>
+            </excludeObjectUIDs>
+            <ductUIDs>
+              <uID>tankDuct_excludedFuelTank</uID>
+            </ductUIDs>
+          </ductAssembly>
+        </ducts>
         <fuselages>
           <fuselage uID="SimpleFuselage">
             <name>Simple fuselage</name>

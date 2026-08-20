@@ -43,6 +43,8 @@ public:
     TIGL_EXPORT CCPACSConfiguration const& GetConfiguration() const;
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration();
 
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
+
     // Get the default uID
     TIGL_EXPORT std::string GetDefaultedUID() const override;
 

@@ -63,9 +63,15 @@ CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
 {
     m_transformation.setScalingType(ABS_LOCAL);
     m_transformation.setRotationType(ABS_LOCAL);
+}
 
-    // Register invalidation in CCPACSDucts, so that the vessel loft is rebuilt
-    // whenever a duct changes or the duct cutout flag is toggled.
+void CCPACSVessel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSVessel::ReadCPACS(tixiHandle, xpath);
+
+    // Register invalidation in CCPACSDucts, so that the vessel loft is rebuilt whenever a duct
+    // changes or the duct cutout flag is toggled. This cannot be done in the constructor,
+    // because a vessel may be constructed without a configuration being attached to the model.
     auto& config = GetConfiguration();
     if (config.HasDucts()) {
         config.GetDucts()->RegisterInvalidationCallback([this]() { this->Invalidate(); });
@@ -108,17 +114,18 @@ size_t CCPACSVessel::GetSectionCount() const
     }
 }
 
-const CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index) const
+const CCPACSFuselageSection& CCPACSVessel::GetSection(size_t index) const
 {
     return const_cast<CCPACSVessel&>(*this).GetSection(index);
 }
 
-CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index)
+CCPACSFuselageSection& CCPACSVessel::GetSection(size_t index)
 {
     if (m_sections_choice1) {
         try {
             return m_sections_choice1.get().GetSection(index);
-        } catch(CTiglError e){
+        }
+        catch (CTiglError e) {
             throw CTiglError("Invalid index in CCPACSVessel::GetSection", TIGL_INDEX_ERROR);
         }
     }
@@ -162,7 +169,7 @@ TopoDS_Shape CCPACSVessel::GetSectionFace(const std::string sectionUID) const
     return TopoDS_Shape();
 }
 
-size_t  CCPACSVessel::GetSegmentCount() const
+size_t CCPACSVessel::GetSegmentCount() const
 {
     if (m_segments_choice1) {
         return m_segments_choice1.get_ptr()->GetSegmentCount();
@@ -177,7 +184,8 @@ CCPACSFuselageSegment& CCPACSVessel::GetSegment(const size_t index)
     if (m_segments_choice1) {
         try {
             return m_segments_choice1.get().GetSegment(index);
-        } catch (CTiglError e){
+        }
+        catch (CTiglError e) {
             throw CTiglError("Invalid index in CCPACSVessel::GetSegment", TIGL_INDEX_ERROR);
         }
     }
@@ -624,13 +632,16 @@ void CCPACSVessel::BuildCleanLoft(PNamedShape& cache) const
 
 PNamedShape CCPACSVessel::BuildLoft() const
 {
+    // The uncut geometry must be built first, so that an invalid vessel specification
+    // throws before the configuration is queried.
+    PNamedShape loft = *cleanLoft;
+
     if (!GetConfiguration().HasDucts()) {
-        return *cleanLoft;
+        return loft;
     }
 
     // A duct may be excluded either on vessel level or on fuel tank level
-    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(*cleanLoft,
-                                                              {GetUID(), GetParent()->GetParent()->GetUID()});
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(loft, {GetUID(), GetParent()->GetParent()->GetUID()});
 }
 
 CCPACSGuideCurve& CCPACSVessel::GetGuideCurveSegment(std::string uid)

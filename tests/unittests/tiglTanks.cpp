@@ -17,7 +17,7 @@
  */
 /**
  * @file
- * @brief Tests for testing duct functions.
+ * @brief Tests for testing fuel tank and vessel functions.
  */
 
 #include "test.h"
@@ -31,6 +31,9 @@
 
 #include "CCPACSVessel.h"
 #include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
+
+#include <BRepCheck_Analyzer.hxx>
 
 namespace
 {
@@ -83,6 +86,8 @@ protected:
     }
     void TearDown() override
     {
+        // Make sure a test that enabled the duct cutouts does not affect the others
+        tiglConfigurationSetWithDuctCutouts(FuelTanks::tiglHandle, TIGL_FALSE);
     }
 
     // Static handles for CPACS document and configuration.
@@ -403,4 +408,101 @@ TEST_F(FuelTanks, structure)
     EXPECT_DOUBLE_EQ(p.X(), 14.5);
     EXPECT_DOUBLE_EQ(p.Y(), -1);
     EXPECT_DOUBLE_EQ(p.Z(), -0.2);
+}
+
+TEST_F(FuelTanks, ducts_flag)
+{
+    auto& config = fuelTank->GetConfiguration();
+    ASSERT_TRUE(config.HasDucts());
+
+    TiglBoolean flag = TIGL_TRUE;
+    ASSERT_EQ(tiglConfigurationGetWithDuctCutouts(tiglHandle, &flag), TIGL_SUCCESS);
+    EXPECT_EQ(flag, TIGL_FALSE);
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+    ASSERT_EQ(tiglConfigurationGetWithDuctCutouts(tiglHandle, &flag), TIGL_SUCCESS);
+    EXPECT_EQ(flag, TIGL_TRUE);
+}
+
+TEST_F(FuelTanks, ducts_cutouts_disabled)
+{
+    // Without the flag the vessels must be identical to the values of vessel_loft_evaluation
+    EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.57, 1e-2);
+    EXPECT_NEAR(vessel_spherical->GetGeometricVolume(), 18.1, 1e-2);
+}
+
+TEST_F(FuelTanks, ducts_cutouts_enabled)
+{
+    const double volume_segments_clean  = vessel_segments->GetGeometricVolume();
+    const double volume_spherical_clean = vessel_spherical->GetGeometricVolume();
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+
+    const double volume_segments_cut  = vessel_segments->GetGeometricVolume();
+    const double volume_spherical_cut = vessel_spherical->GetGeometricVolume();
+
+    // Both vessels must lose material ...
+    EXPECT_LT(volume_segments_cut, volume_segments_clean);
+    EXPECT_LT(volume_spherical_cut, volume_spherical_clean);
+
+    // The duct cross section is the fuselageCircleProfile scaled by 0.3, i.e. an area of
+    // 0.2738 m^2. The section based vessel is a straight tube of length 1.5, hence
+    // 6.57 - 0.2738 * 1.5 = 6.16. For the parametric vessel the duct additionally passes
+    // through the two hemispherical domes, which yields 18.10 - 1.30 = 16.79.
+    EXPECT_NEAR(volume_segments_cut, 6.16, 1e-2);
+    EXPECT_NEAR(volume_spherical_cut, 16.79, 1e-2);
+
+    // Toggling the flag back must restore the original geometry exactly
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_FALSE), TIGL_SUCCESS);
+    EXPECT_DOUBLE_EQ(vessel_segments->GetGeometricVolume(), volume_segments_clean);
+    EXPECT_DOUBLE_EQ(vessel_spherical->GetGeometricVolume(), volume_spherical_clean);
+}
+
+TEST_F(FuelTanks, ducts_cutouts_are_valid_solids)
+{
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+
+    for (const auto* vessel : {vessel_segments, vessel_spherical}) {
+        const auto loft = vessel->GetLoft();
+        ASSERT_TRUE(loft);
+
+        BRepCheck_Analyzer analyzer(loft->Shape());
+        EXPECT_TRUE(analyzer.IsValid()) << "Cut loft of vessel " << vessel->GetUID() << " is not a valid shape";
+        EXPECT_GT(GetNumberOfFaces(loft->Shape()), 0);
+    }
+}
+
+TEST_F(FuelTanks, ducts_cutouts_add_faces)
+{
+    const int faces_segments_clean  = GetNumberOfFaces(vessel_segments->GetLoft()->Shape());
+    const int faces_spherical_clean = GetNumberOfFaces(vessel_spherical->GetLoft()->Shape());
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+
+    // The tube walls of the cutout add faces to the loft
+    EXPECT_GT(GetNumberOfFaces(vessel_segments->GetLoft()->Shape()), faces_segments_clean);
+    EXPECT_GT(GetNumberOfFaces(vessel_spherical->GetLoft()->Shape()), faces_spherical_clean);
+}
+
+TEST_F(FuelTanks, ducts_exclude_on_vessel_and_fuel_tank_level)
+{
+    // tankDuct_excludedVessel lies completely inside the section based vessel and is excluded
+    // by the vessel uID, tankDuct_excludedFuelTank lies completely inside the parametric vessel
+    // and is excluded by the uID of its parent fuel tank. Neither of them may remove material,
+    // so the volumes must match those of the through duct alone.
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+
+    EXPECT_NEAR(vessel_segments->GetGeometricVolume(), 6.16, 1e-2);
+    EXPECT_NEAR(vessel_spherical->GetGeometricVolume(), 16.79, 1e-2);
+}
+
+TEST_F(FuelTanks, ducts_cutouts_propagate_to_fuel_tank)
+{
+    ASSERT_TRUE(fuelTank->GetLoft());
+    const int faces_clean = GetNumberOfFaces(fuelTank->GetLoft()->Shape());
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+
+    // CCPACSFuelTank groups the vessel lofts, so the cutouts must show up there as well
+    EXPECT_GT(GetNumberOfFaces(fuelTank->GetLoft()->Shape()), faces_clean);
 }
