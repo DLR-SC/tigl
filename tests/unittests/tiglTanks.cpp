@@ -506,3 +506,35 @@ TEST_F(FuelTanks, ducts_cutouts_propagate_to_fuel_tank)
     // CCPACSFuelTank groups the vessel lofts, so the cutouts must show up there as well
     EXPECT_GT(GetNumberOfFaces(fuelTank->GetLoft()->Shape()), faces_clean);
 }
+
+class FuelTanksWithoutDucts : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        ASSERT_EQ(tixiOpenDocument("TestData/simpletest-fuelTanks.cpacs.xml", &tixiHandle), SUCCESS);
+        ASSERT_EQ(tixiRemoveElement(tixiHandle, "/cpacs/vehicles/aircraft/model/ducts"), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle FuelTanksWithoutDucts::tixiHandle           = 0;
+TiglCPACSConfigurationHandle FuelTanksWithoutDucts::tiglHandle = 0;
+
+TEST_F(FuelTanksWithoutDucts, vessel_loft_without_ducts)
+{
+    auto& uidMgr = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle).GetUIDManager();
+    auto& vessel = uidMgr.ResolveObject<tigl::CCPACSVessel>("tank1_outerVessel");
+
+    ASSERT_FALSE(vessel.GetConfiguration().HasDucts());
+    EXPECT_NEAR(vessel.GetGeometricVolume(), 6.57, 1e-2);
+}
