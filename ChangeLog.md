@@ -25,6 +25,7 @@ Changes since last release
   - TiGLCreator: Add option to set the grid resolution in the settings menu [#1269](https://github.com/DLR-SC/tigl/pull/1269)
   - TiGLCreator: Grid origin labels (Origin X/Y) now dynamically update to reflect the current grid plane (XY, XZ, YZ). The selected grid plane is also persisted across sessions, with XY as default.
   - Add the new system definition introduced in CPACS v3.5
+  - Ducts are now also cut out of fuel tank vessels. A duct assembly may exclude a tank either by the vessel uID or by the fuel tank uID ([#1416](https://github.com/DLR-SC/tigl/issues/1416))
   - Add an alternative wing airfoil parametrization that allows the specification of NACA4 codes directly in CPACS (with the trailing edge thickness). This makes a preprocessing step of writing sampled NACA profiles as point lists obsolete and improves the overall surface quality by internally generating B-Splines with a fine-tuned number of control points. [#1293](https://github.com/DLR-SC/tigl/pull/1293)
   - The function `app.openFile` in the TiGLCreator scripting engine now accepts a configuration uid. [#1309](https://github.com/DLR-SC/tigl/pull/1309)
   - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
