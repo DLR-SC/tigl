@@ -114,18 +114,17 @@ size_t CCPACSVessel::GetSectionCount() const
     }
 }
 
-const CCPACSFuselageSection& CCPACSVessel::GetSection(size_t index) const
+const CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index) const
 {
     return const_cast<CCPACSVessel&>(*this).GetSection(index);
 }
 
-CCPACSFuselageSection& CCPACSVessel::GetSection(size_t index)
+CCPACSFuselageSection& CCPACSVessel::GetSection (size_t  index)
 {
     if (m_sections_choice1) {
         try {
             return m_sections_choice1.get().GetSection(index);
-        }
-        catch (CTiglError e) {
+        } catch(CTiglError e){
             throw CTiglError("Invalid index in CCPACSVessel::GetSection", TIGL_INDEX_ERROR);
         }
     }
@@ -169,7 +168,7 @@ TopoDS_Shape CCPACSVessel::GetSectionFace(const std::string sectionUID) const
     return TopoDS_Shape();
 }
 
-size_t CCPACSVessel::GetSegmentCount() const
+size_t  CCPACSVessel::GetSegmentCount() const
 {
     if (m_segments_choice1) {
         return m_segments_choice1.get_ptr()->GetSegmentCount();
