@@ -53,6 +53,7 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "BRepBuilderAPI_MakeSolid.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools.hxx"
 #include "ShapeFix_Wire.hxx"
@@ -64,6 +65,7 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shell.hxx>
 #include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -496,11 +498,25 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         throw CTiglError("Error cutting control surfaces from wing '" + GetUID() + "'");
     }
 
-    result = PNamedShape(new CNamedShape(cutter.Shape(), (*wingCleanShape)->Name()));
-    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShape, result);
+    PNamedShape cutCompound(new CNamedShape(cutter.Shape(), (*wingCleanShape)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShape, cutCompound);
     for (const auto& cutoutShape : cutoutShapes) {
-        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, cutoutShape, result);
+        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, cutoutShape, cutCompound);
     }
+
+    // BRepAlgoAPI_Cut returns a TopoDS_COMPOUND wrapping the resulting
+    // shell(s); rebuild a genuine TopoDS_SOLID from them, as expected by
+    // exporters and other API consumers of the shape (mirrors
+    // CTiglFusePlane::Perform()'s handling of BRepAlgoAPI_Fuse results).
+    BRepBuilderAPI_MakeSolid solidMaker;
+    TopTools_IndexedMapOfShape shellMap;
+    TopExp::MapShapes(cutCompound->Shape(), TopAbs_SHELL, shellMap);
+    for (int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
+        solidMaker.Add(TopoDS::Shell(shellMap(ishell)));
+    }
+
+    result = PNamedShape(new CNamedShape(solidMaker.Solid(), (*wingCleanShape)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(solidMaker, cutCompound, result);
 
     for (int iFace = 0; iFace < static_cast<int>(result->GetFaceCount()); ++iFace) {
         CFaceTraits ft = result->GetFaceTraits(iFace);
