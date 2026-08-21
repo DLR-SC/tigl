@@ -28,8 +28,8 @@
 #include "CPACSCargoContainers.h"
 #include "CPACSCeilingPanels.h"
 #include "CPACSClassDividers.h"
-#include "CPACSDeck_deckType.h"
 #include "CPACSDeckDoors.h"
+#include "CPACSDecksDeck_deckType.h"
 #include "CPACSGalleys.h"
 #include "CPACSGenericFloorModules.h"
 #include "CPACSLavatories.h"
@@ -56,12 +56,12 @@ namespace generated
     /// 
     /// Data of an aircraft or rotorcraft deck
     /// 
-    class CPACSDeck : public CTiglReqUIDObject, public ITiglUIDRefObject
+    class CPACSDecksDeck : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
-        TIGL_EXPORT CPACSDeck(CPACSDecks* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDecksDeck(CPACSDecks* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSDeck();
+        TIGL_EXPORT virtual ~CPACSDecksDeck();
 
         TIGL_EXPORT CPACSDecks* GetParent();
 
@@ -94,8 +94,8 @@ namespace generated
         TIGL_EXPORT virtual const CCPACSTransformation& GetTransformation() const;
         TIGL_EXPORT virtual CCPACSTransformation& GetTransformation();
 
-        TIGL_EXPORT virtual const CPACSDeck_deckType& GetDeckType() const;
-        TIGL_EXPORT virtual void SetDeckType(const CPACSDeck_deckType& value);
+        TIGL_EXPORT virtual const CPACSDecksDeck_deckType& GetDeckType() const;
+        TIGL_EXPORT virtual void SetDeckType(const CPACSDecksDeck_deckType& value);
 
         TIGL_EXPORT virtual const boost::optional<CPACSCabinGeometry>& GetCabinGeometry() const;
         TIGL_EXPORT virtual boost::optional<CPACSCabinGeometry>& GetCabinGeometry();
@@ -201,7 +201,7 @@ namespace generated
         CCPACSTransformation                      m_transformation;
 
         /// Deck type: passanger, VIP, cargo or livestock
-        CPACSDeck_deckType                        m_deckType;
+        CPACSDecksDeck_deckType                   m_deckType;
 
         boost::optional<CPACSCabinGeometry>       m_cabinGeometry;
 
@@ -245,15 +245,15 @@ namespace generated
         TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
         TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
 
-        CPACSDeck(const CPACSDeck&) = delete;
-        CPACSDeck& operator=(const CPACSDeck&) = delete;
+        CPACSDecksDeck(const CPACSDecksDeck&) = delete;
+        CPACSDecksDeck& operator=(const CPACSDecksDeck&) = delete;
 
-        CPACSDeck(CPACSDeck&&) = delete;
-        CPACSDeck& operator=(CPACSDeck&&) = delete;
+        CPACSDecksDeck(CPACSDecksDeck&&) = delete;
+        CPACSDecksDeck& operator=(CPACSDecksDeck&&) = delete;
     };
 } // namespace generated
 
-// CPACSDeck is customized, use type CCPACSDeck directly
+// CPACSDecksDeck is customized, use type CCPACSDecksDeck directly
 
 // Aliases in tigl namespace
 using CCPACSDecks = generated::CPACSDecks;

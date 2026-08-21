@@ -47,7 +47,7 @@ namespace generated
     /// Base type for string vector nodes
     /// The vector base type can include optional uncertainty
     /// information. The description of uncertainties is placed in
-    /// addtional attributes. First, it is described by an attribute that
+    /// additional attributes. First, it is described by an attribute that
     /// describes the type of uncertainty function called functionName.
     /// The functionName attribute includes the tag name of the
     /// distribution function which is listened in the table shown below.
@@ -56,10 +56,14 @@ namespace generated
     /// If the uncertainty values change for the elements of
     /// the vector than the attribute may be written as a list of values
     /// separated by semicolons
-    /// DEPRECATED: As of CPACS version 3.3, the mapType attribute is set to optional to ensure the compatibility of older data sets.
+    /// DEPRECATED: As of
+    /// CPACS
+    /// version 3.3, the mapType attribute is set to optional to ensure the compatibility of older data sets.
     /// However, since the type is uniquely defined via the XSD, the attribute is superfluous
     /// and will therefore be completely omitted in the next major release (Note: requires
-    /// TiXI >= 3.3). Please contact the CPACS team
+    /// TiXI >= 3.3). Please contact the
+    /// CPACS
+    /// team
     /// if for any reason you see a long-term need for the mapType attribute.
     /// @see uncertaintyFunctions
     /// 

@@ -29,6 +29,7 @@
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 
@@ -109,6 +110,13 @@ PNamedShape CTiglElementGeometryBuilder::BuildShape() const
         for (size_t i = 1; i <= ellipsoids.GetEllipsoidCount(); ++i) {
             const auto& e = ellipsoids.GetEllipsoid(i);
             addPart("ellipsoid", BuildEllipsoidShape(e), i);
+        }
+    }
+
+    if (const auto& toriOpt = geom.GetTori(); toriOpt) {
+        const auto& tori = *toriOpt;
+        for (size_t i = 1; i <= tori.GetTorusCount(); ++i) {
+            addPart("torus", BuildTorusShape(tori.GetTorus(i)), i);
         }
     }
 
@@ -255,14 +263,14 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
     const double radiusX = e.GetRadiusX();
     const double radiusY = e.GetRadiusY().get_value_or(radiusX);
     const double radiusZ = e.GetRadiusZ().get_value_or(radiusX);
-    const double angle   = e.GetDiskAngle().get_value_or(2.0 * M_PI);
+    const double angle   = e.GetRevolutionAngle().get_value_or(2.0 * M_PI);
 
     if (radiusX <= 0.0 || radiusY <= 0.0 || radiusZ <= 0.0) {
         throw tigl::CTiglError("Invalid ellipsoid parameters: All radii must be positive.", TIGL_INVALID_VALUE);
     }
 
     if (angle <= 0.0 || angle > 2.0 * M_PI) {
-        throw tigl::CTiglError("Invalid ellipsoid diskAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+        throw tigl::CTiglError("Invalid ellipsoid revolutionAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
     }
 
     const TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(1.0, angle).Shape();
@@ -275,6 +283,46 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildEllipsoidShape(const CCPACSEllips
 
     // apply transformation if present
     const auto& optTr = e.GetTransformation();
+    if (optTr) {
+        const CTiglTransformation tr = optTr->getTransformationMatrix();
+        shape                        = tr.Transform(shape);
+    }
+
+    return shape;
+}
+
+TopoDS_Shape CTiglElementGeometryBuilder::BuildTorusShape(const CCPACSTorus& t) const
+{
+    const double majorRadius = t.GetMajorRadius();
+    const double minorRadius = t.GetMinorRadius();
+    const double revolAngle  = t.GetRevolutionAngle().get_value_or(2.0 * M_PI);
+
+    if (majorRadius <= Precision::Confusion() || minorRadius <= Precision::Confusion()) {
+        const auto uID = t.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        throw tigl::CTiglError("Invalid torus parameters for uID=\"" + uID +
+                                   "\": majorRadius and minorRadius must be positive.",
+                               TIGL_INVALID_VALUE);
+    }
+
+    // gp_Torus raises Standard_ConstructionError for a self-intersecting (spindle) torus
+    if (majorRadius - minorRadius <= Precision::Confusion()) {
+        const auto uID = t.GetNextUIDParent()->GetObjectUID().get_value_or("unknown");
+        throw tigl::CTiglError("Invalid torus parameters for uID=\"" + uID +
+                                   "\": minorRadius must be smaller than majorRadius.",
+                               TIGL_INVALID_VALUE);
+    }
+
+    if (revolAngle <= Precision::Confusion() || revolAngle > 2.0 * M_PI + Precision::Confusion()) {
+        throw tigl::CTiglError("Invalid torus revolutionAngle: must be in range (0, 2*pi].", TIGL_INVALID_VALUE);
+    }
+
+    // A revolAngle marginally above 2*pi is accepted above;
+    // therefore, clamping it so that the full torus is built as a closed shape rather than a segment:
+    const double angle = std::min(revolAngle, 2.0 * M_PI);
+    TopoDS_Shape shape = BRepPrimAPI_MakeTorus(majorRadius, minorRadius, angle).Shape();
+
+    // apply transformation if present
+    const auto& optTr = t.GetTransformation();
     if (optTr) {
         const CTiglTransformation tr = optTr->getTransformationMatrix();
         shape                        = tr.Transform(shape);

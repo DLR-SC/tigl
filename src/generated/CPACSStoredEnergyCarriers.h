@@ -17,9 +17,12 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <string>
 #include <tixi.h>
-#include "ITiglUIDRefObject.h"
+#include "CPACSStoredFuels.h"
+#include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -29,25 +32,24 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSInternalPressures;
+    class CPACSConfigurationDefinition;
 
     // This class is used in:
-    // CPACSInternalPressures
+    // CPACSConfigurationDefinition
 
-    /// @brief Cabin pressure
+    /// @brief Energy carrier configuration
     /// 
-    /// Internal pressure of a fuselage, deck or compartment
     /// 
-    class CPACSInternalPressure : public ITiglUIDRefObject
+    class CPACSStoredEnergyCarriers
     {
     public:
-        TIGL_EXPORT CPACSInternalPressure(CPACSInternalPressures* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSStoredEnergyCarriers(CPACSConfigurationDefinition* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSInternalPressure();
+        TIGL_EXPORT virtual ~CPACSStoredEnergyCarriers();
 
-        TIGL_EXPORT CPACSInternalPressures* GetParent();
+        TIGL_EXPORT CPACSConfigurationDefinition* GetParent();
 
-        TIGL_EXPORT const CPACSInternalPressures* GetParent() const;
+        TIGL_EXPORT const CPACSConfigurationDefinition* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -58,36 +60,29 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::string& GetReferenceUID() const;
-        TIGL_EXPORT virtual void SetReferenceUID(const std::string& value);
+        TIGL_EXPORT virtual const boost::optional<CPACSStoredFuels>& GetStoredFuels() const;
+        TIGL_EXPORT virtual boost::optional<CPACSStoredFuels>& GetStoredFuels();
 
-        TIGL_EXPORT virtual const double& GetPressure() const;
-        TIGL_EXPORT virtual void SetPressure(const double& value);
+        TIGL_EXPORT virtual CPACSStoredFuels& GetStoredFuels(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveStoredFuels();
 
     protected:
-        CPACSInternalPressures* m_parent;
+        CPACSConfigurationDefinition* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// UID of a fuselage, deck or compartment
-        std::string m_referenceUID;
-
-        /// Internal pressure [Pa]
-        double      m_pressure;
+        boost::optional<CPACSStoredFuels> m_storedFuels;
 
     private:
-        TIGL_EXPORT const CTiglUIDObject* GetNextUIDObject() const final;
-        TIGL_EXPORT void NotifyUIDChange(const std::string& oldUid, const std::string& newUid) final;
+        CPACSStoredEnergyCarriers(const CPACSStoredEnergyCarriers&) = delete;
+        CPACSStoredEnergyCarriers& operator=(const CPACSStoredEnergyCarriers&) = delete;
 
-        CPACSInternalPressure(const CPACSInternalPressure&) = delete;
-        CPACSInternalPressure& operator=(const CPACSInternalPressure&) = delete;
-
-        CPACSInternalPressure(CPACSInternalPressure&&) = delete;
-        CPACSInternalPressure& operator=(CPACSInternalPressure&&) = delete;
+        CPACSStoredEnergyCarriers(CPACSStoredEnergyCarriers&&) = delete;
+        CPACSStoredEnergyCarriers& operator=(CPACSStoredEnergyCarriers&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSInternalPressure = generated::CPACSInternalPressure;
-using CCPACSInternalPressures = generated::CPACSInternalPressures;
+using CCPACSStoredEnergyCarriers = generated::CPACSStoredEnergyCarriers;
+using CCPACSConfigurationDefinition = generated::CPACSConfigurationDefinition;
 } // namespace tigl

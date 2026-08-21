@@ -40,15 +40,15 @@ namespace generated
     /// @brief controlSurfaceStepType
     /// 
     /// The deflection path of the control surface is defined
-    /// within the hinge line coordinat system. This is defined as
+    /// within the hinge line coordinate system. This is defined as
     /// follows: The x-hinge coordinate equals the wing x-axis. The
     /// y-hinge coordinate equals the hinge line axis (see above;
     /// positive from inner to outer hinge point). The z-hinge line is
     /// perpendicular on the x-hinge and y-hinge coordinate according to
     /// the right hand rule. The rotation of the control surface is
     /// defined as rotation around the positive y-hinge line.
-    /// The deflection of the is defined in any number of
-    /// steps. The deflection of the control surface is done as follows:
+    /// The deflection of the control surface is defined by at
+    /// least two steps. It is specified as follows:
     /// First the x-deflection at the inner and outer border; afterwards
     /// the z-deflection of the inner and outer border; last the
     /// y-deflection of the inner border. The y-deflection is only
@@ -117,7 +117,7 @@ namespace generated
         /// of the inner hinge line point. Not allowed for spoilers!
         boost::optional<CPACSPointXZ> m_outerHingeTranslation;
 
-        /// Positve rotation around the hinge line,
+        /// Positive rotation around the hinge line,
         /// heading from the inner to the outer border. Defaults to zero.
         boost::optional<double>       m_hingeLineRotation;
 

@@ -53,7 +53,7 @@ namespace generated
     /// One spar point can be used by more than one spar, if
     /// e.g. two spars are merging. The detailed cross section of the
     /// spar is also defined with sparSegments.
-    /// Pleas find below a picture for an example definition
+    /// Please find below a picture for an example definition
     /// of 3 spars in one wing, by using spar position points and spar
     /// segments:
     /// @see spars1

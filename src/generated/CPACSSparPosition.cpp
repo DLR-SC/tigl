@@ -116,6 +116,17 @@ namespace generated
             }
         }
 
+        // read element sparPositionCurve
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionCurve")) {
+            m_sparPositionCurve_choice3 = boost::in_place(reinterpret_cast<CCPACSWingSparPosition*>(this));
+            try {
+                m_sparPositionCurve_choice3->ReadCPACS(tixiHandle, xpath + "/sparPositionCurve");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read sparPositionCurve at xpath " << xpath << ": " << e.what();
+                m_sparPositionCurve_choice3 = boost::none;
+            }
+        }
+
         if (m_uidMgr && !m_uID.empty()) m_uidMgr->RegisterObject(m_uID, *this);
         if (!ValidateChoices()) {
             LOG(ERROR) << "Invalid choice configuration at xpath " << xpath;
@@ -149,6 +160,17 @@ namespace generated
             }
         }
 
+        // write element sparPositionCurve
+        if (m_sparPositionCurve_choice3) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/sparPositionCurve");
+            m_sparPositionCurve_choice3->WriteCPACS(tixiHandle, xpath + "/sparPositionCurve");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/sparPositionCurve")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/sparPositionCurve");
+            }
+        }
+
     }
 
     bool CPACSSparPosition::ValidateChoices() const
@@ -163,6 +185,8 @@ namespace generated
                     // elements of other choices must not be there
                     !(
                         m_sparPositionEtaXsi_choice2.is_initialized()
+                        ||
+                        m_sparPositionCurve_choice3.is_initialized()
                     )
                 )
                 +
@@ -173,6 +197,20 @@ namespace generated
                     // elements of other choices must not be there
                     !(
                         m_sparPositionRib_choice1.is_initialized()
+                        ||
+                        m_sparPositionCurve_choice3.is_initialized()
+                    )
+                )
+                +
+                (
+                    // mandatory elements of this choice must be there
+                    m_sparPositionCurve_choice3.is_initialized()
+                    &&
+                    // elements of other choices must not be there
+                    !(
+                        m_sparPositionRib_choice1.is_initialized()
+                        ||
+                        m_sparPositionEtaXsi_choice2.is_initialized()
                     )
                 )
                 == 1
@@ -219,6 +257,16 @@ namespace generated
         return m_sparPositionEtaXsi_choice2;
     }
 
+    const boost::optional<CCPACSCurvePoint>& CPACSSparPosition::GetSparPositionCurve_choice3() const
+    {
+        return m_sparPositionCurve_choice3;
+    }
+
+    boost::optional<CCPACSCurvePoint>& CPACSSparPosition::GetSparPositionCurve_choice3()
+    {
+        return m_sparPositionCurve_choice3;
+    }
+
     CPACSWingRibPoint& CPACSSparPosition::GetSparPositionRib_choice1(CreateIfNotExistsTag)
     {
         if (!m_sparPositionRib_choice1)
@@ -241,6 +289,18 @@ namespace generated
     void CPACSSparPosition::RemoveSparPositionEtaXsi_choice2()
     {
         m_sparPositionEtaXsi_choice2 = boost::none;
+    }
+
+    CCPACSCurvePoint& CPACSSparPosition::GetSparPositionCurve_choice3(CreateIfNotExistsTag)
+    {
+        if (!m_sparPositionCurve_choice3)
+            m_sparPositionCurve_choice3 = boost::in_place(reinterpret_cast<CCPACSWingSparPosition*>(this));
+        return *m_sparPositionCurve_choice3;
+    }
+
+    void CPACSSparPosition::RemoveSparPositionCurve_choice3()
+    {
+        m_sparPositionCurve_choice3 = boost::none;
     }
 
 } // namespace generated

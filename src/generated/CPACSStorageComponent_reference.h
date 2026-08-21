@@ -28,37 +28,34 @@ namespace tigl
 namespace generated
 {
     // This enum is used in:
-    // CPACSDeck
+    // CPACSStorageComponent
 
-    enum CPACSDeck_deckType
+    enum CPACSStorageComponent_reference
     {
-        passenger,
-        VIP,
-        cargo,
-        livestock
+        optimalVolume,
+        usableVolume,
+        realVolume
     };
 
-    inline std::string CPACSDeck_deckTypeToString(const CPACSDeck_deckType& value)
+    inline std::string CPACSStorageComponent_referenceToString(const CPACSStorageComponent_reference& value)
     {
         switch(value) {
-        case passenger: return "passenger";
-        case VIP: return "VIP";
-        case cargo: return "cargo";
-        case livestock: return "livestock";
-        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSDeck_deckType");
+        case optimalVolume: return "optimalVolume";
+        case usableVolume: return "usableVolume";
+        case realVolume: return "realVolume";
+        default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSStorageComponent_reference");
         }
     }
-    inline CPACSDeck_deckType stringToCPACSDeck_deckType(const std::string& value)
+    inline CPACSStorageComponent_reference stringToCPACSStorageComponent_reference(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "passenger") { return passenger; }
-        if (toLower(value) == "vip") { return VIP; }
-        if (toLower(value) == "cargo") { return cargo; }
-        if (toLower(value) == "livestock") { return livestock; }
-        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSDeck_deckType");
+        if (toLower(value) == "optimalvolume") { return optimalVolume; }
+        if (toLower(value) == "usablevolume") { return usableVolume; }
+        if (toLower(value) == "realvolume") { return realVolume; }
+        throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSStorageComponent_reference");
     }
 } // namespace generated
 
 // Aliases in tigl namespace
-using ECPACSDeck_deckType = generated::CPACSDeck_deckType;
+using ECPACSStorageComponent_reference = generated::CPACSStorageComponent_reference;
 } // namespace tigl

@@ -31,10 +31,10 @@ class CTiglUIDObject;
 namespace generated
 {
     class CPACSAircraftControlElement;
-    class CPACSVehicleConfiguration;
+    class CPACSConfigurationDefinition;
 
     // This class is used in:
-    // CPACSVehicleConfiguration
+    // CPACSConfigurationDefinition
 
     /// @brief Control elements
     /// 
@@ -44,13 +44,13 @@ namespace generated
     class CPACSAircraftControlElements
     {
     public:
-        TIGL_EXPORT CPACSAircraftControlElements(CPACSVehicleConfiguration* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSAircraftControlElements(CPACSConfigurationDefinition* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSAircraftControlElements();
 
-        TIGL_EXPORT CPACSVehicleConfiguration* GetParent();
+        TIGL_EXPORT CPACSConfigurationDefinition* GetParent();
 
-        TIGL_EXPORT const CPACSVehicleConfiguration* GetParent() const;
+        TIGL_EXPORT const CPACSConfigurationDefinition* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -73,7 +73,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveControlElement(CPACSAircraftControlElement& ref);
 
     protected:
-        CPACSVehicleConfiguration* m_parent;
+        CPACSConfigurationDefinition* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
@@ -91,5 +91,5 @@ namespace generated
 // Aliases in tigl namespace
 using CCPACSAircraftControlElements = generated::CPACSAircraftControlElements;
 using CCPACSAircraftControlElement = generated::CPACSAircraftControlElement;
-using CCPACSVehicleConfiguration = generated::CPACSVehicleConfiguration;
+using CCPACSConfigurationDefinition = generated::CPACSConfigurationDefinition;
 } // namespace tigl

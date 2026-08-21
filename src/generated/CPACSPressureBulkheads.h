@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief pressureBulkheadsType
     /// 
-    /// PressureBulkheads type, conteining pressure bulkheads
+    /// PressureBulkheads type, containing pressure bulkheads
     /// 
     class CPACSPressureBulkheads
     {

@@ -35,7 +35,7 @@ namespace generated
     /// @brief Maps points (actually the index in the point list) to a curve parameter.
     /// 
     /// Which parameters are allowed depends on the context.
-    /// For exampple in a wing profile, values between -1 and 1 are valid.
+    /// For example in a wing profile, values between -1 and 1 are valid.
     /// 
     class CPACSCurveParamPointMap
     {

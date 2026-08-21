@@ -99,7 +99,7 @@ namespace generated
         /// direction. Default: 0.0deg.
         double                                    m_phi;
 
-        /// By default, the wall is only extruded in positive direction. If doubleSidedExtrusion is true, the wall is additionaly extruded in negative direction as well. Default: false.
+        /// By default, the wall is only extruded in positive direction. If doubleSidedExtrusion is true, the wall is additionally extruded in negative direction as well. Default: false.
         boost::optional<bool>                     m_doubleSidedExtrusion;
 
         /// Rotates the first edge of the wall segment so that it is adjacent with the structural element defined in the first wall position (bulkhead, fuselage section or another plane wall). Default: false.

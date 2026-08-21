@@ -35,7 +35,8 @@ namespace generated
 
     /// @brief Superellipse
     /// 
-    /// A profile based on superellipses is composed of an upper and a lower semi-ellipse, which may differ from each other in their parameterization. The total width and height of the profile is always 1, since scaling is performed after referencing (e.g., in the fuselage).
+    /// A profile based on superellipses is composed of an upper and a lower semi-ellipse, which may differ from each other in their parameterization.
+    /// The total width and height of the profile is always 1, since scaling is performed after referencing (e.g., in the fuselage).
     /// This lowerHeightFraction describes the portion of the lower semi-ellipse on the total height.
     /// The resulting profile is defined by the following set of equations:
     /// @see superEllipseUpper
@@ -43,13 +44,18 @@ namespace generated
     /// with
     /// @see superEllipseLowerZ0
     /// The following examples indicate the various possibilities of parametric profiles:
-    /// Example 1 : ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (0.5; 2; 5; 3; 0.25)
+    /// Example 1 :
+    /// ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (0.5; 2; 5; 3; 0.25)
     /// @see superEllipseExample1
-    /// Example 2 : ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (2; 2; 2; 2; 0.5) = a circle
+    /// Example 2 :
+    /// ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (2; 2; 2; 2; 0.5) = a circle
     /// @see superEllipseExample2
-    /// Example 3 : ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (1; 1; 1; 1; 0.5) = a square / diamond
+    /// Example 3 :
+    /// ( mUpper,nUpper,mLower,nLower, lowerHeightFraction ) = (1; 1; 1; 1; 0.5) = a square / diamond
     /// @see superEllipseExample3
-    /// Note : For exponents that are infinitely large, the superellipse converges to a rectangle. However, the value Inf is not a valid entry at this point. Use the square element instead.
+    /// Note : For exponents that are infinitely large, the superellipse converges to a rectangle.
+    /// However, the value Inf is not a valid entry at this point.
+    /// Use the square element instead.
     /// 
     class CPACSSuperEllipseProfile
     {
