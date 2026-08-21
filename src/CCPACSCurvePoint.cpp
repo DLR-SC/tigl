@@ -11,6 +11,9 @@ CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent)
 CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingRibsPositioning* parent)
 : generated::CPACSCurvePoint(parent) {}
 
+CCPACSCurvePoint::CCPACSCurvePoint(CCPACSWingSparPosition* parent)
+: generated::CPACSCurvePoint(parent) {}
+
 void CCPACSCurvePoint::SetEta(const double& value)
 {
     generated::CPACSCurvePoint::SetEta(value);

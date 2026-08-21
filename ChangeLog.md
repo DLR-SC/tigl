@@ -6,6 +6,8 @@ Changes since last release
 2025/09/26
 -General changes
   - Draw the flaps by using fusing a list with OCC's BRepAlgoAPI_Cut instaed of fusing all together and creating a computational expensive cut. [#1265](https://github.com/DLR-SC/tigl/issues/1265)
+  - Add new function tiglWingInterpolateExtrapolateXsi() to TiGL API to extend existing functionality of tiglWingInterpolateXsi() without breaking its behaviour. The intersection point may now also lie outside of the two defining points to extrapolate from these two [#1412](https://github.com/DLR-SC/tigl/issues/1412).
+  - Update the internal CPACS schema to version 3.5.1. For further CPACS updates, observe the important note in the belonging PR [#1028](https://github.com/DLR-SC/tigl/issues/1028).
   - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
@@ -29,6 +31,9 @@ Changes since last release
   - Implemented the UpperLower wire in CTiglWingProfileNACA ([#1366](https://github.com/DLR-SC/tigl/issues/1366))
 
 - Fixes
+  - Fix too small minimal control point number in b-spline profile approximation check ([#1422](https://github.com/DLR-SC/tigl/issues/1422)).
+  - TiglCreator: Fix selection being off by one click ([#1395](https://github.com/DLR-SC/tigl/issues/1395)).
+  - TiGLCreator: Fix crash when opening the "Display Options" tab after closing (or replacing) the currently loaded aircraft. `ModificatorDisplayOptionsWidget::setFromItem` dereferenced the `TIGLCreatorDocument*` without checking for `nullptr`. Additionally, the last selected `CPACSTreeItem*` was cached across document close/open, and dereferencing it after the underlying CPACSTree was rebuilt was a use-after-free; the cached selection is now cleared whenever the tree model is reset ([#1404](https://github.com/DLR-SC/tigl/issues/1404))
   - Aircraft fusing no longer fails when a system or deck component (e.g. a lavatory or ceiling panel) has no geometry defined, since this is a valid CPACS state for elements described by mass properties only. Such components now simply contribute no shape instead of aborting the fuse. Also fix a related TiGLCreator crash: `Draw -> Aircraft -> Fused aircraft triangulation` did not catch exceptions and crashed the application. Additionally, this draw option now shows the same symmetries/far-field dialog as `Draw -> Aircraft -> Complete aircraft fused (slow)` instead of always reusing whatever fuse mode happened to be cached from a previous action ([#1388](https://github.com/DLR-SC/tigl/issues/1388))
   - Fix fused CAD export (IGES/STEP/BRep) not fusing sibling components that intersect each other outside of a parent-child relationship (e.g. a horizontal and vertical tailplane both attached to the fuselage but also intersecting each other). All aircraft components are now fused together in a single Boolean operation, correctly resolving such mutual intersections between any number of components ([#939](https://github.com/DLR-SC/tigl/issues/939))
   - Fix `BuildWireRectangle` throwing on the "circle" limit of a fuselage/wing standard rectangle profile (`heightToWidthRatio`/`cornerRadius` combination where the straight edges degenerate to zero length), which broke geometry generation for the TIGLCreator template's fuselage profile.

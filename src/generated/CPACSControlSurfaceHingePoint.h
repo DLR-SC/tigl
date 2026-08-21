@@ -37,16 +37,15 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfacePath
 
-    /// @brief controlSurfaceHingePointType
+    /// @brief Hinge point
     /// 
-    /// The deflection path of a control surface is described
-    /// with respect to two hinge points - one at the inner border of
-    /// the control surface and one at the outer border of the control
-    /// surface. Those two points are defined using the xsi and relative
-    /// height coordinates of the parent. Therefore those points can also
-    /// lay outbound of the control surface. Those two points defined
-    /// the hinge line, which is a straight line between the two points.
-    /// An example can be found below:
+    /// The deflection path of a control surface is described with respect to two hinge points -
+    /// one at the inner border of the control surface and one at the outer border of the control surface.
+    /// These two points are defined by the xsi and relative height coordinates of the parent.
+    /// In addition, a translation (with respect to the wing coordinate system) can be applied.
+    /// Therefore they can also be defined outside of the control surface.
+    /// These two points define the hinge line, which is a straight line between them.
+    /// An example is shown below:
     /// @see path
     /// 
     class CPACSControlSurfaceHingePoint

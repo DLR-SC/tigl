@@ -118,7 +118,7 @@ namespace generated
         /// Description of the engine pylon.
         boost::optional<std::string>        m_description;
 
-        /// UID of the parent (normaly wing or fuselage).
+        /// UID of the parent (normally wing or fuselage).
         std::string                         m_parentUID;
 
         CCPACSTransformation                m_transformation;

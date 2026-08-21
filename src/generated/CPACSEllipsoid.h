@@ -44,8 +44,11 @@ namespace generated
     /// The semi-axis lengths are defined by radiusX, radiusY and radiusZ.
     /// The radii in y- and z-direction are optional.
     /// If not specified, they default to radiusX.
-    /// The optional diskAngle defines the opening angle of the ellipsoid segment.
     /// If not specified, it defaults to 2*pi, resulting in a full ellipsoid.
+    /// Note that the angle refers to the parameterization of the underlying sphere:
+    /// for radiusX != radiusY the section planes are located at the azimuth
+    /// atan2(radiusY*sin(revolutionAngle), radiusX*cos(revolutionAngle)), which differs
+    /// from revolutionAngle itself.
     /// 
     class CPACSEllipsoid
     {
@@ -76,8 +79,8 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<double>& GetRadiusZ() const;
         TIGL_EXPORT virtual void SetRadiusZ(const boost::optional<double>& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetDiskAngle() const;
-        TIGL_EXPORT virtual void SetDiskAngle(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const boost::optional<double>& GetRevolutionAngle() const;
+        TIGL_EXPORT virtual void SetRevolutionAngle(const boost::optional<double>& value);
 
         TIGL_EXPORT virtual const boost::optional<CCPACSTransformationSE3>& GetTransformation() const;
         TIGL_EXPORT virtual boost::optional<CCPACSTransformationSE3>& GetTransformation();
@@ -99,8 +102,8 @@ namespace generated
         /// Semi-axis length in z-direction [m] (if not defined: equals radiusX)
         boost::optional<double>                  m_radiusZ;
 
-        /// Opening angle of the ellipsoid segment [rad] (if not defined: equals 2*pi)
-        boost::optional<double>                  m_diskAngle;
+        /// Revolution angle about the local z-axis [rad] (if not defined: equals 2*pi)
+        boost::optional<double>                  m_revolutionAngle;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;
 

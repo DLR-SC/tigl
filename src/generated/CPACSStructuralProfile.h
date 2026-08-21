@@ -44,7 +44,7 @@ namespace generated
     /// several points (->pointList) in the x-y-space. Two points are
     /// combined to one sheet (->sheetList) by using the pointUIDs.
     /// This profile is defined by several points in the
-    /// x-y-space. Allways two points are combined to one sheet. The
+    /// x-y-space. Always two points are combined to one sheet. The
     /// properties of each sheet are defined in the 'sheetProperties'
     /// section by referencing on the sheetUID and the material
     /// properties. The orthotropy direction of composite materials equals

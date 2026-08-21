@@ -40,7 +40,7 @@ namespace generated
 
     /// @brief compositeType
     /// 
-    /// Composite type, conatining data of a composite
+    /// Composite type, containing data of a composite
     /// 
     class CPACSComposite : public CTiglReqUIDObject
     {

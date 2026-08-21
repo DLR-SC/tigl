@@ -20,7 +20,9 @@
 #include <memory>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -30,25 +32,51 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemReservoir;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemHydraulicStorageElements;
+    class CPACSSysElemThermoFluidStorageElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemHydraulicStorageElements
+    // CPACSSysElemThermoFluidStorageElements
 
     /// @brief Reservoirs
     /// 
+    /// Container for reusable reservoirs. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemReservoirs
     {
     public:
-        TIGL_EXPORT CPACSSysElemReservoirs(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemReservoirs(CPACSSysElemHydraulicStorageElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemReservoirs(CPACSSysElemThermoFluidStorageElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemReservoirs();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CPACSSysElemHydraulicStorageElements>::value || std::is_same<P, CPACSSysElemThermoFluidStorageElements>::value, "template argument for P is not a parent class of CPACSSysElemReservoirs");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CPACSSysElemHydraulicStorageElements>::value || std::is_same<P, CPACSSysElemThermoFluidStorageElements>::value, "template argument for P is not a parent class of CPACSSysElemReservoirs");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +87,29 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemReservoir>>& GetReservoirs() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemReservoir>>& GetReservoirs();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetReservoirs() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetReservoirs();
 
         TIGL_EXPORT virtual size_t GetReservoirCount() const;
         TIGL_EXPORT virtual size_t GetReservoirIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemReservoir& GetReservoir(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemReservoir& GetReservoir(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetReservoir(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetReservoir(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemReservoir& GetReservoir(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemReservoir& GetReservoir(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetReservoir(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetReservoir(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemReservoir& AddReservoir();
-        TIGL_EXPORT virtual void RemoveReservoir(CPACSSysElemReservoir& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddReservoir();
+        TIGL_EXPORT virtual void RemoveReservoir(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemReservoir>> m_reservoirs;
+        /// Stores a liquid or gaseous working medium at comparatively low pressure.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_reservoirs;
 
     private:
         CPACSSysElemReservoirs(const CPACSSysElemReservoirs&) = delete;
@@ -92,6 +122,7 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemReservoirs = generated::CPACSSysElemReservoirs;
-using CCPACSSysElemReservoir = generated::CPACSSysElemReservoir;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemHydraulicStorageElements = generated::CPACSSysElemHydraulicStorageElements;
+using CCPACSSysElemThermoFluidStorageElements = generated::CPACSSysElemThermoFluidStorageElements;
 } // namespace tigl

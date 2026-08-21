@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemCompressor;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemPneumaticConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemPneumaticConversionElements
 
     /// @brief Compressors
     /// 
+    /// Container for reusable compressors. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemCompressors
     {
     public:
-        TIGL_EXPORT CPACSSysElemCompressors(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemCompressors(CPACSSysElemPneumaticConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemCompressors();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemPneumaticConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemPneumaticConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemCompressor>>& GetCompressors() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemCompressor>>& GetCompressors();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCompressors() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetCompressors();
 
         TIGL_EXPORT virtual size_t GetCompressorCount() const;
         TIGL_EXPORT virtual size_t GetCompressorIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemCompressor& GetCompressor(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemCompressor& GetCompressor(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCompressor(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCompressor(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemCompressor& GetCompressor(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemCompressor& GetCompressor(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetCompressor(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetCompressor(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemCompressor& AddCompressor();
-        TIGL_EXPORT virtual void RemoveCompressor(CPACSSysElemCompressor& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddCompressor();
+        TIGL_EXPORT virtual void RemoveCompressor(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemPneumaticConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemCompressor>> m_compressors;
+        /// Raises the pressure of a gaseous working medium.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_compressors;
 
     private:
         CPACSSysElemCompressors(const CPACSSysElemCompressors&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemCompressors = generated::CPACSSysElemCompressors;
-using CCPACSSysElemCompressor = generated::CPACSSysElemCompressor;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemPneumaticConversionElements = generated::CPACSSysElemPneumaticConversionElements;
 } // namespace tigl

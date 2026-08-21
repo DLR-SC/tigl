@@ -27,7 +27,7 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeck;
+class CCPACSDecksDeck;
 class CCPACSFuselage;
 
 namespace generated
@@ -59,27 +59,27 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDeck>>& GetDecks() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDeck>>& GetDecks();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CCPACSDecksDeck>>& GetDecks() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CCPACSDecksDeck>>& GetDecks();
 
         TIGL_EXPORT virtual size_t GetDeckCount() const;
         TIGL_EXPORT virtual size_t GetDeckIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CCPACSDeck& GetDeck(size_t index) const;
-        TIGL_EXPORT virtual CCPACSDeck& GetDeck(size_t index);
+        TIGL_EXPORT virtual const CCPACSDecksDeck& GetDeck(size_t index) const;
+        TIGL_EXPORT virtual CCPACSDecksDeck& GetDeck(size_t index);
 
-        TIGL_EXPORT virtual const CCPACSDeck& GetDeck(const std::string& UID) const;
-        TIGL_EXPORT virtual CCPACSDeck& GetDeck(const std::string& UID);
+        TIGL_EXPORT virtual const CCPACSDecksDeck& GetDeck(const std::string& UID) const;
+        TIGL_EXPORT virtual CCPACSDecksDeck& GetDeck(const std::string& UID);
 
-        TIGL_EXPORT virtual CCPACSDeck& AddDeck();
-        TIGL_EXPORT virtual void RemoveDeck(CCPACSDeck& ref);
+        TIGL_EXPORT virtual CCPACSDecksDeck& AddDeck();
+        TIGL_EXPORT virtual void RemoveDeck(CCPACSDecksDeck& ref);
 
     protected:
         CCPACSFuselage* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CCPACSDeck>> m_decks;
+        std::vector<std::unique_ptr<CCPACSDecksDeck>> m_decks;
 
     private:
         CPACSDecks(const CPACSDecks&) = delete;

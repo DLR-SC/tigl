@@ -47,14 +47,14 @@ namespace generated
     /// If the parameter 'fromSectionUID' is set, the
     /// positioning describes the translation between the 'from' towards
     /// the 'to' section. If the parameter 'fromSectionUID' is left
-    /// blank the orgin of the positioning vector is the origin of the
-    /// parent coordinate syste.
-    /// The orgin of the section coordinate system is the
+    /// blank the origin of the positioning vector is the origin of the
+    /// parent coordinate system.
+    /// The origin of the section coordinate system is the
     /// position which is described by the positioning vector PLUS the
     /// translation which is described in the section.
-    /// Please note: If the orgin of the positioning vector is
+    /// Please note: If the origin of the positioning vector is
     /// defined by using another section, i.e. fromSection is defined,
-    /// the orgin of this vector equals the end of the positioning
+    /// the origin of this vector equals the end of the positioning
     /// vector of the previous section. This means that the section
     /// translation of the from-section has no influence on the
     /// positioning of the to-section. Therefore the total translation,
@@ -130,18 +130,18 @@ namespace generated
         double                       m_length;
 
         /// Sweepangle between inner and outer section.
-        /// This angle equals a positive rotation of the positioing vector
+        /// This angle equals a positive rotation of the positioning vector
         /// around the z-axis of the wing coordinate system.
         double                       m_sweepAngle;
 
         /// Dihedralangle between inner and outer section.
-        /// This angle equals a positive rotation of the positioing vector
+        /// This angle equals a positive rotation of the positioning vector
         /// around the x-axis of the wing coordinate system
         double                       m_dihedralAngle;
 
         /// Reference to starting section of the
         /// positioning vector. If missing, the positioning is made from the
-        /// orgin of the wing coordinate system.
+        /// origin of the wing coordinate system.
         boost::optional<std::string> m_fromSectionUID;
 
         /// Reference to ending section (section to be

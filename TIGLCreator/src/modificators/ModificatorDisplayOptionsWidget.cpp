@@ -89,7 +89,7 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
     currentDoc = doc;
     currentContext = context;
 
-    if (!item) {
+    if (!item || !doc || !context) {
 
         if (ui) {
             ui->infoLabel->setVisible(true);

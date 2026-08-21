@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemBattery;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemElectricalStorageElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemElectricalStorageElements
 
     /// @brief Batteries
     /// 
+    /// Container for reusable batteries. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemBatteries
     {
     public:
-        TIGL_EXPORT CPACSSysElemBatteries(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemBatteries(CPACSSysElemElectricalStorageElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemBatteries();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemElectricalStorageElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemElectricalStorageElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemBattery>>& GetBatterys() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemBattery>>& GetBatterys();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetBatterys() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetBatterys();
 
         TIGL_EXPORT virtual size_t GetBatteryCount() const;
         TIGL_EXPORT virtual size_t GetBatteryIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemBattery& GetBattery(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemBattery& GetBattery(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetBattery(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetBattery(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemBattery& GetBattery(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemBattery& GetBattery(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetBattery(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetBattery(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemBattery& AddBattery();
-        TIGL_EXPORT virtual void RemoveBattery(CPACSSysElemBattery& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddBattery();
+        TIGL_EXPORT virtual void RemoveBattery(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemElectricalStorageElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemBattery>> m_batterys;
+        /// Stores electrochemical energy and supplies direct-current electrical power.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_batterys;
 
     private:
         CPACSSysElemBatteries(const CPACSSysElemBatteries&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemBatteries = generated::CPACSSysElemBatteries;
-using CCPACSSysElemBattery = generated::CPACSSysElemBattery;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemElectricalStorageElements = generated::CPACSSysElemElectricalStorageElements;
 } // namespace tigl

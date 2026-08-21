@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
   <header>
     <name>Cpacs2Test</name>
     <description>Test file to check versioning according to new CPACS header. Expected to throw deprecation warning due to mentioning cpacsVersion in header.</description>

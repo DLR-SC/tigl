@@ -21,7 +21,6 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
-#include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
 namespace tigl
@@ -39,6 +38,7 @@ namespace generated
 
     CPACSLateralCap::~CPACSLateralCap()
     {
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CPACSStructuralWallElement* CPACSLateralCap::GetParent() const
@@ -91,6 +91,14 @@ namespace generated
 
     void CPACSLateralCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            }
+        }
+
         // read element area
         if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/area")) {
             m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
@@ -115,10 +123,21 @@ namespace generated
             LOG(ERROR) << "Required element placement is missing at xpath " << xpath;
         }
 
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSLateralCap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
+        // write attribute uID
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
+
         // write element area
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/area");
         tixi::TixiSaveElement(tixiHandle, xpath + "/area", m_area);
@@ -131,6 +150,27 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/placement");
         tixi::TixiSaveElement(tixiHandle, xpath + "/placement", CPACSLateralCap_placementToString(m_placement));
 
+    }
+
+    const boost::optional<std::string>& CPACSLateralCap::GetUID() const
+    {
+        return m_uID;
+    }
+
+    void CPACSLateralCap::SetUID(const boost::optional<std::string>& value)
+    {
+        if (m_uidMgr && value != m_uID) {
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
+            }
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
+            }
+        }
+        m_uID = value;
     }
 
     const double& CPACSLateralCap::GetArea() const

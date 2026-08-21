@@ -16,9 +16,10 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemReservoir.h"
+#include "CPACSSysElemHydraulicStorageElements.h"
 #include "CPACSSysElemReservoirs.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemThermoFluidStorageElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,31 +30,35 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemReservoirs::CPACSSysElemReservoirs(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemReservoirs::CPACSSysElemReservoirs(CPACSSysElemHydraulicStorageElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemHydraulicStorageElements);
+    }
+
+    CPACSSysElemReservoirs::CPACSSysElemReservoirs(CPACSSysElemThermoFluidStorageElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemThermoFluidStorageElements);
     }
 
     CPACSSysElemReservoirs::~CPACSSysElemReservoirs()
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemReservoirs::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSSystemElements* CPACSSysElemReservoirs::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSSysElemReservoirs::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSSysElemHydraulicStorageElements>()) {
+                return GetParent<CPACSSysElemHydraulicStorageElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemThermoFluidStorageElements>()) {
+                return GetParent<CPACSSysElemThermoFluidStorageElements>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSSysElemReservoirs::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSSysElemHydraulicStorageElements>()) {
+                return GetParent<CPACSSysElemHydraulicStorageElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemThermoFluidStorageElements>()) {
+                return GetParent<CPACSSysElemThermoFluidStorageElements>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -98,12 +108,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemReservoir>>& CPACSSysElemReservoirs::GetReservoirs() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemReservoirs::GetReservoirs() const
     {
         return m_reservoirs;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemReservoir>>& CPACSSysElemReservoirs::GetReservoirs()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemReservoirs::GetReservoirs()
     {
         return m_reservoirs;
     }
@@ -124,25 +134,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemReservoirs::GetReservoirIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemReservoir& CPACSSysElemReservoirs::GetReservoir(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemReservoirs::GetReservoir(size_t index)
     {
         if (index < 1 || index > GetReservoirCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemReservoir>>::GetReservoir", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetReservoir", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_reservoirs[index];
     }
 
-    const CPACSSysElemReservoir& CPACSSysElemReservoirs::GetReservoir(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemReservoirs::GetReservoir(size_t index) const
     {
         if (index < 1 || index > GetReservoirCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemReservoir>>::GetReservoir", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetReservoir", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_reservoirs[index];
     }
 
-    CPACSSysElemReservoir& CPACSSysElemReservoirs::GetReservoir(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemReservoirs::GetReservoir(const std::string& UID)
     {
         for (auto& elem : m_reservoirs ) {
             if (elem->GetUID() == UID)
@@ -151,7 +161,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemReservoirs::GetReservoir. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemReservoir& CPACSSysElemReservoirs::GetReservoir(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemReservoirs::GetReservoir(const std::string& UID) const
     {
         for (auto& elem : m_reservoirs ) {
             if (elem->GetUID() == UID)
@@ -161,13 +171,13 @@ namespace generated
     }
 
 
-    CPACSSysElemReservoir& CPACSSysElemReservoirs::AddReservoir()
+    CPACSVehicleElementBase& CPACSSysElemReservoirs::AddReservoir()
     {
-        m_reservoirs.push_back(std::make_unique<CPACSSysElemReservoir>(this, m_uidMgr));
+        m_reservoirs.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_reservoirs.back();
     }
 
-    void CPACSSysElemReservoirs::RemoveReservoir(CPACSSysElemReservoir& ref)
+    void CPACSSysElemReservoirs::RemoveReservoir(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_reservoirs.size(); i++) {
             if (m_reservoirs[i].get() == &ref) {

@@ -87,7 +87,7 @@ namespace generated
 
         /// Relative spanwise position of the cut out
         /// profile. The eta coordinate refers to the control surface and
-        /// desribes the cut out profile at the leading edge of the control
+        /// describes the cut out profile at the leading edge of the control
         /// surface.
         CCPACSEtaIsoLine m_eta;
 

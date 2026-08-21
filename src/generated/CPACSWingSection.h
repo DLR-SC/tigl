@@ -46,7 +46,7 @@ namespace generated
     /// Mathematically spoken a section is a coordinate system
     /// that is translated, rotated and scaled relative to the wing
     /// coordinate system. This transformation parameters are defined
-    /// withing the transformation section.
+    /// within the transformation section.
     /// In addition to the translation, which is defined in
     /// the transformation part, the section can be translated by using
     /// the positionings vectors (wing->positiongs). Translation of

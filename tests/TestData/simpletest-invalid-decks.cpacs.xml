@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+    xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
     <header>
         <name>Decks test</name>
         <description>Simple decks definitions for unit testing</description>

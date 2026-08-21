@@ -25,6 +25,7 @@
 #include "CPACSCuboid.h"
 #include "CPACSCylinder.h"
 #include "CPACSEllipsoid.h"
+#include "CPACSTorus.h"
 #include "CPACSExternalGeometry.h"
 #include "CPACSMultiSegmentShape.h"
 
@@ -52,6 +53,7 @@ private:
     TopoDS_Shape BuildCylinderShape(const CCPACSCylinder& c) const;
     TopoDS_Shape BuildConeShape(const CCPACSCone& c) const;
     TopoDS_Shape BuildEllipsoidShape(const CCPACSEllipsoid& e) const;
+    TopoDS_Shape BuildTorusShape(const CCPACSTorus& t) const;
     TopoDS_Shape BuildMultiSegmentShape(const CCPACSMultiSegmentShape& m) const;
     TopoDS_Shape BuildExternalShape(const CCPACSExternalGeometry& e) const;
 };

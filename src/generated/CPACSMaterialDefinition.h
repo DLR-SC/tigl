@@ -137,7 +137,7 @@ namespace generated
 
         /// Scaling factor of the composite thickness.
         /// Absolute thicknesses are defined in each composite material
-        /// seperatly
+        /// separately
         boost::optional<double>      m_thicknessScaling_choice1;
 
         /// uID of a material definition.

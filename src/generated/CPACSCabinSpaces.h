@@ -27,14 +27,14 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeck;
+class CCPACSDecksDeck;
 
 namespace generated
 {
     class CPACSCabinSpace;
 
     // This class is used in:
-    // CPACSDeck
+    // CPACSDecksDeck
 
     /// @brief Cabin spaces
     /// 
@@ -43,13 +43,13 @@ namespace generated
     class CPACSCabinSpaces
     {
     public:
-        TIGL_EXPORT CPACSCabinSpaces(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSCabinSpaces(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSCabinSpaces();
 
-        TIGL_EXPORT CCPACSDeck* GetParent();
+        TIGL_EXPORT CCPACSDecksDeck* GetParent();
 
-        TIGL_EXPORT const CCPACSDeck* GetParent() const;
+        TIGL_EXPORT const CCPACSDecksDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -76,7 +76,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSpace(CPACSCabinSpace& ref);
 
     protected:
-        CCPACSDeck* m_parent;
+        CCPACSDecksDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
