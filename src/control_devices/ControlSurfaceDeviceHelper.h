@@ -36,5 +36,12 @@ namespace ControlSurfaceDeviceHelper
 
     TIGL_EXPORT  gp_Pnt calc_hinge_point(CCPACSControlSurfaceHingePoint const& hinge_point, CCPACSEtaIsoLine const& etaLE, CCPACSWingComponentSegment const& cSegment, CTiglUIDManager const* uidMgr, std::string const& innerOuter);
 
+    // Returns a point on the border of a control surface device (leading or trailing edge, depending on
+    // which eta/xsi pair is passed), interpolated between the inner and outer border at the given eta
+    // (0 = inner border, 1 = outer border), and moved to the device's current deflected position.
+    TIGL_EXPORT gp_Pnt GetDeflectedBorderPoint(double etaInner, double etaOuter, double xsiInner, double xsiOuter,
+                                                double eta, CCPACSWingComponentSegment const& cSegment,
+                                                gp_Trsf const& flapTransform);
+
 }
 }

@@ -5,6 +5,7 @@ Changes since last release
 ----------------
 2025/09/26
 -General changes
+- Add `tiglControlSurfaceGetEdgePoint` to get a point on the leading or trailing edge of a (possibly deflected) control surface device [#1425](https://github.com/DLR-SC/tigl/issues/1425)
   - TiGLCreator: Draw option menus are now updated when adding new wings or fuselages. 
   - TiGLCreator: Bi-directional selection of shapes via the GUI or the CPACSTree is supported now [#1275](https://github.com/DLR-SC/tigl/issues/1275).
   - TIGLCreator: Use NACA profiles and standard profiles in the TIGLCreator templates ([#1367](https://github.com/DLR-SC/tigl/issues/1367))
@@ -17,6 +18,7 @@ Changes since last release
   - CPACS Export: Choose more meaningful marker for mirrored objects uIDs [#1289](https://github.com/DLR-SC/tigl/issues/1289)
   - Add geometry and mass-property evaluation for fuselage decks ([#1298](https://github.com/DLR-SC/tigl/pull/1298), [CPACS#859](https://github.com/DLR-SL/CPACS/issues/859))
   - Add leading edge devices (LED) to TiGL and TiGLcreator [#1101](https://github.com/DLR-SC/tigl/issues/1101)
+  
   - Always display the borders of the control surfaces on the wing
   - Add funtionality to add user-defined spotlights to the TiGLCreator ([#1245](https://github.com/DLR-SC/tigl/issues/1245))
   - TiGLCreator: Add option to display the control point net of all faces of a geometric component for debugging purposes [#1260](https://github.com/DLR-SC/tigl/pull/1260)

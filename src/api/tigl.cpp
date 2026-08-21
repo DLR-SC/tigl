@@ -2844,6 +2844,63 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
     return tiglControlSurfaceSetControlParameter(cpacsHandle, controlSurfaceUID, deflection);
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetEdgePoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  TiglControlSurfaceEdgeType edgeType,
+                                                                  double eta,
+                                                                  double * x,
+                                                                  double * y,
+                                                                  double * z)
+{
+    if (controlSurfaceUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for controlSurfaceUID ";
+        LOG(ERROR) << "in function call to tiglControlSurfaceGetEdgePoint." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (x == 0 || y == 0 || z == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for x, y or z ";
+        LOG(ERROR) << "in function call to tiglControlSurfaceGetEdgePoint." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        const auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(cpacsHandle);
+        const auto& uidMgr = config.GetUIDManager();
+
+        gp_Pnt point;
+        if (uidMgr.IsType<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID)) {
+            const auto& ted = uidMgr.ResolveObject<tigl::CCPACSTrailingEdgeDevice>(controlSurfaceUID);
+            point = (edgeType == LEADING_EDGE) ? ted.GetLeadingEdgePoint(eta) : ted.GetTrailingEdgePoint(eta);
+        }
+        else if (uidMgr.IsType<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID)) {
+            const auto& led = uidMgr.ResolveObject<tigl::CCPACSLeadingEdgeDevice>(controlSurfaceUID);
+            point = (edgeType == LEADING_EDGE) ? led.GetLeadingEdgePoint(eta) : led.GetTrailingEdgePoint(eta);
+        }
+        else {
+            LOG(ERROR) << "Error: UID '" << controlSurfaceUID << "' is not a leading or trailing edge device." << std::endl;
+            return TIGL_UID_ERROR;
+        }
+
+        *x = point.X();
+        *y = point.Y();
+        *z = point.Z();
+
+        return TIGL_SUCCESS;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return ex.getCode();
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglControlSurfaceGetEdgePoint!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 /******************************************************************************/
 /* Fuselage Functions                                                         */
 /******************************************************************************/

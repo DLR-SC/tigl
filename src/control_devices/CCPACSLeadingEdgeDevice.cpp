@@ -80,6 +80,22 @@ gp_Trsf CCPACSLeadingEdgeDevice::GetFlapTransform() const
     return GetPath().GetSteps().GetTransformation(m_currentControlParam, innerHingeOld, outerHingeOld);
 }
 
+gp_Pnt CCPACSLeadingEdgeDevice::GetLeadingEdgePoint(double eta) const
+{
+    return ControlSurfaceDeviceHelper::GetDeflectedBorderPoint(
+        GetOuterShape().GetInnerBorder().getEtaLE(), GetOuterShape().GetOuterBorder().getEtaLE(),
+        GetOuterShape().GetInnerBorder().getXsiLE(), GetOuterShape().GetOuterBorder().getXsiLE(), eta,
+        ComponentSegment(*this), GetFlapTransform());
+}
+
+gp_Pnt CCPACSLeadingEdgeDevice::GetTrailingEdgePoint(double eta) const
+{
+    return ControlSurfaceDeviceHelper::GetDeflectedBorderPoint(
+        GetOuterShape().GetInnerBorder().getEtaTE(), GetOuterShape().GetOuterBorder().getEtaTE(),
+        GetOuterShape().GetInnerBorder().getXsiTE(), GetOuterShape().GetOuterBorder().getXsiTE(), eta,
+        ComponentSegment(*this), GetFlapTransform());
+}
+
 double CCPACSLeadingEdgeDevice::GetMinControlParameter() const
 {
     return GetPath().GetSteps().GetSteps().front()->GetControlParameter();
