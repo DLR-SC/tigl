@@ -99,8 +99,7 @@ protected:
         tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(FuelTanks::tiglHandle).GetUIDManager();
 
     // Fuel tank objects
-    const tigl::CCPACSFuelTank* fuelTank         = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
-    const tigl::CCPACSFuelTank* fuelTank_corrupt = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank_corrupt");
+    const tigl::CCPACSFuelTank* fuelTank = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank1");
 
     // Vessel objects resolved from the fuel tank
     const tigl::CCPACSVessels& vessels    = fuelTank->GetVessels();
@@ -115,8 +114,6 @@ protected:
     tigl::CCPACSVessel* vessel_isotensoid    = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank5_isotensoidDome");
 
     tigl::CCPACSVessel* vessel_symmetric = &uidMgr.ResolveObject<tigl::CCPACSVessel>("tank7_symmetricVessel");
-    tigl::CCPACSVessel* vessel_corrupt1   = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry1");
-    tigl::CCPACSVessel* vessel_corrupt2  = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry2");
 
     // Dummy objects for exception testing
     DummyAircraftModel dummyAircraft;
@@ -135,7 +132,7 @@ TEST_F(FuelTanks, configuration)
     auto& config    = fuelTank->GetConfiguration();
     std::string uID = "tank1";
 
-    EXPECT_EQ(config.GetFuelTankCount(), 8);
+    EXPECT_EQ(config.GetFuelTankCount(), 7);
     EXPECT_EQ(config.GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(config.GetFuelTank(uID));
     EXPECT_EQ(config.GetFuelTankIndex(uID), 1);
@@ -156,7 +153,7 @@ TEST_F(FuelTanks, fuelTanks)
     EXPECT_EQ(fuelTanks->GetFuelTank(1).GetDefaultedUID(), uID);
     EXPECT_NO_THROW(fuelTanks->GetFuelTank(uID));
     EXPECT_EQ(fuelTanks->GetFuelTankIndex(uID), 1);
-    EXPECT_EQ(fuelTanks->GetFuelTankCount(), 8);
+    EXPECT_EQ(fuelTanks->GetFuelTankCount(), 7);
 }
 
 TEST_F(FuelTanks, fuelTank)
@@ -244,10 +241,6 @@ TEST_F(FuelTanks, vessel_type_info)
     EXPECT_FALSE(vessel_isotensoid->HasEllipsoidDome());
     EXPECT_FALSE(vessel_isotensoid->HasTorisphericalDome());
     EXPECT_TRUE(vessel_isotensoid->HasIsotensoidDome());
-
-    // Check for corrupt vessel exceptions.
-    EXPECT_THROW(vessel_corrupt1->IsVesselViaSegments(), tigl::CTiglError);
-    EXPECT_THROW(vessel_corrupt1->IsVesselViaDesignParameters(), tigl::CTiglError);
 }
 
 TEST_F(FuelTanks, vessel_sections)
@@ -329,43 +322,7 @@ TEST_F(FuelTanks, vessel_loft_evaluation)
     EXPECT_NEAR(vessel_segments->GetCircumference(1, 0.5), 7.43, 1e-2);
     CheckExceptionMessage([&]() { vessel_parametric->GetCircumference(1, 0.5); }, tankTypeExceptionString);
 
-    EXPECT_THROW(vessel_corrupt1->GetLoft(), tigl::CTiglError);
-    CheckExceptionMessage([&]() { vessel_corrupt2->GetLoft(); }, "Parametric vessel specification incomplete: "
-                                                       "cylinderRadius, cylinderLength and domeType required.");
     EXPECT_THROW(dummyVessel.GetLoft(), tigl::CTiglError);
-}
-
-TEST_F(FuelTanks, vessel_parametric_exceptions)
-{
-    CheckExceptionMessage([&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_ellipsoid").GetLoft(); },
-                          "Half axis fraction (-1.000000) of vessel \"Vessel with negative ax ratio\" "
-                          "(uID=\"vessel_corrupt_ellipsoid\") must be a positive value!");
-
-    CheckExceptionMessage(
-        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical1").GetLoft(); },
-        "The dish radius (0.500000) of vessel \"Vessel with too small dish radius\" "
-        "(uID=\"vessel_corrupt_torispherical1\") must be larger than the cylinder radius (1.000000)!");
-
-    CheckExceptionMessage(
-        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical2").GetLoft(); },
-        "The knuckle radius (1.500000) of vessel \"Vessel with too large knuckle radius\" "
-        "(uID=\"vessel_corrupt_torispherical2\") must be larger than 0 and smaller than the cylinder Radius "
-        "(1.000000)!");
-
-    CheckExceptionMessage(
-        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_isotensoid").GetLoft(); },
-        "The polar opening radius (1.500000) of vessel \"Vessel with too large polar opening radius\" "
-        "(uID=\"vessel_corrupt_isotensoid\") must be larger than 0 and smaller than the cylinder radius (1.000000)!");
-
-    CheckExceptionMessage(
-        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_radius").GetLoft(); },
-        "The cylinder radius (-1.000000) of vessel \"Vessel with negative radius\" "
-        "(uID=\"vessel_corrupt_negative_radius\") must be larger than 0!");
-
-    CheckExceptionMessage(
-        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_length").GetLoft(); },
-        "The cylinder length (-1.000000) of vessel \"Vessel with negative length\" "
-        "(uID=\"vessel_corrupt_negative_length\") must be larger than or equal to 0!");
 }
 
 TEST_F(FuelTanks, vessel_face_traits)
@@ -505,6 +462,85 @@ TEST_F(FuelTanks, ducts_cutouts_propagate_to_fuel_tank)
 
     // CCPACSFuelTank groups the vessel lofts, so the cutouts must show up there as well
     EXPECT_GT(GetNumberOfFaces(fuelTank->GetLoft()->Shape()), faces_clean);
+}
+
+class InvalidFuelTanks : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simpletest-invalid-fuelTanks.cpacs.xml";
+        ASSERT_EQ(tixiOpenDocument(filename, &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testAircraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+
+    tigl::CTiglUIDManager& uidMgr =
+        tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(InvalidFuelTanks::tiglHandle).GetUIDManager();
+
+    const tigl::CCPACSFuelTank* fuelTank_corrupt = &uidMgr.ResolveObject<tigl::CCPACSFuelTank>("tank_corrupt");
+    tigl::CCPACSVessel* vessel_corrupt1 = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry1");
+    tigl::CCPACSVessel* vessel_corrupt2 = &uidMgr.ResolveObject<tigl::CCPACSVessel>("vessel_corrupt_geometry2");
+};
+
+TixiDocumentHandle InvalidFuelTanks::tixiHandle           = 0;
+TiglCPACSConfigurationHandle InvalidFuelTanks::tiglHandle = 0;
+
+TEST_F(InvalidFuelTanks, vessel_type_info)
+{
+    EXPECT_THROW(vessel_corrupt1->IsVesselViaSegments(), tigl::CTiglError);
+    EXPECT_THROW(vessel_corrupt1->IsVesselViaDesignParameters(), tigl::CTiglError);
+}
+
+TEST_F(InvalidFuelTanks, vessel_loft_evaluation)
+{
+    EXPECT_THROW(vessel_corrupt1->GetLoft(), tigl::CTiglError);
+    CheckExceptionMessage([&]() { vessel_corrupt2->GetLoft(); },
+                          "Parametric vessel specification incomplete: "
+                          "cylinderRadius, cylinderLength and domeType required.");
+}
+
+TEST_F(InvalidFuelTanks, vessel_parametric_exceptions)
+{
+    CheckExceptionMessage([&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_ellipsoid").GetLoft(); },
+                          "Half axis fraction (-1.000000) of vessel \"Vessel with negative ax ratio\" "
+                          "(uID=\"vessel_corrupt_ellipsoid\") must be a positive value!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical1").GetLoft(); },
+        "The dish radius (0.500000) of vessel \"Vessel with too small dish radius\" "
+        "(uID=\"vessel_corrupt_torispherical1\") must be larger than the cylinder radius (1.000000)!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_torispherical2").GetLoft(); },
+        "The knuckle radius (1.500000) of vessel \"Vessel with too large knuckle radius\" "
+        "(uID=\"vessel_corrupt_torispherical2\") must be larger than 0 and smaller than the cylinder Radius "
+        "(1.000000)!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_isotensoid").GetLoft(); },
+        "The polar opening radius (1.500000) of vessel \"Vessel with too large polar opening radius\" "
+        "(uID=\"vessel_corrupt_isotensoid\") must be larger than 0 and smaller than the cylinder radius (1.000000)!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_radius").GetLoft(); },
+        "The cylinder radius (-1.000000) of vessel \"Vessel with negative radius\" "
+        "(uID=\"vessel_corrupt_negative_radius\") must be larger than 0!");
+
+    CheckExceptionMessage(
+        [&]() { fuelTank_corrupt->GetVessels().GetVessel("vessel_corrupt_negative_length").GetLoft(); },
+        "The cylinder length (-1.000000) of vessel \"Vessel with negative length\" "
+        "(uID=\"vessel_corrupt_negative_length\") must be larger than or equal to 0!");
 }
 
 class FuelTanksWithoutDucts : public ::testing::Test

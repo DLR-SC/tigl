@@ -105,7 +105,7 @@ class TestFuelTanks(unittest.TestCase):
     def test_configuration(self) -> None:
         self.assertEqual(
             self.aircraft_config.get_fuel_tank_count(),
-            8,
+            7,
         )
 
         # Verify the index- and UID-based overloads exposed by SWIG.
@@ -151,7 +151,7 @@ class TestFuelTanks(unittest.TestCase):
         )
         self.assertEqual(
             fuel_tanks.get_fuel_tank_count(),
-            8,
+            7,
         )
 
     def test_fuel_tank(self) -> None:

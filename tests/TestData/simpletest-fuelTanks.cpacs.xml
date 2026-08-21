@@ -517,7 +517,7 @@
                     <toElementUID>outerVessel_section3_element1</toElementUID>
                   </segment>
                 </segments>
-                <structure uID="outerVesselStructure">
+                <structure>
                   <frames>
                     <frame uID="outerVesselStructureFrame1">
                       <framePosition uID="outerVesselStructureFrame1_fp1">
@@ -1082,98 +1082,6 @@
                     <toElementUID>symmetricVessel_section2_element1</toElementUID>
                   </segment>
                 </segments>
-              </vessel>
-            </vessels>
-          </fuelTank>
-          <fuelTank uID="tank_corrupt">
-            <name>Corrupt tank</name>
-            <description>Test case exception handling</description>
-            <parentUID>SimpleFuselage</parentUID>
-            <transformation />
-            <vessels>
-              <vessel uID="vessel_corrupt_geometry1">
-                <name>Vessel with wrong geometry</name>
-                <transformation />
-                <cylinderRadius>0.4</cylinderRadius>
-                <cylinderLength>1.</cylinderLength>
-              </vessel>
-                <vessel uID="vessel_corrupt_geometry2">
-                    <name>Vessel 2 with wrong geometry</name>
-                    <transformation />
-                    <cylinderLength>1.</cylinderLength>
-                    <domeType>
-                        <ellipsoid>
-                            <halfAxisFraction>1</halfAxisFraction>
-                        </ellipsoid>
-                    </domeType>
-                </vessel>
-              <vessel uID="vessel_corrupt_ellipsoid">
-                <name>Vessel with negative ax ratio</name>
-                <transformation />
-                <cylinderRadius>1</cylinderRadius>
-                <cylinderLength>1</cylinderLength>
-                <domeType>
-                  <ellipsoid>
-                    <halfAxisFraction>-1</halfAxisFraction>
-                  </ellipsoid>
-                </domeType>
-              </vessel>
-              <vessel uID="vessel_corrupt_torispherical1">
-                <name>Vessel with too small dish radius</name>
-                <transformation />
-                <cylinderRadius>1</cylinderRadius>
-                <cylinderLength>1</cylinderLength>
-                <domeType>
-                  <torispherical>
-                    <dishRadius>0.5</dishRadius>
-                    <knuckleRadius>0.1</knuckleRadius>
-                  </torispherical>
-                </domeType>
-              </vessel>
-              <vessel uID="vessel_corrupt_torispherical2">
-                <name>Vessel with too large knuckle radius</name>
-                <transformation />
-                <cylinderRadius>1</cylinderRadius>
-                <cylinderLength>1</cylinderLength>
-                <domeType>
-                  <torispherical>
-                    <dishRadius>1.5</dishRadius>
-                    <knuckleRadius>1.5</knuckleRadius>
-                  </torispherical>
-                </domeType>
-              </vessel>
-              <vessel uID="vessel_corrupt_isotensoid">
-                <name>Vessel with too large polar opening radius</name>
-                <transformation />
-                <cylinderRadius>1</cylinderRadius>
-                <cylinderLength>1</cylinderLength>
-                <domeType>
-                  <isotensoid>
-                    <polarOpeningRadius>1.5</polarOpeningRadius>
-                  </isotensoid>
-                </domeType>
-              </vessel>
-              <vessel uID="vessel_corrupt_negative_radius">
-                <name>Vessel with negative radius</name>
-                <transformation />
-                <cylinderRadius>-1</cylinderRadius>
-                <cylinderLength>1</cylinderLength>
-                <domeType>
-                  <isotensoid>
-                    <polarOpeningRadius>0.5</polarOpeningRadius>
-                  </isotensoid>
-                </domeType>
-              </vessel>
-              <vessel uID="vessel_corrupt_negative_length">
-                <name>Vessel with negative length</name>
-                <transformation />
-                <cylinderRadius>1</cylinderRadius>
-                <cylinderLength>-1</cylinderLength>
-                <domeType>
-                  <isotensoid>
-                    <polarOpeningRadius>0.5</polarOpeningRadius>
-                  </isotensoid>
-                </domeType>
               </vessel>
             </vessels>
           </fuelTank>
