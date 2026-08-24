@@ -494,7 +494,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
     // BRepAlgoAPI pattern, instead of fusing the n cutouts pairwise into one
     // complex tool and then cutting once.
     TopTools_ListOfShape objects, tools;
-    objects.Append((*wingCleanShape)->Shape());
+    objects.Append((*wingCleanShapeUntrimmed)->Shape());
     for (const auto& cutoutShape : cutoutShapes) {
         tools.Append(cutoutShape->Shape());
     }
@@ -507,8 +507,8 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         throw CTiglError("Error cutting control surfaces from wing '" + GetUID() + "'");
     }
 
-    PNamedShape cutCompound(new CNamedShape(cutter.Shape(), (*wingCleanShape)->Name()));
-    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShape, cutCompound);
+    PNamedShape cutCompound(new CNamedShape(cutter.Shape(), (*wingCleanShapeUntrimmed)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShapeUntrimmed, cutCompound);
     for (const auto& cutoutShape : cutoutShapes) {
         CBooleanOperTools::MapFaceNamesAfterBOP(cutter, cutoutShape, cutCompound);
     }
@@ -524,7 +524,7 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         solidMaker.Add(TopoDS::Shell(shellMap(ishell)));
     }
 
-    result = PNamedShape(new CNamedShape(solidMaker.Solid(), (*wingCleanShape)->Name()));
+    result = PNamedShape(new CNamedShape(solidMaker.Solid(), (*wingCleanShapeUntrimmed)->Name()));
     CBooleanOperTools::MapFaceNamesAfterBOP(solidMaker, cutCompound, result);
 
     for (int iFace = 0; iFace < static_cast<int>(result->GetFaceCount()); ++iFace) {
