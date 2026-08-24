@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSEllipsoid.h"
-#include "CPACSEllipsoids.h"
+#include "CPACSTori.h"
+#include "CPACSTorus.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -28,29 +28,30 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSEllipsoid::CPACSEllipsoid(CPACSEllipsoids* parent, CTiglUIDManager* uidMgr)
+    CPACSTorus::CPACSTorus(CPACSTori* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_radiusX(0)
+        , m_majorRadius(0)
+        , m_minorRadius(0)
     {
         //assert(parent != NULL);
         m_parent = parent;
     }
 
-    CPACSEllipsoid::~CPACSEllipsoid()
+    CPACSTorus::~CPACSTorus()
     {
     }
 
-    const CPACSEllipsoids* CPACSEllipsoid::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSEllipsoids* CPACSEllipsoid::GetParent()
+    const CPACSTori* CPACSTorus::GetParent() const
     {
         return m_parent;
     }
 
-    const CTiglUIDObject* CPACSEllipsoid::GetNextUIDParent() const
+    CPACSTori* CPACSTorus::GetParent()
+    {
+        return m_parent;
+    }
+
+    const CTiglUIDObject* CPACSTorus::GetNextUIDParent() const
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -58,7 +59,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDObject* CPACSEllipsoid::GetNextUIDParent()
+    CTiglUIDObject* CPACSTorus::GetNextUIDParent()
     {
         if (m_parent) {
             return m_parent->GetNextUIDParent();
@@ -66,7 +67,7 @@ namespace generated
         return nullptr;
     }
 
-    CTiglUIDManager& CPACSEllipsoid::GetUIDManager()
+    CTiglUIDManager& CPACSTorus::GetUIDManager()
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -74,7 +75,7 @@ namespace generated
         return *m_uidMgr;
     }
 
-    const CTiglUIDManager& CPACSEllipsoid::GetUIDManager() const
+    const CTiglUIDManager& CPACSTorus::GetUIDManager() const
     {
         if (!m_uidMgr) {
             throw CTiglError("UIDManager is null");
@@ -82,24 +83,22 @@ namespace generated
         return *m_uidMgr;
     }
 
-    void CPACSEllipsoid::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+    void CPACSTorus::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element radiusX
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusX")) {
-            m_radiusX = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusX");
+        // read element majorRadius
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/majorRadius")) {
+            m_majorRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/majorRadius");
         }
         else {
-            LOG(ERROR) << "Required element radiusX is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element majorRadius is missing at xpath " << xpath;
         }
 
-        // read element radiusY
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusY")) {
-            m_radiusY = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusY");
+        // read element minorRadius
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/minorRadius")) {
+            m_minorRadius = tixi::TixiGetElement<double>(tixiHandle, xpath + "/minorRadius");
         }
-
-        // read element radiusZ
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/radiusZ")) {
-            m_radiusZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusZ");
+        else {
+            LOG(ERROR) << "Required element minorRadius is missing at xpath " << xpath;
         }
 
         // read element revolutionAngle
@@ -120,33 +119,15 @@ namespace generated
 
     }
 
-    void CPACSEllipsoid::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
+    void CPACSTorus::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element radiusX
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/radiusX");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/radiusX", m_radiusX);
+        // write element majorRadius
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/majorRadius");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/majorRadius", m_majorRadius);
 
-        // write element radiusY
-        if (m_radiusY) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/radiusY");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/radiusY", *m_radiusY);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusY")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/radiusY");
-            }
-        }
-
-        // write element radiusZ
-        if (m_radiusZ) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/radiusZ");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/radiusZ", *m_radiusZ);
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/radiusZ")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/radiusZ");
-            }
-        }
+        // write element minorRadius
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/minorRadius");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/minorRadius", m_minorRadius);
 
         // write element revolutionAngle
         if (m_revolutionAngle) {
@@ -172,64 +153,54 @@ namespace generated
 
     }
 
-    const double& CPACSEllipsoid::GetRadiusX() const
+    const double& CPACSTorus::GetMajorRadius() const
     {
-        return m_radiusX;
+        return m_majorRadius;
     }
 
-    void CPACSEllipsoid::SetRadiusX(const double& value)
+    void CPACSTorus::SetMajorRadius(const double& value)
     {
-        m_radiusX = value;
+        m_majorRadius = value;
     }
 
-    const boost::optional<double>& CPACSEllipsoid::GetRadiusY() const
+    const double& CPACSTorus::GetMinorRadius() const
     {
-        return m_radiusY;
+        return m_minorRadius;
     }
 
-    void CPACSEllipsoid::SetRadiusY(const boost::optional<double>& value)
+    void CPACSTorus::SetMinorRadius(const double& value)
     {
-        m_radiusY = value;
+        m_minorRadius = value;
     }
 
-    const boost::optional<double>& CPACSEllipsoid::GetRadiusZ() const
-    {
-        return m_radiusZ;
-    }
-
-    void CPACSEllipsoid::SetRadiusZ(const boost::optional<double>& value)
-    {
-        m_radiusZ = value;
-    }
-
-    const boost::optional<double>& CPACSEllipsoid::GetRevolutionAngle() const
+    const boost::optional<double>& CPACSTorus::GetRevolutionAngle() const
     {
         return m_revolutionAngle;
     }
 
-    void CPACSEllipsoid::SetRevolutionAngle(const boost::optional<double>& value)
+    void CPACSTorus::SetRevolutionAngle(const boost::optional<double>& value)
     {
         m_revolutionAngle = value;
     }
 
-    const boost::optional<CCPACSTransformationSE3>& CPACSEllipsoid::GetTransformation() const
+    const boost::optional<CCPACSTransformationSE3>& CPACSTorus::GetTransformation() const
     {
         return m_transformation;
     }
 
-    boost::optional<CCPACSTransformationSE3>& CPACSEllipsoid::GetTransformation()
+    boost::optional<CCPACSTransformationSE3>& CPACSTorus::GetTransformation()
     {
         return m_transformation;
     }
 
-    CCPACSTransformationSE3& CPACSEllipsoid::GetTransformation(CreateIfNotExistsTag)
+    CCPACSTransformationSE3& CPACSTorus::GetTransformation(CreateIfNotExistsTag)
     {
         if (!m_transformation)
             m_transformation = boost::in_place(this, m_uidMgr);
         return *m_transformation;
     }
 
-    void CPACSEllipsoid::RemoveTransformation()
+    void CPACSTorus::RemoveTransformation()
     {
         m_transformation = boost::none;
     }
