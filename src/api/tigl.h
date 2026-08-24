@@ -298,6 +298,14 @@ enum TiglControlSurfaceType
 
 typedef enum TiglControlSurfaceType TiglControlSurfaceType;
 
+enum TiglControlSurfaceEdgeType
+{
+    LEADING_EDGE = 0,
+    TRAILING_EDGE = 1
+};
+
+typedef enum TiglControlSurfaceEdgeType TiglControlSurfaceEdgeType;
+
 enum TiglLoftSide
 {
     UPPER_SIDE = 0,
@@ -1969,6 +1977,38 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetControlParameter(TiglCPAC
 TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char * controlSurfaceUID,
                                                                   double deflection);
+
+
+/**
+* @brief Returns a point on the leading or trailing edge of a control surface device (flap or slat),
+*        reflecting the device's current deflection (i.e. as last set via ::tiglControlSurfaceSetControlParameter).
+*
+* The point is returned in global (world) coordinates. The eta parameter runs along the device's own
+* leading or trailing edge, from 0 (inner border of the control surface) to 1 (outer border), analogous
+* to the eta/xsi convention of ::tiglWingComponentSegmentGetPoint.
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  controlSurfaceUID       UID of the control surface
+* @param[in]  edgeType                Whether to query the leading edge (::LEADING_EDGE) or trailing edge (::TRAILING_EDGE) of the device
+* @param[in]  eta                     Relative position along the device's edge (0 = inner border, 1 = outer border)
+* @param[out] x                       X coordinate of the point
+* @param[out] y                       Y coordinate of the point
+* @param[out] z                       Z coordinate of the point
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the control surface does not exist
+*   - TIGL_NULL_POINTER if controlSurfaceUID, x, y or z is a NULL pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceGetEdgePoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                  const char * controlSurfaceUID,
+                                                                  TiglControlSurfaceEdgeType edgeType,
+                                                                  double eta,
+                                                                  double * x,
+                                                                  double * y,
+                                                                  double * z);
 
 
 /*@}*/

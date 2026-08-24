@@ -36,6 +36,8 @@
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
 
+#include <cmath>
+
 using namespace std;
 
 /******************************************************************************/
@@ -291,6 +293,46 @@ TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetAndSetControlParameter)
     ASSERT_EQ(TIGL_SUCCESS,
               tiglControlSurfaceGetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", &controlParm));
     ASSERT_NEAR(0.33, controlParm, 1e-10);
+}
+
+TEST_F(TiglControlSurfaceDevice, tiglControlSurfaceGetEdgePoint)
+{
+    double x, y, z;
+
+    // error handling
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglControlSurfaceGetEdgePoint(tiglHandle, NULL, TRAILING_EDGE, 0.5, &x, &y, &z));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglControlSurfaceGetEdgePoint(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap",
+                                                                  TRAILING_EDGE, 0.5, NULL, &y, &z));
+    ASSERT_EQ(TIGL_UID_ERROR,
+              tiglControlSurfaceGetEdgePoint(tiglHandle, "rmplstlzchn", TRAILING_EDGE, 0.5, &x, &y, &z));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglControlSurfaceGetEdgePoint(-1, "D150_VAMP_W1_CompSeg1_innerFlap", TRAILING_EDGE,
+                                                               0.5, &x, &y, &z));
+
+    // trailing edge device: the trailing edge of the flap is far from the hinge line and
+    // should move noticeably when the flap is deflected, the leading edge (hinge/cut line)
+    // should move much less
+    ASSERT_EQ(TIGL_SUCCESS,
+              tiglControlSurfaceSetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 0.0));
+
+    double teX0, teY0, teZ0, leX0, leY0, leZ0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetEdgePoint(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap",
+                                                             TRAILING_EDGE, 0.5, &teX0, &teY0, &teZ0));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetEdgePoint(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap",
+                                                             LEADING_EDGE, 0.5, &leX0, &leY0, &leZ0));
+
+    ASSERT_EQ(TIGL_SUCCESS,
+              tiglControlSurfaceSetControlParameter(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap", 1.0));
+
+    double teX1, teY1, teZ1, leX1, leY1, leZ1;
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetEdgePoint(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap",
+                                                             TRAILING_EDGE, 0.5, &teX1, &teY1, &teZ1));
+    ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceGetEdgePoint(tiglHandle, "D150_VAMP_W1_CompSeg1_innerFlap",
+                                                             LEADING_EDGE, 0.5, &leX1, &leY1, &leZ1));
+
+    double teDist = sqrt(pow(teX1 - teX0, 2) + pow(teY1 - teY0, 2) + pow(teZ1 - teZ0, 2));
+    double leDist = sqrt(pow(leX1 - leX0, 2) + pow(leY1 - leY0, 2) + pow(leZ1 - leZ0, 2));
+    ASSERT_GT(teDist, 1e-3);
+    ASSERT_GT(teDist, leDist);
 }
 
 TEST_F(TiglControlSurfaceDevice, CPACSTrailingEdgeDevices)

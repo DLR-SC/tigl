@@ -40,6 +40,11 @@ public:
     // Returns the flap transformation based on the current control parameter
     TIGL_EXPORT gp_Trsf GetFlapTransform() const;
 
+    // Returns a point on the device's own leading or trailing edge (eta=0 at the inner
+    // border, eta=1 at the outer border), reflecting the device's current deflection.
+    TIGL_EXPORT gp_Pnt GetLeadingEdgePoint(double eta) const;
+    TIGL_EXPORT gp_Pnt GetTrailingEdgePoint(double eta) const;
+
     TIGL_EXPORT double GetMinControlParameter() const;
     TIGL_EXPORT double GetMaxControlParameter() const;
 

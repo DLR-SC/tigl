@@ -124,5 +124,21 @@ gp_Pnt calc_hinge_point(
         return lower;
     };
 
+gp_Pnt GetDeflectedBorderPoint(double etaInner, double etaOuter, double xsiInner, double xsiOuter,
+                                double eta, CCPACSWingComponentSegment const& cSegment,
+                                gp_Trsf const& flapTransform)
+{
+    if (eta < 0. || 1. < eta) {
+        throw CTiglError("Parameter eta not in the range 0.0 <= eta <= 1.0 in "
+                          "ControlSurfaceDeviceHelper::GetDeflectedBorderPoint");
+    }
+
+    double etaCS = etaInner + eta * (etaOuter - etaInner);
+    double xsiCS = xsiInner + eta * (xsiOuter - xsiInner);
+
+    gp_Pnt undeflectedPoint = cSegment.GetPoint(etaCS, xsiCS);
+    return undeflectedPoint.Transformed(flapTransform);
+}
+
 }
 }
