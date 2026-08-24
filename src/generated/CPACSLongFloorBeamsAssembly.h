@@ -38,7 +38,7 @@ namespace generated
     /// @brief longFloorBeamsAssemblyType
     /// 
     /// longFloorBeamsAssembly type, containing long. floor
-    /// beam assemblys
+    /// beam assemblies
     /// 
     class CPACSLongFloorBeamsAssembly
     {

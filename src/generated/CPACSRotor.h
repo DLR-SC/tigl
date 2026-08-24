@@ -57,9 +57,8 @@ namespace generated
     /// rearwards for main and tail rotors, upwards for a propeller). The y-axis completes the right-handed orthogonal
     /// coordinate system. Rotor hub attributes, hinges and references to
     /// attached rotor blades are defined in the rotorHub element.
-    /// Note that rotor blade geometries are only referenced and not
-    /// defined in the child nodes of the rotor element. Refer to the
-    /// documentation of rotorBladesType ( Empty#T/rotorBladesType ) and wingType ( Empty#T/wingType ) for information on the definition of rotor blade geometries.
+    /// Note that rotor blade geometries are only referenced and not defined in the child nodes of the rotor element.
+    /// Refer to the documentation of rotorBladesType ( Empty#T/rotorBladesType ) and wingType ( Empty#T/wingType ) for information on the definition of rotor blade geometries.
     /// The following figure shows the transformations to be
     /// applied to rotorBlade geometries to visualize them in the rotor
     /// frames for a given state (each rotor: rotorAzimuth given, each

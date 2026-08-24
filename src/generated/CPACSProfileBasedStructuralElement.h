@@ -47,13 +47,10 @@ namespace generated
     /// @brief Structural elements based on profiles
     /// 
     /// Short description
-    /// The ProfileBasedStructuralElement type containins the
-    /// data of a structural element, that are based on 2-dimensional profiles.
+    /// The ProfileBasedStructuralElement type containins the data of a structural element, that are based on 2-dimensional profiles.
     /// There are three approaches to model profile based structural elements: by specifying global beam properties by referencing a structuralProfile2D element by choosing one of the prescribed standard profiles
     /// 1. Global beam properties
-    /// In the section globalBeamProperties the properties
-    /// of the structural profile in an equivalent beam representation
-    /// are defined.
+    /// In the section globalBeamProperties the properties of the structural profile in an equivalent beam representation are defined.
     /// 2. Structural 2D profile
     /// The structuralProfileUID element refers to the uID of the structuralProfile2D element.
     /// As described in the corresponding documentation, this profile is defined by several points in the x-y-space.

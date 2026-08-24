@@ -38,7 +38,7 @@ namespace generated
     /// @brief Main landing gear support beam
     /// 
     /// Definition of the main landing gear support beam, if a
-    /// support beam is used for the attachment. The defintion includes
+    /// support beam is used for the attachment. The definition includes
     /// cross section properties as well as the position of the support
     /// beam.
     /// 

@@ -24,6 +24,8 @@
 
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Solid.hxx>
@@ -161,7 +163,7 @@ TEST_F(Systems, SystemMass)
     // requested tolerance and was silently forced smooth by the old, structurally invalid
     // concatenation. The fixed geometry is very slightly (and correctly) different in shape,
     // shifting the center of gravity by ~1e-5.
-    EXPECT_NEAR(cog->x, 16.4246251, eps);
+    EXPECT_NEAR(cog->x, 19.629312, eps);
     EXPECT_NEAR(cog->y, 7.0952114, eps);
     EXPECT_NEAR(cog->z, 0.2864744, eps);
 }
@@ -284,6 +286,156 @@ TEST_F(Systems, ComponentsGeometry)
     }
 }
 
+namespace
+{
+double ShapeVolume(const TopoDS_Shape& shape)
+{
+    GProp_GProps props;
+    // Adaptive variant: the toroidal surface is trigonometric, so the default
+    // fixed-order Gauss integration would only be accurate to ~1e-5 here.
+    BRepGProp::VolumeProperties(shape, props, 1.0e-9);
+    return props.Mass();
+}
+} // namespace
+
+TEST_F(Systems, TorusGeometry)
+{
+    const double eps = 1e-6;
+
+    // torus_1 -> full torus, R = 1.0, r = 0.25, revolutionAngle defaulted to 2*pi
+    {
+        const auto& component = GetComponent("torus_1");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
+        EXPECT_EQ(shape->Name(), "torus_1_torus_1");
+
+        // A full torus is closed in both parametric directions and therefore
+        // consists of a single face with seam edges.
+        EXPECT_EQ(shape->GetFaceCount(), 1u);
+
+        Bnd_Box box;
+        BRepBndLib::AddOptimal(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 2.5, eps); // 2 * (R + r)
+        EXPECT_NEAR(ymax - ymin, 2.5, eps);
+        EXPECT_NEAR(zmax - zmin, 0.5, eps); // 2 * r
+
+        // V = 2 * pi^2 * R * r^2
+        EXPECT_NEAR(ShapeVolume(shape->Shape()), 1.2337005501361697, eps);
+
+        const auto centroidLocal = component.GetCentroidLocal();
+        EXPECT_NEAR(centroidLocal.x, 0.0, eps);
+        EXPECT_NEAR(centroidLocal.y, 0.0, eps);
+        EXPECT_NEAR(centroidLocal.z, 0.0, eps);
+
+        const auto centroidGlobal = component.GetCentroidGlobal();
+        ASSERT_TRUE(centroidGlobal);
+        EXPECT_NEAR(centroidGlobal->x, 20.0, eps);
+        EXPECT_NEAR(centroidGlobal->y, 0.0, eps);
+        EXPECT_NEAR(centroidGlobal->z, 0.0, eps);
+    }
+
+    // torus_2 -> R = 1.0, r = 0.25, revolutionAngle = pi/2
+    {
+        const auto& component = GetComponent("torus_2");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
+
+        // Segmented torus: toroidal face plus two planar faces closing the segment.
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
+
+        Bnd_Box box;
+        BRepBndLib::AddOptimal(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        // The segment spans u = 0 ... pi/2, so it stays in the first quadrant.
+        EXPECT_NEAR(xmax - xmin, 1.25, eps);
+        EXPECT_NEAR(ymax - ymin, 1.25, eps);
+        EXPECT_NEAR(zmax - zmin, 0.5, eps);
+
+        // V = revolutionAngle * R * pi * r^2
+        EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.3084251375340424, eps);
+
+        // Centroid on the bisector u = pi/4 at distance R_eff * sin(pi/4) / (pi/4),
+        // with R_eff = R + r^2 / (4 R): outer parts of the cross section sweep more
+        // volume than inner ones.
+        const auto centroidLocal = component.GetCentroidLocal();
+        EXPECT_NEAR(centroidLocal.x, 0.6465669563108248, eps);
+        EXPECT_NEAR(centroidLocal.y, 0.6465669563108248, eps);
+        EXPECT_NEAR(centroidLocal.z, 0.0, eps);
+
+        const auto centroidGlobal = component.GetCentroidGlobal();
+        ASSERT_TRUE(centroidGlobal);
+        EXPECT_NEAR(centroidGlobal->x, 20.6465669563108248, eps);
+        EXPECT_NEAR(centroidGlobal->y, 5.6465669563108248, eps);
+        EXPECT_NEAR(centroidGlobal->z, 0.0, eps);
+    }
+
+    // torus_3 -> R = 0.5, r = 0.45, revolutionAngle = pi.
+    // Near-limit radius ratio: the remaining hole radius is only R - r = 0.05.
+    {
+        const auto& component = GetComponent("torus_3");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
+
+        Bnd_Box box;
+        BRepBndLib::AddOptimal(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        EXPECT_NEAR(xmax - xmin, 1.9, eps); // 2 * (R + r)
+        EXPECT_NEAR(ymax - ymin, 0.95, eps); // half revolution -> R + r
+        EXPECT_NEAR(zmax - zmin, 0.9, eps); // 2 * r
+
+        EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.9992974456102975, eps);
+
+        // Bisector u = pi/2, distance R_eff * sin(pi/2) / (pi/2)
+        // with R_eff = R + r^2 / (4 R) = 0.60125
+        const auto centroidLocal = component.GetCentroidLocal();
+        EXPECT_NEAR(centroidLocal.x, 0.0, eps);
+        EXPECT_NEAR(centroidLocal.y, 0.3827676381360083, eps);
+        EXPECT_NEAR(centroidLocal.z, 0.0, eps);
+    }
+
+    // torus_4 -> R = 1.0, r = 0.25, revolutionAngle = 3*pi/2, rotated by 90 deg about x
+    {
+        const auto& component = GetComponent("torus_4");
+        PNamedShape shape     = component.GetLoft();
+        ASSERT_TRUE(shape);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
+
+        Bnd_Box box;
+        BRepBndLib::AddOptimal(shape->Shape(), box);
+        double xmin, ymin, zmin, xmax, ymax, zmax;
+        box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        // Without the rotation the extents would be 2.5 / 2.5 / 0.5 (a 3/4 torus has
+        // the same bounding box as a full one). The rotation swaps y and z, so these
+        // extents verify that the primitive level transformation was applied.
+        EXPECT_NEAR(xmax - xmin, 2.5, eps);
+        EXPECT_NEAR(ymax - ymin, 0.5, eps);
+        EXPECT_NEAR(zmax - zmin, 2.5, eps);
+
+        EXPECT_NEAR(ShapeVolume(shape->Shape()), 0.9252754126021273, eps);
+
+        // Bisector u = 3*pi/4 before rotation, mapped by (x, y, z) -> (x, -z, y).
+        const auto centroidLocal = component.GetCentroidLocal();
+        EXPECT_NEAR(centroidLocal.x, -0.2155223187702750, eps);
+        EXPECT_NEAR(centroidLocal.y, 0.0, eps);
+        EXPECT_NEAR(centroidLocal.z, 0.2155223187702750, eps);
+
+        const auto centroidGlobal = component.GetCentroidGlobal();
+        ASSERT_TRUE(centroidGlobal);
+        EXPECT_NEAR(centroidGlobal->x, 19.7844776812297240, eps);
+        EXPECT_NEAR(centroidGlobal->y, 15.0, eps);
+        EXPECT_NEAR(centroidGlobal->z, 0.2155223187702750, eps);
+    }
+}
+
 TEST_F(Systems, Representation)
 {
     // cuboid_1 is explicitly set to "physical"
@@ -305,6 +457,13 @@ TEST_F(Systems, Representation)
         const auto& component = GetComponent("wedge_1");
         EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
         EXPECT_EQ(component.GetComponentRepresentationAsString(), "physical");
+    }
+
+    // wedge_2 is explicitly set to "placeholder"
+    {
+        const auto& component = GetComponent("wedge_2");
+        EXPECT_EQ(component.GetComponentRepresentation(), TIGL_GEOMREP_PLACEHOLDER);
+        EXPECT_EQ(component.GetComponentRepresentationAsString(), "placeholder");
     }
 }
 
@@ -650,7 +809,27 @@ TEST_F(InvalidSystems, InvalidShapes)
     {
         const auto& invalidShape = GetComponent("zeroVolumeEllipsoid");
         CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
-                              "Invalid ellipsoid diskAngle: must be in range (0, 2*pi].");
+                              "Invalid ellipsoid revolutionAngle: must be in range (0, 2*pi].");
+    }
+
+    {
+        const auto& invalidShape = GetComponent("invalidTorus");
+        CheckExceptionMessage(
+            [&] { (void)invalidShape.GetLoft(); },
+            "Invalid torus parameters for uID=\"invalidPredTorus\": majorRadius and minorRadius must be positive.");
+    }
+
+    {
+        const auto& invalidShape = GetComponent("spindleTorus");
+        CheckExceptionMessage(
+            [&] { (void)invalidShape.GetLoft(); },
+            "Invalid torus parameters for uID=\"predSpindleTorus\": minorRadius must be smaller than majorRadius.");
+    }
+
+    {
+        const auto& invalidShape = GetComponent("zeroVolumeTorus");
+        CheckExceptionMessage([&] { (void)invalidShape.GetLoft(); },
+                              "Invalid torus revolutionAngle: must be in range (0, 2*pi].");
     }
 
     // It's ok to build a cone as cylinder (ToDo: checking the warning would be nice)

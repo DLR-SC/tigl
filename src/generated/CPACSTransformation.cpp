@@ -16,8 +16,8 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDeck.h"
 #include "CCPACSDeckComponentBase.h"
+#include "CCPACSDecksDeck.h"
 #include "CCPACSDuct.h"
 #include "CCPACSDuctAssembly.h"
 #include "CCPACSEnginePosition.h"
@@ -47,20 +47,20 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSTransformation::CPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
-        : m_uidMgr(uidMgr)
-    {
-        //assert(parent != NULL);
-        m_parent = parent;
-        m_parentType = &typeid(CCPACSDeck);
-    }
-
     CPACSTransformation::CPACSTransformation(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
         m_parentType = &typeid(CCPACSDeckComponentBase);
+    }
+
+    CPACSTransformation::CPACSTransformation(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSDecksDeck);
     }
 
     CPACSTransformation::CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr)
@@ -223,11 +223,11 @@ namespace generated
     const CTiglUIDObject* CPACSTransformation::GetNextUIDParent() const
     {
         if (m_parent) {
-            if (IsParent<CCPACSDeck>()) {
-                return GetParent<CCPACSDeck>();
-            }
             if (IsParent<CCPACSDeckComponentBase>()) {
                 return GetParent<CCPACSDeckComponentBase>();
+            }
+            if (IsParent<CCPACSDecksDeck>()) {
+                return GetParent<CCPACSDecksDeck>();
             }
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();
@@ -293,11 +293,11 @@ namespace generated
     CTiglUIDObject* CPACSTransformation::GetNextUIDParent()
     {
         if (m_parent) {
-            if (IsParent<CCPACSDeck>()) {
-                return GetParent<CCPACSDeck>();
-            }
             if (IsParent<CCPACSDeckComponentBase>()) {
                 return GetParent<CCPACSDeckComponentBase>();
+            }
+            if (IsParent<CCPACSDecksDeck>()) {
+                return GetParent<CCPACSDecksDeck>();
             }
             if (IsParent<CCPACSDuct>()) {
                 return GetParent<CCPACSDuct>();

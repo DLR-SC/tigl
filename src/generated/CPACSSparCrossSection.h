@@ -50,7 +50,7 @@ namespace generated
     /// the wing middle plane and web1. This equals the coordinate
     /// defined within the sparPosition.
     /// Please find below a picture where all spar cross
-    /// section parameters as well as the orientation refereneces for
+    /// section parameters as well as the orientation references for
     /// the material definition can be found:
     /// @see spars2
     /// 

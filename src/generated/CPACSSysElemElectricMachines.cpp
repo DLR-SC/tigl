@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemElectricMachine.h"
 #include "CPACSSysElemElectricMachines.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemMechanicalConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemElectricMachines::CPACSSysElemElectricMachines(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemElectricMachines::CPACSSysElemElectricMachines(CPACSSysElemMechanicalConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemElectricMachines::GetParent() const
+    const CPACSSysElemMechanicalConversionElements* CPACSSysElemElectricMachines::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemElectricMachines::GetParent()
+    CPACSSysElemMechanicalConversionElements* CPACSSysElemElectricMachines::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>& CPACSSysElemElectricMachines::GetElectricMachines() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemElectricMachines::GetElectricMachines() const
     {
         return m_electricMachines;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>& CPACSSysElemElectricMachines::GetElectricMachines()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemElectricMachines::GetElectricMachines()
     {
         return m_electricMachines;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemElectricMachines::GetElectricMachineIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::GetElectricMachine(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemElectricMachines::GetElectricMachine(size_t index)
     {
         if (index < 1 || index > GetElectricMachineCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>::GetElectricMachine", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetElectricMachine", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_electricMachines[index];
     }
 
-    const CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::GetElectricMachine(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemElectricMachines::GetElectricMachine(size_t index) const
     {
         if (index < 1 || index > GetElectricMachineCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemElectricMachine>>::GetElectricMachine", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetElectricMachine", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_electricMachines[index];
     }
 
-    CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::GetElectricMachine(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemElectricMachines::GetElectricMachine(const std::string& UID)
     {
         for (auto& elem : m_electricMachines ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemElectricMachines::GetElectricMachine. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::GetElectricMachine(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemElectricMachines::GetElectricMachine(const std::string& UID) const
     {
         for (auto& elem : m_electricMachines ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemElectricMachine& CPACSSysElemElectricMachines::AddElectricMachine()
+    CPACSVehicleElementBase& CPACSSysElemElectricMachines::AddElectricMachine()
     {
-        m_electricMachines.push_back(std::make_unique<CPACSSysElemElectricMachine>(this, m_uidMgr));
+        m_electricMachines.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_electricMachines.back();
     }
 
-    void CPACSSysElemElectricMachines::RemoveElectricMachine(CPACSSysElemElectricMachine& ref)
+    void CPACSSysElemElectricMachines::RemoveElectricMachine(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_electricMachines.size(); i++) {
             if (m_electricMachines[i].get() == &ref) {

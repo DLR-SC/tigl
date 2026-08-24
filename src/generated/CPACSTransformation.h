@@ -32,8 +32,8 @@
 namespace tigl
 {
 class CTiglUIDManager;
-class CCPACSDeck;
 class CCPACSDeckComponentBase;
+class CCPACSDecksDeck;
 class CCPACSDuct;
 class CCPACSDuctAssembly;
 class CCPACSEnginePosition;
@@ -58,8 +58,8 @@ namespace generated
     class CPACSLandingGearBase;
 
     // This class is used in:
-    // CPACSDeck
     // CPACSDeckComponentBase
+    // CPACSDecksDeck
     // CPACSDuct
     // CPACSDuctAssembly
     // CPACSElementGeometry
@@ -96,8 +96,8 @@ namespace generated
     class CPACSTransformation : public CTiglOptUIDObject
     {
     public:
-        TIGL_EXPORT CPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformation(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSDuct* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CCPACSDuctAssembly* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformation(CPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
@@ -129,7 +129,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSDeck>::value || std::is_same<P, CCPACSDeckComponentBase>::value || std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSDeckComponentBase>::value || std::is_same<P, CCPACSDecksDeck>::value || std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -139,7 +139,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSDeck>::value || std::is_same<P, CCPACSDeckComponentBase>::value || std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
+            static_assert(std::is_same<P, CCPACSDeckComponentBase>::value || std::is_same<P, CCPACSDecksDeck>::value || std::is_same<P, CCPACSDuct>::value || std::is_same<P, CCPACSDuctAssembly>::value || std::is_same<P, CPACSElementGeometry>::value || std::is_same<P, CCPACSEnginePosition>::value || std::is_same<P, CCPACSEnginePylon>::value || std::is_same<P, CPACSExternalGeometry>::value || std::is_same<P, CCPACSFuelTank>::value || std::is_same<P, CCPACSFuselage>::value || std::is_same<P, CCPACSFuselageSectionElement>::value || std::is_same<P, CCPACSFuselageSection>::value || std::is_same<P, CCPACSExternalObject>::value || std::is_same<P, CPACSLandingGearBase>::value || std::is_same<P, CCPACSNacelleSection>::value || std::is_same<P, CCPACSRotor>::value || std::is_same<P, CCPACSRotorHinge>::value || std::is_same<P, CCPACSVessel>::value || std::is_same<P, CCPACSWing>::value || std::is_same<P, CCPACSWingSectionElement>::value || std::is_same<P, CCPACSWingSection>::value, "template argument for P is not a parent class of CPACSTransformation");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -190,7 +190,7 @@ namespace generated
 
         /// Rotation data default: 0,0,0. The rotation
         /// angles are the three Euler angles to describe the orientation of
-        /// the coordinate system. The order is allways xyz in CPACS.
+        /// the coordinate system. The order is always xyz in CPACS.
         /// Therefore the first rotation is around the x-axis, the second
         /// rotation is around the rotated y-axis (y') and the third
         /// rotation is around the two times rotated z-axis (z'').

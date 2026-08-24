@@ -73,8 +73,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetSource() const;
         TIGL_EXPORT virtual void SetSource(const std::string& value);
 
-        TIGL_EXPORT virtual const bool& GetConsistancy() const;
-        TIGL_EXPORT virtual void SetConsistancy(const bool& value);
+        TIGL_EXPORT virtual const bool& GetConsistency() const;
+        TIGL_EXPORT virtual void SetConsistency(const bool& value);
 
         TIGL_EXPORT virtual const CPACSBeamCrossSection& GetBeamCrossSection() const;
         TIGL_EXPORT virtual CPACSBeamCrossSection& GetBeamCrossSection();
@@ -105,7 +105,7 @@ namespace generated
         std::string                         m_uID;
         std::string                         m_materialUID;
         std::string                         m_source;
-        bool                                m_consistancy;
+        bool                                m_consistency;
         CPACSBeamCrossSection               m_beamCrossSection;
         CCPACSPointXY                       m_beamCOG;
         boost::optional<CCPACSPointXY>      m_beamShearCenter;

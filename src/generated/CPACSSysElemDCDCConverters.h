@@ -30,25 +30,26 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSSysElemDCDCConverter;
-    class CPACSSystemElements;
+    class CPACSVehicleElementBase;
+    class CPACSSysElemElectricalConversionElements;
 
     // This class is used in:
-    // CPACSSystemElements
+    // CPACSSysElemElectricalConversionElements
 
-    /// @brief DC-DC converters
+    /// @brief Dc-dc converters
     /// 
+    /// Container for reusable DC-DC converters. The surrounding hierarchy determines the physical domain and functional role.
     /// 
     class CPACSSysElemDCDCConverters
     {
     public:
-        TIGL_EXPORT CPACSSysElemDCDCConverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSysElemDCDCConverters(CPACSSysElemElectricalConversionElements* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSysElemDCDCConverters();
 
-        TIGL_EXPORT CPACSSystemElements* GetParent();
+        TIGL_EXPORT CPACSSysElemElectricalConversionElements* GetParent();
 
-        TIGL_EXPORT const CPACSSystemElements* GetParent() const;
+        TIGL_EXPORT const CPACSSysElemElectricalConversionElements* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -59,27 +60,28 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>& GetDcdcConverters() const;
-        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>& GetDcdcConverters();
+        TIGL_EXPORT virtual const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetDcdcConverters() const;
+        TIGL_EXPORT virtual std::vector<std::unique_ptr<CPACSVehicleElementBase>>& GetDcdcConverters();
 
         TIGL_EXPORT virtual size_t GetDcdcConverterCount() const;
         TIGL_EXPORT virtual size_t GetDcdcConverterIndex(const std::string& UID) const;
 
-        TIGL_EXPORT virtual const CPACSSysElemDCDCConverter& GetDcdcConverter(size_t index) const;
-        TIGL_EXPORT virtual CPACSSysElemDCDCConverter& GetDcdcConverter(size_t index);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetDcdcConverter(size_t index) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetDcdcConverter(size_t index);
 
-        TIGL_EXPORT virtual const CPACSSysElemDCDCConverter& GetDcdcConverter(const std::string& UID) const;
-        TIGL_EXPORT virtual CPACSSysElemDCDCConverter& GetDcdcConverter(const std::string& UID);
+        TIGL_EXPORT virtual const CPACSVehicleElementBase& GetDcdcConverter(const std::string& UID) const;
+        TIGL_EXPORT virtual CPACSVehicleElementBase& GetDcdcConverter(const std::string& UID);
 
-        TIGL_EXPORT virtual CPACSSysElemDCDCConverter& AddDcdcConverter();
-        TIGL_EXPORT virtual void RemoveDcdcConverter(CPACSSysElemDCDCConverter& ref);
+        TIGL_EXPORT virtual CPACSVehicleElementBase& AddDcdcConverter();
+        TIGL_EXPORT virtual void RemoveDcdcConverter(CPACSVehicleElementBase& ref);
 
     protected:
-        CPACSSystemElements* m_parent;
+        CPACSSysElemElectricalConversionElements* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>> m_dcdcConverters;
+        /// Converts direct-current electrical power between voltage or current levels.
+        std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_dcdcConverters;
 
     private:
         CPACSSysElemDCDCConverters(const CPACSSysElemDCDCConverters&) = delete;
@@ -92,6 +94,6 @@ namespace generated
 
 // Aliases in tigl namespace
 using CCPACSSysElemDCDCConverters = generated::CPACSSysElemDCDCConverters;
-using CCPACSSysElemDCDCConverter = generated::CPACSSysElemDCDCConverter;
-using CCPACSSystemElements = generated::CPACSSystemElements;
+using CCPACSVehicleElementBase = generated::CPACSVehicleElementBase;
+using CCPACSSysElemElectricalConversionElements = generated::CPACSSysElemElectricalConversionElements;
 } // namespace tigl
