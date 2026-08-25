@@ -365,7 +365,10 @@ void TIGLCreatorContext::selectShape(const QString& uid)
 
     myContext->ClearSelected(Standard_False);
     for (auto& obj : iobjects) {
-        myContext->AddOrRemoveSelected(obj, Standard_False);
+        // skip hidden parts, e.g. a mirrored shape hidden via "Show Symmetry"
+        if (!obj.IsNull() && myContext->IsDisplayed(obj)) {
+            myContext->AddOrRemoveSelected(obj, Standard_False);
+        }
     }
     myContext->UpdateCurrentViewer();
 

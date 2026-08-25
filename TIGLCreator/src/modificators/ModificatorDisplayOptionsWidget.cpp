@@ -161,13 +161,25 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                             color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
 
                         }
-                        transparencySlider->setValue(transparency*100);
-                        renderingModeCombo->setCurrentIndex(displayMode);
+                        // Block signals: these calls only mirror the object's current state
+                        // into the widgets. Letting the change-slots fire would re-apply the
+                        // values to the scene (SetDisplayMode/SetMaterial recompute the AIS
+                        // presentation and drop the selection highlight, and display mode 2
+                        // would even open the texture file dialog).
+                        {
+                            QSignalBlocker blockTransparency(transparencySlider);
+                            QSignalBlocker blockRenderingMode(renderingModeCombo);
+                            transparencySlider->setValue(transparency*100);
+                            renderingModeCombo->setCurrentIndex(displayMode);
+                        }
                         updateColorButton(color);
 
                     }
 
-                    materialCombo->setCurrentIndex(0);
+                    {
+                        QSignalBlocker blockMaterial(materialCombo);
+                        materialCombo->setCurrentIndex(0);
+                    }
 
                     if (hasSymmetry) {
                         // Read the persisted preference rather than the live AIS display state:

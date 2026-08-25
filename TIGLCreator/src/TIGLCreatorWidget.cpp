@@ -858,6 +858,13 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 {
     setCurrentPoint(point);
 
+    // Treat small movements between press and release as a click: a real mouse often
+    // jitters by a few pixels, and a tiny selection rectangle would select nothing
+    // (rectangle selection only picks fully covered objects), silently clearing the
+    // selection instead of selecting the clicked object.
+    const bool isClick =
+        (myCurrentPoint - myStartPoint).manhattanLength() <= QApplication::startDragDistance();
+
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -865,7 +872,7 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
     else {
         switch( myMode ) {
         case CurAction3d_Nothing:
-            if ( myCurrentPoint == myStartPoint ) {
+            if ( isClick ) {
                 inputEvent( nFlags & MULTISELECTIONKEY );
             }
             else {
@@ -920,12 +927,27 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
             std::string shapeName = viewerContext->GetShapeManager().GetNameFromIObject(shape);
 
             if (!shapeName.empty()) {
-                emit shapeSelected(QString::fromStdString(shapeName));
+                if (isClick && !(nFlags & MULTISELECTIONKEY)) {
+                    // Plain single click: normalize the selection to the whole component
+                    // (original and mirrored part) and redraw. Emits shapeSelected on the
+                    // context, which syncs the CPACS tree.
+                    viewerContext->selectShape(QString::fromStdString(shapeName));
+                }
+                else {
+                    // multi- or rectangle selection: keep the native selection as is
+                    emit shapeSelected(QString::fromStdString(shapeName));
+                }
             }
             else {
                 emit nonEditableShapeSelected();
+                // the native pick has changed the selection, make the highlight visible
+                viewerContext->updateViewer();
             }
         }
+    }
+    else {
+        // the click may just have cleared the selection; redraw to remove old highlights
+        viewerContext->updateViewer();
     }
 
     emit selectionChanged();
@@ -969,8 +991,12 @@ void TIGLCreatorWidget::onMouseMove( Qt::MouseButtons buttons,
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MiddleButton ) {
         switch ( myMode ) {
         case CurAction3d_Nothing:
-            drawRubberBand ( myStartPoint, myCurrentPoint );
-            dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            // don't start the rubber band selection before exceeding the drag threshold,
+            // so that slightly jittering clicks don't clear the selection
+            if ((myCurrentPoint - myStartPoint).manhattanLength() > QApplication::startDragDistance()) {
+                drawRubberBand ( myStartPoint, myCurrentPoint );
+                dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            }
             break;
 
         case CurAction3d_DynamicZooming:

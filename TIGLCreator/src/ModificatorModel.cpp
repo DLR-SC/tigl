@@ -393,9 +393,9 @@ void ModificatorModel::validateAllUIDs()
     tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
     std::set<std::string> failed;
     tree.forEachUid([&](const std::string& uid) {
-        try {
-            uidManager.ResolveObject(uid);
-        } catch (...) {
+        // don't probe via ResolveObject: constructing the CTiglError it throws for every
+        // unregistered uid spams the console with debug log messages on each file open
+        if (!uidManager.IsUIDRegistered(uid)) {
             failed.insert(uid);
         }
     });
@@ -1183,9 +1183,16 @@ void ModificatorModel::highlightShape(const std::string& name){
     auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
 
     if (iobjects.size() > 0) {
-        scene->getContext()->ClearSelected(Standard_False);
-        scene->getContext()->SetSelected(iobjects[0], Standard_True);
-        scene->getContext()->UpdateCurrentViewer();
+        auto context = scene->getContext();
+        // Highlight the whole component, i.e. the original and - if displayed - the
+        // mirrored part, so that tree- and viewer-initiated selections look the same (#1419)
+        context->ClearSelected(Standard_False);
+        for (auto& obj : iobjects) {
+            if (!obj.IsNull() && context->IsDisplayed(obj)) {
+                context->AddOrRemoveSelected(obj, Standard_False);
+            }
+        }
+        context->UpdateCurrentViewer();
     }
 }
 
