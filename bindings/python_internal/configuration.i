@@ -390,7 +390,6 @@ namespace tigl
 // --------------- Fuselage structure -----------------//
 
 %apply double *OUTPUT { double* eta, double* xsi };
-%ignore tigl::CTiglStringerFrameBorderedObject;
 %include "CTiglStringerFrameBorderedObject.h"
 %include "generated/CPACSSkinSegment.h"
 %include "CCPACSSkinSegment.h"
