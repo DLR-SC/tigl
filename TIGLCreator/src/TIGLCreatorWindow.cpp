@@ -1414,7 +1414,10 @@ void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
         return;
     }
     lastSelectedTreeUID = treeWidget->getSelectedUID();
-    lastSelectedTreeItem = item;
+    // Only cache real tree items: on deselection nullptr (or an uninitialized
+    // placeholder) is passed, and caching it would leave a stale/dangling fallback
+    // for the display options and re-dispatch paths (#1419).
+    lastSelectedTreeItem = (item && item->isInitialized()) ? item : nullptr;
 }
 
 void TIGLCreatorWindow::onModificatorModelReset()

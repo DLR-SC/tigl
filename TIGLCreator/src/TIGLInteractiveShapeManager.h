@@ -43,6 +43,11 @@ public:
     PNamedShape GetShapeFromIObject(Handle(AIS_Shape) obj);
     IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
+    // Returns the name/uid the interactive object was registered under, or an empty
+    // string if the object is unknown. Unlike GetShapeFromIObject, this also works
+    // for objects registered by uid only (no PNamedShape), e.g. engines and pylons.
+    std::string GetNameFromIObject(Handle(AIS_Shape) obj) const;
+
     std::vector<PNamedShape> GetAllShapes() const;
 
     // removes the shape and all interactive objects belonging to the shape

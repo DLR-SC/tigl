@@ -311,7 +311,10 @@ bool ModificatorDisplayOptionsWidget::apply()
             auto &sm = currentContext->GetShapeManager();
             if (sm.HasShapeEntry(uid.toStdString())) {
                 auto objs = sm.GetIObjectsFromShapeName(uid.toStdString());
-                
+                if (objs.empty()) {
+                    return false;
+                }
+
                 auto obj = objs[0];
                 Standard_Real transparency;
                 int displayMode;
@@ -562,6 +565,10 @@ void ModificatorDisplayOptionsWidget::onResetOptions()
     }
     const QString uid = QString::fromStdString(currentItem->getUid());
     if (uid.isEmpty()) {
+        return;
+    }
+    // GetGeometricComponent below throws for unknown uids, which must not escape a Qt slot
+    if (!currentDoc || !currentDoc->GetConfiguration().GetUIDManager().HasGeometricComponent(uid.toStdString())) {
         return;
     }
     auto &sm = currentContext->GetShapeManager();
