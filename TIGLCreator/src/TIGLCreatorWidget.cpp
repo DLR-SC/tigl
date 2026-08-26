@@ -865,6 +865,12 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
     const bool isClick =
         (myCurrentPoint - myStartPoint).manhattanLength() <= QApplication::startDragDistance();
 
+    // True only if this release actually performed a pick on the object under the cursor.
+    // Do not derive this from isClick alone further down: myStartPoint is continuously
+    // reset to the current position while zooming/panning (see onMouseMove), so at the end
+    // of such a navigation gesture isClick is true even though nothing was picked.
+    bool didPick = false;
+
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -874,6 +880,7 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
         case CurAction3d_Nothing:
             if ( isClick ) {
                 inputEvent( nFlags & MULTISELECTIONKEY );
+                didPick = true;
             }
             else {
                 dragEvent( myStartPoint,
@@ -927,14 +934,15 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
             std::string shapeName = viewerContext->GetShapeManager().GetNameFromIObject(shape);
 
             if (!shapeName.empty()) {
-                if (isClick && !(nFlags & MULTISELECTIONKEY)) {
+                if (didPick && !(nFlags & MULTISELECTIONKEY)) {
                     // Plain single click: normalize the selection to the whole component
                     // (original and mirrored part) and redraw. Emits shapeSelected on the
                     // context, which syncs the CPACS tree.
                     viewerContext->selectShape(QString::fromStdString(shapeName));
                 }
                 else {
-                    // multi- or rectangle selection: keep the native selection as is
+                    // multi-/rectangle selection or a pure navigation gesture (zoom, pan,
+                    // rotate): leave the existing selection untouched and only sync the tree
                     emit shapeSelected(QString::fromStdString(shapeName));
                 }
             }

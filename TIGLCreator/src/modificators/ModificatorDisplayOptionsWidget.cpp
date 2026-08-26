@@ -149,31 +149,30 @@ void ModificatorDisplayOptionsWidget::setFromItem(cpcr::CPACSTreeItem* item, TIG
                             return;
                         }
                         auto obj = objs[0];
-                        Standard_Real transparency;
-                        int displayMode;
-                        QColor color;
 
+                        // Only mirror the widgets from an existing presentation: without an
+                        // object there are no values to show, and writing uninitialized ones
+                        // into the widgets would push them onto the scene on the next apply().
                         if (!obj.IsNull()) {
                             Handle(Prs3d_Drawer) drawer = obj->Attributes();
-                            transparency = drawer->Transparency();
-                            displayMode = drawer->DisplayMode();
-                            Quantity_Color qc = drawer->Color();
-                            color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
+                            const Standard_Real transparency = drawer->Transparency();
+                            const int displayMode            = drawer->DisplayMode();
+                            Quantity_Color qc                = drawer->Color();
+                            QColor color = QColor::fromRgbF(qc.Red(), qc.Green(), qc.Blue());
 
+                            // Block signals: these calls only mirror the object's current state
+                            // into the widgets. Letting the change-slots fire would re-apply the
+                            // values to the scene (SetDisplayMode/SetMaterial recompute the AIS
+                            // presentation and drop the selection highlight, and display mode 2
+                            // would even open the texture file dialog).
+                            {
+                                QSignalBlocker blockTransparency(transparencySlider);
+                                QSignalBlocker blockRenderingMode(renderingModeCombo);
+                                transparencySlider->setValue(transparency*100);
+                                renderingModeCombo->setCurrentIndex(displayMode);
+                            }
+                            updateColorButton(color);
                         }
-                        // Block signals: these calls only mirror the object's current state
-                        // into the widgets. Letting the change-slots fire would re-apply the
-                        // values to the scene (SetDisplayMode/SetMaterial recompute the AIS
-                        // presentation and drop the selection highlight, and display mode 2
-                        // would even open the texture file dialog).
-                        {
-                            QSignalBlocker blockTransparency(transparencySlider);
-                            QSignalBlocker blockRenderingMode(renderingModeCombo);
-                            transparencySlider->setValue(transparency*100);
-                            renderingModeCombo->setCurrentIndex(displayMode);
-                        }
-                        updateColorButton(color);
-
                     }
 
                     {
@@ -327,13 +326,18 @@ bool ModificatorDisplayOptionsWidget::apply()
                     return false;
                 }
 
-                auto obj = objs[0];
-                Standard_Real transparency;
-                int displayMode;
-                if (!obj.IsNull()) {
-                    Handle(Prs3d_Drawer) drawer = obj->Attributes();
-                    transparency = drawer->Transparency(); 
-                    displayMode = drawer->DisplayMode();
+                // Fall back to the "Shaded" default of the rendering mode combo box if none
+                // of the objects has a presentation to read the current values from -
+                // applying uninitialized values to the scene would be worse.
+                Standard_Real transparency = 0.;
+                int displayMode            = 1;
+                for (const auto& refObj : objs) {
+                    if (!refObj.IsNull()) {
+                        Handle(Prs3d_Drawer) drawer = refObj->Attributes();
+                        transparency = drawer->Transparency();
+                        displayMode  = drawer->DisplayMode();
+                        break;
+                    }
                 }
                 transparency = transparencySlider ? transparencySlider->value()*0.01 : transparency;
 

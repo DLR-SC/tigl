@@ -34,6 +34,7 @@
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
+#include <algorithm>
 #include <QTimer>
 #include <Standard_Failure.hxx>
 
@@ -1185,9 +1186,16 @@ void ModificatorModel::highlightShape(const std::string& name){
     if (iobjects.size() > 0) {
         auto context = scene->getContext();
         // Highlight the whole component, i.e. the original and - if displayed - the
-        // mirrored part, so that tree- and viewer-initiated selections look the same (#1419)
+        // mirrored part, so that tree- and viewer-initiated selections look the same (#1419).
+        // Those are the first two objects registered for a uid (see
+        // TIGLCreatorDocument::drawComponentByUID); any further object registered under the
+        // same uid is auxiliary geometry (spars and ribs of a wing, sample point clouds, ...)
+        // that does not belong to the component itself. Keep this in sync with
+        // TIGLCreatorContext::selectShape().
         context->ClearSelected(Standard_False);
-        for (auto& obj : iobjects) {
+        const std::size_t nComponentObjects = std::min<std::size_t>(iobjects.size(), 2);
+        for (std::size_t i = 0; i < nComponentObjects; ++i) {
+            const Handle(AIS_Shape)& obj = iobjects[i];
             if (!obj.IsNull() && context->IsDisplayed(obj)) {
                 context->AddOrRemoveSelected(obj, Standard_False);
             }
