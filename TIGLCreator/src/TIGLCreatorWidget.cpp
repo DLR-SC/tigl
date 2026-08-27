@@ -858,6 +858,19 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 {
     setCurrentPoint(point);
 
+    // Treat small movements between press and release as a click: a real mouse often
+    // jitters by a few pixels, and a tiny selection rectangle would select nothing
+    // (rectangle selection only picks fully covered objects), silently clearing the
+    // selection instead of selecting the clicked object.
+    const bool isClick =
+        (myCurrentPoint - myStartPoint).manhattanLength() <= QApplication::startDragDistance();
+
+    // True only if this release actually performed a pick on the object under the cursor.
+    // Do not derive this from isClick alone further down: myStartPoint is continuously
+    // reset to the current position while zooming/panning (see onMouseMove), so at the end
+    // of such a navigation gesture isClick is true even though nothing was picked.
+    bool didPick = false;
+
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -865,8 +878,9 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
     else {
         switch( myMode ) {
         case CurAction3d_Nothing:
-            if ( myCurrentPoint == myStartPoint ) {
+            if ( isClick ) {
                 inputEvent( nFlags & MULTISELECTIONKEY );
+                didPick = true;
             }
             else {
                 dragEvent( myStartPoint,
@@ -914,16 +928,34 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
         Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
 
         if (!shape.IsNull()) {
-            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+            // Resolve via the name the object was registered under: components such as
+            // engines and pylons are registered by uid without a PNamedShape, so a
+            // lookup through GetShapeFromIObject would fail for them.
+            std::string shapeName = viewerContext->GetShapeManager().GetNameFromIObject(shape);
 
-            if (cnamedShape) {
-                std::string shapeName = cnamedShape->Name();
-                emit shapeSelected(QString::fromStdString(shapeName));
+            if (!shapeName.empty()) {
+                if (didPick && !(nFlags & MULTISELECTIONKEY)) {
+                    // Plain single click: normalize the selection to the whole component
+                    // (original and mirrored part) and redraw. Emits shapeSelected on the
+                    // context, which syncs the CPACS tree.
+                    viewerContext->selectShape(QString::fromStdString(shapeName));
+                }
+                else {
+                    // multi-/rectangle selection or a pure navigation gesture (zoom, pan,
+                    // rotate): leave the existing selection untouched and only sync the tree
+                    emit shapeSelected(QString::fromStdString(shapeName));
+                }
             }
             else {
                 emit nonEditableShapeSelected();
+                // the native pick has changed the selection, make the highlight visible
+                viewerContext->updateViewer();
             }
         }
+    }
+    else {
+        // the click may just have cleared the selection; redraw to remove old highlights
+        viewerContext->updateViewer();
     }
 
     emit selectionChanged();
@@ -967,8 +999,12 @@ void TIGLCreatorWidget::onMouseMove( Qt::MouseButtons buttons,
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MiddleButton ) {
         switch ( myMode ) {
         case CurAction3d_Nothing:
-            drawRubberBand ( myStartPoint, myCurrentPoint );
-            dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            // don't start the rubber band selection before exceeding the drag threshold,
+            // so that slightly jittering clicks don't clear the selection
+            if ((myCurrentPoint - myStartPoint).manhattanLength() > QApplication::startDragDistance()) {
+                drawRubberBand ( myStartPoint, myCurrentPoint );
+                dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            }
             break;
 
         case CurAction3d_DynamicZooming:

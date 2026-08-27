@@ -21,6 +21,8 @@
 #include "tigl_config.h"
 
 
+#include <algorithm>
+
 #include <QApplication>
 #include <QTextStream>
 #include <QFile>
@@ -364,8 +366,18 @@ void TIGLCreatorContext::selectShape(const QString& uid)
     }
 
     myContext->ClearSelected(Standard_False);
-    for (auto& obj : iobjects) {
-        myContext->AddOrRemoveSelected(obj, Standard_False);
+    // Select the component itself, i.e. its loft and - if present - the mirrored loft.
+    // By the convention of TIGLCreatorDocument::drawComponentByUID() those are the first
+    // two objects registered for a uid. Further objects may be auxiliary geometry drawn
+    // under the same uid (spars and ribs of a wing, sample point clouds, ...), which must
+    // not be dragged into the selection of the component.
+    const std::size_t nComponentObjects = std::min<std::size_t>(iobjects.size(), 2);
+    for (std::size_t i = 0; i < nComponentObjects; ++i) {
+        const Handle(AIS_Shape)& obj = iobjects[i];
+        // skip hidden parts, e.g. a mirrored shape hidden via "Show Symmetry"
+        if (!obj.IsNull() && myContext->IsDisplayed(obj)) {
+            myContext->AddOrRemoveSelected(obj, Standard_False);
+        }
     }
     myContext->UpdateCurrentViewer();
 
