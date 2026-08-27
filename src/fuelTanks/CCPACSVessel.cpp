@@ -69,9 +69,9 @@ void CCPACSVessel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::st
 {
     generated::CPACSVessel::ReadCPACS(tixiHandle, xpath);
 
-    // Register invalidation in CCPACSDucts, so that the vessel loft is rebuilt whenever a duct
-    // changes or the duct cutout flag is toggled. This cannot be done in the constructor,
-    // because a vessel may be constructed without a configuration being attached to the model.
+    // Ducts live outside the vessel's subtree, so their changes cannot invalidate the loft
+    // through the parent chain. Registering here rather than in the constructor, because the
+    // configuration is only attached once reading has started.
     auto& config = GetConfiguration();
     if (config.HasDucts()) {
         config.GetDucts()->RegisterInvalidationCallback([this]() { this->Invalidate(); });
@@ -770,7 +770,7 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
 
 void CCPACSVessel::InvalidateImpl(const boost::optional<std::string>&) const
 {
-    loft.clear();
+    CTiglAbstractGeometricComponent::Reset();
     cleanLoft.clear();
     if (m_segments_choice1) {
         m_segments_choice1.get().Invalidate();
