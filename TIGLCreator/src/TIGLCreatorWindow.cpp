@@ -1431,7 +1431,7 @@ void TIGLCreatorWindow::onModificatorModelReset()
     // QItemSelectionModel drops its selection on a model reset without emitting
     // selectionChanged(), so no dispatch() runs. Without this, opening another
     // configuration while the "Display Options" tab is active would leave the widget with a
-    // pointer into the destroyed tree, which its slots dereference (#1419, #1404).
+    // pointer into the destroyed tree, which is dereferenced by it's slots  (#1419, #1404).
     if (modificatorContainerWidget) {
         modificatorContainerWidget->setDisplayOptionsFromItem(nullptr, nullptr, nullptr);
     }
