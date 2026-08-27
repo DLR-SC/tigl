@@ -1186,7 +1186,7 @@ void ModificatorModel::highlightShape(const std::string& name){
     if (iobjects.size() > 0) {
         auto context = scene->getContext();
         // Highlight the whole component, i.e. the original and - if displayed - the
-        // mirrored part, so that tree- and viewer-initiated selections look the same (#1419).
+        // mirrored part, so that tree- and viewer-initiated selections look the same.
         // Those are the first two objects registered for a uid (see
         // TIGLCreatorDocument::drawComponentByUID); any further object registered under the
         // same uid is auxiliary geometry (spars and ribs of a wing, sample point clouds, ...)
