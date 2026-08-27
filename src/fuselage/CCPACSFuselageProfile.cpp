@@ -276,7 +276,7 @@ void CCPACSFuselageProfile::BuildWiresPointList(WireCache& cache) const
 
                 auto paramsVec = computeParams(occPoints, paramsMap, 0.5);
 
-                int max_iter = 5;
+                int max_iter = 10;
                 CTiglApproxResult approxResult = approx.FitCurveOptimal(paramsVec, max_iter, approxErrFct);
 
                 spline = approxResult.curve;

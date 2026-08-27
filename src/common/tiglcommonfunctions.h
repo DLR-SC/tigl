@@ -177,6 +177,11 @@ TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 // returns the number of faces of the current shape
 TIGL_EXPORT unsigned int GetNumberOfFaces(const TopoDS_Shape& shape);
 
+// Distributes nFaces faces evenly over nSegments segments, rounding up so that
+// every face is covered (ceil division). The result is clamped to a minimum of 1.
+// Used to determine the number of loft faces per profile segment.
+TIGL_EXPORT int FacesPerSegment(int nFaces, int nSegments);
+
 TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
 TIGL_EXPORT TopoDS_Face GetFace(const TopoDS_Shape& shape, int iFace);

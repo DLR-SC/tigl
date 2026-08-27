@@ -129,7 +129,7 @@ TEST_F(DuctSimple, DuctLevel)
     }
 
     // Check the position of a sample duct with help of its bounding box
-    auto loftSimpleDuct = ductSimpleDuct->GetLoft();
+    auto loftSimpleDuct = ductSimpleDuct->GetTrimmedLoft();
     const TopoDS_Shape& shapeSimpleDuct = loftSimpleDuct->Shape();
 
     Bnd_Box ductBBox;
@@ -392,4 +392,17 @@ TEST_F(DuctSimple, tiglConfigurationGetWithDuctCutouts)
     ASSERT_EQ(TIGL_SUCCESS, tiglConfigurationGetWithDuctCutouts(DuctSimple::tiglHandle, &flag));
     EXPECT_TRUE(tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(DuctSimple::tiglHandle).GetDucts()->IsEnabled());
     EXPECT_TRUE(flag);
+}
+
+TEST_F(DuctSimple, UntrimmedLoftAccessors)
+{
+    // Verify GetUntrimmedLoft() works and equals GetLoft() for ducts (no trimming path exists)
+    auto duct = ductSimpleDuct;
+    auto loft = duct->GetLoft();
+    auto untrimmed = duct->GetUntrimmedLoft();
+
+    EXPECT_TRUE(loft != nullptr);
+    EXPECT_TRUE(untrimmed != nullptr);
+
+    EXPECT_EQ(GetNumberOfFaces(loft->Shape()), GetNumberOfFaces(untrimmed->Shape()));
 }

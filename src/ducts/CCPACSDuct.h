@@ -45,6 +45,9 @@ public:
     //as a callback.
     TIGL_EXPORT void RegisterInvalidationCallback(std::function<void()> const&);
 
+    TIGL_EXPORT PNamedShape GetTrimmedLoft() const override;
+    TIGL_EXPORT PNamedShape GetUntrimmedLoft() const;
+
 protected:
     PNamedShape BuildLoft() const override;
 
@@ -55,10 +58,18 @@ private:
     // get short name for loft
     std::string GetShortShapeName() const;
 
-    void SetFaceTraits (PNamedShape loft) const;
+    // Names the loft's faces. nSegments controls whether the aerodynamic faces
+    // are grouped per segment (trimmed loft) or as a single group (untrimmed loft).
+    void SetFaceTraits (PNamedShape loft, int nSegments) const;
 
     std::vector<std::function<void()>> invalidationCallbacks;
 
+    mutable Cache<PNamedShape, CCPACSDuct> loftUntrimmed;   /**< Duct surface, untrimmed (without UV cuts at profiles) */
+    mutable Cache<PNamedShape, CCPACSDuct> loftTrimmed;     /**< Duct surface, trimmed (with UV cuts at profiles) */
+
+    void BuildLoftTrimmed(PNamedShape& cache) const;
+    void BuildLoftUntrimmed(PNamedShape& cache) const;
+    void BuildLoftImpl(PNamedShape& cache, bool trim) const;
 };
 
 }

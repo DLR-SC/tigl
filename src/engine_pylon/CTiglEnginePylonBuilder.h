@@ -11,8 +11,8 @@ namespace tigl
 class CTiglEnginePylonBuilder
 {
 public:
-    CTiglEnginePylonBuilder(const CCPACSEnginePylon& pylon)
-        : m_pylon(pylon)
+    CTiglEnginePylonBuilder(const CCPACSEnginePylon& pylon, bool enableProfileCutting = false)
+        : m_pylon(pylon), _enableProfileCutting(enableProfileCutting)
     {}
 
     TIGL_EXPORT operator PNamedShape();
@@ -21,6 +21,7 @@ public:
 
 private:
     const CCPACSEnginePylon& m_pylon;
+    bool _enableProfileCutting;
 };
 
 } // namespace tigl

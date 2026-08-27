@@ -349,7 +349,7 @@ void CCPACSFuselageSegment::SetFaceTraits (PNamedShape loft) const
     int facesPerSegment = GetNumberOfLoftFaces();
     int remainingFaces = nFaces - facesPerSegment;
     if (facesPerSegment == 0 || remainingFaces < 0 || remainingFaces > 2) {
-        LOG(WARNING) << "Fuselage segment faces cannot be names properly (maybe due to Guide Curves?)";
+        LOG(WARNING) << "Fuselage segment faces cannot be named properly (maybe due to Guide Curves?)";
         return;
     }
 
@@ -382,7 +382,22 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
     }
     else {
         // retrieve segment loft as subshape of the fuselage loft
-        PNamedShape fuselageLoft = GetParent()->GetParentComponent()->GetLoft();
+        PNamedShape fuselageLoft;
+        if (GetParent()->IsParent<CCPACSFuselage>()) {
+            fuselageLoft = GetParent()->GetParent<CCPACSFuselage>()->GetTrimmedLoft();
+        }
+        else if (GetParent()->IsParent<CCPACSDuct>()) {
+            fuselageLoft =  GetParent()->GetParent<CCPACSDuct>()->GetTrimmedLoft();
+        }
+        else if (GetParent()->IsParent<CCPACSVessel>()) {
+            fuselageLoft =  GetParent()->GetParent<CCPACSVessel>()->GetTrimmedLoft();
+        }
+        else if (GetParent()->IsParent<CCPACSMultiSegmentShape>()) {
+            throw CTiglError("CCPACSFuselageSegment::BuildLoft called on a CCPACSMultiSegmentShape. This is currently not supported.");
+        }
+        else {
+            throw CTiglError("Unknown parent type for CCPACSFuselageSegments.");
+        }
 
         TopoDS_Shell loftShell;
         BRep_Builder BB;
@@ -394,10 +409,18 @@ PNamedShape CCPACSFuselageSegment::BuildLoft() const
 
         //determine the number of faces per segment
         int nFacesPerSegment = GetNumberOfLoftFaces();
+        int nfaces = faceMap.Extent();
 
         const int mySegmentIndex = GetSegmentIndex();
         for (int i = 1; i <= nFacesPerSegment; ++i) {
-            BB.Add(loftShell, TopoDS::Face(faceMap(nFacesPerSegment*(mySegmentIndex-1) + i)));
+            int faceIndex = nFacesPerSegment*(mySegmentIndex-1) + i;
+            if (faceIndex < 1 || faceIndex > nfaces) {
+                LOG(ERROR) << "CCPACSFuselageSegment::BuildLoft: computed face index " << faceIndex
+                           << " is out of range [1, " << nfaces << "] for segment \"" << GetUID()
+                           << "\". The trimmed parent loft does not contain the expected number of faces.";
+                throw CTiglError("CCPACSFuselageSegment::BuildLoft: face index out of range for segment \"" + GetUID() + "\".", TIGL_ERROR);
+            }
+            BB.Add(loftShell, TopoDS::Face(faceMap(faceIndex)));
         }
 
         //close the shell with sidecaps and make them a solid
@@ -795,7 +818,7 @@ gp_Pnt CCPACSFuselageSegment::GetPointOnXPlane(double eta, double xpos, int poin
 // Gets the wire on the loft at a given eta
 TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
 {
-
+    PNamedShape loft;
     TopoDS_Shape s = GetFacesByName(GetLoft(), GetUID());
 
     BRepBuilderAPI_MakeWire wireMaker;
@@ -957,7 +980,6 @@ TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
           nfaces-=1;
     }
 
-    int facesPerSegment = nfaces / nSegments;
-    return facesPerSegment;
+    return FacesPerSegment(nfaces, nSegments);
 }
 } // end namespace tigl

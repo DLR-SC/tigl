@@ -264,7 +264,7 @@ TEST_F(Systems, ComponentsGeometry)
         const auto& multiSegment = GetComponent("wing");
         PNamedShape shape        = multiSegment.GetLoft();
         ASSERT_TRUE(shape);
-        EXPECT_EQ(shape->GetFaceCount(), 4u);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
 
         Bnd_Box box;
         BRepBndLib::Add(shape->Shape(), box);
@@ -277,11 +277,12 @@ TEST_F(Systems, ComponentsGeometry)
     }
 
     // multiSegmentShape with 2 segments and super ellipses
+    // Note: multiSegmentShapes geometry doesn't support trimming, so GetTrimmedLoft() == GetUntrimmedLoft() == GetLoft()
     {
         const auto& multiSegment = GetComponent("multiSegmentComponent3");
         PNamedShape shape        = multiSegment.GetLoft();
         ASSERT_TRUE(shape);
-        EXPECT_EQ(shape->GetFaceCount(), 10u);
+        EXPECT_EQ(shape->GetFaceCount(), 3u);
     }
 }
 

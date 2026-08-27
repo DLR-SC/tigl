@@ -66,7 +66,17 @@ public:
      * @param enabled Set to true, if smoothing should be enabled.
      */
     TIGL_EXPORT void setMakeSmooth(bool enabled);
-    
+
+    /**
+     * @brief setEnableProfileCutting enables or disables cutting the resulting
+     * shell at the profile (section) positions and kink locations. When disabled,
+     * the loft is returned as a continuous surface without UV cuts at profiles.
+     * Default is false (cutting disabled).
+     *
+     * @param enabled Set to true to enable profile cutting (original behavior).
+     */
+    TIGL_EXPORT void setEnableProfileCutting(bool enabled);
+
     TIGL_EXPORT TopoDS_Shape& Shape();
     
     TIGL_EXPORT operator TopoDS_Shape& ();
@@ -106,6 +116,7 @@ private:
     std::vector<Standard_Real> uparams, vparams;
     bool _hasPerformed, _makeSolid;
     bool _makeSmooth = false;
+    bool _enableProfileCutting = false;
     
     TopoDS_Shape _result;
 };

@@ -135,6 +135,53 @@ TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesWithKinks_
     ASSERT_TRUE(BRepCheck_Analyzer(fuselage->Shape()).IsValid());
 }
 
+TEST_F(FuselageStandardProfileSuperEllipse, UntrimmedLoftFaceNames_MultipleAeroFaces)
+{
+    // Regression test for the untrimmed fuselage face naming.
+    //
+    // The guides model produces an untrimmed loft with several aerodynamic faces
+    // (one per guide-curve sector) followed by the Front/Rear cap faces. The old
+    // untrimmed face-naming assumed a single aero face and cycled the cap names
+    // (loftName, "symmetry", "Front", "Rear") over every remaining face, which
+    // mislabeled aero faces as Front/Rear/symmetry and gave the caps wrong names.
+    //
+    // Buggy output was: SimpleFuselage, Front, Rear, SimpleFuselage, symmetry,
+    // Front, Rear, SimpleFuselage  (3 aero / 1 symmetry / 2 Front / 2 Rear).
+    // Correct layout is [aero...][symmetry?][Front][Rear]: 6 aero, 0 symmetry,
+    // 1 Front, 1 Rear.
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+
+    tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
+    PNamedShape loft               = fuselage.GetUntrimmedLoft();
+    ASSERT_TRUE(loft != nullptr);
+
+    const std::string aeroName = loft->Name();
+
+    int nAero = 0, nSymmetry = 0, nFront = 0, nRear = 0;
+    for (int i = 0; i < loft->GetFaceCount(); ++i) {
+        const std::string name = loft->GetFaceTraits(i).Name();
+        if (name == "Front") {
+            ++nFront;
+        }
+        else if (name == "Rear") {
+            ++nRear;
+        }
+        else if (name == "symmetry") {
+            ++nSymmetry;
+        }
+        else if (name == aeroName) {
+            ++nAero;
+        }
+    }
+
+    EXPECT_EQ(nAero, 6);
+    EXPECT_EQ(nSymmetry, 0);
+    EXPECT_EQ(nFront, 1);
+    EXPECT_EQ(nRear, 1);
+    EXPECT_EQ(loft->GetFaceCount(), 8);
+}
+
 TEST_F(FuselageStandardProfileSuperEllipse, BuildFuselageMixedProfilesInvalidInput)
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -172,7 +219,7 @@ TEST(FuselageStandardProfileSuperEllipse_kinks, issue_1094)
 
     // check number of faces. It should be Front, Rear and additionally four faces, one face per quadrant.
     // If there are additional kinks, there are more faces
-    auto fuselage = config.GetFuselage(1).GetLoft();
+    auto fuselage = config.GetFuselage(1).GetTrimmedLoft();
     int face_count = 0;
     for (int i=0; i < fuselage->GetFaceCount(); ++i) {
         if (fuselage->GetFaceTraits(i).Name() != "Front" && fuselage->GetFaceTraits(i).Name() != "Rear") {
