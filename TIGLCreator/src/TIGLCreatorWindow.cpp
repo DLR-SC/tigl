@@ -1414,7 +1414,10 @@ void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
         return;
     }
     lastSelectedTreeUID = treeWidget->getSelectedUID();
-    lastSelectedTreeItem = item;
+    // Only cache real tree items: on deselection nullptr (or an uninitialized
+    // placeholder) is passed, and caching it would leave a stale/dangling fallback
+    // for the display options and re-dispatch paths (#1419).
+    lastSelectedTreeItem = (item && item->isInitialized()) ? item : nullptr;
 }
 
 void TIGLCreatorWindow::onModificatorModelReset()
@@ -1423,6 +1426,15 @@ void TIGLCreatorWindow::onModificatorModelReset()
     // selected item is gone. Clear the cached pointer to avoid dangling references.
     lastSelectedTreeItem = nullptr;
     lastSelectedTreeUID.clear();
+
+    // The display options widget caches the item as well. Nothing else clears it here:
+    // QItemSelectionModel drops its selection on a model reset without emitting
+    // selectionChanged(), so no dispatch() runs. Without this, opening another
+    // configuration while the "Display Options" tab is active would leave the widget with a
+    // pointer into the destroyed tree, which is dereferenced by it's slots  (#1419, #1404).
+    if (modificatorContainerWidget) {
+        modificatorContainerWidget->setDisplayOptionsFromItem(nullptr, nullptr, nullptr);
+    }
 }
 
 void TIGLCreatorWindow::onDisplayOptionsRequested()

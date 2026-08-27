@@ -64,6 +64,18 @@ PNamedShape InteractiveShapeManager::GetShapeFromIObject(const
     return shapeIt->second.shape;
 }
 
+std::string InteractiveShapeManager::GetNameFromIObject(Handle(AIS_Shape) obj) const
+{
+    auto it = _names.find(obj);
+
+    if (it == _names.end())
+    {
+        return std::string();
+    }
+
+    return it->second;
+}
+
 std::vector<Handle(AIS_Shape)>
 InteractiveShapeManager::GetIObjectsFromShapeName(const std::string& name) const
 {
