@@ -212,6 +212,15 @@ void TIGLCreatorContext::deleteAllObjects()
         myContext->Remove( aListIterator.Value(), Standard_False);
     }
     myContext->UpdateCurrentViewer();
+
+    // Removing the AIS objects from the 3D context does not forget them in the shape manager:
+    // without this, a subsequent drawComponentByUID() for a uid still registered there takes the
+    // "update existing objects" branch instead of "create fresh", so it can never add an AIS
+    // object for a mirrored shape that did not exist the first time the component was drawn (e.g.
+    // right after enabling symmetry on a wing). That left the mirror invisible until the whole
+    // configuration was closed and reopened, since only that path started from an empty shape
+    // manager (#1432).
+    myShapeManager.removeAllObjects();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.  
