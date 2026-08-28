@@ -61,6 +61,7 @@ Changes since last release
   - Fix an issue, where a color is selected on mouse hover in the color chooser dialog *(e.g. when changing the color of a geometric component)*. This issue is caused by a Qt bug ([#1217](https://github.com/DLR-SC/tigl/issues/1217)).
   - TiGLCreator: Auto-append file extension when saving a screenshot if missing, with a more informative error message ([#1296](https://github.com/DLR-SC/tigl/issues/1296))
   - Fixed an unhandled exception in the TiGLCreator (was triggered from the UpperLower wire in CTiglWingProfileNACA)([#1366](https://github.com/DLR-SC/tigl/issues/1366))
+  - Fixed `CCPACSAircraftModel::GetConfiguration` and `CCPACSRotorcraftModel::GetConfiguration` returning a null reference if the model is not attached to a configuration. It now throws a `CTiglError` instead ([#1426](https://github.com/DLR-SC/tigl/pull/1426))
 
 Version 3.5.0-rc1
 -----------------

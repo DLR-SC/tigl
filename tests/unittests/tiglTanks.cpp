@@ -464,6 +464,13 @@ TEST_F(FuelTanks, ducts_cutouts_propagate_to_fuel_tank)
     EXPECT_GT(GetNumberOfFaces(fuelTank->GetLoft()->Shape()), faces_clean);
 }
 
+// Regression test for CCPACSAircraftModel::GetConfiguration: the dummy objects are built
+// without a configuration, which used to yield a null reference instead of an error.
+TEST_F(FuelTanks, vessel_without_configuration)
+{
+    EXPECT_THROW(dummyVessel.GetConfiguration(), tigl::CTiglError);
+}
+
 class InvalidFuelTanks : public ::testing::Test
 {
 protected:
