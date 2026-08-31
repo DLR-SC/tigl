@@ -508,6 +508,7 @@
           <description>NACA 4 Series Profile</description> 
             <nacaProfile>
                 <naca4DigitCode>0012</naca4DigitCode>
+                <trailingEdgeThickness>0.1</trailingEdgeThickness>
             </nacaProfile>
          </wingAirfoil> 
          <wingAirfoil uID="NACA0009">

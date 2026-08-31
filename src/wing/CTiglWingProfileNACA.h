@@ -25,7 +25,7 @@
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 #include "Cache.h"
-#include "CTiglNACA4Calculator.h"
+#include "CTiglNACACalculator.h"
 
 #include <vector>
 #include <TopoDS_Edge.hxx>
@@ -111,12 +111,12 @@ namespace tigl{
 
         private:
     struct WireCache {
-        TopoDS_Edge               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Edge               lowerWire;      /**< wire of the lower wing profile */
+        TopoDS_Edge               upperWire;      
+        TopoDS_Edge               lowerWire;  
         TopoDS_Edge               trailingEdge; 
         TopoDS_Edge               upperLowerWire;
-        gp_Pnt                    lePoint;              /**< Leading edge point */
-        gp_Pnt                    tePoint;              /**< Trailing edge point */
+        gp_Pnt                    lePoint;              
+        gp_Pnt                    tePoint;              
     };
 
     void InvalidateParent() const;
@@ -126,7 +126,7 @@ namespace tigl{
 
     private:
        std::string profileUID;
-        CTiglNACA4Calculator calculator;
+       std::variant<NACA4DigitCode, NACA5DigitCode> nacacode;
        double te_thickness;
        Cache<WireCache, CTiglWingProfileNACA> wireCache;
     };
