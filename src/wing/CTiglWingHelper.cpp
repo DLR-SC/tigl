@@ -25,6 +25,22 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWing.h"
 
+#include <gp_XYZ.hxx>
+
+namespace
+{
+// The axis heuristics below pick an axis by comparing accumulated |components|.
+// A wing at exactly 45 degrees (e.g. dihedral 45) makes two components
+// mathematically equal, and a plain >= then picks the axis based on last-ulp
+// platform rounding (FMA contraction, libm differences). Treat differences
+// below a relative tolerance as a tie, resolved in favor of the first argument,
+// so the choice is deterministic across platforms.
+bool GreaterOrTied(double a, double b, const gp_XYZ& scale)
+{
+    return a >= b - 1e-8 * scale.Modulus();
+}
+} // namespace
+
 tigl::CTiglWingHelper::CTiglWingHelper()
     : tipUidCache(*this, &tigl::CTiglWingHelper::SetTipUid)
 {
@@ -154,12 +170,12 @@ TiglAxis tigl::CTiglWingHelper::GetMajorDirection() const
         cumulatedDepthDirection += dirDepth;
 
         int depthIndex = 0;
-        if (cumulatedDepthDirection.X() >= cumulatedDepthDirection.Y() &&
-            cumulatedDepthDirection.X() >= cumulatedDepthDirection.Z()) {
+        if (GreaterOrTied(cumulatedDepthDirection.X(), cumulatedDepthDirection.Y(), cumulatedDepthDirection) &&
+            GreaterOrTied(cumulatedDepthDirection.X(), cumulatedDepthDirection.Z(), cumulatedDepthDirection)) {
             depthIndex = 0;
         }
-        else if (cumulatedDepthDirection.Y() >= cumulatedDepthDirection.X() &&
-                 cumulatedDepthDirection.Y() >= cumulatedDepthDirection.Z()) {
+        else if (GreaterOrTied(cumulatedDepthDirection.Y(), cumulatedDepthDirection.X(), cumulatedDepthDirection) &&
+                 GreaterOrTied(cumulatedDepthDirection.Y(), cumulatedDepthDirection.Z(), cumulatedDepthDirection)) {
             depthIndex = 1;
         }
         else {
@@ -168,14 +184,17 @@ TiglAxis tigl::CTiglWingHelper::GetMajorDirection() const
 
         switch (depthIndex) {
         case 0:
-            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_Y_AXIS
-                                                                            : TiglAxis::TIGL_Z_AXIS;
+            return GreaterOrTied(cumulatedSpanDirection.Y(), cumulatedSpanDirection.Z(), cumulatedSpanDirection)
+                       ? TiglAxis::TIGL_Y_AXIS
+                       : TiglAxis::TIGL_Z_AXIS;
         case 1:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? TiglAxis::TIGL_X_AXIS
-                                                                            : TiglAxis::TIGL_Z_AXIS;
+            return GreaterOrTied(cumulatedSpanDirection.X(), cumulatedSpanDirection.Z(), cumulatedSpanDirection)
+                       ? TiglAxis::TIGL_X_AXIS
+                       : TiglAxis::TIGL_Z_AXIS;
         case 2:
-            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? TiglAxis::TIGL_X_AXIS
-                                                                            : TiglAxis::TIGL_Y_AXIS;
+            return GreaterOrTied(cumulatedSpanDirection.X(), cumulatedSpanDirection.Y(), cumulatedSpanDirection)
+                       ? TiglAxis::TIGL_X_AXIS
+                       : TiglAxis::TIGL_Y_AXIS;
         default:
             return TiglAxis ::TIGL_Y_AXIS;
         }
@@ -204,14 +223,17 @@ TiglAxis tigl::CTiglWingHelper::GetDeepDirection() const
 
     switch (GetMajorDirection()) {
     case TIGL_Y_AXIS:
-        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Z() ? TiglAxis::TIGL_X_AXIS
-                                                                          : TiglAxis::TIGL_Z_AXIS;
+        return GreaterOrTied(cumulatedDepthDirection.X(), cumulatedDepthDirection.Z(), cumulatedDepthDirection)
+                   ? TiglAxis::TIGL_X_AXIS
+                   : TiglAxis::TIGL_Z_AXIS;
     case TIGL_Z_AXIS:
-        return cumulatedDepthDirection.X() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_X_AXIS
-                                                                          : TiglAxis::TIGL_Y_AXIS;
+        return GreaterOrTied(cumulatedDepthDirection.X(), cumulatedDepthDirection.Y(), cumulatedDepthDirection)
+                   ? TiglAxis::TIGL_X_AXIS
+                   : TiglAxis::TIGL_Y_AXIS;
     case TIGL_X_AXIS:
-        return cumulatedDepthDirection.Z() >= cumulatedDepthDirection.Y() ? TiglAxis::TIGL_Z_AXIS
-                                                                          : TiglAxis::TIGL_Y_AXIS;
+        return GreaterOrTied(cumulatedDepthDirection.Z(), cumulatedDepthDirection.Y(), cumulatedDepthDirection)
+                   ? TiglAxis::TIGL_Z_AXIS
+                   : TiglAxis::TIGL_Y_AXIS;
     default:
         return TiglAxis ::TIGL_X_AXIS;
     }

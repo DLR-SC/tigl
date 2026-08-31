@@ -1265,7 +1265,7 @@ TEST_F(creatorWing, wingCreateSectionInsideWithParam)
 
     wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378, "Cpacs2Test_Wing_Sec2Bis");
 
-    expectedArea = 0.185723;
+    expectedArea = 0.1840184995461778; // adapted to non-coons-patched occt 7.9.2
     expectedWidth = 0.81102;
     expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");
