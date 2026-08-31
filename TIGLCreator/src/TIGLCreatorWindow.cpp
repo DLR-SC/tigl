@@ -1434,6 +1434,15 @@ void TIGLCreatorWindow::onModificatorModelReset()
     // pointer into the destroyed tree, which is dereferenced by it's slots  (#1419, #1404).
     if (modificatorContainerWidget) {
         modificatorContainerWidget->setDisplayOptionsFromItem(nullptr, nullptr, nullptr);
+
+        // The active specialized widget (wing/fuselage/element/...) holds a raw reference into
+        // the CCPACSConfiguration, which a config reload (e.g. undo/redo, or opening another
+        // file) destroys and rebuilds from scratch. dispatchLastSelectedItemOnConfigurationEdited()
+        // re-dispatches the current selection afterwards, but the tree selection is already gone
+        // by the time this slot runs (same reason as above), so that re-dispatch can silently no-op.
+        // Reset to the neutral "no selection" state so a stale widget can't be interacted with and
+        // dereference the dangling reference (#1432).
+        modificatorContainerWidget->setNoInterfaceWidget();
     }
 }
 

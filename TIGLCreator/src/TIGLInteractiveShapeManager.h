@@ -54,6 +54,11 @@ public:
     void removeObject(const std::string& name);
     void clear();
 
+    // Forgets all registered shapes/objects (so a subsequent drawComponentByUID() treats every
+    // uid as new and recreates all of its AIS objects, e.g. a newly added mirrored shape), but -
+    // unlike clear() - keeps the persistent per-uid "show symmetry" preference intact.
+    void removeAllObjects();
+
     // removes only the interactive object from the shape manager
     void removeObject(Handle(AIS_Shape) obj);
     void addObject(PNamedShape shape, const Handle(AIS_Shape) iObject);

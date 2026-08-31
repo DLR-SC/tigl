@@ -202,6 +202,15 @@ void InteractiveShapeManager::clear()
     _symmetryVisible.clear();
 }
 
+void InteractiveShapeManager::removeAllObjects()
+{
+    // Unlike clear(), keep _symmetryVisible: it is a per-uid user preference that must
+    // survive a delete-and-redraw cycle of the same configuration (e.g. undo/redo, or the
+    // file-watcher-triggered reload after an edit), not just a config being closed.
+    _shapeEntries.clear();
+    _names.clear();
+}
+
 bool InteractiveShapeManager::GetSymmetryVisible(const std::string& uid) const
 {
     auto it = _symmetryVisible.find(uid);

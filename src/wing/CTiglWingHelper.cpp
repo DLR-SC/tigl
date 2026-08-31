@@ -117,20 +117,25 @@ void tigl::CTiglWingHelper::SetTipUid(std::string& cache) const
 
         delta = cTiglElementsMap.at(elementUIDs[i])->GetCenter() - rootCenter;
 
-        if (majorDir == TIGL_Y_AXIS && fabs(delta.y) > maxD) {
-            maxD  = delta.y;
-            cache = elementUIDs[i];
-        }
-        else if (majorDir == TIGL_Z_AXIS && fabs(delta.z) > maxD) {
-            maxD  = delta.z;
-            cache = elementUIDs[i];
-        }
-        else if (majorDir == TIGL_X_AXIS && fabs(delta.x) > maxD) {
-            maxD  = delta.x;
-            cache = elementUIDs[i];
-        }
-        else {
+        double d = 0;
+        switch (majorDir) {
+        case TIGL_X_AXIS:
+            d = fabs(delta.x);
+            break;
+        case TIGL_Y_AXIS:
+            d = fabs(delta.y);
+            break;
+        case TIGL_Z_AXIS:
+            d = fabs(delta.z);
+            break;
+        default:
             LOG(ERROR) << "CTiglWingHelper::SetTipCElement: Unexpected case!";
+            continue;
+        }
+
+        if (d > maxD) {
+            maxD  = d;
+            cache = elementUIDs[i];
         }
     }
 }
