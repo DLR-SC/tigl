@@ -14,6 +14,8 @@ python = ">=3.10,<3.15"
 setuptools = "*"
 doxygen = "*"
 
+[feature.base.pypi-dependencies]
+cpacs-schema-tool = { git = "https://github.com/DLR-SL/cpacs-schema-tool.git", tag = "v0.1.1" }
 
 [feature.python-internal.dependencies]
 # Must match the swig version conda-forge's pythonocc-core package was actually built with
@@ -103,6 +105,14 @@ unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
 tiglcreator = { cmd = "./tiglcreator", cwd = "build/install/bin"}
+
+test-schema = { cmd = "cpacs-schema check cpacs_schema.xsd", cwd = "cpacs_gen_input"}
+lint-schema = { cmd = "cpacs-schema lint cpacs_schema.xsd", cwd = "cpacs_gen_input"}
+format-schema = { cmd = """
+    cp cpacs_schema.xsd cpacs_schema.xsd.backup
+    cpacs-schema format cpacs_schema.xsd --in-place
+""", cwd = "cpacs_gen_input"}
+check-schema = { depends-on = ["test-schema", "lint-schema"] }
 
 # The environments define some common build configurations for TiGL or configurations used in CI
 [environments]
