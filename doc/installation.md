@@ -43,9 +43,8 @@ TiGL is a CMake project, so in simple terms, TiGL can be configured and built vi
 
 The minimum requirements to build TiGL are a C++17 compliant compiler and CMake, TiXI and OpenCascade Technology (OCCT). Qt5 is needed if you want to build the TiGLCreator.
 
-All build dependencies of TiGL are available as conda packages. Most dependencies are supplied in a decicated channel at [https://anaconda.org/dlr-sc/](https://anaconda.org/dlr-sc/). 
-Specifically, this channel contains a recommended variant of opencascade, which includes a patch for G2-continuous Coons patches.
-The recipes for the conda packages in the dlr-sc channel can be found at [https://github.com/DLR-SC/tigl-conda](https://github.com/DLR-SC/tigl-conda).
+All build dependencies of TiGL are available as conda packages, mostly from the [conda-forge](https://conda-forge.org/) channel. 
+TiGL no longer requires a patched variant of OpenCASCADE; the stock conda-forge `occt` package is used directly.
 
 @subsection pixi Using the Pixi package manager
 
@@ -71,23 +70,21 @@ Will build and install TiGL using cmake and ninja. This will be done using the t
 
 will invoke unit tests and integration tests
 
-    pixi run tiglcreator
+    pixi run -e default tiglcreator
 
 will start the TiGLCreator from the install directory.
 
-To use another environment than `default`, we need to invoke the command like this:
+To build and run tests, use the `default` environment:
 
-    pixi run -e occt-static configure
-    pixi run install
-    pixi run unittests
-
- This command configures TiGL for a Release build that statically links against OpenCascade, installs TiGL in a subdirectory of the build directory and run the unit tests, but not the integration tests.
+    pixi run -e default configure
+    pixi run -e default install
+    pixi run -e default unittests
 
 The `configure` task has additional arguments. For instance
 
-    pixi run -e occt-static configure Debug
+    pixi run -e default configure Debug
 
-will configure a Debug build of TiGL that links in OCCT statically.
+will configure a Debug build of TiGL.
 
 @subsection internalpython Internal Python bindings
 
@@ -115,6 +112,27 @@ The code generator is included as a git submodule to this repository. For conven
     pixi run generate
 
 will update the git submodule, build the code generator and invoke the code generator on the input files in the directory `cpacs_gen_input/`.
+
+@subsection thirdpartysources Vendored third-party sources
+
+Two dependencies that aren't (fully) available as conda-forge packages are vendored directly in the repository:
+
+- `thirdparty/pythonocc-core` (git submodule): the pythonocc-core SWIG interface files used by TiGL's
+  internal Python bindings (`TIGL_BINDINGS_PYTHON_INTERNAL`) to reuse OCCT type wrappers. The
+  conda-forge `pythonocc-core` package only ships the compiled `OCC` Python module, not these sources.
+  The pixi `generate` and `python-internal configure` tasks initialize this submodule automatically.
+  When building without pixi, run `git submodule update --init --recursive` before configuring.
+  **Important**: keep the submodule's pinned tag in sync with the `pythonocc-core` and `occt` versions
+  in `pixi.toml` (see the pinned version comments there). SWIG's cross-module runtime type sharing
+  breaks silently across large version gaps.
+- `thirdparty/matlab-sdk/{win-64,osx-64}`: MATLAB's `extern/include` headers and `mex`/`mx`/`mat`
+  import-stub libraries needed to build the MATLAB (MEX) bindings (`TIGL_BINDINGS_MATLAB`) without a
+  full MATLAB installation. No conda-forge equivalent exists. Not needed on Linux, where MATLAB itself
+  provides `mex`/`make` for building the bindings against a real local installation (see @ref matlab).
+  `cmake/FindMATLAB.cmake` uses these automatically as a fallback when `MATLAB_DIR`/`MATLABDIR` aren't
+  set to a real MATLAB installation. Only an Intel (`osx-64`) SDK is vendored — on Apple Silicon
+  (`osx-arm64`) the MATLAB bindings are skipped with a CMake warning unless you point `MATLAB_DIR`
+  at your own Apple Silicon MATLAB installation.
 
 @subsection cmakeoptions CMake Options
 

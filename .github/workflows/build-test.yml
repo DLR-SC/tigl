@@ -54,7 +54,11 @@ jobs:
     runs-on: ${{ inputs.os }}
     steps:
       # checkout, setup pixi, compilers and ccache/sccache
+      # submodules: recursive is required for thirdparty/pythonocc-core (vendored SWIG sources
+      # needed at CMake configure time for the python-internal bindings, see cmake/FindPythonOCC.cmake)
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - name: Set up Visual Studio shell
         if: startsWith(inputs.os, 'windows')
         uses: egor-tensin/vs-shell@v2

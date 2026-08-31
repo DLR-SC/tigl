@@ -47,9 +47,7 @@
 #include <Standard_Version.hxx>
 
 
-#include <fstream>
-
-gp_Pnt EdgeFirstPoint(TopoDS_Edge e) 
+gp_Pnt EdgeFirstPoint(TopoDS_Edge e)
 {
     double u1, u2;
     Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
@@ -89,15 +87,13 @@ protected:
         // ************************************************************
         // Read in guides and profiles
         // ************************************************************
+        // Use the filename overload of BRepTools::Read: passing a test-constructed
+        // std::istream into the conda-forge occt libraries crashes on macOS when the
+        // test binary and occt link different libc++ runtimes (system vs. conda),
+        // as TopTools_ShapeSet::Read manipulates the stream's std::locale.
         BRep_Builder b;
-        std::ifstream in;
-        in.open(GetParam()[1].c_str());
-        BRepTools::Read(guides, in, b);
-        in.close();
-
-        in.open(GetParam()[2].c_str());
-        BRepTools::Read(profiles, in, b);
-        in.close();
+        BRepTools::Read(guides, GetParam()[1].c_str(), b);
+        BRepTools::Read(profiles, GetParam()[2].c_str(), b);
 
         ASSERT_FALSE(guides.IsNull());
         ASSERT_FALSE(profiles.IsNull());

@@ -1,8 +1,30 @@
-# Look for the interface file
+# The pythonocc-core SWIG interface files (src/SWIG_files/...) are not shipped by the
+# conda-forge pythonocc-core package (only the compiled OCC Python module is). Until that is
+# addressed upstream (https://github.com/conda-forge/pythonocc-feedstock), TiGL vendors the
+# matching pythonocc-core release as a git submodule at thirdparty/pythonocc-core -- keep its
+# pinned tag in sync with the pythonocc-core/occt version in pixi.toml.
 FIND_PATH(PythonOCC_SOURCE_DIR
     NAMES src/SWIG_files/wrapper/Standard.i
-    PATH_SUFFIXES src/pythonocc-core
+    PATHS ${CMAKE_SOURCE_DIR}/thirdparty/pythonocc-core
+    NO_DEFAULT_PATH
 )
+
+IF(NOT PythonOCC_SOURCE_DIR)
+    # Fall back to a conda-provided source tree, if any (e.g. a non-conda-forge channel).
+    FIND_PATH(PythonOCC_SOURCE_DIR
+        NAMES src/SWIG_files/wrapper/Standard.i
+        PATH_SUFFIXES src/pythonocc-core
+    )
+ENDIF()
+
+IF(NOT PythonOCC_SOURCE_DIR)
+    MESSAGE(WARNING
+        "pythonocc-core SWIG sources not found under ${CMAKE_SOURCE_DIR}/thirdparty/pythonocc-core. "
+        "This is a git submodule and is not populated by a plain 'git clone' -- run "
+        "'git submodule update --init --recursive' from the repository root and reconfigure. "
+        "(pixi's 'configure' task does this automatically; only needed manually if configuring outside of pixi.)"
+    )
+ENDIF()
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonOCC
