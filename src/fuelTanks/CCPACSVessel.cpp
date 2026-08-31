@@ -28,6 +28,7 @@
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
 #include "CCPACSFuelTank.h"
+#include "CCPACSDucts.h"
 #include "generated/CPACSFuelTanks.h"
 #include "generated/CPACSDomeType.h"
 #include "generated/CPACSEllipsoidDome.h"
@@ -50,20 +51,41 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
 
+#include <utility>
+
 namespace tigl
 {
 
 CCPACSVessel::CCPACSVessel(CCPACSVessels* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSVessel(parent, uidMgr)
     , CTiglRelativelyPositionedComponent(GetParent()->GetParent(), &m_transformation)
+    , cleanLoft(*this, &CCPACSVessel::BuildCleanLoft)
 {
     m_transformation.setScalingType(ABS_LOCAL);
     m_transformation.setRotationType(ABS_LOCAL);
 }
 
+void CCPACSVessel::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
+{
+    generated::CPACSVessel::ReadCPACS(tixiHandle, xpath);
+
+    // Ducts live outside the vessel's subtree, so their changes cannot invalidate the loft
+    // through the parent chain. Registering here rather than in the constructor, because the
+    // configuration is only attached once reading has started.
+    auto& config = GetConfiguration();
+    if (config.HasDucts()) {
+        config.GetDucts()->RegisterInvalidationCallback([this]() { this->Invalidate(); });
+    }
+}
+
 CCPACSConfiguration const& CCPACSVessel::GetConfiguration() const
 {
     return GetParent()->GetParent()->GetConfiguration();
+}
+
+CCPACSConfiguration& CCPACSVessel::GetConfiguration()
+{
+    return const_cast<CCPACSConfiguration&>(std::as_const(*this).GetConfiguration());
 }
 
 std::string CCPACSVessel::GetDefaultedUID() const
@@ -161,7 +183,8 @@ CCPACSFuselageSegment& CCPACSVessel::GetSegment(const size_t index)
     if (m_segments_choice1) {
         try {
             return m_segments_choice1.get().GetSegment(index);
-        } catch (CTiglError e){
+        }
+        catch (CTiglError e) {
             throw CTiglError("Invalid index in CCPACSVessel::GetSegment", TIGL_INDEX_ERROR);
         }
     }
@@ -581,7 +604,7 @@ void CCPACSVessel::BuildShapeFromSimpleParameters(TopoDS_Shape& loftShape) const
     loftShape = TransformedShape;
 }
 
-PNamedShape CCPACSVessel::BuildLoft() const
+void CCPACSVessel::BuildCleanLoft(PNamedShape& cache) const
 {
     TopoDS_Shape loftShape;
     std::string loftName      = GetUID();
@@ -591,19 +614,33 @@ PNamedShape CCPACSVessel::BuildLoft() const
         BuildShapeFromSegments(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraitsFromSegments(loft);
-        return loft;
+        cache = loft;
     }
     else if (m_domeType_choice2) {
         BuildShapeFromSimpleParameters(loftShape);
         PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
         SetFaceTraitsFromParams(loft);
-        return loft;
+        cache = loft;
     }
     else {
         throw CTiglError("No valid combination of segments and sections or parametric specification for lofting of "
                          "tank vessel available.",
                          TIGL_ERROR);
     }
+}
+
+PNamedShape CCPACSVessel::BuildLoft() const
+{
+    // The uncut geometry must be built first, so that an invalid vessel specification
+    // throws before the configuration is queried.
+    PNamedShape loft = *cleanLoft;
+
+    if (!GetConfiguration().HasDucts()) {
+        return loft;
+    }
+
+    // A duct may be excluded either on vessel level or on fuel tank level
+    return GetConfiguration().GetDucts()->LoftWithDuctCutouts(loft, {GetUID(), GetParent()->GetParent()->GetUID()});
 }
 
 CCPACSGuideCurve& CCPACSVessel::GetGuideCurveSegment(std::string uid)
@@ -733,7 +770,8 @@ void CCPACSVessel::SetFaceTraitsFromParams(PNamedShape loft) const
 
 void CCPACSVessel::InvalidateImpl(const boost::optional<std::string>&) const
 {
-    loft.clear();
+    CTiglAbstractGeometricComponent::Reset();
+    cleanLoft.clear();
     if (m_segments_choice1) {
         m_segments_choice1.get().Invalidate();
     }
