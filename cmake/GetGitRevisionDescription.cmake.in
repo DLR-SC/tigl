@@ -24,15 +24,12 @@ if(HEAD_CONTENTS MATCHES "ref")
 	if(EXISTS "@GIT_DIR@/${HEAD_REF}")
 		configure_file("@GIT_DIR@/${HEAD_REF}" "@GIT_DATA@/head-ref" COPYONLY)
 	elseif(EXISTS "@GIT_DIR@/packed-refs")
-		# The branch's ref isn't a loose file, e.g. after "git gc"/"git pack-refs" -- look it up
-		# in packed-refs instead. (This used to fall back to the branch's reflog file and set
-		# HEAD_HASH to the ref *name* itself rather than a real commit hash, silently corrupting
-		# any version string built from it.)
-		file(STRINGS "@GIT_DIR@/packed-refs" _tigl_packed_ref_line REGEX "^[0-9a-f]+ ${HEAD_REF}$")
-		if(_tigl_packed_ref_line)
-			string(REGEX REPLACE "^([0-9a-f]+) .*" "\\1" HEAD_HASH "${_tigl_packed_ref_line}")
+		# loose ref file is missing, e.g. because refs were packed by
+		# `git pack-refs` - resolve the hash from packed-refs instead
+		file(READ "@GIT_DIR@/packed-refs" PACKED_REFS)
+		if(${PACKED_REFS} MATCHES "([0-9a-z]+) ${HEAD_REF}")
+			set(HEAD_HASH "${CMAKE_MATCH_1}")
 		endif()
-		unset(_tigl_packed_ref_line)
 	endif()
 else()
 	# detached HEAD

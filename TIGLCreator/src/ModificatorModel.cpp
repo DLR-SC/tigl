@@ -34,6 +34,7 @@
 #include "tixicpp.h"
 #include "TIGLCreatorException.h"
 #include "TIGLCreatorErrorDialog.h"
+#include <algorithm>
 #include <QTimer>
 #include <Standard_Failure.hxx>
 
@@ -145,8 +146,9 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
             return;
         }
 
-        // Used, e.g., when a shape is selected that is not editable in the CPACSCreator
-        if ( !item->isInitialized() ) {
+        // Used, e.g., when the selection was cleared or a shape is selected that is
+        // not editable in the CPACSCreator
+        if ( !item || !item->isInitialized() ) {
             modificatorContainerWidget->hideAllSpecializedWidgets();
             modificatorContainerWidget->setNoInterfaceWidget();
             return;
@@ -336,6 +338,12 @@ void ModificatorModel::dispatch(cpcr::CPACSTreeItem* item)
         else {
             modificatorContainerWidget->setNoInterfaceWidget();
             LOG(INFO) << "MODIFICATOR MANAGER: item not suported";
+            // Components without a dedicated editor (engines, pylons, ...) should still
+            // get highlighted in the viewer when selected in the tree
+            if (scene && !item->getUid().empty() && scene->GetShapeManager().HasShapeEntry(item->getUid())) {
+                unHighlight();
+                highlightShape(item->getUid());
+            }
         }
         modificatorContainerWidget->updateDisplayOptionsIfActive(item, doc, scene);
     }
@@ -386,9 +394,9 @@ void ModificatorModel::validateAllUIDs()
     tigl::CTiglUIDManager& uidManager = doc->GetConfiguration().GetUIDManager();
     std::set<std::string> failed;
     tree.forEachUid([&](const std::string& uid) {
-        try {
-            uidManager.ResolveObject(uid);
-        } catch (...) {
+        // don't probe via ResolveObject: constructing the CTiglError it throws for every
+        // unregistered uid spams the console with debug log messages on each file open
+        if (!uidManager.IsUIDRegistered(uid)) {
             failed.insert(uid);
         }
     });
@@ -1176,9 +1184,23 @@ void ModificatorModel::highlightShape(const std::string& name){
     auto iobjects = scene->GetShapeManager().GetIObjectsFromShapeName(name);
 
     if (iobjects.size() > 0) {
-        scene->getContext()->ClearSelected(Standard_False);
-        scene->getContext()->SetSelected(iobjects[0], Standard_True);
-        scene->getContext()->UpdateCurrentViewer();
+        auto context = scene->getContext();
+        // Highlight the whole component, i.e. the original and - if displayed - the
+        // mirrored part, so that tree- and viewer-initiated selections look the same.
+        // Those are the first two objects registered for a uid (see
+        // TIGLCreatorDocument::drawComponentByUID); any further object registered under the
+        // same uid is auxiliary geometry (spars and ribs of a wing, sample point clouds, ...)
+        // that does not belong to the component itself. Keep this in sync with
+        // TIGLCreatorContext::selectShape().
+        context->ClearSelected(Standard_False);
+        const std::size_t nComponentObjects = std::min<std::size_t>(iobjects.size(), 2);
+        for (std::size_t i = 0; i < nComponentObjects; ++i) {
+            const Handle(AIS_Shape)& obj = iobjects[i];
+            if (!obj.IsNull() && context->IsDisplayed(obj)) {
+                context->AddOrRemoveSelected(obj, Standard_False);
+            }
+        }
+        context->UpdateCurrentViewer();
     }
 }
 
