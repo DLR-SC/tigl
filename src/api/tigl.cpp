@@ -143,6 +143,83 @@ namespace
 
 }
 
+namespace
+{
+    TiglReturnCode wingInterpolateXsiImpl(TiglCPACSConfigurationHandle cpacsHandle,
+                                          const char * firstUID, double firstEta, double firstXsi,
+                                          const char * secondUID, double secondEta, double secondXsi,
+                                          const char * intersectionUID, double intersectionEta,
+                                          TiglBoolean tiglAllowExtrapolation,
+                                          double * intersectionXsi, TiglBoolean * hasWarning)
+
+    {
+        bool allowExtrapolation = (tiglAllowExtrapolation == TIGL_TRUE);
+        std::string calledFunctionName = allowExtrapolation ? "tiglWingInterpolateExtrapolateXsi" : "tiglWingInterpolateXsi";
+
+        if (firstUID == 0) {
+            LOG(ERROR) << "Null pointer for argument firstUID\n"
+                       << "in function call to " << calledFunctionName << ".";
+            return TIGL_NULL_POINTER;
+        }
+
+        if (secondUID == 0) {
+            LOG(ERROR) << "Null pointer for argument secondUID\n"
+                       << "in function call to " << calledFunctionName << ".";
+            return TIGL_NULL_POINTER;
+        }
+
+        if (intersectionUID == 0) {
+            LOG(ERROR) << "Null pointer for argument intersectionUID\n"
+                       << "in function call to " << calledFunctionName << ".";
+            return TIGL_NULL_POINTER;
+        }
+
+        if (intersectionXsi == 0) {
+            LOG(ERROR) << "Null pointer for argument intersectionXsi\n"
+                       << "in function call to " << calledFunctionName << ".";
+            return TIGL_NULL_POINTER;
+        }
+
+        try {
+            tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+            tigl::CCPACSConfiguration& config         = manager.GetConfiguration(cpacsHandle);
+            const auto& uidMgr                        = config.GetUIDManager();
+
+            double xsiTemp = 0.;
+            double distanceTmp = 0.;
+            InterpolateXsi(firstUID, tigl::EtaXsi(firstEta, firstXsi),
+                        secondUID, tigl::EtaXsi(secondEta, secondXsi),
+                        intersectionUID, intersectionEta, uidMgr,
+                        xsiTemp, distanceTmp, allowExtrapolation);
+            *intersectionXsi = xsiTemp;
+
+            // check if xsi is valid
+            if (hasWarning) {
+                if (*intersectionXsi < 0. || *intersectionXsi > 1.) {
+                    *hasWarning = TIGL_TRUE;
+                }
+                else {
+                    *hasWarning = TIGL_FALSE;
+                }
+            }
+
+            return TIGL_SUCCESS;
+        }
+        catch (const tigl::CTiglError& ex) {
+            LOG(ERROR) << ex.what();
+            return ex.getCode();
+        }
+        catch (std::exception& ex) {
+            LOG(ERROR) << ex.what();
+            return TIGL_ERROR;
+        }
+        catch (...) {
+            LOG(ERROR) << "Caught an unknown exception in " << calledFunctionName << "!";
+            return TIGL_ERROR;
+        }
+    }
+}
+
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
 
@@ -2241,71 +2318,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingInterpolateXsi(TiglCPACSConfigurationH
                                                          const char * firstUID, double firstEta, double firstXsi,
                                                          const char * secondUID, double secondEta, double secondXsi,
                                                          const char * intersectionUID, double intersectionEta,
-                                                         double * intersectionXsi,
-                                                         TiglBoolean * hasWarning)
+                                                         double * intersectionXsi, TiglBoolean * hasWarning)
 
 {
-    if (firstUID == 0) {
-        LOG(ERROR) << "Null pointer for argument firstUID\n"
-                   << "in function call to tiglWingInterpolateXsi.";
-        return TIGL_NULL_POINTER;
-    }
+    return wingInterpolateXsiImpl(cpacsHandle,
+                                  firstUID, firstEta, firstXsi,
+                                  secondUID, secondEta, secondXsi,
+                                  intersectionUID, intersectionEta, TIGL_FALSE,
+                                  intersectionXsi, hasWarning);
+}
 
-    if (secondUID == 0) {
-        LOG(ERROR) << "Null pointer for argument secondUID\n"
-                   << "in function call to tiglWingInterpolateXsi.";
-        return TIGL_NULL_POINTER;
-    }
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingInterpolateExtrapolateXsi(
+                                                        TiglCPACSConfigurationHandle cpacsHandle,
+                                                        const char * firstUID, double firstEta, double firstXsi,
+                                                        const char * secondUID, double secondEta, double secondXsi,
+                                                        const char * intersectionUID, double intersectionEta,
+                                                        double * intersectionXsi, TiglBoolean * hasWarning)
 
-    if (intersectionUID == 0) {
-        LOG(ERROR) << "Null pointer for argument intersectionUID\n"
-                   << "in function call to tiglWingInterpolateXsi.";
-        return TIGL_NULL_POINTER;
-    }
-
-    if (intersectionXsi == 0) {
-        LOG(ERROR) << "Null pointer for argument intersectionXsi\n"
-                   << "in function call to tiglWingInterpolateXsi.";
-        return TIGL_NULL_POINTER;
-    }
-
-    try {
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config         = manager.GetConfiguration(cpacsHandle);
-        const auto& uidMgr                        = config.GetUIDManager();
-
-        double xsiTemp = 0.;
-        double distanceTmp = 0.;
-        tigl::InterpolateXsi(firstUID, tigl::EtaXsi(firstEta, firstXsi),
-                             secondUID, tigl::EtaXsi(secondEta, secondXsi),
-                             intersectionUID, intersectionEta, uidMgr,
-                             xsiTemp, distanceTmp);
-        *intersectionXsi = xsiTemp;
-
-        // check if xsi is valid
-        if (hasWarning) {
-            if (*intersectionXsi < 0. || *intersectionXsi > 1.) {
-                *hasWarning = TIGL_TRUE;
-            }
-            else {
-                *hasWarning = TIGL_FALSE;
-            }
-        }
-
-        return TIGL_SUCCESS;
-    }
-    catch (const tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.what();
-        return ex.getCode();
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what();
-        return TIGL_ERROR;
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingInterpolateXsi!";
-        return TIGL_ERROR;
-    }
+{
+    return wingInterpolateXsiImpl(cpacsHandle,
+                                  firstUID, firstEta, firstXsi,
+                                  secondUID, secondEta, secondXsi,
+                                  intersectionUID, intersectionEta, TIGL_TRUE,
+                                  intersectionXsi, hasWarning);
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(TiglCPACSConfigurationHandle cpacsHandle,

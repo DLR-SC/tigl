@@ -53,6 +53,12 @@ CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSCone* parent, CTiglUIDMan
 {
 }
 
+CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSTorus* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSTransformationSE3(parent, uidMgr)
+    , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)
+{
+}
+
 CCPACSTransformationSE3::CCPACSTransformationSE3(CCPACSEllipsoid* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSTransformationSE3(parent, uidMgr)
     , _transformationMatrix(*this, &CCPACSTransformationSE3::updateMatrix)

@@ -1255,15 +1255,6 @@ TEST_F(creatorWing, section_order)
     }
 }
 
-// expectedArea was captured in Aug 2025 (commit fabae5307). It does NOT test the dlr-sc Coons-C2
-// patch: NACA0012 here is a legacy <pointList> profile (see TestData/simpletest_modified.cpacs.xml),
-// so this goes through CTiglWingProfilePointList -- CreateNewConnectedElementBetween only
-// linearly interpolates center/width/height/rotation, and GetArea() is a plain transformed-wire
-// area, with no lofting/GeomFill anywhere on the path. Since Aug 2025, CTiglWingProfilePointList's
-// wire construction was reworked from interpolation to approximation (starting 533f4e497, Nov 2025,
-// ~20 commits), which legitimately shifts enclosed area while leaving bounding-box width/center
-// unaffected -- exactly the pattern below (width and center still pass; only area moved). Refreshed
-// against occt 7.9.3 with the current point-list approximation code: GetArea() == 0.1840184995461778.
 TEST_F(creatorWing, wingCreateSectionInsideWithParam)
 {
     tigl::CTiglSectionElement* newElement;
@@ -1274,7 +1265,7 @@ TEST_F(creatorWing, wingCreateSectionInsideWithParam)
 
     wing->CreateNewConnectedElementBetween("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1", 0.378, "Cpacs2Test_Wing_Sec2Bis");
 
-    expectedArea = 0.1840184995461778;
+    expectedArea = 0.1840184995461778; // adapted to non-coons-patched occt 7.9.2
     expectedWidth = 0.81102;
     expectedCenter = tigl::CTiglPoint(0.663589, 1.378, 0.0);
     newElement     = GetCElementOf("Cpacs2Test_Wing_Sec2BisElem1");

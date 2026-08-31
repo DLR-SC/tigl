@@ -32,34 +32,29 @@ class CTiglUIDObject;
 
 namespace generated
 {
-    class CPACSEllipsoids;
+    class CPACSTori;
 
     // This class is used in:
-    // CPACSEllipsoids
+    // CPACSTori
 
-    /// @brief Ellipsoid
+    /// @brief Torus
     /// 
-    /// The local component coordinate system of the ellipsoid is centered at its geometric center.
-    /// The principal axes of the ellipsoid coincide with the local x-, y- and z-axes.
-    /// The semi-axis lengths are defined by radiusX, radiusY and radiusZ.
-    /// The radii in y- and z-direction are optional.
-    /// If not specified, they default to radiusX.
-    /// If not specified, it defaults to 2*pi, resulting in a full ellipsoid.
-    /// Note that the angle refers to the parameterization of the underlying sphere:
-    /// for radiusX != radiusY the section planes are located at the azimuth
-    /// atan2(radiusY*sin(revolutionAngle), radiusX*cos(revolutionAngle)), which differs
-    /// from revolutionAngle itself.
+    /// The local component coordinate system of the torus is centered at its
+    /// geometric center. The symmetry axis coincides with the local z-axis, the
+    /// reference circle lies in the plane z = 0.
+    /// The optional revolutionAngle defines the angle of revolution about the local
+    /// z-axis. If not specified, it defaults to 2*pi, resulting in a full torus.
     /// 
-    class CPACSEllipsoid
+    class CPACSTorus
     {
     public:
-        TIGL_EXPORT CPACSEllipsoid(CPACSEllipsoids* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTorus(CPACSTori* parent, CTiglUIDManager* uidMgr);
 
-        TIGL_EXPORT virtual ~CPACSEllipsoid();
+        TIGL_EXPORT virtual ~CPACSTorus();
 
-        TIGL_EXPORT CPACSEllipsoids* GetParent();
+        TIGL_EXPORT CPACSTori* GetParent();
 
-        TIGL_EXPORT const CPACSEllipsoids* GetParent() const;
+        TIGL_EXPORT const CPACSTori* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -70,14 +65,11 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-        TIGL_EXPORT virtual const double& GetRadiusX() const;
-        TIGL_EXPORT virtual void SetRadiusX(const double& value);
+        TIGL_EXPORT virtual const double& GetMajorRadius() const;
+        TIGL_EXPORT virtual void SetMajorRadius(const double& value);
 
-        TIGL_EXPORT virtual const boost::optional<double>& GetRadiusY() const;
-        TIGL_EXPORT virtual void SetRadiusY(const boost::optional<double>& value);
-
-        TIGL_EXPORT virtual const boost::optional<double>& GetRadiusZ() const;
-        TIGL_EXPORT virtual void SetRadiusZ(const boost::optional<double>& value);
+        TIGL_EXPORT virtual const double& GetMinorRadius() const;
+        TIGL_EXPORT virtual void SetMinorRadius(const double& value);
 
         TIGL_EXPORT virtual const boost::optional<double>& GetRevolutionAngle() const;
         TIGL_EXPORT virtual void SetRevolutionAngle(const boost::optional<double>& value);
@@ -89,34 +81,34 @@ namespace generated
         TIGL_EXPORT virtual void RemoveTransformation();
 
     protected:
-        CPACSEllipsoids* m_parent;
+        CPACSTori* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Semi-axis length in x-direction [m]
-        double                                   m_radiusX;
+        /// Distance from the local z-axis to the
+        /// center of the tube [m]
+        double                                   m_majorRadius;
 
-        /// Semi-axis length in y-direction [m] (if not defined: equals radiusX)
-        boost::optional<double>                  m_radiusY;
+        /// Radius of the tube cross section
+        /// [m]
+        double                                   m_minorRadius;
 
-        /// Semi-axis length in z-direction [m] (if not defined: equals radiusX)
-        boost::optional<double>                  m_radiusZ;
-
-        /// Revolution angle about the local z-axis [rad] (if not defined: equals 2*pi)
+        /// Revolution angle about the local z-axis
+        /// [rad] (if not defined: equals 2*pi)
         boost::optional<double>                  m_revolutionAngle;
 
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:
-        CPACSEllipsoid(const CPACSEllipsoid&) = delete;
-        CPACSEllipsoid& operator=(const CPACSEllipsoid&) = delete;
+        CPACSTorus(const CPACSTorus&) = delete;
+        CPACSTorus& operator=(const CPACSTorus&) = delete;
 
-        CPACSEllipsoid(CPACSEllipsoid&&) = delete;
-        CPACSEllipsoid& operator=(CPACSEllipsoid&&) = delete;
+        CPACSTorus(CPACSTorus&&) = delete;
+        CPACSTorus& operator=(CPACSTorus&&) = delete;
     };
 } // namespace generated
 
 // Aliases in tigl namespace
-using CCPACSEllipsoid = generated::CPACSEllipsoid;
-using CCPACSEllipsoids = generated::CPACSEllipsoids;
+using CCPACSTorus = generated::CPACSTorus;
+using CCPACSTori = generated::CPACSTori;
 } // namespace tigl
