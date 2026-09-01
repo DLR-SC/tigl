@@ -4,6 +4,26 @@ Changelog
 Changes since last release
 ----------------
 
+- General changes
+
+  - none
+
+- New API functions
+
+  - none
+
+- TiGLCreator
+
+  - none
+
+- Build System
+
+  - none
+
+- Fixes
+
+  - none
+
 Version 3.5.0
 -------------
 2026/09/01
