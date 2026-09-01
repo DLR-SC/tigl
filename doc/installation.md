@@ -113,6 +113,26 @@ The code generator is included as a git submodule to this repository. For conven
 
 will update the git submodule, build the code generator and invoke the code generator on the input files in the directory `cpacs_gen_input/`.
 
+@subsection cpacsstylechecker Check the CPACS schema on style and syntax
+
+After a change on the `cpacs_schema.xsd`, users can execute the external `cpacs-schema-tool` to check the schema on correctness and style. Since it is also used by the CPACS maintainers, this can avoid overhead when merging the changes coming from TiGL into the main CPACS repository. There are a few commands to solve different tasks:
+
+    pixi run test-schema
+
+verifies canonical formatting and XSD compilation.
+
+    pixi run lint-schema
+
+checks CPACS conventions, references, reachability, prefixes, and XSD validity.
+
+    pixi run format-schema
+
+creates a new file based on the current schema that normalizes ordering, attributes, whitespace, and redundant occurrence defaults. Before application, a copy of the current schema called `cpacs_schema.xsd.backup` is made.
+
+    pixi run check-schema
+
+combines the both calls of `pixi run test-schema` and `pixi run lint-schema`.
+
 @subsection thirdpartysources Vendored third-party sources
 
 Two dependencies that aren't (fully) available as conda-forge packages are vendored directly in the repository:
