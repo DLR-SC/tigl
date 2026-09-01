@@ -1,0 +1,214 @@
+/** Header bar **/
+
+#top {
+    border-width: 0 0 1px 0;
+    border-color: #cacaca;
+    border-style: solid;
+}
+
+#titlearea {
+    padding: 10px;
+    margin: 0px;
+    float: left;
+    border: none;
+    width: initial;
+}
+
+#projectlogo {
+    vertical-align: top;
+}
+
+/**  Links **/
+
+a {
+    color: #15804B;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.contents a:visited {
+    color: #15804B;
+}
+
+/** Header **/
+
+h2.groupheader {
+    border-bottom: 0px;
+    color:#007430;
+}
+
+/** Tabs **/
+
+#main-menu {
+    background-image: None;
+    text-shadow: None;
+    padding-top: 31px;
+    padding-bottom: 12px;
+}
+
+#main-menu li {
+    background-image: None;
+}
+
+#main-menu a {
+    background-image: None;
+    color: #919191;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 0px 20px 0px 20px;
+}
+
+#main-menu li.current a {
+    background-image: None;
+    text-shadow: None;
+    color:#1B8E55;
+}
+
+#main-menu a:hover {
+    background-image: None;
+    text-shadow: None;
+    color: #333;
+}
+
+/** Navigation **/
+
+#nav-tree {
+    background-color: inherit;
+    background-image: none;
+}
+
+
+#nav-tree a {
+    font-size: 13px;
+    color: #303030;
+}
+#nav-tree .selected {
+    background: #1b8e55;
+    text-shadow: 0px 1px 1px rgb(41, 74, 46);
+}
+.ui-resizable-e {
+    background: none;
+    border-right: solid 1px #d3d3d3;
+}
+
+/** Document **/
+
+div.header {
+    color: #1B8E55;
+    margin-top: 0;
+    padding-bottom: 15px;
+    margin: 0px;
+    background-image: none;
+    background-color: initial;
+    border-bottom: none;
+}
+
+.title {
+    font: 400 14px/28px Roboto,sans-serif;
+    font-size: 14px;
+    font-size: 2.3125em;
+    margin: 10px 2px;
+}
+
+table.markdownTable td, table.markdownTable th {
+    border: 1px solid #0FA200
+}
+
+th.markdownTableHeadLeft, th.markdownTableHeadRight, th.markdownTableHeadCenter, th.markdownTableHeadNone {
+    background-color: #1B8E55;
+}
+
+/** Code Section **/
+
+.memproto, dl.reflist dt {
+    background-color: #F2F5F8;
+}
+
+.memdoc, dl.reflist dd {
+    background-image: none;
+}
+
+.memdoc, .memproto, dl.reflist dd {
+    background-image: none;
+    background-repeat: repeat-x;
+    border: 1px solid#d2d2dd;
+
+    border-radius: 0px;
+    border-radius: 0px;
+    box-shadow: none;
+    -moz-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -moz-box-shadow: none;
+    -webkit-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -webkit-box-shadow: none;
+}
+
+.memdoc {
+    border-top: none
+}
+
+.memproto {
+    border-bottom: none;
+}
+ 
+.memtitle {
+    display: none;
+}
+
+.memname {
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+.paramname {
+    color: #3861a8;
+    white-space: nowrap;
+}
+
+/*** Footer ***/
+
+.section-padding {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+address.footer {
+    text-align: right;
+    padding-right: 12px;
+}
+
+img.footer {
+    border: 0px;
+    vertical-align: middle;
+}
+
+.footer-area {
+    background: #fafafa;
+    border-top: 1px solid #d8d7d7;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.footer-social.social-btn a {
+    border-radius: 100%;
+    border: 1px solid #949494;
+    color: #919191;
+    display: inline-block;
+    font-size: 18px;
+    line-height: 42px;
+    height: 45px;
+    width: 45px;
+    text-align: center;
+    margin: 0 15px 30px 15px;
+}
+
+a.github  i {
+    margin-top: 12px;
+}
+
+.site-info {
+    color: #999;
+}

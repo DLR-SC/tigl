@@ -1,0 +1,28 @@
+var classtigl_1_1CTiglWingProfilePointList =
+[
+    [ "WireCache", "structtigl_1_1CTiglWingProfilePointList_1_1WireCache.html", "structtigl_1_1CTiglWingProfilePointList_1_1WireCache" ],
+    [ "CTiglWingProfilePointList", "classtigl_1_1CTiglWingProfilePointList.html#a6b7da8b19728680e4f559b61f5ea3436", null ],
+    [ "CTiglWingProfilePointList", "classtigl_1_1CTiglWingProfilePointList.html#a7ca30acaa33e5e95db14f38be7fa1b35", null ],
+    [ "CTiglWingProfilePointList", "classtigl_1_1CTiglWingProfilePointList.html#a069d73d2c73a894e7c0216778a068fe0", null ],
+    [ "BuildLETEPoints", "classtigl_1_1CTiglWingProfilePointList.html#ac08fa5196a662f85b5cbe04cb2e3b773", null ],
+    [ "BuildWires", "classtigl_1_1CTiglWingProfilePointList.html#ae97bf533adc6f90020de10c0894513e3", null ],
+    [ "closeProfilePoints", "classtigl_1_1CTiglWingProfilePointList.html#ab4fd1dcb1a5af3358208fbbf960343d2", null ],
+    [ "GetLEPoint", "classtigl_1_1CTiglWingProfilePointList.html#a2334eae794a1cf5cbea4aaabd5358115", null ],
+    [ "GetLowerWire", "classtigl_1_1CTiglWingProfilePointList.html#a5d25dd9cff61198cf54e9deb8fdcdf8b", null ],
+    [ "GetSamplePoints", "classtigl_1_1CTiglWingProfilePointList.html#ac2832de172c4f7789a0a18bed4625abf", null ],
+    [ "GetTEPoint", "classtigl_1_1CTiglWingProfilePointList.html#a46bc4427bfc9b5be38cb66aaa8ff8086", null ],
+    [ "GetTrailingEdge", "classtigl_1_1CTiglWingProfilePointList.html#a73df7103413547e8f718518d1c5b70a6", null ],
+    [ "GetUpperLowerWire", "classtigl_1_1CTiglWingProfilePointList.html#ad1b12c0f90fcf64f7c93ef5f0cc1c642", null ],
+    [ "GetUpperWire", "classtigl_1_1CTiglWingProfilePointList.html#a9eea7018cbccaa1cb9f719b2f9b473f6", null ],
+    [ "HasBluntTE", "classtigl_1_1CTiglWingProfilePointList.html#a7487a8bc6b9fe456679a3b927484db94", null ],
+    [ "Invalidate", "classtigl_1_1CTiglWingProfilePointList.html#a8c0215e0eada3f40eda9ff4ed6971452", null ],
+    [ "openProfilePoints", "classtigl_1_1CTiglWingProfilePointList.html#aa321fed0e3f7da0aa73e3e6927e4e492", null ],
+    [ "operator=", "classtigl_1_1CTiglWingProfilePointList.html#ac4a88797c98c3b0a42b9699f841f12df", null ],
+    [ "trimUpperLowerCurve", "classtigl_1_1CTiglWingProfilePointList.html#a092b777304673a69c8221f5b61f1cc87", null ],
+    [ "c_blendingDistance", "classtigl_1_1CTiglWingProfilePointList.html#a3f81c29b7518912d605ed14dfe5031e3", null ],
+    [ "c_trailingEdgeRelGap", "classtigl_1_1CTiglWingProfilePointList.html#adeaf7927352f19bd56ff27e50a7ef2e5", null ],
+    [ "coordinates", "classtigl_1_1CTiglWingProfilePointList.html#a8845a659e626a6a60ca0e02835a649f8", null ],
+    [ "profileUID", "classtigl_1_1CTiglWingProfilePointList.html#a6a6400b95568e54cf37125b1aa4c9c3c", null ],
+    [ "profileWireAlgo", "classtigl_1_1CTiglWingProfilePointList.html#a6f4a3ae4a22ac4eb6bd0a54f92f94e5c", null ],
+    [ "wireCache", "classtigl_1_1CTiglWingProfilePointList.html#a3813ed51500296b2440e33ea1f61a90d", null ]
+];

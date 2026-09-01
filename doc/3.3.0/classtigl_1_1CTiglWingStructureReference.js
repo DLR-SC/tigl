@@ -1,0 +1,36 @@
+var classtigl_1_1CTiglWingStructureReference =
+[
+    [ "Type", "classtigl_1_1CTiglWingStructureReference.html#ae8b9cbf11e6078b52110436fe69396cf", [
+      [ "ComponentSegmentType", "classtigl_1_1CTiglWingStructureReference.html#ae8b9cbf11e6078b52110436fe69396cfa8499b714600e40d6b27ee3f3c00ccb99", null ],
+      [ "TrailingEdgeDeviceType", "classtigl_1_1CTiglWingStructureReference.html#ae8b9cbf11e6078b52110436fe69396cfaede6f0040f3728c58cb7f62dd0264b57", null ]
+    ] ],
+    [ "CTiglWingStructureReference", "classtigl_1_1CTiglWingStructureReference.html#af6a858552365fc703f51efb7b8ebbe00", null ],
+    [ "CTiglWingStructureReference", "classtigl_1_1CTiglWingStructureReference.html#a32461c1b67a6c4cc61238603f12c508e", null ],
+    [ "GetEtaXsiLocal", "classtigl_1_1CTiglWingStructureReference.html#aed2ab0b1b9b6574744166c2abbfdbc6a", null ],
+    [ "GetInnerFace", "classtigl_1_1CTiglWingStructureReference.html#afe0f8cd13c9b0873ddf4b7ca41d0b4a6", null ],
+    [ "GetLeadingEdgeDirection", "classtigl_1_1CTiglWingStructureReference.html#a98e4ee12d48ebdf1dcc4add6fb518383", null ],
+    [ "GetLeadingEdgeLength", "classtigl_1_1CTiglWingStructureReference.html#a647abed125a6692760ae193df513c0a2", null ],
+    [ "GetLeadingEdgeLine", "classtigl_1_1CTiglWingStructureReference.html#afa9f1aa86ae1bf157b83c7f33aa42ce9", null ],
+    [ "GetLeadingEdgePoint", "classtigl_1_1CTiglWingStructureReference.html#ad62504a2a03f43830676da4995aa36e9", null ],
+    [ "GetLoft", "classtigl_1_1CTiglWingStructureReference.html#a8e6c9173ef30989900ebb7ba4101b31d", null ],
+    [ "GetLowerShape", "classtigl_1_1CTiglWingStructureReference.html#a65157639f088987cbddb6aaedd3577bf", null ],
+    [ "GetMidplaneEtaDir", "classtigl_1_1CTiglWingStructureReference.html#ae20214d4eb979ec4acb1b1a277a200c8", null ],
+    [ "GetMidplaneLine", "classtigl_1_1CTiglWingStructureReference.html#a32f895f95119fa60da763964368da44e", null ],
+    [ "GetMidplaneNormal", "classtigl_1_1CTiglWingStructureReference.html#a2b118e6f9aad6279f3ffce0347196d22", null ],
+    [ "GetMidplaneShape", "classtigl_1_1CTiglWingStructureReference.html#acc9eb1d05c818fd0b1f892bc4130d36c", null ],
+    [ "GetOuterFace", "classtigl_1_1CTiglWingStructureReference.html#a7f0b503ce7459a0c28cbb1f0e9f9db49", null ],
+    [ "GetPoint", "classtigl_1_1CTiglWingStructureReference.html#afcc354db63e902444381d5b5217f27df", null ],
+    [ "GetPoint", "classtigl_1_1CTiglWingStructureReference.html#a4dede10ef1c045f01dc61c0f861d3e42", null ],
+    [ "GetStructure", "classtigl_1_1CTiglWingStructureReference.html#a61c435771e51f9e0ba1296e3f9b6e896", null ],
+    [ "GetTrailingEdgeDirection", "classtigl_1_1CTiglWingStructureReference.html#a58b2e3acd3b81ed15a14da093e8f6618", null ],
+    [ "GetTrailingEdgeLength", "classtigl_1_1CTiglWingStructureReference.html#a21404a85b7728a1ec7f2add38de5a6c2", null ],
+    [ "GetTrailingEdgeLine", "classtigl_1_1CTiglWingStructureReference.html#a5b94947f4e5eec2ba32725f56b8cd937", null ],
+    [ "GetTrailingEdgePoint", "classtigl_1_1CTiglWingStructureReference.html#a52a2116670a99d6b60681b4eb760e840", null ],
+    [ "GetType", "classtigl_1_1CTiglWingStructureReference.html#ad75b342ced40b94a99937f4ea7bdae48", null ],
+    [ "GetUID", "classtigl_1_1CTiglWingStructureReference.html#a91e7b3531be37f260c953774c3e48ff1", null ],
+    [ "GetUpperShape", "classtigl_1_1CTiglWingStructureReference.html#a063fe70d5f4d0cb43877597acbc5ab01", null ],
+    [ "GetWing", "classtigl_1_1CTiglWingStructureReference.html#a1d0a79dfd759cf60123845a14dfbfa00", null ],
+    [ "GetWingComponentSegment", "classtigl_1_1CTiglWingStructureReference.html#ab06ca44623037ca0dbb2ca8524250487", null ],
+    [ "componentSegment", "classtigl_1_1CTiglWingStructureReference.html#abfdd84f85bef3eafa1d0b6de82b4ac98", null ],
+    [ "type", "classtigl_1_1CTiglWingStructureReference.html#a66acaafa14e998e4d38f5b2cc3d74229", null ]
+];

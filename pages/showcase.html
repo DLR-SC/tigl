@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	
+	<!-- TITLE OF SITE -->
+	<title>Showcase | The TiGL Geometry Library</title>
+
+
+	
+	<!-- META DATA -->
+    <meta name="description" content="The TiGL Geometry Library to process aircraft geometries in pre-design."/>
+ 
+	<meta name="keywords" content="tigl, aircraft, dlr, cad, geometry, design, simulation, aeronautics, aerospace, space, optimization, MDO, Open Source">
+	<meta name="author" content="Deutsches Zentrum für Luft- und Raumfahrt e.V. (DLR)">
+
+	
+	<meta property="og:title" content="Showcase" />
+	<meta property="og:type" content="article" />
+	<meta property="og:image" content="https://dlr-sc.github.io/tigl/images/screenshots/Muldicon-600x370.png" />
+	<meta property="og:url" content="https://dlr-sc.github.io/tigl/pages/showcase.html" />
+	<meta property="og:description" content="CPACS Models and Screenshots of TiGL" />
+	<meta property="og:locale" content="C" />
+	<meta property="og:site_name" content="The TiGL Geometry Library" />
+	<meta property="article:published_time" content="2019-02-07" />
+	<meta property="article:section" content="pages" />
+
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+ 
+   <!-- =========================
+      FAV AND TOUCH ICONS  
+    ============================== -->
+
+	<!-- ****** faviconit.com Favicons ****** -->
+	<link rel="shortcut icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/TiGL.ico">
+	<link rel="icon" sizes="16x16 32x32 64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL.ico">
+	<link rel="icon" type="image/png" sizes="196x196" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-192.png">
+	<link rel="icon" type="image/png" sizes="160x160" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-160.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-96.png">
+	<link rel="icon" type="image/png" sizes="64x64" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-64.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-16.png">
+	<link rel="apple-touch-icon" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-57.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-114.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-72.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-60.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-120.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-76.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-180.png">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage" content="https://dlr-sc.github.io/tigl/theme/images/icon/Icon_TIGL-144.png">
+	<meta name="msapplication-config" content="https://dlr-sc.github.io/tigl/theme/browserconfig.xml">
+	<!-- ****** faviconit.com Favicons ****** -->
+
+    <!-- =========================
+       STYLESHEETS 
+    ============================== -->
+    <!-- PRELOADER -->
+    <link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/preloader.css">
+	
+	<!-- Bootstrap v3.3.4 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- icon fonts Font Awesome 4.3.0 -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/font-awesome.min.css" rel="stylesheet"> 
+	<!-- code highlighting from pygments -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/pygments.css" rel="stylesheet"> 
+	<!-- Plugins  -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/jquery.fs.boxer.css" rel="stylesheet" /> 
+	<link rel="stylesheet" href="https://dlr-sc.github.io/tigl/theme/css/owl.carousel.css"> 
+	
+	<!-- Import Custom Styles -->
+	<link href="https://dlr-sc.github.io/tigl/theme/css/style.css" rel="stylesheet"> 
+	
+</head>
+
+
+<body class="">
+	<!-- Pre Loader -->
+	<div class="pre-loader">
+		<div class="spinner"></div>
+	</div>
+	<span id="page-top"></span>
+	<!-- Main Menu -->
+	<div class="main-menu-container navbar-fixed-top-">
+		<div id="main-menu" class="navbar navbar-default" role="navigation">
+			<div class="container">
+
+				<div class="navbar-header">
+					<!-- responsive navigation -->
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<i class="fa fa-bars"></i>
+					</button> <!-- /.navbar-toggle -->
+					<!-- Logo -->
+					<h1 class="logo">
+						<a class="navbar-brand" href="https://dlr-sc.github.io/tigl/">
+							<img height="50px" src="https://dlr-sc.github.io/tigl/images/tigl-logo.png" alt="TiGL Logo">
+						</a><!-- /.navbar-brand -->
+					</h1>
+				</div> <!-- /.navbar-header -->
+
+				<nav class="collapse navbar-collapse">
+					<!-- Main navigation -->
+					<ul id="mainNavigation" class="main-mav nav navbar-nav pull-right">
+						<li><a class="not-in-home"class="active" href="https://dlr-sc.github.io/tigl/#page-top">Home</a>
+						</li>
+
+
+					<!--	<li><a href="https://dlr-sc.github.io/tigl/#contents">What is TiGL?</a></li>   -->
+						
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#contents">About TiGL</a></li>
+						<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/#news">News</a></li>
+
+ 
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/features.html">Features</a></li>
+            					<li class="active"><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/showcase.html">Showcase</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/ecosystem.html">Ecosystem</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/documentation.html">Documentation</a></li>
+            					<li><a class="not-in-home" href="https://dlr-sc.github.io/tigl/pages/contact.html">Contact</a></li>
+
+
+
+						<li><a class="donate red" href="https://dlr-sc.github.io/tigl/pages/download.html">Download</a></li>     
+					</ul> <!-- /#mainNavigation -->
+				</nav> <!-- /.navbar-collapse  -->
+			</div> <!-- /.container -->
+		</div><!-- /#main-menu -->
+	</div><!-- /.main-menu-container -->
+	<!-- Main Menu End -->
+
+<section id="content">
+
+	<div class="page-name background-bg page-name-bg">
+		<div class="overlay">
+			<div class="container">
+				<h2 class="page-title m0">
+					Showcase
+				</h2>
+				<div class="page-location">
+					<a href="https://dlr-sc.github.io/tigl/">Home</a> <span> Showcase </span>
+				</div>
+			</div><!-- /.container -->
+		</div><!-- /.overlay -->
+	</div><!-- /.page-name -->
+
+
+
+	<section id="team"> 
+		<div id="contents"> 
+			<div class="container section-padding"> 
+				<h2 class="section-title">Showcase</h2>
+				
+  		
+
+        <div class="container section-padding"> 
+            <div id="gallery">
+                <div class="isotope-filters text-center">
+                    <button data-filter="" class="active">All</button> 
+<                   <button data-filter=".cat-aeronautics">Models</button>
+                    <button data-filter=".cat-screenshots">Screenshots</button> 
+                </div> <!-- /.portfolioFilter -->
+
+                <div class="isotope">
+
+                    <div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/Muldicon-600x370.png" alt="img 1">
+                            <a href="images/screenshots/Muldicon-HighRes.png" class="boxer"><span class="item-title">Unmanned vehicle with inner wing structure and control surfaces</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+					<div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/D150-600x370.png" alt="img 1">
+                            <a href="images/screenshots/D150-HighRes.png" class="boxer"><span class="item-title">Model of the DLR D150 aircraft</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+                    
+					<div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/Ariane5-600x370.png" alt="img 1">
+                            <a href="images/screenshots/Ariane5-HighRes.png" class="boxer"><span class="item-title">Ariane 5 rocket</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+                    
+					<div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/D150-Engines-600x370.png" alt="img 1">
+                            <a href="images/screenshots/D150-Engines-HighRes.png" class="boxer"><span class="item-title">DLR D150 with engines as generic components</span></a>
+                        </div>
+                    </div><!-- /.item -->
+                    
+                    <div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/Concorde-600x370.png" alt="img 1">
+                            <a href="images/screenshots/Concorde-HighRes.png" class="boxer"><span class="item-title">CPACS model of the Concorde</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+                    <div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/SimpleHeli-600x370.png" alt="img 1">
+                            <a href="images/screenshots/SimpleHeli-HighRes.png" class="boxer"><span class="item-title">Simple rotorcraft model</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+                    <div class="item squire cat-aeronautics">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/Fighter-600x370.png" alt="img 1">
+                            <a href="images/screenshots/Fighter-HighRes.png" class="boxer"><span class="item-title">Fighter</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+
+                    <div class="item squire cat-screenshots">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/TiGLViewer-600x370.png" alt="img 1">
+                            <a href="images/screenshots/TiGLViewer-HighRes.png" class="boxer"><span class="item-title">Screenshot of the TiGL Viewer</span></a>
+                        </div>
+                    </div><!-- /.item --> 
+
+                    <div class="item squire cat-screenshots">
+                        <div class="galerry-item">
+                            <img src="images/screenshots/TiGL-Viewer-Android-600x300.png" alt="img 1">
+                            <a href="images/screenshots/TiGL-Viewer-Android-HighRes.png" class="boxer"><span class="item-title">TiGL Viewer on Android</span></a>
+                        </div>
+                    </div><!-- /.item -->
+
+                </div><!-- /.isotope -->
+            </div><!--  /.gallery --> 
+        </div><!-- /.container -->
+
+
+    
+			</div><!-- /.container -->
+		</div>
+	</section><!-- /#team -->
+
+
+	
+
+
+</section><!-- /#content -->
+
+    <div class="footer-area ">
+
+	<footer class="section-padding">
+		<div class="social-btn footer-social text-center">
+			<!--<a href="https://twitter.com" class="twitter"><i class="fa fa-twitter"></i></a>-->
+			<!--<a href="https://www.youtube.com" class="youtube"><i class="fa fa-youtube"></i></a>-->
+			<a href="https://github.com/DLR-SC/tigl" class="github"><i class="fa fa-github"></i></a>
+		</div>
+
+
+		<div class="site-info text-center">
+			 &copy; 2020 <a href="http://www.DLR.de">Deutsches Zentrum für Luft- und Raumfahrt e.V.</a>
+
+                	&nbsp;&sdot;&nbsp;<a href="http://www.dlr.de/sc">Institute for Software Technology</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/imprint.html">Imprint</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/privacy.html">Privacy</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/terms-of-use.html">Terms of use</a></li>
+                	&nbsp;&sdot;&nbsp;<a href="https://dlr-sc.github.io/tigl/pages/accessibility.html">Accessibility</a></li>
+
+		</div>
+
+		<div id="go-top-top">
+			  <span><i class="fa fa-chevron-up"></i></span>
+		</div>
+	</footer>
+
+	</div><!-- /footer-area -->
+
+	<!-- Include modernizr-2.8.0.min.js -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/modernizr.js"></script>
+
+	<!-- Include jquery.min.js plugin -->
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery-2.1.0.min.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/plugins.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/onePage-nav.js"></script>
+	<script src="https://dlr-sc.github.io/tigl/theme/js/jquery.ajaxchimp.min.js"></script> 
+	<script src="https://dlr-sc.github.io/tigl/theme/js/custom.js"></script>
+
+	<script>
+	(function($) {
+		"use strict";
+		
+	        $(window).on("load",function(e){
+	        	// Main menu
+	        	$('#main-menu #mainNavigation').onePageNav({
+	        		currentClass: 'active',
+	        		changeHash: false,
+	        		scrollSpeed: 750,
+	        		scrollThreshold: 0.5,
+	        		scrollOffset: 84,
+	        		filter: ':not(.sub-menu a, .not-in-home, .donate)',
+	        		easing: 'swing'
+	        	});  
+	        });
+		$(window).on('scroll', function (){ 
+			if ($(window).scrollTop() >$(window).height()-110){
+				$('#main-menu').addClass('navbar-fixed-top'); 
+			} else {
+				$('#main-menu').removeClass('navbar-fixed-top'); 
+			} 
+		});
+	 })(jQuery);
+	</script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-134418253-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+</body>
+</html>
