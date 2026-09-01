@@ -9,3 +9,4 @@
 *.idea
 filefilter.txt
 /debugShapes
+cpacs_gen_input/cpacs_schema.xsd.backup
