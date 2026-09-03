@@ -53,10 +53,15 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 class TIGLCreatorContext;
+class TIGLCreatorSpotlightManager;
+class TIGLCreatorWindow;
 
 class TIGLCreatorWidget : public QWidget
 {
     Q_OBJECT
+
+    friend class TIGLCreatorSpotlightManager;
+    friend class TIGLCreatorWindow;
 
 public:
 
@@ -175,6 +180,13 @@ protected: // methods
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
 
+    // These functions come with complex input args and/or should not be seen by JavaScript API and console
+    // Since TIGLCreatorSpotlightManager still needs access to them, the class is marked as friend class above
+    void activateLight(const Handle(V3d_Light)& light);
+    void deactivateLight(const Handle(V3d_Light)& light);
+    void removeLight(const Handle(V3d_Light)& light);
+    void refreshLights();
+
     void setStartPoint(const QPoint&);
     void setCurrentPoint(const QPoint&);
 
@@ -208,7 +220,8 @@ private: // members
     Qt::MouseButton                 myButtonFlags;
     QCursor                         myCrossCursor;
     QColor                          myBGColor;
-    TIGLCreatorContext*              viewerContext;
+    TIGLCreatorContext*             viewerContext;
+    TIGLCreatorSpotlightManager*    mySpotlightManager;
 
 private: // methods
     void initialize();
