@@ -48,6 +48,8 @@
 #include "TIGLCreatorErrorDialog.h"
 #include "TIGLCreatorLogHistory.h"
 #include "TIGLCreatorLogRedirection.h"
+#include "TIGLCreatorSpotlightManager.h"
+#include "TIGLCreatorOthersWidget.h"
 #include "CTiglLogSplitter.h"
 #include "TIGLCreatorLoggerHTMLDecorator.h"
 #include "TIGLCreatorScreenshotDialog.h"
@@ -136,6 +138,11 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     // refresh display options UI when the scene reports display-attribute changes
     connect(myScene, &TIGLCreatorContext::displayAttributesChanged,
         this, &TIGLCreatorWindow::onSceneDisplayAttributesChanged);
+
+    // create spotlight manager and wire it to the corresponding "others" widget
+    spotlightManager = new TIGLCreatorSpotlightManager(myOCC, this);
+    othersWidget->setSpotlightManager(spotlightManager);
+    myOCC->mySpotlightManager = spotlightManager;
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -1338,7 +1345,7 @@ void TIGLCreatorWindow::addSpotlight()
     gp_Vec dir = addSpotlightDialog.getDirection().Get_gp_Pnt().XYZ();
     double concentration = addSpotlightDialog.getConcentration();
 
-    getViewer()->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
+    spotlightManager->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
 }
 
 /// This function is copied from QtCoreLib (>5.1)
