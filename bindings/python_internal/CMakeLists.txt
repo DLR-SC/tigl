@@ -61,7 +61,11 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
     # we use the same definitions as pythonocc for their build to hide some of their warnings
     option(SWIG_HIDE_WARNINGS "Check this option if you want a less verbose swig output." ON)
-    set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -py3)
+    # -py3 became the only (default) mode once SWIG dropped Python 2 support and is a
+    # no-op warning on SWIG >= 4.1; only pass it for the older versions that need it.
+    if(SWIG_VERSION VERSION_LESS "4.1")
+        set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -py3)
+    endif()
     if(SWIG_HIDE_WARNINGS)
       message(STATUS "Disabled SWIG warnings")
       # 526: harmless in TiGL's CCPACS* classes, which routinely pull in generated
