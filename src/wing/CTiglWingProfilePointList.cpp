@@ -124,7 +124,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             interpPointsIndices.push_back(static_cast<double>(coordinates.size()));
         }
         if (std::find(interpPointsIndices.begin(), interpPointsIndices.end(), lePointIdx) == interpPointsIndices.end()) {
-            interpPointsIndices.push_back(lePointIdx+1);
+            interpPointsIndices.push_back(static_cast<double>(lePointIdx + 1));
         }
 
         Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(coordinates.size()));

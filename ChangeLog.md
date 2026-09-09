@@ -22,6 +22,11 @@ Changes since last release
     typedefs with `Handle(X)`, replaced the removed `FindPythonInterp` CMake module with
     `FindPython3`, and suppressed a handful of SWIG warnings that are inherent to how the
     Python bindings are generated
+  - Fixed the remaining MSVC/Windows build warnings: explicit `static_cast`s for narrowing
+    `size_t`/`int` conversions, resolved signed/unsigned comparison and unreferenced-variable
+    warnings, updated deprecated `INSTANTIATE_TEST_CASE_P` gtest macro usages to
+    `INSTANTIATE_TEST_SUITE_P`, and suppressed the MSVC deprecation warning for the Python
+    bindings' generated wrapper code (which intentionally calls TiGL's own deprecated API)
 
 - Fixes
 

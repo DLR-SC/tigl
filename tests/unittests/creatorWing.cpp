@@ -1313,7 +1313,7 @@ TEST_F(creatorWing, D250_DeleteSection )
 
     //TODO: check the behavior with the connected component and guide line 
     
-    nbSegements = wing->GetSegments().GetSegmentCount();
+    nbSegements = static_cast<int>(wing->GetSegments().GetSegmentCount());
     wing->DeleteConnectedElement("wing_innerKink_Elem1");
     EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
     orderedUids = wing->GetOrderedConnectedElement();
@@ -1330,7 +1330,7 @@ TEST_F(creatorWing, D250_DeleteSection )
     }
     saveInOutputFile();
 
-    nbSegements = wing->GetSegments().GetSegmentCount();
+    nbSegements = static_cast<int>(wing->GetSegments().GetSegmentCount());
     wing->DeleteConnectedElement("wing_midPlane_Elem1");
     EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
     orderedUids = wing->GetOrderedConnectedElement();
@@ -1346,7 +1346,7 @@ TEST_F(creatorWing, D250_DeleteSection )
     }
     saveInOutputFile();
 
-    nbSegements = wing->GetSegments().GetSegmentCount();
+    nbSegements = static_cast<int>(wing->GetSegments().GetSegmentCount());
     wing->DeleteConnectedElement("wing_winglet_tip_Elem1");
     EXPECT_EQ(wing->GetSegments().GetSegmentCount(), nbSegements - 1);
     orderedUids = wing->GetOrderedConnectedElement();

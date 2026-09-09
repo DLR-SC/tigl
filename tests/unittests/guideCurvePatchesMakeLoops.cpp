@@ -301,4 +301,4 @@ const std::vector<std::string> filenamesNacelleClosedProfiles(keywords5, keyword
 const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle, filenamesNacelleClosedProfiles};
 const std::vector<std::vector< std::string> >filenames(fn, fn + 5);
 
-INSTANTIATE_TEST_CASE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));
+INSTANTIATE_TEST_SUITE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));

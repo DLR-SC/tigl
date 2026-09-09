@@ -331,8 +331,8 @@ namespace
         // Add all knots u_i=f(s_i)
         // Since we assume a piecewise linear reparameterization function f, the knots of f are just the new parameters
         // Hence, evaluating f at one knot gives the corresponding old parameter
-        TColStd_Array1OfReal knotsParams(1, paramsOld.size());
-        TColStd_Array1OfInteger multsParams(1, paramsOld.size());
+        TColStd_Array1OfReal knotsParams(1, static_cast<int>(paramsOld.size()));
+        TColStd_Array1OfInteger multsParams(1, static_cast<int>(paramsOld.size()));
         for (int paramIdx = 0; paramIdx < paramsOld.size(); paramIdx++) {
             knotsParams.SetValue(paramIdx+1, paramsOld[paramIdx]);
             multsParams.SetValue(paramIdx+1, degree);
@@ -435,7 +435,7 @@ namespace details
             [&u](double v){ return u <= v; }
         );
 
-        int paramsIdx = std::distance(paramsOld.begin(), it);
+        int paramsIdx = static_cast<int>(std::distance(paramsOld.begin(), it));
         // Catch case u=0, since distance would be 0 which causes illegal vector access by subtraction of 1
         if (paramsIdx  == 0) {
             ++paramsIdx;

@@ -107,7 +107,9 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
         # the generated wrap.cxx intentionally calls TiGL's own deprecated API to
         # keep it available from Python for backwards compatibility
-        if(NOT MSVC)
+        if(MSVC)
+            target_compile_options(${MODULE} PRIVATE /wd4996)
+        else()
             target_compile_options(${MODULE} PRIVATE -Wno-deprecated-declarations)
         endif()
 

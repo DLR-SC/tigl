@@ -483,7 +483,6 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
     QString      fileType;
     QFileInfo    fileInfo;
 
-    TIGLCreatorInputOutput::FileFormat format;
     TIGLCreatorInputOutput reader;
     bool triangulation = false;
     bool success;
@@ -1178,8 +1177,8 @@ void TIGLCreatorWindow::updateMenus()
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
-            nRotorBlades = config.GetRotorBladeCount();
-            nRotors = config.GetRotorCount();
+            nRotorBlades = static_cast<int>(config.GetRotorBladeCount());
+            nRotors = static_cast<int>(config.GetRotorCount());
         }
     }
     catch(tigl::CTiglError& ){}

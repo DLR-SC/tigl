@@ -482,12 +482,11 @@ TEST_P(TestBuildFace, build)
     EXPECT_NO_THROW(BuildFace(wire));
 }
 
-INSTANTIATE_TEST_CASE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
+INSTANTIATE_TEST_SUITE_P(TiglCommonFunctions, TestBuildFace, ::testing::Range(1, 30, 1));
 
 TEST(TiglCommonFunctions, edgeGetPointTangentBasedOnParam_checkArgs)
 {
     TopoDS_Edge edge;
-    double alpha;
     gp_Pnt point;
     gp_Vec tangent;
     BRep_Builder b;
