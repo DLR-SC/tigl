@@ -66,7 +66,12 @@ set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( tixi3 3.0.3 REQUIRED CONFIG)
 
 
-find_package( PythonInterp )
+# PythonInterp/PythonLibs are removed as of CMake 3.27; use the modern FindPython3
+# module and keep the classic PYTHON_EXECUTABLE/PYTHONINTERP_FOUND variables around,
+# since they are used throughout the build (checkstyle, bindings/matlab, ...).
+find_package( Python3 COMPONENTS Interpreter )
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+set(PYTHONINTERP_FOUND ${Python3_Interpreter_FOUND})
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)

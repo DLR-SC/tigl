@@ -348,7 +348,7 @@ BSplineFit::error BSplineFit::FitOptimal(const TColgp_Array1OfPnt &points, doubl
 }
 
 
-Handle_Geom_BSplineCurve BSplineFit::Curve() const
+Handle(Geom_BSplineCurve) BSplineFit::Curve() const
 {
     return _curve;
 }

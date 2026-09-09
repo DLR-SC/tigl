@@ -64,7 +64,12 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
     set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -py3)
     if(SWIG_HIDE_WARNINGS)
       message(STATUS "Disabled SWIG warnings")
-      set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -w302,401,402,412,314,509,512,504,325,503,520,350,351,383,389,394,395,404)
+      # 526: harmless in TiGL's CCPACS* classes, which routinely pull in generated
+      #      accessors via "using Base::GetX;" while SWIG renames them to snake_case
+      # 317: from_string<FaceNameSettings> is a real template specialization SWIG
+      #      doesn't recognize as such (CTiglExportIges.h)
+      # 312: private anonymous union in CTiglWingStructureReference, not swig-exposed
+      set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -w302,401,402,412,314,509,512,504,325,503,520,350,351,383,389,394,395,404,526,317,312)
     endif()
 
 
@@ -95,6 +100,12 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
 
         swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
         swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
+
+        # the generated wrap.cxx intentionally calls TiGL's own deprecated API to
+        # keep it available from Python for backwards compatibility
+        if(NOT MSVC)
+            target_compile_options(${MODULE} PRIVATE -Wno-deprecated-declarations)
+        endif()
 
         install(TARGETS ${MODULE}
                 DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3

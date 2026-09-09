@@ -104,7 +104,7 @@ void CCPACSRotationCurve::CutCurveAtZetas(TopoDS_Edge& edge) const
     double umin, umax;
     double par1 = -1;
     double par2 = -1;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
     if (len < Precision::Confusion()) {

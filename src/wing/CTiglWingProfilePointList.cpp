@@ -279,7 +279,7 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
 
     // Get Leading edge parameter on curve
@@ -544,7 +544,7 @@ void CTiglWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointCont
     }
 }
 
-void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve) const
+void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle(Geom_Curve) curve) const
 {
     gp_Pnt firstPnt = lowerCurve->StartPoint();
     gp_Pnt lastPnt = upperCurve->EndPoint();

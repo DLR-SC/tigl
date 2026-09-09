@@ -18,7 +18,10 @@ Changes since last release
 
 - Build System
 
-  - none
+  - Fixed most CMake/compiler/SWIG build warnings: replaced deprecated OCCT `Handle_X`
+    typedefs with `Handle(X)`, replaced the removed `FindPythonInterp` CMake module with
+    `FindPython3`, and suppressed a handful of SWIG warnings that are inherent to how the
+    Python bindings are generated
 
 - Fixes
 

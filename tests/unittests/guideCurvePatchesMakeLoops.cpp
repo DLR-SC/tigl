@@ -50,7 +50,7 @@
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e)
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
     
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u2);
@@ -62,7 +62,7 @@ gp_Pnt EdgeFirstPoint(TopoDS_Edge e)
 gp_Pnt EdgeLastPoint(TopoDS_Edge e) 
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
     
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u1);
