@@ -52,6 +52,10 @@ Changes since last release
     that value)
   - Fixed a Clang/macOS `-Winconsistent-missing-override` warning in
     `ModificatorModel::setData` (overriding `QAbstractItemModel::setData`)
+  - Fixed a Clang/macOS `-Wunused-value` warning in `tiglWingNacaProfile.cpp` caused by
+    `EXPECT_NO_THROW` being applied to already-evaluated variables instead of the calls that
+    produced them, which meant the intended exception checks for `GetUpperWire`/`GetLowerWire`/
+    `GetTrailingEdge` were not actually being tested; now wraps the calls themselves
 
 - Fixes
 
