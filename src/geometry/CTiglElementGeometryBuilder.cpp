@@ -337,7 +337,7 @@ TopoDS_Shape CTiglElementGeometryBuilder::BuildMultiSegmentShape(const CCPACSMul
     segments.SetReferenceParent(m_refComponent);
     segments.SetConfiguration(m_refConfig);
 
-    const int nSeg = segments.GetSegmentCount();
+    const int nSeg = static_cast<int>(segments.GetSegmentCount());
 
     if (nSeg < 1) {
         throw CTiglError("Cannot build multi-segment shape: no segments defined.", TIGL_INVALID_VALUE);

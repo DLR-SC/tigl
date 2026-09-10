@@ -76,13 +76,11 @@ TEST_F(WingNACAProfile, naca0012_generateBreps)
     // get profile curves of 1st airfoil
     for(const auto &code : nacaCodes){
         tigl::CCPACSWingProfile & profile = config.GetWingProfile(code.c_str());
-        TopoDS_Edge upperWire = profile.GetUpperWire();
-        TopoDS_Edge lowerWire = profile.GetLowerWire();
-        TopoDS_Edge trailingEdge = profile.GetTrailingEdge();
-        
-        EXPECT_NO_THROW(upperWire);
-        EXPECT_NO_THROW(lowerWire);
-        EXPECT_NO_THROW(trailingEdge);
+        TopoDS_Edge upperWire, lowerWire, trailingEdge;
+
+        EXPECT_NO_THROW(upperWire = profile.GetUpperWire());
+        EXPECT_NO_THROW(lowerWire = profile.GetLowerWire());
+        EXPECT_NO_THROW(trailingEdge = profile.GetTrailingEdge());
 
         EXPECT_FALSE(upperWire.IsNull());
         EXPECT_FALSE(lowerWire.IsNull());

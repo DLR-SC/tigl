@@ -18,9 +18,11 @@ Changes since last release
 
 - Build System
 
-  - Silence Doxygen's per-file progress spam and fix a batch of Doxygen warnings (undocumented/mismatched
-    `@param`s, misparsed `Handle(...)` return types, unescaped CPACS element names in doc comments)
-    ([#1442](https://github.com/DLR-SC/tigl/issues/1442)).
+  - Fixed numerous CMake, compiler (GCC, Clang/macOS, MSVC), SWIG, doxygen and Python build warnings,
+    and fixed a `make install` failure on macOS caused by an incorrectly computed Python
+    site-packages install path. Silenced doxygens very verbose build output
+  - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
+    in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating
 
 - Fixes
 

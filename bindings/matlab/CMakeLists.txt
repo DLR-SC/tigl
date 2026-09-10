@@ -7,9 +7,13 @@ option(TIGL_BINDINGS_MATLAB "Build the matlab bindings of tigl (requires matlab 
 if(TIGL_BINDINGS_MATLAB)
 
 find_package(MATLAB QUIET)
-find_package(PythonInterp REQUIRED)
+# PYTHON_EXECUTABLE is already set (via FindPython3) by the top-level CMakeLists.txt
+if(NOT PYTHON_EXECUTABLE)
+    message(FATAL_ERROR "MATLAB bindings require Python, but no Python interpreter was found.")
+endif()
 
-message(STATUS "Found MATLAB. Create matlab bindings.")
+message(STATUS "Generating MATLAB bindings interface (tiglmatlab.c). Whether the compiled "
+                "mex file is also built depends on whether MATLAB itself is found (see below).")
 
 #run python to create the tiglmatlab.c
 add_custom_command(

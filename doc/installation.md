@@ -167,6 +167,7 @@ Here is a complete list of TiGL's CMake options.
 | TIGL_BINDINGS_JAVA | Build the java bindings of TiGL (requires Java) | OFF |
 | TIGL_BINDINGS_MATLAB | Build the Matlab bindings of TiGL (requires matlab and python) | OFF |
 | TIGL_BINDINGS_INSTALL_CPP | Install TiGL's C++ bindings | OFF |
+| TIGL_WARNINGS_AS_ERRORS | Treat compiler warnings in TiGL's own targets (core library, TIGLCreator, tests) as errors. Does not apply to thirdparty code or the SWIG-generated bindings | ON |
 | TIGL_NIGHTLY | Create a nightly build of TIGL (includes git sha into tigl version) | OFF |
 | TIGL_CONCAT_GENERERATED_FILES | Concatenate all generated files into one. This speeds up compilation, but gives undesirable line numbers in error messages in releases | ON |
 | TIGL_USE_GLOG | Enables advanced logging (requires google glog) | OFF |

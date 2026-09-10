@@ -56,7 +56,7 @@ public:
 
     /// Returns the resulting curve. Returns
     /// Null in case of an error
-    TIGL_EXPORT Handle_Geom_BSplineCurve Curve() const;
+    TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
     /// Computes the maximum error of the fit
     TIGL_EXPORT double GetMaxError();
@@ -84,7 +84,7 @@ private:
     error fitCurve();
 
     /// The resulting B-spline curve
-    Handle_Geom_BSplineCurve _curve;
+    Handle(Geom_BSplineCurve) _curve;
 
     /// degree of the B-spline
     int _degree;
