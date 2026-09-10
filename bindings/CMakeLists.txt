@@ -17,25 +17,9 @@ if (TIGL_BINDINGS_PYTHON)
     message(STATUS "Python include directory: ${Python3_INCLUDE_DIR}")
     message(STATUS "Python library release: ${Python3_LIBRARY_RELEASE}")
 
-    # distutils.sysconfig was removed in Python 3.12 (PEP 632), so it can no longer be used to
-    # locate site-packages here.
-    #
-    # PYTHON_SITE_PACKAGES needs to be a path *relative to CMAKE_INSTALL_PREFIX*, which is NOT
-    # necessarily this interpreter's own sys.prefix: e.g. pixi's "python-internal" environment
-    # sets CMAKE_INSTALL_PREFIX to $CONDA_PREFIX (so it coincides with sys.prefix, installing
-    # straight into the live environment), but pixi's "default" environment sets it to a local
-    # build/install directory instead, to produce a self-contained, relocatable install tree -
-    # deliberately independent of where the build-time Python interpreter itself lives.
-    #
-    # Because of that, the right query is "what does a site-packages subpath look like under any
-    # prefix" (a portable template), not "what is my absolute site-packages, diffed against
-    # sys.prefix" - the latter only reconstructs correctly when CMAKE_INSTALL_PREFIX happens to
-    # equal sys.prefix, and otherwise surfaces install-scheme quirks as a badly broken path (this
-    # was tried and failed exactly this way on one platform/Python combination in CI, producing a
-    # long, escaping "../../.." relative path). Get the template directly instead, by asking
-    # sysconfig to resolve the path as if the prefix were empty, and stripping the resulting
-    # leading path separator (os.sep, so no separator literal has to survive CMake's own string
-    # escaping).
+    # distutils.sysconfig was removed in Python 3.12 (PEP 632). Ask sysconfig for the
+    # site-packages path as if the prefix were empty, giving a path relative to
+    # CMAKE_INSTALL_PREFIX (which isn't always this interpreter's own sys.prefix).
     execute_process(
         COMMAND "${Python3_EXECUTABLE}" -c "if True:
         import sysconfig, os

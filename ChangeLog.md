@@ -18,62 +18,11 @@ Changes since last release
 
 - Build System
 
-  - Fixed most CMake/compiler/SWIG build warnings: replaced deprecated OCCT `Handle_X`
-    typedefs with `Handle(X)`, replaced the removed `FindPythonInterp` CMake module with
-    `FindPython3`, and suppressed a handful of SWIG warnings that are inherent to how the
-    Python bindings are generated
-  - Fixed the remaining MSVC/Windows build warnings: explicit `static_cast`s for narrowing
-    `size_t`/`int` conversions, resolved signed/unsigned comparison and unreferenced-variable
-    warnings, updated deprecated `INSTANTIATE_TEST_CASE_P` gtest macro usages to
-    `INSTANTIATE_TEST_SUITE_P`, and suppressed the MSVC deprecation warning for the Python
-    bindings' generated wrapper code (which intentionally calls TiGL's own deprecated API)
-  - Replaced the deprecated CMake `swig_link_libraries` with `target_link_libraries` in the
-    internal Python bindings, fixing a CMake deprecation warning seen with newer CMake versions
+  - Fixed numerous CMake, compiler (GCC, Clang/macOS, MSVC), SWIG, and Python build warnings,
+    and fixed a `make install` failure on macOS caused by an incorrectly computed Python
+    site-packages install path
   - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
-    in TiGL's own targets (core library, TIGLCreator, tests) as errors, so future warnings are
-    caught immediately instead of accumulating; thirdparty code and the SWIG-generated bindings
-    are intentionally excluded, since their warnings are outside our control
-  - Fixed Clang/macOS `-Winconsistent-missing-override` warnings by adding the missing `override`
-    keyword to several domain class methods that override CPACSGen-generated accessors
-    (`CCPACSPointListXY::GetPoint`, `CCPACSNacelleSections::GetSectionCount`/`GetSection`,
-    `CCPACSFuselages::ReadCPACS`/`WriteCPACS`)
-  - Marked OpenCASCADE's (and Boost's/tixi3's) include directories as `SYSTEM` for the core
-    library and TIGLCreator targets, so `TIGL_WARNINGS_AS_ERRORS` no longer fails the build over
-    warnings that originate in third-party headers we don't control (e.g. a deprecated `sprintf`
-    call in an older OCCT header, only reachable on Clang/macOS)
-  - Replaced the removed `distutils.sysconfig` (Python 3.12, PEP 632) with the stdlib `sysconfig`
-    module to locate the Python site-packages install directory, fixing a
-    "Python site-packages directory could not be found" CMake warning
-  - Downgraded an informational CMake message about MATLAB bindings being skipped on Apple
-    Silicon (no vendored SDK) from `WARNING` to `STATUS`, since this is expected, documented
-    behavior rather than a problem
-  - Fixed a Clang/macOS `-Wswitch` warning in `CCPACSWing::SetAreaKeepSpan` by adding the
-    missing `TIGL_NO_AXIS` case (a no-op, matching the switch's previous implicit behavior for
-    that value)
-  - Fixed a Clang/macOS `-Winconsistent-missing-override` warning in
-    `ModificatorModel::setData` (overriding `QAbstractItemModel::setData`)
-  - Fixed a Clang/macOS `-Wunused-value` warning in `tiglWingNacaProfile.cpp` caused by
-    `EXPECT_NO_THROW` being applied to already-evaluated variables instead of the calls that
-    produced them, which meant the intended exception checks for `GetUpperWire`/`GetLowerWire`/
-    `GetTrailingEdge` were not actually being tested; now wraps the calls themselves
-  - Fixed a misleading, unconditional "Found MATLAB. Create matlab bindings." status message in
-    `bindings/matlab/CMakeLists.txt` that printed regardless of whether MATLAB was actually
-    found, contradicting the correct conditional message right after it
-  - Fixed a `make install` failure on macOS (observed with Python 3.14) where the Python
-    site-packages install path was computed by diffing this interpreter's absolute site-packages
-    against `sys.prefix`, then re-appending that to `CMAKE_INSTALL_PREFIX` - which only
-    reconstructs correctly when `CMAKE_INSTALL_PREFIX` happens to equal `sys.prefix` (true for
-    pixi's `python-internal` environment, but not for `default`, which deliberately installs into
-    a separate, relocatable `build/install` tree). On the affected platform this produced a badly
-    broken, escaping `../../..` path instead of a short relative one. Now computes the
-    prefix-independent relative template directly via `sysconfig.get_path(..., vars={'base': '',
-    'platbase': ''})` instead, which is correct regardless of the relationship between
-    `CMAKE_INSTALL_PREFIX` and the build-time interpreter's own `sys.prefix`
-  - Fixed two Python `SyntaxWarning`s in `bindings/bindings_generator/cheader_parser.py` (emitted
-    while generating `tigl3wrapper.py`): an invalid `\s` escape sequence in a non-raw regex string
-    (now a raw string), and a string-literal comparison using `is` instead of `==`. Both are
-    currently tolerated by CPython but are deprecated and will become hard errors in a future
-    Python version
+    in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating
 
 - Fixes
 
