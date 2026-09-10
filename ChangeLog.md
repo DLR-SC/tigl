@@ -50,6 +50,8 @@ Changes since last release
   - Fixed a Clang/macOS `-Wswitch` warning in `CCPACSWing::SetAreaKeepSpan` by adding the
     missing `TIGL_NO_AXIS` case (a no-op, matching the switch's previous implicit behavior for
     that value)
+  - Fixed a Clang/macOS `-Winconsistent-missing-override` warning in
+    `ModificatorModel::setData` (overriding `QAbstractItemModel::setData`)
 
 - Fixes
 
