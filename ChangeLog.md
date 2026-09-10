@@ -27,6 +27,8 @@ Changes since last release
     warnings, updated deprecated `INSTANTIATE_TEST_CASE_P` gtest macro usages to
     `INSTANTIATE_TEST_SUITE_P`, and suppressed the MSVC deprecation warning for the Python
     bindings' generated wrapper code (which intentionally calls TiGL's own deprecated API)
+  - Replaced the deprecated CMake `swig_link_libraries` with `target_link_libraries` in the
+    internal Python bindings, fixing a CMake deprecation warning seen with newer CMake versions
 
 - Fixes
 

@@ -103,7 +103,7 @@ if (TIGL_BINDINGS_PYTHON_INTERNAL)
         set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i generate_doc_i)
 
         swig_add_library(${MODULE} LANGUAGE python SOURCES ${MODULE}.i TYPE MODULE)
-        swig_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
+        target_link_libraries(${MODULE} tigl3 tigl3_cpp Python3::Module)
 
         # the generated wrap.cxx intentionally calls TiGL's own deprecated API to
         # keep it available from Python for backwards compatibility
