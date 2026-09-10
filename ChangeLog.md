@@ -59,6 +59,16 @@ Changes since last release
   - Fixed a misleading, unconditional "Found MATLAB. Create matlab bindings." status message in
     `bindings/matlab/CMakeLists.txt` that printed regardless of whether MATLAB was actually
     found, contradicting the correct conditional message right after it
+  - Fixed a `make install` failure on macOS (observed with Python 3.14) where the Python
+    site-packages install path was computed by diffing this interpreter's absolute site-packages
+    against `sys.prefix`, then re-appending that to `CMAKE_INSTALL_PREFIX` - which only
+    reconstructs correctly when `CMAKE_INSTALL_PREFIX` happens to equal `sys.prefix` (true for
+    pixi's `python-internal` environment, but not for `default`, which deliberately installs into
+    a separate, relocatable `build/install` tree). On the affected platform this produced a badly
+    broken, escaping `../../..` path instead of a short relative one. Now computes the
+    prefix-independent relative template directly via `sysconfig.get_path(..., vars={'base': '',
+    'platbase': ''})` instead, which is correct regardless of the relationship between
+    `CMAKE_INSTALL_PREFIX` and the build-time interpreter's own `sys.prefix`
 
 - Fixes
 
