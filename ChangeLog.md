@@ -69,6 +69,11 @@ Changes since last release
     prefix-independent relative template directly via `sysconfig.get_path(..., vars={'base': '',
     'platbase': ''})` instead, which is correct regardless of the relationship between
     `CMAKE_INSTALL_PREFIX` and the build-time interpreter's own `sys.prefix`
+  - Fixed two Python `SyntaxWarning`s in `bindings/bindings_generator/cheader_parser.py` (emitted
+    while generating `tigl3wrapper.py`): an invalid `\s` escape sequence in a non-raw regex string
+    (now a raw string), and a string-literal comparison using `is` instead of `==`. Both are
+    currently tolerated by CPython but are deprecated and will become hard errors in a future
+    Python version
 
 - Fixes
 
