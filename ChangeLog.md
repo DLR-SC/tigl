@@ -56,6 +56,9 @@ Changes since last release
     `EXPECT_NO_THROW` being applied to already-evaluated variables instead of the calls that
     produced them, which meant the intended exception checks for `GetUpperWire`/`GetLowerWire`/
     `GetTrailingEdge` were not actually being tested; now wraps the calls themselves
+  - Fixed a misleading, unconditional "Found MATLAB. Create matlab bindings." status message in
+    `bindings/matlab/CMakeLists.txt` that printed regardless of whether MATLAB was actually
+    found, contradicting the correct conditional message right after it
 
 - Fixes
 
