@@ -124,7 +124,9 @@ target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMA
 # workaround: on macos, the file glext.h should be loaded from occt/include instead from the system dir
 # This is a "Bug" in the occt header files which use <> instead of "" for include
 # hence, we must explicitly inlude the occt dir before all other includes!
-target_include_directories(${PROGNAME} BEFORE PRIVATE  ${OpenCASCADE_INCLUDE_DIR}) 
+# SYSTEM: this is third-party code, so with TIGL_WARNINGS_AS_ERRORS enabled, warnings
+# originating inside these headers must not fail our build.
+target_include_directories(${PROGNAME} SYSTEM BEFORE PRIVATE  ${OpenCASCADE_INCLUDE_DIR})
 
 target_link_libraries(${PROGNAME} PRIVATE
   tigl3_static tigl3_cpp

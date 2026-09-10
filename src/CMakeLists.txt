@@ -82,10 +82,20 @@ add_library(tigl3_objects OBJECT ${TIGL_SRC})
 set_property(TARGET tigl3_objects PROPERTY POSITION_INDEPENDENT_CODE ON) # needed for shared libraries
 
 target_include_directories(tigl3_objects
-    PRIVATE $<TARGET_PROPERTY:TKernel,INTERFACE_INCLUDE_DIRECTORIES>
     PRIVATE ${TIGL_INCLUDES}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/api
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# These are third-party dependencies whose headers we don't control, so they are added as
+# SYSTEM include directories: with TIGL_WARNINGS_AS_ERRORS enabled, compiler warnings
+# originating inside them (e.g. deprecated C stdlib calls in some OCCT versions) must not
+# fail our build. Normally CMake treats headers from a linked IMPORTED target's
+# INTERFACE_INCLUDE_DIRECTORIES as SYSTEM automatically, but here the include dirs are
+# extracted via $<TARGET_PROPERTY:...> instead of an actual target_link_libraries edge,
+# which bypasses that automatic behavior - so SYSTEM must be requested explicitly.
+target_include_directories(tigl3_objects SYSTEM
+    PRIVATE $<TARGET_PROPERTY:TKernel,INTERFACE_INCLUDE_DIRECTORIES>
     PRIVATE $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
     PUBLIC $<TARGET_PROPERTY:tixi3,INTERFACE_INCLUDE_DIRECTORIES>
 )
@@ -95,7 +105,7 @@ target_include_directories(tigl3_objects
 #   but the tixicpp includes are in the same dir as the tixi3 includes.
 #   A local build has it but has a different include directory than tixi3.
 if (TARGET tixicpp)
-    target_include_directories(tigl3_objects
+    target_include_directories(tigl3_objects SYSTEM
         PRIVATE $<TARGET_PROPERTY:tixicpp,INTERFACE_INCLUDE_DIRECTORIES>
     )
 endif(TARGET tixicpp)
@@ -111,7 +121,7 @@ if(TARGET glog::glog)
     PRIVATE $<TARGET_PROPERTY:glog::glog,INTERFACE_COMPILE_DEFINITIONS>
   )
 
-  target_include_directories(tigl3_objects
+  target_include_directories(tigl3_objects SYSTEM
     PRIVATE $<TARGET_PROPERTY:glog::glog,INTERFACE_INCLUDE_DIRECTORIES>
   )
 endif()
