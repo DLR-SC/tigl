@@ -47,6 +47,9 @@ Changes since last release
   - Downgraded an informational CMake message about MATLAB bindings being skipped on Apple
     Silicon (no vendored SDK) from `WARNING` to `STATUS`, since this is expected, documented
     behavior rather than a problem
+  - Fixed a Clang/macOS `-Wswitch` warning in `CCPACSWing::SetAreaKeepSpan` by adding the
+    missing `TIGL_NO_AXIS` case (a no-op, matching the switch's previous implicit behavior for
+    that value)
 
 - Fixes
 

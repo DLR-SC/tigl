@@ -1372,6 +1372,8 @@ void CCPACSWing::SetAreaKeepSpan(double newArea)
     case TIGL_X_AXIS:
         projection.AddProjectionOnYZPlane();
         break;
+    case TIGL_NO_AXIS:
+        break;
     }
 
     double vInc, wInc;
