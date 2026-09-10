@@ -37,6 +37,16 @@ Changes since last release
     keyword to several domain class methods that override CPACSGen-generated accessors
     (`CCPACSPointListXY::GetPoint`, `CCPACSNacelleSections::GetSectionCount`/`GetSection`,
     `CCPACSFuselages::ReadCPACS`/`WriteCPACS`)
+  - Marked OpenCASCADE's (and Boost's/tixi3's) include directories as `SYSTEM` for the core
+    library and TIGLCreator targets, so `TIGL_WARNINGS_AS_ERRORS` no longer fails the build over
+    warnings that originate in third-party headers we don't control (e.g. a deprecated `sprintf`
+    call in an older OCCT header, only reachable on Clang/macOS)
+  - Replaced the removed `distutils.sysconfig` (Python 3.12, PEP 632) with the stdlib `sysconfig`
+    module to locate the Python site-packages install directory, fixing a
+    "Python site-packages directory could not be found" CMake warning
+  - Downgraded an informational CMake message about MATLAB bindings being skipped on Apple
+    Silicon (no vendored SDK) from `WARNING` to `STATUS`, since this is expected, documented
+    behavior rather than a problem
 
 - Fixes
 
