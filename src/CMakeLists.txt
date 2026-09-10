@@ -127,6 +127,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   endif()
 endif()
 
+tigl_enable_warnings_as_errors(tigl3_objects)
+
 # workaround for xcode. We must give each target a source file, not just a list of object files
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "// DUMMY FILE")
 

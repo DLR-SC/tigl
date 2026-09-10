@@ -42,6 +42,10 @@ endif()
 
 option(TIGL_BINDINGS_INSTALL_CPP "Install TiGL's CPP bindings" OFF)
 
+option(TIGL_WARNINGS_AS_ERRORS
+       "Treat compiler warnings in TiGL's own targets (core library, TIGLCreator, tests) as errors. Does not apply to thirdparty code or the SWIG-generated bindings."
+       ON)
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)

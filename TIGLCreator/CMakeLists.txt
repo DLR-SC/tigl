@@ -116,6 +116,8 @@ add_executable(${PROGNAME} ${TYPE}
 set_target_properties(${PROGNAME} PROPERTIES AUTOMOC TRUE)
 set_target_properties(${PROGNAME} PROPERTIES AUTOUIC TRUE)
 
+tigl_enable_warnings_as_errors(${PROGNAME})
+
 # include path for ui files
 target_include_directories(${PROGNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

@@ -29,6 +29,10 @@ Changes since last release
     bindings' generated wrapper code (which intentionally calls TiGL's own deprecated API)
   - Replaced the deprecated CMake `swig_link_libraries` with `target_link_libraries` in the
     internal Python bindings, fixing a CMake deprecation warning seen with newer CMake versions
+  - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
+    in TiGL's own targets (core library, TIGLCreator, tests) as errors, so future warnings are
+    caught immediately instead of accumulating; thirdparty code and the SWIG-generated bindings
+    are intentionally excluded, since their warnings are outside our control
 
 - Fixes
 

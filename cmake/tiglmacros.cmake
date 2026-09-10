@@ -64,3 +64,21 @@ FUNCTION(CAT IN OUT)
     FILE(READ ${IN} CONTENTS)
     FILE(APPEND ${OUT} "${CONTENTS}")
 ENDFUNCTION(CAT IN OUT)
+
+# Treats compiler warnings as errors for the given target, at whatever warning
+# level that target is already compiled with (this does not itself raise the
+# warning level, e.g. via -Wall/-Wextra or /W4). Controlled by the top-level
+# TIGL_WARNINGS_AS_ERRORS option, so it can be turned off if a toolchain
+# upgrade surfaces a new warning that hasn't been triaged yet. Intentionally
+# meant only for TiGL's own targets (core library, TIGLCreator, tests) -
+# not for thirdparty code or the SWIG-generated Python/MATLAB bindings, which
+# are outside our control.
+function(tigl_enable_warnings_as_errors target)
+    if(TIGL_WARNINGS_AS_ERRORS)
+        if(MSVC)
+            target_compile_options(${target} PRIVATE /WX)
+        else()
+            target_compile_options(${target} PRIVATE -Werror)
+        endif()
+    endif()
+endfunction()
