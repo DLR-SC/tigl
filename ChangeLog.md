@@ -33,6 +33,10 @@ Changes since last release
     in TiGL's own targets (core library, TIGLCreator, tests) as errors, so future warnings are
     caught immediately instead of accumulating; thirdparty code and the SWIG-generated bindings
     are intentionally excluded, since their warnings are outside our control
+  - Fixed Clang/macOS `-Winconsistent-missing-override` warnings by adding the missing `override`
+    keyword to several domain class methods that override CPACSGen-generated accessors
+    (`CCPACSPointListXY::GetPoint`, `CCPACSNacelleSections::GetSectionCount`/`GetSection`,
+    `CCPACSFuselages::ReadCPACS`/`WriteCPACS`)
 
 - Fixes
 
