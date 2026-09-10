@@ -255,7 +255,7 @@ const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 // Get segment count
 int CCPACSWing::GetSegmentCount() const
 {
-    return m_segments.GetSegmentCount();
+    return static_cast<int>(m_segments.GetSegmentCount());
 }
 
 // Returns the segment for a given index
@@ -284,7 +284,7 @@ const CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid) const
 int CCPACSWing::GetComponentSegmentCount() const
 {
     if (m_componentSegments) {
-        return m_componentSegments->GetComponentSegmentCount();
+        return static_cast<int>(m_componentSegments->GetComponentSegmentCount());
     }
     else {
         return 0;
@@ -1371,6 +1371,8 @@ void CCPACSWing::SetAreaKeepSpan(double newArea)
         break;
     case TIGL_X_AXIS:
         projection.AddProjectionOnYZPlane();
+        break;
+    case TIGL_NO_AXIS:
         break;
     }
 

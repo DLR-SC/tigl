@@ -427,7 +427,7 @@ PNamedShape CCPACSWingSegment::BuildLoft() const
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(wingLoft->Shape(), TopAbs_FACE, faceMap);
         int nFaces = faceMap.Extent();
-        int nSegments = segments->GetSegmentCount();
+        int nSegments = static_cast<int>(segments->GetSegmentCount());
         int nFacesPerSegment = (nFaces - 2)/nSegments;
 
         // determine index of segment to retrieve the correct subshapes of the wing

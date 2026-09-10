@@ -171,7 +171,7 @@ void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCon
         myViewer  = aContext->CurrentViewer();
         myView    = myViewer->CreateView();
 
-        Handle_Aspect_Window myWindow;
+        Handle(Aspect_Window) myWindow;
         
 #if OCC_VERSION_HEX >= 0x060800
         myWindow = new TIGLQAspectWindow(this);

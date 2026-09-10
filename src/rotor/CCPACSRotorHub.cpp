@@ -65,7 +65,7 @@ size_t CCPACSRotorHub::GetRotorBladeCount() const
 {
     int rotorBladeCount = 0;
     for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
-        rotorBladeCount += GetRotorBladeAttachment(i).GetNumberOfBlades();
+        rotorBladeCount += static_cast<int>(GetRotorBladeAttachment(i).GetNumberOfBlades());
     }
     return rotorBladeCount;
 }
@@ -73,10 +73,10 @@ size_t CCPACSRotorHub::GetRotorBladeCount() const
 // Returns the rotor blade for a given index
 const CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(size_t index) const
 {
-    int rotorBladeIndex = index;
+    int rotorBladeIndex = static_cast<int>(index);
     int rotorBladeAttachmentIndex = 1;
-    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades()) {
-        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades();
+    while (rotorBladeIndex > static_cast<int>(GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades())) {
+        rotorBladeIndex -= static_cast<int>(GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades());
         rotorBladeAttachmentIndex++;
     }
     return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);
@@ -84,10 +84,10 @@ const CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(size_t index) const
 
 CTiglAttachedRotorBlade& CCPACSRotorHub::GetRotorBlade(size_t index)
 {
-    int rotorBladeIndex = index;
+    int rotorBladeIndex = static_cast<int>(index);
     int rotorBladeAttachmentIndex = 1;
-    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades()) {
-        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades();
+    while (rotorBladeIndex > static_cast<int>(GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades())) {
+        rotorBladeIndex -= static_cast<int>(GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetNumberOfBlades());
         rotorBladeAttachmentIndex++;
     }
     return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetAttachedRotorBlade(rotorBladeIndex);

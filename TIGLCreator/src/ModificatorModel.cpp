@@ -836,7 +836,7 @@ void ModificatorModel::addProfile(QString const& profileID)
     std::string profile_name = profilesDB.removeSuffix(profileID).toStdString();
 
     auto profiles_idx = getIndex(profiles, 0);
-    auto profile_row = profiles->getChildren().size();
+    int profile_row = static_cast<int>(profiles->getChildren().size());
     beginInsertRows(profiles_idx, profile_row, profile_row);
 
     // apply changes to configuration
@@ -900,7 +900,7 @@ void ModificatorModel::onAddWingRequested()
 
         auto* wings = getWings();
         auto wings_idx = getIndex(wings, 0);
-        auto row = wings->getChildren().size();
+        int row = static_cast<int>(wings->getChildren().size());
 
         beginInsertRows(wings_idx, row, row);
 
@@ -1107,7 +1107,7 @@ void ModificatorModel::onAddFuselageRequested()
 
         auto* fuselages_node = getFuselages();
         auto fuselages_idx = getIndex(fuselages_node, 0);
-        auto row = fuselages_node->getChildren().size();
+        int row = static_cast<int>(fuselages_node->getChildren().size());
 
         beginInsertRows(fuselages_idx, row, row);
 
@@ -1461,7 +1461,7 @@ int ModificatorModel::rowCount(const QModelIndex& idx) const
     }
 
     cpcr::CPACSTreeItem* item = getItem(idx);
-    return item->getChildren().size();
+    return static_cast<int>(item->getChildren().size());
 }
 
 int ModificatorModel::columnCount(const QModelIndex& idx) const

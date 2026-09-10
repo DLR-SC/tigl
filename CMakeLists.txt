@@ -42,6 +42,10 @@ endif()
 
 option(TIGL_BINDINGS_INSTALL_CPP "Install TiGL's CPP bindings" OFF)
 
+option(TIGL_WARNINGS_AS_ERRORS
+       "Treat compiler warnings in TiGL's own targets (core library, TIGLCreator, tests) as errors. Does not apply to thirdparty code or the SWIG-generated bindings."
+       ON)
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)
@@ -66,7 +70,12 @@ set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( tixi3 3.0.3 REQUIRED CONFIG)
 
 
-find_package( PythonInterp )
+# PythonInterp/PythonLibs are removed as of CMake 3.27; use the modern FindPython3
+# module and keep the classic PYTHON_EXECUTABLE/PYTHONINTERP_FOUND variables around,
+# since they are used throughout the build (checkstyle, bindings/matlab, ...).
+find_package( Python3 COMPONENTS Interpreter )
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+set(PYTHONINTERP_FOUND ${Python3_Interpreter_FOUND})
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)

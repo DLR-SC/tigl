@@ -642,7 +642,7 @@ void GetShapeExtension(const TopoDS_Shape& shape,
 int GetHash(const TopoDS_Shape& shape)
 {
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,8,0)
-    return std::hash<TopoDS_Shape>{}(shape);
+    return static_cast<int>(std::hash<TopoDS_Shape>{}(shape));
 #else
     return shape.HashCode(INT_MAX);
 #endif
@@ -910,7 +910,7 @@ gp_Pnt GetFirstPoint(const TopoDS_Wire& w)
 gp_Pnt GetFirstPoint(const TopoDS_Edge& e)
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
 
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u2);
@@ -940,7 +940,7 @@ gp_Pnt GetLastPoint(const TopoDS_Wire& w)
 gp_Pnt GetLastPoint(const TopoDS_Edge& e)
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
 
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u1);

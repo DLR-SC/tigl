@@ -18,7 +18,11 @@ Changes since last release
 
 - Build System
 
-  - none
+  - Fixed numerous CMake, compiler (GCC, Clang/macOS, MSVC), SWIG, and Python build warnings,
+    and fixed a `make install` failure on macOS caused by an incorrectly computed Python
+    site-packages install path
+  - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
+    in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating
 
 - Fixes
 

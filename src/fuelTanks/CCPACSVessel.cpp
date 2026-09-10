@@ -150,7 +150,7 @@ CCPACSFuselageSection& CCPACSVessel::GetSection(const std::string& sectionUID)
 
 TopoDS_Shape CCPACSVessel::GetSectionFace(const std::string sectionUID) const
 {
-    const int segmentCount = GetSegmentCount();
+    const int segmentCount = static_cast<int>(GetSegmentCount());
 
     // Search for the section in all segments
     for (int n = 0; n < segmentCount; ++n) {
@@ -720,7 +720,7 @@ void CCPACSVessel::SetFaceTraitsFromSegments(PNamedShape loft) const
     int nFacesAero  = nFacesTotal;
 
     auto& segments = m_segments_choice1.get();
-    int nSegments  = segments.GetSegmentCount();
+    int nSegments  = static_cast<int>(segments.GetSegmentCount());
 
     bool hasSymmetryPlane = GetNumberOfEdges(segments.GetSegment(1).GetEndWire()) > 1;
 

@@ -1,28 +1,9 @@
-# work around wrong python detection script of cmake (happens with old python versions)
-if(PYTHON_EXECUTABLE)
-    execute_process(COMMAND "${PYTHON_EXECUTABLE}" --version
-                    ERROR_VARIABLE _VERSION
-                    RESULT_VARIABLE _PYTHON_VERSION_RESULT
-                    OUTPUT_QUIET
-                    ERROR_STRIP_TRAILING_WHITESPACE)
-    if(_PYTHON_VERSION_RESULT)
-        execute_process(COMMAND "${PYTHON_EXECUTABLE}" -V
-                        ERROR_VARIABLE _VERSION
-                        RESULT_VARIABLE _PYTHON_VERSION_RESULT
-                        OUTPUT_QUIET
-                        ERROR_STRIP_TRAILING_WHITESPACE)
-    endif(_PYTHON_VERSION_RESULT)
-    if(NOT _PYTHON_VERSION_RESULT AND _VERSION MATCHES "^Python [0-9]+\\.[0-9]+.*")
-        string(REPLACE "Python " "" PYTHON_VERSION_STRING "${_VERSION}")
-        string(REGEX REPLACE "^([0-9]+)\\.[0-9]+.*" "\\1" PYTHON_VERSION_MAJOR "${PYTHON_VERSION_STRING}")
-        string(REGEX REPLACE "^[0-9]+\\.([0-9])+.*" "\\1" PYTHON_VERSION_MINOR "${PYTHON_VERSION_STRING}")
-        if(PYTHON_VERSION_STRING MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+.*")
-            string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" PYTHON_VERSION_PATCH "${PYTHON_VERSION_STRING}")
-        endif()
-    endif()
-endif(PYTHON_EXECUTABLE)
-
-if(PYTHON_EXECUTABLE AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
+# bindings/CMakeLists.txt already runs find_package(Python3 ... REQUIRED) before
+# adding this subdirectory, so PYTHON_EXECUTABLE/Python3_VERSION are always valid
+# here. (The previous hand-rolled `python --version` parsing below this comment
+# used to work around ancient CMake's lack of FindPython3, but had been silently
+# broken since Python 3.4, which prints `--version` to stdout, not stderr.)
+if(NOT Python3_VERSION VERSION_LESS "2.5")
 	#run python to create the wrapper
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
@@ -33,13 +14,13 @@ if(PYTHON_EXECUTABLE AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 		)
 
 		add_custom_target(tiglPython ALL
-			COMMENT "Create python interface for tigl" VERBATIM 
+			COMMENT "Create python interface for tigl" VERBATIM
 			DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
 		)
-		
+
 		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tigl3wrapper.py
 				DESTINATION ${PYTHON_SITE_PACKAGES}/tigl3
 				COMPONENT interfaces)
 else()
-    message(ERROR "Python could not be found or the python installation is too old ( < 2.5). Python bindings can not be build!")
+    message(WARNING "Python installation is too old ( < 2.5). Python bindings can not be built!")
 endif()

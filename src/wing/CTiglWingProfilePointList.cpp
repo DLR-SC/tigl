@@ -124,7 +124,7 @@ CTiglWingProfilePointList::CTiglWingProfilePointList(const CCPACSWingProfile& pr
             interpPointsIndices.push_back(static_cast<double>(coordinates.size()));
         }
         if (std::find(interpPointsIndices.begin(), interpPointsIndices.end(), lePointIdx) == interpPointsIndices.end()) {
-            interpPointsIndices.push_back(lePointIdx+1);
+            interpPointsIndices.push_back(static_cast<double>(lePointIdx + 1));
         }
 
         Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, static_cast<Standard_Integer>(coordinates.size()));
@@ -279,7 +279,7 @@ void CTiglWingProfilePointList::BuildWiresImpl(WireCache& cache, bool closed) co
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
 
     // Get Leading edge parameter on curve
@@ -544,7 +544,7 @@ void CTiglWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointCont
     }
 }
 
-void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve) const
+void CTiglWingProfilePointList::trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle(Geom_Curve) curve) const
 {
     gp_Pnt firstPnt = lowerCurve->StartPoint();
     gp_Pnt lastPnt = upperCurve->EndPoint();

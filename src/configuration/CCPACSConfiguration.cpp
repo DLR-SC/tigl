@@ -888,7 +888,7 @@ size_t CCPACSConfiguration::GetExternalObjectCount() const
 
 CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(size_t index) const
 {
-    return aircraftModel->GetGenericGeometryComponents()->GetObject(index);
+    return aircraftModel->GetGenericGeometryComponents()->GetObject(static_cast<int>(index));
 }
 
 // Returns the fuselage for a given UID.

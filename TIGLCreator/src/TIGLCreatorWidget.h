@@ -97,7 +97,7 @@ public:
     // the scene context must be set before first use
     void setContext(TIGLCreatorContext* aContext);
 
-    Handle_V3d_View                  getView( )    { return myView; }
+    Handle(V3d_View)                  getView( )    { return myView; }
 
     //Overrides
     QPaintEngine*   paintEngine() const override;

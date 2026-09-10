@@ -50,7 +50,7 @@
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e)
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
     
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u2);
@@ -62,7 +62,7 @@ gp_Pnt EdgeFirstPoint(TopoDS_Edge e)
 gp_Pnt EdgeLastPoint(TopoDS_Edge e) 
 {
     double u1, u2;
-    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) c = BRep_Tool::Curve(e, u1, u2);
     
     if (e.Orientation() == TopAbs_REVERSED) {
         return c->Value(u1);
@@ -301,4 +301,4 @@ const std::vector<std::string> filenamesNacelleClosedProfiles(keywords5, keyword
 const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle, filenamesNacelleClosedProfiles};
 const std::vector<std::vector< std::string> >filenames(fn, fn + 5);
 
-INSTANTIATE_TEST_CASE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));
+INSTANTIATE_TEST_SUITE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));
