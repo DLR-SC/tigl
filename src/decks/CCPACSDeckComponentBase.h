@@ -29,7 +29,7 @@ namespace tigl
 class CCPACSConfiguration;
 
 /**
- * @brief Representing a CPACS <deck> element.
+ * @brief Representing a CPACS `<deck>` element.
  *
  * Mass properties:
  * - The referenced element may define either an explicit mass or a density.

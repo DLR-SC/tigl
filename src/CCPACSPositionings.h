@@ -58,7 +58,7 @@ public:
 
     /**
      * @brief GetPositioningTransformation returns the positioning matrix for a given section-uid
-     * @param sectionIndex
+     * @param sectionUID
      * @return Returns CTiglTransformation positioning matrix by sectionIndex
      */
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
@@ -67,7 +67,7 @@ public:
      * Set positioning transformation.
      * This function will take a section UID and will set the positioning of this section such that
      * the positioning obtained by this section is equal to the given position.
-     * @Remark, If the section has no postioning associated to it, the function will create a new positioning that has no
+     * @remark If the section has no postioning associated to it, the function will create a new positioning that has no
      * from element.
      * @param sectionUID: The section that will be modified
      * @param newPosition: The new final position given by positionings for this section.

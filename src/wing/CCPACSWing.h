@@ -114,7 +114,6 @@ public:
 
     /**
      *  @brief Returns the number of segments of the wing
-     *  @param index
      *  @return int
      */
     TIGL_EXPORT int GetSegmentCount() const;
@@ -311,7 +310,7 @@ public:
      * @brief Returns the mean aerodynamic chord of the wing
      * @param mac_chord
      * @param mac_x
-     * @param may_y
+     * @param mac_y
      * @param mac_z
      */
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) const;
@@ -320,8 +319,6 @@ public:
      * @brief Calculates the segment coordinates from global (x,y,z) coordinates
      * If x,y,z does not belong to any segment, -1 is returned
      * @param xyz Global (x,y,z) coordinates
-     * @param[in] eta
-     * @param[in] xsi
      * @param[out] eta
      * @param[out] xsi
      * @param onTop
@@ -451,7 +448,7 @@ public:
      * Set the wing half span while keeping the aspect ratio constant.
      * The span is set scaling the wing uniformly.
      * @remark The area will change.
-     * @param newArea
+     * @param newHalfSpan
      */
     TIGL_EXPORT void SetHalfSpanKeepAR(double newHalfSpan);
 
@@ -461,7 +458,7 @@ public:
      * The span is set by first scaling the wing uniformly,
      * then resetting the area while keeping the span constant.
      * @remark The aspect ratio will change.
-     * @param newArea
+     * @param newHalfSpan
      */
     TIGL_EXPORT void SetHalfSpanKeepArea(double newHalfSpan);
 
@@ -557,6 +554,7 @@ public:
      * @param startElementUID
      * @param endElementUID
      * @param eta
+     * @param sectionName
      */
     TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "New_section_between");
 

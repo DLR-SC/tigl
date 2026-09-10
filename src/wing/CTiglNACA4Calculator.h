@@ -36,9 +36,10 @@ class CTiglNACA4Calculator{
         /**
         * @brief Construct a new CTiglNACA4Calculator object
         * 
-        * @param max_camber 
-        * @param max_camber_position 
-        * @param max_profile_thickness 
+        * @param max_camber
+        * @param max_camber_position
+        * @param max_profile_thickness
+        * @param trailing_edge_thickness
         */
         TIGL_EXPORT CTiglNACA4Calculator(double max_camber, double max_camber_position, double max_profile_thickness, double trailing_edge_thickness = 0);
 

@@ -48,9 +48,9 @@ public:
     /**
      * Create a new wing with sections and segments.
      *
-     * @param fuselageUID
+     * @param wingUID
      * @param numberOfSection
-     * @param profileUID
+     * @param airfoilUID
      * @return
      */
     TIGL_EXPORT CCPACSWing& CreateWing(const std::string& wingUID, int numberOfSection, const std::string& airfoilUID);

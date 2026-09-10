@@ -18,7 +18,9 @@ Changes since last release
 
 - Build System
 
-  - none
+  - Silence Doxygen's per-file progress spam and fix a batch of Doxygen warnings (undocumented/mismatched
+    `@param`s, misparsed `Handle(...)` return types, unescaped CPACS element names in doc comments)
+    ([#1442](https://github.com/DLR-SC/tigl/issues/1442)).
 
 - Fixes
 

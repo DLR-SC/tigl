@@ -39,7 +39,7 @@ public:
      *      the fuselage origin (with a length of 0, if the origin of the profile correspond to its center).
      *
      * @param fuselage
-     * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
+     * @param useSimpleDecomposition If set to true, the standardization uses only polar decomposition.
      * This means that the cpacs file is more readable but there can be some simplification that changes the global
      * shape of the fuselage.
      */
@@ -54,7 +54,7 @@ public:
      *      the wing origin (with a length of 0, if the origin of the airfoil corresponds to its leading edge).
      *
      * @param wing
-     * @param useSimpleDecomposition, if set to true the standardization use only polar decomposition.
+     * @param useSimpleDecomposition If set to true, the standardization uses only polar decomposition.
      * This means that the cpacs file is more readable but there can be some simplification that changes the global
      * shape of the wing.
      */

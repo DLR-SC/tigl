@@ -58,8 +58,6 @@ public:
      * \param gcp Guide curve profile coordinates
      * \param fromDefinition Choose the interpretation of alpha1 for the guide curve's starting point on profileContainer1 (circumference or parameter)
      * \param toDefinition Choose the interpretation of alpha2 for the guide curve's end point on profileContainer2 (circumference or parameter)
-     *
-     * @return Guide curve wire in world coordinates
      */
     TIGL_EXPORT CCPACSGuideCurveAlgo(const TopTools_SequenceOfShape& profileContainer1,
                                      const TopTools_SequenceOfShape& profileContainer2,
