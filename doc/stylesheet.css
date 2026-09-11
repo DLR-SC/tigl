@@ -18,6 +18,11 @@
     vertical-align: top;
 }
 
+.sm {
+    position: static;
+    z-index: 9999;
+}
+
 /**  Links **/
 
 a {
