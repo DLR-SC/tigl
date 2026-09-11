@@ -58,7 +58,6 @@ public:
     @param theS surface
     @param theUfirst the value of the first parameter
     @param theUlast the value of the last parameter
-    @return None
     */
     TIGL_EXPORT static  void UReparametrize(Handle(Geom_BSplineSurface)& theS,
                                             const Standard_Real theUfirst,
@@ -70,7 +69,6 @@ public:
     @param theS surface
     @param theVfirst the value of the first parameter
     @param theVlast the value of the last parameter
-    @return None
     */
     TIGL_EXPORT static  void VReparametrize(Handle(Geom_BSplineSurface)& theS,
                                             const Standard_Real theVfirst,
@@ -83,7 +81,6 @@ public:
     @param theCont the value of continuity required
     @param theTol  the value of maximum allowed change of the shape of the surface
     @param theInsertKnots the flag that allows to insert new knots.
-    @return None
     */
     TIGL_EXPORT static  void USmoothing(Handle(Geom_BSplineSurface)& theS,
                                         const Standard_Integer theCont,const Standard_Real theTol,
@@ -96,7 +93,6 @@ public:
     @param theCont the value of continuity required
     @param theTol  the value of maximum allowed change of the shape of the surface
     @param theInsertKnots the flag that allows to insert new knots.
-    @return None
     */
     TIGL_EXPORT static  void VSmoothing(Handle(Geom_BSplineSurface)& theS,
                                         const Standard_Integer theCont,const Standard_Real theTol,
@@ -106,7 +102,7 @@ public:
     @brief Concatenate two surfaces along V boundary
 
     @param theS1 the first surface
-    @param theS1 the second surface
+    @param theS2 the second surface
     @param theTol the value of sewing tolerance
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
@@ -121,7 +117,7 @@ public:
     @brief Concatenate two surfaces along U boundary
 
     @param theS1 the first surface
-    @param theS1 the second surface
+    @param theS2 the second surface
     @param theTol the value of sewing tolerance
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
@@ -136,7 +132,7 @@ public:
     @brief Concatenate two surfaces along any coinciding boundaries
 
     @param theS1 the first surface
-    @param theS1 the second surface
+    @param theS2 the second surface
     @param theTol the value of sewing tolerance
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully

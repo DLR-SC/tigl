@@ -18,11 +18,11 @@ Changes since last release
 
 - Build System
 
-  - Fixed numerous CMake, compiler (GCC, Clang/macOS, MSVC), SWIG, and Python build warnings,
+  - Fixed numerous CMake, compiler (GCC, Clang/macOS, MSVC), SWIG, doxygen and Python build warnings,
     and fixed a `make install` failure on macOS caused by an incorrectly computed Python
-    site-packages install path
+    site-packages install path. Silenced doxygens very verbose build output ([#1441](https://github.com/DLR-SC/tigl/pull/1441), [#1443](https://github.com/DLR-SC/tigl/pull/1443))
   - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
-    in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating
+    in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating ([#1441](https://github.com/DLR-SC/tigl/pull/1441))
 
 - Fixes
 

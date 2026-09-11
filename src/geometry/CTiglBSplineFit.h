@@ -33,8 +33,6 @@ public:
      * @brief BSplineFit Class to fit a B-spline to data points
      * @param deg Degree of the resulting B-spline
      * @param ncp Number of control points of the B-spline (ncp > deg)
-     * @param eps Tolerance of the iterative method
-     * @param maxIter Maximum number of iterations
      */
     TIGL_EXPORT BSplineFit(int deg, int ncp);
 

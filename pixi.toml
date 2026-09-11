@@ -12,7 +12,7 @@ tixi = "3.3.2.*"
 qt = "5.15.15.*"
 python = ">=3.10,<3.15"
 setuptools = "*"
-doxygen = "*"
+doxygen = "==1.13.2"
 
 [feature.base.pypi-dependencies]
 cpacs-schema-tool = { git = "https://github.com/DLR-SL/cpacs-schema-tool.git", tag = "v0.1.1" }

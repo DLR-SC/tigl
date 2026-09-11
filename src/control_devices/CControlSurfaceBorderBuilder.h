@@ -43,7 +43,7 @@ public:
      * the CPACS definition.
      * 
      * @param rLEHeight Relative height of the nose point
-     * @param xsiNode Depth coordinate of the nose point
+     * @param xsiNose Depth coordinate of the nose point
      * @param xsiUpper Upper skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
