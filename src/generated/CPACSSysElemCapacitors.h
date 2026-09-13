@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores electrical energy in an electric field and releases it to the connected circuit.
+        /// Stores electrical energy in an electric field and releases it to the connected circuit
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_capacitors;
 
     private:

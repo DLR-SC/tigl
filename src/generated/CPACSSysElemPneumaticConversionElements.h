@@ -156,43 +156,43 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic conversion elements.
+        /// Library of predefined generic conversion elements
         boost::optional<CPACSSysElemGenericConversionElements>    m_genericConversionElements;
 
-        /// Library of predefined compressors.
+        /// Library of predefined compressors
         boost::optional<CPACSSysElemCompressors>                  m_compressors;
 
-        /// Library of predefined electric driven compressors.
+        /// Library of predefined electric driven compressors
         boost::optional<CPACSSysElemElectricDrivenCompressors>    m_electricDrivenCompressors;
 
-        /// Library of predefined mechanical driven compressors.
+        /// Library of predefined mechanical driven compressors
         boost::optional<CPACSSysElemMechanicalDrivenCompressors>  m_mechanicalDrivenCompressors;
 
-        /// Library of predefined fans.
+        /// Library of predefined fans
         boost::optional<CPACSSysElemFans>                         m_fans;
 
-        /// Library of predefined electric driven fans.
+        /// Library of predefined electric driven fans
         boost::optional<CPACSSysElemElectricDrivenFans>           m_electricDrivenFans;
 
-        /// Library of predefined mechanical driven fans.
+        /// Library of predefined mechanical driven fans
         boost::optional<CPACSSysElemMechanicalDrivenFans>         m_mechanicalDrivenFans;
 
-        /// Library of predefined air-cycle machines.
+        /// Library of predefined air-cycle machines
         boost::optional<CPACSSysElemAirCycleMachines>             m_airCycleMachines;
 
-        /// Library of predefined expansion turbines.
+        /// Library of predefined expansion turbines
         boost::optional<CPACSSysElemExpansionTurbines>            m_expansionTurbines;
 
-        /// Library of predefined nozzles.
+        /// Library of predefined nozzles
         boost::optional<CPACSSysElemNozzles>                      m_nozzles;
 
-        /// Library of predefined diffusers.
+        /// Library of predefined diffusers
         boost::optional<CPACSSysElemDiffusers>                    m_diffusers;
 
-        /// Library of predefined vacuum pumps.
+        /// Library of predefined vacuum pumps
         boost::optional<CPACSSysElemVacuumPumps>                  m_vacuumPumps;
 
-        /// Library of predefined pneumatic air-conditioning kits.
+        /// Library of predefined pneumatic air-conditioning kits
         boost::optional<CPACSSysElemPneumaticAirConditioningKits> m_pneumaticAirConditioningKits;
 
     private:

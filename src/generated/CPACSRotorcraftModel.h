@@ -43,15 +43,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraft
 
-    /// @brief rotorcraftModelType
+    /// @brief Rotorcraft model
     /// 
-    /// RotorCraftModel type, containing a complete rotorcraft
-    /// model (Geometry and all specific data). The rotorcraftModelType
-    /// is basically a copy of the aircraftModelType with the following
-    /// additional elements: rotors, rotorBlades, driveSystems.
-    /// Furthermore the following elements have been adapted for
-    /// rotorcraft: global and analyses (aeroPerformance and
-    /// massBreakdown).
+    /// Complete rotorcraft model (Geometry and all specific data). The rotorcraftModelType is basically a copy of the aircraftModelType with the following additional elements: rotors, rotorBlades, driveSystems. Furthermore the following elements have been adapted for rotorcraft: global and analyses (aeroPerformance and massBreakdown).
     /// 
     class CPACSRotorcraftModel : public CTiglReqUIDObject
     {
@@ -129,26 +123,34 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                               m_uID;
 
-        /// Name of rotorcraft model
+        /// Name
         std::string                               m_name;
 
-        /// Description of rotorcraft model
+        /// Description
         boost::optional<std::string>              m_description;
 
+        /// Fuselages
         boost::optional<CCPACSFuselages>          m_fuselages;
 
+        /// Wings
         boost::optional<CCPACSWings>              m_wings;
 
+        /// Rotors
         boost::optional<CCPACSRotors>             m_rotors;
 
+        /// Rotor blades
         boost::optional<CCPACSRotorBlades>        m_rotorBlades;
 
+        /// Engines
         boost::optional<CCPACSEnginePositions>    m_engines;
 
+        /// Systems
         boost::optional<CCPACSACSystems>          m_systems;
 
+        /// System architectures
         boost::optional<CPACSSystemArchitectures> m_systemArchitectures;
 
     private:

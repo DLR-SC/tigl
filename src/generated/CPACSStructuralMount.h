@@ -97,23 +97,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string          m_uID;
 
+        /// Degrees of freedom blocked by the mount
         int                  m_blockedDOF;
 
-        /// If this value is set to true then only the end points of the intersection shall be included as nodes in the model.
+        /// If this value is set to true then only the end points of the intersection shall be included as nodes in the model
         bool                 m_takeOnlyEndPoints;
 
-        /// The UID for the first connection UID may include for wings: skin, sparUID, ribDefinitionUID, ribNumber, stringerUID, stingerNumber, and for fuselages: skinSegmentUID, frameUID, stringerUID, crossBeamUID, crossBeamStrutUID, longFloorBeamUID.
+        /// The UID for the first connection UID may include for wings: skin, sparUID, ribDefinitionUID, ribNumber, stringerUID, stingerNumber, and for fuselages: skinSegmentUID, frameUID, stringerUID, crossBeamUID, crossBeamStrutUID, longFloorBeamUID
         std::string          m_fromStructureUID;
 
-        /// Optional counter to specify numbered items, e.g. ribs in a ribSet.
+        /// Optional counter to specify numbered items, e.g. ribs in a ribSet
         boost::optional<int> m_fromStructureCounter;
 
-        /// The UID for the second connection UID may include for wings: skin, sparUID, ribDefinitionUID, ribNumber, stringerUID, stingerNumber, and for fuselages: skinSegmentUID, frameUID, stringerUID, crossBeamUID, crossBeamStrutUID, longFloorBeamUID.
+        /// The UID for the second connection UID may include for wings: skin, sparUID, ribDefinitionUID, ribNumber, stringerUID, stingerNumber, and for fuselages: skinSegmentUID, frameUID, stringerUID, crossBeamUID, crossBeamStrutUID, longFloorBeamUID
         std::string          m_toStructureUID;
 
-        /// Optional counter to specify numbered items, e.g. ribs in a ribSet.
+        /// Optional counter to specify numbered items, e.g. ribs in a ribSet
         boost::optional<int> m_toStructureCounter;
 
     private:

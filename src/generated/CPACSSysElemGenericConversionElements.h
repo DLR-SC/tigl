@@ -117,7 +117,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents an element that converts energy, power, flow, pressure, temperature, phase, or another system state.
+        /// Element that converts energy, power, flow, pressure, temperature, phase, or another system state
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericConversionElements;
 
     private:

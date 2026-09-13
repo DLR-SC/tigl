@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Separates phases of a multi-phase working medium.
+        /// Separates phases of a multi-phase working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_phaseSeparators;
 
     private:

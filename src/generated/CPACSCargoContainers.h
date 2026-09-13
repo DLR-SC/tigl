@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cargo container
         std::vector<std::unique_ptr<CCPACSDeckComponentBase>> m_cargoContainers;
 
     private:

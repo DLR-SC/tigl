@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief Engines
     /// 
-    /// Engines type, containing complete engine configurations
+    /// Complete engine configurations
     /// 
     class CPACSEngines
     {
@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Engine
         std::vector<std::unique_ptr<CPACSEngine>> m_engines;
 
     private:

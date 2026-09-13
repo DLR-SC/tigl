@@ -132,6 +132,7 @@ namespace generated
         /// Center of gravity (x,y,z)
         boost::optional<CCPACSPoint>      m_location;
 
+        /// Mass moments of inertia of the element
         boost::optional<CPACSMassInertia> m_massInertia;
 
     private:

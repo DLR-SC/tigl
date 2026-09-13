@@ -76,6 +76,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Strut
         std::vector<std::unique_ptr<CPACSTrackStrut>> m_struts;
 
     private:

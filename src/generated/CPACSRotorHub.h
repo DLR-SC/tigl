@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSRotor
 
-    /// @brief rotorHubType
+    /// @brief Rotor hub
     /// 
-    /// RotorHub type, containing definitions for the rotor hub
-    /// and attached hinges and blades.
+    /// Definitions for the rotor hub and attached hinges and blades.
     /// 
     class CPACSRotorHub : public CTiglReqUIDObject
     {
@@ -81,12 +80,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                       m_uID;
 
-        /// Name of the rotor hub.
+        /// Name
         boost::optional<std::string>      m_name;
 
-        /// Description of the rotor hub.
+        /// Description
         boost::optional<std::string>      m_description;
 
         /// Rotor head type. Possible values: "semiRigid",
@@ -95,7 +95,7 @@ namespace generated
 
         /// Rotor blade attachments are used to define how
         /// many rotor blades are attached at which azimuth positions of the
-        /// rotor hub and the used hinges.
+        /// rotor hub and the used hinges
         CCPACSRotorBladeAttachments       m_rotorBladeAttachments;
 
     private:

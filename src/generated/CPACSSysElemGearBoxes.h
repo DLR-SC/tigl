@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transforms mechanical speed and torque through a geared transmission.
+        /// Transforms mechanical speed and torque through a geared transmission
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_gearBoxs;
 
     private:

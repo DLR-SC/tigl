@@ -73,6 +73,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
         /// Offset of the rotation curve in x-direction

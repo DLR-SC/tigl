@@ -34,9 +34,9 @@ class CTiglUIDObject;
 namespace generated
 {
     // This class is used in:
-    /// @brief CPACS root element
+    /// @brief Root element
     /// 
-    /// Version V3.5.1-RC
+    /// Version develop
     /// Date 2026-05-29
     /// 1. Overview
     /// The C ommon P arametric A ircraft C onfiguration S cheme (CPACS) is an XML-based data format for describing aircraft configurations and their corresponding data.
@@ -266,7 +266,6 @@ namespace generated
     /// &lt;dcl&gt;11.;12.;13.;14.;21.;22.;23.;24.;31.;32.;33.;34.&lt;/dcl&gt;
     /// Values for cl increments:
     /// Control parameter = -1 Control parameter = -0.5 Control parameter =  0 Control parameter =  1 Altitude = 1000m 11. 12. 13. 14. Altitude = 2000m 21. 22. 23. 24. Altitude = 3000m 31. 32. 33. 34.
-    /// 
     /// 10. Control Parameters
     /// Control parameters are abstract parameters, linking a generic value (i.e., the control parameter) to a configurational state of a control device
     /// (e.g., control surface, landing gear, engine settings, ...).
@@ -393,7 +392,10 @@ namespace generated
     protected:
         CTiglUIDManager* m_uidMgr;
 
+        /// Header with version, creator and change log
         CPACSHeader                    m_header;
+
+        /// Vehicles
         boost::optional<CPACSVehicles> m_vehicles;
 
     private:

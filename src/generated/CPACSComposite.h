@@ -38,9 +38,9 @@ namespace generated
     // This class is used in:
     // CPACSComposites
 
-    /// @brief compositeType
+    /// @brief Composite
     /// 
-    /// Composite type, containing data of a composite
+    /// Data of a composite
     /// 
     class CPACSComposite : public CTiglReqUIDObject
     {
@@ -90,18 +90,20 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                       m_uID;
 
-        /// Name of composite
+        /// Name
         std::string                                       m_name;
 
-        /// Description of composite
+        /// Description
         boost::optional<std::string>                      m_description;
 
-        /// offset of the laminate. The reference plane of
+        /// Offset of the laminate. The reference plane of
         /// the laminate is the arithmetic mean of the laminate thickness.
         boost::optional<double>                           m_offset;
 
+        /// Layer
         std::vector<std::unique_ptr<CPACSCompositeLayer>> m_compositeLayers;
 
     private:

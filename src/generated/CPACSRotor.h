@@ -42,9 +42,7 @@ namespace generated
     /// @brief Rotor type, containing a rotor (main rotor, tail rotor,
     /// fenestron, propeller,...) of an rotorcraft model.
     /// 
-    /// Rotor type, containing a rotor (e.g. main rotor, tail
-    /// rotor, fenestron, propeller,...) definition of a rotorcraft
-    /// model.
+    /// Rotor (e.g. main rotor, tail rotor, fenestron, propeller,...) definition of a rotorcraft model.
     /// The position and attitude of the rotor is defined
     /// using the transformation element. The following image shows the
     /// CPACS conventions for the orientation of rotors and rotor axis
@@ -117,14 +115,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                       m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis> m_symmetry;
 
-        /// Name of the rotor.
+        /// Name
         std::string                       m_name;
 
-        /// Description of the rotor.
+        /// Description
         boost::optional<std::string>      m_description;
 
         /// UID of the part to which the rotor is mounted
@@ -134,11 +134,11 @@ namespace generated
         boost::optional<std::string>      m_parentUID;
 
         /// Rotor type. Possible values: "mainRotor"
-        /// (default), "tailRotor", "fenestron" or "propeller"..
+        /// (default), "tailRotor", "fenestron" or "propeller".
         boost::optional<CPACSRotor_type>  m_type;
 
         /// Nominal value of the angular rotation speed in
-        /// rotations per minute (rpm).
+        /// rotations per minute (rpm)
         boost::optional<double>           m_nominalRotationsPerMinute;
 
         /// Transformation (scaling, rotation,

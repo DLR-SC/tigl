@@ -84,6 +84,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                      m_uID;
 
         /// Name
@@ -92,6 +93,7 @@ namespace generated
         /// Description
         boost::optional<std::string>     m_description;
 
+        /// Components
         boost::optional<CPACSComponents> m_components;
 
     private:

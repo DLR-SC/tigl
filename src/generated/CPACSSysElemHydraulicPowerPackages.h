@@ -83,7 +83,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Integrated hydraulic power package modeled as one reusable system
-        /// element.
+        /// element
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_hydraulicPowerPackages;
 
     private:

@@ -119,6 +119,7 @@ namespace generated
         /// Maximum y-coordinate where the upper face ends [m] (if not defined: equals depthY)
         boost::optional<double>                  m_upperFaceYmax;
 
+        /// Optional rigid transformation defining the position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

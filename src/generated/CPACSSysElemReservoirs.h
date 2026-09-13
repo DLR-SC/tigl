@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores a liquid or gaseous working medium at comparatively low pressure.
+        /// Stores a liquid or gaseous working medium at comparatively low pressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_reservoirs;
 
     private:

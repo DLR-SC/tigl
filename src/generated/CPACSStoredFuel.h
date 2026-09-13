@@ -85,9 +85,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>                m_uID;
+
+        /// Reference to the stored fuel
         std::string                                 m_fuelUID;
+
+        /// Conditions the fuel is stored at
         boost::optional<CPACSFuelStorageConditions> m_storageConditions;
+
+        /// Components the fuel is stored in
         boost::optional<CPACSStorageComponents>     m_storageComponents;
 
     private:

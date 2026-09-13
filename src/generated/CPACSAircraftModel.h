@@ -156,34 +156,46 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                    m_uID;
 
-        /// Name of the aircraft model
+        /// Name
         std::string                                    m_name;
 
-        /// Description of the aircraft model
+        /// Description
         boost::optional<std::string>                   m_description;
 
+        /// Configuration definitions
         boost::optional<CPACSConfigurationDefinitions> m_configurationDefinitions;
 
+        /// Ducts
         boost::optional<CCPACSDucts>                   m_ducts;
 
+        /// Fuselages
         boost::optional<CCPACSFuselages>               m_fuselages;
 
+        /// Wings
         boost::optional<CCPACSWings>                   m_wings;
 
+        /// Positions
         boost::optional<CCPACSEnginePositions>         m_engines;
 
+        /// Engine pylons
         boost::optional<CPACSEnginePylons>             m_enginePylons;
 
+        /// Landing gears
         boost::optional<CPACSLandingGears>             m_landingGears;
 
+        /// Fuel tanks
         boost::optional<CPACSFuelTanks>                m_fuelTanks;
 
+        /// Systems
         boost::optional<CCPACSACSystems>               m_systems;
 
+        /// Geometric components
         boost::optional<CCPACSExternalObjects>         m_genericGeometryComponents;
 
+        /// System architectures
         boost::optional<CPACSSystemArchitectures>      m_systemArchitectures;
 
     private:

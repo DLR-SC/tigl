@@ -70,7 +70,10 @@ namespace generated
     protected:
         CPACSStandardProfile* m_parent;
 
+        /// Radius of the rectangle corners
         boost::optional<double> m_cornerRadius;
+
+        /// Ratio of the rectangle height to its width
         CPACSPosExcl0DoubleBase m_heightToWidthRatio;
 
     private:

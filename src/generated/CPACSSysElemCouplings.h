@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Connects adjacent distribution components and transfers the relevant medium or load across the joint.
+        /// Connects adjacent distribution components and transfers the relevant medium or load across the joint
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_couplings;
 
     private:

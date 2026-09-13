@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts direct-current electrical power between voltage or current levels.
+        /// Converts direct-current electrical power between voltage or current levels
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_dcdcConverters;
 
     private:

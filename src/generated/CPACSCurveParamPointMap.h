@@ -66,7 +66,7 @@ namespace generated
         /// List of indices of points to be mapped. Each index must be in the range [1, npoints].
         CCPACSStringVector m_pointIndices;
 
-        /// List of parameters on the curve, that is mapped to the points defined by their index.
+        /// List of parameters on the curve, that is mapped to the points defined by their index
         CCPACSStringVector m_paramOnCurve;
 
     private:

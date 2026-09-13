@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSPointPerformanceConstraints
 
-    /// @brief doubleConstraintBaseType
+    /// @brief Floating point constraint base type
     /// 
     /// Base type for double nodes including a relational operator attribute indicating valid constraint region
     /// The doubleConstraintBaseType extends the doubleBaseType and thus inherits all its attributes.
@@ -64,7 +64,9 @@ namespace generated
     protected:
         CPACSPointPerformanceConstraints* m_parent;
 
+        /// Relational operator of the constraint (lt, le, eq, ne, gt, ge)
         CPACSRelationalOperator m_relationalOperator;
+
         double                  m_value;
 
     private:

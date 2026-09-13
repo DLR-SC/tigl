@@ -69,13 +69,13 @@ namespace generated
     protected:
         CPACSLandingGearStrutAttachment* m_parent;
 
-        /// Relative height of spar or rib at which landing gear is attached.
+        /// Relative height of spar or rib at which landing gear is attached
         double                  m_relHeight;
 
-        /// Relative spanwise position (eta) of spar at which landing gear is attached.
+        /// Relative spanwise position (eta) of spar at which landing gear is attached
         boost::optional<double> m_eta;
 
-        /// Relative chordwise position (xsi) of the rib at which landing gear is attached.
+        /// Relative chordwise position (xsi) of the rib at which landing gear is attached
         boost::optional<double> m_xsi;
 
     private:

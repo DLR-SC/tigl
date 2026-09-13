@@ -36,9 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageElements
 
-    /// @brief fuselageElementType
+    /// @brief Fuselage section element
     /// 
-    /// FuselageElement type, containing fuselage element data
+    /// Fuselage element data
     /// 
     class CPACSFuselageElement : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -80,17 +80,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of fuselage element
+        /// Name
         std::string                  m_name;
 
-        /// Description of fuselage element
+        /// Description
         boost::optional<std::string> m_description;
 
         /// Reference to a fuselage profile
         std::string                  m_profileUID;
 
+        /// Position and orientation
         CCPACSTransformation         m_transformation;
 
     private:

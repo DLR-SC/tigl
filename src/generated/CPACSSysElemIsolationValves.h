@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Separates a section of a fluid or pneumatic network from the remaining system.
+        /// Separates a section of a fluid or pneumatic network from the remaining system
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_isolationValves;
 
     private:

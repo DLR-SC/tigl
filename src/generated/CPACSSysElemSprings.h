@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores mechanical potential energy through elastic deformation.
+        /// Stores mechanical potential energy through elastic deformation
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_springs;
 
     private:

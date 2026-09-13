@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Controls a thermo-fluid pressure reduction through throttling.
+        /// Controls a thermo-fluid pressure reduction through throttling
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_expansionValves;
 
     private:

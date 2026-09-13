@@ -91,9 +91,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Stringers
         boost::optional<CCPACSStringersAssembly> m_stringers;
+
+        /// Frames
         boost::optional<CCPACSFramesAssembly>    m_frames;
+
+        /// Skin layers
         boost::optional<CPACSVesselSkinLayers>   m_skinLayers;
+
+        /// Walls inside the vessel
         boost::optional<CCPACSWalls>             m_walls;
 
     private:

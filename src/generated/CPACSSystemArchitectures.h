@@ -106,6 +106,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// System architecture
         std::vector<std::unique_ptr<CCPACSSystemArchitecture>> m_systemArchitectures;
 
     private:

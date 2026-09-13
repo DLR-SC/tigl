@@ -33,10 +33,8 @@ namespace generated
     // This class is used in:
     // CPACSPressureBulkheadAssembly
 
-    /// @brief pressureBulkheadAssemblyPositionType
+    /// @brief Pressure bulkhead assembly position
     /// 
-    /// PressureBulkheadAssemblyPosition type, containing a
-    /// pressure bulkhead assembly position
     /// 
     class CPACSPressureBulkheadAssemblyPosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -72,6 +70,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
         /// Frame to which bulkhead is attached to

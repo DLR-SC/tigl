@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSGlobalBeamProperties
 
-    /// @brief beamStiffnessType
+    /// @brief Beam stiffness
     /// 
     /// globalBeamStiffnessType, containing the beam
     /// stiffnesses such as EA, EI
@@ -87,13 +87,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
+
+        /// Axial stiffness
         double      m_EA;
+
+        /// Bending stiffness of the beam around its x-axis
         double      m_EIxx;
+
+        /// Bending stiffness of the beam around its y-axis
         double      m_EIyy;
+
+        /// Coupled bending stiffness
         double      m_EIxy;
+
+        /// Torsional stiffness
         double      m_GIt;
+
+        /// Shear modulus
         double      m_G;
+
+        /// Torsional moment of inertia of the beam
         double      m_It;
 
     private:

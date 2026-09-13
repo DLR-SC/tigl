@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stops flow through a line when commanded or when a defined condition is met.
+        /// Stops flow through a line when commanded or when a defined condition is met
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_shutOffValves;
 
     private:

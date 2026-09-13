@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores electrical energy in a magnetic field and opposes changes in current.
+        /// Stores electrical energy in a magnetic field and opposes changes in current
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_inductors;
 
     private:

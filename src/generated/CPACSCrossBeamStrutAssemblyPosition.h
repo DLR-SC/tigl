@@ -37,10 +37,8 @@ namespace generated
     // This class is used in:
     // CPACSCargoCrossBeamStrutsAssembly
 
-    /// @brief crossBeamStrutAssemblyPositionType
+    /// @brief Cross beam strut assembly position
     /// 
-    /// CrossBeamStrutAssemblyPosition type, containing a
-    /// crossBeam strut assembly position
     /// 
     class CPACSCrossBeamStrutAssemblyPosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -91,6 +89,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                              m_uID;
 
         /// UID of profile based structural element to be
@@ -109,9 +108,10 @@ namespace generated
         /// crossbeam intersection
         double                                   m_positionYAtCrossBeam;
 
-        /// angle of the strut in global yz plane
+        /// Angle of the strut in global yz plane
         boost::optional<double>                  m_angleX;
 
+        /// Alignment
         boost::optional<CPACSAlignmentCrossBeam> m_alignment;
 
     private:

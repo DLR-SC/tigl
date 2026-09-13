@@ -125,8 +125,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Hinge point at the inner border of the control surface
         CPACSControlSurfaceHingePoint m_innerHingePoint;
+
+        /// Hinge point at the outer border of the control surface
         CPACSControlSurfaceHingePoint m_outerHingePoint;
+
+        /// Steps
         CCPACSControlSurfaceSteps     m_steps;
 
     private:

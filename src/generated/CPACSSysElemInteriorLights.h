@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Consumes electrical power to provide illumination inside the vehicle.
+        /// Consumes electrical power to provide illumination inside the vehicle
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_interiorLights;
 
     private:

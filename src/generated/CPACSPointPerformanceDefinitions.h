@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Point performance definition
         std::vector<std::unique_ptr<CPACSPointPerformanceDefinition>> m_pointPerformanceDefinitions;
 
     private:

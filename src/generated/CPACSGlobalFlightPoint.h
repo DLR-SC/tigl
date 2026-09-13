@@ -39,7 +39,6 @@ namespace generated
     /// @brief Flight point
     /// 
     /// 
-    /// 
     class CPACSGlobalFlightPoint : public CTiglReqUIDObject
     {
     public:
@@ -91,12 +90,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
+        /// Name
         std::string                  m_name;
 
+        /// Description
         boost::optional<std::string> m_description;
 
+        /// Altitude
         double                       m_altitude;
 
         /// Mach number
@@ -108,6 +111,7 @@ namespace generated
         /// True air speed
         boost::optional<double>      m_trueAirSpeed_choice3;
 
+        /// Environmental conditions
         CPACSEnvironment             m_environment;
 
     private:

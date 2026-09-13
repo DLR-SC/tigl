@@ -38,7 +38,6 @@ namespace generated
     /// @brief Generic geometric components
     /// 
     /// 
-    /// 
     class CPACSGenericGeometryComponents
     {
     public:
@@ -79,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Generic geometric component
         std::vector<std::unique_ptr<CCPACSExternalObject>> m_genericGeometryComponents;
 
     private:
