@@ -144,6 +144,7 @@ GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 SEARCHENGINE           = YES
 SERVER_BASED_SEARCH    = NO
+HTML_COLORSTYLE        = LIGHT
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
