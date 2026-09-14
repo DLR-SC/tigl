@@ -14,7 +14,7 @@ Changes since last release
 
 - TiGLCreator
 
-  - none
+  - Implement a manager to deal with user-defined spotlights. These can now be added, edited, copied, deleted and turned off/on again directly via the GUI. That way, the CPACS Tree is extended by a tab called 'Others' ([#1439](https://github.com/DLR-SC/tigl/issues/1439))
 
 - Build System
 
