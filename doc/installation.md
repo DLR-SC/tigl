@@ -133,6 +133,12 @@ creates a new file based on the current schema that normalizes ordering, attribu
 
 combines the both calls of `pixi run test-schema` and `pixi run lint-schema`.
 
+@subsection documentation Build the TiGL documentation
+
+From time to time after code changes - especially before a new release - the generated TiGL documentation needs to be updated. Use the following task:
+
+    pixi run doc
+
 @subsection thirdpartysources Vendored third-party sources
 
 Two dependencies that aren't (fully) available as conda-forge packages are vendored directly in the repository:
