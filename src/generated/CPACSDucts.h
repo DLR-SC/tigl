@@ -94,7 +94,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Duct
         std::vector<std::unique_ptr<CCPACSDuct>>         m_ducts;
+
+        /// Duct assembly
         std::vector<std::unique_ptr<CCPACSDuctAssembly>> m_ductAssemblys;
 
     private:

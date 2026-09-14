@@ -45,7 +45,7 @@ namespace generated
 
     /// @brief Point: x,y
     /// 
-    /// Point type, containing an xy data doublet.
+    /// Xy data doublet.
     /// 
     class CPACSPointXY : public CTiglOptUIDObject
     {
@@ -107,6 +107,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// X-Component

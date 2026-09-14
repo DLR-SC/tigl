@@ -81,6 +81,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Aircraft model
         std::vector<std::unique_ptr<CCPACSAircraftModel>> m_models;
 
     private:

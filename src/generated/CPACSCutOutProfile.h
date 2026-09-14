@@ -81,8 +81,8 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to the profile uID. Profiles should
-        /// be linked in profiles/structuralProfiles
+        /// Reference to the profile UID. Profiles should
+        /// be linked in profiles/structuralProfiles.
         std::string      m_profileUID;
 
         /// Relative spanwise position of the cut out

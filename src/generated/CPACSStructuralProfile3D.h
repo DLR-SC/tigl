@@ -37,8 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfiles
 
-    /// @brief structuralProfile3DType
-    /// 
+    /// @brief Three-dimensional structural profile
     /// 
     /// 
     class CPACSStructuralProfile3D : public CTiglReqUIDObject
@@ -81,10 +80,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
+
+        /// Name
         std::string                  m_name;
+
+        /// Description
         boost::optional<std::string> m_description;
+
+        /// List of the profile points
         CPACSPointList               m_pointList;
+
+        /// Sheets connecting the profile points
         CPACSSheetList3D             m_sheetList3D;
 
     private:

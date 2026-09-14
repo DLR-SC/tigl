@@ -35,6 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSWalls
 
+    /// @brief Wall segments
+    /// 
+    /// 
     class CPACSWallSegments
     {
     public:
@@ -75,7 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Wall segment definition.
+        /// Wall segment definition
         std::vector<std::unique_ptr<CCPACSWallSegment>> m_wallSegments;
 
     private:

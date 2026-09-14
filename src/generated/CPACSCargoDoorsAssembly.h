@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    /// @brief cargoDoorsAssemblyType
+    /// @brief Cargo doors assembly
     /// 
-    /// CargoDoorsAssembly type, containing cargo door
-    /// assemblies
+    /// Cargo door assemblies
     /// 
     class CPACSCargoDoorsAssembly
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cargo door
         std::vector<std::unique_ptr<CCPACSDoorAssemblyPosition>> m_cargoDoors;
 
     private:

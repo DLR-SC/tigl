@@ -121,28 +121,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic control elements.
+        /// Library of predefined generic control elements
         boost::optional<CPACSSysElemGenericControlElements> m_genericControlElements;
 
-        /// Library of predefined circuit breakers.
+        /// Library of predefined circuit breakers
         boost::optional<CPACSSysElemCircuitBreakers>        m_circuitBreakers;
 
-        /// Library of predefined contactors.
+        /// Library of predefined contactors
         boost::optional<CPACSSysElemContactors>             m_contactors;
 
-        /// Library of predefined switches.
+        /// Library of predefined switches
         boost::optional<CPACSSysElemSwitches>               m_switches;
 
-        /// Library of predefined relays.
+        /// Library of predefined relays
         boost::optional<CPACSSysElemRelays>                 m_relays;
 
-        /// Library of predefined fuses.
+        /// Library of predefined fuses
         boost::optional<CPACSSysElemFuses>                  m_fuses;
 
-        /// Library of predefined transformers.
+        /// Library of predefined transformers
         boost::optional<CPACSSysElemTransformers>           m_transformers;
 
-        /// Library of predefined filters.
+        /// Library of predefined filters
         boost::optional<CPACSSysElemFilters>                m_filters;
 
     private:

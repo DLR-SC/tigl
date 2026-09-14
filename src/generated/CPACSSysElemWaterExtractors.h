@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Removes liquid water from a gaseous or multi-phase working medium.
+        /// Removes liquid water from a gaseous or multi-phase working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_waterExtractors;
 
     private:

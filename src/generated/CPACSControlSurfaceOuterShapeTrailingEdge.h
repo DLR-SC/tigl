@@ -87,8 +87,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Inner border
         CCPACSControlSurfaceBorderTrailingEdge       m_innerBorder;
+
+        /// Outer border
         CCPACSControlSurfaceBorderTrailingEdge       m_outerBorder;
+
+        /// Airfoil contours between the inner and the outer border
         boost::optional<CPACSControlSurfaceContours> m_intermediateAirfoils;
 
     private:

@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    /// @brief longFloorBeamsAssemblyType
+    /// @brief Longitudinal floor beams assembly
     /// 
-    /// longFloorBeamsAssembly type, containing long. floor
-    /// beam assemblies
+    /// Long. floor beam assemblies
     /// 
     class CPACSLongFloorBeamsAssembly
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Longitudinal floor beam
         std::vector<std::unique_ptr<CCPACSLongFloorBeam>> m_longFloorBeams;
 
     private:

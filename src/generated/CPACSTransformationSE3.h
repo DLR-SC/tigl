@@ -54,11 +54,7 @@ namespace generated
 
     /// @brief Transformation
     /// 
-    /// Transformation type, containing a set of
-    /// transformations. The order of the transformations is
-    /// rotation -> translation, and they are executed in this
-    /// order. Any of them can be omitted; it will be replaced by its
-    /// defaults.
+    /// Set of transformations. The order of the transformations is rotation -> translation, and they are executed in this order. Any of them can be omitted; it will be replaced by its defaults.
     /// 
     class CPACSTransformationSE3 : public CTiglOptUIDObject
     {
@@ -129,6 +125,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>       m_uID;
 
         /// Rotation data default: 0,0,0. The rotation

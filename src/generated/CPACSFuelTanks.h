@@ -38,7 +38,6 @@ namespace generated
     /// @brief Fuel tanks
     /// 
     /// 
-    /// 
     class CPACSFuelTanks
     {
     public:
@@ -79,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuel tank
         std::vector<std::unique_ptr<CCPACSFuelTank>> m_fuelTanks;
 
     private:

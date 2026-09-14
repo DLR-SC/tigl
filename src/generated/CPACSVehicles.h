@@ -145,16 +145,37 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Aircraft models
         boost::optional<CPACSAircraft>               m_aircraft;
+
+        /// Rotorcraft models
         boost::optional<CPACSRotorcraft>             m_rotorcraft;
+
+        /// Engines
         boost::optional<CPACSEngines>                m_engines;
+
+        /// Performance cases
         boost::optional<CPACSGlobalPerformanceCases> m_performanceCases;
+
+        /// Globally defined flight points
         boost::optional<CPACSFlightPoints>           m_flightPoints;
+
+        /// Profile geometries
         boost::optional<CPACSProfiles>               m_profiles;
+
+        /// Structural elements
         boost::optional<CPACSStructuralElements>     m_structuralElements;
+
+        /// Deck elements
         boost::optional<CPACSDeckElements>           m_deckElements;
+
+        /// System elements
         boost::optional<CPACSSystemElements>         m_systemElements;
+
+        /// Materials
         boost::optional<CPACSMaterials>              m_materials;
+
+        /// Energy carriers
         boost::optional<CPACSEnergyCarriers>         m_energyCarriers;
 
     private:

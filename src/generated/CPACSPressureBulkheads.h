@@ -36,9 +36,8 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief pressureBulkheadsType
+    /// @brief Pressure bulkheads
     /// 
-    /// PressureBulkheads type, containing pressure bulkheads
     /// 
     class CPACSPressureBulkheads
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Pressure bulkhead
         std::vector<std::unique_ptr<CCPACSPressureBulkhead>> m_pressureBulkheads;
 
     private:

@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurves
 
-    /// @brief Guide Curve Type
+    /// @brief Guide curve
     /// 
     /// A guide curve may be used to alter the shape of the
     /// outer geometry and "guide" the loft.
@@ -121,24 +121,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                 m_uID;
 
-        /// Name of guide curve
+        /// Name
         std::string                                 m_name;
 
-        /// Description of guide curve
+        /// Description
         boost::optional<std::string>                m_description;
 
         /// Reference to a guide curve profile
         std::string                                 m_guideCurveProfileUID;
 
         /// Reference to the previous guide curve from
-        /// which this guide curve shall start.
+        /// which this guide curve shall start
         boost::optional<std::string>                m_fromGuideCurveUID_choice1;
 
         /// Continuity definition for geometry
         /// generation. Possible options: C0, C1 from previous, C2 from
-        /// previous, C1 to previous, C2 to previous
+        /// previous, C1 to previous, C2 to previous.
         boost::optional<CPACSGuideCurve_continuity> m_continuity_choice1;
 
         /// Reference to the relative circumference

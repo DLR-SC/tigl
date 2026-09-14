@@ -120,6 +120,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                                m_uID;
 
         /// Relative chordwise position of the track. Eta
@@ -134,8 +135,10 @@ namespace generated
         /// of the controlSrufaceTrackTypeType for details.
         boost::optional<CPACSControlSurfaceTrackType_trackSubType> m_trackSubType;
 
+        /// Actuator
         boost::optional<CPACSTrackActuator>                        m_actuator;
 
+        /// Structural parts
         boost::optional<CPACSTrackStructure>                       m_trackStructure;
 
     private:

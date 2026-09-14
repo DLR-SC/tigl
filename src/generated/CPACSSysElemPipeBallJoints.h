@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Provides an articulated pipe connection that accommodates angular movement.
+        /// Articulated pipe connection that accommodates angular movement
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pipeBallJoints;
 
     private:

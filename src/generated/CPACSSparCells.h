@@ -82,6 +82,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Spar cell
         std::vector<std::unique_ptr<CPACSSparCell>> m_sparCells;
 
     private:

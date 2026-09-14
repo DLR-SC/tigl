@@ -39,8 +39,7 @@ namespace generated
     /// @brief List of sheets, connecting 2-dimensional profile
     /// points.
     /// 
-    /// SheetList type, containing a list of sheets. Each sheet
-    /// combines two points to one sheet.
+    /// List of sheets. Each sheet combines two points to one sheet.
     /// 
     class CPACSSheetList
     {
@@ -82,6 +81,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Sheet
         std::vector<std::unique_ptr<CPACSSheet>> m_sheets;
 
     private:

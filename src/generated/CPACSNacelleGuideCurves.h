@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Guide curve
         std::vector<std::unique_ptr<CPACSNacelleGuideCurve>> m_nacelleGuideCurves;
 
     private:

@@ -100,19 +100,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic elements.
+        /// Library of predefined generic elements
         boost::optional<CPACSSysElemGenericThermoFluidElements>      m_genericThermoFluidElements;
 
-        /// Contains elements that retain energy or a working medium and make it available for later use.
+        /// Elements that retain energy or a working medium and make it available for later use
         boost::optional<CPACSSysElemThermoFluidStorageElements>      m_storageElements;
 
-        /// Contains elements that transform energy, power, pressure, flow, temperature, phase, or another system state.
+        /// Elements that transform energy, power, pressure, flow, temperature, phase, or another system state
         boost::optional<CPACSSysElemThermoFluidConversionElements>   m_conversionElements;
 
-        /// Contains elements that transport, route, split, join, or connect a system quantity.
+        /// Elements that transport, route, split, join, or connect a system quantity
         boost::optional<CPACSSysElemThermoFluidDistributionElements> m_distributionElements;
 
-        /// Contains elements that switch, regulate, isolate, protect, or sense a system quantity.
+        /// Elements that switch, regulate, isolate, protect, or sense a system quantity
         boost::optional<CPACSSysElemThermoFluidControlElements>      m_controlElements;
 
     private:

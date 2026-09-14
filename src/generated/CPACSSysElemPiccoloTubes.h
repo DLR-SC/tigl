@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Distributes pneumatic flow through multiple small outlets along a tube.
+        /// Distributes pneumatic flow through multiple small outlets along a tube
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_piccoloTubes;
 
     private:

@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselage
 
+    /// @brief Compartments
+    /// 
+    /// 
     class CPACSCompartments
     {
     public:

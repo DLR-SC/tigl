@@ -42,7 +42,7 @@ namespace generated
     // CPACSCabinGeometryContour
     // CPACSCabinSpace
 
-    /// @brief stringVectorBaseType
+    /// @brief String vector base type
     /// 
     /// Base type for string vector nodes
     /// The vector base type can include optional uncertainty
@@ -140,14 +140,30 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
+        /// Mapping type of the data, fixed to vector
         boost::optional<std::string> m_mapType;
+
+        /// Parameter mu of the uncertainty distribution function
         boost::optional<std::string> m_mu;
+
+        /// Parameter delta of the uncertainty distribution function
         boost::optional<std::string> m_delta;
+
+        /// Parameter a of the uncertainty distribution function
         boost::optional<std::string> m_a;
+
+        /// Parameter b of the uncertainty distribution function
         boost::optional<std::string> m_b;
+
+        /// Parameter c of the uncertainty distribution function
         boost::optional<std::string> m_c;
+
+        /// Parameter v of the uncertainty distribution function
         boost::optional<std::string> m_v;
+
+        /// Parameter w of the uncertainty distribution function
         boost::optional<std::string> m_w;
+
         std::string                  m_value;
 
     private:

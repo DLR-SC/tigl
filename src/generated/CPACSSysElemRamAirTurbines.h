@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Extracts mechanical shaft power from the external airflow.
+        /// Extracts mechanical shaft power from the external airflow
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_ramAirTurbines;
 
     private:

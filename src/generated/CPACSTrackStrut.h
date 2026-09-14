@@ -73,8 +73,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Name
         CPACSTrackStrut_name m_name;
+
+        /// Reference to the material
         std::string          m_materialUID;
+
+        /// Reference to the profile
         std::string          m_profileUID;
 
     private:

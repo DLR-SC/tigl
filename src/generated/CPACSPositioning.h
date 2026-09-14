@@ -117,16 +117,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the positioning.
+        /// Name
         std::string                  m_name;
 
-        /// Description of the positioning.
+        /// Description
         boost::optional<std::string> m_description;
 
         /// Distance between inner and outer section
-        /// (length of the positioning vector).
+        /// (length of the positioning vector)
         double                       m_length;
 
         /// Sweepangle between inner and outer section.
@@ -136,7 +137,7 @@ namespace generated
 
         /// Dihedralangle between inner and outer section.
         /// This angle equals a positive rotation of the positioning vector
-        /// around the x-axis of the wing coordinate system
+        /// around the x-axis of the wing coordinate system.
         double                       m_dihedralAngle;
 
         /// Reference to starting section of the
@@ -145,7 +146,7 @@ namespace generated
         boost::optional<std::string> m_fromSectionUID;
 
         /// Reference to ending section (section to be
-        /// positioned) of the positioning vector.
+        /// positioned) of the positioning vector
         std::string                  m_toSectionUID;
 
     private:

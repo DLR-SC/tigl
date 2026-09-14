@@ -86,6 +86,7 @@ namespace generated
         /// Height in z-direction [m]
         double                                   m_height;
 
+        /// Optional rigid transformation defining the position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

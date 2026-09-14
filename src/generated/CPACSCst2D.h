@@ -39,8 +39,7 @@ namespace generated
     // CPACSProfileGeometry
     // CPACSProfileGeometry2D
 
-    /// @brief cst2DType
-    /// 
+    /// @brief Two-dimensional CST parameterization
     /// 
     /// 
     class CPACSCst2D

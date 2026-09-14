@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Deck
         std::vector<std::unique_ptr<CCPACSDecksDeck>> m_decks;
 
     private:

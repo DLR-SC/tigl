@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Interrupts an electrical circuit automatically or manually to protect equipment and wiring.
+        /// Interrupts an electrical circuit automatically or manually to protect equipment and wiring
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_circuitBreakers;
 
     private:

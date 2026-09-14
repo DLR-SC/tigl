@@ -37,10 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSCargoDoorsAssembly
 
-    /// @brief doorAssemblyPositionType
+    /// @brief Door assembly position
     /// 
-    /// DoorAssemblyPosition type, containing the position of a door
-    /// assembly
+    /// Position of a door assembly
     /// 
     class CPACSDoorAssemblyPosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -106,13 +105,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                         m_uID;
 
+        /// Name
         boost::optional<std::string>                        m_name;
 
+        /// Description
         boost::optional<std::string>                        m_description;
 
-        /// optional definition of door type (restricted to pax,
+        /// Optional definition of door type (restricted to pax,
         /// service, emergency, cargo)
         boost::optional<CPACSDoorAssemblyPosition_doorType> m_doorType;
 

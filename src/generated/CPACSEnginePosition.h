@@ -37,10 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSEnginePositions
 
-    /// @brief enginePositionType
+    /// @brief Engine position
     /// 
-    /// EnginePosition type, containing data for a single
-    /// engine
+    /// Data for a single engine
     /// 
     class CPACSEnginePosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -88,14 +87,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                       m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis> m_symmetry;
 
-        /// Name of the engine
+        /// Name
         std::string                       m_name;
 
-        /// Description of the engine
+        /// Description
         boost::optional<std::string>      m_description;
 
         /// Reference to the used engine
@@ -104,6 +105,7 @@ namespace generated
         /// Component, to which the engine is mounted
         std::string                       m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation              m_transformation;
 
     private:

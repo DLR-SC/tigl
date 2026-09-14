@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cone
         std::vector<std::unique_ptr<CPACSCone>> m_cones;
 
     private:

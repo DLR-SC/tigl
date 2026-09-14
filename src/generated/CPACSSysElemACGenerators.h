@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts mechanical input power into alternating-current electrical power.
+        /// Converts mechanical input power into alternating-current electrical power
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_acGenerators;
 
     private:

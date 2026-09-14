@@ -45,7 +45,6 @@ namespace generated
     /// @brief Definition of one engine pylon.
     /// 
     /// 
-    /// 
     class CPACSEnginePylon : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
     public:
@@ -107,26 +106,31 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// UID of the engine pylon.
+        /// UID
         std::string                         m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>   m_symmetry;
 
-        /// Name of the engine pylon.
+        /// Name
         boost::optional<std::string>        m_name;
 
-        /// Description of the engine pylon.
+        /// Description
         boost::optional<std::string>        m_description;
 
-        /// UID of the parent (normally wing or fuselage).
+        /// UID of the parent (normally wing or fuselage)
         std::string                         m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation                m_transformation;
 
+        /// Sections
         boost::optional<CCPACSWingSections> m_sections;
 
+        /// Segments
         boost::optional<CCPACSWingSegments> m_segments;
 
+        /// Positionings of the engine pylon sections
         boost::optional<CCPACSPositionings> m_positionings;
 
     private:

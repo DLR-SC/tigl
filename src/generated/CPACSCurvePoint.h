@@ -37,7 +37,7 @@ namespace generated
     // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
-    /// @brief curvePointType
+    /// @brief Point on a curve
     /// 
     /// Point on a curve in normalized curve coordinates.
     /// The referenceUID must reference a one-dimensional curve such as spars.
@@ -93,10 +93,10 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
-        /// Relative position on the referenced line/curve.
+        /// Relative position on the referenced line/curve
         double      m_eta;
 
-        /// This reference uID determines the reference curve.
+        /// This reference UID determines the reference curve.
         /// If it points to a spar, then the eta value is considered to be a spar coordinate
         /// between start (eta=0) and end (eta=1) of the spar.
         std::string m_referenceUID;

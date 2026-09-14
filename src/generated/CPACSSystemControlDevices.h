@@ -95,6 +95,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string      m_uID;
 
         /// Control function indicating the activation state

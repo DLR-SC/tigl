@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Switches or isolates an electrical circuit using a control signal.
+        /// Switches or isolates an electrical circuit using a control signal
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_relays;
 
     private:

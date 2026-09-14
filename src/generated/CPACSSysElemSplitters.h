@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Divides an incoming distribution path into two or more outgoing paths.
+        /// Divides an incoming distribution path into two or more outgoing paths
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_splitters;
 
     private:

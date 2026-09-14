@@ -39,6 +39,9 @@ namespace generated
     // This class is used in:
     // CPACSWallSegments
 
+    /// @brief Wall segment
+    /// 
+    /// 
     class CPACSWallSegment : public CTiglOptUIDObject, public ITiglUIDRefObject
     {
     public:
@@ -91,12 +94,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>              m_uID;
 
-        /// Defines extrusion direction. Rotation angle
-        /// around fuselage x-axis of extrusion direction. A
-        /// value of 0deg means fuselage z-axis as extrusion
-        /// direction. Default: 0.0deg.
+        /// Extrusion direction. Rotation angle around fuselage x-axis of extrusion direction. A value of 0deg means fuselage z-axis as extrusion direction. Default: 0.0deg.
         double                                    m_phi;
 
         /// By default, the wall is only extruded in positive direction. If doubleSidedExtrusion is true, the wall is additionally extruded in negative direction as well. Default: false.
@@ -122,7 +123,6 @@ namespace generated
         boost::optional<CPACSBoundingElementUIDs> m_boundingElementUIDs;
 
         /// Reference to the structural property definition
-        /// of this wall segment.
         boost::optional<std::string>              m_structuralWallElementUID;
 
         /// List of wall position uIDs that are used for

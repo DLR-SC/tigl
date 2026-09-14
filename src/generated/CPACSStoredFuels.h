@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Stored fuel
         std::vector<std::unique_ptr<CPACSStoredFuel>> m_storedFuels;
 
     private:

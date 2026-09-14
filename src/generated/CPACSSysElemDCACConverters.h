@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts direct-current electrical power into alternating-current electrical power.
+        /// Converts direct-current electrical power into alternating-current electrical power
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_dcacConverters;
 
     private:

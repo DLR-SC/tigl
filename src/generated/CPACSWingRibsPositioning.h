@@ -134,32 +134,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Defines the start of the rib defined in eta-xsi coordinates of a reference plane
+        /// Start of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
 
-        /// Defines the start of the rib by a point on a reference curve,
-        /// such as a spar, but not an explicit sparPosition
+        /// Start of the rib by a point on a reference curve, such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_startCurvePoint_choice2;
 
-        /// Defines the location of the beginning of the rib using a specific sparPosition
+        /// Location of the beginning of the rib using a specific sparPosition
         boost::optional<std::string>       m_startSparPositionUID_choice3;
 
-        /// Defines the end of the rib defined in eta-xsi coordinates of a reference plane
+        /// End of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
 
-        /// Defines the end of the rib defined by a point on a reference curve
-        /// such as a spar, but not an explicit sparPosition
+        /// End of the rib defined by a point on a reference curve such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_endCurvePoint_choice2;
 
-        /// Defines the location of the end of the rib using a specific sparPosition
+        /// Location of the end of the rib using a specific sparPosition
         boost::optional<std::string>       m_endSparPositionUID_choice3;
 
-        /// Defines the forward beginning of the ribs. It can either be a
-        /// sparUID or "trailingEdge" or "leadingEdge".
+        /// Forward beginning of the ribs. It can either be a sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribStart;
 
-        /// Defines the backward ending of the ribs. It can either be a
-        /// sparUID or "trailingEdge" or "leadingEdge".
+        /// Backward ending of the ribs. It can either be a sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribEnd;
 
         /// The spacing of the ribs defines the distance between two ribs,
@@ -167,18 +163,17 @@ namespace generated
         /// ribReferenceLine. First rib is placed at etaStart.
         boost::optional<double>            m_spacing_choice1;
 
-        /// Defines the number of ribs in this ribSet. First rib is at
-        /// etaStart on the
-        /// referenceLine, last rib is at etaEnd. The spacing is constant on the
-        /// ribReferenceLine.
+        /// Number of ribs in this ribSet. First rib is at etaStart on the referenceLine, last rib is at etaEnd. The spacing is constant on the ribReferenceLine.
         boost::optional<int>               m_numberOfRibs_choice2;
 
         /// The ribReference is the reference line for the computation of the rib set spacing.
         /// It can either be a sparUID or "trailingEdge" or "leadingEdge"
         std::string                        m_ribReference;
 
+        /// Behaviour of the ribs when crossing other structural elements
         CPACSRibCrossingBehaviour          m_ribCrossingBehaviour;
 
+        /// Rotation
         CCPACSWingRibRotation              m_ribRotation;
 
     private:

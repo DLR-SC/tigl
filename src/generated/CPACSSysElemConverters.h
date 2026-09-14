@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts electrical power between voltage, current, frequency, phase, or waveform characteristics.
+        /// Converts electrical power between voltage, current, frequency, phase, or waveform characteristics
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_converters;
 
     private:

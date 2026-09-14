@@ -38,7 +38,7 @@ namespace generated
     // CPACSRectangleProfile
     // CPACSSuperEllipseProfile
 
-    /// @brief doubleBaseType
+    /// @brief Floating point base type
     /// 
     /// Base type for double nodes (including external data
     /// attributes)
@@ -129,16 +129,36 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
+        /// Path of the node inside the external data file
         boost::optional<std::string> m_externalDataNodePath;
+
+        /// Name of the external data file
         boost::optional<std::string> m_externalFileName;
+
+        /// Directory of the external data file
         boost::optional<std::string> m_externalDataDirectory;
+
+        /// Parameter mu of the uncertainty distribution function
         boost::optional<double>      m_mu;
+
+        /// Parameter delta of the uncertainty distribution function
         boost::optional<double>      m_delta;
+
+        /// Parameter a of the uncertainty distribution function
         boost::optional<double>      m_a;
+
+        /// Parameter b of the uncertainty distribution function
         boost::optional<double>      m_b;
+
+        /// Parameter c of the uncertainty distribution function
         boost::optional<double>      m_c;
+
+        /// Parameter v of the uncertainty distribution function
         boost::optional<double>      m_v;
+
+        /// Parameter w of the uncertainty distribution function
         boost::optional<double>      m_w;
+
         double                       m_value;
 
     private:

@@ -99,16 +99,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                        m_uID;
 
-        /// Defines a spar position on an existing rib using a relative xsi coordinate
-        /// to determine the chord wise position on that rib
+        /// Spar position on an existing rib using a relative xsi coordinate to determine the chord wise position on that rib
         boost::optional<CPACSWingRibPoint> m_sparPositionRib_choice1;
 
-        /// Defines a spar position using relative eta/xsi coordinates
+        /// Spar position using relative eta/xsi coordinates
         boost::optional<CCPACSEtaXsiPoint> m_sparPositionEtaXsi_choice2;
 
-        /// Defines a spar position via a point on a curve
+        /// Spar position via a point on a curve
         boost::optional<CCPACSCurvePoint>  m_sparPositionCurve_choice3;
 
     private:

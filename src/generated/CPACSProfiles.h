@@ -45,7 +45,7 @@ namespace generated
 
     /// @brief Profiles
     /// 
-    /// Profiles type, containing profile geometries
+    /// Profile geometries
     /// 
     class CPACSProfiles
     {
@@ -114,12 +114,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuselage profiles
         boost::optional<CCPACSFuselageProfiles>  m_fuselageProfiles;
+
+        /// Wing airfoils
         boost::optional<CCPACSWingProfiles>      m_wingAirfoils;
+
+        /// Guide curve profiles
         boost::optional<CPACSGuideCurveProfiles> m_guideCurves;
+
+        /// Rotor airfoils
         boost::optional<CCPACSRotorProfiles>     m_rotorAirfoils;
+
+        /// Structural profiles
         boost::optional<CPACSStructuralProfiles> m_structuralProfiles;
+
+        /// Nacelle profiles
         boost::optional<CPACSNacelleProfiles>    m_nacelleProfiles;
+
+        /// Curve profiles
         boost::optional<CPACSCurveProfiles>      m_curveProfiles;
 
     private:

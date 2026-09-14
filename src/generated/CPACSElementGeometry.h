@@ -159,20 +159,28 @@ namespace generated
         /// of the element or an enclosing envelope representation.
         boost::optional<CPACSGeometryRepresentation> m_representation;
 
+        /// Cuboids forming the element geometry
         boost::optional<CPACSCuboids>                m_cuboids;
 
+        /// Cylinders forming the element geometry
         boost::optional<CPACSCylinders>              m_cylinders;
 
+        /// Cones forming the element geometry
         boost::optional<CPACSCones>                  m_cones;
 
+        /// Ellipsoids forming the element geometry
         boost::optional<CPACSEllipsoids>             m_ellipsoids;
 
+        /// Tori forming the element geometry
         boost::optional<CPACSTori>                   m_tori;
 
+        /// Multi-segment shapes forming the element geometry
         boost::optional<CPACSMultiSegmentShapes>     m_multiSegmentShapes;
 
+        /// External geometry files referenced by the element
         boost::optional<CPACSExternalGeometries>     m_externals;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation>        m_transformation;
 
     private:

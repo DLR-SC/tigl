@@ -50,8 +50,7 @@ namespace generated
     /// @brief Wing type, containing all a lifting surface (wing, HTP,
     /// VTP, canard...) of an aircraft model.
     /// 
-    /// Wing type, containing all a lifting surface (wing,
-    /// HTP, VTP, canard...) of an aircraft model.
+    /// A lifting surface (wing, HTP, VTP, canard...) of an aircraft model.
     /// Position of the wing: The position of the wing is
     /// defined using the transformation parameters. Using those
     /// parameters, the wing coordinate system is translated, rotated
@@ -167,16 +166,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                  m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>            m_symmetry;
 
+        /// Continuity used for lofting this component (default: C2 for fuselages and ducts, C0 for wings)
         boost::optional<CPACSLoftContinuity>         m_loftContinuity;
 
-        /// Name of the wing.
+        /// Name
         std::string                                  m_name;
 
-        /// Description of the wing.
+        /// Description
         boost::optional<std::string>                 m_description;
 
         /// UID of part to which the wing is mounted (if
@@ -185,14 +187,19 @@ namespace generated
         /// (The root of the connection hierarchy).
         boost::optional<std::string>                 m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation                         m_transformation;
 
+        /// Sections
         CCPACSWingSections                           m_sections;
 
+        /// Positionings of the wing sections
         boost::optional<CCPACSPositionings>          m_positionings;
 
+        /// Segments
         CCPACSWingSegments                           m_segments;
 
+        /// ComponentSegments
         boost::optional<CCPACSWingComponentSegments> m_componentSegments;
 
     private:

@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraftModel
 
-    /// @brief rotorsType
+    /// @brief Rotors
     /// 
-    /// Rotors type, containing all the rotors (mainRotors,
-    /// tailRotors, fenestrons, propellers, ...) of an rotorcraft model.
+    /// The rotors (mainRotors, tailRotors, fenestrons, propellers, ...) of an rotorcraft model.
     /// 
     class CPACSRotors
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rotor
         std::vector<std::unique_ptr<CCPACSRotor>> m_rotors;
 
     private:

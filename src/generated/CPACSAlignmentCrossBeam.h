@@ -38,8 +38,7 @@ namespace generated
     // CPACSCrossBeamAssemblyPosition
     // CPACSCrossBeamStrutAssemblyPosition
 
-    /// @brief alignmentCrossBeamType
-    /// 
+    /// @brief Cross beam alignment
     /// 
     /// 
     class CPACSAlignmentCrossBeam : public CTiglReqUIDObject
@@ -109,6 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string             m_uID;
 
         /// Offset in direction of extrusion, first side

@@ -45,10 +45,7 @@ namespace generated
 
     /// @brief Definition of the spar cross section.
     /// 
-    /// Spar type, containing the cross section definition of
-    /// a spar. The spar middle point is defined by the intersection of
-    /// the wing middle plane and web1. This equals the coordinate
-    /// defined within the sparPosition.
+    /// Cross section definition of a spar. The spar middle point is defined by the intersection of the wing middle plane and web1. This equals the coordinate defined within the sparPosition.
     /// Please find below a picture where all spar cross
     /// section parameters as well as the orientation references for
     /// the material definition can be found:
@@ -133,14 +130,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Upper cap
         boost::optional<CPACSCap>       m_upperCap;
 
+        /// Lower cap
         boost::optional<CPACSCap>       m_lowerCap;
 
+        /// First web
         CPACSWeb                        m_web1;
 
+        /// Second web
         boost::optional<CPACSWeb>       m_web2;
 
+        /// Cells
         boost::optional<CPACSSparCells> m_sparCells;
 
         /// The angle between the wing middle plane and

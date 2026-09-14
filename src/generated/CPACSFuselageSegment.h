@@ -37,10 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageSegments
 
-    /// @brief fuselageSegmentType
+    /// @brief Fuselage segment
     /// 
-    /// FuselageSegment type, containing data of a fuselage
-    /// segment
+    /// Data of a fuselage segment
     /// 
     class CPACSFuselageSegment : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -88,12 +87,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                        m_uID;
 
-        /// Name of fuselage segment
+        /// Name
         std::string                        m_name;
 
-        /// Description of fuselage segment
+        /// Description
         boost::optional<std::string>       m_description;
 
         /// Reference to element from which the segment
@@ -105,7 +105,7 @@ namespace generated
         std::string                        m_toElementUID;
 
         /// Optional and additional guidecurves to shape
-        /// the outer geometry.
+        /// the outer geometry
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:

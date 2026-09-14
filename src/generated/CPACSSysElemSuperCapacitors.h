@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores electrical energy electrostatically with high power capability.
+        /// Stores electrical energy electrostatically with high power capability
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_superCapacitors;
 
     private:

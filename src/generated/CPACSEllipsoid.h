@@ -44,6 +44,7 @@ namespace generated
     /// The semi-axis lengths are defined by radiusX, radiusY and radiusZ.
     /// The radii in y- and z-direction are optional.
     /// If not specified, they default to radiusX.
+    /// The optional revolutionAngle defines the angle of revolution about the local z-axis.
     /// If not specified, it defaults to 2*pi, resulting in a full ellipsoid.
     /// Note that the angle refers to the parameterization of the underlying sphere:
     /// for radiusX != radiusY the section planes are located at the azimuth
@@ -105,6 +106,7 @@ namespace generated
         /// Revolution angle about the local z-axis [rad] (if not defined: equals 2*pi)
         boost::optional<double>                  m_revolutionAngle;
 
+        /// Optional rigid transformation defining the position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

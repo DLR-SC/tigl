@@ -82,11 +82,7 @@ namespace generated
 
     /// @brief Transformation
     /// 
-    /// Transformation type, containing a set of
-    /// transformations. The order of the transformations is scaling
-    /// -> rotation -> translation, and they are executed in this
-    /// order. Any of them can be omitted; it will be replaced by its
-    /// defaults.
+    /// Set of transformations. The order of the transformations is scaling -> rotation -> translation, and they are executed in this order. Any of them can be omitted; it will be replaced by its defaults.
     /// Transformations are always executed relative to the
     /// child not the parent. I.e. a scaling does not have an influence
     /// on the parent item. For example in the outer geometry of a wing
@@ -182,6 +178,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>       m_uID;
 
         /// Scaling data default: 1,1,1. Those parameters

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts electrical input power into controlled mechanical motion or force.
+        /// Converts electrical input power into controlled mechanical motion or force
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricActuators;
 
     private:

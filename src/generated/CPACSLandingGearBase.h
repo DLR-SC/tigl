@@ -113,8 +113,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                        m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>                  m_symmetry;
 
         /// Name
@@ -126,17 +128,19 @@ namespace generated
         /// UID of the parent component. If set, the position of the main strut is defined relative to the parent coordinate system.
         boost::optional<std::string>                       m_parentUID;
 
+        /// Control parameters for retraction and extension
         boost::optional<CPACSLandingGearControl>           m_control;
 
+        /// Components the landing gear is assembled from
         boost::optional<CPACSLandingGearComponentAssembly> m_componentAssembly_choice1;
 
         /// Total length of landing gear, equals the distance from the middle of the bogie/axles to the axis of rotation of the pintle strut. Distance is measured while landing gear is fully extended and in airborne condition (i.e., if a spring is present, the totalLength includes the springDeflectionLength)
         boost::optional<double>                            m_totalLength_choice2;
 
-        /// Static suspension travel means the positive distance between the total length in airborne condition and the reduced length due to compression on the ground.
+        /// Static suspension travel means the positive distance between the total length in airborne condition and the reduced length due to compression on the ground
         boost::optional<double>                            m_staticSuspensionTravel_choice2;
 
-        /// Compressed suspension travel means the positive distance between the total length in airborne condition and the maximum reduced length due to maximum compression on the ground (e.g., landing shock).
+        /// Compressed suspension travel means the positive distance between the total length in airborne condition and the maximum reduced length due to maximum compression on the ground (e.g., landing shock)
         boost::optional<double>                            m_compressedSuspensionTravel_choice2;
 
         /// Transformation with respect to the uppermost point of the main strut. From this point the landing gear is oriented in negative z-direction by default.

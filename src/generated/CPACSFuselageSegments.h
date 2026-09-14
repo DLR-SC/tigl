@@ -44,10 +44,9 @@ namespace generated
     // CPACSMultiSegmentShape
     // CPACSVessel
 
-    /// @brief fuselageSegmentsType
+    /// @brief Fuselage segments
     /// 
-    /// FuselageSegments type, containing fuselage segment
-    /// definitions (from sections and elements)
+    /// Fuselage segment definitions (from sections and elements)
     /// 
     class CPACSFuselageSegments
     {
@@ -115,6 +114,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuselage segment
         std::vector<std::unique_ptr<CCPACSFuselageSegment>> m_segments;
 
     private:

@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSGuideCurveProfiles
 
-    /// @brief guideCurveProfileGeometryType
+    /// @brief Guide curve profile geometry
     /// 
     /// A guide curve profile is defined by a profile name, an
     /// optional description and a 3-dimensional relative pointlist with
@@ -99,16 +99,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis> m_symmetry;
 
+        /// UID
         std::string                       m_uID;
 
-        /// Name of profile
+        /// Name
         std::string                       m_name;
 
-        /// Description of profile
+        /// Description
         boost::optional<std::string>      m_description;
 
+        /// Relative point list
         CCPACSPointListRelXYZVector       m_pointList;
 
     private:

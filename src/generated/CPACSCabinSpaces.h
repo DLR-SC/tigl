@@ -39,7 +39,6 @@ namespace generated
     /// @brief Cabin spaces
     /// 
     /// 
-    /// 
     class CPACSCabinSpaces
     {
     public:
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cabin space
         std::vector<std::unique_ptr<CPACSCabinSpace>> m_spaces;
 
     private:

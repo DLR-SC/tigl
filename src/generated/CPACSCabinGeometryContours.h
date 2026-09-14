@@ -71,6 +71,7 @@ namespace generated
     protected:
         CPACSCabinGeometry* m_parent;
 
+        /// Cabin geometry contour
         std::vector<std::unique_ptr<CPACSCabinGeometryContour>> m_contours;
 
     private:

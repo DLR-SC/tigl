@@ -39,7 +39,6 @@ namespace generated
     /// @brief Deck doors
     /// 
     /// 
-    /// 
     class CPACSDeckDoors
     {
     public:
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Deck door
         std::vector<std::unique_ptr<CPACSDeckDoor>> m_deckDoors;
 
     private:

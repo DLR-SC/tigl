@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSLongFloorBeamsAssembly
 
-    /// @brief longFloorBeamType
+    /// @brief Longitudinal floor beam
     /// 
-    /// longFloorBeam type, containing a long. floor beam
-    /// definition
+    /// Long. floor beam definition
     /// 
     class CPACSLongFloorBeam : public CTiglReqUIDObject
     {
@@ -83,7 +82,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                               m_uID;
+
+        /// Position of the longitudinal floor beam
         std::vector<std::unique_ptr<CCPACSLongFloorBeamPosition>> m_longFloorBeamPositions;
 
     private:

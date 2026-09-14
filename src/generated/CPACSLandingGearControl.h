@@ -86,6 +86,7 @@ namespace generated
         /// = retraction to the right.
         boost::optional<double>                           m_retractAngle;
 
+        /// Control functions for retraction and extension
         boost::optional<CPACSLandingGearControlFunctions> m_controlFunctions;
 
         /// Distance of the center of rotation to the top of the main strut
