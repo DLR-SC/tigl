@@ -176,8 +176,8 @@ th.markdownTableHeadLeft, th.markdownTableHeadRight, th.markdownTableHeadCenter,
 /*** Footer ***/
 
 .section-padding {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 address.footer {
@@ -203,19 +203,23 @@ img.footer {
     border-radius: 100%;
     border: 1px solid #949494;
     color: #919191;
-    display: inline-block;
-    font-size: 18px;
-    line-height: 42px;
-    height: 45px;
-    width: 45px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 22px;
+    height: 24px;
+    width: 24px;
     text-align: center;
-    margin: 0 15px 30px 15px;
+    margin: 0 8px 0 8px;
 }
 
 a.github  i {
-    margin-top: 12px;
+    margin-top: 0;
 }
 
 .site-info {
     color: #999;
+    font-size: 10px;
+    line-height: 16px;
 }
