@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Adds water vapor to a gaseous working medium.
+        /// Adds water vapor to a gaseous working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_humidifiers;
 
     private:

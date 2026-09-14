@@ -77,6 +77,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Control element
         std::vector<std::unique_ptr<CPACSAircraftControlElement>> m_controlElements;
 
     private:

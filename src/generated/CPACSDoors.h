@@ -36,9 +36,8 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief doorsType
+    /// @brief Doors
     /// 
-    /// Doors type, containing doors
     /// 
     class CPACSDoors
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Door
         std::vector<std::unique_ptr<CPACSDoorCutOut>> m_doors;
 
     private:

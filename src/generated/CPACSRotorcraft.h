@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief Rotorcraft
     /// 
-    /// Rotorcraft type, containing all the rotorcraft models.
+    /// The rotorcraft models.
     /// Most of the extensions used in the rotorcraft type have
     /// been defined as part of the work in the DLR project RIDE
     /// (Rotorcraft Integrated Design and Evaluation, 2009-2012).
@@ -87,6 +87,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rotorcraft model
         std::vector<std::unique_ptr<CCPACSRotorcraftModel>> m_models;
 
     private:

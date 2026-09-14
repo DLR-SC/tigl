@@ -38,7 +38,6 @@ namespace generated
     /// @brief Sections
     /// 
     /// 
-    /// 
     class CPACSNacelleSections
     {
     public:
@@ -79,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Section
         std::vector<std::unique_ptr<CCPACSNacelleSection>> m_sections;
 
     private:

@@ -112,6 +112,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                m_uID;
 
         /// Length of the axle. For a single wheel, the length is equal to the distance between the center of the piston and the center of the wheel. For two wheels, the length is equal to the distance between the centers of the wheels with the axis being centered w.r.t. to the Piston.
@@ -123,7 +124,7 @@ namespace generated
         /// Number of wheels attached to this axle
         int                        m_numberOfWheels;
 
-        /// Defines the side of the first wheel (inboard or outboard; inboard corresponds to the negative y-direction or in flight direction left) for odd number of wheels on this axis. Each additional wheel is the added on the opposite site of the previous wheel.
+        /// Side of the first wheel (inboard or outboard; inboard corresponds to the negative y-direction or in flight direction left) for odd number of wheels on this axis. Each additional wheel is the added on the opposite site of the previous wheel.
         CPACSAxle_sideOfFirstWheel m_sideOfFirstWheel;
 
         /// Properties of the wheel(s) attached to this axle. If more than one wheel is attached, all wheels on a single axis have the same properties.

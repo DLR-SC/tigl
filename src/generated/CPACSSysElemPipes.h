@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transports a gaseous, hydraulic, or thermo-fluid working medium between components.
+        /// Transports a gaseous, hydraulic, or thermo-fluid working medium between components
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pipes;
 
     private:

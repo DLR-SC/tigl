@@ -37,7 +37,7 @@ namespace generated
 
     /// @brief Point: x, z
     /// 
-    /// Point type, containing an xz data doublet.
+    /// Xz data doublet.
     /// 
     class CPACSPointXZ : public CTiglOptUIDObject
     {
@@ -73,6 +73,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// X-Component

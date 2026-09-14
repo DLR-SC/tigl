@@ -43,7 +43,7 @@ namespace generated
     // CPACSCurveProfiles
     // CPACSNacelleProfiles
 
-    /// @brief profileGeometry2DType
+    /// @brief Two-dimensional profile geometry
     /// 
     /// A profile is defined by a profile name, an optional
     /// description and a 2-dimensional pointlist with both
@@ -155,18 +155,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Symmetry of the profile (none, inherit, x-axis or y-axis)
         boost::optional<CPACSProfileGeometry2DType_symmetry> m_symmetry;
 
+        /// UID
         std::string                                          m_uID;
 
-        /// Name of profile
+        /// Name
         std::string                                          m_name;
 
-        /// Description of profile
+        /// Description
         boost::optional<std::string>                         m_description;
 
+        /// Point list
         boost::optional<CCPACSPointListXYVector>             m_pointList_choice1;
 
+        /// CST parameterization
         boost::optional<CCPACSWingProfileCST>                m_cst2D_choice2;
 
     private:

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers alternating-current electrical power between circuits through electromagnetic induction, typically changing voltage or isolation.
+        /// Transfers alternating-current electrical power between circuits through electromagnetic induction, typically changing voltage or isolation
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_transformers;
 
     private:

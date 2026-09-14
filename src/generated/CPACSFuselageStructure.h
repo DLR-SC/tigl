@@ -45,10 +45,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselage
 
-    /// @brief fuselageStructureType
+    /// @brief Fuselage structure
     /// 
-    /// FuselageStructure type, containing data of the fuselage's
-    /// structure
+    /// Data of the fuselage's structure
     /// 
     class CPACSFuselageStructure
     {
@@ -135,15 +134,34 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Skin
         boost::optional<CCPACSSkin>                         m_skin;
+
+        /// Stringers
         boost::optional<CCPACSStringersAssembly>            m_stringers;
+
+        /// Frames
         boost::optional<CCPACSFramesAssembly>               m_frames;
+
+        /// Cross beams of the cargo deck
         boost::optional<CCPACSCargoCrossBeamsAssembly>      m_cargoCrossBeams;
+
+        /// Cross beam struts of the cargo deck
         boost::optional<CCPACSCargoCrossBeamStrutsAssembly> m_cargoCrossBeamStruts;
+
+        /// Longitudinal floor beams
         boost::optional<CCPACSLongFloorBeamsAssembly>       m_longFloorBeams;
+
+        /// Pressure bulkheads
         boost::optional<CCPACSPressureBulkheadAssembly>     m_pressureBulkheads;
+
+        /// Walls inside the fuselage
         boost::optional<CCPACSWalls>                        m_walls;
+
+        /// Cargo doors
         boost::optional<CPACSCargoDoorsAssembly>            m_cargoDoors;
+
+        /// Structural mounts
         boost::optional<CPACSFuselageStructuralMounts>      m_fuselageStructuralMounts;
 
     private:

@@ -37,6 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSStructuralWallElement
 
+    /// @brief Lateral cap
+    /// 
+    /// 
     class CPACSLateralCap : public CTiglOptUIDObject
     {
     public:
@@ -74,13 +77,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
-        /// Area of the cap
+        /// Area
         double                       m_area;
 
+        /// Material properties
         CCPACSMaterialDefinition     m_material;
 
+        /// Placement
         CPACSLateralCap_placement    m_placement;
 
     private:

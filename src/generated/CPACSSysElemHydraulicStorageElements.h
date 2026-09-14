@@ -86,13 +86,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic storage elements.
+        /// Library of predefined generic storage elements
         boost::optional<CPACSSysElemGenericStorageElements> m_genericStorageElements;
 
-        /// Library of predefined reservoirs.
+        /// Library of predefined reservoirs
         boost::optional<CPACSSysElemReservoirs>             m_reservoirs;
 
-        /// Library of predefined accumulators.
+        /// Library of predefined accumulators
         boost::optional<CPACSSysElemAccumulators>           m_accumulators;
 
     private:

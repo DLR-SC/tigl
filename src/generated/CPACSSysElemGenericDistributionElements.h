@@ -117,7 +117,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents an element that transports, routes, splits, joins, or connects a system quantity.
+        /// Element that transports, routes, splits, joins, or connects a system quantity
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericDistributionElements;
 
     private:

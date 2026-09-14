@@ -84,8 +84,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Skin
         boost::optional<CCPACSSkin>              m_skin;
+
+        /// Stringers
         boost::optional<CCPACSStringersAssembly> m_stringers;
+
+        /// Frames
         boost::optional<CCPACSFramesAssembly>    m_frames;
 
     private:

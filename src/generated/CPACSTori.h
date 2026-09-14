@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Torus
         std::vector<std::unique_ptr<CPACSTorus>> m_torus;
 
     private:

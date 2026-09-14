@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Generates or maintains a gaseous flow with a comparatively small pressure rise.
+        /// Generates or maintains a gaseous flow with a comparatively small pressure rise
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_fans;
 
     private:

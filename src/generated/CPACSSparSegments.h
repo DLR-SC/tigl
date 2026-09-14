@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Spar segment
         std::vector<std::unique_ptr<CCPACSWingSparSegment>> m_sparSegments;
 
     private:

@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Combines two or more incoming distribution paths into an outgoing path.
+        /// Combines two or more incoming distribution paths into an outgoing path
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_joiners;
 
     private:

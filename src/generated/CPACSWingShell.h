@@ -86,8 +86,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                      m_uID;
+
+        /// Skin
         CPACSWingSkin                    m_skin;
+
+        /// Cells
         boost::optional<CCPACSWingCells> m_cells;
 
     private:

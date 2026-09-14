@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Vehicle configuration
         std::vector<std::unique_ptr<CPACSConfigurationDefinition>> m_configurationDefinitions;
 
     private:

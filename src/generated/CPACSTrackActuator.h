@@ -35,8 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTrackType
 
-    /// @brief trackActuatorType
-    /// 
+    /// @brief Track actuator
     /// 
     /// 
     class CPACSTrackActuator : public CTiglReqUIDObject, public ITiglUIDRefObject
@@ -73,14 +72,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string              m_uID;
 
-        /// Reference to the uID of the actuator of the
-        /// track.
+        /// Reference to the UID of the actuator of the
+        /// track
         std::string              m_actuatorUID;
 
-        /// Definition of the material properties of the
-        /// actuator to track attachment.
+        /// Material properties of the actuator to track attachment
         CCPACSMaterialDefinition m_material;
 
     private:

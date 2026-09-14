@@ -41,8 +41,7 @@ namespace generated
 
     /// @brief Fuselages
     /// 
-    /// Fuselages type, containing the fuselages of the
-    /// configuration
+    /// Fuselages of the configuration
     /// 
     class CPACSFuselages
     {
@@ -108,6 +107,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuselage
         std::vector<std::unique_ptr<CCPACSFuselage>> m_fuselages;
 
     private:

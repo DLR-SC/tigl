@@ -35,6 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSCurvePointListXYZ
 
+    /// @brief Approximation settings
+    /// 
+    /// 
     class CPACSApproximationSettings
     {
     public:
@@ -79,7 +82,7 @@ namespace generated
         /// 2. MaxError: Maximum Error
         boost::optional<std::string>        m_errorComputationMethod;
 
-        /// Defines the number of control points that should be used for approximating the given points with a B-spline curve. The minimal value is 4.
+        /// Number of control points that should be used for approximating the given points with a B-spline curve. The minimal value is 4.
         boost::optional<int>                m_controlPointNumber_choice1;
 
         /// Instead of specifying the number of control points, the positive upper bound for the error of the approximation is provided.

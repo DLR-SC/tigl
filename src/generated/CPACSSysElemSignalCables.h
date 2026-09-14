@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers electrical or electronic signals between components.
+        /// Transfers electrical or electronic signals between components
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_signalCables;
 
     private:

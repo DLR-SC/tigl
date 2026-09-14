@@ -39,9 +39,7 @@ namespace generated
 
     /// @brief Materials
     /// 
-    /// Materials type, containing material and composite data.
-    /// A material describes the properties of a certain material.
-    /// Several materials can be combined within one composite.
+    /// Material and composite data. A material describes the properties of a certain material. Several materials can be combined within one composite.
     /// 
     class CPACSMaterials
     {
@@ -74,6 +72,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Composites built
         boost::optional<CPACSComposites> m_composites;
 
     private:

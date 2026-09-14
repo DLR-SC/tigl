@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores energy in a pressurized working medium and releases it when required.
+        /// Stores energy in a pressurized working medium and releases it when required
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_accumulators;
 
     private:

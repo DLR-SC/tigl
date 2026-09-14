@@ -36,9 +36,8 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief rivetsType
+    /// @brief Rivets
     /// 
-    /// Rivets type, containing rivets
     /// 
     class CPACSRivets
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rivet
         std::vector<std::unique_ptr<CPACSRivet>> m_rivets;
 
     private:

@@ -84,6 +84,7 @@ namespace generated
         /// Description
         boost::optional<std::string> m_description;
 
+        /// Contours
         CPACSCabinGeometryContours   m_contours;
 
         /// Vector of x coordinates

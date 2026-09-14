@@ -38,11 +38,7 @@ namespace generated
 
     /// @brief Section of the wing.
     /// 
-    /// WingSection type, containing a wing section. The
-    /// sections contains elements, where the airfoils are defined. For
-    /// the definition of a wing at least two sections (root and tip)
-    /// have to be defined, but any number greater than 2 is also
-    /// possible.
+    /// Wing section. The sections contains elements, where the airfoils are defined. For the definition of a wing at least two sections (root and tip) have to be defined, but any number greater than 2 is also possible.
     /// Mathematically spoken a section is a coordinate system
     /// that is translated, rotated and scaled relative to the wing
     /// coordinate system. This transformation parameters are defined
@@ -96,16 +92,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of wing the wing section.
+        /// Name
         std::string                  m_name;
 
-        /// Description of the wing section.
+        /// Description
         boost::optional<std::string> m_description;
 
+        /// Position and orientation
         CCPACSTransformation         m_transformation;
 
+        /// Elements
         CCPACSWingSectionElements    m_elements;
 
     private:

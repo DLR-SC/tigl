@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSDoorOpening
 
-    /// @brief doorOpeningLegacyType
+    /// @brief Door opening (legacy)
     /// 
     /// doors describe all doors of the cabin. They are linked
     /// to a structural door description. The cabin door is usually equal
@@ -82,15 +82,16 @@ namespace generated
         /// relative to the cabin origin.
         double                      m_x;
 
-        /// the door sill height relative to cabin origin.
+        /// The door sill height relative to cabin origin
         double                      m_z;
 
-        /// The width of the door in x-direction.
+        /// The width of the door in x-direction
         double                      m_width;
 
-        /// the effective height of the door.
+        /// The effective height
         double                      m_height;
 
+        /// Side of the fuselage the door is located on
         CPACSDoorOpeningLegacy_side m_side;
 
     private:

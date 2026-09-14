@@ -124,10 +124,13 @@ namespace generated
         /// the pylons x-axis.
         boost::optional<CPACSPointX>      m_ribRotation;
 
+        /// Cell of the rib with deviating properties
         boost::optional<CPACSWingRibCell> m_ribCell;
 
+        /// Upper cap
         boost::optional<CPACSCap>         m_upperCap;
 
+        /// Lower cap
         boost::optional<CPACSCap>         m_lowerCap;
 
         /// Post element definition applied to all vertical intersections with spars

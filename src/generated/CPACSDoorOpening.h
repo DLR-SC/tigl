@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSDeckDoor
 
-    /// @brief "doorOpeningType"
+    /// @brief Door opening
     /// 
     /// Ceiling panel instance collection type.
     /// 
@@ -78,7 +78,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to the cut out
         boost::optional<std::string>            m_cutOutUID_choice1;
+
+        /// Legacy description
         boost::optional<CPACSDoorOpeningLegacy> m_doorOpeningLegacy_choice2;
 
     private:

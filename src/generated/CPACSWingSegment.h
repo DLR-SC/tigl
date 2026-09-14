@@ -91,24 +91,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                        m_uID;
 
-        /// Name of wing the wing segment.
+        /// Name
         std::string                        m_name;
 
-        /// Description of the wing segment.
+        /// Description
         boost::optional<std::string>       m_description;
 
         /// Reference to the element from which the
-        /// segment shall start.
+        /// segment shall start
         std::string                        m_fromElementUID;
 
         /// Reference to the element at which the segment
-        /// shall end.
+        /// shall end
         std::string                        m_toElementUID;
 
         /// Optional and additional guidecurves to shape
-        /// the outer geometry.
+        /// the outer geometry
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
     private:

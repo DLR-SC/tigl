@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Provides a detachable electrical connection point for a mating plug or device.
+        /// Detachable electrical connection point for a mating plug or device
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_sockets;
 
     private:

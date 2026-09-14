@@ -39,7 +39,6 @@ namespace generated
     /// @brief Cabin aisles
     /// 
     /// 
-    /// 
     class CPACSCabinAisles
     {
     public:
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cabin aisle
         std::vector<std::unique_ptr<CPACSCabinAisle>> m_aisles;
 
     private:

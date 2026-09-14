@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reduces flow velocity and increases static pressure in a gaseous flow path.
+        /// Reduces flow velocity and increases static pressure in a gaseous flow path
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_diffusers;
 
     private:

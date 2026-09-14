@@ -117,7 +117,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents a control, protection, isolation, or sensing element for which no more specific class is available.
+        /// Control, protection, isolation, or sensing element for which no more specific class is available
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericControlElements;
 
     private:

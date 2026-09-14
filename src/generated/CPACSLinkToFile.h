@@ -97,7 +97,9 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
+        /// File format of the linked geometry file
         boost::optional<CPACSLinkToFileType_format> m_format;
+
         std::string                                 m_value;
 
     private:

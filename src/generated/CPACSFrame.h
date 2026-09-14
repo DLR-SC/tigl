@@ -35,9 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFramesAssembly
 
-    /// @brief frameType
+    /// @brief Frame
     /// 
-    /// frame type, containing frame definition (V1.5+)
+    /// Frame definition (V1.5+)
     /// 
     class CPACSFrame : public CTiglReqUIDObject
     {
@@ -82,7 +82,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                                       m_uID;
+
+        /// Position
         std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>> m_framePositions;
 
     private:

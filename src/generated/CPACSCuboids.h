@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cuboid
         std::vector<std::unique_ptr<CPACSCuboid>> m_cuboids;
 
     private:

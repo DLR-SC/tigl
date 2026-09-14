@@ -35,6 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSCompartment
 
+    /// @brief Compartment geometry
+    /// 
+    /// 
     class CPACSCompartmentGeometry : public ITiglUIDRefObject
     {
     public:
@@ -67,7 +70,7 @@ namespace generated
         /// UIDs of 2d structural fuselage elements
         /// (e.g., pressure bulkheads, walls or
         /// floors). The compartment will be
-        /// enclosed with the fuselage skin
+        /// enclosed with the fuselage skin.
         std::vector<std::string> m_boundaryElementUIDs;
 
     private:
