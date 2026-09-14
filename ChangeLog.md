@@ -23,6 +23,7 @@ Changes since last release
     site-packages install path. Silenced doxygens very verbose build output ([#1441](https://github.com/DLR-SC/tigl/pull/1441), [#1443](https://github.com/DLR-SC/tigl/pull/1443))
   - Added a `TIGL_WARNINGS_AS_ERRORS` CMake option (default `ON`) that treats compiler warnings
     in TiGL's own targets as errors, so new ones are caught immediately instead of accumulating ([#1441](https://github.com/DLR-SC/tigl/pull/1441))
+  - Add a `doc` task to pixi for building the generated TiGL documentation 
 
 - Fixes
 
