@@ -7,7 +7,7 @@
 }
 
 #titlearea {
-    padding: 10px;
+    padding: 5px 10px;
     margin: 0px;
     float: left;
     border: none;
@@ -47,12 +47,13 @@ h2.groupheader {
 #main-menu {
     background-image: None;
     text-shadow: None;
-    padding-top: 31px;
-    padding-bottom: 12px;
+    padding-top: 6px;
+    padding-bottom: 5px;
 }
 
 #main-menu li {
     background-image: None;
+    padding: 0px;
 }
 
 #main-menu a {
@@ -60,6 +61,7 @@ h2.groupheader {
     color: #919191;
     text-transform: uppercase;
     font-size: 12px;
+    line-height: 30px;
     padding: 0px 20px 0px 20px;
 }
 
