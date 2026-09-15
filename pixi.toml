@@ -101,6 +101,7 @@ generate = { cmd = """
 """, depends-on = ["init-submodules"]}
 build = { cmd = "cmake --build . {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}]}
 install = { cmd = "cmake --build . --target install {{ extra_args }}", cwd = "build", args= [ { "arg" = "extra_args", "default" = "-j"}] }
+doc = { cmd = "cmake --build . --target doc", cwd = "build" }
 unittests = { cmd = "./TiGL-unittests", cwd = "build/tests/unittests" }
 integrationtests = { cmd = "./TiGL-integrationtests", cwd = "build/tests/integrationtests"}
 tests = [ {task = "unittests"}, {task = "integrationtests"} ]
