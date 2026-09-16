@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief List of points
     /// 
-    /// PointList type, containing an ordered list of points
+    /// Ordered list of points
     /// 
     class CPACSPointList
     {

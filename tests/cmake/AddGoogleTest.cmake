@@ -7,6 +7,13 @@
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
+# CMake >= 3.30 deprecates calling FetchContent_Populate() directly (CMP0169) in favor
+# of FetchContent_MakeAvailable(), but that doesn't support EXCLUDE_FROM_ALL until
+# CMake 3.28. Keep the old, more widely compatible pattern and opt into the old policy
+# behavior explicitly where the policy exists, instead of letting it warn.
+if(POLICY CMP0169)
+    cmake_policy(SET CMP0169 OLD)
+endif()
 FetchContent_Declare(googletest
     GIT_REPOSITORY      https://github.com/google/googletest.git
     GIT_TAG             v1.17.0)

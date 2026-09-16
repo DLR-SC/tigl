@@ -134,24 +134,27 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                            m_uID;
 
-        /// Name of the wing componentSegment.
+        /// Name
         std::string                            m_name;
 
-        /// Description of the componentSegment.
+        /// Description
         boost::optional<std::string>           m_description;
 
         /// Reference to the element from which the
-        /// componentSegment shall start.
+        /// componentSegment shall start
         std::string                            m_fromElementUID;
 
         /// Reference to the element from which the
-        /// componentSegment shall end.
+        /// componentSegment shall end
         std::string                            m_toElementUID;
 
+        /// Structural layout
         boost::optional<CCPACSWingCSStructure> m_structure;
 
+        /// Control surfaces
         boost::optional<CCPACSControlSurfaces> m_controlSurfaces;
 
     private:

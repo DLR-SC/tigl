@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSComponentSegment
 
-    /// @brief controlSurfacesType
+    /// @brief Control surfaces
     /// 
     /// Definition of the outer shape, structure and deflection
     /// of all control surfaces (flaps, slats, soiler, ailerons...) of
@@ -80,7 +80,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Leading edge devices of the componentSegment
         boost::optional<CPACSLeadingEdgeDevices>  m_leadingEdgeDevices;
+
+        /// Trailing edge devices of the componentSegment
         boost::optional<CPACSTrailingEdgeDevices> m_trailingEdgeDevices;
 
     private:

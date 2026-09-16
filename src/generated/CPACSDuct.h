@@ -109,10 +109,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                           m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>     m_symmetry;
 
+        /// Continuity used for lofting this component (default: C2 for fuselages and ducts, C0 for wings)
         boost::optional<CPACSLoftContinuity>  m_loftContinuity;
 
         /// Name
@@ -121,14 +124,19 @@ namespace generated
         /// Description
         boost::optional<std::string>          m_description;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation> m_transformation;
 
+        /// Sections
         CCPACSFuselageSections                m_sections;
 
+        /// Positionings of the duct sections
         boost::optional<CCPACSPositionings>   m_positionings;
 
+        /// Segments
         CCPACSFuselageSegments                m_segments;
 
+        /// Structural layout
         boost::optional<CCPACSDuctStructure>  m_structure;
 
     private:

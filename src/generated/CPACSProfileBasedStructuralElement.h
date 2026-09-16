@@ -144,33 +144,37 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                                               m_uID;
 
-        /// Name of the profile based structural element
+        /// Name
         boost::optional<std::string>                                              m_name;
 
-        /// Description of the profile based structural
-        /// element
+        /// Description
         boost::optional<std::string>                                              m_description;
 
+        /// Global beam properties
         boost::optional<CPACSGlobalBeamProperties>                                m_globalBeamProperties_choice1;
 
+        /// Material definition of a sheet of the profile
         std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>      m_sheetProperties_choice2;
 
         /// Standard Profile Type, see picture below for
-        /// further information.
+        /// further information
         boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>   m_standardProfileType_choice2_1;
 
         /// Reference to the structural profile profile
-        /// uID
+        /// UID
         boost::optional<std::string>                                              m_structuralProfileUID_choice2_2;
 
+        /// Material definition of a point reinforcement of the profile
         std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>> m_pointProperties_choice2_2;
 
         /// Reference point in structural profile
         /// definition for structural element definition
         boost::optional<std::string>                                              m_referencePointUID_choice2_2;
 
+        /// Two-dimensional transformation
         boost::optional<CPACSTransformation2D>                                    m_transformation;
 
     private:

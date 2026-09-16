@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// List of spar position uIDs.
+        /// List of spar position uIDs
         std::vector<std::string> m_sparPositionUIDs;
 
     private:

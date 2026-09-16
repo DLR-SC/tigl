@@ -80,13 +80,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to the uID of a control device, e.g. a control surface or a landing gear
+        /// Reference to the UID of a control device, e.g. a control surface or a landing gear
         boost::optional<std::string> m_controlDeviceUID_choice1;
 
         /// Control parameter of the control device
         boost::optional<double>      m_controlParameter_choice1;
 
-        /// Reference to a control distributor uID
+        /// Reference to a control distributor UID
         boost::optional<std::string> m_controlDistributorUID_choice2;
 
         /// Value of the command parameter of a control distributor. If not given explicitly in the control distributor, linear interpolation between the neighboring points is required.

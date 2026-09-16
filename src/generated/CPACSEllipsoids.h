@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Ellipsoid
         std::vector<std::unique_ptr<CPACSEllipsoid>> m_ellipsoids;
 
     private:

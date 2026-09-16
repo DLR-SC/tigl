@@ -135,34 +135,34 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic conversion elements.
+        /// Library of predefined generic conversion elements
         boost::optional<CPACSSysElemGenericConversionElements> m_genericConversionElements;
 
-        /// Library of predefined electric motors.
+        /// Library of predefined electric motors
         boost::optional<CPACSSysElemElectricMotors>            m_electricMotors;
 
-        /// Library of predefined electric machines.
+        /// Library of predefined electric machines
         boost::optional<CPACSSysElemElectricMachines>          m_electricMachines;
 
-        /// Library of predefined gear boxes.
+        /// Library of predefined gear boxes
         boost::optional<CPACSSysElemGearBoxes>                 m_gearBoxes;
 
-        /// Library of predefined hydraulic actuators.
+        /// Library of predefined hydraulic actuators
         boost::optional<CPACSSysElemHydraulicActuators>        m_hydraulicActuators;
 
-        /// Library of predefined electric actuators.
+        /// Library of predefined electric actuators
         boost::optional<CPACSSysElemElectricActuators>         m_electricActuators;
 
-        /// Library of predefined dampers.
+        /// Library of predefined dampers
         boost::optional<CPACSSysElemDampers>                   m_dampers;
 
-        /// Library of predefined turbines.
+        /// Library of predefined turbines
         boost::optional<CPACSSysElemTurbines>                  m_turbines;
 
-        /// Library of predefined ram-air turbines.
+        /// Library of predefined ram-air turbines
         boost::optional<CPACSSysElemRamAirTurbines>            m_ramAirTurbines;
 
-        /// Library of predefined auxiliary power gas turbines.
+        /// Library of predefined auxiliary power gas turbines
         boost::optional<CPACSSysElemAuxiliaryPowerGasTurbines> m_auxiliaryPowerGasTurbines;
 
     private:

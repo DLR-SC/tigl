@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Permits flow in one direction while preventing reverse flow.
+        /// Permits flow in one direction while preventing reverse flow
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_checkValves;
 
     private:

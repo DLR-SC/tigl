@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Switches an electrical power circuit through an electrically controlled contact mechanism.
+        /// Switches an electrical power circuit through an electrically controlled contact mechanism
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_contactors;
 
     private:

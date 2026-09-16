@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Structural mount
         std::vector<std::unique_ptr<CPACSStructuralMount>> m_fuselageStructuralMounts;
 
     private:

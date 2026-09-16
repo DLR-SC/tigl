@@ -122,26 +122,32 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                     m_uID;
 
-        /// Name of the leading edge device.
+        /// Name
         std::string                                     m_name;
 
-        /// Description of the leading edge device.
+        /// Description
         boost::optional<std::string>                    m_description;
 
         /// UID of the parent of the LED. The parent is
         /// the componentSegment, where it is attached to.
         std::string                                     m_parentUID;
 
+        /// Outer shape
         CCPACSControlSurfaceOuterShapeLeadingEdge       m_outerShape;
 
+        /// Cut out in the wing structure due to the leading edge device
         boost::optional<CCPACSControlSurfaceWingCutOut> m_wingCutOut;
 
+        /// Structural layout
         boost::optional<CCPACSWingCSStructure>          m_structure;
 
+        /// Deflection path
         CPACSControlSurfacePath                         m_path;
 
+        /// Tracks guiding the leading edge device
         boost::optional<CPACSControlSurfaceTracks>      m_tracks;
 
     private:

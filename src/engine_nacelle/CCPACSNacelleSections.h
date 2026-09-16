@@ -29,8 +29,8 @@ class CCPACSNacelleSections : public generated::CPACSNacelleSections
 public:
     TIGL_EXPORT CCPACSNacelleSections(CCPACSNacelleCowl* parent, CTiglUIDManager* uidMgr);
 
-    TIGL_EXPORT size_t GetSectionCount() const;
-    TIGL_EXPORT CCPACSNacelleSection& GetSection(size_t index) const;
+    TIGL_EXPORT size_t GetSectionCount() const override;
+    TIGL_EXPORT CCPACSNacelleSection& GetSection(size_t index) const override;
     TIGL_EXPORT CCPACSNacelleSection& GetSection(std::string const uid) const;
     TIGL_EXPORT size_t GetSectionIndex(std::string const uid) const;
 };

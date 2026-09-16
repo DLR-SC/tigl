@@ -38,7 +38,6 @@ namespace generated
     /// @brief Skin Layers
     /// 
     /// 
-    /// 
     class CPACSVesselSkinLayers
     {
     public:
@@ -75,6 +74,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Skin layer
         std::vector<std::unique_ptr<CCPACSSkin>> m_skinLayers;
 
     private:

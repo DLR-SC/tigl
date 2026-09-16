@@ -180,6 +180,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                               m_uID;
 
         /// Name
@@ -188,7 +189,7 @@ namespace generated
         /// Description
         boost::optional<std::string>              m_description;
 
-        /// UID of the object used as parent coordinate system (typically the fuselage uID)
+        /// UID of the object used as parent coordinate system (typically the fuselage UID)
         boost::optional<std::string>              m_parentUID;
 
         /// UID of the floor structure which supports this deck
@@ -203,6 +204,7 @@ namespace generated
         /// Deck type: passanger, VIP, cargo or livestock
         CPACSDecksDeck_deckType                   m_deckType;
 
+        /// Geometry of the cabin on this deck
         boost::optional<CPACSCabinGeometry>       m_cabinGeometry;
 
         /// Seat modules

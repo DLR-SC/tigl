@@ -98,7 +98,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to a uID
+        /// Reference to a UID
         std::vector<std::string> m_uIDs;
 
     private:

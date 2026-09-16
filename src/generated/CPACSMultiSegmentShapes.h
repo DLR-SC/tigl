@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Multi-segment shape
         std::vector<std::unique_ptr<CPACSMultiSegmentShape>> m_multiSegmentShapes;
 
     private:

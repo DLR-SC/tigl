@@ -167,7 +167,7 @@ void CCPACSFuselage::SetParentUID(const boost::optional<std::string>& value)
 // Get section count
 int CCPACSFuselage::GetSectionCount() const
 {
-    return m_sections.GetSectionCount();
+    return static_cast<int>(m_sections.GetSectionCount());
 }
 
 // Returns the face that has a given fuselage section as its boundary
@@ -197,7 +197,7 @@ CCPACSFuselageSection& CCPACSFuselage::GetSection(int index)
 // Get segment count
 int CCPACSFuselage::GetSegmentCount() const
 {
-    return m_segments.GetSegmentCount();
+    return static_cast<int>(m_segments.GetSegmentCount());
 }
 
 // Returns the segment for a given index

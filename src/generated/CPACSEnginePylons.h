@@ -38,7 +38,6 @@ namespace generated
     /// @brief Engine pylons
     /// 
     /// 
-    /// 
     class CPACSEnginePylons
     {
     public:
@@ -79,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Engine pylon
         std::vector<std::unique_ptr<CCPACSEnginePylon>> m_enginePylons;
 
     private:

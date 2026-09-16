@@ -77,6 +77,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Step of the deflection path
         std::vector<std::unique_ptr<CPACSControlSurfaceStep>> m_steps;
 
     private:

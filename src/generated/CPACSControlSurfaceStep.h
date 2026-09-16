@@ -37,7 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceSteps
 
-    /// @brief controlSurfaceStepType
+    /// @brief Control surface deflection step
     /// 
     /// The deflection path of the control surface is defined
     /// within the hinge line coordinate system. This is defined as

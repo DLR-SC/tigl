@@ -37,8 +37,7 @@ namespace generated
 
     /// @brief ComponentSegments of the wing.
     /// 
-    /// ComponentSegments type, containing all the
-    /// componentSegments of the wing.
+    /// The componentSegments of the wing.
     /// 
     class CPACSComponentSegments
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// ComponentSegment
         std::vector<std::unique_ptr<CCPACSWingComponentSegment>> m_componentSegments;
 
     private:

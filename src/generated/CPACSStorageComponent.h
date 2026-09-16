@@ -85,8 +85,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                 m_uID;
 
+        /// Reference to the component the energy carrier is stored in
         std::string                                 m_componentUID;
 
         /// Fill factor
@@ -95,6 +97,7 @@ namespace generated
         /// Fill factor reference (optimalVolume | usableVolume | realVolume)
         CPACSStorageComponent_reference             m_reference;
 
+        /// Conditions the energy carrier is stored at in this component
         boost::optional<CPACSFuelStorageConditions> m_storageConditions;
 
     private:

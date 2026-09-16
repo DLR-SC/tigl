@@ -305,14 +305,14 @@ namespace
         return rowVector;
     }
 
-    Handle_TColgp_HArray1OfPnt pntArray2GetColumn(const TColgp_Array2OfPnt& matrix, int colIndex)
+    Handle(TColgp_HArray1OfPnt) pntArray2GetColumn(const TColgp_Array2OfPnt& matrix, int colIndex)
     {
-        return array2GetColumn<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, colIndex);
+        return array2GetColumn<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle(TColgp_HArray1OfPnt)>(matrix, colIndex);
     }
 
-    Handle_TColgp_HArray1OfPnt pntArray2GetRow(const TColgp_Array2OfPnt& matrix, int rowIndex)
+    Handle(TColgp_HArray1OfPnt) pntArray2GetRow(const TColgp_Array2OfPnt& matrix, int rowIndex)
     {
-        return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle_TColgp_HArray1OfPnt>(matrix, rowIndex);
+        return array2GetRow<TColgp_Array2OfPnt, TColgp_HArray1OfPnt, Handle(TColgp_HArray1OfPnt)>(matrix, rowIndex);
     }
 
     // Some helper functions for CTiglBSplineAlgorithms::reparameterizePiecewiseLinear ...
@@ -331,8 +331,8 @@ namespace
         // Add all knots u_i=f(s_i)
         // Since we assume a piecewise linear reparameterization function f, the knots of f are just the new parameters
         // Hence, evaluating f at one knot gives the corresponding old parameter
-        TColStd_Array1OfReal knotsParams(1, paramsOld.size());
-        TColStd_Array1OfInteger multsParams(1, paramsOld.size());
+        TColStd_Array1OfReal knotsParams(1, static_cast<int>(paramsOld.size()));
+        TColStd_Array1OfInteger multsParams(1, static_cast<int>(paramsOld.size()));
         for (int paramIdx = 0; paramIdx < paramsOld.size(); paramIdx++) {
             knotsParams.SetValue(paramIdx+1, paramsOld[paramIdx]);
             multsParams.SetValue(paramIdx+1, degree);
@@ -435,7 +435,7 @@ namespace details
             [&u](double v){ return u <= v; }
         );
 
-        int paramsIdx = std::distance(paramsOld.begin(), it);
+        int paramsIdx = static_cast<int>(std::distance(paramsOld.begin(), it));
         // Catch case u=0, since distance would be 0 which causes illegal vector access by subtraction of 1
         if (paramsIdx  == 0) {
             ++paramsIdx;
@@ -871,7 +871,7 @@ Handle(Geom_BSplineSurface) CTiglBSplineAlgorithms::pointsToSurface(const TColgp
     // first interpolate all points by B-splines in u-direction
     std::vector<Handle(Geom_Curve)> uSplines;
     for (int cpVIdx = points.LowerCol(); cpVIdx <= points.UpperCol(); ++cpVIdx) {
-        Handle_TColgp_HArray1OfPnt points_u = pntArray2GetColumn(points, cpVIdx);
+        Handle(TColgp_HArray1OfPnt) points_u = pntArray2GetColumn(points, cpVIdx);
         CTiglPointsToBSplineInterpolation interpolationObject(points_u, uParams, 3, makeUDirClosed);
 
         Handle(Geom_Curve) curve = interpolationObject.Curve();

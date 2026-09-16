@@ -36,8 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralProfile3D
 
-    /// @brief sheetList3DType
-    /// 
+    /// @brief Three-dimensional sheet list
     /// 
     /// 
     class CPACSSheetList3D
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Three-dimensional sheet
         std::vector<std::unique_ptr<CPACSSheet3D>> m_sheet3Ds;
 
     private:

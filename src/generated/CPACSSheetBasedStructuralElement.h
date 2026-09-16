@@ -34,10 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSSheetBasedStructuralElements
 
-    /// @brief sheetBasedStructuralElementType
+    /// @brief Sheet-based structural element
     /// 
-    /// sheetBasedStructuralElementType type, sheet definition
-    /// for use in fuselage/structure
+    /// Sheet definition for use in fuselage/structure
     /// 
     class CPACSSheetBasedStructuralElement : public CTiglReqUIDObject
     {
@@ -70,6 +69,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string              m_uID;
 
         /// Material definition of the skin segment

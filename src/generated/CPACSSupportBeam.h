@@ -73,7 +73,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Position
         CPACSLandingGearSupportBeamPosition m_position;
+
+        /// Cross section
         CPACSSparCrossSection               m_structure;
 
     private:

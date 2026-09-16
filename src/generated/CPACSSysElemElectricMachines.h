@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts between electrical and mechanical power without prescribing motor or generator operation.
+        /// Converts between electrical and mechanical power without prescribing motor or generator operation
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricMachines;
 
     private:

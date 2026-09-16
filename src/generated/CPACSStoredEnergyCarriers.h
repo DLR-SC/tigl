@@ -71,6 +71,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuels stored on board
         boost::optional<CPACSStoredFuels> m_storedFuels;
 
     private:

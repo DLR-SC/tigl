@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSDoorSurroundStructuresAssembly
 
-    /// @brief doorSurroundStructurePositionType
+    /// @brief Door surround structure position
     /// 
-    /// DoorSurroundStructurePosition type, containing the position of a
-    /// door surround structure
+    /// Position of a door surround structure
     /// 
     class CPACSDoorSurroundStructurePosition : public CTiglReqUIDObject
     {
@@ -86,24 +85,27 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
+        /// Name
         boost::optional<std::string> m_name;
 
+        /// Description
         boost::optional<std::string> m_description;
 
-        /// number of bays effected by DSS in front of
+        /// Number of bays affected by DSS in front of
         /// door
         int                          m_framesGapFront;
 
-        /// number of bays effected by DSS in behind of
+        /// Number of bays affected by DSS in behind of
         /// door
         int                          m_framesGapRear;
 
-        /// number of bays effected by DSS
+        /// Number of bays affected by DSS
         int                          m_stringersGapPrimary;
 
-        /// number of bays effected by DSS
+        /// Number of bays affected by DSS
         int                          m_stringersGapSecondary;
 
     private:

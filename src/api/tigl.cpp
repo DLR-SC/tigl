@@ -1138,7 +1138,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *wingCountPtr = config.GetWingCount();
+        *wingCountPtr = static_cast<int>(config.GetWingCount());
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -1714,7 +1714,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *wingIndexPtr = config.GetWingIndex(std::string(wingUID));
+        *wingIndexPtr = static_cast<int>(config.GetWingIndex(std::string(wingUID)));
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -2031,7 +2031,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
         // search for component segment
-        int nwings = config.GetWingCount();
+        int nwings = static_cast<int>(config.GetWingCount());
         for (int iwing = 1; iwing <= nwings; ++iwing) {
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             int ncompSegs = wing.GetComponentSegmentCount();
@@ -2894,7 +2894,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHan
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *fuselageCountPtr = config.GetFuselageCount();
+        *fuselageCountPtr = static_cast<int>(config.GetFuselageCount());
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -3877,7 +3877,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *fuselageIndexPtr = config.GetFuselageIndex(std::string(fuselageUID));
+        *fuselageIndexPtr = static_cast<int>(config.GetFuselageIndex(std::string(fuselageUID)));
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4177,7 +4177,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorCount(TiglCPACSConfigurationHandle
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *rotorCountPtr = config.GetRotorCount();
+        *rotorCountPtr = static_cast<int>(config.GetRotorCount());
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4249,7 +4249,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetIndex(TiglCPACSConfigurationHandle
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        *rotorIndexPtr = config.GetRotorIndex(std::string(rotorUID));
+        *rotorIndexPtr = static_cast<int>(config.GetRotorIndex(std::string(rotorUID)));
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4545,7 +4545,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigura
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
-        *rotorBladeCountPtr = rotor.GetRotorBladeCount();
+        *rotorBladeCountPtr = static_cast<int>(rotor.GetRotorBladeCount());
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {
@@ -4589,7 +4589,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurat
         tigl::CCPACSRotor& rotor = config.GetRotor(rotorIndex);
         tigl::CTiglAttachedRotorBlade& rotorBlade = rotor.GetRotorBlade(rotorBladeIndex);
         tigl::CCPACSRotorBladeAttachment& rotorBladeAttachment = rotorBlade.GetRotorBladeAttachment();
-        *wingIndexPtr = rotorBladeAttachment.GetWingIndex();
+        *wingIndexPtr = static_cast<int>(rotorBladeAttachment.GetWingIndex());
         return TIGL_SUCCESS;
     }
     catch (const tigl::CTiglError& ex) {

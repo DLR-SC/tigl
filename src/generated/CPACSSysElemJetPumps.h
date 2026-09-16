@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses momentum transfer from a motive fluid to entrain and pump a secondary fluid.
+        /// Uses momentum transfer from a motive fluid to entrain and pump a secondary fluid
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_jetPumps;
 
     private:

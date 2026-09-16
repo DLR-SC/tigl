@@ -103,9 +103,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
+
+        /// Storage temperature
         double                       m_temperature;
+
+        /// Density of the fuel at storage conditions
         double                       m_density;
+
+        /// Storage pressure
         boost::optional<double>      m_pressure;
 
     private:

@@ -224,7 +224,7 @@ TEST_P(CurveNetworkCoons, testFromBRep)
     BRepTools::Write(loft, path_output.c_str());
 }
 
-INSTANTIATE_TEST_CASE_P(makeLoft, CurveNetworkCoons, ::testing::Values(
+INSTANTIATE_TEST_SUITE_P(makeLoft, CurveNetworkCoons, ::testing::Values(
                             "nacelle",
                             "full_nacelle",
                             "wing2",

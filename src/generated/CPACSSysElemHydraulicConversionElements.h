@@ -114,25 +114,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic conversion elements.
+        /// Library of predefined generic conversion elements
         boost::optional<CPACSSysElemGenericConversionElements> m_genericConversionElements;
 
-        /// Library of predefined pneumatic driven pumps.
+        /// Library of predefined pneumatic driven pumps
         boost::optional<CPACSSysElemPneumaticDrivenPumps>      m_pneumaticDrivenPumps;
 
-        /// Library of predefined mechanical driven pumps.
+        /// Library of predefined mechanical driven pumps
         boost::optional<CPACSSysElemMechanicalDrivenPumps>     m_mechanicalDrivenPumps;
 
-        /// Library of predefined electric driven pumps.
+        /// Library of predefined electric driven pumps
         boost::optional<CPACSSysElemElectricDrivenPumps>       m_electricDrivenPumps;
 
-        /// Library of predefined hydraulic driven pumps.
+        /// Library of predefined hydraulic driven pumps
         boost::optional<CPACSSysElemHydraulicDrivenPumps>      m_hydraulicDrivenPumps;
 
-        /// Library of predefined hydraulic power packages.
+        /// Library of predefined hydraulic power packages
         boost::optional<CPACSSysElemHydraulicPowerPackages>    m_hydraulicPowerPackages;
 
-        /// Library of predefined power-transfer units.
+        /// Library of predefined power-transfer units
         boost::optional<CPACSSysElemPowerTransferUnits>        m_powerTransferUnits;
 
     private:

@@ -87,10 +87,13 @@ namespace generated
         /// Specifies whether the loft between the segments is generated smoothly (default: true)
         boost::optional<bool>                    m_smooth;
 
+        /// Sections
         CCPACSFuselageSections                   m_sections;
 
+        /// Segments
         CCPACSFuselageSegments                   m_segments;
 
+        /// Optional rigid transformation defining the position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

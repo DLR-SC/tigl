@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts electrical power into heat transferred to a working medium or component.
+        /// Converts electrical power into heat transferred to a working medium or component
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricHeaters;
 
     private:

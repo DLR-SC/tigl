@@ -124,7 +124,7 @@
       set (MATLAB_DIR "${_TIGL_MATLAB_SDK_DIR}" CACHE PATH "Installation prefix for MATLAB." FORCE)
     endif ()
     if (NOT MATLAB_DIR AND APPLE AND (CMAKE_OSX_ARCHITECTURES MATCHES "arm64" OR (NOT CMAKE_OSX_ARCHITECTURES AND (CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64"))))
-      message(WARNING "MATLAB bindings will not be built on Apple Silicon (osx-arm64): no vendored SDK available. "
+      message(STATUS "MATLAB bindings will not be built on Apple Silicon (osx-arm64): no vendored SDK available. "
                       "Set MATLAB_DIR to a local Apple Silicon MATLAB installation to enable them. "
                       "See doc/installation.md §thirdpartysources.")
     endif ()

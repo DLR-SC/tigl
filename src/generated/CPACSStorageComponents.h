@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Storage component
         std::vector<std::unique_ptr<CPACSStorageComponent>> m_storageComponents;
 
     private:

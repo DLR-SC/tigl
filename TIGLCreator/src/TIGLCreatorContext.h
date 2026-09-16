@@ -145,8 +145,8 @@ signals:
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();
 
-    Handle_V3d_Viewer               myViewer;
-    Handle_AIS_InteractiveContext   myContext;
+    Handle(V3d_Viewer)               myViewer;
+    Handle(AIS_InteractiveContext)   myContext;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;

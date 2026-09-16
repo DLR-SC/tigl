@@ -78,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Component
         std::vector<std::unique_ptr<CCPACSComponent>> m_components;
 
     private:

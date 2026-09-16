@@ -104,6 +104,7 @@ namespace generated
         /// Exponent n for lower semi-ellipse
         CPACSPosExcl0DoubleBase m_nLower;
 
+        /// Height of the lower semi-ellipse relative to the total height
         double                  m_lowerHeightFraction;
 
     private:

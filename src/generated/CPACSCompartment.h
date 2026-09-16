@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSCompartments
 
+    /// @brief Compartment
+    /// 
+    /// 
     class CPACSCompartment : public CTiglOptUIDObject
     {
     public:
@@ -76,18 +79,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
-        /// Compartment geometry uIDs list.
+        /// Compartment geometry uIDs list
         CPACSCompartmentGeometry     m_geometry;
 
-        /// Name of the compartment.
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of the compartment.
+        /// Description
         boost::optional<std::string> m_description;
 
-        /// Ideal design volume of the compartment.
+        /// Ideal design volume
         boost::optional<double>      m_designVolume;
 
     private:

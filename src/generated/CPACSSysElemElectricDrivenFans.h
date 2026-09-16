@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses electrical input power to generate a gaseous flow or pressure rise.
+        /// Uses electrical input power to generate a gaseous flow or pressure rise
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricDrivenFans;
 
     private:

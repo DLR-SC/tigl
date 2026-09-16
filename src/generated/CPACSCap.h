@@ -48,8 +48,7 @@ namespace generated
 
     /// @brief Cap
     /// 
-    /// SparCap type, containing the cross section area of the
-    /// spar cap and the material properties.
+    /// Cross section area of the spar cap and the material properties.
     /// Please find below a picture where all spar cross
     /// section parameters as well as the orientation references for
     /// the material definition can be found:
@@ -116,11 +115,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
-        /// Area of the cap
+        /// Area
         double                       m_area;
 
+        /// Material properties
         CCPACSMaterialDefinition     m_material;
 
     private:

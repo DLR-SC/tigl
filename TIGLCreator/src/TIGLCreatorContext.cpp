@@ -506,7 +506,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
                                                  aPoint.Z() + aZoffset);
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
-        return Handle(AIS_Shape)::DownCast(aGraphicPoint);
+        return Handle(AIS_Shape)();
     }
 
 }

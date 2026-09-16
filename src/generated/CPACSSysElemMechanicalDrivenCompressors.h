@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses mechanical shaft power to raise the pressure of a gaseous working medium.
+        /// Uses mechanical shaft power to raise the pressure of a gaseous working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_mechanicalDrivenCompressors;
 
     private:

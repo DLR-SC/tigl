@@ -37,10 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSCargoCrossBeamsAssembly
 
-    /// @brief crossBeamAssemblyPositionType
+    /// @brief Cross beam assembly position
     /// 
-    /// CrossBeamAssemblyPosition type, containing the position
-    /// of a crossBeam assembly
+    /// Position of a crossBeam assembly
     /// 
     class CPACSCrossBeamAssemblyPosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -85,6 +84,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                              m_uID;
 
         /// UID of profile based structural element to be
@@ -98,6 +98,7 @@ namespace generated
         /// Referenze z position of the crossbeam
         double                                   m_positionZ;
 
+        /// Alignment
         boost::optional<CPACSAlignmentCrossBeam> m_alignment;
 
     private:

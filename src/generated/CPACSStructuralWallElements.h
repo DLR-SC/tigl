@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
+    /// @brief Structural wall elements
+    /// 
+    /// 
     class CPACSStructuralWallElements
     {
     public:
@@ -76,7 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Structural wall reinforcement definition specifying physical properties of a fuselage wall segment.
+        /// Structural wall reinforcement definition specifying physical properties of a fuselage wall segment
         std::vector<std::unique_ptr<CPACSStructuralWallElement>> m_structuralWallElements;
 
     private:

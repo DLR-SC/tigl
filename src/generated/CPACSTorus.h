@@ -97,6 +97,7 @@ namespace generated
         /// [rad] (if not defined: equals 2*pi)
         boost::optional<double>                  m_revolutionAngle;
 
+        /// Optional rigid transformation defining the position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
     private:

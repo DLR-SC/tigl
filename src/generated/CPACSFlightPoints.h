@@ -39,7 +39,6 @@ namespace generated
     /// @brief Flight Cases
     /// 
     /// 
-    /// 
     class CPACSFlightPoints
     {
     public:
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Flight point
         std::vector<std::unique_ptr<CPACSGlobalFlightPoint>> m_flightPoints;
 
     private:

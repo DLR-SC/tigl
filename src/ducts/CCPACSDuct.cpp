@@ -120,7 +120,7 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     }
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = m_segments.GetSegmentCount();
+    int nSegments = static_cast<int>(m_segments.GetSegmentCount());
 
     int facesPerSegment = nFacesAero/ nSegments;
 

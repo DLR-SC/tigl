@@ -69,7 +69,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// framePositionUID of the frame, where the landing gear
-        /// is attached to.
+        /// is attached to
         std::vector<std::string> m_stringerFramePositionUIDs;
 
     private:

@@ -147,6 +147,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
         /// Name
@@ -155,6 +156,7 @@ namespace generated
         /// Description
         boost::optional<std::string> m_description;
 
+        /// Position and orientation
         CCPACSTransformation         m_transformation;
 
         /// UID of the profile

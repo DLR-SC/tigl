@@ -97,18 +97,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                       m_uID;
 
-        /// Name of the rib set
+        /// Name
         std::string                                       m_name;
 
-        /// Description of the rib set
+        /// Description
         boost::optional<std::string>                      m_description;
 
+        /// Positioning of the ribs as a set
         boost::optional<CCPACSWingRibsPositioning>        m_ribsPositioning_choice1;
 
+        /// Explicit positioning of a single rib
         boost::optional<CCPACSWingRibExplicitPositioning> m_ribExplicitPositioning_choice2;
 
+        /// Cross section
         CCPACSWingRibCrossSection                         m_ribCrossSection;
 
     private:

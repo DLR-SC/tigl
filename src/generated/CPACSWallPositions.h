@@ -35,6 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSWalls
 
+    /// @brief Wall positions
+    /// 
+    /// 
     class CPACSWallPositions
     {
     public:
@@ -75,7 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Wall position definition specifying a point in the fuselage to be connected to a wall segment.
+        /// Wall position definition specifying a point in the fuselage to be connected to a wall segment
         std::vector<std::unique_ptr<CCPACSWallPosition>> m_wallPositions;
 
     private:
