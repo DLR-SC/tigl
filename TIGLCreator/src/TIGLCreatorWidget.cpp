@@ -42,6 +42,7 @@
 #include "TIGLCreatorContext.h"
 #include "TIGLCreatorSettings.h"
 #include "TIGLCreatorMaterials.h"
+#include "TIGLCreatorSpotlightManager.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
@@ -98,7 +99,8 @@ TIGLCreatorWidget::TIGLCreatorWidget(QWidget * parent)
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
     myButtonFlags     ( Qt::NoButton ),
-    viewerContext     (nullptr)
+    viewerContext     (nullptr),
+    mySpotlightManager(nullptr)
 {
     initialize();
 }
@@ -610,24 +612,50 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
 
 void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
 {
-    if (concentration < 0.0 || concentration > 1.0) {
-        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]";
-        return;
+    if (mySpotlightManager) {
+        mySpotlightManager->addSpotlight(x, y, z, dx, dy, dz, concentration);
+    } else {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): No spotlight manager is set.";
     }
+}
 
-    if (dx*dx + dy*dy + dz*dz < 1e8) {
-        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector";
-        return;
+void TIGLCreatorWidget::activateLight(const Handle(V3d_Light)& light)
+{
+    if (!myView.IsNull() && !light.IsNull()) {
+        myView->SetLightOn(light);
+        myView->UpdateLights();
     }
+    update();
+}
 
-    Handle(V3d_Light) theLight = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
-    theLight->SetPosition(gp_Pnt(x,y,z));
-    theLight->SetDirection(gp_Dir(dx, dy, dz));
-    theLight->SetConcentration(concentration);
+void TIGLCreatorWidget::deactivateLight(const Handle(V3d_Light)& light)
+{
+    if (!myView.IsNull() && !light.IsNull()) {
+        myView->SetLightOff(light);
+        myView->UpdateLights();
+    }
+    update();
+}
 
+void TIGLCreatorWidget::removeLight(const Handle(V3d_Light)& light)
+{
+    if (!light.IsNull()) {
+        if (!myView.IsNull()) {
+            myView->SetLightOff(light);
+        }
+        if (!myViewer.IsNull()) {
+            myViewer->DelLight(light);
+        }
+    }
+    refreshLights();
+}
+
+void TIGLCreatorWidget::refreshLights()
+{
     if (!myView.IsNull()) {
-        myView->SetLightOn(theLight);
+        myView->UpdateLights();
     }
+    update();
 }
 
 void TIGLCreatorWidget::hiddenLineOff()
