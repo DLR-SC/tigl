@@ -1,0 +1,27 @@
+var classtigl_1_1generated_1_1CPACSMultiSegmentShapes =
+[
+    [ "CPACSMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a9e0cc15eecf6ed1de14cb0ec8827c9c9", null ],
+    [ "~CPACSMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a1c41a8cd8a6f6856509210bc01754adf", null ],
+    [ "CPACSMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a369ce1a181b598b1be114fc80f7f3b74", null ],
+    [ "CPACSMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a79d4d6fc1a7bcb4a0fc9334fd8bc1dba", null ],
+    [ "AddMultiSegmentShape", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a4f264e77c3ec5c99015a4be20c615bf8", null ],
+    [ "GetMultiSegmentShape", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#aa98c57ef66a669240b631d38f8e88215", null ],
+    [ "GetMultiSegmentShape", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ae2427b9c498db998a235d4bea291e68e", null ],
+    [ "GetMultiSegmentShapeCount", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a80ae8a5d1963ef546cf4ccdc4e0abf48", null ],
+    [ "GetMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a8042193922cebc0ff588de9b320851ed", null ],
+    [ "GetMultiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ad186040b1d1558fe4a92bd2cde3720c8", null ],
+    [ "GetNextUIDParent", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a298c9a90a825c780c7fd5841b218fdb7", null ],
+    [ "GetNextUIDParent", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#afd4076010714dee380c2de256fb54111", null ],
+    [ "GetParent", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a4d2f372de347731fa1763ed386a66716", null ],
+    [ "GetParent", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a630b89e853b2508a118ab9bc4f36bb25", null ],
+    [ "GetUIDManager", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#af9da4d8d3b805c851e7e99bb3ea38471", null ],
+    [ "GetUIDManager", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#aa4c318a71d87292047725a42e2679f0b", null ],
+    [ "operator=", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ac43aaf5b175447e02ee635b496b8dccd", null ],
+    [ "operator=", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#aeba4d375c15b9bf12df9349771859b50", null ],
+    [ "ReadCPACS", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a72187bbc4c7b0ff80f863738505c0a69", null ],
+    [ "RemoveMultiSegmentShape", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ac5b6673f566ed8f19d90f50ff6bf7495", null ],
+    [ "WriteCPACS", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ac526dabb69ca0df80a4df821d0deceb3", null ],
+    [ "m_multiSegmentShapes", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a60ae8a63be9da0caa4ad93a8ef6545f5", null ],
+    [ "m_parent", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#a7594ebda29a9e8150be0d80697b7a0bf", null ],
+    [ "m_uidMgr", "classtigl_1_1generated_1_1CPACSMultiSegmentShapes.html#ad375f9960d47920c71d89821a013dc03", null ]
+];
