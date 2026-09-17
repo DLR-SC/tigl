@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemCompressor.h"
 #include "CPACSSysElemCompressors.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemPneumaticConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemCompressors::CPACSSysElemCompressors(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemCompressors::CPACSSysElemCompressors(CPACSSysElemPneumaticConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemCompressors::GetParent() const
+    const CPACSSysElemPneumaticConversionElements* CPACSSysElemCompressors::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemCompressors::GetParent()
+    CPACSSysElemPneumaticConversionElements* CPACSSysElemCompressors::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemCompressor>>& CPACSSysElemCompressors::GetCompressors() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemCompressors::GetCompressors() const
     {
         return m_compressors;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemCompressor>>& CPACSSysElemCompressors::GetCompressors()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemCompressors::GetCompressors()
     {
         return m_compressors;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemCompressors::GetCompressorIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemCompressor& CPACSSysElemCompressors::GetCompressor(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemCompressors::GetCompressor(size_t index)
     {
         if (index < 1 || index > GetCompressorCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemCompressor>>::GetCompressor", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCompressor", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_compressors[index];
     }
 
-    const CPACSSysElemCompressor& CPACSSysElemCompressors::GetCompressor(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemCompressors::GetCompressor(size_t index) const
     {
         if (index < 1 || index > GetCompressorCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemCompressor>>::GetCompressor", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCompressor", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_compressors[index];
     }
 
-    CPACSSysElemCompressor& CPACSSysElemCompressors::GetCompressor(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemCompressors::GetCompressor(const std::string& UID)
     {
         for (auto& elem : m_compressors ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemCompressors::GetCompressor. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemCompressor& CPACSSysElemCompressors::GetCompressor(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemCompressors::GetCompressor(const std::string& UID) const
     {
         for (auto& elem : m_compressors ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemCompressor& CPACSSysElemCompressors::AddCompressor()
+    CPACSVehicleElementBase& CPACSSysElemCompressors::AddCompressor()
     {
-        m_compressors.push_back(std::make_unique<CPACSSysElemCompressor>(this, m_uidMgr));
+        m_compressors.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_compressors.back();
     }
 
-    void CPACSSysElemCompressors::RemoveCompressor(CPACSSysElemCompressor& ref)
+    void CPACSSysElemCompressors::RemoveCompressor(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_compressors.size(); i++) {
             if (m_compressors[i].get() == &ref) {

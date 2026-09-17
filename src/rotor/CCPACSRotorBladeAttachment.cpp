@@ -59,7 +59,7 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
 
     // 1. Rotation around hinges, beginning with the last
     if (doHingeTransformation) {
-        for (int k=GetHingeCount()-1; k>=0; --k) {
+        for (int k=static_cast<int>(GetHingeCount())-1; k>=0; --k) {
             CTiglPoint curHingePosition = GetHinge(k+1).GetTranslation();
             const ECPACSRotorHubHinge_type& curHingeType = GetHinge(k+1).GetType();
             // a. move to origin
@@ -177,7 +177,7 @@ void CCPACSRotorBladeAttachment::lazyCreateAttachedRotorBlades() const
     // We have to do these lazily, as we do not have control of the order in which CPACS elements are read
     // (wings may not be loaded yet, when ReadCPACS of this class is called)
     CCPACSRotorcraftModel& rotorcraft = *m_parent->GetParent()->GetParent()->GetParent()->GetParent();
-    const int bladeCount = GetNumberOfBlades();
+    const int bladeCount = static_cast<int>(GetNumberOfBlades());
     if (attachedRotorBlades.size() != bladeCount) {
         attachedRotorBlades.clear();
         if (rotorcraft.GetRotorBlades()) {

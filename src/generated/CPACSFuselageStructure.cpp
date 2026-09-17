@@ -176,6 +176,17 @@ namespace generated
             }
         }
 
+        // read element fuselageStructuralMounts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageStructuralMounts")) {
+            m_fuselageStructuralMounts = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
+            try {
+                m_fuselageStructuralMounts->ReadCPACS(tixiHandle, xpath + "/fuselageStructuralMounts");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuselageStructuralMounts at xpath " << xpath << ": " << e.what();
+                m_fuselageStructuralMounts = boost::none;
+            }
+        }
+
     }
 
     void CPACSFuselageStructure::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -279,6 +290,17 @@ namespace generated
             }
         }
 
+        // write element fuselageStructuralMounts
+        if (m_fuselageStructuralMounts) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuselageStructuralMounts");
+            m_fuselageStructuralMounts->WriteCPACS(tixiHandle, xpath + "/fuselageStructuralMounts");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselageStructuralMounts")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuselageStructuralMounts");
+            }
+        }
+
     }
 
     const boost::optional<CCPACSSkin>& CPACSFuselageStructure::GetSkin() const
@@ -369,6 +391,16 @@ namespace generated
     boost::optional<CPACSCargoDoorsAssembly>& CPACSFuselageStructure::GetCargoDoors()
     {
         return m_cargoDoors;
+    }
+
+    const boost::optional<CPACSFuselageStructuralMounts>& CPACSFuselageStructure::GetFuselageStructuralMounts() const
+    {
+        return m_fuselageStructuralMounts;
+    }
+
+    boost::optional<CPACSFuselageStructuralMounts>& CPACSFuselageStructure::GetFuselageStructuralMounts()
+    {
+        return m_fuselageStructuralMounts;
     }
 
     CCPACSSkin& CPACSFuselageStructure::GetSkin(CreateIfNotExistsTag)
@@ -477,6 +509,18 @@ namespace generated
     void CPACSFuselageStructure::RemoveCargoDoors()
     {
         m_cargoDoors = boost::none;
+    }
+
+    CPACSFuselageStructuralMounts& CPACSFuselageStructure::GetFuselageStructuralMounts(CreateIfNotExistsTag)
+    {
+        if (!m_fuselageStructuralMounts)
+            m_fuselageStructuralMounts = boost::in_place(reinterpret_cast<CCPACSFuselageStructure*>(this), m_uidMgr);
+        return *m_fuselageStructuralMounts;
+    }
+
+    void CPACSFuselageStructure::RemoveFuselageStructuralMounts()
+    {
+        m_fuselageStructuralMounts = boost::none;
     }
 
 } // namespace generated

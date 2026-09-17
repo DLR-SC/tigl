@@ -24,7 +24,7 @@
 
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "CCPACSDeckComponentBase.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglFusePlane.h"
@@ -61,9 +61,9 @@ protected:
         return GetConfiguration().GetUIDManager();
     }
 
-    const tigl::CCPACSDeck& GetDeck(const std::string& uid) const
+    const tigl::CCPACSDecksDeck& GetDeck(const std::string& uid) const
     {
-        return GetUIDManager().ResolveObject<tigl::CCPACSDeck>(uid);
+        return GetUIDManager().ResolveObject<tigl::CCPACSDecksDeck>(uid);
     }
 
     const tigl::CCPACSDeckComponentBase& GetComponent(const std::string& uid) const
@@ -114,16 +114,21 @@ TEST_F(Decks, DeckGeometry)
 
 TEST_F(Decks, ComponentRepresentation)
 {
-    const auto& seat     = GetComponent("seatModule1_rh");
-    const auto& ceiling  = GetComponent("ceilingPanel1");
-    const auto& galley   = GetComponent("galley");
-    const auto& lavatory = GetComponent("lavatory");
+    const auto& seat        = GetComponent("seatModule1_rh");
+    const auto& ceiling     = GetComponent("ceilingPanel1");
+    const auto& floorModule = GetComponent("floorModule");
+    const auto& galley      = GetComponent("galley");
+    const auto& lavatory    = GetComponent("lavatory");
 
     EXPECT_EQ(seat.GetComponentRepresentation(), TIGL_GEOMREP_ENVELOPE);
     EXPECT_EQ(seat.GetComponentRepresentationAsString(), "envelope");
 
     EXPECT_EQ(ceiling.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
     EXPECT_EQ(ceiling.GetComponentRepresentationAsString(), "physical");
+
+    EXPECT_EQ(floorModule.GetComponentRepresentation(), TIGL_GEOMREP_PLACEHOLDER);
+    EXPECT_EQ(floorModule.GetComponentRepresentationAsString(), "placeholder");
+
     EXPECT_EQ(galley.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
     EXPECT_EQ(lavatory.GetComponentRepresentation(), TIGL_GEOMREP_PHYSICAL);
 }

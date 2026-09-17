@@ -17,17 +17,19 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include <typeinfo>
 #include "CTiglError.h"
+#include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
-class CTiglUIDObject;
 class CCPACSWingRibCrossSection;
 
 namespace generated
@@ -46,14 +48,13 @@ namespace generated
 
     /// @brief Cap
     /// 
-    /// SparCap type, containing the cross section area of the
-    /// spar cap and the material properties.
-    /// Pleas find below a picture where all spar cross
-    /// section parameters as well as the orientation refereneces for
+    /// Cross section area of the spar cap and the material properties.
+    /// Please find below a picture where all spar cross
+    /// section parameters as well as the orientation references for
     /// the material definition can be found:
     /// @see spars2
     /// 
-    class CPACSCap
+    class CPACSCap : public CTiglOptUIDObject
     {
     public:
         TIGL_EXPORT CPACSCap(CPACSSparCell* parent, CTiglUIDManager* uidMgr);
@@ -99,6 +100,9 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+
         TIGL_EXPORT virtual const double& GetArea() const;
         TIGL_EXPORT virtual void SetArea(const double& value);
 
@@ -111,10 +115,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Area of the cap
-        double                   m_area;
+        /// UID
+        boost::optional<std::string> m_uID;
 
-        CCPACSMaterialDefinition m_material;
+        /// Area
+        double                       m_area;
+
+        /// Material properties
+        CCPACSMaterialDefinition     m_material;
 
     private:
         CPACSCap(const CPACSCap&) = delete;

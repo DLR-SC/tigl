@@ -31,25 +31,6 @@
 #include "CTiglElementGeometryBuilder.h"
 #include "CTiglElementMassBuilder.h"
 #include "tiglcommonfunctions.h"
-#include "CPACSSysElemBattery.h"
-#include "CPACSSysElemCable.h"
-#include "CPACSSysElemCompressor.h"
-#include "CPACSSysElemConverter.h"
-#include "CPACSSysElemDCDCConverter.h"
-#include "CPACSSysElemElectricMachine.h"
-#include "CPACSSysElemElectricMotor.h"
-#include "CPACSSysElemFuelCell.h"
-#include "CPACSSysElemGearBox.h"
-#include "CPACSSysElemGenerator.h"
-#include "CPACSSysElemHeatExchanger.h"
-#include "CPACSSysElemInverter.h"
-#include "CPACSSysElemPowerDistributionUnit.h"
-#include "CPACSSysElemPowerElectronic.h"
-#include "CPACSSysElemPump.h"
-#include "CPACSSysElemRectifier.h"
-#include "CPACSSysElemReservoir.h"
-#include "CPACSSysElemSwitchgear.h"
-#include "CPACSSysElemTurboGenerator.h"
 #include "CPACSVehicleElementBase.h"
 #include "CPACSElementGeometry.h"
 #include "CPACSElementMass.h"
@@ -97,12 +78,11 @@ namespace
         }
     };
 
-    using SystemElementTypes = SupportedSystemElementTypes<
-        CCPACSSysElemBattery, CCPACSSysElemCable, CCPACSSysElemCompressor, CCPACSSysElemConverter,
-        CCPACSSysElemDCDCConverter, CCPACSSysElemElectricMachine, CCPACSSysElemElectricMotor, CCPACSSysElemFuelCell,
-        CCPACSSysElemGearBox, CCPACSSysElemGenerator, CCPACSSysElemHeatExchanger, CCPACSSysElemInverter,
-        CCPACSSysElemPowerDistributionUnit, CCPACSSysElemPowerElectronic, CCPACSSysElemPump, CCPACSSysElemRectifier,
-        CCPACSSysElemReservoir, CCPACSSysElemSwitchgear, CCPACSSysElemTurboGenerator, CCPACSVehicleElementBase>;
+    // For now, all system elements are represented by vehicleElementBaseType.
+    // Individual system elements may later be assigned dedicated types with
+    // element-specific information, derived from vehicleElementBaseType. The
+    // current implementation supports this by extending SupportedSystemElementTypes:
+    using SystemElementTypes = SupportedSystemElementTypes<CCPACSVehicleElementBase>;
 
     const CCPACSElementGeometry* GetGeometry(const CTiglUIDManager& uidMgr, const std::string& uid)
     {
@@ -143,6 +123,9 @@ TiglGeometryRepresentation CCPACSComponent::GetComponentRepresentation() const
     }
     if (representation == CPACSGeomRep::envelope) {
         return TIGL_GEOMREP_ENVELOPE;
+    }
+    if (representation == CPACSGeomRep::placeholder) {
+        return TIGL_GEOMREP_PLACEHOLDER;
     }
 
     throw CTiglError("Invalid geometry representation for component with uID \"" +

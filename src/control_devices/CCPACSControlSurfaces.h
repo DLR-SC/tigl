@@ -31,7 +31,7 @@ public:
 
     TIGL_EXPORT size_t ControlSurfaceCount() const;
 
-    TIGL_EXPORT void GetFusedControlSurfaceCutOutShape(PNamedShape& fusedBoxes) const;
+    TIGL_EXPORT void GetControlSurfaceCutOutShapes(ListPNamedShape& cutoutShapes) const;
 
     TIGL_EXPORT void GetFlapsShapes(ListPNamedShape& flapShapes) const;
 

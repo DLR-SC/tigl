@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    /// @brief nacelleProfilesType
+    /// @brief Nacelle profiles
     /// 
     /// Nacelle profiles type, containing nacelle profile geometries.
     /// See profileGeometryType for further documentation
@@ -81,6 +81,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Nacelle profile
         std::vector<std::unique_ptr<CCPACSNacelleProfile>> m_nacelleProfiles;
 
     private:

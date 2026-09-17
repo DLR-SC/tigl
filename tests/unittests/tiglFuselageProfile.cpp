@@ -103,7 +103,7 @@ TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
     ASSERT_TRUE(kinks.size() == 1);
     ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
 
-    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, yCoords.size());
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, static_cast<int>(yCoords.size()));
     tigl::ITiglWireAlgorithm::CPointContainer cpoints;
     for (int j = 0; j < yCoords.size(); j++) {
         gp_Pnt pnt(0., yCoords[j], zCoords[j]);
@@ -113,7 +113,7 @@ TEST(FuselageProfileApproximation, ComputeApproximatedProfile)
     // Profile contains one kink and one additional interpolation point to test for more robustness
     tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3, true);
     approx.InterpolatePoint(kinks[0]-1, true);
-    approx.InterpolatePoint(interpolatedPointsIndices[0]-1, false);
+    approx.InterpolatePoint(static_cast<int>(interpolatedPointsIndices[0]) - 1, false);
 
     auto paramsVec = tigl::computeParams(hpoints, paramsMap, 0.5);
 

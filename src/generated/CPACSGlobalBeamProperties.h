@@ -39,7 +39,7 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    /// @brief globalBeamPropertiesType
+    /// @brief Global beam properties
     /// 
     /// globalBeamPropertiesType, containing the global beam
     /// properties such as EA, EI, mass
@@ -73,8 +73,8 @@ namespace generated
         TIGL_EXPORT virtual const std::string& GetSource() const;
         TIGL_EXPORT virtual void SetSource(const std::string& value);
 
-        TIGL_EXPORT virtual const bool& GetConsistancy() const;
-        TIGL_EXPORT virtual void SetConsistancy(const bool& value);
+        TIGL_EXPORT virtual const bool& GetConsistency() const;
+        TIGL_EXPORT virtual void SetConsistency(const bool& value);
 
         TIGL_EXPORT virtual const CPACSBeamCrossSection& GetBeamCrossSection() const;
         TIGL_EXPORT virtual CPACSBeamCrossSection& GetBeamCrossSection();
@@ -102,14 +102,31 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                         m_uID;
+
+        /// Reference to the material
         std::string                         m_materialUID;
+
+        /// Source the beam properties were derived from
         std::string                         m_source;
-        bool                                m_consistancy;
+
+        /// Flag stating whether the beam properties are consistent with each other
+        bool                                m_consistency;
+
+        /// Geometrical properties of the beam cross section
         CPACSBeamCrossSection               m_beamCrossSection;
+
+        /// Center of gravity of the beam cross section
         CCPACSPointXY                       m_beamCOG;
+
+        /// Shear center of the beam cross section
         boost::optional<CCPACSPointXY>      m_beamShearCenter;
+
+        /// Stiffness properties
         boost::optional<CPACSBeamStiffness> m_beamStiffness;
+
+        /// Mass of the beam per unit length
         boost::optional<double>             m_beamSpecificMass;
 
     private:

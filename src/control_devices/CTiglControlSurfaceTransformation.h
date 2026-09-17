@@ -30,7 +30,7 @@ namespace tigl
 {
 
 /**
- * @bried Computes the transformation matrix for the flap movement
+ * @brief Computes the transformation matrix for the flap movement
  *
  * Assumption: The old and new hingepoint positions are already pre-computed
  */

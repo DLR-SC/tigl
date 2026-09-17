@@ -41,6 +41,7 @@ namespace generated
     class CPACSCylinder;
     class CPACSEllipsoid;
     class CPACSMultiSegmentShape;
+    class CPACSTorus;
 
     // This class is used in:
     // CPACSComponent
@@ -49,14 +50,11 @@ namespace generated
     // CPACSCylinder
     // CPACSEllipsoid
     // CPACSMultiSegmentShape
+    // CPACSTorus
 
     /// @brief Transformation
     /// 
-    /// Transformation type, containing a set of
-    /// transformations. The order of the transformations is
-    /// rotation -> translation, and they are executed in this
-    /// order. Any of them can be omitted; it will be replaced by its
-    /// defaults.
+    /// Set of transformations. The order of the transformations is rotation -> translation, and they are executed in this order. Any of them can be omitted; it will be replaced by its defaults.
     /// 
     class CPACSTransformationSE3 : public CTiglOptUIDObject
     {
@@ -67,6 +65,7 @@ namespace generated
         TIGL_EXPORT CPACSTransformationSE3(CPACSCylinder* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformationSE3(CPACSEllipsoid* parent, CTiglUIDManager* uidMgr);
         TIGL_EXPORT CPACSTransformationSE3(CPACSMultiSegmentShape* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSTransformationSE3(CPACSTorus* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSTransformationSE3();
 
@@ -79,7 +78,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSCone>::value || std::is_same<P, CPACSCuboid>::value || std::is_same<P, CPACSCylinder>::value || std::is_same<P, CPACSEllipsoid>::value || std::is_same<P, CPACSMultiSegmentShape>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
+            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSCone>::value || std::is_same<P, CPACSCuboid>::value || std::is_same<P, CPACSCylinder>::value || std::is_same<P, CPACSEllipsoid>::value || std::is_same<P, CPACSMultiSegmentShape>::value || std::is_same<P, CPACSTorus>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -89,7 +88,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSCone>::value || std::is_same<P, CPACSCuboid>::value || std::is_same<P, CPACSCylinder>::value || std::is_same<P, CPACSEllipsoid>::value || std::is_same<P, CPACSMultiSegmentShape>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
+            static_assert(std::is_same<P, CCPACSComponent>::value || std::is_same<P, CPACSCone>::value || std::is_same<P, CPACSCuboid>::value || std::is_same<P, CPACSCylinder>::value || std::is_same<P, CPACSEllipsoid>::value || std::is_same<P, CPACSMultiSegmentShape>::value || std::is_same<P, CPACSTorus>::value, "template argument for P is not a parent class of CPACSTransformationSE3");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -126,6 +125,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>       m_uID;
 
         /// Rotation data default: 0,0,0. The rotation
@@ -158,4 +158,5 @@ using CCPACSCuboid = generated::CPACSCuboid;
 using CCPACSCylinder = generated::CPACSCylinder;
 using CCPACSEllipsoid = generated::CPACSEllipsoid;
 using CCPACSMultiSegmentShape = generated::CPACSMultiSegmentShape;
+using CCPACSTorus = generated::CPACSTorus;
 } // namespace tigl

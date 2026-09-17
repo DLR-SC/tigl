@@ -38,7 +38,12 @@ void CCPACSDucts::RegisterInvalidationCallback(std::function<void()> const& fn){
     invalidationCallbacks.push_back(fn);
 }
 
-PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::string const & uid) const
+PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::string const& uid) const
+{
+    return LoftWithDuctCutouts(cleanLoft, std::vector<std::string>{uid});
+}
+
+PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::vector<std::string> const& uids) const
 {
     if (!enabled || m_ductAssemblys.size() == 0) {
         return cleanLoft;
@@ -51,7 +56,9 @@ PNamedShape CCPACSDucts::LoftWithDuctCutouts(PNamedShape const& cleanLoft, std::
         if (ductAssembly->GetExcludeObjectUIDs()) {
 
             auto const & excludeVector =ductAssembly->GetExcludeObjectUIDs()->GetUIDs();
-            if (std::any_of(excludeVector.begin(), excludeVector.end(), [&](const std::string& elem) { return elem == uid; })) {
+            if (std::any_of(excludeVector.begin(), excludeVector.end(), [&](const std::string& elem) {
+                    return std::find(uids.begin(), uids.end(), elem) != uids.end();
+                })) {
                 continue;
             }
         }        

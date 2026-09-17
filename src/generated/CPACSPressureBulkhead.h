@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSPressureBulkheads
 
-    /// @brief pressureBulkheadType
+    /// @brief Pressure bulkhead
     /// 
-    /// PressureBulkhead type, containing data of a pressure
-    /// bulkhead
+    /// Data of a pressure bulkhead
     /// 
     class CPACSPressureBulkhead : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -104,14 +103,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the pressure bulkhead structural
-        /// element
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of the pressure bulkhead
-        /// structural element
+        /// Description
         boost::optional<std::string> m_description;
 
         /// UID of structural sheet element used for the
@@ -138,7 +136,7 @@ namespace generated
         /// the adjacent frame
         boost::optional<double>      m_bulkheadCalotteRadiusAtFrame_choice2;
 
-        /// maximum flection of the pressure bulkhaed
+        /// Maximum flection of the pressure bulkhaed
         /// calotte
         boost::optional<double>      m_maxFlectionDepth_choice2;
 

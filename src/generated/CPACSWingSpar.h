@@ -36,11 +36,7 @@ namespace generated
 
     /// @brief Wing spars
     /// 
-    /// Spars type, a spar is defined by sparSegments that
-    /// stretch between multiple sparPositions. The spar definition is
-    /// very flexible in CPACS. Spars can start and end at any position
-    /// of the wing, spars can have kinks at any position of the wing
-    /// and spars can cross each other or merge.
+    /// Spar is defined by sparSegments that stretch between multiple sparPositions. The spar definition is very flexible in CPACS. Spars can start and end at any position of the wing, spars can have kinks at any position of the wing and spars can cross each other or merge.
     /// At first the spar points (->sparPositions) have to
     /// be defined. Spar points are defined using the relative
     /// coordinates eta and xsi. Spar points do lay on wing middle
@@ -53,7 +49,7 @@ namespace generated
     /// One spar point can be used by more than one spar, if
     /// e.g. two spars are merging. The detailed cross section of the
     /// spar is also defined with sparSegments.
-    /// Pleas find below a picture for an example definition
+    /// Please find below a picture for an example definition
     /// of 3 spars in one wing, by using spar position points and spar
     /// segments:
     /// @see spars1
@@ -89,7 +85,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Positions defining the spars
         CCPACSWingSparPositions m_sparPositions;
+
+        /// Spar segments running through the spar positions
         CCPACSWingSparSegments  m_sparSegments;
 
     private:

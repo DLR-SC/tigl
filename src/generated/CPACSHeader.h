@@ -37,7 +37,7 @@ namespace generated
 
     /// @brief CPACS header
     /// 
-    /// Header type, containing CPACS dataset description
+    /// CPACS dataset description
     /// 
     class CPACSHeader
     {
@@ -74,19 +74,20 @@ namespace generated
     protected:
         CPACSCpacs* m_parent;
 
-        /// Name of CPACS dataset
+        /// Name
         std::string                  m_name;
 
-        /// Description of CPACS dataset
+        /// Description
         boost::optional<std::string> m_description;
 
-        /// Version of initial CPACS dataset according to the Semantic Versioning 2.0.0 standard.
+        /// Version of initial CPACS dataset according to the Semantic Versioning 2.0.0 standard
         std::string                  m_version;
 
         /// DEPRECATED: Should only be set to allow TiGL to open the file until TiGL is adopted accordingly.
         /// Will be replaced by the cpacsVersion element in versionInfos.
         boost::optional<std::string> m_cpacsVersion;
 
+        /// Version history
         CPACSVersionInfos            m_versionInfos;
 
     private:

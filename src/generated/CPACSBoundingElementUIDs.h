@@ -34,6 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSWallSegment
 
+    /// @brief Bounding element UIDs
+    /// 
+    /// 
     class CPACSBoundingElementUIDs : public ITiglUIDRefObject
     {
     public:

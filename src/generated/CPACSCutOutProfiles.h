@@ -40,7 +40,6 @@ namespace generated
     /// @brief Definition of cut out profiles.
     /// 
     /// 
-    /// 
     class CPACSCutOutProfiles
     {
     public:
@@ -83,8 +82,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Profile of the outer cut out
         CPACSOuterCutOutProfile                          m_outerCutOutProfile;
+
+        /// Profile of the inner cut out
         CPACSOuterCutOutProfile                          m_innerCutOutProfile;
+
+        /// Additional cut out profile
         std::vector<std::unique_ptr<CPACSCutOutProfile>> m_cutOutProfiles;
 
     private:

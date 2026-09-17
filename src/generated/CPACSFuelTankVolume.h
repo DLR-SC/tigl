@@ -36,7 +36,6 @@ namespace generated
     /// @brief Definition of different volumes of the fuel tank.
     /// 
     /// 
-    /// 
     class CPACSFuelTankVolume
     {
     public:
@@ -76,21 +75,21 @@ namespace generated
 
         /// Theoretical volume if material thicknesses
         /// (ribs, spars, skins, stringers) and systems (fuel pumps,
-        /// pipes...) are neglected.
+        /// pipes...) are neglected
         double                  m_optimalVolume;
 
-        /// Usable fuel volume aircraft operations.
+        /// Usable fuel volume aircraft operations
         boost::optional<double> m_usableVolume_choice1;
 
-        /// Total real fuel tank volume.
+        /// Total real fuel tank volume
         boost::optional<double> m_realVolume_choice1;
 
         /// Factor between the usalbe fuel volume and
-        /// the real fuel volume.
+        /// the real fuel volume
         boost::optional<double> m_useableVolumeFactor_choice2;
 
         /// Factor between the real fuel volume and the
-        /// theoretical optimum fuel volume.
+        /// theoretical optimum fuel volume
         boost::optional<double> m_realVolumeFactor_choice2;
 
     private:

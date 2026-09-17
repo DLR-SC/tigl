@@ -105,6 +105,17 @@ namespace generated
             }
         }
 
+        // read element engines
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+            m_engines = boost::in_place(this, m_uidMgr);
+            try {
+                m_engines->ReadCPACS(tixiHandle, xpath + "/engines");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read engines at xpath " << xpath << ": " << e.what();
+                m_engines = boost::none;
+            }
+        }
+
         // read element performanceCases
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/performanceCases")) {
             m_performanceCases = boost::in_place(this, m_uidMgr);
@@ -124,17 +135,6 @@ namespace generated
             } catch(const std::exception& e) {
                 LOG(ERROR) << "Failed to read flightPoints at xpath " << xpath << ": " << e.what();
                 m_flightPoints = boost::none;
-            }
-        }
-
-        // read element engines
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
-            m_engines = boost::in_place(this, m_uidMgr);
-            try {
-                m_engines->ReadCPACS(tixiHandle, xpath + "/engines");
-            } catch(const std::exception& e) {
-                LOG(ERROR) << "Failed to read engines at xpath " << xpath << ": " << e.what();
-                m_engines = boost::none;
             }
         }
 
@@ -193,6 +193,17 @@ namespace generated
             }
         }
 
+        // read element energyCarriers
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/energyCarriers")) {
+            m_energyCarriers = boost::in_place(this);
+            try {
+                m_energyCarriers->ReadCPACS(tixiHandle, xpath + "/energyCarriers");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read energyCarriers at xpath " << xpath << ": " << e.what();
+                m_energyCarriers = boost::none;
+            }
+        }
+
     }
 
     void CPACSVehicles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
@@ -219,6 +230,17 @@ namespace generated
             }
         }
 
+        // write element engines
+        if (m_engines) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
+            m_engines->WriteCPACS(tixiHandle, xpath + "/engines");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/engines");
+            }
+        }
+
         // write element performanceCases
         if (m_performanceCases) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/performanceCases");
@@ -238,17 +260,6 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/flightPoints")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/flightPoints");
-            }
-        }
-
-        // write element engines
-        if (m_engines) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/engines");
-            m_engines->WriteCPACS(tixiHandle, xpath + "/engines");
-        }
-        else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/engines");
             }
         }
 
@@ -307,6 +318,17 @@ namespace generated
             }
         }
 
+        // write element energyCarriers
+        if (m_energyCarriers) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/energyCarriers");
+            m_energyCarriers->WriteCPACS(tixiHandle, xpath + "/energyCarriers");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/energyCarriers")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/energyCarriers");
+            }
+        }
+
     }
 
     const boost::optional<CPACSAircraft>& CPACSVehicles::GetAircraft() const
@@ -329,6 +351,16 @@ namespace generated
         return m_rotorcraft;
     }
 
+    const boost::optional<CPACSEngines>& CPACSVehicles::GetEngines() const
+    {
+        return m_engines;
+    }
+
+    boost::optional<CPACSEngines>& CPACSVehicles::GetEngines()
+    {
+        return m_engines;
+    }
+
     const boost::optional<CPACSGlobalPerformanceCases>& CPACSVehicles::GetPerformanceCases() const
     {
         return m_performanceCases;
@@ -347,16 +379,6 @@ namespace generated
     boost::optional<CPACSFlightPoints>& CPACSVehicles::GetFlightPoints()
     {
         return m_flightPoints;
-    }
-
-    const boost::optional<CPACSEngines>& CPACSVehicles::GetEngines() const
-    {
-        return m_engines;
-    }
-
-    boost::optional<CPACSEngines>& CPACSVehicles::GetEngines()
-    {
-        return m_engines;
     }
 
     const boost::optional<CPACSProfiles>& CPACSVehicles::GetProfiles() const
@@ -409,6 +431,16 @@ namespace generated
         return m_materials;
     }
 
+    const boost::optional<CPACSEnergyCarriers>& CPACSVehicles::GetEnergyCarriers() const
+    {
+        return m_energyCarriers;
+    }
+
+    boost::optional<CPACSEnergyCarriers>& CPACSVehicles::GetEnergyCarriers()
+    {
+        return m_energyCarriers;
+    }
+
     CPACSAircraft& CPACSVehicles::GetAircraft(CreateIfNotExistsTag)
     {
         if (!m_aircraft)
@@ -433,6 +465,18 @@ namespace generated
         m_rotorcraft = boost::none;
     }
 
+    CPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)
+    {
+        if (!m_engines)
+            m_engines = boost::in_place(this, m_uidMgr);
+        return *m_engines;
+    }
+
+    void CPACSVehicles::RemoveEngines()
+    {
+        m_engines = boost::none;
+    }
+
     CPACSGlobalPerformanceCases& CPACSVehicles::GetPerformanceCases(CreateIfNotExistsTag)
     {
         if (!m_performanceCases)
@@ -455,18 +499,6 @@ namespace generated
     void CPACSVehicles::RemoveFlightPoints()
     {
         m_flightPoints = boost::none;
-    }
-
-    CPACSEngines& CPACSVehicles::GetEngines(CreateIfNotExistsTag)
-    {
-        if (!m_engines)
-            m_engines = boost::in_place(this, m_uidMgr);
-        return *m_engines;
-    }
-
-    void CPACSVehicles::RemoveEngines()
-    {
-        m_engines = boost::none;
     }
 
     CPACSProfiles& CPACSVehicles::GetProfiles(CreateIfNotExistsTag)
@@ -527,6 +559,18 @@ namespace generated
     void CPACSVehicles::RemoveMaterials()
     {
         m_materials = boost::none;
+    }
+
+    CPACSEnergyCarriers& CPACSVehicles::GetEnergyCarriers(CreateIfNotExistsTag)
+    {
+        if (!m_energyCarriers)
+            m_energyCarriers = boost::in_place(this);
+        return *m_energyCarriers;
+    }
+
+    void CPACSVehicles::RemoveEnergyCarriers()
+    {
+        m_energyCarriers = boost::none;
     }
 
 } // namespace generated

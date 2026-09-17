@@ -90,6 +90,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                             m_uID;
 
         /// Name
@@ -99,10 +100,10 @@ namespace generated
         boost::optional<std::string>            m_description;
 
         /// Number of passengers this door adds to the
-        /// overall exit capacity limit of the aircraft.
+        /// overall exit capacity limit of the aircraft
         int                                     m_paxCapacity;
 
-        /// Opening geometry of the door
+        /// Opening geometry
         CPACSDoorOpening                        m_opening;
 
         /// Door type (boarding, cargo, evacuation or service)

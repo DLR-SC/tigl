@@ -28,12 +28,12 @@ namespace tigl
 class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSDeckComponentBase;
-class CCPACSDeck;
+class CCPACSDecksDeck;
 
 namespace generated
 {
     // This class is used in:
-    // CPACSDeck
+    // CPACSDecksDeck
 
     /// @brief Sidewall panels
     /// 
@@ -42,13 +42,13 @@ namespace generated
     class CPACSSidewallPanels
     {
     public:
-        TIGL_EXPORT CPACSSidewallPanels(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSSidewallPanels(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSSidewallPanels();
 
-        TIGL_EXPORT CCPACSDeck* GetParent();
+        TIGL_EXPORT CCPACSDecksDeck* GetParent();
 
-        TIGL_EXPORT const CCPACSDeck* GetParent() const;
+        TIGL_EXPORT const CCPACSDecksDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -75,7 +75,7 @@ namespace generated
         TIGL_EXPORT virtual void RemoveSidewallPanel(CCPACSDeckComponentBase& ref);
 
     protected:
-        CCPACSDeck* m_parent;
+        CCPACSDecksDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 

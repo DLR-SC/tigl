@@ -81,13 +81,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to the profile uID. Profiles should
-        /// be linked in profiles/structuralProfiles
+        /// Reference to the profile UID. Profiles should
+        /// be linked in profiles/structuralProfiles.
         std::string      m_profileUID;
 
         /// Relative spanwise position of the cut out
         /// profile. The eta coordinate refers to the control surface and
-        /// desribes the cut out profile at the leading edge of the control
+        /// describes the cut out profile at the leading edge of the control
         /// surface.
         CCPACSEtaIsoLine m_eta;
 

@@ -54,8 +54,7 @@ namespace generated
 
     /// @brief Material Definition
     /// 
-    /// MaterialDefinition type, containing a material
-    /// definition (Reference to material and thickness)
+    /// Material definition (Reference to material and thickness)
     /// 
     class CPACSMaterialDefinition : public ITiglUIDRefObject
     {
@@ -129,21 +128,21 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// uID of a composite definition.
+        /// UID of a composite definition
         boost::optional<std::string> m_compositeUID_choice1;
 
-        /// Orthotropy direction of the composite.
+        /// Orthotropy direction of the composite
         boost::optional<double>      m_orthotropyDirection_choice1;
 
         /// Scaling factor of the composite thickness.
         /// Absolute thicknesses are defined in each composite material
-        /// seperatly
+        /// separately.
         boost::optional<double>      m_thicknessScaling_choice1;
 
-        /// uID of a material definition.
+        /// UID of a material definition
         boost::optional<std::string> m_materialUID_choice2;
 
-        /// Absolute thickness of the material.
+        /// Absolute thickness
         boost::optional<double>      m_thickness_choice2;
 
     private:

@@ -36,8 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSMaterials
 
-    /// @brief compositesType
-    /// 
+    /// @brief Composites
     /// 
     /// 
     class CPACSComposites
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Composite
         std::vector<std::unique_ptr<CPACSComposite>> m_composites;
 
     private:

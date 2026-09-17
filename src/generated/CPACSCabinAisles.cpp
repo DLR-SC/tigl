@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "CPACSCabinAisle.h"
 #include "CPACSCabinAisles.h"
 #include "CTiglError.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCabinAisles::CPACSCabinAisles(CCPACSDeck* parent, CTiglUIDManager* uidMgr)
+    CPACSCabinAisles::CPACSCabinAisles(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CCPACSDeck* CPACSCabinAisles::GetParent() const
+    const CCPACSDecksDeck* CPACSCabinAisles::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSDeck* CPACSCabinAisles::GetParent()
+    CCPACSDecksDeck* CPACSCabinAisles::GetParent()
     {
         return m_parent;
     }

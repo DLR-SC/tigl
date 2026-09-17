@@ -29,7 +29,7 @@ namespace tigl
 class CCPACSConfiguration;
 
 /**
- * @brief Geometric component representing a CPACS <component> within systems.
+ * @brief Geometric component representing a CPACS `<component>` within systems.
  *
  * A CCPACSComponent references a system element via @c systemElementUID and provides
  * geometric and mass properties derived from that referenced element.
@@ -42,14 +42,14 @@ class CCPACSConfiguration;
  * Coordinate frames:
  * - Local values (mass, CoG local) are expressed in the component's local coordinate system.
  * - Global CoG is only available if the component is explicitly positioned via a
- *   CPACS @c <transformation> element (see IsPositioned()).
+ *   CPACS `<transformation>` element (see IsPositioned()).
  */
 class CCPACSComponent : public generated::CPACSComponent, public CTiglRelativelyPositionedComponent
 {
 public:
     /**
      * @brief Constructs a CCPACSComponent.
-     * @param parent Parent CPACS <components> container.
+     * @param parent Parent CPACS `<components>` container.
      * @param uidMgr UID manager for resolving referenced system elements.
      */
     TIGL_EXPORT CCPACSComponent(CCPACSComponents* parent, CTiglUIDManager* uidMgr);
@@ -77,7 +77,9 @@ public:
      *
      * The representation is obtained from the referenced element geometry definition.
      * It is returned as one of the TiGL constants
-     * @c TIGL_GEOMREP_PHYSICAL (1) or @c TIGL_GEOMREP_ENVELOPE (2).
+     * @c TIGL_GEOMREP_PHYSICAL (1),
+     * @c TIGL_GEOMREP_ENVELOPE (2), or
+     * @c TIGL_GEOMREP_PLACEHOLDER (4).
      * If no explicit representation is given in CPACS,
      * @c TIGL_GEOMREP_PHYSICAL (1) is returned.
      *
@@ -91,6 +93,7 @@ public:
      * Possible return values are:
      * - @c "physical"
      * - @c "envelope"
+     * - @c "placeholder"
      *
      * If no explicit representation is given in CPACS, @c "physical" is returned.
      *
@@ -171,7 +174,7 @@ public:
     /**
      * @brief Returns whether this component is explicitly positioned in CPACS.
      *
-     * This checks for the presence of the optional CPACS @c <transformation> element
+     * This checks for the presence of the optional CPACS `<transformation>` element
      * under the component.
      *
      * @return true if an explicit transformation is present, false otherwise.

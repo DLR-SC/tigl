@@ -16,9 +16,10 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemCable.h"
 #include "CPACSSysElemCables.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemElectricalDistributionElements.h"
+#include "CPACSSysElemMechanicalDistributionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,31 +30,35 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemCables::CPACSSysElemCables(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemCables::CPACSSysElemCables(CPACSSysElemElectricalDistributionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemElectricalDistributionElements);
+    }
+
+    CPACSSysElemCables::CPACSSysElemCables(CPACSSysElemMechanicalDistributionElements* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CPACSSysElemMechanicalDistributionElements);
     }
 
     CPACSSysElemCables::~CPACSSysElemCables()
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemCables::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CPACSSystemElements* CPACSSysElemCables::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSSysElemCables::GetNextUIDParent() const
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSSysElemElectricalDistributionElements>()) {
+                return GetParent<CPACSSysElemElectricalDistributionElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemMechanicalDistributionElements>()) {
+                return GetParent<CPACSSysElemMechanicalDistributionElements>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -61,7 +66,12 @@ namespace generated
     CTiglUIDObject* CPACSSysElemCables::GetNextUIDParent()
     {
         if (m_parent) {
-            return m_parent->GetNextUIDParent();
+            if (IsParent<CPACSSysElemElectricalDistributionElements>()) {
+                return GetParent<CPACSSysElemElectricalDistributionElements>()->GetNextUIDParent();
+            }
+            if (IsParent<CPACSSysElemMechanicalDistributionElements>()) {
+                return GetParent<CPACSSysElemMechanicalDistributionElements>()->GetNextUIDParent();
+            }
         }
         return nullptr;
     }
@@ -84,90 +94,90 @@ namespace generated
 
     void CPACSSysElemCables::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
-        // read element cables
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cables")) {
-            tixi::TixiReadElements(tixiHandle, xpath + "/cables", m_cables, 1, tixi::xsdUnbounded, this, m_uidMgr);
+        // read element cable
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/cable")) {
+            tixi::TixiReadElements(tixiHandle, xpath + "/cable", m_cables, 1, tixi::xsdUnbounded, this, m_uidMgr);
         }
 
     }
 
     void CPACSSysElemCables::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
-        // write element cables
-        tixi::TixiSaveElements(tixiHandle, xpath + "/cables", m_cables);
+        // write element cable
+        tixi::TixiSaveElements(tixiHandle, xpath + "/cable", m_cables);
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemCable>>& CPACSSysElemCables::GetCables() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemCables::GetCables() const
     {
         return m_cables;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemCable>>& CPACSSysElemCables::GetCables()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemCables::GetCables()
     {
         return m_cables;
     }
 
-    size_t CPACSSysElemCables::GetCablesCount() const
+    size_t CPACSSysElemCables::GetCableCount() const
     {
         return m_cables.size();
     }
 
-    size_t CPACSSysElemCables::GetCablesIndex(const std::string& UID) const
+    size_t CPACSSysElemCables::GetCableIndex(const std::string& UID) const
     {
-        for (size_t i=0; i < GetCablesCount(); i++) {
+        for (size_t i=0; i < GetCableCount(); i++) {
             const std::string tmpUID(m_cables[i]->GetUID());
             if (tmpUID == UID) {
                 return i+1;
             }
         }
-        throw CTiglError("Invalid UID in CPACSSysElemCables::GetCablesIndex", TIGL_UID_ERROR);
+        throw CTiglError("Invalid UID in CPACSSysElemCables::GetCableIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemCable& CPACSSysElemCables::GetCables(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemCables::GetCable(size_t index)
     {
-        if (index < 1 || index > GetCablesCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemCable>>::GetCables", TIGL_INDEX_ERROR);
+        if (index < 1 || index > GetCableCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCable", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cables[index];
     }
 
-    const CPACSSysElemCable& CPACSSysElemCables::GetCables(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemCables::GetCable(size_t index) const
     {
-        if (index < 1 || index > GetCablesCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemCable>>::GetCables", TIGL_INDEX_ERROR);
+        if (index < 1 || index > GetCableCount()) {
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetCable", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_cables[index];
     }
 
-    CPACSSysElemCable& CPACSSysElemCables::GetCables(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemCables::GetCable(const std::string& UID)
     {
         for (auto& elem : m_cables ) {
             if (elem->GetUID() == UID)
                 return *elem;
             }
-            throw CTiglError("Invalid UID in CPACSSysElemCables::GetCables. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+            throw CTiglError("Invalid UID in CPACSSysElemCables::GetCable. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemCable& CPACSSysElemCables::GetCables(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemCables::GetCable(const std::string& UID) const
     {
         for (auto& elem : m_cables ) {
             if (elem->GetUID() == UID)
                 return *elem;
             }
-            throw CTiglError("Invalid UID in CPACSSysElemCables::GetCables. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
+            throw CTiglError("Invalid UID in CPACSSysElemCables::GetCable. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
 
-    CPACSSysElemCable& CPACSSysElemCables::AddCables()
+    CPACSVehicleElementBase& CPACSSysElemCables::AddCable()
     {
-        m_cables.push_back(std::make_unique<CPACSSysElemCable>(this, m_uidMgr));
+        m_cables.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_cables.back();
     }
 
-    void CPACSSysElemCables::RemoveCables(CPACSSysElemCable& ref)
+    void CPACSSysElemCables::RemoveCable(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_cables.size(); i++) {
             if (m_cables[i].get() == &ref) {

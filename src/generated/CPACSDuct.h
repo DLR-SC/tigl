@@ -27,6 +27,7 @@
 #include <string>
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
+#include "CPACSLoftContinuity.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "tigl_internal.h"
@@ -70,6 +71,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CPACSLoftContinuity>& GetLoftContinuity() const;
+        TIGL_EXPORT virtual void SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value);
+
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
@@ -105,9 +109,14 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                           m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>     m_symmetry;
+
+        /// Continuity used for lofting this component (default: C2 for fuselages and ducts, C0 for wings)
+        boost::optional<CPACSLoftContinuity>  m_loftContinuity;
 
         /// Name
         std::string                           m_name;
@@ -115,14 +124,19 @@ namespace generated
         /// Description
         boost::optional<std::string>          m_description;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation> m_transformation;
 
+        /// Sections
         CCPACSFuselageSections                m_sections;
 
+        /// Positionings of the duct sections
         boost::optional<CCPACSPositionings>   m_positionings;
 
+        /// Segments
         CCPACSFuselageSegments                m_segments;
 
+        /// Structural layout
         boost::optional<CCPACSDuctStructure>  m_structure;
 
     private:

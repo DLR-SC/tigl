@@ -36,6 +36,7 @@ public:
     TIGL_EXPORT CCPACSTransformationSE3(CCPACSCuboid* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformationSE3(CCPACSCylinder* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformationSE3(CCPACSCone* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformationSE3(CCPACSTorus* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformationSE3(CCPACSEllipsoid* parent, CTiglUIDManager* uidMgr);
 
     TIGL_EXPORT void reset();

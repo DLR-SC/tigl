@@ -88,8 +88,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                       m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis> m_symmetry;
 
         /// Name
@@ -101,8 +103,10 @@ namespace generated
         /// Parent component
         boost::optional<std::string>      m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation              m_transformation;
 
+        /// Vessels forming the fuel tank
         CPACSVessels                      m_vessels;
 
     private:

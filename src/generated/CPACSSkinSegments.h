@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSSkin
 
-    /// @brief fuselageSkinSegmentType
+    /// @brief Skin segments
     /// 
-    /// FuselageSkinSegment type, containing material on skin
-    /// over circumference
+    /// Material on skin over circumference
     /// 
     class CPACSSkinSegments
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Skin segment
         std::vector<std::unique_ptr<CCPACSSkinSegment>> m_skinSegments;
 
     private:

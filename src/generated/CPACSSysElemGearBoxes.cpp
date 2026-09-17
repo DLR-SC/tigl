@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemGearBox.h"
 #include "CPACSSysElemGearBoxes.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemMechanicalConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemGearBoxes::CPACSSysElemGearBoxes(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemGearBoxes::CPACSSysElemGearBoxes(CPACSSysElemMechanicalConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemGearBoxes::GetParent() const
+    const CPACSSysElemMechanicalConversionElements* CPACSSysElemGearBoxes::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemGearBoxes::GetParent()
+    CPACSSysElemMechanicalConversionElements* CPACSSysElemGearBoxes::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemGearBox>>& CPACSSysElemGearBoxes::GetGearBoxs() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemGearBoxes::GetGearBoxs() const
     {
         return m_gearBoxs;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemGearBox>>& CPACSSysElemGearBoxes::GetGearBoxs()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemGearBoxes::GetGearBoxs()
     {
         return m_gearBoxs;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemGearBoxes::GetGearBoxIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemGearBox& CPACSSysElemGearBoxes::GetGearBox(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemGearBoxes::GetGearBox(size_t index)
     {
         if (index < 1 || index > GetGearBoxCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemGearBox>>::GetGearBox", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGearBox", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_gearBoxs[index];
     }
 
-    const CPACSSysElemGearBox& CPACSSysElemGearBoxes::GetGearBox(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemGearBoxes::GetGearBox(size_t index) const
     {
         if (index < 1 || index > GetGearBoxCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemGearBox>>::GetGearBox", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGearBox", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_gearBoxs[index];
     }
 
-    CPACSSysElemGearBox& CPACSSysElemGearBoxes::GetGearBox(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemGearBoxes::GetGearBox(const std::string& UID)
     {
         for (auto& elem : m_gearBoxs ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemGearBoxes::GetGearBox. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemGearBox& CPACSSysElemGearBoxes::GetGearBox(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemGearBoxes::GetGearBox(const std::string& UID) const
     {
         for (auto& elem : m_gearBoxs ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemGearBox& CPACSSysElemGearBoxes::AddGearBox()
+    CPACSVehicleElementBase& CPACSSysElemGearBoxes::AddGearBox()
     {
-        m_gearBoxs.push_back(std::make_unique<CPACSSysElemGearBox>(this, m_uidMgr));
+        m_gearBoxs.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_gearBoxs.back();
     }
 
-    void CPACSSysElemGearBoxes::RemoveGearBox(CPACSSysElemGearBox& ref)
+    void CPACSSysElemGearBoxes::RemoveGearBox(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_gearBoxs.size(); i++) {
             if (m_gearBoxs[i].get() == &ref) {

@@ -47,7 +47,7 @@ namespace generated
     /// @see nacelle_guideCurve
     /// Note : Currently, the nacelles do not have an explicit guide curve type but employ the standard guide curve definition, which is used in wings and profiles.
     /// Therefore, the parameters have a different meaning:
-    /// Standard guide curve parameter Nacelle guide curve equivalent Description rX φ Independent variable normalized to [0,1] rY Δx Orthogonal offset (translation in x -direction) rZ Δr Radial offset
+    /// Standard guide curve parameter Nacelle guide curve equivalent Description rX φ Independent variable normalized to [0,1]  rY Δx Orthogonal offset (translation in x -direction) rZ Δr Radial offset
     class CPACSNacelleGuideCurve : public ITiglUIDRefObject
     {
     public:

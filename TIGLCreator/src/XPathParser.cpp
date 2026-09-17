@@ -43,8 +43,8 @@ std::string cpcr::XPathParser::GetLastNode(std::string xpath)
         xpath.erase(xpath.size() - 1, 1);
     }
 
-    int found = xpath.find_last_of("/");
-    if (found < 0) {
+    size_t found = xpath.find_last_of("/");
+    if (found == std::string::npos) {
         return xpath;
     }
     std::string r = xpath.substr(found + 1);
@@ -54,8 +54,8 @@ std::string cpcr::XPathParser::GetLastNode(std::string xpath)
 std::string cpcr::XPathParser::RemoveEndingBrackets(std::string string)
 {
     if (string[string.size() - 1] == ']') {
-        long int found = string.find_last_of('[');
-        if (found < 0) {
+        size_t found = string.find_last_of('[');
+        if (found == std::string::npos) {
             LOG(ERROR) << "XPathParser: RemoveEndingBrackets:  Invalid input: " + string;
         }
         else {
@@ -71,8 +71,8 @@ int cpcr::XPathParser::GetIndexOfNode(std::string particle)
     int r = 1; // be default the index is one
 
     if (particle[particle.size() - 1] == ']') {
-        long int found = particle.find_last_of('[');
-        if (found < 0) {
+        size_t found = particle.find_last_of('[');
+        if (found == std::string::npos) {
             LOG(ERROR) << "XPathParser: GetIndexOfNode:  Invalid input: " + particle;
         }
         else {
@@ -158,8 +158,8 @@ std::string cpcr::XPathParser::RemoveLastNode(std::string xpath)
     }
 
     std::string r;
-    int found = xpath.find_last_of("/");
-    if (found < 0) {
+    size_t found = xpath.find_last_of("/");
+    if (found == std::string::npos) {
         r     = xpath;
         xpath = "";
     }

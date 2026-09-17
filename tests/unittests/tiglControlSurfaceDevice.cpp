@@ -365,6 +365,19 @@ TEST_F(TiglControlSurfaceDevice, CPACSLeadingEdgeDevices)
 }
 
 
+TEST_F(TiglControlSurfaceDevice, WingLoftWithCutoutsIsSolid)
+{
+    // The wing loft with control-surface cutouts removed must remain a
+    // genuine TopoDS_SOLID (not a TopoDS_COMPOUND wrapping a solid), since
+    // API consumers such as tiglCheckPointInside require a solid shape.
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config         = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing                    = config.GetWing(1);
+
+    TopoDS_Shape loftWithCutouts = wing.GetLoftWithCutouts();
+    ASSERT_EQ(loftWithCutouts.ShapeType(), TopAbs_SOLID);
+}
+
 TEST_F(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetControlParameter(tiglHandle, "FlapInner", 1.0));

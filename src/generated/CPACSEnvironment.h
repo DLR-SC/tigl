@@ -93,6 +93,7 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
+        /// Atmospheric model the conditions are based on
         CPACSAtmosphericModel   m_atmosphericModel;
 
         /// Delta temperature with respect to the standard temperature of the selected atmosphere [K]

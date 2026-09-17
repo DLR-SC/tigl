@@ -46,7 +46,7 @@ namespace generated
     // CPACSRotorAirfoils
     // CPACSWingAirfoils
 
-    /// @brief profileGeometryType
+    /// @brief Profile geometry
     /// 
     /// A profile is defined by a profile name, an optional
     /// description and a 3-dimensional pointlist with all three
@@ -66,7 +66,7 @@ namespace generated
     /// upper side back to the trailing edge.
     /// Example 2: For a fuselage, the coordinates are
     /// typically given in y and z with x set to "0". Starting point of
-    /// the profile sould be the lowest point (typically in the symmetry
+    /// the profile should be the lowest point (typically in the symmetry
     /// plane), then upwards on the positive y-side up to the highest
     /// point (again, typically in the symmetry plane). Depending on,
     /// whether the fuselage shall be specified with symmetry condition
@@ -168,22 +168,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>        m_symmetry;
 
+        /// UID
         std::string                              m_uID;
 
-        /// Name of profile
+        /// Name
         std::string                              m_name;
 
-        /// Description of profile
+        /// Description
         boost::optional<std::string>             m_description;
 
+        /// Point list
         boost::optional<CCPACSCurvePointListXYZ> m_pointList_choice1;
 
+        /// CST parameterization
         boost::optional<CCPACSWingProfileCST>    m_cst2D_choice2;
 
+        /// Standard profile definition
         boost::optional<CPACSStandardProfile>    m_standardProfile_choice3;
 
+        /// NACA airfoil definition
         boost::optional<CPACSNacaProfile>        m_nacaProfile_choice4;
 
     private:

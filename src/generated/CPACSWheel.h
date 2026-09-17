@@ -74,16 +74,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
         /// Wheel radius
         double      m_radius;
 
-        /// With of the wheel
+        /// Width
         double      m_width;
 
         /// Brake: false =
-        /// not braked; true = braked.
+        /// not braked; true = braked
         bool        m_braked;
 
     private:

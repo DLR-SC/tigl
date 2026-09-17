@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemHeatExchanger.h"
 #include "CPACSSysElemHeatExchangers.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemThermoFluidConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemHeatExchangers::CPACSSysElemHeatExchangers(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemHeatExchangers::CPACSSysElemHeatExchangers(CPACSSysElemThermoFluidConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemHeatExchangers::GetParent() const
+    const CPACSSysElemThermoFluidConversionElements* CPACSSysElemHeatExchangers::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemHeatExchangers::GetParent()
+    CPACSSysElemThermoFluidConversionElements* CPACSSysElemHeatExchangers::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>& CPACSSysElemHeatExchangers::GetHeatExchangers() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemHeatExchangers::GetHeatExchangers() const
     {
         return m_heatExchangers;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>& CPACSSysElemHeatExchangers::GetHeatExchangers()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemHeatExchangers::GetHeatExchangers()
     {
         return m_heatExchangers;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemHeatExchangers::GetHeatExchangerIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::GetHeatExchanger(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemHeatExchangers::GetHeatExchanger(size_t index)
     {
         if (index < 1 || index > GetHeatExchangerCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>::GetHeatExchanger", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetHeatExchanger", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_heatExchangers[index];
     }
 
-    const CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::GetHeatExchanger(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemHeatExchangers::GetHeatExchanger(size_t index) const
     {
         if (index < 1 || index > GetHeatExchangerCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemHeatExchanger>>::GetHeatExchanger", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetHeatExchanger", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_heatExchangers[index];
     }
 
-    CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::GetHeatExchanger(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemHeatExchangers::GetHeatExchanger(const std::string& UID)
     {
         for (auto& elem : m_heatExchangers ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemHeatExchangers::GetHeatExchanger. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::GetHeatExchanger(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemHeatExchangers::GetHeatExchanger(const std::string& UID) const
     {
         for (auto& elem : m_heatExchangers ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemHeatExchanger& CPACSSysElemHeatExchangers::AddHeatExchanger()
+    CPACSVehicleElementBase& CPACSSysElemHeatExchangers::AddHeatExchanger()
     {
-        m_heatExchangers.push_back(std::make_unique<CPACSSysElemHeatExchanger>(this, m_uidMgr));
+        m_heatExchangers.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_heatExchangers.back();
     }
 
-    void CPACSSysElemHeatExchangers::RemoveHeatExchanger(CPACSSysElemHeatExchanger& ref)
+    void CPACSSysElemHeatExchangers::RemoveHeatExchanger(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_heatExchangers.size(); i++) {
             if (m_heatExchangers[i].get() == &ref) {

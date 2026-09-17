@@ -102,9 +102,9 @@ namespace generated
             m_radiusZ = tixi::TixiGetElement<double>(tixiHandle, xpath + "/radiusZ");
         }
 
-        // read element diskAngle
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/diskAngle")) {
-            m_diskAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/diskAngle");
+        // read element revolutionAngle
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/revolutionAngle")) {
+            m_revolutionAngle = tixi::TixiGetElement<double>(tixiHandle, xpath + "/revolutionAngle");
         }
 
         // read element transformation
@@ -148,14 +148,14 @@ namespace generated
             }
         }
 
-        // write element diskAngle
-        if (m_diskAngle) {
-            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/diskAngle");
-            tixi::TixiSaveElement(tixiHandle, xpath + "/diskAngle", *m_diskAngle);
+        // write element revolutionAngle
+        if (m_revolutionAngle) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/revolutionAngle");
+            tixi::TixiSaveElement(tixiHandle, xpath + "/revolutionAngle", *m_revolutionAngle);
         }
         else {
-            if (tixi::TixiCheckElement(tixiHandle, xpath + "/diskAngle")) {
-                tixi::TixiRemoveElement(tixiHandle, xpath + "/diskAngle");
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/revolutionAngle")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/revolutionAngle");
             }
         }
 
@@ -202,14 +202,14 @@ namespace generated
         m_radiusZ = value;
     }
 
-    const boost::optional<double>& CPACSEllipsoid::GetDiskAngle() const
+    const boost::optional<double>& CPACSEllipsoid::GetRevolutionAngle() const
     {
-        return m_diskAngle;
+        return m_revolutionAngle;
     }
 
-    void CPACSEllipsoid::SetDiskAngle(const boost::optional<double>& value)
+    void CPACSEllipsoid::SetRevolutionAngle(const boost::optional<double>& value)
     {
-        m_diskAngle = value;
+        m_revolutionAngle = value;
     }
 
     const boost::optional<CCPACSTransformationSE3>& CPACSEllipsoid::GetTransformation() const

@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorcraftModel
 
-    /// @brief rotorBladesType
+    /// @brief Rotor blades
     /// 
-    /// RotorBlades type, containing all the rotor blade
-    /// gometry definitions of an rotorcraft model.
+    /// The rotor blade gometry definitions of an rotorcraft model.
     /// Rotor blade geometries are defined using the same data
     /// structure as wings (wingType). But in order to be compatible
     /// with the other rotor blade related types (e.g. rotorType,

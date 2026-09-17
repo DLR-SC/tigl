@@ -35,9 +35,8 @@ namespace generated
     // This class is used in:
     // CPACSRivets
 
-    /// @brief rivetType
+    /// @brief Rivet
     /// 
-    /// Rivet type, containing a rivet
     /// 
     class CPACSRivet : public CTiglReqUIDObject
     {
@@ -79,12 +78,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the rivet type
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of the rivet type
+        /// Description
         boost::optional<std::string> m_description;
 
         /// Tensile Strength of the rivet type

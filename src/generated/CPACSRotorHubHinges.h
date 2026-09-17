@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorBladeAttachment
 
-    /// @brief rotorHubHingesType
+    /// @brief Rotor hub hinges
     /// 
-    /// RotorHubHinges type, defining hinges used to attach a
-    /// rotor blade to the rotor head.
+    /// Hinges used to attach a rotor blade to the rotor head.
     /// 
     class CPACSRotorHubHinges
     {
@@ -80,7 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of a flap, lead-lag or pitch hinge.
+        /// Flap, lead-lag or pitch hinge
         std::vector<std::unique_ptr<CCPACSRotorHinge>> m_hinges;
 
     private:

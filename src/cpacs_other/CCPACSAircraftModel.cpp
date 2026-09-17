@@ -57,7 +57,11 @@ PNamedShape CCPACSAircraftModel::BuildLoft() const
 }
 
 
-CCPACSConfiguration& CCPACSAircraftModel::GetConfiguration() const {
+CCPACSConfiguration& CCPACSAircraftModel::GetConfiguration() const
+{
+    if (!config) {
+        throw CTiglError("The aircraft model is not attached to a configuration.", TIGL_ERROR);
+    }
     return *config;
 }
 

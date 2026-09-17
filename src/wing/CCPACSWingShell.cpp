@@ -36,7 +36,7 @@ CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure* parent, CTiglUIDManager*
 int CCPACSWingShell::GetCellCount() const
 {
     if (m_cells)
-        return m_cells->GetCellCount();
+        return static_cast<int>(m_cells->GetCellCount());
     else
         return 0;
 }

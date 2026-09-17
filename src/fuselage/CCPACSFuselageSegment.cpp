@@ -948,7 +948,7 @@ TIGL_EXPORT int CCPACSFuselageSegment::GetNumberOfLoftFaces() const
     // no guide curves, therefore we either have one or two faces, depending on the symmetry plane
     bool hasSymmetryPlane = GetNumberOfEdges(GetEndWire()) > 1;
     int nfaces = GetNumberOfFaces(GetParent()->GetParentComponent()->GetLoft()->Shape());
-    int nSegments = GetParent()->GetSegmentCount();
+    int nSegments = static_cast<int>(GetParent()->GetSegmentCount());
 
     if (!CTiglTopoAlgorithms::IsDegenerated(GetParent()->GetSegment(1).GetStartWire())) {
           nfaces-=1;

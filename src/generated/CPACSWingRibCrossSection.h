@@ -117,17 +117,20 @@ namespace generated
         /// trailing edge). This angle defaults to 90° which means, that the
         /// rib is perpendicular on the wings middle plane. The rotation
         /// angle is defined at the intersection point of the rib with the
-        /// ribReference line. The rib itself is allways straight and not
+        /// ribReference line. The rib itself is always straight and not
         /// twisted. PYLON: The Rotation along the z describes a rotation
         /// around the pylons z-axis (= rotation in top view). This angle
         /// defaults to 90° which means, that the rib is perpendicular to
         /// the pylons x-axis.
         boost::optional<CPACSPointX>      m_ribRotation;
 
+        /// Cell of the rib with deviating properties
         boost::optional<CPACSWingRibCell> m_ribCell;
 
+        /// Upper cap
         boost::optional<CPACSCap>         m_upperCap;
 
+        /// Lower cap
         boost::optional<CPACSCap>         m_lowerCap;
 
         /// Post element definition applied to all vertical intersections with spars

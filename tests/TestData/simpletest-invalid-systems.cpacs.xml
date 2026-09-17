@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../../cpacs_gen_input/cpacs_schema.xsd">
+    xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
     <header>
         <name>Invalid fuel tanks test</name>
         <description>Simple fuel tank for unit testing with focus on invalid CPACS and exception handling</description>
@@ -232,6 +232,18 @@
                                     <name>MSS without data</name>
                                     <systemElementUID>predMssWithoutSegments</systemElementUID>
                                 </component>
+                                <component uID="invalidTorus">
+                                    <name>Negative Torus</name>
+                                    <systemElementUID>invalidPredTorus</systemElementUID>
+                                </component>
+                                <component uID="spindleTorus">
+                                    <name>Self-intersecting torus</name>
+                                    <systemElementUID>predSpindleTorus</systemElementUID>
+                                </component>
+                                <component uID="zeroVolumeTorus">
+                                    <name>Torus with zero volume</name>
+                                    <systemElementUID>predZeroVolumeTorus</systemElementUID>
+                                </component>
                             </components>
                         </genericSystem>
                         <genericSystem uID="testSystem2">
@@ -271,8 +283,8 @@
             </model>
         </aircraft>
         <systemElements>
-            <genericComponents>
-                <genericComponent uID="predCuboid_1">
+            <genericElements>
+                <genericElement uID="predCuboid_1">
                     <name>Predefined cuboid 1</name>
                     <geometry>
                         <cuboids>
@@ -283,8 +295,8 @@
                             </cuboid>
                         </cuboids>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredCuboid">
+                </genericElement>
+                <genericElement uID="invalidPredCuboid">
                     <name>Predefined cuboid with negative length</name>
                     <geometry>
                         <cuboids>
@@ -295,8 +307,8 @@
                             </cuboid>
                         </cuboids>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredCuboid_2">
+                </genericElement>
+                <genericElement uID="invalidPredCuboid_2">
                     <name>Predefined cuboid with invalid mass definition</name>
                     <geometry>
                         <cuboids>
@@ -308,8 +320,8 @@
                         </cuboids>
                     </geometry>
                     <mass />
-                </genericComponent>
-                <genericComponent uID="invalidPredCylinder">
+                </genericElement>
+                <genericElement uID="invalidPredCylinder">
                     <name>Predefined cylinder with negative radius</name>
                     <geometry>
                         <cylinders>
@@ -319,8 +331,8 @@
                             </cylinder>
                         </cylinders>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredCone">
+                </genericElement>
+                <genericElement uID="invalidPredCone">
                     <name>Predefined cone with negative radius</name>
                     <geometry>
                         <cones>
@@ -330,8 +342,8 @@
                             </cone>
                         </cones>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="PredCylinderCone">
+                </genericElement>
+                <genericElement uID="PredCylinderCone">
                     <name>Predefined cone which is actually a cylinder</name>
                     <geometry>
                         <cones>
@@ -342,8 +354,8 @@
                             </cone>
                         </cones>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredEllipsoid">
+                </genericElement>
+                <genericElement uID="invalidPredEllipsoid">
                     <name>Predefined ellipsoid with negative radius</name>
                     <geometry>
                         <ellipsoids>
@@ -352,19 +364,19 @@
                             </ellipsoid>
                         </ellipsoids>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="predZeroVolumeEllipsoid">
+                </genericElement>
+                <genericElement uID="predZeroVolumeEllipsoid">
                     <name>Predefined ellipsoid with zero volume</name>
                     <geometry>
                         <ellipsoids>
                             <ellipsoid>
                                 <radiusX>1.</radiusX>
-                                <diskAngle>0.</diskAngle>
+                                <revolutionAngle>0.</revolutionAngle>
                             </ellipsoid>
                         </ellipsoids>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredExternal1">
+                </genericElement>
+                <genericElement uID="invalidPredExternal1">
                     <name>External CAD file without file format</name>
                     <geometry>
                         <externals>
@@ -374,8 +386,8 @@
                             </external>
                         </externals>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="invalidPredExternal2">
+                </genericElement>
+                <genericElement uID="invalidPredExternal2">
                     <name>External CAD file with unknown file format</name>
                     <geometry>
                         <externals>
@@ -385,8 +397,8 @@
                             </external>
                         </externals>
                     </geometry>
-                </genericComponent>
-                <genericComponent uID="predFace">
+                </genericElement>
+                <genericElement uID="predFace">
                     <name>Predefined Face</name>
                     <geometry>
                         <externals>
@@ -398,8 +410,8 @@
                     <mass>
                         <density>0.1</density>
                     </mass>
-                </genericComponent>
-                <genericComponent uID="predEllipsoid">
+                </genericElement>
+                <genericElement uID="predEllipsoid">
                     <name>Predefined ellipsoid with zero mass</name>
                     <geometry>
                         <ellipsoids>
@@ -411,22 +423,56 @@
                     <mass>
                         <mass>0.0</mass>
                     </mass>
-                </genericComponent>
-                <genericComponent uID="predElementWithoutGeometry">
+                </genericElement>
+                <genericElement uID="predElementWithoutGeometry">
                     <name>Predefined element without geometry</name>
                     <mass>
                         <mass>0.0</mass>
                     </mass>
-                </genericComponent>
-                <genericComponent uID="predMssWithoutSegments">
+                </genericElement>
+                <genericElement uID="predMssWithoutSegments">
                     <name>Predefined multi-segment shape without data</name>
                     <geometry>
                         <multiSegmentShapes>
                             <multiSegmentShape />
                         </multiSegmentShapes>
                     </geometry>
-                </genericComponent>
-            </genericComponents>
+                </genericElement>
+                <genericElement uID="invalidPredTorus">
+                    <name>Predefined torus with negative radius</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>-1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predSpindleTorus">
+                    <name>Predefined torus with minorRadius exceeding majorRadius</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>0.25</majorRadius>
+                                <minorRadius>1.</minorRadius>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predZeroVolumeTorus">
+                    <name>Predefined torus with zero volume</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                                <revolutionAngle>0.</revolutionAngle>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+            </genericElements>
         </systemElements>
         <profiles>
             <wingAirfoils>

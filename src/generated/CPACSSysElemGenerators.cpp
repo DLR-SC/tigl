@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemGenerator.h"
+#include "CPACSSysElemElectricalConversionElements.h"
 #include "CPACSSysElemGenerators.h"
-#include "CPACSSystemElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemGenerators::CPACSSysElemGenerators(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemGenerators::CPACSSysElemGenerators(CPACSSysElemElectricalConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemGenerators::GetParent() const
+    const CPACSSysElemElectricalConversionElements* CPACSSysElemGenerators::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemGenerators::GetParent()
+    CPACSSysElemElectricalConversionElements* CPACSSysElemGenerators::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemGenerator>>& CPACSSysElemGenerators::GetGenerators() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemGenerators::GetGenerators() const
     {
         return m_generators;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemGenerator>>& CPACSSysElemGenerators::GetGenerators()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemGenerators::GetGenerators()
     {
         return m_generators;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemGenerators::GetGeneratorIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemGenerator& CPACSSysElemGenerators::GetGenerator(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemGenerators::GetGenerator(size_t index)
     {
         if (index < 1 || index > GetGeneratorCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemGenerator>>::GetGenerator", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenerator", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_generators[index];
     }
 
-    const CPACSSysElemGenerator& CPACSSysElemGenerators::GetGenerator(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemGenerators::GetGenerator(size_t index) const
     {
         if (index < 1 || index > GetGeneratorCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemGenerator>>::GetGenerator", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetGenerator", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_generators[index];
     }
 
-    CPACSSysElemGenerator& CPACSSysElemGenerators::GetGenerator(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemGenerators::GetGenerator(const std::string& UID)
     {
         for (auto& elem : m_generators ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemGenerators::GetGenerator. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemGenerator& CPACSSysElemGenerators::GetGenerator(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemGenerators::GetGenerator(const std::string& UID) const
     {
         for (auto& elem : m_generators ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemGenerator& CPACSSysElemGenerators::AddGenerator()
+    CPACSVehicleElementBase& CPACSSysElemGenerators::AddGenerator()
     {
-        m_generators.push_back(std::make_unique<CPACSSysElemGenerator>(this, m_uidMgr));
+        m_generators.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_generators.back();
     }
 
-    void CPACSSysElemGenerators::RemoveGenerator(CPACSSysElemGenerator& ref)
+    void CPACSSysElemGenerators::RemoveGenerator(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_generators.size(); i++) {
             if (m_generators[i].get() == &ref) {

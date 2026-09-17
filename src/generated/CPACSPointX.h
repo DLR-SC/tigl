@@ -41,7 +41,7 @@ namespace generated
 
     /// @brief Point: x
     /// 
-    /// Point type, containing a x data.
+    /// X data.
     /// 
     class CPACSPointX : public CTiglOptUIDObject
     {
@@ -98,6 +98,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// X-Component

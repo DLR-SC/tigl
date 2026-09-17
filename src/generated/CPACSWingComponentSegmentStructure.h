@@ -46,8 +46,7 @@ namespace generated
 
     /// @brief Structure of the wing
     /// 
-    /// wingComponentSegmentStructure type, containing the
-    /// whole structue (skins, ribs, spars...) of the wing.
+    /// Whole structure (skins, ribs, spars...) of the wing.
     /// 
     class CPACSWingComponentSegmentStructure
     {
@@ -117,9 +116,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Upper shell
         CCPACSWingShell                            m_upperShell;
+
+        /// Lower shell
         CCPACSWingShell                            m_lowerShell;
+
+        /// Ribs
         boost::optional<CCPACSWingRibsDefinitions> m_ribsDefinitions;
+
+        /// Spars
         boost::optional<CCPACSWingSpars>           m_spars;
 
     private:

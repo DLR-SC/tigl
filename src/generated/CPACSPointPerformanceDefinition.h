@@ -41,7 +41,7 @@ namespace generated
     // This class is used in:
     // CPACSPointPerformanceDefinitions
 
-    /// @brief pointPerformanceType
+    /// @brief Point performance definition
     /// 
     /// Specific performance settings for the point performance calculation (e.g.: a cruise Mach number)
     /// 
@@ -111,6 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                            m_uID;
 
         /// Name
@@ -123,7 +124,7 @@ namespace generated
         /// the point performance should be
         /// considered - after indicated segment
         /// of the mission as defined in
-        /// performanceCase
+        /// performanceCase.
         boost::optional<std::string>                           m_segmentUID_choice1;
 
         /// Defines at which part of the mission
@@ -142,13 +143,16 @@ namespace generated
         /// (mFuelCurrent/mFuelTO)
         boost::optional<double>                                m_fuelFraction_choice3;
 
-        /// Indicates the type of point performance
+        /// Type
         CPACSPointPerformanceDefinition_typeOfPointPerformance m_typeOfPointPerformance;
 
+        /// Constraints applying to the point performance
         boost::optional<CPACSPointPerformanceConstraints>      m_constraints;
 
+        /// Requirements the point performance has to fulfil
         boost::optional<CPACSPointPerformanceRequirements>     m_requirements;
 
+        /// Environmental conditions
         boost::optional<CPACSEnvironment>                      m_environment;
 
     private:

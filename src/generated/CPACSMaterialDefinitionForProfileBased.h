@@ -39,9 +39,7 @@ namespace generated
     /// @brief Definition of the properties of the structural
     /// profile sheet
     /// 
-    /// MaterialDefinitionForProfileBased type, containing a
-    /// material definition (Reference to material and thickness) for
-    /// profile based objects.
+    /// Material definition (Reference to material and thickness) for profile based objects.
     /// 
     class CPACSMaterialDefinitionForProfileBased : public ITiglUIDRefObject
     {
@@ -104,16 +102,16 @@ namespace generated
         /// Length of the sheet of a standard profile [m]
         boost::optional<double>                                                        m_length_choice2;
 
-        /// uID of a composite definition.
+        /// UID of a composite definition
         boost::optional<std::string>                                                   m_compositeUID_choice1;
 
-        /// Orthoropy direction of the composite.
+        /// Orthotropy direction of the composite
         boost::optional<double>                                                        m_orthotropyDirection_choice1;
 
-        /// Scaling factor of the composite thickness.
+        /// Scaling factor of the composite thickness
         boost::optional<double>                                                        m_thicknessScaling_choice1;
 
-        /// uID of a material definition.
+        /// UID of a material definition
         boost::optional<std::string>                                                   m_materialUID_choice2;
 
         /// Absolute thickness of the material [m]

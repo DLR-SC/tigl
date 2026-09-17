@@ -26,16 +26,18 @@
 namespace tigl
 {
 class CTiglUIDObject;
+class CCPACSWingSparPosition;
 class CCPACSWingRibExplicitPositioning;
 class CCPACSWingRibsPositioning;
 
 namespace generated
 {
     // This class is used in:
+    // CPACSSparPosition
     // CPACSWingRibExplicitPositioning
     // CPACSWingRibsPositioning
 
-    /// @brief curvePointType
+    /// @brief Point on a curve
     /// 
     /// Point on a curve in normalized curve coordinates.
     /// The referenceUID must reference a one-dimensional curve such as spars.
@@ -43,6 +45,7 @@ namespace generated
     class CPACSCurvePoint
     {
     public:
+        TIGL_EXPORT CPACSCurvePoint(CCPACSWingSparPosition* parent);
         TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent);
         TIGL_EXPORT CPACSCurvePoint(CCPACSWingRibsPositioning* parent);
 
@@ -57,7 +60,7 @@ namespace generated
         template<typename P>
         P* GetParent()
         {
-            static_assert(std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
+            static_assert(std::is_same<P, CCPACSWingSparPosition>::value || std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -67,7 +70,7 @@ namespace generated
         template<typename P>
         const P* GetParent() const
         {
-            static_assert(std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
+            static_assert(std::is_same<P, CCPACSWingSparPosition>::value || std::is_same<P, CCPACSWingRibExplicitPositioning>::value || std::is_same<P, CCPACSWingRibsPositioning>::value, "template argument for P is not a parent class of CPACSCurvePoint");
             if (!IsParent<P>()) {
                 throw CTiglError("bad parent");
             }
@@ -90,10 +93,10 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
-        /// Relative position on the referenced line/curve.
+        /// Relative position on the referenced line/curve
         double      m_eta;
 
-        /// This reference uID determines the reference curve.
+        /// This reference UID determines the reference curve.
         /// If it points to a spar, then the eta value is considered to be a spar coordinate
         /// between start (eta=0) and end (eta=1) of the spar.
         std::string m_referenceUID;

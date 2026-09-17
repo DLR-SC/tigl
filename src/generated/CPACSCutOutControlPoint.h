@@ -68,12 +68,12 @@ namespace generated
 
         /// Relative height of the most forward position of
         /// the parents leading edge, relative to the airfoil height without
-        /// cut out.
+        /// cut out
         double m_relHeight;
 
         /// Relative chordwise position of the most
         /// forward position of the parents leading edge, relative to the
-        /// parents chord without cut out.
+        /// parents chord without cut out
         double m_xsi;
 
     private:

@@ -28,6 +28,7 @@
 #include <TiglSymmetryAxis.h>
 #include <tixi.h>
 #include <typeinfo>
+#include "CPACSLoftContinuity.h"
 #include "CreateIfNotExists.h"
 #include "CTiglError.h"
 #include "CTiglUIDObject.h"
@@ -49,8 +50,7 @@ namespace generated
     /// @brief Wing type, containing all a lifting surface (wing, HTP,
     /// VTP, canard...) of an aircraft model.
     /// 
-    /// Wing type, containing all a lifting surface (wing,
-    /// HTP, VTP, canard...) of an aircraft model.
+    /// A lifting surface (wing, HTP, VTP, canard...) of an aircraft model.
     /// Position of the wing: The position of the wing is
     /// defined using the transformation parameters. Using those
     /// parameters, the wing coordinate system is translated, rotated
@@ -59,7 +59,7 @@ namespace generated
     /// of the wing is defined by airfoils that are placed within the 3D
     /// space. Two airfoils are combined to one wing segment within the
     /// segments. For the definition of the positions of the airfoils,
-    /// differnt sections are defined. Within each section one or more
+    /// different sections are defined. Within each section one or more
     /// elements are defined. The airfoil shape is defined within the
     /// elements. If the wings outer shape should e.g. have a step it is
     /// possible to define two different airfoils in one section by
@@ -127,6 +127,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CPACSLoftContinuity>& GetLoftContinuity() const;
+        TIGL_EXPORT virtual void SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value);
+
         TIGL_EXPORT virtual const std::string& GetName() const;
         TIGL_EXPORT virtual void SetName(const std::string& value);
 
@@ -163,14 +166,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                  m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>            m_symmetry;
 
-        /// Name of the wing.
+        /// Continuity used for lofting this component (default: C2 for fuselages and ducts, C0 for wings)
+        boost::optional<CPACSLoftContinuity>         m_loftContinuity;
+
+        /// Name
         std::string                                  m_name;
 
-        /// Description of the wing.
+        /// Description
         boost::optional<std::string>                 m_description;
 
         /// UID of part to which the wing is mounted (if
@@ -179,14 +187,19 @@ namespace generated
         /// (The root of the connection hierarchy).
         boost::optional<std::string>                 m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation                         m_transformation;
 
+        /// Sections
         CCPACSWingSections                           m_sections;
 
+        /// Positionings of the wing sections
         boost::optional<CCPACSPositionings>          m_positionings;
 
+        /// Segments
         CCPACSWingSegments                           m_segments;
 
+        /// ComponentSegments
         boost::optional<CCPACSWingComponentSegments> m_componentSegments;
 
     private:

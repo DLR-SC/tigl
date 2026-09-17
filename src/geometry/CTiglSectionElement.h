@@ -167,8 +167,8 @@ public:
 
     /**
      * Set the normal of the profile.
+     * @param newNormal
      * @param referenceCS
-     * @return
      */
     TIGL_EXPORT void SetNormal(CTiglPoint newNormal, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
@@ -179,7 +179,6 @@ public:
      * @see GetRotationAroundNormal to have a more precise definition of the angle.
      * @param angle
      * @param referenceCS
-     * @return
      */
     TIGL_EXPORT void SetRotationAroundNormal(double angle, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
 
@@ -202,7 +201,7 @@ public:
       * The con is that sometimes the transformation can not be decomposed equally and some information is lost^.
       *
       * @param newTransformation
-      * @param check, if true a warning is logged if the transformation can not be properly decomposed
+      * @param check If true, a warning is logged if the transformation can not be properly decomposed
       */
     TIGL_EXPORT void SetPSETransformationsUseSimpleDecomposition(const CTiglTransformation &newTransformation, bool check = true);
 

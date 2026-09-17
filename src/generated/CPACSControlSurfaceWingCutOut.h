@@ -49,7 +49,7 @@ namespace generated
     /// Optional. Definition of the parents structure cut out
     /// due to a control surface. The cut out is split into three parts:
     /// cut out of the upper and lower skin and the definition of an
-    /// profile conecting the cut out of the upper and lower skin.
+    /// profile connecting the cut out of the upper and lower skin.
     /// An example for wing cut outs can be found in the
     /// picture below:
     /// @see wingCutOut
@@ -136,11 +136,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cut out in the upper skin of the parent structure
         CPACSControlSurfaceSkinCutOut                        m_upperSkin;
+
+        /// Cut out in the lower skin of the parent structure
         CPACSControlSurfaceSkinCutOut                        m_lowerSkin;
+
+        /// Control points of the cut out profile at the inner and outer border
         boost::optional<CPACSCutOutControlPoints>            m_cutOutProfileControlPoint;
+
+        /// Profiles describing the shape of the cut out
         boost::optional<CPACSCutOutProfiles>                 m_cutOutProfiles;
+
+        /// Inner border
         boost::optional<CPACSControlSurfaceSkinCutOutBorder> m_innerBorder;
+
+        /// Outer border
         boost::optional<CPACSControlSurfaceSkinCutOutBorder> m_outerBorder;
 
     private:

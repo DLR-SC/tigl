@@ -395,7 +395,7 @@ QString TIGLCreatorDocument::dlgGetWingOrRotorBladeSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         std::string name       = wing.GetUID();
@@ -425,7 +425,7 @@ QString TIGLCreatorDocument::dlgGetWingSelection(const QString& wingUid)
     tigl::CCPACSConfiguration& config = GetConfiguration();
 
     if (wingUid.isEmpty()) {
-        int wingCount                     = config.GetWingCount();
+        int wingCount                     = static_cast<int>(config.GetWingCount());
         for (int i = 1; i <= wingCount; i++) {
             tigl::CCPACSWing& wing = config.GetWing(i);
             if (!wing.IsRotorBlade()) {
@@ -459,7 +459,7 @@ QString TIGLCreatorDocument::dlgGetWingComponentSegmentSelection(const QString& 
     tigl::CCPACSConfiguration& config = GetConfiguration();
     if (wingUID.isEmpty()) {
     
-        int wingCount                     = config.GetWingCount();
+        int wingCount                     = static_cast<int>(config.GetWingCount());
         for (int i = 1; i <= wingCount; i++) {
             tigl::CCPACSWing& wing = config.GetWing(i);
             if (wing.IsRotorBlade()) {
@@ -505,7 +505,7 @@ QString TIGLCreatorDocument::dlgGetWingSegmentSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
@@ -564,7 +564,7 @@ QString TIGLCreatorDocument::dlgGetRotorSelection(const QString& rotorUid)
     }
     // Initialize rotorBlade list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int rotorCount                    = config.GetRotorCount();
+    int rotorCount                    = static_cast<int>(config.GetRotorCount());
     for (int i = 1; i <= rotorCount; i++) {
         tigl::CCPACSRotor& rotor = config.GetRotor(i);
         std::string name         = rotor.GetUID();
@@ -593,7 +593,7 @@ QString TIGLCreatorDocument::dlgGetRotorBladeSelection(const QString& rotorBlade
     }
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
@@ -626,7 +626,7 @@ QString TIGLCreatorDocument::dlgGetRotorBladeComponentSegmentSelection(const QSt
     }
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
@@ -655,7 +655,7 @@ QString TIGLCreatorDocument::dlgGetRotorBladeSegmentSelection()
 
     // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {
@@ -714,7 +714,7 @@ QString TIGLCreatorDocument::dlgGetFuselageSelection(const QString& Uid)
     }
     // Initialize fuselage list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int fuselageCount                 = config.GetFuselageCount();
+    int fuselageCount                 = static_cast<int>(config.GetFuselageCount());
     for (int i = 1; i <= fuselageCount; i++) {
         auto& fuselage   = config.GetFuselage(i);
         std::string name = fuselage.GetUID();
@@ -741,7 +741,7 @@ QString TIGLCreatorDocument::dlgGetFuselageSegmentSelection()
 
     // Initialize fuselage list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int fuselageCount                 = config.GetFuselageCount();
+    int fuselageCount                 = static_cast<int>(config.GetFuselageCount());
     for (int i = 1; i <= fuselageCount; i++) {
         auto& fuselage = config.GetFuselage(i);
         for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
@@ -771,7 +771,7 @@ QString TIGLCreatorDocument::dlgGetFuselageProfileSelection()
 
     // Initialize fuselage list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int profileCount                  = config.GetFuselageProfileCount();
+    int profileCount                  = static_cast<int>(config.GetFuselageProfileCount());
     for (int i = 1; i <= profileCount; i++) {
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(i);
         const std::string& profileUID        = profile.GetUID();
@@ -919,7 +919,7 @@ void TIGLCreatorDocument::drawControlPointNetByUID(const QString& uid)
             LOG(WARNING) << "Cannot draw control net: The geometric shape for the component with uid \"" << uid.toStdString() << "\" has no faces.";
         }
         int valid_face_count = 0;
-        for (int i = 0; i < loft->GetFaceCount(); ++i) {
+        for (int i = 0; i < static_cast<int>(loft->GetFaceCount()); ++i) {
             TopoDS_Face face = GetFace(loft->Shape(), i);
 
             Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
@@ -1696,7 +1696,7 @@ void TIGLCreatorDocument::drawFuselageSamplePointsAngle(const QString& Uid)
     }
 
     START_COMMAND()
-    int fuselageIndex = GetConfiguration().GetFuselageIndex(fuselageUid.toStdString());
+    int fuselageIndex = static_cast<int>(GetConfiguration().GetFuselageIndex(fuselageUid.toStdString()));
     double x, y, z;
 
     removeFuselage(fuselageUid);
@@ -2817,7 +2817,7 @@ void TIGLCreatorDocument::drawRotorBladeGuideCurves()
     removeAirfoil();
     // loop over all wings
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount                     = config.GetWingCount();
+    int wingCount                     = static_cast<int>(config.GetWingCount());
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         if (wing.IsRotorBlade()) {

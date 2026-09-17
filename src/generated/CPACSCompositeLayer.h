@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSComposite
 
-    /// @brief compositeLayerType
+    /// @brief Composite layer
     /// 
-    /// CompositeLayer type, conatining data of a composite
-    /// layer
+    /// Data of a composite layer
     /// 
     class CPACSCompositeLayer : public ITiglUIDRefObject
     {
@@ -81,19 +80,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Name of layer
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of layer
+        /// Description
         boost::optional<std::string> m_description;
 
-        /// Thickness of layer
+        /// Thickness
         double                       m_thickness;
 
         /// Angle of layer in degree
         double                       m_phi;
 
-        /// Material UID of the layer
+        /// Material UID
         std::string                  m_materialUID;
 
     private:

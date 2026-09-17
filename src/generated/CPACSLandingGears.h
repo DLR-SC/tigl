@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Landing gear
         std::vector<std::unique_ptr<CPACSLandingGearBase>> m_landingGears;
 
     private:

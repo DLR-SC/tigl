@@ -20,7 +20,7 @@
 #include <GProp_GProps.hxx>
 
 #include "CCPACSDeckComponentBase.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSSeatElement.h"
 #include "generated/CPACSGalleyElement.h"
@@ -193,6 +193,9 @@ TiglGeometryRepresentation CCPACSDeckComponentBase::GetComponentRepresentation()
     }
     if (representation == CPACSGeomRep::envelope) {
         return TIGL_GEOMREP_ENVELOPE;
+    }
+    if (representation == CPACSGeomRep::placeholder) {
+        return TIGL_GEOMREP_PLACEHOLDER;
     }
 
     throw CTiglError("Invalid geometry representation for component with uID \"" +

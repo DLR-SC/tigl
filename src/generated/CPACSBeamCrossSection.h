@@ -33,7 +33,7 @@ namespace generated
     // This class is used in:
     // CPACSGlobalBeamProperties
 
-    /// @brief beamCrossSectionType
+    /// @brief Beam cross section
     /// 
     /// beamCrossSectionType, containing the beam geometrical
     /// properties
@@ -81,11 +81,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
+
+        /// Cross section area
         double      m_area;
+
+        /// Minimum x coordinate
         double      m_xMin;
+
+        /// Maximum x coordinate
         double      m_xMax;
+
+        /// Minimum y coordinate
         double      m_yMin;
+
+        /// Maximum y coordinate
         double      m_yMax;
 
     private:

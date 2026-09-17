@@ -123,10 +123,10 @@ void CPACSTreeWidget::onSelectionChanged(const QItemSelection& newSelection, con
     if (filterModel->isValid()) {
         cpcr::CPACSTreeItem* newSelectedItem = filterModel->getItemFromSelection(newSelection);
         if (!newSelectedItem) {
-            // Pass an empty tree item so that the CPACSEditor is hidden and reset inside
-            // Otherwise, the CPACSEditor would still show the options of the last editable item
-            cpcr::CPACSTreeItem treeItem{};
-            emit newSelectedTreeItem(&treeItem);
+            // Pass nullptr so that the CPACSEditor is hidden and reset inside.
+            // Never emit a pointer to a temporary item here: receivers cache the
+            // pointer beyond this call, which led to crashes on dangling access (#1419).
+            emit newSelectedTreeItem(nullptr);
 
             ui->searchLineEdit->blockSignals(blockValue1);
             ui->expertViewCheckBox->blockSignals(blockValue2);

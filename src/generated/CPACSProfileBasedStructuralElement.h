@@ -47,13 +47,10 @@ namespace generated
     /// @brief Structural elements based on profiles
     /// 
     /// Short description
-    /// The ProfileBasedStructuralElement type containins the
-    /// data of a structural element, that are based on 2-dimensional profiles.
+    /// The ProfileBasedStructuralElement type containins the data of a structural element, that are based on 2-dimensional profiles.
     /// There are three approaches to model profile based structural elements: by specifying global beam properties by referencing a structuralProfile2D element by choosing one of the prescribed standard profiles
     /// 1. Global beam properties
-    /// In the section globalBeamProperties the properties
-    /// of the structural profile in an equivalent beam representation
-    /// are defined.
+    /// In the section globalBeamProperties the properties of the structural profile in an equivalent beam representation are defined.
     /// 2. Structural 2D profile
     /// The structuralProfileUID element refers to the uID of the structuralProfile2D element.
     /// As described in the corresponding documentation, this profile is defined by several points in the x-y-space.
@@ -147,33 +144,37 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                                               m_uID;
 
-        /// Name of the profile based structural element
+        /// Name
         boost::optional<std::string>                                              m_name;
 
-        /// Description of the profile based structural
-        /// element
+        /// Description
         boost::optional<std::string>                                              m_description;
 
+        /// Global beam properties
         boost::optional<CPACSGlobalBeamProperties>                                m_globalBeamProperties_choice1;
 
+        /// Material definition of a sheet of the profile
         std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBased>>      m_sheetProperties_choice2;
 
         /// Standard Profile Type, see picture below for
-        /// further information.
+        /// further information
         boost::optional<CPACSProfileBasedStructuralElement_standardProfileType>   m_standardProfileType_choice2_1;
 
         /// Reference to the structural profile profile
-        /// uID
+        /// UID
         boost::optional<std::string>                                              m_structuralProfileUID_choice2_2;
 
+        /// Material definition of a point reinforcement of the profile
         std::vector<std::unique_ptr<CPACSMaterialDefinitionForProfileBasedPoint>> m_pointProperties_choice2_2;
 
         /// Reference point in structural profile
         /// definition for structural element definition
         boost::optional<std::string>                                              m_referencePointUID_choice2_2;
 
+        /// Two-dimensional transformation
         boost::optional<CPACSTransformation2D>                                    m_transformation;
 
     private:

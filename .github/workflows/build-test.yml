@@ -54,7 +54,11 @@ jobs:
     runs-on: ${{ inputs.os }}
     steps:
       # checkout, setup pixi, compilers and ccache/sccache
+      # submodules: recursive is required for thirdparty/pythonocc-core (vendored SWIG sources
+      # needed at CMake configure time for the python-internal bindings, see cmake/FindPythonOCC.cmake)
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - name: Set up Visual Studio shell
         if: startsWith(inputs.os, 'windows')
         uses: egor-tensin/vs-shell@v2
@@ -67,14 +71,18 @@ jobs:
           key: compiler-cache-${{ inputs.os }}-${{ inputs.config }}-${{ inputs.pixienv }}
       - name: Setup sccache
         if: startsWith(inputs.os, 'windows')
-        uses: mozilla-actions/sccache-action@v0.0.10
+        uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.10.0
+        uses: prefix-dev/setup-pixi@v0.10.2
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
           environments: ${{ inputs.pixienv }}
+
+      - name: Check CPACS schema
+        run: pixi run -e default check-schema
+        if: ${{inputs.os == 'ubuntu-latest' && inputs.config == 'Debug' }}
 
       # configure, build and install tigl3
       - name: Configure TiGL (Linux, MacOS)
@@ -161,7 +169,7 @@ jobs:
       - name: Extract build archive
         run: tar -xzf build.tar.gz
       - name: Setup pixi
-        uses: prefix-dev/setup-pixi@v0.10.0
+        uses: prefix-dev/setup-pixi@v0.10.2
         with:
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}

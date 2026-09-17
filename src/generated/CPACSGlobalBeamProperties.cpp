@@ -29,7 +29,7 @@ namespace generated
 {
     CPACSGlobalBeamProperties::CPACSGlobalBeamProperties(CCPACSProfileBasedStructuralElement* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
-        , m_consistancy(0)
+        , m_consistency(0)
         , m_beamCrossSection(this, m_uidMgr)
         , m_beamCOG(this, m_uidMgr)
     {
@@ -117,12 +117,12 @@ namespace generated
             LOG(ERROR) << "Required element source is missing at xpath " << xpath;
         }
 
-        // read element consistancy
-        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/consistancy")) {
-            m_consistancy = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/consistancy");
+        // read element consistency
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/consistency")) {
+            m_consistency = tixi::TixiGetElement<bool>(tixiHandle, xpath + "/consistency");
         }
         else {
-            LOG(ERROR) << "Required element consistancy is missing at xpath " << xpath;
+            LOG(ERROR) << "Required element consistency is missing at xpath " << xpath;
         }
 
         // read element beamCrossSection
@@ -184,9 +184,9 @@ namespace generated
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/source");
         tixi::TixiSaveElement(tixiHandle, xpath + "/source", m_source);
 
-        // write element consistancy
-        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/consistancy");
-        tixi::TixiSaveElement(tixiHandle, xpath + "/consistancy", m_consistancy);
+        // write element consistency
+        tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/consistency");
+        tixi::TixiSaveElement(tixiHandle, xpath + "/consistency", m_consistency);
 
         // write element beamCrossSection
         tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/beamCrossSection");
@@ -273,14 +273,14 @@ namespace generated
         m_source = value;
     }
 
-    const bool& CPACSGlobalBeamProperties::GetConsistancy() const
+    const bool& CPACSGlobalBeamProperties::GetConsistency() const
     {
-        return m_consistancy;
+        return m_consistency;
     }
 
-    void CPACSGlobalBeamProperties::SetConsistancy(const bool& value)
+    void CPACSGlobalBeamProperties::SetConsistency(const bool& value)
     {
-        m_consistancy = value;
+        m_consistency = value;
     }
 
     const CPACSBeamCrossSection& CPACSGlobalBeamProperties::GetBeamCrossSection() const

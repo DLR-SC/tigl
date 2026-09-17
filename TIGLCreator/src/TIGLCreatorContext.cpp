@@ -21,6 +21,8 @@
 #include "tigl_config.h"
 
 
+#include <algorithm>
+
 #include <QApplication>
 #include <QTextStream>
 #include <QFile>
@@ -230,13 +232,6 @@ void TIGLCreatorContext::trackDisplayedObject(DocumentId docId, const Handle(AIS
 
 void TIGLCreatorContext::deleteObjectsOfDocument(DocumentId docId)
 {
-    // Mirrors the pre-existing (global) deleteAllObjects(): removes AIS
-    // objects only. It intentionally does NOT clear the document's named
-    // shape manager entries (see GetShapeManager) - callers that redraw a
-    // document rely on stale-but-present entries (e.g. HasShapeEntry checks
-    // guarding "draw only if not already displayed"). Callers that are
-    // closing a document for good should also clear its shape manager
-    // explicitly.
     auto it = myDocumentObjects.find(docId);
     if (it != myDocumentObjects.end()) {
         for (const auto& obj : it->second) {
@@ -247,6 +242,16 @@ void TIGLCreatorContext::deleteObjectsOfDocument(DocumentId docId)
         myDocumentObjects.erase(it);
     }
     myContext->UpdateCurrentViewer();
+
+    // Removing the AIS objects from the 3D context does not forget them in the document's shape
+    // manager: without this, a subsequent drawComponentByUID() for a uid still registered there
+    // takes the "update existing objects" branch instead of "create fresh", so it can never add an
+    // AIS object for a mirrored shape that did not exist the first time the component was drawn
+    // (e.g. right after enabling symmetry on a wing). That left the mirror invisible until the
+    // configuration was closed and reopened, since only that path started from an empty shape
+    // manager (#1432). removeAllObjects() (rather than clear()) keeps the per-uid "show symmetry"
+    // preference intact across this redraw.
+    GetShapeManager(docId).removeAllObjects();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.  
@@ -401,8 +406,18 @@ void TIGLCreatorContext::selectShape(const QString& uid)
     }
 
     myContext->ClearSelected(Standard_False);
-    for (auto& obj : iobjects) {
-        myContext->AddOrRemoveSelected(obj, Standard_False);
+    // Select the component itself, i.e. its loft and - if present - the mirrored loft.
+    // By the convention of TIGLCreatorDocument::drawComponentByUID() those are the first
+    // two objects registered for a uid. Further objects may be auxiliary geometry drawn
+    // under the same uid (spars and ribs of a wing, sample point clouds, ...), which must
+    // not be dragged into the selection of the component.
+    const std::size_t nComponentObjects = std::min<std::size_t>(iobjects.size(), 2);
+    for (std::size_t i = 0; i < nComponentObjects; ++i) {
+        const Handle(AIS_Shape)& obj = iobjects[i];
+        // skip hidden parts, e.g. a mirrored shape hidden via "Show Symmetry"
+        if (!obj.IsNull() && myContext->IsDisplayed(obj)) {
+            myContext->AddOrRemoveSelected(obj, Standard_False);
+        }
     }
     myContext->UpdateCurrentViewer();
 
@@ -527,7 +542,7 @@ Handle(AIS_Shape) TIGLCreatorContext::displayPoint(const gp_Pnt& aPoint,
         aGraphicText->SetScale(TextScale);
         myContext->Display(aGraphicText,UpdateViewer);
         trackDocumentObject(docId, aGraphicText);
-        return Handle(AIS_Shape)::DownCast(aGraphicPoint);
+        return Handle(AIS_Shape)();
     }
 
 }
@@ -737,6 +752,17 @@ IObjectList TIGLCreatorContext::GetIObjectsFromShapeName(const std::string& name
         }
     }
     return IObjectList();
+}
+
+std::string TIGLCreatorContext::GetNameFromIObject(const Handle(AIS_Shape)& obj) const
+{
+    for (const auto& kv : myShapeManagers) {
+        std::string name = kv.second.GetNameFromIObject(obj);
+        if (!name.empty()) {
+            return name;
+        }
+    }
+    return std::string();
 }
 
 Handle(AIS_InteractiveObject) TIGLCreatorContext::displayShapeHLMode(const TopoDS_Shape& loft, DocumentId docId, bool updateViewer,

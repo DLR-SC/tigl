@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Trailing edge device
         std::vector<std::unique_ptr<CCPACSTrailingEdgeDevice>> m_trailingEdgeDevices;
 
     private:

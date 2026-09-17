@@ -19,6 +19,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
+#include <CCPACSCurvePoint.h>
 #include <CCPACSEtaXsiPoint.h>
 #include <string>
 #include <tixi.h>
@@ -81,25 +82,34 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEtaXsiPoint>& GetSparPositionEtaXsi_choice2();
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSCurvePoint>& GetSparPositionCurve_choice3() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSCurvePoint>& GetSparPositionCurve_choice3();
+
         TIGL_EXPORT virtual CPACSWingRibPoint& GetSparPositionRib_choice1(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSparPositionRib_choice1();
 
         TIGL_EXPORT virtual CCPACSEtaXsiPoint& GetSparPositionEtaXsi_choice2(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSparPositionEtaXsi_choice2();
 
+        TIGL_EXPORT virtual CCPACSCurvePoint& GetSparPositionCurve_choice3(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveSparPositionCurve_choice3();
+
     protected:
         CCPACSWingSparPositions* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                        m_uID;
 
-        /// Defines a spar position on an existing rib using a relative xsi coordinate
-        /// to determine the chord wise position on that rib
+        /// Spar position on an existing rib using a relative xsi coordinate to determine the chord wise position on that rib
         boost::optional<CPACSWingRibPoint> m_sparPositionRib_choice1;
 
-        /// Defines a spar position using relative eta/xsi coordinates
+        /// Spar position using relative eta/xsi coordinates
         boost::optional<CCPACSEtaXsiPoint> m_sparPositionEtaXsi_choice2;
+
+        /// Spar position via a point on a curve
+        boost::optional<CCPACSCurvePoint>  m_sparPositionCurve_choice3;
 
     private:
         CPACSSparPosition(const CPACSSparPosition&) = delete;

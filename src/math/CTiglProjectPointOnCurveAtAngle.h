@@ -71,7 +71,7 @@ public:
      * Projects a point a curve such that the vector from the point p to the point on the
      * curve has a certain angle to the curve's direction.
      * 
-     * @param P Point to project on the curve
+     * @param p Point to project on the curve
      * @param curve Curve on which p is projected on
      * @param angle Angle, at which the curve is projected on. Angle in range [0,pi].
      *        0 means in curve direction, pi against curve direction. Pi/2 perpendicular to the curve

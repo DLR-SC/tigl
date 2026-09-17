@@ -3,3 +3,7 @@
 	url = https://github.com/DLR-SC/cpacs_tigl_gen.git
 	branch = master
 	ignore = dirty
+[submodule "thirdparty/pythonocc-core"]
+	path = thirdparty/pythonocc-core
+	url = https://github.com/tpaviot/pythonocc-core.git
+	ignore = dirty

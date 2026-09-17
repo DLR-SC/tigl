@@ -34,6 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSTrackStructure
 
+    /// @brief Track secondary structure
+    /// 
+    /// 
     class CPACSTrackSecondaryStructure : public ITiglUIDRefObject
     {
     public:
@@ -62,6 +65,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to the material
         std::string m_materialUID;
 
     private:

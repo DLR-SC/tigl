@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    /// @brief cargoCrossBeamsAssemblyType
+    /// @brief Cargo cross beams assembly
     /// 
-    /// CargoCrossBeamsAssembly type, containing cargo
-    /// crossBeam assemblys
+    /// Cargo crossBeam assemblies
     /// 
     class CPACSCargoCrossBeamsAssembly
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cargo cross beam
         std::vector<std::unique_ptr<CCPACSCrossBeamAssemblyPosition>> m_cargoCrossBeams;
 
     private:

@@ -16,9 +16,9 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CPACSSysElemDCDCConverter.h"
 #include "CPACSSysElemDCDCConverters.h"
-#include "CPACSSystemElements.h"
+#include "CPACSSysElemElectricalConversionElements.h"
+#include "CPACSVehicleElementBase.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSSysElemDCDCConverters::CPACSSysElemDCDCConverters(CPACSSystemElements* parent, CTiglUIDManager* uidMgr)
+    CPACSSysElemDCDCConverters::CPACSSysElemDCDCConverters(CPACSSysElemElectricalConversionElements* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSSystemElements* CPACSSysElemDCDCConverters::GetParent() const
+    const CPACSSysElemElectricalConversionElements* CPACSSysElemDCDCConverters::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSSystemElements* CPACSSysElemDCDCConverters::GetParent()
+    CPACSSysElemElectricalConversionElements* CPACSSysElemDCDCConverters::GetParent()
     {
         return m_parent;
     }
@@ -98,12 +98,12 @@ namespace generated
 
     }
 
-    const std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>& CPACSSysElemDCDCConverters::GetDcdcConverters() const
+    const std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemDCDCConverters::GetDcdcConverters() const
     {
         return m_dcdcConverters;
     }
 
-    std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>& CPACSSysElemDCDCConverters::GetDcdcConverters()
+    std::vector<std::unique_ptr<CPACSVehicleElementBase>>& CPACSSysElemDCDCConverters::GetDcdcConverters()
     {
         return m_dcdcConverters;
     }
@@ -124,25 +124,25 @@ namespace generated
         throw CTiglError("Invalid UID in CPACSSysElemDCDCConverters::GetDcdcConverterIndex", TIGL_UID_ERROR);
     }
 
-    CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::GetDcdcConverter(size_t index)
+    CPACSVehicleElementBase& CPACSSysElemDCDCConverters::GetDcdcConverter(size_t index)
     {
         if (index < 1 || index > GetDcdcConverterCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>::GetDcdcConverter", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetDcdcConverter", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_dcdcConverters[index];
     }
 
-    const CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::GetDcdcConverter(size_t index) const
+    const CPACSVehicleElementBase& CPACSSysElemDCDCConverters::GetDcdcConverter(size_t index) const
     {
         if (index < 1 || index > GetDcdcConverterCount()) {
-            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSSysElemDCDCConverter>>::GetDcdcConverter", TIGL_INDEX_ERROR);
+            throw CTiglError("Invalid index in std::vector<std::unique_ptr<CPACSVehicleElementBase>>::GetDcdcConverter", TIGL_INDEX_ERROR);
         }
         index--;
         return *m_dcdcConverters[index];
     }
 
-    CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::GetDcdcConverter(const std::string& UID)
+    CPACSVehicleElementBase& CPACSSysElemDCDCConverters::GetDcdcConverter(const std::string& UID)
     {
         for (auto& elem : m_dcdcConverters ) {
             if (elem->GetUID() == UID)
@@ -151,7 +151,7 @@ namespace generated
             throw CTiglError("Invalid UID in CPACSSysElemDCDCConverters::GetDcdcConverter. \""+ UID + "\" not found in CPACS file!" , TIGL_UID_ERROR);
     }
 
-    const CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::GetDcdcConverter(const std::string& UID) const
+    const CPACSVehicleElementBase& CPACSSysElemDCDCConverters::GetDcdcConverter(const std::string& UID) const
     {
         for (auto& elem : m_dcdcConverters ) {
             if (elem->GetUID() == UID)
@@ -161,13 +161,13 @@ namespace generated
     }
 
 
-    CPACSSysElemDCDCConverter& CPACSSysElemDCDCConverters::AddDcdcConverter()
+    CPACSVehicleElementBase& CPACSSysElemDCDCConverters::AddDcdcConverter()
     {
-        m_dcdcConverters.push_back(std::make_unique<CPACSSysElemDCDCConverter>(this, m_uidMgr));
+        m_dcdcConverters.push_back(std::make_unique<CPACSVehicleElementBase>(this, m_uidMgr));
         return *m_dcdcConverters.back();
     }
 
-    void CPACSSysElemDCDCConverters::RemoveDcdcConverter(CPACSSysElemDCDCConverter& ref)
+    void CPACSSysElemDCDCConverters::RemoveDcdcConverter(CPACSVehicleElementBase& ref)
     {
         for (std::size_t i = 0; i < m_dcdcConverters.size(); i++) {
             if (m_dcdcConverters[i].get() == &ref) {

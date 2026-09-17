@@ -4110,6 +4110,268 @@
             <componentSegments>
             </componentSegments>
           </wing>
+	  <wing uID="W18_TipRegr" symmetry="x-z-plane">
+            <name>W18_TipRegr</name>
+            <parentUID>SimpleFuselage</parentUID>
+            <description>Regression test for issue #1432: CTiglWingHelper::SetTipUid must pick the element with the largest absolute distance from the root, even when an intermediate element's signed offset is smaller in magnitude than a preceding one.</description>
+            <transformation uID="W18_TipRegr_transformation1">
+              <scaling uID="W18_TipRegr_transformation1_scaling1">
+                <x>1</x>
+                <y>1</y>
+                <z>1</z>
+              </scaling>
+              <rotation uID="W18_TipRegr_transformation1_rotation1">
+                <x>0</x>
+                <y>0</y>
+                <z>0</z>
+              </rotation>
+              <translation refType="absGlobal" uID="W18_TipRegr_transformation1_translation1">
+                <x>20</x>
+                <y>20</y>
+                <z>0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="W18_TipRegr_Sec1">
+                <name>W18_TipRegr Section 1</name>
+                <description>W18_TipRegr Section 1</description>
+                <transformation uID="W18_TipRegr_Sec1_transformation1">
+                  <scaling uID="W18_TipRegr_Sec1_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W18_TipRegr_Sec1_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W18_TipRegr_Sec1_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W18_TipRegr_Sec1_El1">
+                    <name>W18_TipRegr Section 1 Main Element</name>
+                    <description>W18_TipRegr Section 1 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W18_TipRegr_Sec1_El1_transformation1">
+                      <scaling uID="W18_TipRegr_Sec1_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W18_TipRegr_Sec1_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W18_TipRegr_Sec1_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W18_TipRegr_Sec2">
+                <name>W18_TipRegr Section 2</name>
+                <description>W18_TipRegr Section 2</description>
+                <transformation uID="W18_TipRegr_Sec2_transformation1">
+                  <scaling uID="W18_TipRegr_Sec2_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W18_TipRegr_Sec2_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W18_TipRegr_Sec2_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W18_TipRegr_Sec2_El1">
+                    <name>W18_TipRegr Section 2 Main Element</name>
+                    <description>W18_TipRegr Section 2 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W18_TipRegr_Sec2_El1_transformation1">
+                      <scaling uID="W18_TipRegr_Sec2_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W18_TipRegr_Sec2_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W18_TipRegr_Sec2_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W18_TipRegr_Sec3">
+                <name>W18_TipRegr Section 3</name>
+                <description>W18_TipRegr Section 3</description>
+                <transformation uID="W18_TipRegr_Sec3_transformation1">
+                  <scaling uID="W18_TipRegr_Sec3_transformation1_scaling1">
+                    <x>1</x>
+                    <y>1</y>
+                    <z>1</z>
+                  </scaling>
+                  <rotation uID="W18_TipRegr_Sec3_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W18_TipRegr_Sec3_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W18_TipRegr_Sec3_El1">
+                    <name>W18_TipRegr Section 3 Main Element</name>
+                    <description>W18_TipRegr Section 3 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W18_TipRegr_Sec3_El1_transformation1">
+                      <scaling uID="W18_TipRegr_Sec3_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W18_TipRegr_Sec3_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W18_TipRegr_Sec3_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="W18_TipRegr_Sec4">
+                <name>W18_TipRegr Section 4</name>
+                <description>W18_TipRegr Section 4</description>
+                <transformation uID="W18_TipRegr_Sec4_transformation1">
+                  <scaling uID="W18_TipRegr_Sec4_transformation1_scaling1">
+                    <x>0.5</x>
+                    <y>0.5</y>
+                    <z>0.5</z>
+                  </scaling>
+                  <rotation uID="W18_TipRegr_Sec4_transformation1_rotation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </rotation>
+                  <translation refType="absLocal" uID="W18_TipRegr_Sec4_transformation1_translation1">
+                    <x>0</x>
+                    <y>0</y>
+                    <z>0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="W18_TipRegr_Sec4_El1">
+                    <name>W18_TipRegr Section 4 Main Element</name>
+                    <description>W18_TipRegr Section 4 Main Element</description>
+                    <airfoilUID>NACA0012</airfoilUID>
+                    <transformation uID="W18_TipRegr_Sec4_El1_transformation1">
+                      <scaling uID="W18_TipRegr_Sec4_El1_transformation1_scaling1">
+                        <x>1</x>
+                        <y>1</y>
+                        <z>1</z>
+                      </scaling>
+                      <rotation uID="W18_TipRegr_Sec4_El1_transformation1_rotation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </rotation>
+                      <translation refType="absLocal" uID="W18_TipRegr_Sec4_El1_transformation1_translation1">
+                        <x>0</x>
+                        <y>0</y>
+                        <z>0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="W18_TipRegr_positioning1">
+                <name>W18_TipRegr Section 1 Positioning</name>
+                <description>W18_TipRegr Section 1 Positioning</description>
+                <length>0</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>W18_TipRegr_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="W18_TipRegr_positioning2">
+                <name>W18_TipRegr Section 2 Positioning</name>
+                <description>W18_TipRegr Section 2 Positioning: swept fully backwards, this is the true tip (largest distance from root)</description>
+                <length>10</length>
+                <sweepAngle>180</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W18_TipRegr_Sec1</fromSectionUID>
+                <toSectionUID>W18_TipRegr_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="W18_TipRegr_positioning3">
+                <name>W18_TipRegr Section 3 Positioning</name>
+                <description>W18_TipRegr Section 3 Positioning: steps back towards the root, but stays farther out than the root</description>
+                <length>2</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W18_TipRegr_Sec2</fromSectionUID>
+                <toSectionUID>W18_TipRegr_Sec3</toSectionUID>
+              </positioning>
+              <positioning uID="W18_TipRegr_positioning4">
+                <name>W18_TipRegr Section 4 Positioning</name>
+                <description>W18_TipRegr Section 4 Positioning: steps back towards the root again, still closer to the root than Section 2</description>
+                <length>1</length>
+                <sweepAngle>0</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>W18_TipRegr_Sec3</fromSectionUID>
+                <toSectionUID>W18_TipRegr_Sec4</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="W18_TipRegr_Seg_1_2">
+                <name>W18_TipRegr Segment 1 to 2</name>
+                <description>W18_TipRegr Segment 1 to 2</description>
+                <fromElementUID>W18_TipRegr_Sec1_El1</fromElementUID>
+                <toElementUID>W18_TipRegr_Sec2_El1</toElementUID>
+              </segment>
+              <segment uID="W18_TipRegr_Seg_2_3">
+                <name>W18_TipRegr Segment 2 to 3</name>
+                <description>W18_TipRegr Segment 2 to 3</description>
+                <fromElementUID>W18_TipRegr_Sec2_El1</fromElementUID>
+                <toElementUID>W18_TipRegr_Sec3_El1</toElementUID>
+              </segment>
+              <segment uID="W18_TipRegr_Seg_3_4">
+                <name>W18_TipRegr Segment 3 to 4</name>
+                <description>W18_TipRegr Segment 3 to 4</description>
+                <fromElementUID>W18_TipRegr_Sec3_El1</fromElementUID>
+                <toElementUID>W18_TipRegr_Sec4_El1</toElementUID>
+              </segment>
+            </segments>
+          </wing>
+
 	  
         </wings>
       </model>

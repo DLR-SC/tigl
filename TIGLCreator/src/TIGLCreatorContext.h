@@ -103,6 +103,13 @@ public:
     // document context of its own.
     IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
+    // Cross-document lookup: resolves a picked AIS object back to the name/uid it was
+    // registered under, regardless of which open document owns it. Unlike
+    // GetShapeFromIObject, this also works for objects registered by uid only (no
+    // PNamedShape), e.g. engines and pylons. Used by the shared 3D viewport, which has
+    // no document context of its own for a raw pick.
+    std::string GetNameFromIObject(const Handle(AIS_Shape)& obj) const;
+
     // Function used to highlight (HL) shape (used by ModificatorManager)
 
     // display the shape using highlighting settings and return the AIS_InteractiveObject
@@ -177,8 +184,8 @@ signals:
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();
 
-    Handle_V3d_Viewer               myViewer;
-    Handle_AIS_InteractiveContext   myContext;
+    Handle(V3d_Viewer)               myViewer;
+    Handle(AIS_InteractiveContext)   myContext;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;

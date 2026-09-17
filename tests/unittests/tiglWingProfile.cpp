@@ -114,7 +114,7 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
     ASSERT_TRUE(xCoords.size() == zCoords.size());
     ASSERT_TRUE(interpolatedPointsIndices.size() == 1);
 
-    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, xCoords.size());
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, static_cast<int>(xCoords.size()));
     tigl::ITiglWireAlgorithm::CPointContainer cpoints;
     for (int j = 0; j < xCoords.size(); j++) {
         gp_Pnt pnt(xCoords[j], 0., zCoords[j]);
@@ -126,7 +126,7 @@ TEST(WingProfileApproximation, ComputeApproximatedProfile)
     // Profile contains one interpolation point to test for more robustness
     tigl::CTiglBSplineApproxInterp approx(*hpoints, nrControlPoints, 3);
 
-    approx.InterpolatePoint(interpolatedPointsIndices[0]-1);
+    approx.InterpolatePoint(static_cast<int>(interpolatedPointsIndices[0]) - 1);
 
     // Make sure that the first and last point is still interpolated to ensure a closed wing profile
     approx.InterpolatePoint(0);

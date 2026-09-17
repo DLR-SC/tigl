@@ -70,6 +70,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Axle
         CPACSAxle m_axle;
 
         /// Relative position of the axle to the bogie (if more than one axle is defined; 0 = forward end of bogie; 1 = rear end of bogie)

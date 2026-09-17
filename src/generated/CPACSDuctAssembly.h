@@ -93,6 +93,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                           m_uID;
 
         /// Name
@@ -105,10 +106,13 @@ namespace generated
         /// mounted (if any)
         boost::optional<std::string>          m_parentUID;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation> m_transformation;
 
+        /// References to objects
         boost::optional<CPACSUIDSequence>     m_excludeObjectUIDs;
 
+        /// References to the ducts forming the assembly
         CPACSUIDSequence                      m_ductUIDs;
 
     private:

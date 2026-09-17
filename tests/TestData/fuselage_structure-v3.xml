@@ -601,15 +601,17 @@
                   </stringerPosition>
                 </stringer>
               </stringers>
-              <skinSegments>
-                <skinSegment uID="skinSegment1">
-                  <sheetElementUID>TODO</sheetElementUID>
-                  <startFrameUID>half_frame</startFrameUID>
-                  <endFrameUID>frame1</endFrameUID>
-                  <startStringerUID>stringer1</startStringerUID>
-                  <endStringerUID>stringer7</endStringerUID>
-                </skinSegment>
-              </skinSegments>
+              <skin>
+                <skinSegments>
+                  <skinSegment uID="skinSegment1">
+                    <sheetElementUID>TODO</sheetElementUID>
+                    <startFrameUID>half_frame</startFrameUID>
+                    <endFrameUID>frame1</endFrameUID>
+                    <startStringerUID>stringer1</startStringerUID>
+                    <endStringerUID>stringer7</endStringerUID>
+                  </skinSegment>
+                </skinSegments>
+              </skin>
               <cargoDoors>
                 <cargoDoor uID="cargoDoor1">
                   <doorElementUID>TODO</doorElementUID>

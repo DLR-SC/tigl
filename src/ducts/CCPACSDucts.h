@@ -37,6 +37,11 @@ public:
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&, std::string const &) const;
 
+    // Overload for objects that can be excluded on more than one level, e.g. a vessel
+    // may be excluded either by its own uid or by the uid of its parent fuel tank.
+    // A duct assembly is skipped if it excludes any of the given uids.
+    TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&, std::vector<std::string> const&) const;
+
     TIGL_EXPORT CCPACSDuct const& GetDuct(std::string const& uid) const;
     TIGL_EXPORT CCPACSDuct& GetDuct(std::string const& uid);
 

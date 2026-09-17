@@ -483,7 +483,6 @@ void TIGLCreatorWindow::openNewFile(const QString& templatePath)
     QString      fileType;
     QFileInfo    fileInfo;
 
-    TIGLCreatorInputOutput::FileFormat format;
     TIGLCreatorInputOutput reader;
     bool triangulation = false;
     bool success;
@@ -1178,8 +1177,8 @@ void TIGLCreatorWindow::updateMenus()
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
-            nRotorBlades = config.GetRotorBladeCount();
-            nRotors = config.GetRotorCount();
+            nRotorBlades = static_cast<int>(config.GetRotorBladeCount());
+            nRotors = static_cast<int>(config.GetRotorCount());
         }
     }
     catch(tigl::CTiglError& ){}
@@ -1414,7 +1413,10 @@ void TIGLCreatorWindow::onTreeSelectionChanged(cpcr::CPACSTreeItem* item)
         return;
     }
     lastSelectedTreeUID = treeWidget->getSelectedUID();
-    lastSelectedTreeItem = item;
+    // Only cache real tree items: on deselection nullptr (or an uninitialized
+    // placeholder) is passed, and caching it would leave a stale/dangling fallback
+    // for the display options and re-dispatch paths (#1419).
+    lastSelectedTreeItem = (item && item->isInitialized()) ? item : nullptr;
 }
 
 void TIGLCreatorWindow::onModificatorModelReset()
@@ -1423,6 +1425,24 @@ void TIGLCreatorWindow::onModificatorModelReset()
     // selected item is gone. Clear the cached pointer to avoid dangling references.
     lastSelectedTreeItem = nullptr;
     lastSelectedTreeUID.clear();
+
+    // The display options widget caches the item as well. Nothing else clears it here:
+    // QItemSelectionModel drops its selection on a model reset without emitting
+    // selectionChanged(), so no dispatch() runs. Without this, opening another
+    // configuration while the "Display Options" tab is active would leave the widget with a
+    // pointer into the destroyed tree, which is dereferenced by it's slots  (#1419, #1404).
+    if (modificatorContainerWidget) {
+        modificatorContainerWidget->setDisplayOptionsFromItem(nullptr, nullptr, nullptr);
+
+        // The active specialized widget (wing/fuselage/element/...) holds a raw reference into
+        // the CCPACSConfiguration, which a config reload (e.g. undo/redo, or opening another
+        // file) destroys and rebuilds from scratch. dispatchLastSelectedItemOnConfigurationEdited()
+        // re-dispatches the current selection afterwards, but the tree selection is already gone
+        // by the time this slot runs (same reason as above), so that re-dispatch can silently no-op.
+        // Reset to the neutral "no selection" state so a stale widget can't be interacted with and
+        // dereference the dangling reference (#1432).
+        modificatorContainerWidget->setNoInterfaceWidget();
+    }
 }
 
 void TIGLCreatorWindow::onDisplayOptionsRequested()

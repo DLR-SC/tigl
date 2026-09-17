@@ -615,7 +615,11 @@ TEST_F(BSplineInterpolation, withKinksShield)
     EXPECT_NEAR(0.8, kinkParams[1], 1e-13);
 
     auto paramsVec = interpolator.Parameters();
-    EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec));
+    // The intermediate parameters are computed by rescaling the initial curve
+    // parametrization between the prescribed kink parameters. The result differs
+    // in the last ulp across platforms (e.g. FMA contraction on arm64), so don't
+    // compare exactly.
+    EXPECT_TRUE(ArraysMatch({0., 0.2, 0.5, 0.8, 1.0}, paramsVec, InTolerance(1e-14)));
 
     gp_Pnt p; gp_Vec d_start, d_end;
     curve->D1(0., p, d_start);

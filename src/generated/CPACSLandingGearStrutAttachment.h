@@ -112,8 +112,10 @@ namespace generated
         /// UID of the second spar, where the landing gear is attached to. Only used, if the landing gear is attached between two spars.
         boost::optional<std::string>                    m_sparSegmentUID_choice1;
 
+        /// Support beam
         boost::optional<CPACSSupportBeam>               m_supportBeam_choice2;
 
+        /// References to the stringer and frame positions
         boost::optional<CPACSStringerFramePositionUIDs> m_stringerFramePositionUIDs_choice3;
 
         /// UID of the structural mount
@@ -125,6 +127,7 @@ namespace generated
         /// Number of the rib in the rib set (ribDefinition)
         boost::optional<int>                            m_ribNumber_choice5;
 
+        /// Positioning of the attachment on the wing
         boost::optional<CPACSWingAttachmentPositioning> m_positioning;
 
     private:
