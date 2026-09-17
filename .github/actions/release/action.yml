@@ -31,11 +31,12 @@ runs:
     - name: Parse version
       shell: bash -l {0}
       run: |
-        version=`echo $github_ref | cut -c 12-`
+        version=${GITHUB_REF_NAME#test-}
+        version=${version#v}
         echo $version
         echo "version=$version" >> $GITHUB_ENV
       env:
-         github_ref: ${{ github.ref }}
+         GITHUB_REF_NAME: ${{ github.ref_name }}
          
     - name: download Win64 package Build artifact
       uses: actions/download-artifact@v4
@@ -101,6 +102,7 @@ runs:
 
 
     - name: Create Pull Request at DLR-SC/tigl-website
+      if: ${{ !startsWith(github.ref, 'refs/tags/test-') }}
       uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-website
@@ -124,6 +126,7 @@ runs:
         git diff
 
     - name: Create Pull Request at DLR-SC/tigl-conda
+      if: ${{ !startsWith(github.ref, 'refs/tags/test-') }}
       uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-conda
