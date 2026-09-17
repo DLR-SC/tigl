@@ -41,16 +41,19 @@ runs:
       uses: actions/download-artifact@v4
       with:
         name: win-package
-        
+        path: win-package
+
     - name: download Win64 installer Build artifact
       uses: actions/download-artifact@v4
       with:
         name: win-installer
-         
+        path: win-installer
+
     - name: download MacOS package Build artifact
       uses: actions/download-artifact@v4
       with:
         name: macos-package
+        path: macos-package
         
     - name: download html-documentation
       uses: actions/download-artifact@v4
@@ -62,7 +65,7 @@ runs:
       id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
+        tag_name: ${{ github.ref_name }}
         name: TiGL ${{ env.version }}
         body: ${{ steps.changelog.outputs.content  }}
         draft: true
