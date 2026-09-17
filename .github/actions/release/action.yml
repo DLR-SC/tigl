@@ -41,16 +41,19 @@ runs:
       uses: actions/download-artifact@v4
       with:
         name: win-package
-        
+        path: win-package
+
     - name: download Win64 installer Build artifact
       uses: actions/download-artifact@v4
       with:
         name: win-installer
-         
+        path: win-installer
+
     - name: download MacOS package Build artifact
       uses: actions/download-artifact@v4
       with:
         name: macos-package
+        path: macos-package
         
     - name: download html-documentation
       uses: actions/download-artifact@v4
