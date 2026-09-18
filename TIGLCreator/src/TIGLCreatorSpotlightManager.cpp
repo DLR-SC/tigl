@@ -100,21 +100,21 @@ void TIGLCreatorSpotlightManager::copySpotlight(int index)
                  sourceEnabled);
 }
 
-bool TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y, double z,
+void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y, double z,
                                                   double dx, double dy, double dz,
                                                   double concentration)
 {
     if (index < 0 || index >= mySpotlights.size()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Invalid spotlight index " << index << ".";
-        return false;
+        return;
     }
     if (concentration < 0.0 || concentration > 1.0) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
-        return false;
+        return;
     }
     if (dx*dx + dy*dy + dz*dz < 1e-8) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Direction must not be the zero vector or very close to it.";
-        return false;
+        return;
     }
 
     SpotlightData& data = mySpotlights[index];
@@ -130,7 +130,6 @@ bool TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
     }
 
     emit spotlightsChanged();
-    return true;
 }
 
 bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)

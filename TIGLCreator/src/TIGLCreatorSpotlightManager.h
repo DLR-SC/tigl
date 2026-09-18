@@ -47,7 +47,7 @@ public:
 
     void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration);
     void removeSpotlight(int index);
-    bool updateSpotlight(int index, double x, double y, double z, double dx, double dy, double dz, double concentration);
+    void updateSpotlight(int index, double x, double y, double z, double dx, double dy, double dz, double concentration);
     void copySpotlight(int index);
     bool setSpotlightEnabled(int index, bool enabled);
     bool isSpotlightEnabled(int index) const;
