@@ -72,6 +72,7 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
 void TIGLCreatorSpotlightManager::removeSpotlight(int index)
 {
     if (index < 0 || index >= mySpotlights.size()) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: Invalid spotlight index " << index << ".";
         return;
     }
     myWidget->removeLight(mySpotlights[index].light);
@@ -82,6 +83,7 @@ void TIGLCreatorSpotlightManager::removeSpotlight(int index)
 void TIGLCreatorSpotlightManager::copySpotlight(int index)
 {
     if (index < 0 || index >= mySpotlights.size()) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::copySpotlight: Invalid spotlight index " << index << ".";
         return;
     }
 
