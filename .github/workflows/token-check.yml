@@ -1,0 +1,12 @@
+name: token-check
+on: workflow_dispatch
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          echo "length: ${#GH_TOKEN}"
+          echo "sha256: $(printf %s "$GH_TOKEN" | sha256sum | cut -c1-12)"
+          echo "status: $(curl -s -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer $GH_TOKEN\" https://api.github.com/repos/DLR-SC/tigl)"
