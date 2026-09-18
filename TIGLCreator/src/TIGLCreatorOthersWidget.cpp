@@ -149,6 +149,10 @@ void TIGLCreatorOthersWidget::onCategorySelectionChanged(QTreeWidgetItem* curren
         return;
     }
     int index = current->data(0, Qt::UserRole).toInt();
+    if (index < 0 || index >= myDetailStack->count()) {
+        myDetailStack->setCurrentIndex(0);
+        return;
+    }
     myDetailStack->setCurrentIndex(index);
 }
 
