@@ -66,6 +66,7 @@ void TIGLCreatorAddSpotlightDialog::setupUI(const QString& title)
     dx->setDecimals(decimals);
     dy->setDecimals(decimals);
     dz->setDecimals(decimals);
+    concentration->setDecimals(decimals);
 
     // set ranges for all spinboxes
     double position_min = -1e4;
