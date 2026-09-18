@@ -52,7 +52,7 @@ public:
     bool setSpotlightEnabled(int index, bool enabled);
     bool isSpotlightEnabled(int index) const;
 
-    QList<SpotlightData> getSpotlights() const;
+    const QList<SpotlightData>& getSpotlights() const;
 
 signals:
     void spotlightsChanged();

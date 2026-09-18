@@ -163,7 +163,7 @@ bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
     return mySpotlights[index].enabled;
 }
 
-QList<SpotlightData> TIGLCreatorSpotlightManager::getSpotlights() const
+const QList<SpotlightData>& TIGLCreatorSpotlightManager::getSpotlights() const
 {
     return mySpotlights;
 }

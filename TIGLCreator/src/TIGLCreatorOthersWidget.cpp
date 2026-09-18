@@ -181,7 +181,7 @@ void TIGLCreatorOthersWidget::onEditSpotlight()
         return;
     }
 
-    QList<SpotlightData> spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
     if (row >= spotlights.size()) {
         return;
     }
@@ -232,7 +232,7 @@ void TIGLCreatorOthersWidget::onDeleteSpotlight()
         return;
     }
 
-    QList<SpotlightData> spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
     if (row >= spotlights.size()) {
         return;
     }
@@ -288,7 +288,7 @@ void TIGLCreatorOthersWidget::refreshSpotlightList()
     mySpotlightList->clear();
 
     if (mySpotlightManager) {
-        QList<SpotlightData> spotlights = mySpotlightManager->getSpotlights();
+        const   QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
         for (const auto& s : spotlights) {
             QListWidgetItem* item = new QListWidgetItem(s.name);
             item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
