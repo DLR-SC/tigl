@@ -1340,11 +1340,11 @@ void TIGLCreatorWindow::addSpotlight()
         return;
     }
 
-    gp_Pnt pos = addSpotlightDialog.getPosition().Get_gp_Pnt();
-    gp_Vec dir = addSpotlightDialog.getDirection().Get_gp_Pnt().XYZ();
+    tigl::CTiglPoint pos = addSpotlightDialog.getPosition();
+    tigl::CTiglPoint dir = addSpotlightDialog.getDirection();
     double concentration = addSpotlightDialog.getConcentration();
 
-    spotlightManager->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
+    spotlightManager->addSpotlight(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z, concentration);
 }
 
 /// This function is copied from QtCoreLib (>5.1)
