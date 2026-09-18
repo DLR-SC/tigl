@@ -153,22 +153,12 @@ void TIGLCreatorAddSpotlightDialog::setValues(double x, double y, double z,
 
 tigl::CTiglPoint TIGLCreatorAddSpotlightDialog::getPosition() const
 {
-    tigl::CTiglPoint point(0,0,0);
-    point.x = position_x->value();
-    point.y = position_y->value();
-    point.z = position_z->value();
-
-    return point;
+    return tigl::CTiglPoint(position_x->value(), position_y->value(), position_z->value());
 }
 
 tigl::CTiglPoint TIGLCreatorAddSpotlightDialog::getDirection() const
 {
-    tigl::CTiglPoint direction(0,0,0);
-    direction.x = dx->value();
-    direction.y = dy->value();
-    direction.z = dz->value();
-
-    return direction;
+    return tigl::CTiglPoint(dx->value(), dy->value(), dz->value());
 }
 
 double TIGLCreatorAddSpotlightDialog::getConcentration() const
