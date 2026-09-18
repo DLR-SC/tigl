@@ -28,7 +28,9 @@ TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widg
     : QObject(parent)
     , myWidget(widget)
     , myNextId(1)
-{}
+{
+    Q_ASSERT(myWidget != nullptr);
+}
 
 void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
                                                double dx, double dy, double dz,
