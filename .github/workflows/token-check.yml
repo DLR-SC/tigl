@@ -1,12 +1,19 @@
 name: token-check
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - check_gh_token_dummy
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - env:
+      - name: Probe stored GH_TOKEN (prints no secret material)
+        env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "length: ${#GH_TOKEN}"
-          echo "sha256: $(printf %s "$GH_TOKEN" | sha256sum | cut -c1-12)"
-          echo "status: $(curl -s -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer $GH_TOKEN\" https://api.github.com/repos/DLR-SC/tigl)"
+          fp=$(printf %s "$GH_TOKEN" | sha256sum | cut -c1-12)
+          echo "sha256: $fp"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/DLR-SC/tigl)
+          echo "status: $code"
