@@ -222,6 +222,11 @@ void TIGLCreatorOthersWidget::onCopySpotlight()
         return;
     }
 
+    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    if (row >= spotlights.size()) {
+        return;
+    }
+
     mySpotlightManager->copySpotlight(row);
 }
 
