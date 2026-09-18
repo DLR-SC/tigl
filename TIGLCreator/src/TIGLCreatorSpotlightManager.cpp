@@ -62,8 +62,9 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
     data.name = QString("Spotlight %1").arg(myNextId++);
     data.light = light;
     data.direction = gp_Pnt(dx, dy, dz);
-    data.enabled = enabled;
 
+    // A new light is not active in the view until it is explicitly turned on,
+    // so no deactivation is needed here for the disabled case
     if (enabled) {
         myWidget->activateLight(light);
     }
@@ -92,7 +93,7 @@ void TIGLCreatorSpotlightManager::copySpotlight(int index)
     gp_Pnt position = mySpotlights[index].light->Position();
     gp_Pnt direction = mySpotlights[index].direction;
     double concentration = mySpotlights[index].light->Concentration();
-    bool sourceEnabled = mySpotlights[index].enabled;
+    bool sourceEnabled = isSpotlightEnabled(index);
 
     addSpotlight(position.X(), position.Y(), position.Z(),
                  direction.X(), direction.Y(), direction.Z(),
@@ -123,10 +124,10 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
     data.light->SetConcentration(concentration);
     data.direction = gp_Pnt(dx, dy, dz);
 
-    if (data.enabled) {
+    if (myWidget->isLightEnabled(data.light)) {
         myWidget->activateLight(data.light);
     } else {
-        myWidget->deactivateLight(data.light);
+        myWidget->refreshLights();
     }
 
     emit spotlightsChanged();
@@ -140,11 +141,9 @@ bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)
     }
 
     SpotlightData& data = mySpotlights[index];
-    if (data.enabled == enabled) {
+    if (myWidget->isLightEnabled(data.light) == enabled) {
         return true;
     }
-
-    data.enabled = enabled;
 
     if (enabled) {
         myWidget->activateLight(data.light);
@@ -163,7 +162,7 @@ bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
         return false;
     }
 
-    return mySpotlights[index].enabled;
+    return myWidget->isLightEnabled(mySpotlights[index].light);
 }
 
 const QList<SpotlightData>& TIGLCreatorSpotlightManager::getSpotlights() const

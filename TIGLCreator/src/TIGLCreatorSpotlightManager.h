@@ -35,7 +35,6 @@ struct SpotlightData
     QString name;
     Handle(V3d_Light) light;
     gp_Pnt direction;
-    bool enabled = true;
 };
 
 class TIGLCreatorSpotlightManager : public QObject

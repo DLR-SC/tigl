@@ -186,6 +186,7 @@ private: // members
     void deactivateLight(const Handle(V3d_Light)& light);
     void removeLight(const Handle(V3d_Light)& light);
     void refreshLights();
+    bool isLightEnabled(const Handle(V3d_Light)& light) const;
 
     void setStartPoint(const QPoint&);
     void setCurrentPoint(const QPoint&);

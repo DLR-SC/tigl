@@ -277,7 +277,7 @@ void TIGLCreatorOthersWidget::onSpotlightVisibChanged(QListWidgetItem* item)
 
 void TIGLCreatorOthersWidget::refreshSpotlightList()
 {
-    if (!mySpotlightList || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
+    if (!mySpotlightList || !mySpotlightManager || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
         return;
     }
 
@@ -291,14 +291,12 @@ void TIGLCreatorOthersWidget::refreshSpotlightList()
     // Rebuild whole list since after change (add, edit, delete) it is not clear which spotlight changed
     mySpotlightList->clear();
 
-    if (mySpotlightManager) {
-        const   QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
-        for (const auto& s : spotlights) {
-            QListWidgetItem* item = new QListWidgetItem(s.name);
-            item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-            item->setCheckState(s.enabled ? Qt::Checked : Qt::Unchecked);
-            mySpotlightList->addItem(item);
-        }
+    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    for (int i = 0; i < spotlights.size(); ++i) {
+        QListWidgetItem* item = new QListWidgetItem(spotlights[i].name);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+        item->setCheckState(mySpotlightManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
+        mySpotlightList->addItem(item);
     }
 
     myIsRefreshingSpotlightList = false;

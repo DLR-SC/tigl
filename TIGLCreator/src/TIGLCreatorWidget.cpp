@@ -658,6 +658,14 @@ void TIGLCreatorWidget::refreshLights()
     update();
 }
 
+bool TIGLCreatorWidget::isLightEnabled(const Handle(V3d_Light)& light) const
+{
+    if (myView.IsNull() || light.IsNull()) {
+        return false;
+    }
+    return myView->IsActiveLight(light);
+}
+
 void TIGLCreatorWidget::hiddenLineOff()
 {
     if (!myView.IsNull()) {
