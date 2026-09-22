@@ -20,6 +20,7 @@
 #include "CControlSurfaceBorderBuilder.h"
 #include "CCPACSControlSurfaceOuterShapeTrailingEdge.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "ControlSurfaceDeviceHelper.h"
 #include "tigletaxsifunctions.h"
 
 #include "CNamedShape.h"
@@ -84,24 +85,9 @@ CCPACSControlSurfaceBorderTrailingEdge::GetAirfoilWire(CTiglControlSurfaceBorder
     CCPACSWingProfile& profile = uidMgr().ResolveObject<CCPACSWingProfile>(GetAirfoil()->GetAirfoilUID());
     TopoDS_Wire w              = profile.GetWire();
 
-    // scale
-    CTiglTransformation scale;
-    scale.AddScaling(coords.getLe().Distance(coords.getTe()), 1, GetAirfoil()->GetScalZ());
+    const CTiglTransformation total =
+        ControlSurfaceDeviceHelper::GetBorderAirfoilTransformation(coords, GetAirfoil()->GetScalZ());
 
-    // bring the wire into the coordinate system of
-    // the airfoil by swapping z with y
-    gp_Trsf trafo;
-    trafo.SetTransformation(gp_Ax3(gp_Pnt(0, 0, 0), gp_Vec(0, -1, 0), gp_Vec(1, 0, 0)));
-    CTiglTransformation flipZY(trafo);
-
-    // put the airfoil to the correct place
-    CTiglTransformation position(coords.globalTransform());
-
-    // compute the total transform
-    CTiglTransformation total;
-    total.PreMultiply(scale);
-    total.PreMultiply(flipZY);
-    total.PreMultiply(position);
     w = TopoDS::Wire(total.Transform(w));
     return w;
 }
