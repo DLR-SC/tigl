@@ -38,10 +38,10 @@ namespace tigl
 CTiglAbstractGeometricComponent const* CCPACSControlSurfaceWingCutOut::GetParentComponent() const
 {
     if (IsParent<CCPACSTrailingEdgeDevice>()) {
-        return (CCPACSTrailingEdgeDevice*)GetParent<CCPACSTrailingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSTrailingEdgeDevice>();
     }
     if (IsParent<CCPACSLeadingEdgeDevice>()) {
-        return (CCPACSLeadingEdgeDevice*)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSLeadingEdgeDevice>();
     }
     throw CTiglError("Unexpected error:");
 }

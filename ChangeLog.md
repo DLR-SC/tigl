@@ -28,6 +28,7 @@ Changes since last release
 - Fixes
 
   - Fix an issue that the header of the docu did not show the TiGL logo anymore due to the switch to a newer doxygen version internally [#1444](https://github.com/DLR-SC/tigl/issues/1444)
+  - Fix a crash when a control surface defines a `wingCutOut`
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
 

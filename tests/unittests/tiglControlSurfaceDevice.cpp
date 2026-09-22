@@ -19,6 +19,7 @@
 #include "test.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSLeadingEdgeDevice.h"
+#include "CCPACSControlSurfaces.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSConfigurationManager.h"
@@ -35,6 +36,8 @@
 #include "Geom_Plane.hxx"
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 
 using namespace std;
 
@@ -382,6 +385,41 @@ TEST_F(TiglControlSurfaceDeviceSimple, setControlParameterAndExport)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglControlSurfaceSetControlParameter(tiglHandle, "FlapInner", 1.0));
     tiglExportConfiguration(tiglHandle, "TestData/export/simpletest-flaps.stp", TIGL_TRUE, 0.0);
+}
+
+namespace
+{
+double ShapeVolume(const TopoDS_Shape& shape)
+{
+    GProp_GProps props;
+    BRepGProp::VolumeProperties(shape, props);
+    return props.Mass();
+}
+} // namespace
+
+TEST_F(TiglControlSurfaceDeviceSimple, wingCutOutShape)
+{
+    // both devices of this file carry a wingCutOut, whose parent is the device itself
+    auto& manager          = tigl::CCPACSConfigurationManager::GetInstance();
+    auto& config           = manager.GetConfiguration(tiglHandle);
+    auto& wing             = config.GetWing(1);
+    auto& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
+    auto& controlSurfaces  = *componentSegment.GetControlSurfaces();
+
+    auto& flap = controlSurfaces.GetTrailingEdgeDevices()->GetTrailingEdgeDevice(1);
+    ASSERT_EQ("FlapInner", flap.GetDefaultedUID());
+    auto flapCutOut = flap.GetCutOutShape();
+    ASSERT_TRUE(flapCutOut != nullptr);
+    EXPECT_GT(ShapeVolume(flapCutOut->Shape()), 0.);
+
+    auto& led = controlSurfaces.GetLeadingEdgeDevices()->GetLeadingEdgeDevice(1);
+    ASSERT_EQ("InnerLED", led.GetDefaultedUID());
+    auto ledCutOut = led.GetCutOutShape();
+    ASSERT_TRUE(ledCutOut != nullptr);
+    EXPECT_GT(ShapeVolume(ledCutOut->Shape()), 0.);
+
+    // the cut outs take material out of the wing
+    EXPECT_LT(ShapeVolume(wing.GetLoftWithCutouts()), ShapeVolume(wing.GetLoft()->Shape()));
 }
 
 TEST_F(TiglControlSurfaceDeviceSimple, bug_780_reference_segment)
