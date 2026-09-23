@@ -43,7 +43,7 @@ CTiglAbstractGeometricComponent const* CCPACSControlSurfaceWingCutOut::GetParent
     if (IsParent<CCPACSLeadingEdgeDevice>()) {
         return GetParent<CCPACSLeadingEdgeDevice>();
     }
-    throw CTiglError("Unexpected error:");
+    throw CTiglError("Unexpected error in CCPACSControlSurfaceWingCutOut::GetParentComponent: The registered parent is not a CCPACSLeadingEdgeDevice or a CCPACSTrailingEdgeDevice. Other parent components are currently not supported.");
 }
 
 CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent,
