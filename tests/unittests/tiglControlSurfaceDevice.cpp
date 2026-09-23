@@ -412,6 +412,8 @@ TEST_F(TiglControlSurfaceDeviceSimple, wingCutOutShape)
     ASSERT_TRUE(flapCutOut != nullptr);
     EXPECT_GT(ShapeVolume(flapCutOut->Shape()), 0.);
 
+    // the border of this device gives xsiTEUpper and xsiTELower instead of xsiTE, and its cut out has
+    // borders of its own, so that the cut out needs the chordwise position of the device border
     auto& led = controlSurfaces.GetLeadingEdgeDevices()->GetLeadingEdgeDevice(1);
     ASSERT_EQ("InnerLED", led.GetDefaultedUID());
     auto ledCutOut = led.GetCutOutShape();
