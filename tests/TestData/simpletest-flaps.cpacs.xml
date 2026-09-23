@@ -533,6 +533,16 @@
                           </innerShape>
                         </outerBorder>
                       </outerShape>
+                      <wingCutOut>
+                        <upperSkin>
+                          <xsiInnerBorder>0.8</xsiInnerBorder>
+                          <xsiOuterBorder>0.8</xsiOuterBorder>
+                        </upperSkin>
+                        <lowerSkin>
+                          <xsiInnerBorder>0.8</xsiInnerBorder>
+                          <xsiOuterBorder>0.8</xsiOuterBorder>
+                        </lowerSkin>
+                      </wingCutOut>
                       <path>
                         <innerHingePoint>
                           <hingeXsi>0.05</hingeXsi>
@@ -617,6 +627,16 @@
                           </leadingEdgeShape>
                         </outerBorder>
                       </outerShape>
+                      <wingCutOut>
+                        <upperSkin>
+                          <xsiInnerBorder>0.9</xsiInnerBorder>
+                          <xsiOuterBorder>0.9</xsiOuterBorder>
+                        </upperSkin>
+                        <lowerSkin>
+                          <xsiInnerBorder>0.9</xsiInnerBorder>
+                          <xsiOuterBorder>0.9</xsiOuterBorder>
+                        </lowerSkin>
+                      </wingCutOut>
                       <path>
                         <innerHingePoint>
                           <hingeXsi>0.8</hingeXsi>

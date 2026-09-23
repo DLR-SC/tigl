@@ -38,12 +38,12 @@ namespace tigl
 CTiglAbstractGeometricComponent const* CCPACSControlSurfaceWingCutOut::GetParentComponent() const
 {
     if (IsParent<CCPACSTrailingEdgeDevice>()) {
-        return (CCPACSTrailingEdgeDevice*)GetParent<CCPACSTrailingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSTrailingEdgeDevice>();
     }
     if (IsParent<CCPACSLeadingEdgeDevice>()) {
-        return (CCPACSLeadingEdgeDevice*)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSLeadingEdgeDevice>();
     }
-    throw CTiglError("Unexpected error:");
+    throw CTiglError("Unexpected error in CCPACSControlSurfaceWingCutOut::GetParentComponent: The registered parent is not a CCPACSLeadingEdgeDevice or a CCPACSTrailingEdgeDevice. Other parent components are currently not supported.");
 }
 
 CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent,
