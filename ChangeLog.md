@@ -29,6 +29,8 @@ Changes since last release
 
   - Fix an issue that the header of the docu did not show the TiGL logo anymore due to the switch to a newer doxygen version internally [#1444](https://github.com/DLR-SC/tigl/issues/1444)
   - Fix a crash when a control surface defines a `wingCutOut` ([#1454](https://github.com/DLR-SC/tigl/pull/1454))
+  - Fix a crash when the border of a leading edge device gives `xsiTEUpper` and `xsiTELower` instead of
+    `xsiTE` and its `wingCutOut` has borders of its own
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
 

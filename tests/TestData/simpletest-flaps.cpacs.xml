@@ -505,10 +505,8 @@
                             <eta>0.1</eta>
                             <referenceUID>WING_CS1</referenceUID>
                           </etaTE>
-                          <xsiTE>
-                            <xsi>0.08</xsi>
-                            <referenceUID>WING_CS1</referenceUID>
-                          </xsiTE>
+                          <xsiTEUpper>0.08</xsiTEUpper>
+                          <xsiTELower>0.08</xsiTELower>
                           <innerShape>
                             <relHeightTE>0.2</relHeightTE>
                             <xsiTE>0.5</xsiTE>
@@ -523,10 +521,8 @@
                             <eta>0.41</eta>
                             <referenceUID>WING_CS1</referenceUID>
                           </etaTE>
-                          <xsiTE>
-                            <xsi>0.1</xsi>
-                            <referenceUID>WING_CS1</referenceUID>
-                          </xsiTE>
+                          <xsiTEUpper>0.1</xsiTEUpper>
+                          <xsiTELower>0.1</xsiTELower>
                           <innerShape>
                             <relHeightTE>0.2</relHeightTE>
                             <xsiTE>0.5</xsiTE>
@@ -542,6 +538,26 @@
                           <xsiInnerBorder>0.8</xsiInnerBorder>
                           <xsiOuterBorder>0.8</xsiOuterBorder>
                         </lowerSkin>
+                        <innerBorder>
+                          <etaLE>
+                            <eta>0.08</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.08</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </etaTE>
+                        </innerBorder>
+                        <outerBorder>
+                          <etaLE>
+                            <eta>0.44</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </etaLE>
+                          <etaTE>
+                            <eta>0.44</eta>
+                            <referenceUID>WING_CS1</referenceUID>
+                          </etaTE>
+                        </outerBorder>
                       </wingCutOut>
                       <path>
                         <innerHingePoint>

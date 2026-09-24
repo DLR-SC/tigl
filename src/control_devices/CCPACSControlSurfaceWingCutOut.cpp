@@ -261,7 +261,7 @@ CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceWingCutOut::GetCut
     }
 
     double lEta = transformEtaToCSOrTed(cutOutBorder->GetEtaLE_choice2().value(), *m_uidMgr);
-    double tXsi = outerShapeBorder->GetXsiTE_choice1()->GetXsi();
+    double tXsi = outerShapeBorder->getXsiTE();
     double tEta = transformEtaToCSOrTed(cutOutBorder->GetEtaTE_choice2().value(), *m_uidMgr);
     double lXsi = outerShapeBorder->getXsiLE(); // this is always 0.0
 
