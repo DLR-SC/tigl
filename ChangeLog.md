@@ -31,6 +31,8 @@ Changes since last release
   - Fix a crash when a control surface defines a `wingCutOut` ([#1454](https://github.com/DLR-SC/tigl/pull/1454))
   - Fix a crash when the border of a leading edge device gives `xsiTEUpper` and `xsiTELower` instead of
     `xsiTE` and its `wingCutOut` has borders of its own
+  - Fix the Windows NSIS installer (`.exe`) not including the Matlab/Python bindings, headers and
+    internal C++ bindings, which were only present in the `.zip` release artifact ([#1456](https://github.com/DLR-SC/tigl/issues/1456))
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
 
