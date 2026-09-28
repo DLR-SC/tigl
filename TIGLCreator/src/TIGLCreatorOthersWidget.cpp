@@ -24,13 +24,97 @@
 #include <QHBoxLayout>
 #include <QTreeWidget>
 #include <QStackedWidget>
-#include <QListWidget>
-#include <QListWidgetItem>
+#include <QHeaderView>
 #include <QPushButton>
 #include <QMessageBox>
 #include <QLabel>
 #include <QSplitter>
+#include <QPainter>
+#include <QStyle>
+#include <QStyledItemDelegate>
+#include <QStyleOption>
+#include <QMouseEvent>
 #include <gp_Pnt.hxx>
+
+namespace {
+
+/// Renders the check state of an item centered in its rect instead of
+/// at the left edge as the default item delegate does, and makes the
+/// centered check box the clickable toggle area.
+class CenteredCheckDelegate : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override
+    {
+        QStyleOptionViewItem viewOption = option;
+        initStyleOption(&viewOption, index);
+
+        // Determine the check box rect first: subElementRect only returns
+        // a valid rect while the HasCheckIndicator feature is still set
+        const Qt::CheckState checkState = viewOption.checkState;
+        const QRect rect = checkRect(viewOption);
+
+        // Suppress the check indicator of the default rendering, otherwise
+        // the check box would also be painted at the left edge
+        // (QStyledItemDelegate::paint cannot be used, it re-initializes
+        // the option from the index)
+        viewOption.checkState = Qt::Unchecked;
+        viewOption.features &= ~QStyleOptionViewItem::HasCheckIndicator;
+        viewOption.widget->style()->drawControl(QStyle::CE_ItemViewItem, &viewOption, painter, viewOption.widget);
+
+        QStyleOptionButton buttonOption;
+        buttonOption.palette = viewOption.palette;
+        buttonOption.state = viewOption.state;
+        if (checkState == Qt::Checked) {
+            buttonOption.state |= QStyle::State_On;
+        }
+        buttonOption.rect = rect;
+        painter->save();
+        painter->setClipRect(viewOption.rect);
+        viewOption.widget->style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &buttonOption, painter, viewOption.widget);
+        painter->restore();
+    }
+
+    bool editorEvent(QEvent* event, QAbstractItemModel* model,
+                     const QStyleOptionViewItem& option, const QModelIndex& index) override
+    {
+        if (event->type() == QEvent::MouseButtonPress) {
+            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+            // Use the same rect initialization as in paint()
+            QStyleOptionViewItem viewOption = option;
+            initStyleOption(&viewOption, index);
+            if (mouseEvent->button() == Qt::LeftButton &&
+                    checkRect(viewOption).adjusted(-2, -2, 2, 2).contains(mouseEvent->pos())) {
+                const Qt::CheckState oldState = static_cast<Qt::CheckState>(index.data(Qt::CheckStateRole).toInt());
+                return model->setData(index,
+                                       static_cast<int>(oldState == Qt::Checked ? Qt::Unchecked : Qt::Checked),
+                                       Qt::CheckStateRole);
+            }
+            // A press anywhere else must not toggle the check state, the
+            // base implementation would do so for the left edge indicator
+            return false;
+        }
+        return QStyledItemDelegate::editorEvent(event, model, option, index);
+    }
+
+private:
+    static QRect checkRect(const QStyleOptionViewItem& option)
+    {
+        // Start from the indicator rectangle the style itself uses for
+        // the default (left aligned) check box, so the vertical position
+        // matches the default rendering exactly, and only center it
+        // horizontally within the item
+        QRect rect = option.widget->style()->subElementRect(
+            QStyle::SE_ItemViewItemCheckIndicator, &option, option.widget);
+        rect.moveLeft(option.rect.x() + (option.rect.width() - rect.width()) / 2);
+        return rect;
+    }
+};
+
+}
 
 TIGLCreatorOthersWidget::TIGLCreatorOthersWidget(QWidget* parent)
     : QWidget(parent)
@@ -105,9 +189,19 @@ QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
     QVBoxLayout* layout = new QVBoxLayout(panel);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    // Spotlight list
-    mySpotlightList = new QListWidget();
-    layout->addWidget(mySpotlightList, 1);
+    // Spotlight tree: first column toggles the spotlight, second column toggles the 3D cone
+    // visibility, the wide third column lists the spotlight names
+    mySpotlightTree = new QTreeWidget();
+    mySpotlightTree->setColumnCount(3);
+    mySpotlightTree->setHeaderLabels(QStringList() << "Show Spotlight" << "Show Cone" << "Spotlights");
+    mySpotlightTree->setRootIsDecorated(false);
+    mySpotlightTree->setUniformRowHeights(true);
+    mySpotlightTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    mySpotlightTree->setItemDelegateForColumn(0, new CenteredCheckDelegate());
+    mySpotlightTree->setItemDelegateForColumn(1, new CenteredCheckDelegate());
+    mySpotlightTree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    mySpotlightTree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    layout->addWidget(mySpotlightTree, 1);
 
     // Button row
     QHBoxLayout* buttonLayout = new QHBoxLayout();
@@ -130,16 +224,24 @@ QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
     connect(myEditButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onEditSpotlight);
     connect(myCopyButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onCopySpotlight);
     connect(myDeleteButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onDeleteSpotlight);
-    connect(mySpotlightList, &QListWidget::currentRowChanged, this, [this](int) {
-        bool hasSelection = mySpotlightList->currentRow() >= 0;
+    connect(mySpotlightTree, &QTreeWidget::itemSelectionChanged, this, [this]() {
+        bool hasSelection = mySpotlightTree->currentItem() != nullptr;
         myEditButton->setEnabled(hasSelection);
         myCopyButton->setEnabled(hasSelection);
         myDeleteButton->setEnabled(hasSelection);
     });
-    connect(mySpotlightList, &QListWidget::itemChanged,
-            this, &TIGLCreatorOthersWidget::onSpotlightVisibChanged);
+    connect(mySpotlightTree, &QTreeWidget::itemChanged,
+            this, &TIGLCreatorOthersWidget::onSpotlightItemChanged);
 
     return panel;
+}
+
+int TIGLCreatorOthersWidget::currentSpotlightIndex() const
+{
+    if (!mySpotlightTree || !mySpotlightTree->currentItem()) {
+        return -1;
+    }
+    return mySpotlightTree->indexOfTopLevelItem(mySpotlightTree->currentItem());
 }
 
 void TIGLCreatorOthersWidget::onCategorySelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
@@ -180,7 +282,7 @@ void TIGLCreatorOthersWidget::onEditSpotlight()
         return;
     }
 
-    int row = mySpotlightList->currentRow();
+    int row = currentSpotlightIndex();
     if (row < 0) {
         return;
     }
@@ -217,7 +319,7 @@ void TIGLCreatorOthersWidget::onCopySpotlight()
         return;
     }
 
-    int row = mySpotlightList->currentRow();
+    int row = currentSpotlightIndex();
     if (row < 0) {
         return;
     }
@@ -236,7 +338,7 @@ void TIGLCreatorOthersWidget::onDeleteSpotlight()
         return;
     }
 
-    int row = mySpotlightList->currentRow();
+    int row = currentSpotlightIndex();
     if (row < 0) {
         return;
     }
@@ -258,59 +360,63 @@ void TIGLCreatorOthersWidget::onDeleteSpotlight()
     }
 }
 
-void TIGLCreatorOthersWidget::onSpotlightVisibChanged(QListWidgetItem* item)
+void TIGLCreatorOthersWidget::onSpotlightItemChanged(QTreeWidgetItem* item, int column)
 {
     if (!mySpotlightManager || !item || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
         return;
     }
 
-    int row = mySpotlightList->row(item);
-    if (row < 0) {
+    int row = mySpotlightTree->indexOfTopLevelItem(item);
+    if (row < 0 || (column != 0 && column != 1)) {
         return;
     }
 
-    bool newState = (item->checkState() == Qt::Checked);
+    bool newState = (item->checkState(column) == Qt::Checked);
     Qt::CheckState previousState = newState ? Qt::Unchecked : Qt::Checked;
 
     myIsTogglingSpotlight = true;
-    bool success = mySpotlightManager->setSpotlightEnabled(row, newState);
+    bool success = (column == 0)
+        ? mySpotlightManager->setSpotlightEnabled(row, newState)
+        : mySpotlightManager->setSpotlightSymbolVisible(row, newState);
     if (!success) {
-        item->setCheckState(previousState);
+        item->setCheckState(column, previousState);
     }
     myIsTogglingSpotlight = false;
 }
 
 void TIGLCreatorOthersWidget::refreshSpotlightList()
 {
-    if (!mySpotlightList || !mySpotlightManager || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
+    if (!mySpotlightTree || !mySpotlightManager || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
         return;
     }
 
     myIsRefreshingSpotlightList = true;
 
     QString currentName;
-    if (mySpotlightList->currentRow() >= 0) {
-        currentName = mySpotlightList->currentItem()->text();
+    if (mySpotlightTree->currentItem()) {
+        currentName = mySpotlightTree->currentItem()->text(2);
     }
 
     // Rebuild whole list since after change (add, edit, delete) it is not clear which spotlight changed
-    mySpotlightList->clear();
+    mySpotlightTree->clear();
 
     const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
     for (int i = 0; i < spotlights.size(); ++i) {
-        QListWidgetItem* item = new QListWidgetItem(spotlights[i].name);
+        QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(mySpotlightManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
-        mySpotlightList->addItem(item);
+        item->setText(2, spotlights[i].name);
+        item->setCheckState(0, mySpotlightManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
+        item->setCheckState(1, mySpotlightManager->isSpotlightSymbolVisible(i) ? Qt::Checked : Qt::Unchecked);
+        mySpotlightTree->addTopLevelItem(item);
     }
 
     myIsRefreshingSpotlightList = false;
 
     // Try to restore the previously selected spotlight by name
     if (!currentName.isEmpty()) {
-        for (int i = 0; i < mySpotlightList->count(); ++i) {
-            if (mySpotlightList->item(i)->text() == currentName) {
-                mySpotlightList->setCurrentRow(i);
+        for (int i = 0; i < mySpotlightTree->topLevelItemCount(); ++i) {
+            if (mySpotlightTree->topLevelItem(i)->text(2) == currentName) {
+                mySpotlightTree->setCurrentItem(mySpotlightTree->topLevelItem(i));
                 break;
             }
         }

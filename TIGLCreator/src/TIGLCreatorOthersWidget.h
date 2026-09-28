@@ -24,9 +24,7 @@
 class QTreeWidget;
 class QTreeWidgetItem;
 class QStackedWidget;
-class QListWidget;
 class QPushButton;
-class QListWidgetItem;
 class TIGLCreatorSpotlightManager;
 
 class TIGLCreatorOthersWidget : public QWidget
@@ -44,16 +42,17 @@ private slots:
     void onEditSpotlight();
     void onCopySpotlight();
     void onDeleteSpotlight();
-    void onSpotlightVisibChanged(QListWidgetItem* item);
+    void onSpotlightItemChanged(QTreeWidgetItem* item, int column);
 
 private:
     QWidget* createSpotlightPanel();
     void refreshSpotlightList();
+    int currentSpotlightIndex() const;
 
     QTreeWidget* myCategoryTree;
     QStackedWidget* myDetailStack;
 
-    QListWidget* mySpotlightList;
+    QTreeWidget* mySpotlightTree;
     QPushButton* myAddButton;
     QPushButton* myEditButton;
     QPushButton* myCopyButton;
