@@ -21,6 +21,8 @@
 #include "generated/CPACSControlSurfaceHingePoint.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSEtaIsoLine.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CTiglTransformation.h"
 #include "CTiglUIDManager.h"
 
 namespace tigl
@@ -36,5 +38,11 @@ namespace ControlSurfaceDeviceHelper
 
     TIGL_EXPORT  gp_Pnt calc_hinge_point(CCPACSControlSurfaceHingePoint const& hinge_point, CCPACSEtaIsoLine const& etaLE, CCPACSWingComponentSegment const& cSegment, CTiglUIDManager const* uidMgr, std::string const& innerOuter);
 
+    /**
+     * @brief Places the airfoil of a control surface border into the plane of that border.
+     * The airfoil has a unit chord, scalZ is a fraction of the chord of the border.
+     */
+    TIGL_EXPORT CTiglTransformation
+    GetBorderAirfoilTransformation(const CTiglControlSurfaceBorderCoordinateSystem& coords, double scalZ);
 }
 }

@@ -20,6 +20,8 @@
 
 #include "CControlSurfaceBorderBuilder.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CTiglTransformation.h"
+#include "ControlSurfaceDeviceHelper.h"
 
 #include <TopoDS_Shape.hxx>
 #include <BRepTools.hxx>
@@ -109,6 +111,31 @@ TEST(TiglControlSurfaceBorderCoordinates, transformation)
     ASSERT_NEAR(2, v3.X(), 1e-10);
     ASSERT_NEAR(-1, v3.Y(), 1e-10);
     ASSERT_NEAR(0, v3.Z(), 1e-10);
+}
+
+TEST(TiglControlSurfaceBorderCoordinates, airfoilTransformation)
+{
+    // the chord of the border is 2 m long, the airfoil is given with a unit chord
+    tigl::CTiglControlSurfaceBorderCoordinateSystem coords(gp_Pnt(1, 0, 0), gp_Pnt(3, 0, 0), gp_Vec(0, 0, 1));
+
+    double scalZ                = 0.5;
+    tigl::CTiglTransformation t = tigl::ControlSurfaceDeviceHelper::GetBorderAirfoilTransformation(coords, scalZ);
+
+    gp_Pnt le = t.Transform(gp_Pnt(0., 0., 0.));
+    ASSERT_NEAR(1., le.X(), 1e-10);
+    ASSERT_NEAR(0., le.Y(), 1e-10);
+    ASSERT_NEAR(0., le.Z(), 1e-10);
+
+    gp_Pnt te = t.Transform(gp_Pnt(1., 0., 0.));
+    ASSERT_NEAR(3., te.X(), 1e-10);
+    ASSERT_NEAR(0., te.Y(), 1e-10);
+    ASSERT_NEAR(0., te.Z(), 1e-10);
+
+    // the thickness is scaled with the chord as well: 2 * scalZ * 0.1
+    gp_Pnt upper = t.Transform(gp_Pnt(0.25, 0., 0.1));
+    ASSERT_NEAR(1.5, upper.X(), 1e-10);
+    ASSERT_NEAR(0., upper.Y(), 1e-10);
+    ASSERT_NEAR(0.1, upper.Z(), 1e-10);
 }
 
 TEST(TiglControlSurfaceBorderCoordinates, transformationAdvanced)
