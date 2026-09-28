@@ -41,6 +41,7 @@
 #include "ISession_Direction.h"
 #include "AIS_TexturedShape.hxx"
 #include "AIS_InteractiveContext.hxx"
+#include "AIS_LightSource.hxx"
 #include "BRepBuilderAPI_MakeVertex.hxx"
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -579,7 +580,20 @@ std::vector<Handle(AIS_InteractiveObject)> TIGLCreatorContext::selected()
 void TIGLCreatorContext::eraseSelected()
 {
     if (!myContext.IsNull()) {
-        QUndoCommand* command = new TiGLCreator::DeleteObjects(myContext, selected());
+        std::vector<Handle(AIS_InteractiveObject)> objects;
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            Handle(AIS_InteractiveObject) object = myContext->SelectedInteractive();
+            // Spotlight cone symbols are visual aids managed by the spotlight manager
+            // and must not be deletable from the 3D viewer
+            if (!Handle(AIS_LightSource)::DownCast(object).IsNull()) {
+                continue;
+            }
+            objects.push_back(object);
+        }
+        if (objects.empty()) {
+            return;
+        }
+        QUndoCommand* command = new TiGLCreator::DeleteObjects(myContext, objects);
         myUndoStack->push(command);
     }
 }
