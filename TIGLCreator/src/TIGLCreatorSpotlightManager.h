@@ -26,6 +26,8 @@
 #include <gp_Pnt.hxx>
 
 class TIGLCreatorWidget;
+class AIS_InteractiveContext;
+class AIS_LightSource;
 
 // Struct to store the spotlight's name together with the OCCT object since there is no internal field 'name'.
 // Additionally, the direction is stored externally. That is due to OCCT storing only the normalized direction vector.
@@ -53,6 +55,10 @@ public:
 
     const QList<SpotlightData>& getSpotlights() const;
 
+    // Show or hide the 3D symbol (position marker + direction cone) of the given spotlight in the viewer
+    bool setSpotlightSymbolVisible(int index, bool visible);
+    bool isSpotlightSymbolVisible(int index) const;
+
 signals:
     void spotlightsChanged();
 
@@ -60,8 +66,18 @@ private:
     // This overload is needed when a spotlight is copied to also copy the state (on/off) correctly
     void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration, bool enabled);
 
+    // Returns the length of a spotlight's cone
+    // For better visibility, the cone's real-world-size is not always the same. It is adjusted that way that the size on the 
+    // screen appears independent of zooming when activated
+    double symbolLength() const;
+    static double coneAngleFromConcentration(double concentration);
+    void displaySpotlightSymbol(int index);
+    void eraseSpotlightSymbol(int index);
+    Handle(AIS_InteractiveContext) getContext() const;
+
     TIGLCreatorWidget* myWidget;
     QList<SpotlightData> mySpotlights;
+    QList<Handle(AIS_LightSource)> mySpotlightSymbols;
     int myNextId;
 };
 

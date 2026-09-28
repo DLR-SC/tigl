@@ -18,11 +18,18 @@
 
 #include "TIGLCreatorSpotlightManager.h"
 #include "TIGLCreatorWidget.h"
+#include "TIGLCreatorContext.h"
 #include "CTiglLogging.h"
 
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_LightSource.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <V3d_Light.hxx>
+#include <V3d_View.hxx>
+#include <algorithm>
+#include <cmath>
 
 TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widget, QObject* parent)
     : QObject(parent)
@@ -53,13 +60,17 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
         return;
     }
 
+    const QString name = QString("Spotlight %1").arg(myNextId++);
+
     Handle(V3d_Light) light = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
+    light->SetName(TCollection_AsciiString(name.toUtf8().constData()));
     light->SetPosition(gp_Pnt(x, y, z));
     light->SetDirection(gp_Dir(dx, dy, dz));
     light->SetConcentration(concentration);
+    light->SetAngle(static_cast<Standard_ShortReal>(coneAngleFromConcentration(concentration)));
 
     SpotlightData data;
-    data.name = QString("Spotlight %1").arg(myNextId++);
+    data.name = name;
     data.light = light;
     data.direction = gp_Pnt(dx, dy, dz);
 
@@ -69,6 +80,7 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
         myWidget->activateLight(light);
     }
     mySpotlights.append(data);
+    mySpotlightSymbols.append(Handle(AIS_LightSource)());
     emit spotlightsChanged();
 }
 
@@ -78,8 +90,10 @@ void TIGLCreatorSpotlightManager::removeSpotlight(int index)
         LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: Invalid spotlight index " << index << ".";
         return;
     }
+    eraseSpotlightSymbol(index);
     myWidget->removeLight(mySpotlights[index].light);
     mySpotlights.removeAt(index);
+    mySpotlightSymbols.removeAt(index);
     emit spotlightsChanged();
 }
 
@@ -122,12 +136,24 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
     data.light->SetPosition(gp_Pnt(x, y, z));
     data.light->SetDirection(gp_Dir(dx, dy, dz));
     data.light->SetConcentration(concentration);
+    data.light->SetAngle(static_cast<Standard_ShortReal>(coneAngleFromConcentration(concentration)));
     data.direction = gp_Pnt(dx, dy, dz);
 
     if (myWidget->isLightEnabled(data.light)) {
         myWidget->activateLight(data.light);
     } else {
         myWidget->refreshLights();
+    }
+
+    // Refresh the symbol so that it follows the changed position, direction and cone angle.
+    // SetToUpdate is required, otherwise AIS_InteractiveContext::Update leaves the
+    // old presentation in place (same pattern as AIS_LightSource::SetLight)
+    if (!mySpotlightSymbols[index].IsNull()) {
+        Handle(AIS_InteractiveContext) context = getContext();
+        if (context) {
+            mySpotlightSymbols[index]->SetToUpdate();
+            context->Update(mySpotlightSymbols[index], Standard_False);
+        }
     }
 
     emit spotlightsChanged();
@@ -168,4 +194,120 @@ bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
 const QList<SpotlightData>& TIGLCreatorSpotlightManager::getSpotlights() const
 {
     return mySpotlights;
+}
+
+double TIGLCreatorSpotlightManager::coneAngleFromConcentration(double concentration)
+{
+    // Maps the concentration to the cone angle of the spotlight:
+    // a fully concentrated light gets a narrow cone (30 deg), a fully diffuse light a wide one (85 deg).
+    // The angle must stay below 90 deg, because the spot shading evaluates pow(cos(angle), exponent)
+    // and a negative cosine (possible for angles > 90 deg) is undefined in the shader and renders as black
+    constexpr double minAngle = M_PI / 6.0;
+    constexpr double maxAngle = 85.0 * M_PI / 180.0;
+    return minAngle + (1.0 - concentration) * (maxAngle - minAngle);
+}
+
+Handle(AIS_InteractiveContext) TIGLCreatorSpotlightManager::getContext() const
+{
+    if (!myWidget->viewerContext) {
+        return Handle(AIS_InteractiveContext)();
+    }
+    return myWidget->viewerContext->getContext();
+}
+
+double TIGLCreatorSpotlightManager::symbolLength() const
+{
+    Handle(V3d_View) view = myWidget->getView();
+    if (!view) {
+        return 0.0;
+    }
+
+    // World-unit length that corresponds to roughly 120 pixels in the current view
+    Standard_Integer baseX = 0;
+    Standard_Integer baseY = 0;
+    view->Convert(0.0, 0.0, 0.0, baseX, baseY);
+
+    double pixelsPerUnit = 0.0;
+    for (int axis = 0; axis < 3; ++axis) {
+        Standard_Integer x = 0;
+        Standard_Integer y = 0;
+        view->Convert(axis == 0 ? 1.0 : 0.0, axis == 1 ? 1.0 : 0.0, axis == 2 ? 1.0 : 0.0, x, y);
+        pixelsPerUnit = std::max(pixelsPerUnit, std::hypot((double)(x - baseX), (double)(y - baseY)));
+    }
+    if (pixelsPerUnit < 1e-9) {
+        return 0.1;
+    }
+    return 120.0 / pixelsPerUnit;
+}
+
+void TIGLCreatorSpotlightManager::displaySpotlightSymbol(int index)
+{
+    if (index < 0 || index >= mySpotlights.size() || !mySpotlights[index].light) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::displaySpotlightSymbol: Invalid spotlight index " << index << ".";
+        return;
+    }
+    if (!mySpotlightSymbols[index].IsNull()) {
+        return;
+    }
+
+    Handle(AIS_InteractiveContext) context = getContext();
+    if (!context) {
+        return;
+    }
+
+    Handle(AIS_LightSource) symbol = new AIS_LightSource(mySpotlights[index].light);
+    const double length = symbolLength();
+    if (length > 0.0) {
+        symbol->SetSize(2.0 * length);
+    }
+    // The spotlight is turned on/off via the checkbox in the spotlight list,
+    // so disable toggling the light by clicking on the symbol
+    symbol->SetSwitchOnClick(false);
+    context->Display(symbol, Standard_True);
+    // The cone is purely a visual aid: it must not be selectable (and therefore
+    // neither deletable nor highlightable) in the 3D viewer
+    context->Deactivate(symbol);
+    mySpotlightSymbols[index] = symbol;
+}
+
+void TIGLCreatorSpotlightManager::eraseSpotlightSymbol(int index)
+{
+    if (index < 0 || index >= mySpotlightSymbols.size()) {
+        return;
+    }
+
+    if (!mySpotlightSymbols[index].IsNull()) {
+        Handle(AIS_InteractiveContext) context = getContext();
+        if (context) {
+            context->Erase(mySpotlightSymbols[index], Standard_True);
+        }
+        mySpotlightSymbols[index].Nullify();
+    }
+}
+
+bool TIGLCreatorSpotlightManager::setSpotlightSymbolVisible(int index, bool visible)
+{
+    if (index < 0 || index >= mySpotlights.size()) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
+        return false;
+    }
+
+    if (visible) {
+        if (mySpotlightSymbols[index].IsNull()) {
+            displaySpotlightSymbol(index);
+        }
+    } else {
+        eraseSpotlightSymbol(index);
+    }
+    return true;
+}
+
+bool TIGLCreatorSpotlightManager::isSpotlightSymbolVisible(int index) const
+{
+    if (index < 0 || index >= mySpotlightSymbols.size()) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::isSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
+        return false;
+    }
+
+    return !mySpotlightSymbols[index].IsNull();
 }
