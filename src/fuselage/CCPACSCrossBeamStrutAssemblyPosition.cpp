@@ -139,10 +139,12 @@ void CCPACSCrossBeamStrutAssemblyPosition::BuildGeometry(TopoDS_Shape& cache, bo
             TIGL_XML_ERROR);
     }
 
-    // the frame cutting plane is the rotated crossBeam cutting plane bounded at the rotation axis
-    // angle reference is the crossBeam (-Y axis) and clockwise (down first), around gR axis (X direction)
+    // the frame cutting plane is the rotated crossBeam cutting plane bounded at the rotation axis.
+    // angleX is measured like the referenceAngle of a stringer or frame position: the z-axis rotated about the
+    // x-axis, 180 degrees (the default) pointing down. The unrotated half plane points down, so it is rotated by
+    // angleX - 180 degrees.
     gp_Ax1 rotAx(pointOnCrossBeam, gp_Vec(1., 0., 0.));
-    const gp_Pln frameCutPlane = crossBeamCutPlane.Rotated(rotAx, Radians(m_angleX.value_or(0) - 90.));
+    const gp_Pln frameCutPlane      = crossBeamCutPlane.Rotated(rotAx, Radians(m_angleX.value_or(180.) - 180.));
     const double largerThanAnyFrame = 10000;
     const TopoDS_Face frameCutFace = BRepBuilderAPI_MakeFace(frameCutPlane, -largerThanAnyFrame, largerThanAnyFrame, -largerThanAnyFrame / 2, 0);
 
