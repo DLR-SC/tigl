@@ -138,8 +138,9 @@ public slots:
     void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
-    void setBackgroundGradient(int r, int g, int b);
+    void setBackgroundGradient(int r, int g, int b, Standard_Real factor = 1.0);
     void setBackgroundColor(int r, int g, int b);
+    void setSceneDarkened(bool dark);
     void setBGImage(const QString&);
     void viewFront();
     void viewBack();
@@ -221,6 +222,7 @@ private: // members
     Qt::MouseButton                 myButtonFlags;
     QCursor                         myCrossCursor;
     QColor                          myBGColor;
+    bool                            mySceneDarkened;
     TIGLCreatorContext*             viewerContext;
     TIGLCreatorSpotlightManager*    mySpotlightManager;
 

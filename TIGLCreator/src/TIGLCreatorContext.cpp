@@ -86,6 +86,11 @@ TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     TCollection_ExtendedString a3DName("Visual3D");
     myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
     myViewer->SetDefaultLights();
+    // Remember the viewer's default lights so they can be toggled as a group
+    // Necessary to have access for editing (dimming) later via the GUI
+    for (V3d_ListOfLightIterator aLightIt(myViewer->ActiveLights()); aLightIt.More(); aLightIt.Next()) {
+        myDefaultLights.append(aLightIt.Value());
+    }
     myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
     myContext = new AIS_InteractiveContext( myViewer );
 

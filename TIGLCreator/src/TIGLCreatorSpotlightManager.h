@@ -23,6 +23,7 @@
 #include <QList>
 #include <QString>
 #include <V3d_Light.hxx>
+#include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
 class TIGLCreatorWidget;
@@ -53,6 +54,10 @@ public:
     bool setSpotlightEnabled(int index, bool enabled);
     bool isSpotlightEnabled(int index) const;
 
+    // The fixed viewer-level default lights can only be toggled on/off as a group
+    bool setDefaultLightEnabled(bool enabled);
+    bool isDefaultLightEnabled() const;
+
     const QList<SpotlightData>& getSpotlights() const;
 
     // Show or hide the 3D symbol (position marker + direction cone) of the given spotlight in the viewer
@@ -79,6 +84,10 @@ private:
     QList<SpotlightData> mySpotlights;
     QList<Handle(AIS_LightSource)> mySpotlightSymbols;
     int myNextId;
+
+    // The original colors of the viewer's default lights, saved once when they are first dimmed
+    QList<Quantity_Color> myDefaultLightsOriginalColor;
+    bool myDefaultLightsEnabled;
 };
 
 #endif // TIGLCREATORSPOTLIGHTMANAGER_H

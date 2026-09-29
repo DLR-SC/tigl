@@ -76,6 +76,11 @@
 
 #include "V3d_DirectionalLight.hxx"
 #include "V3d_AmbientLight.hxx"
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,9,0)
+#include "V3d_Trihedron.hxx"
+#include "Prs3d_ShadingAspect.hxx"
+#include "Graphic3d_AspectFillArea3d.hxx"
+#endif
 
 // 10% zoom per wheel or key event
 #define TIGLCREATOR_ZOOM_STEP 1.10
@@ -127,6 +132,7 @@ void TIGLCreatorWidget::initialize()
     myKeyboardFlags   = Qt::NoModifier;
     myButtonFlags      = Qt::NoButton;
     myBGColor = QColor(255,235,163);
+    mySceneDarkened = false;
 
     // Needed to generate mouse events
     setMouseTracking( true );
@@ -195,7 +201,22 @@ void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCon
         myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
         // Set up axes (Trihedron) in lower left corner.
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,9,0)
+        // Use the new-style trihedron so that its shading aspects can be made unlit.
+        // Unlit arrows keep their full axis colors even when the default lights are dimmed,
+        // so the legend stays bright against the dark scene.
+        Handle(V3d_Trihedron) aTrihedron = myView->Trihedron();
+        aTrihedron->SetScale( 0.1 );  // scale must be set before SetPosition (offset depends on it)
+        aTrihedron->SetLabelsColor( Quantity_NOC_WHITE );
+        aTrihedron->SetPosition( Aspect_TOTP_LEFT_LOWER );
+        for (V3d_TypeOfAxe anAxis : { V3d_X, V3d_Y, V3d_Z }) {
+            aTrihedron->ArrowAspect( anAxis )->Aspect()->SetShadingModel( Graphic3d_TOSM_UNLIT );
+        }
+        aTrihedron->OriginAspect()->Aspect()->SetShadingModel( Graphic3d_TOSM_UNLIT );
+        aTrihedron->Display( *myView );
+#else
         myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
+#endif
         //myView->SetAntialiasingOn();
 
         //myView->ColorScaleDisplay();
@@ -684,7 +705,7 @@ void TIGLCreatorWidget::hiddenLineOn()
     }
 }
 
-void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b)
+void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b, Standard_Real factor)
 {
     myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
@@ -698,11 +719,11 @@ void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b)
         Standard_Real fu = 2.;
         Standard_Real fd = 0.2;
 
-        Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
-        Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
+        Quantity_Color up  (R1*fu*factor > 1 ? 1. : R1*fu*factor, G1*fu*factor > 1 ? 1. : G1*fu*factor, B1*fu*factor > 1 ? 1. : B1*fu*factor, Quantity_TOC_RGB);
+        Quantity_Color down(R1*fd*factor > 1 ? 1. : R1*fd*factor, G1*fd*factor > 1 ? 1. : G1*fd*factor, B1*fd*factor > 1 ? 1. : B1*fd*factor, Quantity_TOC_RGB);
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
-    } 
+    }
     redraw();
 }
 
@@ -714,6 +735,17 @@ void TIGLCreatorWidget::setBackgroundColor(int r, int g, int b)
         myView->SetBackgroundColor(Quantity_TOC_RGB, r/255., g/255., b/255.);
         redraw();
     }
+}
+
+void TIGLCreatorWidget::setSceneDarkened(bool dark)
+{
+    if (myView.IsNull()) {
+        return;
+    }
+    mySceneDarkened = dark;
+    // Dim the current background gradient to match the disabled default lights
+    const Standard_Real dimFactor = 0.01;
+    setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue(), dark ? dimFactor : 1.0);
 }
 
 void TIGLCreatorWidget::setReset ()
@@ -1374,8 +1406,8 @@ bool TIGLCreatorWidget::makeScreenshot(const QString& filename, bool whiteBGEnab
     }
 
     if (whiteBGEnabled) {
-        // reset color
-        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+        // re-apply background gradient for current dim state
+        setSceneDarkened(mySceneDarkened);
     }
 
     // copy to qimage which supports a variety of file formats

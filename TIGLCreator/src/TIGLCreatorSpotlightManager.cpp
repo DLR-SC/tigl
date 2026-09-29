@@ -28,6 +28,7 @@
 #include <gp_Dir.hxx>
 #include <V3d_Light.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <algorithm>
 #include <cmath>
 
@@ -35,6 +36,7 @@ TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widg
     : QObject(parent)
     , myWidget(widget)
     , myNextId(1)
+    , myDefaultLightsEnabled(true)
 {
     Q_ASSERT(myWidget != nullptr);
 }
@@ -189,6 +191,62 @@ bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
     }
 
     return myWidget->isLightEnabled(mySpotlights[index].light);
+}
+
+bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
+{
+    if (!myWidget->viewerContext) {
+        return false;
+    }
+
+    const QList<Handle(V3d_Light)>& lights = myWidget->viewerContext->defaultLights();
+    if (lights.isEmpty()) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::setDefaultLightEnabled: No default lights found in the viewer.";
+        return false;
+    }
+
+    // Instead of switching the default lights off, dim their colors while the
+    // "TiGL Default" option is unchecked (a fully unlit scene would render the
+    // geometry and the trihedron pitch black) and restore them when re-enabled.
+    // The colors are used because the shading shader reads the light colors live
+    // from the viewer's light list, whereas SetIntensity() only affects the
+    // ray-tracing path (which is not used here).
+    const Standard_Real dimFactor = 0.01;
+    if (!enabled && myDefaultLightsOriginalColor.isEmpty()) {
+        for (const Handle(V3d_Light)& light : lights) {
+            myDefaultLightsOriginalColor.append(light.IsNull() ? Quantity_Color(1.0, 1.0, 1.0, Quantity_TOC_RGB)
+                                                               : light->Color());
+        }
+    }
+    for (int i = 0; i < lights.size(); ++i) {
+        if (lights[i].IsNull()) {
+            continue;
+        }
+        if (!enabled) {
+            const Quantity_Color original = myDefaultLightsOriginalColor[i];
+            lights[i]->SetColor(Quantity_Color(original.Red() * dimFactor,
+                                               original.Green() * dimFactor,
+                                               original.Blue() * dimFactor,
+                                               Quantity_TOC_RGB));
+        }
+        else if (i < myDefaultLightsOriginalColor.size()) {
+            lights[i]->SetColor(myDefaultLightsOriginalColor[i]);
+        }
+    }
+    myDefaultLightsEnabled = enabled;
+    myWidget->setSceneDarkened(!enabled);
+    myWidget->refreshLights();
+    return true;
+}
+
+bool TIGLCreatorSpotlightManager::isDefaultLightEnabled() const
+{
+    if (!myWidget->viewerContext) {
+        return false;
+    }
+
+    // The default lights are never switched off, only dimmed, so the state is tracked here
+    return myDefaultLightsEnabled;
 }
 
 const QList<SpotlightData>& TIGLCreatorSpotlightManager::getSpotlights() const

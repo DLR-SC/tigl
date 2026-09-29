@@ -27,7 +27,9 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <V3d_Viewer.hxx>
+#include <V3d_Light.hxx>
 #include <QObject>
+#include <QList>
 #include "TIGLCreator.h"
 #include "TIGLCreatorColors.h"
 #include "TIGLInteractiveShapeManager.h"
@@ -56,6 +58,7 @@ public:
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
+    const QList<Handle(V3d_Light)>&  defaultLights() const { return myDefaultLights; }
     Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
@@ -146,6 +149,8 @@ private:
     std::vector<Handle(AIS_InteractiveObject)> selected();
 
     Handle(V3d_Viewer)               myViewer;
+    // The lights created by V3d_Viewer::SetDefaultLights, captured once at startup
+    QList<Handle(V3d_Light)>         myDefaultLights;
     Handle(AIS_InteractiveContext)   myContext;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;

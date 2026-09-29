@@ -225,7 +225,9 @@ QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
     connect(myCopyButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onCopySpotlight);
     connect(myDeleteButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onDeleteSpotlight);
     connect(mySpotlightTree, &QTreeWidget::itemSelectionChanged, this, [this]() {
-        bool hasSelection = mySpotlightTree->currentItem() != nullptr;
+        // currentSpotlightIndex returns -1 for the fixed "TiGL Default" row,
+        // which must not be editable/copyable/deletable
+        bool hasSelection = currentSpotlightIndex() >= 0;
         myEditButton->setEnabled(hasSelection);
         myCopyButton->setEnabled(hasSelection);
         myDeleteButton->setEnabled(hasSelection);
@@ -241,7 +243,9 @@ int TIGLCreatorOthersWidget::currentSpotlightIndex() const
     if (!mySpotlightTree || !mySpotlightTree->currentItem()) {
         return -1;
     }
-    return mySpotlightTree->indexOfTopLevelItem(mySpotlightTree->currentItem());
+    // The fixed "TiGL Default" row is tagged with -1, all spotlight rows with their index
+    const QVariant indexVariant = mySpotlightTree->currentItem()->data(0, Qt::UserRole);
+    return indexVariant.isValid() ? indexVariant.toInt() : -1;
 }
 
 void TIGLCreatorOthersWidget::onCategorySelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
@@ -366,8 +370,16 @@ void TIGLCreatorOthersWidget::onSpotlightItemChanged(QTreeWidgetItem* item, int 
         return;
     }
 
-    int row = mySpotlightTree->indexOfTopLevelItem(item);
-    if (row < 0 || (column != 0 && column != 1)) {
+    const QVariant indexVariant = item->data(0, Qt::UserRole);
+    if (!indexVariant.isValid()) {
+        return;
+    }
+    const int index = indexVariant.toInt();
+    // The fixed "TiGL Default" row has no symbol checkbox (-> column 0 only)
+    if (column == 1 && index == -1) {
+        return;
+    }
+    if (column != 0 && column != 1) {
         return;
     }
 
@@ -375,9 +387,16 @@ void TIGLCreatorOthersWidget::onSpotlightItemChanged(QTreeWidgetItem* item, int 
     Qt::CheckState previousState = newState ? Qt::Unchecked : Qt::Checked;
 
     myIsTogglingSpotlight = true;
-    bool success = (column == 0)
-        ? mySpotlightManager->setSpotlightEnabled(row, newState)
-        : mySpotlightManager->setSpotlightSymbolVisible(row, newState);
+    bool success = false;
+    if (index == -1) {
+        success = mySpotlightManager->setDefaultLightEnabled(newState);
+    }
+    else if (column == 0) {
+        success = mySpotlightManager->setSpotlightEnabled(index, newState);
+    }
+    else {
+        success = mySpotlightManager->setSpotlightSymbolVisible(index, newState);
+    }
     if (!success) {
         item->setCheckState(column, previousState);
     }
@@ -400,11 +419,21 @@ void TIGLCreatorOthersWidget::refreshSpotlightList()
     // Rebuild whole list since after change (add, edit, delete) it is not clear which spotlight changed
     mySpotlightTree->clear();
 
+    // The fixed viewer-level default lights as a hard-wired entry: on/off only,
+    // no cone checkbox (column 1 is left without a check state on purpose)
+    QTreeWidgetItem* defaultItem = new QTreeWidgetItem();
+    defaultItem->setFlags(defaultItem->flags() | Qt::ItemIsUserCheckable);
+    defaultItem->setText(2, "TiGL Default");
+    defaultItem->setData(0, Qt::UserRole, -1);
+    defaultItem->setCheckState(0, mySpotlightManager->isDefaultLightEnabled() ? Qt::Checked : Qt::Unchecked);
+    mySpotlightTree->addTopLevelItem(defaultItem);
+
     const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
     for (int i = 0; i < spotlights.size(); ++i) {
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setText(2, spotlights[i].name);
+        item->setData(0, Qt::UserRole, i);
         item->setCheckState(0, mySpotlightManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
         item->setCheckState(1, mySpotlightManager->isSpotlightSymbolVisible(i) ? Qt::Checked : Qt::Unchecked);
         mySpotlightTree->addTopLevelItem(item);
