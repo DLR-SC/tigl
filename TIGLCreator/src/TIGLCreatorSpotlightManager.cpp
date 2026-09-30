@@ -35,6 +35,7 @@
 TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widget, QObject* parent)
     : QObject(parent)
     , myWidget(widget)
+    , myContext(widget ? widget->getViewerContext() : nullptr)
     , myNextId(1)
     , myDefaultLightsEnabled(true)
 {
@@ -53,6 +54,10 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
                                                double concentration,
                                                bool enabled)
 {
+    if (!myContext) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::addSpotlight: No viewer context is set.";
+        return;
+    }
     if (concentration < 0.0 || concentration > 1.0) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::addSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
         return;
@@ -79,7 +84,7 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
     // A new light is not active in the view until it is explicitly turned on,
     // so no deactivation is needed here for the disabled case
     if (enabled) {
-        myWidget->activateLight(light);
+        myContext->activateLight(light);
     }
     mySpotlights.append(data);
     mySpotlightSymbols.append(Handle(AIS_LightSource)());
@@ -88,12 +93,16 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
 
 void TIGLCreatorSpotlightManager::removeSpotlight(int index)
 {
+    if (!myContext) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: No viewer context is set.";
+        return;
+    }
     if (index < 0 || index >= mySpotlights.size()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: Invalid spotlight index " << index << ".";
         return;
     }
     eraseSpotlightSymbol(index);
-    myWidget->removeLight(mySpotlights[index].light);
+    myContext->removeLight(mySpotlights[index].light);
     mySpotlights.removeAt(index);
     mySpotlightSymbols.removeAt(index);
     emit spotlightsChanged();
@@ -121,6 +130,10 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
                                                   double dx, double dy, double dz,
                                                   double concentration)
 {
+    if (!myContext) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: No viewer context is set.";
+        return;
+    }
     if (index < 0 || index >= mySpotlights.size()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Invalid spotlight index " << index << ".";
         return;
@@ -141,15 +154,9 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
     data.light->SetAngle(static_cast<Standard_ShortReal>(coneAngleFromConcentration(concentration)));
     data.direction = gp_Pnt(dx, dy, dz);
 
-    if (myWidget->isLightEnabled(data.light)) {
-        myWidget->activateLight(data.light);
-    } else {
-        myWidget->refreshLights();
-    }
-
     // Refresh the symbol so that it follows the changed position, direction and cone angle.
     // SetToUpdate is required, otherwise AIS_InteractiveContext::Update leaves the
-    // old presentation in place (same pattern as AIS_LightSource::SetLight)
+    // old presentation in place (same pattern as AIS_LightSource::SetLight).
     if (!mySpotlightSymbols[index].IsNull()) {
         Handle(AIS_InteractiveContext) context = getContext();
         if (context) {
@@ -158,25 +165,35 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
         }
     }
 
+    if (myContext->isLightEnabled(data.light)) {
+        myContext->activateLight(data.light);
+    } else {
+        myContext->refreshLights();
+    }
+
     emit spotlightsChanged();
 }
 
 bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)
 {
+    if (!myContext) {
+        LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightEnabled: No viewer context is set.";
+        return false;
+    }
     if (index < 0 || index >= mySpotlights.size()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightEnabled: Invalid spotlight index " << index << ".";
         return false;
     }
 
     SpotlightData& data = mySpotlights[index];
-    if (myWidget->isLightEnabled(data.light) == enabled) {
+    if (myContext->isLightEnabled(data.light) == enabled) {
         return true;
     }
 
     if (enabled) {
-        myWidget->activateLight(data.light);
+        myContext->activateLight(data.light);
     } else {
-        myWidget->deactivateLight(data.light);
+        myContext->deactivateLight(data.light);
     }
 
     emit spotlightsChanged();
@@ -185,21 +202,24 @@ bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)
 
 bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
 {
+    if (!myContext) {
+        return false;
+    }
     if (index < 0 || index >= mySpotlights.size()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::isSpotlightEnabled: Invalid spotlight index " << index << ".";
         return false;
     }
 
-    return myWidget->isLightEnabled(mySpotlights[index].light);
+    return myContext->isLightEnabled(mySpotlights[index].light);
 }
 
 bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
 {
-    if (!myWidget->viewerContext) {
+    if (!myContext) {
         return false;
     }
 
-    const QList<Handle(V3d_Light)>& lights = myWidget->viewerContext->defaultLights();
+    const QList<Handle(V3d_Light)>& lights = myContext->defaultLights();
     if (lights.isEmpty()) {
         LOG(ERROR) << "TIGLCreatorSpotlightManager::setDefaultLightEnabled: No default lights found in the viewer.";
         return false;
@@ -235,13 +255,13 @@ bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
     }
     myDefaultLightsEnabled = enabled;
     myWidget->setSceneDarkened(!enabled);
-    myWidget->refreshLights();
+    myContext->refreshLights();
     return true;
 }
 
 bool TIGLCreatorSpotlightManager::isDefaultLightEnabled() const
 {
-    if (!myWidget->viewerContext) {
+    if (!myContext) {
         return false;
     }
 
@@ -267,10 +287,10 @@ double TIGLCreatorSpotlightManager::coneAngleFromConcentration(double concentrat
 
 Handle(AIS_InteractiveContext) TIGLCreatorSpotlightManager::getContext() const
 {
-    if (!myWidget->viewerContext) {
+    if (!myContext) {
         return Handle(AIS_InteractiveContext)();
     }
-    return myWidget->viewerContext->getContext();
+    return myContext->getContext();
 }
 
 double TIGLCreatorSpotlightManager::symbolLength() const

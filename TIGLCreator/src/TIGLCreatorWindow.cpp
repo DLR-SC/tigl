@@ -142,7 +142,7 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     // create spotlight manager and wire it to the corresponding "others" widget
     spotlightManager = new TIGLCreatorSpotlightManager(myOCC, this);
     othersWidget->setSpotlightManager(spotlightManager);
-    myOCC->mySpotlightManager = spotlightManager;
+    myOCC->setSpotlightManager(spotlightManager);
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused

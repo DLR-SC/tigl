@@ -54,14 +54,10 @@ class gp_Pnt;
 class gp_Vec;
 class TIGLCreatorContext;
 class TIGLCreatorSpotlightManager;
-class TIGLCreatorWindow;
 
 class TIGLCreatorWidget : public QWidget
 {
     Q_OBJECT
-
-    friend class TIGLCreatorSpotlightManager;
-    friend class TIGLCreatorWindow;
 
 public:
 
@@ -101,8 +97,10 @@ public:
 
     // the scene context must be set before first use
     void setContext(TIGLCreatorContext* aContext);
+    void setSpotlightManager(TIGLCreatorSpotlightManager* manager);
 
     Handle(V3d_View)                  getView( )    { return myView; }
+    TIGLCreatorContext*               getViewerContext() const { return viewerContext; }
 
     //Overrides
     QPaintEngine*   paintEngine() const override;
@@ -180,14 +178,6 @@ protected: // methods
 
 private: // members
     void initializeOCC(const Handle(AIS_InteractiveContext)& aContext);
-
-    // These functions come with complex input args and/or should not be seen by JavaScript API and console
-    // Since TIGLCreatorSpotlightManager still needs access to them, the class is marked as friend class above
-    void activateLight(const Handle(V3d_Light)& light);
-    void deactivateLight(const Handle(V3d_Light)& light);
-    void removeLight(const Handle(V3d_Light)& light);
-    void refreshLights();
-    bool isLightEnabled(const Handle(V3d_Light)& light) const;
 
     void setStartPoint(const QPoint&);
     void setCurrentPoint(const QPoint&);

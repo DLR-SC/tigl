@@ -59,6 +59,12 @@ public:
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
     const QList<Handle(V3d_Light)>&  defaultLights() const { return myDefaultLights; }
+
+    void activateLight(const Handle(V3d_Light)& light);
+    void deactivateLight(const Handle(V3d_Light)& light);
+    void removeLight(const Handle(V3d_Light)& light);
+    void refreshLights();
+    bool isLightEnabled(const Handle(V3d_Light)& light) const;
     Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );

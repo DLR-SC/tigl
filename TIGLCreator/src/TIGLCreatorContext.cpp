@@ -167,8 +167,74 @@ Handle(V3d_Viewer)& TIGLCreatorContext::getViewer()
 }
 
 Handle(AIS_InteractiveContext)& TIGLCreatorContext::getContext()
-{ 
-    return myContext; 
+{
+    return myContext;
+}
+
+namespace {
+    Handle(V3d_View) firstActiveView(const Handle(V3d_Viewer)& viewer) {
+        if (viewer.IsNull() || viewer->ActiveViews().IsEmpty()) {
+            return Handle(V3d_View)();
+        }
+        return viewer->ActiveViews().First();
+    }
+}
+
+void TIGLCreatorContext::activateLight(const Handle(V3d_Light)& light)
+{
+    if (light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (view.IsNull()) {
+        return;
+    }
+    view->SetLightOn(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::deactivateLight(const Handle(V3d_Light)& light)
+{
+    if (light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (view.IsNull()) {
+        return;
+    }
+    view->SetLightOff(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::removeLight(const Handle(V3d_Light)& light)
+{
+    if (myViewer.IsNull() || light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (!view.IsNull()) {
+        view->SetLightOff(light);
+    }
+    myViewer->DelLight(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::refreshLights()
+{
+    if (myViewer.IsNull()) {
+        return;
+    }
+    myViewer->UpdateLights();
+    myViewer->Redraw();
+}
+
+bool TIGLCreatorContext::isLightEnabled(const Handle(V3d_Light)& light) const
+{
+    if (light.IsNull()) {
+        return false;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    return !view.IsNull() && view->IsActiveLight(light);
 }
 
 Handle(V3d_Viewer) TIGLCreatorContext::createViewer( const Standard_ExtString aName,

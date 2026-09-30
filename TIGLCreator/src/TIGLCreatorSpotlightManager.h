@@ -27,6 +27,7 @@
 #include <gp_Pnt.hxx>
 
 class TIGLCreatorWidget;
+class TIGLCreatorContext;
 class AIS_InteractiveContext;
 class AIS_LightSource;
 
@@ -81,6 +82,7 @@ private:
     Handle(AIS_InteractiveContext) getContext() const;
 
     TIGLCreatorWidget* myWidget;
+    TIGLCreatorContext* myContext;
     QList<SpotlightData> mySpotlights;
     QList<Handle(AIS_LightSource)> mySpotlightSymbols;
     int myNextId;

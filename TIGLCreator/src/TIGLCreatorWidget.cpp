@@ -172,6 +172,11 @@ void TIGLCreatorWidget::setContext(TIGLCreatorContext* aContext)
     viewerContext = aContext;
 }
 
+void TIGLCreatorWidget::setSpotlightManager(TIGLCreatorSpotlightManager* manager)
+{
+    mySpotlightManager = manager;
+}
+
 
 void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
@@ -638,53 +643,6 @@ void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, do
     } else {
         LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): No spotlight manager is set.";
     }
-}
-
-void TIGLCreatorWidget::activateLight(const Handle(V3d_Light)& light)
-{
-    if (!myView.IsNull() && !light.IsNull()) {
-        myView->SetLightOn(light);
-        myView->UpdateLights();
-    }
-    update();
-}
-
-void TIGLCreatorWidget::deactivateLight(const Handle(V3d_Light)& light)
-{
-    if (!myView.IsNull() && !light.IsNull()) {
-        myView->SetLightOff(light);
-        myView->UpdateLights();
-    }
-    update();
-}
-
-void TIGLCreatorWidget::removeLight(const Handle(V3d_Light)& light)
-{
-    if (!light.IsNull()) {
-        if (!myView.IsNull()) {
-            myView->SetLightOff(light);
-        }
-        if (!myViewer.IsNull()) {
-            myViewer->DelLight(light);
-        }
-    }
-    refreshLights();
-}
-
-void TIGLCreatorWidget::refreshLights()
-{
-    if (!myView.IsNull()) {
-        myView->UpdateLights();
-    }
-    update();
-}
-
-bool TIGLCreatorWidget::isLightEnabled(const Handle(V3d_Light)& light) const
-{
-    if (myView.IsNull() || light.IsNull()) {
-        return false;
-    }
-    return myView->IsActiveLight(light);
 }
 
 void TIGLCreatorWidget::hiddenLineOff()
