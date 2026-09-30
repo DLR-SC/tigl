@@ -361,6 +361,11 @@ void TIGLCreatorContext::selectAll()
         myContext->DisplayedObjects( aList );
         AIS_ListIteratorOfListOfInteractive aListIterator;
         for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
+            // Spotlight cone symbols are visual aids managed by the spotlight manager
+            // and must not be selectable (AddOrRemoveSelected bypasses Deactivate)
+            if (!Handle(AIS_LightSource)::DownCast(aListIterator.Value()).IsNull()) {
+                continue;
+            }
             // add to selection
             myContext->AddOrRemoveSelected(aListIterator.Value(), Standard_False);
         }
