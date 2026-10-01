@@ -53,7 +53,7 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 class TIGLCreatorContext;
-class TIGLCreatorSpotlightManager;
+class TIGLCreatorLightSourceManager;
 
 class TIGLCreatorWidget : public QWidget
 {
@@ -97,7 +97,7 @@ public:
 
     // the scene context must be set before first use
     void setContext(TIGLCreatorContext* aContext);
-    void setSpotlightManager(TIGLCreatorSpotlightManager* manager);
+    void setLightSourceManager(TIGLCreatorLightSourceManager* manager);
 
     Handle(V3d_View)                  getView( )    { return myView; }
     TIGLCreatorContext*               getViewerContext() const { return viewerContext; }
@@ -214,7 +214,7 @@ private: // members
     QColor                          myBGColor;
     bool                            mySceneDarkened;
     TIGLCreatorContext*             viewerContext;
-    TIGLCreatorSpotlightManager*    mySpotlightManager;
+    TIGLCreatorLightSourceManager*  myLightSourceManager;
 
 private: // methods
     void initialize();

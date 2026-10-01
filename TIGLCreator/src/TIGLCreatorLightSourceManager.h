@@ -16,8 +16,8 @@
 * limitations under the License.
 */
 
-#ifndef TIGLCREATORSPOTLIGHTMANAGER_H
-#define TIGLCREATORSPOTLIGHTMANAGER_H
+#ifndef TIGLCREATORLIGHTSOURCEMANAGER_H
+#define TIGLCREATORLIGHTSOURCEMANAGER_H
 
 #include <QObject>
 #include <QList>
@@ -41,12 +41,12 @@ struct SpotlightData
     gp_Pnt direction;
 };
 
-class TIGLCreatorSpotlightManager : public QObject
+class TIGLCreatorLightSourceManager : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TIGLCreatorSpotlightManager(TIGLCreatorWidget* widget, QObject* parent = nullptr);
+    explicit TIGLCreatorLightSourceManager(TIGLCreatorWidget* widget, QObject* parent = nullptr);
 
     void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration);
     void removeSpotlight(int index);
@@ -92,4 +92,4 @@ private:
     bool myDefaultLightsEnabled;
 };
 
-#endif // TIGLCREATORSPOTLIGHTMANAGER_H
+#endif // TIGLCREATORLIGHTSOURCEMANAGER_H

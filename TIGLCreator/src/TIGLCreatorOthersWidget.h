@@ -25,7 +25,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QStackedWidget;
 class QPushButton;
-class TIGLCreatorSpotlightManager;
+class TIGLCreatorLightSourceManager;
 
 class TIGLCreatorOthersWidget : public QWidget
 {
@@ -34,7 +34,7 @@ class TIGLCreatorOthersWidget : public QWidget
 public:
     explicit TIGLCreatorOthersWidget(QWidget* parent = nullptr);
 
-    void setSpotlightManager(TIGLCreatorSpotlightManager* manager);
+    void setLightSourceManager(TIGLCreatorLightSourceManager* manager);
 
 private slots:
     void onCategorySelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
@@ -42,25 +42,25 @@ private slots:
     void onEditSpotlight();
     void onCopySpotlight();
     void onDeleteSpotlight();
-    void onSpotlightItemChanged(QTreeWidgetItem* item, int column);
+    void onLightSourceItemChanged(QTreeWidgetItem* item, int column);
 
 private:
-    QWidget* createSpotlightPanel();
-    void refreshSpotlightList();
-    int currentSpotlightIndex() const;
+    QWidget* createLightSourcePanel();
+    void refreshLightSourceList();
+    int currentLightSourceIndex() const;
 
     QTreeWidget* myCategoryTree;
     QStackedWidget* myDetailStack;
 
-    QTreeWidget* mySpotlightTree;
+    QTreeWidget* myLightSourceTree;
     QPushButton* myAddButton;
     QPushButton* myEditButton;
     QPushButton* myCopyButton;
     QPushButton* myDeleteButton;
 
-    TIGLCreatorSpotlightManager* mySpotlightManager;
-    bool myIsRefreshingSpotlightList;
-    bool myIsTogglingSpotlight;
+    TIGLCreatorLightSourceManager* myLightSourceManager;
+    bool myIsRefreshingLightSourceList;
+    bool myIsTogglingLightSource;
 };
 
 #endif // TIGLCREATOROTHERSWIDGET_H

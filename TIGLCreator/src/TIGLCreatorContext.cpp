@@ -427,7 +427,7 @@ void TIGLCreatorContext::selectAll()
         myContext->DisplayedObjects( aList );
         AIS_ListIteratorOfListOfInteractive aListIterator;
         for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
-            // Spotlight cone symbols are visual aids managed by the spotlight manager
+            // Spotlight cone symbols are visual aids managed by the light source manager
             // and must not be selectable (AddOrRemoveSelected bypasses Deactivate)
             if (!Handle(AIS_LightSource)::DownCast(aListIterator.Value()).IsNull()) {
                 continue;
@@ -659,7 +659,7 @@ void TIGLCreatorContext::eraseSelected()
         std::vector<Handle(AIS_InteractiveObject)> objects;
         for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
             Handle(AIS_InteractiveObject) object = myContext->SelectedInteractive();
-            // Spotlight cone symbols are visual aids managed by the spotlight manager
+            // Spotlight cone symbols are visual aids managed by the light source manager
             // and must not be deletable from the 3D viewer
             if (!Handle(AIS_LightSource)::DownCast(object).IsNull()) {
                 continue;

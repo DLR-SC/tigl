@@ -42,7 +42,7 @@
 #include "TIGLCreatorContext.h"
 #include "TIGLCreatorSettings.h"
 #include "TIGLCreatorMaterials.h"
-#include "TIGLCreatorSpotlightManager.h"
+#include "TIGLCreatorLightSourceManager.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
@@ -105,7 +105,7 @@ TIGLCreatorWidget::TIGLCreatorWidget(QWidget * parent)
     myKeyboardFlags   ( Qt::NoModifier ),
     myButtonFlags     ( Qt::NoButton ),
     viewerContext     (nullptr),
-    mySpotlightManager(nullptr)
+    myLightSourceManager(nullptr)
 {
     initialize();
 }
@@ -172,9 +172,9 @@ void TIGLCreatorWidget::setContext(TIGLCreatorContext* aContext)
     viewerContext = aContext;
 }
 
-void TIGLCreatorWidget::setSpotlightManager(TIGLCreatorSpotlightManager* manager)
+void TIGLCreatorWidget::setLightSourceManager(TIGLCreatorLightSourceManager* manager)
 {
-    mySpotlightManager = manager;
+    myLightSourceManager = manager;
 }
 
 
@@ -638,10 +638,10 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
 
 void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
 {
-    if (mySpotlightManager) {
-        mySpotlightManager->addSpotlight(x, y, z, dx, dy, dz, concentration);
+    if (myLightSourceManager) {
+        myLightSourceManager->addSpotlight(x, y, z, dx, dy, dz, concentration);
     } else {
-        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): No spotlight manager is set.";
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): No light source manager is set.";
     }
 }
 

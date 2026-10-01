@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-#include "TIGLCreatorSpotlightManager.h"
+#include "TIGLCreatorLightSourceManager.h"
 #include "TIGLCreatorWidget.h"
 #include "TIGLCreatorContext.h"
 #include "CTiglLogging.h"
@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <cmath>
 
-TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widget, QObject* parent)
+TIGLCreatorLightSourceManager::TIGLCreatorLightSourceManager(TIGLCreatorWidget* widget, QObject* parent)
     : QObject(parent)
     , myWidget(widget)
     , myContext(widget ? widget->getViewerContext() : nullptr)
@@ -42,28 +42,28 @@ TIGLCreatorSpotlightManager::TIGLCreatorSpotlightManager(TIGLCreatorWidget* widg
     Q_ASSERT(myWidget != nullptr);
 }
 
-void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
+void TIGLCreatorLightSourceManager::addSpotlight(double x, double y, double z,
                                                double dx, double dy, double dz,
                                                double concentration)
 {
     addSpotlight(x, y, z, dx, dy, dz, concentration, true);
 }
 
-void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
+void TIGLCreatorLightSourceManager::addSpotlight(double x, double y, double z,
                                                double dx, double dy, double dz,
                                                double concentration,
                                                bool enabled)
 {
     if (!myContext) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::addSpotlight: No viewer context is set.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::addSpotlight: No viewer context is set.";
         return;
     }
     if (concentration < 0.0 || concentration > 1.0) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::addSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::addSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
         return;
     }
     if (dx*dx + dy*dy + dz*dz < 1e-8) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::addSpotlight: Direction must not be the zero vector or very close to it.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::addSpotlight: Direction must not be the zero vector or very close to it.";
         return;
     }
 
@@ -91,14 +91,14 @@ void TIGLCreatorSpotlightManager::addSpotlight(double x, double y, double z,
     emit spotlightsChanged();
 }
 
-void TIGLCreatorSpotlightManager::removeSpotlight(int index)
+void TIGLCreatorLightSourceManager::removeSpotlight(int index)
 {
     if (!myContext) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: No viewer context is set.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::removeSpotlight: No viewer context is set.";
         return;
     }
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::removeSpotlight: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::removeSpotlight: Invalid spotlight index " << index << ".";
         return;
     }
     eraseSpotlightSymbol(index);
@@ -108,10 +108,10 @@ void TIGLCreatorSpotlightManager::removeSpotlight(int index)
     emit spotlightsChanged();
 }
 
-void TIGLCreatorSpotlightManager::copySpotlight(int index)
+void TIGLCreatorLightSourceManager::copySpotlight(int index)
 {
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::copySpotlight: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::copySpotlight: Invalid spotlight index " << index << ".";
         return;
     }
 
@@ -126,24 +126,24 @@ void TIGLCreatorSpotlightManager::copySpotlight(int index)
                  sourceEnabled);
 }
 
-void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y, double z,
+void TIGLCreatorLightSourceManager::updateSpotlight(int index, double x, double y, double z,
                                                   double dx, double dy, double dz,
                                                   double concentration)
 {
     if (!myContext) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: No viewer context is set.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::updateSpotlight: No viewer context is set.";
         return;
     }
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::updateSpotlight: Invalid spotlight index " << index << ".";
         return;
     }
     if (concentration < 0.0 || concentration > 1.0) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::updateSpotlight: Invalid concentration " << concentration << ". Concentration must be inside [0.0,1.0].";
         return;
     }
     if (dx*dx + dy*dy + dz*dz < 1e-8) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::updateSpotlight: Direction must not be the zero vector or very close to it.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::updateSpotlight: Direction must not be the zero vector or very close to it.";
         return;
     }
 
@@ -174,14 +174,14 @@ void TIGLCreatorSpotlightManager::updateSpotlight(int index, double x, double y,
     emit spotlightsChanged();
 }
 
-bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)
+bool TIGLCreatorLightSourceManager::setSpotlightEnabled(int index, bool enabled)
 {
     if (!myContext) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightEnabled: No viewer context is set.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::setSpotlightEnabled: No viewer context is set.";
         return false;
     }
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightEnabled: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::setSpotlightEnabled: Invalid spotlight index " << index << ".";
         return false;
     }
 
@@ -200,20 +200,20 @@ bool TIGLCreatorSpotlightManager::setSpotlightEnabled(int index, bool enabled)
     return true;
 }
 
-bool TIGLCreatorSpotlightManager::isSpotlightEnabled(int index) const
+bool TIGLCreatorLightSourceManager::isSpotlightEnabled(int index) const
 {
     if (!myContext) {
         return false;
     }
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::isSpotlightEnabled: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::isSpotlightEnabled: Invalid spotlight index " << index << ".";
         return false;
     }
 
     return myContext->isLightEnabled(mySpotlights[index].light);
 }
 
-bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
+bool TIGLCreatorLightSourceManager::setDefaultLightEnabled(bool enabled)
 {
     if (!myContext) {
         return false;
@@ -221,7 +221,7 @@ bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
 
     const QList<Handle(V3d_Light)>& lights = myContext->defaultLights();
     if (lights.isEmpty()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::setDefaultLightEnabled: No default lights found in the viewer.";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::setDefaultLightEnabled: No default lights found in the viewer.";
         return false;
     }
 
@@ -259,7 +259,7 @@ bool TIGLCreatorSpotlightManager::setDefaultLightEnabled(bool enabled)
     return true;
 }
 
-bool TIGLCreatorSpotlightManager::isDefaultLightEnabled() const
+bool TIGLCreatorLightSourceManager::isDefaultLightEnabled() const
 {
     if (!myContext) {
         return false;
@@ -269,12 +269,12 @@ bool TIGLCreatorSpotlightManager::isDefaultLightEnabled() const
     return myDefaultLightsEnabled;
 }
 
-const QList<SpotlightData>& TIGLCreatorSpotlightManager::getSpotlights() const
+const QList<SpotlightData>& TIGLCreatorLightSourceManager::getSpotlights() const
 {
     return mySpotlights;
 }
 
-double TIGLCreatorSpotlightManager::coneAngleFromConcentration(double concentration)
+double TIGLCreatorLightSourceManager::coneAngleFromConcentration(double concentration)
 {
     // Maps the concentration to the cone angle of the spotlight:
     // a fully concentrated light gets a narrow cone (30 deg), a fully diffuse light a wide one (85 deg).
@@ -285,7 +285,7 @@ double TIGLCreatorSpotlightManager::coneAngleFromConcentration(double concentrat
     return minAngle + (1.0 - concentration) * (maxAngle - minAngle);
 }
 
-Handle(AIS_InteractiveContext) TIGLCreatorSpotlightManager::getContext() const
+Handle(AIS_InteractiveContext) TIGLCreatorLightSourceManager::getContext() const
 {
     if (!myContext) {
         return Handle(AIS_InteractiveContext)();
@@ -293,7 +293,7 @@ Handle(AIS_InteractiveContext) TIGLCreatorSpotlightManager::getContext() const
     return myContext->getContext();
 }
 
-double TIGLCreatorSpotlightManager::symbolLength() const
+double TIGLCreatorLightSourceManager::symbolLength() const
 {
     Handle(V3d_View) view = myWidget->getView();
     if (!view) {
@@ -318,10 +318,10 @@ double TIGLCreatorSpotlightManager::symbolLength() const
     return 120.0 / pixelsPerUnit;
 }
 
-void TIGLCreatorSpotlightManager::displaySpotlightSymbol(int index)
+void TIGLCreatorLightSourceManager::displaySpotlightSymbol(int index)
 {
     if (index < 0 || index >= mySpotlights.size() || !mySpotlights[index].light) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::displaySpotlightSymbol: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::displaySpotlightSymbol: Invalid spotlight index " << index << ".";
         return;
     }
     if (!mySpotlightSymbols[index].IsNull()) {
@@ -348,7 +348,7 @@ void TIGLCreatorSpotlightManager::displaySpotlightSymbol(int index)
     mySpotlightSymbols[index] = symbol;
 }
 
-void TIGLCreatorSpotlightManager::eraseSpotlightSymbol(int index)
+void TIGLCreatorLightSourceManager::eraseSpotlightSymbol(int index)
 {
     if (index < 0 || index >= mySpotlightSymbols.size()) {
         return;
@@ -363,10 +363,10 @@ void TIGLCreatorSpotlightManager::eraseSpotlightSymbol(int index)
     }
 }
 
-bool TIGLCreatorSpotlightManager::setSpotlightSymbolVisible(int index, bool visible)
+bool TIGLCreatorLightSourceManager::setSpotlightSymbolVisible(int index, bool visible)
 {
     if (index < 0 || index >= mySpotlights.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::setSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::setSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
         return false;
     }
 
@@ -380,10 +380,10 @@ bool TIGLCreatorSpotlightManager::setSpotlightSymbolVisible(int index, bool visi
     return true;
 }
 
-bool TIGLCreatorSpotlightManager::isSpotlightSymbolVisible(int index) const
+bool TIGLCreatorLightSourceManager::isSpotlightSymbolVisible(int index) const
 {
     if (index < 0 || index >= mySpotlightSymbols.size()) {
-        LOG(ERROR) << "TIGLCreatorSpotlightManager::isSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
+        LOG(ERROR) << "TIGLCreatorLightSourceManager::isSpotlightSymbolVisible: Invalid spotlight index " << index << ".";
         return false;
     }
 

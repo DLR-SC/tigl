@@ -17,7 +17,7 @@
 */
 
 #include "TIGLCreatorOthersWidget.h"
-#include "TIGLCreatorSpotlightManager.h"
+#include "TIGLCreatorLightSourceManager.h"
 #include "TIGLCreatorAddSpotlightDialog.h"
 
 #include <QVBoxLayout>
@@ -118,9 +118,9 @@ private:
 
 TIGLCreatorOthersWidget::TIGLCreatorOthersWidget(QWidget* parent)
     : QWidget(parent)
-    , mySpotlightManager(nullptr)
-    , myIsRefreshingSpotlightList(false)
-    , myIsTogglingSpotlight(false)
+    , myLightSourceManager(nullptr)
+    , myIsRefreshingLightSourceList(false)
+    , myIsTogglingLightSource(false)
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -150,15 +150,15 @@ TIGLCreatorOthersWidget::TIGLCreatorOthersWidget(QWidget* parent)
     placeholderLayout->addWidget(placeholderLabel, 1);
     myDetailStack->addWidget(placeholder);
 
-    // Create the spotlight panel (index 1 in the stack)
-    myDetailStack->addWidget(createSpotlightPanel());
+    // Create the light source panel (index 1 in the stack)
+    myDetailStack->addWidget(createLightSourcePanel());
 
-    // Add "Manage Spotlights" category
-    QTreeWidgetItem* spotlightItem = new QTreeWidgetItem(myCategoryTree);
-    spotlightItem->setText(0, "Manage Spotlights");
-    spotlightItem->setData(0, Qt::UserRole, 1);
-    myCategoryTree->addTopLevelItem(spotlightItem);
-    spotlightItem->setExpanded(true);
+    // Add "Manage Light Sources" category
+    QTreeWidgetItem* lightSourceItem = new QTreeWidgetItem(myCategoryTree);
+    lightSourceItem->setText(0, "Manage Light Sources");
+    lightSourceItem->setData(0, Qt::UserRole, 1);
+    myCategoryTree->addTopLevelItem(lightSourceItem);
+    lightSourceItem->setExpanded(true);
 
     // No item selected by default - placeholder is shown
     myDetailStack->setCurrentIndex(0);
@@ -167,23 +167,23 @@ TIGLCreatorOthersWidget::TIGLCreatorOthersWidget(QWidget* parent)
             this, &TIGLCreatorOthersWidget::onCategorySelectionChanged);
 }
 
-void TIGLCreatorOthersWidget::setSpotlightManager(TIGLCreatorSpotlightManager* manager)
+void TIGLCreatorOthersWidget::setLightSourceManager(TIGLCreatorLightSourceManager* manager)
 {
-    if (mySpotlightManager) {
-        disconnect(mySpotlightManager, &TIGLCreatorSpotlightManager::spotlightsChanged,
-                   this, &TIGLCreatorOthersWidget::refreshSpotlightList);
+    if (myLightSourceManager) {
+        disconnect(myLightSourceManager, &TIGLCreatorLightSourceManager::spotlightsChanged,
+                   this, &TIGLCreatorOthersWidget::refreshLightSourceList);
     }
 
-    mySpotlightManager = manager;
+    myLightSourceManager = manager;
 
-    if (mySpotlightManager) {
-        connect(mySpotlightManager, &TIGLCreatorSpotlightManager::spotlightsChanged,
-                this, &TIGLCreatorOthersWidget::refreshSpotlightList);
-        refreshSpotlightList();
+    if (myLightSourceManager) {
+        connect(myLightSourceManager, &TIGLCreatorLightSourceManager::spotlightsChanged,
+                this, &TIGLCreatorOthersWidget::refreshLightSourceList);
+        refreshLightSourceList();
     }
 }
 
-QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
+QWidget* TIGLCreatorOthersWidget::createLightSourcePanel()
 {
     QWidget* panel = new QWidget();
     QVBoxLayout* layout = new QVBoxLayout(panel);
@@ -191,17 +191,17 @@ QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
 
     // Spotlight tree: first column toggles the spotlight, second column toggles the 3D cone
     // visibility, the wide third column lists the spotlight names
-    mySpotlightTree = new QTreeWidget();
-    mySpotlightTree->setColumnCount(3);
-    mySpotlightTree->setHeaderLabels(QStringList() << "Show Spotlight" << "Show Cone" << "Spotlights");
-    mySpotlightTree->setRootIsDecorated(false);
-    mySpotlightTree->setUniformRowHeights(true);
-    mySpotlightTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    mySpotlightTree->setItemDelegateForColumn(0, new CenteredCheckDelegate());
-    mySpotlightTree->setItemDelegateForColumn(1, new CenteredCheckDelegate());
-    mySpotlightTree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    mySpotlightTree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    layout->addWidget(mySpotlightTree, 1);
+    myLightSourceTree = new QTreeWidget();
+    myLightSourceTree->setColumnCount(3);
+    myLightSourceTree->setHeaderLabels(QStringList() << "Show Light Source" << "Show Cone" << "Light Sources");
+    myLightSourceTree->setRootIsDecorated(false);
+    myLightSourceTree->setUniformRowHeights(true);
+    myLightSourceTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    myLightSourceTree->setItemDelegateForColumn(0, new CenteredCheckDelegate());
+    myLightSourceTree->setItemDelegateForColumn(1, new CenteredCheckDelegate());
+    myLightSourceTree->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    myLightSourceTree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    layout->addWidget(myLightSourceTree, 1);
 
     // Button row
     QHBoxLayout* buttonLayout = new QHBoxLayout();
@@ -224,27 +224,27 @@ QWidget* TIGLCreatorOthersWidget::createSpotlightPanel()
     connect(myEditButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onEditSpotlight);
     connect(myCopyButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onCopySpotlight);
     connect(myDeleteButton, &QPushButton::clicked, this, &TIGLCreatorOthersWidget::onDeleteSpotlight);
-    connect(mySpotlightTree, &QTreeWidget::itemSelectionChanged, this, [this]() {
-        // currentSpotlightIndex returns -1 for the fixed "TiGL Default" row,
+    connect(myLightSourceTree, &QTreeWidget::itemSelectionChanged, this, [this]() {
+        // currentLightSourceIndex returns -1 for the fixed "TiGL Default" row,
         // which must not be editable/copyable/deletable
-        bool hasSelection = currentSpotlightIndex() >= 0;
+        bool hasSelection = currentLightSourceIndex() >= 0;
         myEditButton->setEnabled(hasSelection);
         myCopyButton->setEnabled(hasSelection);
         myDeleteButton->setEnabled(hasSelection);
     });
-    connect(mySpotlightTree, &QTreeWidget::itemChanged,
-            this, &TIGLCreatorOthersWidget::onSpotlightItemChanged);
+    connect(myLightSourceTree, &QTreeWidget::itemChanged,
+            this, &TIGLCreatorOthersWidget::onLightSourceItemChanged);
 
     return panel;
 }
 
-int TIGLCreatorOthersWidget::currentSpotlightIndex() const
+int TIGLCreatorOthersWidget::currentLightSourceIndex() const
 {
-    if (!mySpotlightTree || !mySpotlightTree->currentItem()) {
+    if (!myLightSourceTree || !myLightSourceTree->currentItem()) {
         return -1;
     }
     // The fixed "TiGL Default" row is tagged with -1, all spotlight rows with their index
-    const QVariant indexVariant = mySpotlightTree->currentItem()->data(0, Qt::UserRole);
+    const QVariant indexVariant = myLightSourceTree->currentItem()->data(0, Qt::UserRole);
     return indexVariant.isValid() ? indexVariant.toInt() : -1;
 }
 
@@ -264,7 +264,7 @@ void TIGLCreatorOthersWidget::onCategorySelectionChanged(QTreeWidgetItem* curren
 
 void TIGLCreatorOthersWidget::onAddSpotlight()
 {
-    if (!mySpotlightManager) {
+    if (!myLightSourceManager) {
         return;
     }
 
@@ -277,21 +277,21 @@ void TIGLCreatorOthersWidget::onAddSpotlight()
     tigl::CTiglPoint dir = dialog.getDirection();
     double conc = dialog.getConcentration();
 
-    mySpotlightManager->addSpotlight(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z, conc);
+    myLightSourceManager->addSpotlight(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z, conc);
 }
 
 void TIGLCreatorOthersWidget::onEditSpotlight()
 {
-    if (!mySpotlightManager) {
+    if (!myLightSourceManager) {
         return;
     }
 
-    int row = currentSpotlightIndex();
+    int row = currentLightSourceIndex();
     if (row < 0) {
         return;
     }
 
-    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = myLightSourceManager->getSpotlights();
     if (row >= spotlights.size()) {
         return;
     }
@@ -314,40 +314,40 @@ void TIGLCreatorOthersWidget::onEditSpotlight()
     tigl::CTiglPoint newDir = dialog.getDirection();
     double newConc = dialog.getConcentration();
 
-    mySpotlightManager->updateSpotlight(row, newPos.x, newPos.y, newPos.z, newDir.x, newDir.y, newDir.z, newConc);
+    myLightSourceManager->updateSpotlight(row, newPos.x, newPos.y, newPos.z, newDir.x, newDir.y, newDir.z, newConc);
 }
 
 void TIGLCreatorOthersWidget::onCopySpotlight()
 {
-    if (!mySpotlightManager) {
+    if (!myLightSourceManager) {
         return;
     }
 
-    int row = currentSpotlightIndex();
+    int row = currentLightSourceIndex();
     if (row < 0) {
         return;
     }
 
-    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = myLightSourceManager->getSpotlights();
     if (row >= spotlights.size()) {
         return;
     }
 
-    mySpotlightManager->copySpotlight(row);
+    myLightSourceManager->copySpotlight(row);
 }
 
 void TIGLCreatorOthersWidget::onDeleteSpotlight()
 {
-    if (!mySpotlightManager) {
+    if (!myLightSourceManager) {
         return;
     }
 
-    int row = currentSpotlightIndex();
+    int row = currentLightSourceIndex();
     if (row < 0) {
         return;
     }
 
-    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = myLightSourceManager->getSpotlights();
     if (row >= spotlights.size()) {
         return;
     }
@@ -360,13 +360,13 @@ void TIGLCreatorOthersWidget::onDeleteSpotlight()
         QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
-        mySpotlightManager->removeSpotlight(row);
+        myLightSourceManager->removeSpotlight(row);
     }
 }
 
-void TIGLCreatorOthersWidget::onSpotlightItemChanged(QTreeWidgetItem* item, int column)
+void TIGLCreatorOthersWidget::onLightSourceItemChanged(QTreeWidgetItem* item, int column)
 {
-    if (!mySpotlightManager || !item || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
+    if (!myLightSourceManager || !item || myIsRefreshingLightSourceList || myIsTogglingLightSource) {
         return;
     }
 
@@ -386,38 +386,38 @@ void TIGLCreatorOthersWidget::onSpotlightItemChanged(QTreeWidgetItem* item, int 
     bool newState = (item->checkState(column) == Qt::Checked);
     Qt::CheckState previousState = newState ? Qt::Unchecked : Qt::Checked;
 
-    myIsTogglingSpotlight = true;
+    myIsTogglingLightSource = true;
     bool success = false;
     if (index == -1) {
-        success = mySpotlightManager->setDefaultLightEnabled(newState);
+        success = myLightSourceManager->setDefaultLightEnabled(newState);
     }
     else if (column == 0) {
-        success = mySpotlightManager->setSpotlightEnabled(index, newState);
+        success = myLightSourceManager->setSpotlightEnabled(index, newState);
     }
     else {
-        success = mySpotlightManager->setSpotlightSymbolVisible(index, newState);
+        success = myLightSourceManager->setSpotlightSymbolVisible(index, newState);
     }
     if (!success) {
         item->setCheckState(column, previousState);
     }
-    myIsTogglingSpotlight = false;
+    myIsTogglingLightSource = false;
 }
 
-void TIGLCreatorOthersWidget::refreshSpotlightList()
+void TIGLCreatorOthersWidget::refreshLightSourceList()
 {
-    if (!mySpotlightTree || !mySpotlightManager || myIsRefreshingSpotlightList || myIsTogglingSpotlight) {
+    if (!myLightSourceTree || !myLightSourceManager || myIsRefreshingLightSourceList || myIsTogglingLightSource) {
         return;
     }
 
-    myIsRefreshingSpotlightList = true;
+    myIsRefreshingLightSourceList = true;
 
     QString currentName;
-    if (mySpotlightTree->currentItem()) {
-        currentName = mySpotlightTree->currentItem()->text(2);
+    if (myLightSourceTree->currentItem()) {
+        currentName = myLightSourceTree->currentItem()->text(2);
     }
 
     // Rebuild whole list since after change (add, edit, delete) it is not clear which spotlight changed
-    mySpotlightTree->clear();
+    myLightSourceTree->clear();
 
     // The fixed viewer-level default lights as a hard-wired entry: on/off only,
     // no cone checkbox (column 1 is left without a check state on purpose)
@@ -425,27 +425,27 @@ void TIGLCreatorOthersWidget::refreshSpotlightList()
     defaultItem->setFlags(defaultItem->flags() | Qt::ItemIsUserCheckable);
     defaultItem->setText(2, "TiGL Default");
     defaultItem->setData(0, Qt::UserRole, -1);
-    defaultItem->setCheckState(0, mySpotlightManager->isDefaultLightEnabled() ? Qt::Checked : Qt::Unchecked);
-    mySpotlightTree->addTopLevelItem(defaultItem);
+    defaultItem->setCheckState(0, myLightSourceManager->isDefaultLightEnabled() ? Qt::Checked : Qt::Unchecked);
+    myLightSourceTree->addTopLevelItem(defaultItem);
 
-    const QList<SpotlightData>& spotlights = mySpotlightManager->getSpotlights();
+    const QList<SpotlightData>& spotlights = myLightSourceManager->getSpotlights();
     for (int i = 0; i < spotlights.size(); ++i) {
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
         item->setText(2, spotlights[i].name);
         item->setData(0, Qt::UserRole, i);
-        item->setCheckState(0, mySpotlightManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
-        item->setCheckState(1, mySpotlightManager->isSpotlightSymbolVisible(i) ? Qt::Checked : Qt::Unchecked);
-        mySpotlightTree->addTopLevelItem(item);
+        item->setCheckState(0, myLightSourceManager->isSpotlightEnabled(i) ? Qt::Checked : Qt::Unchecked);
+        item->setCheckState(1, myLightSourceManager->isSpotlightSymbolVisible(i) ? Qt::Checked : Qt::Unchecked);
+        myLightSourceTree->addTopLevelItem(item);
     }
 
-    myIsRefreshingSpotlightList = false;
+    myIsRefreshingLightSourceList = false;
 
     // Try to restore the previously selected spotlight by name
     if (!currentName.isEmpty()) {
-        for (int i = 0; i < mySpotlightTree->topLevelItemCount(); ++i) {
-            if (mySpotlightTree->topLevelItem(i)->text(2) == currentName) {
-                mySpotlightTree->setCurrentItem(mySpotlightTree->topLevelItem(i));
+        for (int i = 0; i < myLightSourceTree->topLevelItemCount(); ++i) {
+            if (myLightSourceTree->topLevelItem(i)->text(2) == currentName) {
+                myLightSourceTree->setCurrentItem(myLightSourceTree->topLevelItem(i));
                 break;
             }
         }
