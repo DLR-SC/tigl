@@ -347,14 +347,28 @@
    <widget class="ModificatorContainerWidget" name="modificatorContainerWidget"/>
   </widget>
   <widget class="QDockWidget" name="treeDockWidget">
-   <property name="windowTitle">
-    <string>CPACS Tree</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="CPACSTreeWidget" name="treeWidget"/>
-  </widget>
+    <property name="windowTitle">
+     <string>Tree</string>
+    </property>
+    <attribute name="dockWidgetArea">
+     <number>2</number>
+    </attribute>
+    <widget class="QTabWidget" name="treeTabWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::North</enum>
+     </property>
+     <widget class="CPACSTreeWidget" name="treeWidget">
+      <attribute name="title">
+       <string>CPACS Tree</string>
+      </attribute>
+     </widget>
+     <widget class="TIGLCreatorOthersWidget" name="othersWidget">
+      <attribute name="title">
+       <string>Others</string>
+      </attribute>
+     </widget>
+    </widget>
+   </widget>
   <action name="newAction">
    <property name="icon">
     <iconset resource="TIGLCreator.qrc">
@@ -1118,13 +1132,19 @@
    <header>CPACSTreeWidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>ModificatorContainerWidget</class>
-   <extends>QWidget</extends>
-   <header>ModificatorContainerWidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
+   <customwidget>
+    <class>ModificatorContainerWidget</class>
+    <extends>QWidget</extends>
+    <header>ModificatorContainerWidget.h</header>
+    <container>1</container>
+   </customwidget>
+   <customwidget>
+    <class>TIGLCreatorOthersWidget</class>
+    <extends>QWidget</extends>
+    <header>TIGLCreatorOthersWidget.h</header>
+    <container>1</container>
+   </customwidget>
+  </customwidgets>
  <resources>
   <include location="TIGLCreator.qrc"/>
  </resources>

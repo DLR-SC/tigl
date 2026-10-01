@@ -26,7 +26,21 @@
 #include <QDoubleSpinBox>
 #include <QDialogButtonBox>
 
-TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
+TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget* parent)
+    : TIGLCreatorAddSpotlightDialog(0., 0., 0., 1., 1., 1., 0.5, "Add a spotlight", parent)
+{}
+
+TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(double x, double y, double z,
+                                                             double dirX, double dirY, double dirZ,
+                                                             double concentration, QWidget* parent)
+    : TIGLCreatorAddSpotlightDialog(x, y, z, dirX, dirY, dirZ, concentration, "Edit spotlight", parent)
+{}
+
+TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(double x, double y, double z,
+                                                             double dirX, double dirY, double dirZ,
+                                                             double concentration,
+                                                             const QString& title,
+                                                             QWidget* parent)
     : QDialog(parent)
     , position_x(new QDoubleSpinBox())
     , position_y(new QDoubleSpinBox())
@@ -36,7 +50,13 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     , dz(new QDoubleSpinBox())
     , concentration(new QDoubleSpinBox())
 {
-    setWindowTitle("Add a spotlight");
+    setupUI(title);
+    setValues(x, y, z, dirX, dirY, dirZ, concentration);
+}
+
+void TIGLCreatorAddSpotlightDialog::setupUI(const QString& title)
+{
+    setWindowTitle(title);
 
     // set decimals for all spinboxes
     int decimals = 7;
@@ -46,6 +66,7 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     dx->setDecimals(decimals);
     dy->setDecimals(decimals);
     dz->setDecimals(decimals);
+    concentration->setDecimals(decimals);
 
     // set ranges for all spinboxes
     double position_min = -1e4;
@@ -61,15 +82,6 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     dz->setRange(direction_min, direction_max);
 
     concentration->setRange(0., 1.);
-
-    // set default values for all spinboxes
-    position_x->setValue(0.);
-    position_y->setValue(0.);
-    position_z->setValue(0.);
-    dx->setValue(1.);
-    dy->setValue(1.);
-    dz->setValue(1.);
-    concentration->setValue(0.5);
 
     // The main layout is vertical with a horizontal layout on top
     // and the dialog buttons below
@@ -107,7 +119,7 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     QGridLayout* groupConcentrationLayout = new QGridLayout();
     groupConcentrationLayout->addWidget(new QLabel("= 0.0: Light spreads into all directions"), 0, 0);
     groupConcentrationLayout->addWidget(new QLabel("= 1.0: Light is bundled"), 1, 0);
-    QLabel *concLabel = new QLabel("concentration = ");
+    QLabel* concLabel = new QLabel("concentration = ");
     concLabel->setAlignment(Qt::AlignRight);
     groupConcentrationLayout->addWidget(concLabel, 2, 0);
     groupConcentrationLayout->addWidget(concentration, 2, 1);
@@ -127,24 +139,27 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget *parent)
     verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
+void TIGLCreatorAddSpotlightDialog::setValues(double x, double y, double z,
+                                              double dirX, double dirY, double dirZ,
+                                              double conc)
+{
+    position_x->setValue(x);
+    position_y->setValue(y);
+    position_z->setValue(z);
+    dx->setValue(dirX);
+    dy->setValue(dirY);
+    dz->setValue(dirZ);
+    concentration->setValue(conc);
+}
+
 tigl::CTiglPoint TIGLCreatorAddSpotlightDialog::getPosition() const
 {
-    tigl::CTiglPoint point(0,0,0);
-    point.x = position_x->value();
-    point.y = position_y->value();
-    point.z = position_z->value();
-
-    return point;
+    return tigl::CTiglPoint(position_x->value(), position_y->value(), position_z->value());
 }
 
 tigl::CTiglPoint TIGLCreatorAddSpotlightDialog::getDirection() const
 {
-    tigl::CTiglPoint direction(0,0,0);
-    direction.x = dx->value();
-    direction.y = dy->value();
-    direction.z = dz->value();
-
-    return direction;
+    return tigl::CTiglPoint(dx->value(), dy->value(), dz->value());
 }
 
 double TIGLCreatorAddSpotlightDialog::getConcentration() const

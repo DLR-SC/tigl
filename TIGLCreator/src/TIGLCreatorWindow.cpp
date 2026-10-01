@@ -48,6 +48,8 @@
 #include "TIGLCreatorErrorDialog.h"
 #include "TIGLCreatorLogHistory.h"
 #include "TIGLCreatorLogRedirection.h"
+#include "TIGLCreatorLightSourceManager.h"
+#include "TIGLCreatorOthersWidget.h"
 #include "CTiglLogSplitter.h"
 #include "TIGLCreatorLoggerHTMLDecorator.h"
 #include "TIGLCreatorScreenshotDialog.h"
@@ -136,6 +138,11 @@ TIGLCreatorWindow::TIGLCreatorWindow()
     // refresh display options UI when the scene reports display-attribute changes
     connect(myScene, &TIGLCreatorContext::displayAttributesChanged,
         this, &TIGLCreatorWindow::onSceneDisplayAttributesChanged);
+
+    // create light source manager and wire it to the corresponding "others" widget
+    lightSourceManager = new TIGLCreatorLightSourceManager(myOCC, this);
+    othersWidget->setLightSourceManager(lightSourceManager);
+    myOCC->setLightSourceManager(lightSourceManager);
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -1333,11 +1340,11 @@ void TIGLCreatorWindow::addSpotlight()
         return;
     }
 
-    gp_Pnt pos = addSpotlightDialog.getPosition().Get_gp_Pnt();
-    gp_Vec dir = addSpotlightDialog.getDirection().Get_gp_Pnt().XYZ();
+    tigl::CTiglPoint pos = addSpotlightDialog.getPosition();
+    tigl::CTiglPoint dir = addSpotlightDialog.getDirection();
     double concentration = addSpotlightDialog.getConcentration();
 
-    getViewer()->addSpotlight(pos.X(), pos.Y(), pos.Z(), dir.X(), dir.Y(), dir.Z(), concentration);
+    lightSourceManager->addSpotlight(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z, concentration);
 }
 
 /// This function is copied from QtCoreLib (>5.1)
