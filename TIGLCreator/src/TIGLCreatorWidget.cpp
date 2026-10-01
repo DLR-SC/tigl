@@ -132,7 +132,6 @@ void TIGLCreatorWidget::initialize()
     myKeyboardFlags   = Qt::NoModifier;
     myButtonFlags      = Qt::NoButton;
     myBGColor = QColor(255,235,163);
-    mySceneDarkened = false;
 
     // Needed to generate mouse events
     setMouseTracking( true );
@@ -663,10 +662,12 @@ void TIGLCreatorWidget::hiddenLineOn()
     }
 }
 
-void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b, Standard_Real factor)
+void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b)
 {
     myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
+        // Dim the gradient to 1 percent to match the disabled default lights
+        const Standard_Real factor = (viewerContext && !viewerContext->isDefaultLightEnabled()) ? 0.01 : 1.0;
         Standard_Real R1 = r/255.;
         Standard_Real G1 = g/255.;
         Standard_Real B1 = b/255.;
@@ -695,15 +696,10 @@ void TIGLCreatorWidget::setBackgroundColor(int r, int g, int b)
     }
 }
 
-void TIGLCreatorWidget::setSceneDarkened(bool dark)
+void TIGLCreatorWidget::updateSceneBackground()
 {
-    if (myView.IsNull()) {
-        return;
-    }
-    mySceneDarkened = dark;
-    // Dim the current background gradient to match the disabled default lights
-    const Standard_Real dimFactor = 0.01;
-    setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue(), dark ? dimFactor : 1.0);
+    // Re-apply the current background gradient, honoring the default light dimming state
+    setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 }
 
 void TIGLCreatorWidget::setReset ()
@@ -1364,8 +1360,8 @@ bool TIGLCreatorWidget::makeScreenshot(const QString& filename, bool whiteBGEnab
     }
 
     if (whiteBGEnabled) {
-        // re-apply background gradient for current dim state
-        setSceneDarkened(mySceneDarkened);
+        // Restore the background gradient, including the dimming for disabled default lights
+        updateSceneBackground();
     }
 
     // copy to qimage which supports a variety of file formats

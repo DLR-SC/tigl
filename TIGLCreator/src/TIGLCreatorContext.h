@@ -58,13 +58,16 @@ public:
 
     Handle(V3d_Viewer)&              getViewer();
     Handle(AIS_InteractiveContext)&  getContext();
-    const QList<Handle(V3d_Light)>&  defaultLights() const { return myDefaultLights; }
 
     void activateLight(const Handle(V3d_Light)& light);
     void deactivateLight(const Handle(V3d_Light)& light);
     void removeLight(const Handle(V3d_Light)& light);
     void refreshLights();
     bool isLightEnabled(const Handle(V3d_Light)& light) const;
+
+    // The viewer's default lights cannot be switched off, so they are dimmed while disabled and restored when re-enabled
+    bool setDefaultLightEnabled(bool enabled);
+    bool isDefaultLightEnabled() const;
     Handle(V3d_Viewer) createViewer( const Standard_ExtString aName,
                                      const Standard_CString aDomain,
                                      const Standard_Real ViewSize );
@@ -154,10 +157,13 @@ signals:
 private:
     std::vector<Handle(AIS_InteractiveObject)> selected();
 
-    Handle(V3d_Viewer)               myViewer;
+    Handle(V3d_Viewer)              myViewer;
     // The lights created by V3d_Viewer::SetDefaultLights, captured once at startup
-    QList<Handle(V3d_Light)>         myDefaultLights;
-    Handle(AIS_InteractiveContext)   myContext;
+    QList<Handle(V3d_Light)>        myDefaultLights;
+    // The original colors of the default lights, saved once when they are first dimmed (they can only be dimmed, never switched off)
+    QList<Quantity_Color>           myDefaultLightsOriginalColor;
+    bool                            myDefaultLightsEnabled;
+    Handle(AIS_InteractiveContext)  myContext;
     Aspect_GridType                 myGridType;
     Aspect_GridDrawMode             myGridMode;
     Quantity_NameOfColor            myGridColor;

@@ -23,7 +23,6 @@
 #include <QList>
 #include <QString>
 #include <V3d_Light.hxx>
-#include <Quantity_Color.hxx>
 #include <gp_Pnt.hxx>
 
 class TIGLCreatorWidget;
@@ -86,10 +85,6 @@ private:
     QList<SpotlightData> mySpotlights;
     QList<Handle(AIS_LightSource)> mySpotlightSymbols;
     int myNextId;
-
-    // The original colors of the viewer's default lights, saved once when they are first dimmed
-    QList<Quantity_Color> myDefaultLightsOriginalColor;
-    bool myDefaultLightsEnabled;
 };
 
 #endif // TIGLCREATORLIGHTSOURCEMANAGER_H
