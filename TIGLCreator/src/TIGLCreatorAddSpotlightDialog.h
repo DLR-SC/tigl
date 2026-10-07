@@ -21,9 +21,9 @@
 
 #include <QDialog>
 #include <CTiglPoint.h>
-
-
-class QDoubleSpinBox;
+#include <QDoubleSpinBox>
+#include <QLabel>
+#include <TIGLDoubleLineEdit.h>
 
 class TIGLCreatorAddSpotlightDialog : public QDialog
 {
@@ -43,7 +43,7 @@ private:
     QDoubleSpinBox* dx;
     QDoubleSpinBox* dy;
     QDoubleSpinBox* dz;
-    QDoubleSpinBox* concentration;
+    TIGLDoubleLineEdit* concentration;
 };
 
 #endif // TIGLCREATORADDSPOTLIGHTDIALOG_H
