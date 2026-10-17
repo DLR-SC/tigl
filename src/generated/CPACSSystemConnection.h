@@ -41,17 +41,13 @@ namespace generated
 
     /// @brief Connection
     /// 
-    /// A connection represents a directed logical relation between a source and a target within a system architecture.
-    /// It can be used to describe interactions, transfer paths, or dependencies between system components and their interfaces to other systems.
-    /// Depending on the selected modeling fidelity, source and target may reference components (or their sub-components) via uID .
-    /// Alternatively, they may refer to external entities (such as ambient or passengers ), ATA chapters, or other system architectures.
-    /// Optional controlDevices can be used to describe connection-specific operating states.
-    /// The optional connectionType classifies
-    /// the primary nature of the connection, such as electric , pneumatic , hydraulic , mechanical , fluid , or data .
-    /// The fluid type denotes the transport
-    /// of a fluid medium as a consumable or resource, such as fuel, water, or
-    /// oxygen. In contrast, hydraulic and pneumatic denote the transmission or
-    /// conditioning of power via a pressurized liquid or gas, respectively.
+    /// Directed connection from a <source> to a <target> within a system architecture, e.g. a fuel line from a tank to a pump or an electric connection from a bus bar to a consumer.
+    /// Power flows along a connection in its direction, from the source to the target (see powerBreakdownsType ).
+    /// Depending on the level of detail, source and target reference a system component or another part of the model such as a fuselage or a fuel tank, an element outside the model such as the ambient air, an ATA chapter or another system architecture ( sourceTargetType ). <controlDevices> make the connection alone switchable, e.g. a line that a valve can close (see systemControlDevicesType ).
+    /// Connection type
+    /// <connectionType> classifies what the connection transmits: electric , pneumatic , hydraulic , mechanical , fluid , heat or data . fluid denotes the transport of a medium as a consumable or resource, e.g. fuel, water or oxygen.
+    /// In contrast, hydraulic and pneumatic denote the transmission of power by a pressurized liquid or gas. heat denotes the transfer of thermal energy, e.g. a coolant loop that carries the waste heat of a fuel cell to a heat exchanger, or the heat that the exchanger rejects to the ambient air; the coolant is only the carrier here, so such a connection is heat and not fluid .
+    /// Its power flows are given as <heatFlow> (see powerBreakdownsType ).
     /// 
     class CPACSSystemConnection : public CTiglReqUIDObject
     {
@@ -111,10 +107,10 @@ namespace generated
         /// Description
         boost::optional<std::string>                          m_description;
 
-        /// Optional classification of the connection type
+        /// What the connection transmits
         boost::optional<CPACSSystemConnection_connectionType> m_connectionType;
 
-        /// Optional control devices defining connection-specific operating states
+        /// Control device that switches the connection
         boost::optional<CPACSSystemControlDevices>            m_controlDevices;
 
         /// Source of the connection
