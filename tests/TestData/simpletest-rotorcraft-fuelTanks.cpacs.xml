@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Ducts and fuel tanks in a rotorcraft test</name>
+    <description>Minimal rotorcraft model with a fuselage and a fuel tank, both cut by one duct</description>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <description>Fuselage and fuel tank cut by a duct in a rotorcraft model</description>
+        <creator>Marko Alder</creator>
+        <timestamp>2026-10-17T12:00:00</timestamp>
+        <cpacsVersion>3.5.1</cpacsVersion>
+      </versionInfo>
+    </versionInfos>
+  </header>
+  <vehicles>
+    <rotorcraft>
+      <model uID="testRotorcraft">
+        <name>Test rotorcraft</name>
+        <ducts>
+          <duct uID="duct">
+            <name>Duct through fuselage and vessel</name>
+            <description>Duct on the x axis running through the fuselage and the vessel and protruding on both ends of each. Cross section radius 0.3.</description>
+            <transformation>
+              <translation>
+                <x>0.5</x>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="duct_section1">
+                <name>Section 1</name>
+                <transformation/>
+                <elements>
+                  <element uID="duct_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>circleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.3</y>
+                        <z>0.3</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="duct_section2">
+                <name>Section 2</name>
+                <transformation>
+                  <translation>
+                    <x>10.5</x>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="duct_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>circleProfile</profileUID>
+                    <transformation>
+                      <scaling>
+                        <y>0.3</y>
+                        <z>0.3</z>
+                      </scaling>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <segments>
+              <segment uID="duct_segment1">
+                <name>Segment 1</name>
+                <fromElementUID>duct_section1_element1</fromElementUID>
+                <toElementUID>duct_section2_element1</toElementUID>
+              </segment>
+            </segments>
+          </duct>
+          <ductAssembly uID="ductAssembly">
+            <name>Assembly cutting fuselage and vessel</name>
+            <transformation/>
+            <ductUIDs>
+              <uID>duct</uID>
+            </ductUIDs>
+          </ductAssembly>
+        </ducts>
+        <fuselages>
+          <fuselage uID="fuselage">
+            <name>Fuselage</name>
+            <description>Cylinder with radius 2 between x=2 and x=9, cut by the duct on its axis</description>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>2.0</y>
+                <z>2.0</z>
+              </scaling>
+            </transformation>
+            <sections>
+              <section uID="fuselage_section1">
+                <name>Section 1</name>
+                <transformation/>
+                <elements>
+                  <element uID="fuselage_section1_element1">
+                    <name>Section 1 Element 1</name>
+                    <profileUID>circleProfile</profileUID>
+                    <transformation/>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_section2">
+                <name>Section 2</name>
+                <transformation/>
+                <elements>
+                  <element uID="fuselage_section2_element1">
+                    <name>Section 2 Element 1</name>
+                    <profileUID>circleProfile</profileUID>
+                    <transformation/>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="fuselage_positioning1">
+                <name>Positioning 1</name>
+                <length>2.0</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <toSectionUID>fuselage_section1</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_positioning2">
+                <name>Positioning 2</name>
+                <length>7.0</length>
+                <sweepAngle>90</sweepAngle>
+                <dihedralAngle>0</dihedralAngle>
+                <fromSectionUID>fuselage_section1</fromSectionUID>
+                <toSectionUID>fuselage_section2</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="fuselage_segment1">
+                <name>Segment 1</name>
+                <fromElementUID>fuselage_section1_element1</fromElementUID>
+                <toElementUID>fuselage_section2_element1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
+        </fuselages>
+        <fuelTanks>
+          <fuelTank uID="tank">
+            <name>Tank</name>
+            <transformation>
+              <translation>
+                <x>5.5</x>
+              </translation>
+            </transformation>
+            <vessels>
+              <vessel uID="vessel">
+                <name>Vessel with spherical dome</name>
+                <transformation>
+                  <scaling>
+                    <x>1.2</x>
+                    <y>1.2</y>
+                    <z>1.2</z>
+                  </scaling>
+                </transformation>
+                <cylinderRadius>1.0</cylinderRadius>
+                <cylinderLength>2.0</cylinderLength>
+                <domeType>
+                  <ellipsoid>
+                    <halfAxisFraction>1</halfAxisFraction>
+                  </ellipsoid>
+                </domeType>
+              </vessel>
+            </vessels>
+          </fuelTank>
+        </fuelTanks>
+      </model>
+    </rotorcraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="circleProfile">
+          <name>Circle</name>
+          <pointList>
+            <x>0.0;0.0;0.0;0.0;0.0</x>
+            <y>0.0;1.0;0.0;-1.0;0.0</y>
+            <z>1.0;0.0;-1.0;0.0;1.0</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+    </profiles>
+  </vehicles>
+</cpacs>

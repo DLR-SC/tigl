@@ -20,6 +20,7 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <CCPACSACSystems.h>
+#include <CCPACSDucts.h>
 #include <CCPACSEnginePositions.h>
 #include <CCPACSFuselages.h>
 #include <CCPACSRotorBlades.h>
@@ -27,6 +28,7 @@
 #include <CCPACSWings.h>
 #include <string>
 #include <tixi.h>
+#include "CPACSFuelTanks.h"
 #include "CPACSSystemArchitectures.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
@@ -76,6 +78,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<std::string>& GetDescription() const;
         TIGL_EXPORT virtual void SetDescription(const boost::optional<std::string>& value);
 
+        TIGL_EXPORT virtual const boost::optional<CCPACSDucts>& GetDucts() const;
+        TIGL_EXPORT virtual boost::optional<CCPACSDucts>& GetDucts();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSFuselages>& GetFuselages() const;
         TIGL_EXPORT virtual boost::optional<CCPACSFuselages>& GetFuselages();
 
@@ -91,11 +96,17 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CCPACSEnginePositions>& GetEngines() const;
         TIGL_EXPORT virtual boost::optional<CCPACSEnginePositions>& GetEngines();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSFuelTanks>& GetFuelTanks() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFuelTanks>& GetFuelTanks();
+
         TIGL_EXPORT virtual const boost::optional<CCPACSACSystems>& GetSystems() const;
         TIGL_EXPORT virtual boost::optional<CCPACSACSystems>& GetSystems();
 
         TIGL_EXPORT virtual const boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures() const;
         TIGL_EXPORT virtual boost::optional<CPACSSystemArchitectures>& GetSystemArchitectures();
+
+        TIGL_EXPORT virtual CCPACSDucts& GetDucts(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveDucts();
 
         TIGL_EXPORT virtual CCPACSFuselages& GetFuselages(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveFuselages();
@@ -111,6 +122,9 @@ namespace generated
 
         TIGL_EXPORT virtual CCPACSEnginePositions& GetEngines(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveEngines();
+
+        TIGL_EXPORT virtual CPACSFuelTanks& GetFuelTanks(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveFuelTanks();
 
         TIGL_EXPORT virtual CCPACSACSystems& GetSystems(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSystems();
@@ -132,6 +146,9 @@ namespace generated
         /// Description
         boost::optional<std::string>              m_description;
 
+        /// Ducts
+        boost::optional<CCPACSDucts>              m_ducts;
+
         /// Fuselages
         boost::optional<CCPACSFuselages>          m_fuselages;
 
@@ -146,6 +163,9 @@ namespace generated
 
         /// Engines
         boost::optional<CCPACSEnginePositions>    m_engines;
+
+        /// Fuel tanks
+        boost::optional<CPACSFuelTanks>           m_fuelTanks;
 
         /// Systems
         boost::optional<CCPACSACSystems>          m_systems;

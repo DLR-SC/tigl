@@ -18,6 +18,7 @@
 #include <cassert>
 #include <CCPACSFuelTank.h>
 #include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CPACSFuelTanks.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -34,30 +35,45 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSAircraftModel);
+    }
+
+    CPACSFuelTanks::CPACSFuelTanks(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSRotorcraftModel);
     }
 
     CPACSFuelTanks::~CPACSFuelTanks()
     {
     }
 
-    const CCPACSAircraftModel* CPACSFuelTanks::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSAircraftModel* CPACSFuelTanks::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSFuelTanks::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSFuelTanks::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSFuelTanks::GetUIDManager()
