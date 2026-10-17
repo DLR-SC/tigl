@@ -44114,23 +44114,30 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                     </ddue:summary>
                     <ddue:remarks>
                         <ddue:content>
-                            <ddue:para>
-                                Directed connection from a <ddue:codeInline>&lt;source&gt;</ddue:codeInline> to a <ddue:codeInline>&lt;target&gt;</ddue:codeInline> within a system architecture, e.g. a fuel line from a tank to a pump or an electric connection from a bus bar to a consumer.
-                                Power flows along a connection in its direction, from the source to the target (see <ddue:codeInline>powerBreakdownsType</ddue:codeInline>).
+                            <ddue:para>A connection represents a directed logical relation between a <ddue:codeInline>source</ddue:codeInline> and a <ddue:codeInline>target</ddue:codeInline> within a system architecture.
+                                It can be used to describe interactions, transfer paths, or dependencies between system components and their interfaces to other systems.
                             </ddue:para>
                             <ddue:para>
-                                Depending on the level of detail, source and target reference a system component or another part of the model such as a fuselage or a fuel tank, an element outside the model such as the ambient air, an ATA chapter or another system architecture (<ddue:codeInline>sourceTargetType</ddue:codeInline>).
-                                <ddue:codeInline>&lt;controlDevices&gt;</ddue:codeInline> make the connection alone switchable, e.g. a line that a valve can close (see <ddue:codeInline>systemControlDevicesType</ddue:codeInline>).
+                                Depending on the selected modeling fidelity, source and target may reference components (or their sub-components) via <ddue:codeInline>uID</ddue:codeInline>.
+                                Alternatively, they may refer to external entities (such as <ddue:codeInline>ambient</ddue:codeInline> or <ddue:codeInline>passengers</ddue:codeInline>), ATA chapters, or other system architectures.
+                                Optional <ddue:codeInline>controlDevices</ddue:codeInline> can be used to describe connection-specific operating states.
                             </ddue:para>
                             <ddue:para>
-                                <ddue:legacyBold>Connection type</ddue:legacyBold>
+                                The optional <ddue:codeInline>connectionType</ddue:codeInline> classifies
+                                the primary nature of the connection, such as
+                                <ddue:codeInline>electric</ddue:codeInline>,
+                                <ddue:codeInline>pneumatic</ddue:codeInline>,
+                                <ddue:codeInline>hydraulic</ddue:codeInline>,
+                                <ddue:codeInline>mechanical</ddue:codeInline>,
+                                <ddue:codeInline>fluid</ddue:codeInline>, or
+                                <ddue:codeInline>data</ddue:codeInline>.
                             </ddue:para>
                             <ddue:para>
-                                <ddue:codeInline>&lt;connectionType&gt;</ddue:codeInline> classifies what the connection transmits: <ddue:codeInline>electric</ddue:codeInline>, <ddue:codeInline>pneumatic</ddue:codeInline>, <ddue:codeInline>hydraulic</ddue:codeInline>, <ddue:codeInline>mechanical</ddue:codeInline>, <ddue:codeInline>fluid</ddue:codeInline>, <ddue:codeInline>heat</ddue:codeInline> or <ddue:codeInline>data</ddue:codeInline>.
-                                <ddue:codeInline>fluid</ddue:codeInline> denotes the transport of a medium as a consumable or resource, e.g. fuel, water or oxygen.
-                                In contrast, <ddue:codeInline>hydraulic</ddue:codeInline> and <ddue:codeInline>pneumatic</ddue:codeInline> denote the transmission of power by a pressurized liquid or gas.
-                                <ddue:codeInline>heat</ddue:codeInline> denotes the transfer of thermal energy, e.g. a coolant loop that carries the waste heat of a fuel cell to a heat exchanger, or the heat that the exchanger rejects to the ambient air; the coolant is only the carrier here, so such a connection is <ddue:codeInline>heat</ddue:codeInline> and not <ddue:codeInline>fluid</ddue:codeInline>.
-                                Its power flows are given as <ddue:codeInline>&lt;heatFlow&gt;</ddue:codeInline> (see <ddue:codeInline>powerBreakdownsType</ddue:codeInline>).
+                                The <ddue:codeInline>fluid</ddue:codeInline> type denotes the transport
+                                of a fluid medium as a consumable or resource, such as fuel, water, or
+                                oxygen. In contrast, <ddue:codeInline>hydraulic</ddue:codeInline> and
+                                <ddue:codeInline>pneumatic</ddue:codeInline> denote the transmission or
+                                conditioning of power via a pressurized liquid or gas, respectively.
                             </ddue:para>
                         </ddue:content>
                     </ddue:remarks>
@@ -44152,7 +44159,7 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                     </xsd:element>
                     <xsd:element name="connectionType" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>What the connection transmits</xsd:documentation>
+                            <xsd:documentation>Optional classification of the connection type</xsd:documentation>
                         </xsd:annotation>
                         <xsd:complexType>
                             <xsd:simpleContent>
@@ -44213,7 +44220,7 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                     </xsd:element>
                     <xsd:element name="controlDevices" minOccurs="0" type="systemControlDevicesType">
                         <xsd:annotation>
-                            <xsd:documentation>Control device that switches the connection</xsd:documentation>
+                            <xsd:documentation>Optional control devices defining connection-specific operating states</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="source" type="sourceTargetType">
