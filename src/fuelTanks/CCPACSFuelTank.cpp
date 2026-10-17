@@ -21,9 +21,9 @@
 */
 
 #include "CCPACSFuelTank.h"
+#include "CCPACSVessel.h"
 #include "CCPACSAircraftModel.h"
 #include "CCPACSRotorcraftModel.h"
-#include "CCPACSVessel.h"
 #include "CTiglError.h"
 #include "CGroupShapes.h"
 #include "CNamedShape.h"
