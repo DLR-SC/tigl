@@ -22,6 +22,8 @@
 
 #include "CCPACSFuelTank.h"
 #include "CCPACSVessel.h"
+#include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CTiglError.h"
 #include "CGroupShapes.h"
 #include "CNamedShape.h"
@@ -37,7 +39,15 @@ CCPACSFuelTank::CCPACSFuelTank(CCPACSFuelTanks* parent, CTiglUIDManager* uidMgr)
 
 CCPACSConfiguration const& CCPACSFuelTank::GetConfiguration() const
 {
-    return GetParent()->GetParent()->GetConfiguration();
+    if (GetParent()->IsParent<CCPACSAircraftModel>()) {
+        return GetParent()->GetParent<CCPACSAircraftModel>()->GetConfiguration();
+    }
+    else if (GetParent()->IsParent<CCPACSRotorcraftModel>()) {
+        return GetParent()->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+    }
+    else {
+        throw CTiglError("Invalid parent");
+    }
 }
 
 std::string CCPACSFuelTank::GetDefaultedUID() const

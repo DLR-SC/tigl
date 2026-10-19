@@ -35976,6 +35976,11 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                             <xsd:documentation>Reference values, e.g. reference area and reference length</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
+                    <xsd:element name="ducts" minOccurs="0" type="ductsType">
+                        <xsd:annotation>
+                            <xsd:documentation>Ducts</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
                     <xsd:element name="fuselages" minOccurs="0" type="fuselagesType">
                         <xsd:annotation>
                             <xsd:documentation>Fuselages</xsd:documentation>
@@ -36009,6 +36014,11 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                     <xsd:element name="landingGear" minOccurs="0" type="landingGearType">
                         <xsd:annotation>
                             <xsd:documentation>Landing gears</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="fuelTanks" minOccurs="0" type="fuelTanksType">
+                        <xsd:annotation>
+                            <xsd:documentation>Fuel tanks</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element name="systems" minOccurs="0" type="systemsType">
