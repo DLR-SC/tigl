@@ -35,6 +35,7 @@ Changes since last release
     internal C++ bindings, which were only present in the `.zip` release artifact ([#1456](https://github.com/DLR-SC/tigl/issues/1456))
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
+  - Fix the direction of a cross beam strut: `angleX` is measured from the z-axis about the x-axis
 
 Version 3.5.0
 -------------
