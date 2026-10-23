@@ -53,6 +53,7 @@ class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
 class TIGLCreatorContext;
+class TIGLCreatorLightSourceManager;
 
 class TIGLCreatorWidget : public QWidget
 {
@@ -96,8 +97,10 @@ public:
 
     // the scene context must be set before first use
     void setContext(TIGLCreatorContext* aContext);
+    void setLightSourceManager(TIGLCreatorLightSourceManager* manager);
 
     Handle(V3d_View)                  getView( )    { return myView; }
+    TIGLCreatorContext*               getViewerContext() const { return viewerContext; }
 
     //Overrides
     QPaintEngine*   paintEngine() const override;
@@ -135,6 +138,8 @@ public slots:
     void hiddenLineOff();
     void setBackgroundGradient(int r, int g, int b);
     void setBackgroundColor(int r, int g, int b);
+    // Re-applies the background gradient, honoring the current default light dimming state
+    void updateSceneBackground();
     void setBGImage(const QString&);
     void viewFront();
     void viewBack();
@@ -150,7 +155,7 @@ public slots:
     void setCameraPosition(double x, double y, double z);
     void setCameraPosition(double elevationAngleDegree, double azimuthAngleDegree);
     void setCameraUpVector(double x, double y, double z);
-    void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration = 0.1);
+    void addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration = 0.5);
     void setReset();
     void setTransparency();
     void setTransparency(int);
@@ -208,7 +213,8 @@ private: // members
     Qt::MouseButton                 myButtonFlags;
     QCursor                         myCrossCursor;
     QColor                          myBGColor;
-    TIGLCreatorContext*              viewerContext;
+    TIGLCreatorContext*             viewerContext;
+    TIGLCreatorLightSourceManager*  myLightSourceManager;
 
 private: // methods
     void initialize();
