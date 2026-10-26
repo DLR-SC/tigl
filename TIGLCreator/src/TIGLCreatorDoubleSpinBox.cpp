@@ -215,6 +215,7 @@ QSize TIGLCreatorDoubleSpinBox::sizeHint() const
     // The base class measures the texts of minimum and maximum, which have only
     // one decimal (e.g. 10000.0). Add space for the other displayed decimals.
     QSize hint = QDoubleSpinBox::sizeHint();
-    hint.rwidth() += fontMetrics().boundingRect(QString(std::max(m_displayDecimals - 1, 0), QLatin1Char('0'))).width();
+    const int shownDecimals = std::min(m_displayDecimals, decimals());
+    hint.rwidth() += fontMetrics().boundingRect(QString(std::max(shownDecimals - 1, 0), QLatin1Char('0'))).width();
     return hint;
 }

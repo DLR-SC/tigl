@@ -43,7 +43,7 @@
       </spacer>
      </item>
      <item row="0" column="2">
-      <widget class="QDoubleSpinBox" name="etaSpinBox">
+      <widget class="TIGLCreatorDoubleSpinBox" name="etaSpinBox">
        <property name="minimumSize">
         <size>
          <width>70</width>
@@ -52,9 +52,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="decimals">
-        <number>6</number>
        </property>
        <property name="maximum">
         <double>1.000000000000000</double>
@@ -88,7 +85,7 @@
       </spacer>
      </item>
      <item row="1" column="2">
-      <widget class="QDoubleSpinBox" name="xsiSpinBox">
+      <widget class="TIGLCreatorDoubleSpinBox" name="xsiSpinBox">
        <property name="minimumSize">
         <size>
          <width>70</width>
@@ -97,9 +94,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="decimals">
-        <number>6</number>
        </property>
        <property name="maximum">
         <double>1.000000000000000</double>
@@ -137,6 +131,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

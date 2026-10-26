@@ -14,7 +14,7 @@ Changes since last release
 
 - TiGLCreator
 
-  - none
+  - Use a new and derived double spinbox type to enter values ([#1469](https://github.com/DLR-SC/tigl/issues/1469))
 
 - Build System
 

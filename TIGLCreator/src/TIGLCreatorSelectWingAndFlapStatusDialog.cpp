@@ -18,6 +18,7 @@
 
 #include "TIGLCreatorSelectWingAndFlapStatusDialog.h"
 #include "ui_TIGLCreatorSelectWingAndFlapStatusDialog.h"
+#include "TIGLCreatorDoubleSpinBox.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSTrailingEdgeDevice.h"
@@ -35,7 +36,6 @@
 #include <QToolTip>
 #include <QSpacerItem>
 #include <QPushButton>
-#include <QDoubleSpinBox>
 #include <QSpacerItem>
 #include <QTableWidget>
 #include <QHeaderView>
@@ -165,8 +165,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
 
     gridLayout->setCellWidget(rowIdx, 1, slider);
 
-    QDoubleSpinBox* spinBox = new QDoubleSpinBox();
-    spinBox->setDecimals(3);
+    TIGLCreatorDoubleSpinBox* spinBox = new TIGLCreatorDoubleSpinBox();
     spinBox->setSingleStep(0.005);
     spinBox->setStyleSheet(transparentBG);
 
