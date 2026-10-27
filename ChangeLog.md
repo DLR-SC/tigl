@@ -35,7 +35,7 @@ Changes since last release
     internal C++ bindings, which were only present in the `.zip` release artifact ([#1456](https://github.com/DLR-SC/tigl/issues/1456))
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
-  - Fix the direction of a cross beam strut: `angleX` is measured from the z-axis about the x-axis
+  - Fix the direction of a cross beam strut ([#1459](https://github.com/DLR-SC/tigl/pull/1459)): `angleX` is now measured from the +z-axis about the x-axis, as defined in CPACS and consistent with `referenceAngle` (previously from the −y-axis). This changes the strut orientation of existing CPACS files; without `angleX`, struts are now vertical.
 
 Version 3.5.0
 -------------
