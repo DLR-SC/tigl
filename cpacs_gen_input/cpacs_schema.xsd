@@ -44200,6 +44200,13 @@ The fuel tank volume type should also be used for the wing fuel tank.</xsd:docum
                                             </xsd:documentation>
                                         </xsd:annotation>
                                     </xsd:enumeration>
+                                    <xsd:enumeration value="heat">
+                                        <xsd:annotation>
+                                            <xsd:documentation>
+                                                Transfer of thermal energy, e.g. by a coolant loop or to the ambient.
+                                            </xsd:documentation>
+                                        </xsd:annotation>
+                                    </xsd:enumeration>
                                     <xsd:enumeration value="data">
                                         <xsd:annotation>
                                             <xsd:documentation>
