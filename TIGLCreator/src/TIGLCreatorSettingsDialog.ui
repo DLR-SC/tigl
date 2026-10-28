@@ -457,17 +457,14 @@
           <number>0</number>
          </property>
          <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="grid_size_spinbox">
-           <property name="decimals">
-            <number>3</number>
-           </property>
+          <widget class="TIGLCreatorDoubleSpinBox" name="grid_size_spinbox">
            <property name="minimum">
             <double>0.001000000000000</double>
            </property>
           </widget>
          </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="grid_origin_Y_spinbox">
+           <widget class="TIGLCreatorDoubleSpinBox" name="grid_origin_Y_spinbox">
             <property name="minimum">
              <double>-100000.000000000000000</double>
             </property>
@@ -477,7 +474,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="grid_origin_X_spinbox">
+           <widget class="TIGLCreatorDoubleSpinBox" name="grid_origin_X_spinbox">
             <property name="minimum">
              <double>-100000.000000000000000</double>
             </property>
@@ -515,7 +512,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QSpinBox" name="grid_radial_div_spinbox">
+          <widget class="TIGLCreatorSpinBox" name="grid_radial_div_spinbox">
            <property name="minimum">
             <number>1</number>
            </property>
@@ -726,7 +723,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="numUIsoLinesSB">
+          <widget class="TIGLCreatorSpinBox" name="numUIsoLinesSB">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -758,7 +755,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="numVIsoLinesSB">
+          <widget class="TIGLCreatorSpinBox" name="numVIsoLinesSB">
            <property name="maximum">
             <number>50</number>
            </property>
@@ -942,6 +939,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TIGLCreatorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>TIGLCreatorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="TIGLCreator.qrc"/>
  </resources>

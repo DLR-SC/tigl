@@ -23,7 +23,7 @@
 #include <CTiglPoint.h>
 
 
-class QDoubleSpinBox;
+class TIGLCreatorDoubleSpinBox;
 
 class TIGLCreatorAddSpotlightDialog : public QDialog
 {
@@ -37,13 +37,13 @@ public:
     double getConcentration() const;
 
 private:
-    QDoubleSpinBox* position_x;
-    QDoubleSpinBox* position_y;
-    QDoubleSpinBox* position_z;
-    QDoubleSpinBox* dx;
-    QDoubleSpinBox* dy;
-    QDoubleSpinBox* dz;
-    QDoubleSpinBox* concentration;
+    TIGLCreatorDoubleSpinBox* position_x;
+    TIGLCreatorDoubleSpinBox* position_y;
+    TIGLCreatorDoubleSpinBox* position_z;
+    TIGLCreatorDoubleSpinBox* dx;
+    TIGLCreatorDoubleSpinBox* dy;
+    TIGLCreatorDoubleSpinBox* dz;
+    TIGLCreatorDoubleSpinBox* concentration;
 };
 
 #endif // TIGLCREATORADDSPOTLIGHTDIALOG_H

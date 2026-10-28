@@ -67,7 +67,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxSweep">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSweep">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -114,7 +114,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxSweepChord">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSweepChord">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -183,7 +183,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxDihedral">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxDihedral">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -224,7 +224,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxDihedralChord">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxDihedralChord">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -309,7 +309,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxArea">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxArea">
        <property name="keyboardTracking">
         <bool>true</bool>
        </property>
@@ -367,7 +367,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxSpan">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSpan">
        <property name="decimals">
         <number>3</number>
        </property>
@@ -422,7 +422,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxAR">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxAR">
        <property name="decimals">
         <number>3</number>
        </property>
@@ -480,6 +480,11 @@
    <extends>QWidget</extends>
    <header>modificators/SymmetryComboBoxWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
