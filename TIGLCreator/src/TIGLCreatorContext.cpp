@@ -41,6 +41,7 @@
 #include "ISession_Direction.h"
 #include "AIS_TexturedShape.hxx"
 #include "AIS_InteractiveContext.hxx"
+#include "AIS_LightSource.hxx"
 #include "BRepBuilderAPI_MakeVertex.hxx"
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -80,11 +81,17 @@ QString getShaderFile(const QString& filename)
 
 TIGLCreatorContext::TIGLCreatorContext(QUndoStack* stack)
     : myUndoStack(stack)
+    , myDefaultLightsEnabled(true)
 {
     // Create the OCC Viewers
     TCollection_ExtendedString a3DName("Visual3D");
     myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
     myViewer->SetDefaultLights();
+    // Remember the viewer's default lights so they can be toggled as a group
+    // Necessary to have access for editing (dimming) later via the GUI
+    for (V3d_ListOfLightIterator aLightIt(myViewer->ActiveLights()); aLightIt.More(); aLightIt.Next()) {
+        myDefaultLights.append(aLightIt.Value());
+    }
     myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
     myContext = new AIS_InteractiveContext( myViewer );
 
@@ -161,8 +168,120 @@ Handle(V3d_Viewer)& TIGLCreatorContext::getViewer()
 }
 
 Handle(AIS_InteractiveContext)& TIGLCreatorContext::getContext()
-{ 
-    return myContext; 
+{
+    return myContext;
+}
+
+namespace {
+    Handle(V3d_View) firstActiveView(const Handle(V3d_Viewer)& viewer) {
+        if (viewer.IsNull() || viewer->ActiveViews().IsEmpty()) {
+            return Handle(V3d_View)();
+        }
+        return viewer->ActiveViews().First();
+    }
+}
+
+void TIGLCreatorContext::activateLight(const Handle(V3d_Light)& light)
+{
+    if (light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (view.IsNull()) {
+        return;
+    }
+    view->SetLightOn(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::deactivateLight(const Handle(V3d_Light)& light)
+{
+    if (light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (view.IsNull()) {
+        return;
+    }
+    view->SetLightOff(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::removeLight(const Handle(V3d_Light)& light)
+{
+    if (myViewer.IsNull() || light.IsNull()) {
+        return;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    if (!view.IsNull()) {
+        view->SetLightOff(light);
+    }
+    myViewer->DelLight(light);
+    refreshLights();
+}
+
+void TIGLCreatorContext::refreshLights()
+{
+    if (myViewer.IsNull()) {
+        return;
+    }
+    myViewer->UpdateLights();
+    myViewer->Redraw();
+}
+
+bool TIGLCreatorContext::isLightEnabled(const Handle(V3d_Light)& light) const
+{
+    if (light.IsNull()) {
+        return false;
+    }
+    const Handle(V3d_View) view = firstActiveView(myViewer);
+    return !view.IsNull() && view->IsActiveLight(light);
+}
+
+bool TIGLCreatorContext::setDefaultLightEnabled(bool enabled)
+{
+    if (myDefaultLights.isEmpty()) {
+        LOG(ERROR) << "TIGLCreatorContext::setDefaultLightEnabled: No default lights found in the viewer.";
+        return false;
+    }
+
+    // Instead of switching the default lights off, dim their colors while the
+    // "TiGL Default" option is unchecked (a fully unlit scene would render the
+    // geometry and the trihedron pitch black) and restore them when re-enabled.
+    // The colors are used because the shading shader reads the light colors live
+    // from the viewer's light list, whereas SetIntensity() only affects the
+    // ray-tracing path (which is not used here).
+    const Standard_Real dimFactor = 0.01;
+    if (!enabled && myDefaultLightsOriginalColor.isEmpty()) {
+        for (const Handle(V3d_Light)& light : myDefaultLights) {
+            myDefaultLightsOriginalColor.append(light.IsNull() ? Quantity_Color(1.0, 1.0, 1.0, Quantity_TOC_RGB)
+                                                               : light->Color());
+        }
+    }
+    for (int i = 0; i < myDefaultLights.size(); ++i) {
+        if (myDefaultLights[i].IsNull()) {
+            continue;
+        }
+        if (!enabled) {
+            const Quantity_Color original = myDefaultLightsOriginalColor[i];
+            myDefaultLights[i]->SetColor(Quantity_Color(original.Red() * dimFactor,
+                                                        original.Green() * dimFactor,
+                                                        original.Blue() * dimFactor,
+                                                        Quantity_TOC_RGB));
+        }
+        else if (i < myDefaultLightsOriginalColor.size()) {
+            myDefaultLights[i]->SetColor(myDefaultLightsOriginalColor[i]);
+        }
+    }
+    myDefaultLightsEnabled = enabled;
+    refreshLights();
+    return true;
+}
+
+bool TIGLCreatorContext::isDefaultLightEnabled() const
+{
+    // The default lights are never switched off, only dimmed, so the state is tracked here
+    return myDefaultLightsEnabled;
 }
 
 Handle(V3d_Viewer) TIGLCreatorContext::createViewer( const Standard_ExtString aName,
@@ -355,6 +474,11 @@ void TIGLCreatorContext::selectAll()
         myContext->DisplayedObjects( aList );
         AIS_ListIteratorOfListOfInteractive aListIterator;
         for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
+            // Spotlight cone symbols are visual aids managed by the light source manager
+            // and must not be selectable (AddOrRemoveSelected bypasses Deactivate)
+            if (!Handle(AIS_LightSource)::DownCast(aListIterator.Value()).IsNull()) {
+                continue;
+            }
             // add to selection
             myContext->AddOrRemoveSelected(aListIterator.Value(), Standard_False);
         }
@@ -579,7 +703,20 @@ std::vector<Handle(AIS_InteractiveObject)> TIGLCreatorContext::selected()
 void TIGLCreatorContext::eraseSelected()
 {
     if (!myContext.IsNull()) {
-        QUndoCommand* command = new TiGLCreator::DeleteObjects(myContext, selected());
+        std::vector<Handle(AIS_InteractiveObject)> objects;
+        for (myContext->InitSelected(); myContext->MoreSelected(); myContext->NextSelected()) {
+            Handle(AIS_InteractiveObject) object = myContext->SelectedInteractive();
+            // Spotlight cone symbols are visual aids managed by the light source manager
+            // and must not be deletable from the 3D viewer
+            if (!Handle(AIS_LightSource)::DownCast(object).IsNull()) {
+                continue;
+            }
+            objects.push_back(object);
+        }
+        if (objects.empty()) {
+            return;
+        }
+        QUndoCommand* command = new TiGLCreator::DeleteObjects(myContext, objects);
         myUndoStack->push(command);
     }
 }
