@@ -931,7 +931,7 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
             // Resolve via the name the object was registered under: components such as
             // engines and pylons are registered by uid without a PNamedShape, so a
             // lookup through GetShapeFromIObject would fail for them.
-            std::string shapeName = viewerContext->GetShapeManager().GetNameFromIObject(shape);
+            std::string shapeName = viewerContext->GetNameFromIObject(shape);
 
             if (!shapeName.empty()) {
                 if (didPick && !(nFlags & MULTISELECTIONKEY)) {

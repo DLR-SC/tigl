@@ -156,6 +156,10 @@ private:
     QString                 myLastFolder;
 
     TIGLCreatorDocument* cpacsConfiguration;
+    // Identifies the (currently only) open document's shapes in the shared
+    // 3D scene. Used both by cpacsConfiguration and by imported non-CPACS
+    // geometry, which has no TIGLCreatorDocument of its own.
+    DocumentId myDocId{0};
     QFileInfo currentFile;
     QString controlFileName;
     QString preferredTitle;
