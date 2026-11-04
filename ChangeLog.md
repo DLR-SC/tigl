@@ -15,6 +15,7 @@ Changes since last release
 - TiGLCreator
 
   - Use a new and derived double spinbox type to enter values ([#1469](https://github.com/DLR-SC/tigl/issues/1469))
+  - Implement a manager to deal with user-defined spotlights and to dimm the default lighting. The spotlights can now be added, edited, copied, deleted and turned off/on again directly via the GUI. Also, light cones can be activated to make the spotlight visible. The CPACS Tree is extended by a tab called 'Others' ([#1439](https://github.com/DLR-SC/tigl/issues/1439))
 
 - Build System
 
@@ -27,6 +28,7 @@ Changes since last release
 
 - Fixes
 
+  - Fix console bug under Linux: When opening TiGL, the console at first was spoiled with a warning and needed a fresh prompt for the user to enter commands [#1460](https://github.com/DLR-SC/tigl/issues/1460)
   - Fix an issue that the header of the docu did not show the TiGL logo anymore due to the switch to a newer doxygen version internally [#1444](https://github.com/DLR-SC/tigl/issues/1444)
   - Fix a crash when a control surface defines a `wingCutOut` ([#1454](https://github.com/DLR-SC/tigl/pull/1454))
   - Fix a crash when the border of a leading edge device gives `xsiTEUpper` and `xsiTELower` instead of
@@ -35,6 +37,7 @@ Changes since last release
     internal C++ bindings, which were only present in the `.zip` release artifact ([#1456](https://github.com/DLR-SC/tigl/issues/1456))
   - Fix the thickness scaling of a control surface contour (`contourReferenceType`): `scalZ` is a
     fraction of the chord of the border, not a length in metres.
+  - Fix the direction of a cross beam strut ([#1459](https://github.com/DLR-SC/tigl/pull/1459)): `angleX` is now measured from the +z-axis about the x-axis, as defined in CPACS and consistent with `referenceAngle` (previously from the −y-axis). This changes the strut orientation of existing CPACS files; without `angleX`, struts are now vertical.
 
 Version 3.5.0
 -------------
