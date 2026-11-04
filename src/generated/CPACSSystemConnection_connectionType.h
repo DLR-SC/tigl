@@ -37,6 +37,7 @@ namespace generated
         hydraulic,
         mechanical,
         fluid,
+        heat,
         data
     };
 
@@ -48,6 +49,7 @@ namespace generated
         case hydraulic: return "hydraulic";
         case mechanical: return "mechanical";
         case fluid: return "fluid";
+        case heat: return "heat";
         case data: return "data";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSSystemConnection_connectionType");
         }
@@ -60,6 +62,7 @@ namespace generated
         if (toLower(value) == "hydraulic") { return hydraulic; }
         if (toLower(value) == "mechanical") { return mechanical; }
         if (toLower(value) == "fluid") { return fluid; }
+        if (toLower(value) == "heat") { return heat; }
         if (toLower(value) == "data") { return data; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSSystemConnection_connectionType");
     }
