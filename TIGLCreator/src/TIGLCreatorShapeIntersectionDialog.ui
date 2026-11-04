@@ -126,14 +126,14 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="pxSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="pxSB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="nxSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="nxSB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
@@ -147,14 +147,14 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="pySB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="pySB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QDoubleSpinBox" name="nySB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="nySB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
@@ -168,14 +168,14 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="pzSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="pzSB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QDoubleSpinBox" name="nzSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="nzSB">
             <property name="minimum">
              <double>-99.000000000000000</double>
             </property>
@@ -231,35 +231,35 @@
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QDoubleSpinBox" name="p2xSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p2xSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="p1xSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p1xSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="1" column="4">
-           <widget class="QDoubleSpinBox" name="wxSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="wxSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="p1ySB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p1ySB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QDoubleSpinBox" name="p2ySB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p2ySB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
@@ -279,7 +279,7 @@
            </widget>
           </item>
           <item row="2" column="4">
-           <widget class="QDoubleSpinBox" name="wySB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="wySB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
@@ -299,21 +299,21 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="p1zSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p1zSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QDoubleSpinBox" name="p2zSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="p2zSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
            </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QDoubleSpinBox" name="wzSB">
+           <widget class="TIGLCreatorDoubleSpinBox" name="wzSB">
             <property name="minimum">
              <double>-99.989999999999995</double>
             </property>
@@ -351,6 +351,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>TabView</tabstop>
   <tabstop>shapeComboS</tabstop>
