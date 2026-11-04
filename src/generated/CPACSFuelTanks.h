@@ -20,7 +20,9 @@
 #include <memory>
 #include <string>
 #include <tixi.h>
+#include <typeinfo>
 #include <vector>
+#include "CTiglError.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -29,11 +31,13 @@ class CTiglUIDManager;
 class CTiglUIDObject;
 class CCPACSFuelTank;
 class CCPACSAircraftModel;
+class CCPACSRotorcraftModel;
 
 namespace generated
 {
     // This class is used in:
     // CPACSAircraftModel
+    // CPACSRotorcraftModel
 
     /// @brief Fuel tanks
     /// 
@@ -42,12 +46,35 @@ namespace generated
     {
     public:
         TIGL_EXPORT CPACSFuelTanks(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSFuelTanks(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSFuelTanks();
 
-        TIGL_EXPORT CCPACSAircraftModel* GetParent();
+        template<typename P>
+        bool IsParent() const
+        {
+            return m_parentType != NULL && *m_parentType == typeid(P);
+        }
 
-        TIGL_EXPORT const CCPACSAircraftModel* GetParent() const;
+        template<typename P>
+        P* GetParent()
+        {
+            static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSFuelTanks");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
+
+        template<typename P>
+        const P* GetParent() const
+        {
+            static_assert(std::is_same<P, CCPACSAircraftModel>::value || std::is_same<P, CCPACSRotorcraftModel>::value, "template argument for P is not a parent class of CPACSFuelTanks");
+            if (!IsParent<P>()) {
+                throw CTiglError("bad parent");
+            }
+            return static_cast<P*>(m_parent);
+        }
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -74,7 +101,8 @@ namespace generated
         TIGL_EXPORT virtual void RemoveFuelTank(CCPACSFuelTank& ref);
 
     protected:
-        CCPACSAircraftModel* m_parent;
+        void* m_parent;
+        const std::type_info* m_parentType;
 
         CTiglUIDManager* m_uidMgr;
 

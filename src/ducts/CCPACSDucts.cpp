@@ -21,6 +21,8 @@
 
 #include "CCPACSDucts.h"
 #include "CCPACSDuct.h"
+#include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CCutShape.h"
 #include "CNamedShape.h"
 #include "CTiglError.h"
@@ -33,6 +35,25 @@ CCPACSDucts::CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr)
     : generated::CPACSDucts(parent, uidMgr)
     , enabled(false)
 {}
+
+CCPACSDucts::CCPACSDucts(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+    : generated::CPACSDucts(parent, uidMgr)
+    , enabled(false)
+{
+}
+
+CCPACSConfiguration& CCPACSDucts::GetConfiguration() const
+{
+    if (IsParent<CCPACSAircraftModel>()) {
+        return GetParent<CCPACSAircraftModel>()->GetConfiguration();
+    }
+    else if (IsParent<CCPACSRotorcraftModel>()) {
+        return GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+    }
+    else {
+        throw CTiglError("Invalid parent");
+    }
+}
 
 void CCPACSDucts::RegisterInvalidationCallback(std::function<void()> const& fn){
     invalidationCallbacks.push_back(fn);

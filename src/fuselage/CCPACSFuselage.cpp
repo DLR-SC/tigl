@@ -92,9 +92,14 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent, CTiglUIDManager* uidMgr)
             configuration->GetDucts()->RegisterInvalidationCallback([&](){ this->Invalidate(); });
         }
     }
-    else
+    else {
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
 
+        // register invalidation in CCPACSDucts
+        if (configuration->HasDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&]() { this->Invalidate(); });
+        }
+    }
 }
 
 // Destructor
