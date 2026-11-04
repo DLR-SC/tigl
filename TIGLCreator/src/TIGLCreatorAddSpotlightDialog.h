@@ -22,7 +22,6 @@
 #include <QDialog>
 #include <CTiglPoint.h>
 
-
 class QDoubleSpinBox;
 
 class TIGLCreatorAddSpotlightDialog : public QDialog
@@ -30,13 +29,27 @@ class TIGLCreatorAddSpotlightDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TIGLCreatorAddSpotlightDialog(QWidget *parent = 0);
+    // Used when a new spotlight is added
+    explicit TIGLCreatorAddSpotlightDialog(QWidget* parent = nullptr);
+    // Used when the spotlight was already created before and is just updated
+    // The current spotlight's params are shown in the dialog
+    TIGLCreatorAddSpotlightDialog(double x, double y, double z,
+                                  double dirX, double dirY, double dirZ,
+                                  double concentration, QWidget* parent = nullptr);
 
     tigl::CTiglPoint getPosition() const;
     tigl::CTiglPoint getDirection() const;
     double getConcentration() const;
 
 private:
+    TIGLCreatorAddSpotlightDialog(double x, double y, double z,
+                                  double dirX, double dirY, double dirZ,
+                                  double concentration,
+                                  const QString& title,
+                                  QWidget* parent);
+
+    void setupUI(const QString& title);
+    void setValues(double x, double y, double z, double dirX, double dirY, double dirZ, double conc);
     QDoubleSpinBox* position_x;
     QDoubleSpinBox* position_y;
     QDoubleSpinBox* position_z;
