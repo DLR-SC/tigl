@@ -24,6 +24,7 @@
 #include <QtCore/QObject>
 #include "TIGLCreator.h"
 #include "TIGLCreatorContext.h"
+#include "DocumentId.h"
 #include <TopTools_HSequenceOfShape.hxx>
 
 class TIGLCreatorWidget;
@@ -47,12 +48,14 @@ public:
     ~TIGLCreatorInputOutput() override = default;
 
     bool importModel( const QString& fileName,
-                      const FileFormat format, 
-                      TIGLCreatorContext& scene );
+                      const FileFormat format,
+                      TIGLCreatorContext& scene,
+                      DocumentId docId );
 
     bool importTriangulation( const QString& fileName,
                               const FileFormat format,
-                              TIGLCreatorContext& scene );
+                              TIGLCreatorContext& scene,
+                              DocumentId docId );
 
     bool exportModel( const QString& fileName,
                       const FileFormat format, 
