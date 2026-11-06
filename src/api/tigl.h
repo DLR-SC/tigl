@@ -400,10 +400,10 @@ enum TiglGetPointBehavior {
 typedef enum TiglGetPointBehavior TiglGetPointBehavior;
 
 /**
-  \defgroup GeneralFunctions General TIGL handling functions
+  \defgroup GeneralFunctions General TIGL Handling Functions
     Function to open, create, and close CPACS-files.
  */
-/*@{*/
+/** \addtogroup GeneralFunctions @{ */
 /**
 * @brief Opens a CPACS configuration and builds up the data and geometry structure in memory.
 *
@@ -493,14 +493,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT const char* tiglGetVersion();
 
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
-  \defgroup WingFunctions Functions for wing calculations
+  \defgroup WingFunctions Functions for Wing Calculations
     Function to handle wing geometry's with TIGL.
- */
-/*@{*/
+  */
+/** \addtogroup WingFunctions @{ */
 
 /**
 * @brief Returns the number of wings in a CPACS configuration.
@@ -1971,14 +1971,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglControlSurfaceSetDeflection(TiglCPACSConfi
                                                                   double deflection);
 
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
-  \defgroup FuselageFunctions Functions for fuselage calculations
+  \defgroup FuselageFunctions Functions for Fuselage Calculations
     Function to handle fuselage geometry's with TIGL.
- */
-/*@{*/
+  */
+/** \addtogroup FuselageFunctions @{ */
 
 /**
 * @brief Returns the number of fuselages in a CPACS configuration.
@@ -2880,14 +2880,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 
 /*****************************************************************************************************/
 
-/*@}*/
+/** @} */
 
 
 /**
-  \defgroup RotorFunctions Functions for rotor calculations
+  \defgroup RotorFunctions Functions for Rotor Calculations
     Functions to handle rotor geometries with TIGL.
- */
-/*@{*/
+  */
+/** \addtogroup RotorFunctions @{ */
 
 /**
 * @brief Returns the number of rotors in a CPACS configuration.
@@ -3169,15 +3169,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
                                                        int rotorIndex,
                                                        double *tipSpeedPtr);
 
-/*@}*/  // end of doxygen group RotorFunctions
+/** @} */  // end of doxygen group RotorFunctions
 /*****************************************************************************************************/
 
 
 /**
-  \defgroup RotorBladeFunctions Functions for rotor blade calculations
+  \defgroup RotorBladeFunctions Functions for Rotor Blade Calculations
     Functions to handle rotor blade geometries with TIGL.
- */
-/*@{*/
+  */
+/** \addtogroup RotorBladeFunctions @{ */
 
 /**
 * @brief Returns the total number of rotor blades attached to a rotor.
@@ -3530,22 +3530,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConf
                                                                    double eta,
                                                                    double* twistAnglePtr);
 
-/*@}*/  // end of doxygen group RotorBladeFunctions
+/** @} */  // end of doxygen group RotorBladeFunctions
 /*****************************************************************************************************/
 
 
 /**
-  \defgroup BooleanFunctions Functions for boolean calculations
+  \defgroup BooleanFunctions Functions for Boolean Calculations
     Function for boolean calculations on wings/fuselages.
     
     These function currently only implement intersection algorithms between two shapes
     defined in cpacs ot a shape and a plane. Shapes or geometries are identified with 
     their cpacs uid.
-    
+
     Currently only wings, wing segments, fuselages, and fuselage segments can be used
     in the intersection routines.
- */
-/*@{*/
+  */
+/** \addtogroup BooleanFunctions @{ */
 
 /**
 * @brief tiglIntersectComponents computes the intersection line(s) between two shapes
@@ -3806,11 +3806,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 
 
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
   \defgroup Export Export Functions
+
             Functions for export of wings/fuselages.
 
 
@@ -3860,9 +3861,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetCurveParameter (TiglCPACSConfigurationH
 
     The 'elements' attribute indicates the number and the names of the additional information tags as a whitespace separated list. In
     this example you could see 5 information fields with the name.
- */
-
-/*@{*/
+  */
+/** \addtogroup Export @{ */
 
 /**
 * @brief Sets options for the geometry export
@@ -4411,18 +4411,18 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingBREPByUID(TiglCPACSConfiguration
                                                               const char* wingUID,
                                                               const char* filename);
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
-  \defgroup Material Material functions
+  \defgroup Material Material Functions
     Functions to query material information of wings/fuselages. Materials are currently ony implemented for the wing component segment.
     Here, materials for the lower and upper wing surface can be queried, which can be a material for the whole skin/surface
     or a material defined inside a wing cell. A wing cell material overwrites the global skin material, i.e. if the whole
     wing skin material is aluminum and the trailing edge is made of radar absorbing material, only the absorbing material
     is returned by the querying functions.
- */
-/*@{*/
+  */
+/** \addtogroup Material @{ */
 
 
 /**
@@ -4506,14 +4506,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(T
      
 
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
-  \defgroup VolumeFunctions Functions for volume calculations
+  \defgroup VolumeFunctions Functions for Volume Calculations
     Function for volume calculations on wings/fuselages.
- */
-/*@{*/
+  */
+/** \addtogroup VolumeFunctions @{ */
 
 /**
 * @brief Returns the volume of the fuselage.
@@ -4600,14 +4600,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 
 
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 
 /**
-  \defgroup SurfaceAreaFunctions Functions for surface area calculations
+  \defgroup SurfaceAreaFunctions Functions for Surface Area Calculations
     Function for surface area calculations of wings/fuselages.
- */
-/*@{*/
+  */
+/** \addtogroup SurfaceAreaFunctions @{ */
 
 
 
@@ -4859,12 +4859,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
                                                         const char* wingUID,
                                                         double *wettedAreaPtr);
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 /**
-  \defgroup GeometryFunctions General geometry functions.
- */
-/*@{*/
+  \defgroup GeometryFunctions General Geometry Functions
+  */
+/** \addtogroup GeometryFunctions @{ */
 
 /**
 * @brief Returns the number of curves the given profile is made of.
@@ -4961,10 +4961,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
                                                             int nControlPoints, double* cpx, double* cpy, double* cpz,
                                                             int nKnots, double* knots);
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 /**
-  \defgroup LoggingFunctions Logging functions.
+  \defgroup LoggingFunctions Logging Functions
     The following functions are used to customize the behaviour how messages are handled by TiGL. By default,
     only error messages and warnings are printed to the console.
 
@@ -4973,8 +4973,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
     errors and warnings can be inspected. File logging is disabled by default.
 
     In order to change the verbosity of the TiGL messages printed on console, use ::tiglLogSetVerbosity.
- */
-/*@{*/
+  */
+/** \addtogroup LoggingFunctions @{ */
 
 /**
 * @brief Sets up the tigl logging mechanism to send all log messages into a file.
@@ -5070,15 +5070,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean en
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
 
-/*@}*/ // end of doxygen group
+/** @} */ // end of doxygen group
 
-/*@}*/
+/** @} */
 /*****************************************************************************************************/
 /**
-  \defgroup ComponentUtilityFunctions Generic utility functions.
+  \defgroup ComponentUtilityFunctions Generic Utility Functions
     Generic utility functions for geometric components that fits not only to wings _or_ fuselages.
- */
-/*@{*/
+  */
+/** \addtogroup ComponentUtilityFunctions @{ */
 
 /**
  * @brief Checks whether a point lies inside the given geometric object.
@@ -5266,7 +5266,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationSetWithDuctCutouts(TiglCPACSC
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetWithDuctCutouts(TiglCPACSConfigurationHandle cpacsHandle,
                                                                       TiglBoolean* WithDuctCutoutsFlag);
 
-/*@}*/ // end of doxygen group
+/** @} */ // end of doxygen group
 
 #endif /* TIGL_H */
 
