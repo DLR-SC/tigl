@@ -1,0 +1,27 @@
+var classtigl_1_1generated_1_1CPACSWingSegments =
+[
+    [ "CPACSWingSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#afeebedfb2e7b50b9602de8b4511380ea", null ],
+    [ "CPACSWingSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#ad80cab59219048d9c457d965e6ea6891", null ],
+    [ "~CPACSWingSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#aceedb4bf7d470d94e02989ea4259e26f", null ],
+    [ "CPACSWingSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#abbe0698c403533e10a1048484d2fcbbd", null ],
+    [ "CPACSWingSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#a07900db1266a40365115b3ed643978cf", null ],
+    [ "AddSegment", "classtigl_1_1generated_1_1CPACSWingSegments.html#a2d7570233bb977d3d99628eac0e2fcd3", null ],
+    [ "GetNextUIDParent", "classtigl_1_1generated_1_1CPACSWingSegments.html#aa3b5315b7ae6b6a254310a6a4804790c", null ],
+    [ "GetNextUIDParent", "classtigl_1_1generated_1_1CPACSWingSegments.html#a5f97c063916aba6b3d8c75bc1dcd9609", null ],
+    [ "GetParent", "classtigl_1_1generated_1_1CPACSWingSegments.html#a12772dd94d767f7b78f4fb5cd2e59c75", null ],
+    [ "GetParent", "classtigl_1_1generated_1_1CPACSWingSegments.html#ad268ce91ca45a955109d6c1f0a52786c", null ],
+    [ "GetSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#ad13af89cdcf097fd6ac235fbf8ddc34e", null ],
+    [ "GetSegments", "classtigl_1_1generated_1_1CPACSWingSegments.html#a87c4a63dfab3578ee50777d4ad195451", null ],
+    [ "GetUIDManager", "classtigl_1_1generated_1_1CPACSWingSegments.html#abc24f086c4404bd55bd8812f6ac9396f", null ],
+    [ "GetUIDManager", "classtigl_1_1generated_1_1CPACSWingSegments.html#ae351a96d426709a3ed65476a3a553734", null ],
+    [ "IsParent", "classtigl_1_1generated_1_1CPACSWingSegments.html#a2e2017f7c1990ebb64d6f3b22965fe6d", null ],
+    [ "operator=", "classtigl_1_1generated_1_1CPACSWingSegments.html#aa0da45902af0c66ef8b45322ac70a4af", null ],
+    [ "operator=", "classtigl_1_1generated_1_1CPACSWingSegments.html#a5511f2e0f8ef757766ea57daa2d4ca88", null ],
+    [ "ReadCPACS", "classtigl_1_1generated_1_1CPACSWingSegments.html#aa61c9cfe0c2bc6607b2b9b2968e342de", null ],
+    [ "RemoveSegment", "classtigl_1_1generated_1_1CPACSWingSegments.html#a0e416431e1db1f910eaeee9a443e5a36", null ],
+    [ "WriteCPACS", "classtigl_1_1generated_1_1CPACSWingSegments.html#a4baa8c41c4c84ae16f690e68fdf5c488", null ],
+    [ "m_parent", "classtigl_1_1generated_1_1CPACSWingSegments.html#a10e2aca982a9b42fea24617782ca6917", null ],
+    [ "m_parentType", "classtigl_1_1generated_1_1CPACSWingSegments.html#a964397f2f87c42e5c05846235f8b3d30", null ],
+    [ "m_segments", "classtigl_1_1generated_1_1CPACSWingSegments.html#a61184aea8d2e0eadf82f96d13915b410", null ],
+    [ "m_uidMgr", "classtigl_1_1generated_1_1CPACSWingSegments.html#ac0ef210258c6456444db26a7074cf6b4", null ]
+];
