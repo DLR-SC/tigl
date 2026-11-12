@@ -57,7 +57,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="heightBox">
+       <widget class="TIGLCreatorSpinBox" name="heightBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -79,7 +79,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QSpinBox" name="widthBox">
+       <widget class="TIGLCreatorSpinBox" name="widthBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -136,7 +136,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="qualityBox_2">
+       <widget class="TIGLCreatorSpinBox" name="qualityBox_2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -179,6 +179,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>TIGLCreatorSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>widthBox</tabstop>
   <tabstop>heightBox</tabstop>

@@ -17,13 +17,13 @@
 */
 
 #include "TIGLCreatorAddSpotlightDialog.h"
+#include "TIGLCreatorDoubleSpinBox.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QLabel>
-#include <QDoubleSpinBox>
 #include <QDialogButtonBox>
 
 TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(QWidget* parent)
@@ -42,13 +42,13 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(double x, double y,
                                                              const QString& title,
                                                              QWidget* parent)
     : QDialog(parent)
-    , position_x(new QDoubleSpinBox())
-    , position_y(new QDoubleSpinBox())
-    , position_z(new QDoubleSpinBox())
-    , dx(new QDoubleSpinBox())
-    , dy(new QDoubleSpinBox())
-    , dz(new QDoubleSpinBox())
-    , concentration(new QDoubleSpinBox())
+    , position_x(new TIGLCreatorDoubleSpinBox())
+    , position_y(new TIGLCreatorDoubleSpinBox())
+    , position_z(new TIGLCreatorDoubleSpinBox())
+    , dx(new TIGLCreatorDoubleSpinBox())
+    , dy(new TIGLCreatorDoubleSpinBox())
+    , dz(new TIGLCreatorDoubleSpinBox())
+    , concentration(new TIGLCreatorDoubleSpinBox())
 {
     setupUI(title);
     setValues(x, y, z, dirX, dirY, dirZ, concentration);
@@ -57,16 +57,6 @@ TIGLCreatorAddSpotlightDialog::TIGLCreatorAddSpotlightDialog(double x, double y,
 void TIGLCreatorAddSpotlightDialog::setupUI(const QString& title)
 {
     setWindowTitle(title);
-
-    // set decimals for all spinboxes
-    int decimals = 7;
-    position_x->setDecimals(decimals);
-    position_y->setDecimals(decimals);
-    position_z->setDecimals(decimals);
-    dx->setDecimals(decimals);
-    dy->setDecimals(decimals);
-    dz->setDecimals(decimals);
-    concentration->setDecimals(decimals);
 
     // set ranges for all spinboxes
     double position_min = -1e4;

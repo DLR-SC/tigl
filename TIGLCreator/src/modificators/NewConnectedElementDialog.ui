@@ -65,10 +65,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDoubleSpinBox" name="eta_spinbox">
-     <property name="decimals">
-      <number>4</number>
-     </property>
+    <widget class="TIGLCreatorDoubleSpinBox" name="eta_spinbox">
      <property name="minimum">
       <double>0.000100000000000</double>
      </property>
@@ -95,6 +92,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

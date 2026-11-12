@@ -23,10 +23,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="pxSB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="pxSB">
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -40,10 +37,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="pySB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="pySB">
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -63,10 +57,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="pzSB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="pzSB">
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -108,10 +99,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="nxSB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="nxSB">
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>
@@ -131,10 +119,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="nySB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="nySB">
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>
@@ -154,10 +139,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="nzSB">
-          <property name="decimals">
-           <number>7</number>
-          </property>
+         <widget class="TIGLCreatorDoubleSpinBox" name="nzSB">
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>
@@ -189,6 +171,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

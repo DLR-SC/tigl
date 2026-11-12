@@ -98,7 +98,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDoubleSpinBox" name="spinBoxX">
+    <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxX">
      <property name="decimals">
       <number>3</number>
      </property>
@@ -139,7 +139,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDoubleSpinBox" name="spinBoxY">
+    <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxY">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -186,7 +186,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDoubleSpinBox" name="spinBoxZ">
+    <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxZ">
      <property name="decimals">
       <number>3</number>
      </property>
@@ -200,6 +200,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
