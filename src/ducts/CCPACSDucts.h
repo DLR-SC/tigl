@@ -28,11 +28,16 @@
 
 namespace tigl {
 
+class CCPACSConfiguration;
+
 class CCPACSDucts: public generated::CPACSDucts
 {
 public:
 
     TIGL_EXPORT CCPACSDucts(CCPACSAircraftModel* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSDucts(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
+
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
 
     // Given an input loft, create a new loft where all ducts have been cut away.
     TIGL_EXPORT PNamedShape LoftWithDuctCutouts(PNamedShape const&, std::string const &) const;

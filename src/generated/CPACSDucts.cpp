@@ -19,6 +19,7 @@
 #include <CCPACSDuct.h>
 #include <CCPACSDuctAssembly.h>
 #include "CCPACSAircraftModel.h"
+#include "CCPACSRotorcraftModel.h"
 #include "CPACSDucts.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -35,30 +36,45 @@ namespace generated
     {
         //assert(parent != NULL);
         m_parent = parent;
+        m_parentType = &typeid(CCPACSAircraftModel);
+    }
+
+    CPACSDucts::CPACSDucts(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr)
+        : m_uidMgr(uidMgr)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSRotorcraftModel);
     }
 
     CPACSDucts::~CPACSDucts()
     {
     }
 
-    const CCPACSAircraftModel* CPACSDucts::GetParent() const
-    {
-        return m_parent;
-    }
-
-    CCPACSAircraftModel* CPACSDucts::GetParent()
-    {
-        return m_parent;
-    }
-
     const CTiglUIDObject* CPACSDucts::GetNextUIDParent() const
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDObject* CPACSDucts::GetNextUIDParent()
     {
-        return m_parent;
+        if (m_parent) {
+            if (IsParent<CCPACSAircraftModel>()) {
+                return GetParent<CCPACSAircraftModel>();
+            }
+            if (IsParent<CCPACSRotorcraftModel>()) {
+                return GetParent<CCPACSRotorcraftModel>();
+            }
+        }
+        return nullptr;
     }
 
     CTiglUIDManager& CPACSDucts::GetUIDManager()

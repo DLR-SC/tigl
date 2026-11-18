@@ -6,7 +6,7 @@ Changes since last release
 
 - General changes
 
-  - none
+  - Support ducts and fuel tanks in rotorcraft models ([#1464](https://github.com/DLR-SC/tigl/issues/1464), [#1465](https://github.com/DLR-SC/tigl/issues/1465))
 
 - New API functions
 

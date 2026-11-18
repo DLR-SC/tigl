@@ -29,6 +29,8 @@
 #include "CCPACSConfigurationManager.h"
 #include "CTiglUIDManager.h"
 
+#include "CCPACSDuct.h"
+#include "CCPACSFuselage.h"
 #include "CCPACSVessel.h"
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
@@ -580,4 +582,65 @@ TEST_F(FuelTanksWithoutDucts, vessel_loft_without_ducts)
 
     ASSERT_FALSE(vessel.GetConfiguration().HasDucts());
     EXPECT_NEAR(vessel.GetGeometricVolume(), 6.57, 1e-2);
+}
+
+// Ducts and fuel tanks are also allowed as children of a rotorcraft model
+class RotorcraftFuelTanks : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        ASSERT_EQ(tixiOpenDocument("TestData/simpletest-rotorcraft-fuelTanks.cpacs.xml", &tixiHandle), SUCCESS);
+        ASSERT_EQ(tiglOpenCPACSConfiguration(tixiHandle, "testRotorcraft", &tiglHandle), TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_EQ(tiglCloseCPACSConfiguration(tiglHandle), TIGL_SUCCESS);
+        ASSERT_EQ(tixiCloseDocument(tixiHandle), SUCCESS);
+    }
+
+    static TixiDocumentHandle tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle RotorcraftFuelTanks::tixiHandle           = 0;
+TiglCPACSConfigurationHandle RotorcraftFuelTanks::tiglHandle = 0;
+
+TEST_F(RotorcraftFuelTanks, vessel_cut_by_duct)
+{
+    auto& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    ASSERT_TRUE(config.IsRotorcraft());
+    ASSERT_TRUE(config.HasDucts());
+    ASSERT_EQ(config.GetFuelTankCount(), 1);
+
+    const auto& fuelTank = config.GetFuelTank("tank");
+    auto& vessel         = config.GetUIDManager().ResolveObject<tigl::CCPACSVessel>("vessel");
+    EXPECT_EQ(&fuelTank.GetConfiguration(), &config);
+    EXPECT_EQ(&config.GetDucts()->GetDuct("duct").GetConfiguration(), &config);
+
+    // Same vessel and duct geometry as tank3_sphericalDome in FuelTanks.ducts_cutouts_enabled
+    const double volume_clean = vessel.GetGeometricVolume();
+    EXPECT_NEAR(volume_clean, 18.1, 1e-2);
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+    EXPECT_NEAR(vessel.GetGeometricVolume(), 16.79, 1e-2);
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_FALSE), TIGL_SUCCESS);
+    EXPECT_DOUBLE_EQ(vessel.GetGeometricVolume(), volume_clean);
+}
+
+TEST_F(RotorcraftFuelTanks, fuselage_cut_by_duct)
+{
+    auto& config   = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(tiglHandle);
+    auto& fuselage = config.GetUIDManager().ResolveObject<tigl::CCPACSFuselage>("fuselage");
+
+    const double volume_clean = fuselage.GetVolume();
+
+    // The fuselage must be invalidated when the cutouts are toggled
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_TRUE), TIGL_SUCCESS);
+    EXPECT_LT(fuselage.GetVolume(), volume_clean);
+
+    ASSERT_EQ(tiglConfigurationSetWithDuctCutouts(tiglHandle, TIGL_FALSE), TIGL_SUCCESS);
+    EXPECT_DOUBLE_EQ(fuselage.GetVolume(), volume_clean);
 }

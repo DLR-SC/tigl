@@ -114,6 +114,11 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent, CTiglUIDManager* uidMgr)
     }
     else if (parent->IsParent<CCPACSRotorcraftModel>()) {
         configuration = &parent->GetParent<CCPACSRotorcraftModel>()->GetConfiguration();
+
+        // register invalidation in CCPACSDucts
+        if (configuration->HasDucts()) {
+            configuration->GetDucts()->RegisterInvalidationCallback([&]() { this->Invalidate(); });
+        }
     }
     else {
         throw CTiglError("Unknown parent");
@@ -133,6 +138,11 @@ CCPACSWing::CCPACSWing(CCPACSRotorBlades* parent, CTiglUIDManager* uidMgr)
     , buildFlaps(false)
     , wingHelper(*this, &CCPACSWing::SetWingHelper)
 {
+    // register invalidation in CCPACSDucts
+    if (configuration->HasDucts()) {
+        configuration->GetDucts()->RegisterInvalidationCallback([&]() { this->Invalidate(); });
+    }
+
     Cleanup();
 }
 

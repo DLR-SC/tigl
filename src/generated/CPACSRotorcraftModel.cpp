@@ -113,6 +113,17 @@ namespace generated
             }
         }
 
+        // read element ducts
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_ducts->ReadCPACS(tixiHandle, xpath + "/ducts");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read ducts at xpath " << xpath << ": " << e.what();
+                m_ducts = boost::none;
+            }
+        }
+
         // read element fuselages
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuselages")) {
             m_fuselages = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
@@ -168,6 +179,17 @@ namespace generated
             }
         }
 
+        // read element fuelTanks
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+            try {
+                m_fuelTanks->ReadCPACS(tixiHandle, xpath + "/fuelTanks");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read fuelTanks at xpath " << xpath << ": " << e.what();
+                m_fuelTanks = boost::none;
+            }
+        }
+
         // read element systems
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/systems")) {
             m_systems = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
@@ -210,6 +232,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/description")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/description");
+            }
+        }
+
+        // write element ducts
+        if (m_ducts) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/ducts");
+            m_ducts->WriteCPACS(tixiHandle, xpath + "/ducts");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/ducts")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/ducts");
             }
         }
 
@@ -265,6 +298,17 @@ namespace generated
         else {
             if (tixi::TixiCheckElement(tixiHandle, xpath + "/engines")) {
                 tixi::TixiRemoveElement(tixiHandle, xpath + "/engines");
+            }
+        }
+
+        // write element fuelTanks
+        if (m_fuelTanks) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/fuelTanks");
+            m_fuelTanks->WriteCPACS(tixiHandle, xpath + "/fuelTanks");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/fuelTanks")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/fuelTanks");
             }
         }
 
@@ -330,6 +374,16 @@ namespace generated
         m_description = value;
     }
 
+    const boost::optional<CCPACSDucts>& CPACSRotorcraftModel::GetDucts() const
+    {
+        return m_ducts;
+    }
+
+    boost::optional<CCPACSDucts>& CPACSRotorcraftModel::GetDucts()
+    {
+        return m_ducts;
+    }
+
     const boost::optional<CCPACSFuselages>& CPACSRotorcraftModel::GetFuselages() const
     {
         return m_fuselages;
@@ -380,6 +434,16 @@ namespace generated
         return m_engines;
     }
 
+    const boost::optional<CPACSFuelTanks>& CPACSRotorcraftModel::GetFuelTanks() const
+    {
+        return m_fuelTanks;
+    }
+
+    boost::optional<CPACSFuelTanks>& CPACSRotorcraftModel::GetFuelTanks()
+    {
+        return m_fuelTanks;
+    }
+
     const boost::optional<CCPACSACSystems>& CPACSRotorcraftModel::GetSystems() const
     {
         return m_systems;
@@ -398,6 +462,18 @@ namespace generated
     boost::optional<CPACSSystemArchitectures>& CPACSRotorcraftModel::GetSystemArchitectures()
     {
         return m_systemArchitectures;
+    }
+
+    CCPACSDucts& CPACSRotorcraftModel::GetDucts(CreateIfNotExistsTag)
+    {
+        if (!m_ducts)
+            m_ducts = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_ducts;
+    }
+
+    void CPACSRotorcraftModel::RemoveDucts()
+    {
+        m_ducts = boost::none;
     }
 
     CCPACSFuselages& CPACSRotorcraftModel::GetFuselages(CreateIfNotExistsTag)
@@ -458,6 +534,18 @@ namespace generated
     void CPACSRotorcraftModel::RemoveEngines()
     {
         m_engines = boost::none;
+    }
+
+    CPACSFuelTanks& CPACSRotorcraftModel::GetFuelTanks(CreateIfNotExistsTag)
+    {
+        if (!m_fuelTanks)
+            m_fuelTanks = boost::in_place(reinterpret_cast<CCPACSRotorcraftModel*>(this), m_uidMgr);
+        return *m_fuelTanks;
+    }
+
+    void CPACSRotorcraftModel::RemoveFuelTanks()
+    {
+        m_fuelTanks = boost::none;
     }
 
     CCPACSACSystems& CPACSRotorcraftModel::GetSystems(CreateIfNotExistsTag)
