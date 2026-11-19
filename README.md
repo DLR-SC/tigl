@@ -1,9 +1,4 @@
-<p>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="doc/images/logo-dark.png">
-    <img src="doc/images/logo.png" alt="TiGL Logo" title="TiGL Logo">
-  </picture>
-</p>
+<p><img src="doc/images/logo-readme.png" alt="TiGL Logo" title="TiGL Logo" width="167"/></p>
 
 [![CI workflow](https://github.com/DLR-SC/tigl/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/DLR-SC/tigl/actions/workflows/ci-workflow.yml)
 [![codecov](https://codecov.io/gh/dlr-sc/tigl/branch/main/graph/badge.svg)](https://codecov.io/gh/dlr-sc/tigl)
