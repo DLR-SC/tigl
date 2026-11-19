@@ -25,7 +25,10 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(
         m_profileCurves.push_back(GeomConvert::CurveToBSplineCurve(curve));
     }
 
+    // make the profile curves compatible, i.e. same degree, parameter range and knot vector
+    // (required, as the profile poles are used directly as rows of the surface pole matrix)
     CTiglBSplineAlgorithms::matchDegree(m_profileCurves);
+    m_profileCurves = CTiglBSplineAlgorithms::createCommonKnotsVectorCurve(m_profileCurves, 1e-14);
 
     m_pole_matrix = TColgp_Array2OfPnt(1,m_profileCurves.size()+(m_profileCurves.size()-2)*6,1, (m_profileCurves[0]->NbPoles()));
     m_u_knots = TColStd_Array1OfReal(1,m_profileCurves[0]->NbKnots());
@@ -58,13 +61,10 @@ void CTiglRoundedSegmentSurface::Perform(){
     m_v_multiplicities.SetValue(1,4);
     m_v_multiplicities.SetValue((nb_v_knots),4);
 
-    //initialize knots in u-direction(copy from originial 1. profile curve fits all)
+    //initialize knots in u-direction (all profile curves share a common knot vector)
     m_u_knots = m_profileCurves[0]->Knots();
-    if (m_u_multiplicities.Length()==2){
-        _u_degree =m_profileCurves[0]->Degree();
-    } else {
-        m_u_multiplicities = m_profileCurves[0]->Multiplicities();
-    }
+    m_u_multiplicities = m_profileCurves[0]->Multiplicities();
+    _u_degree = m_profileCurves[0]->Degree();
 
     //initialize m_segments vector
     for(int i = 0; i < m_profileCurves.size()-1; i++){

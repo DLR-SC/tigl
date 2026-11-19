@@ -6,7 +6,7 @@ Changes since last release
 
 - General changes
 
-  - Add new lofting algorithm to create wing surfaces with rounded segments ([#1284](https://github.com/DLR-SC/tigl/issues/1284))
+  - Add new lofting algorithm to create wings, fuselages and ducts with rounded segments, enabled via the new `roundedSegments` attribute and the `innerRoundingDistance`/`outerRoundingDistance` segment elements ([#1284](https://github.com/DLR-SC/tigl/issues/1284))
 
 - New API functions
 
