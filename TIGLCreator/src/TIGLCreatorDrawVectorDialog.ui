@@ -24,6 +24,9 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="pxSB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -38,6 +41,9 @@
         </item>
         <item row="1" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="pySB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -58,6 +64,9 @@
         </item>
         <item row="2" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="pzSB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-99.000000000000000</double>
           </property>
@@ -100,6 +109,9 @@
         </item>
         <item row="0" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="nxSB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>
@@ -120,6 +132,9 @@
         </item>
         <item row="1" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="nySB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>
@@ -140,6 +155,9 @@
         </item>
         <item row="2" column="1">
          <widget class="TIGLCreatorDoubleSpinBox" name="nzSB">
+          <property name="displayDecimals">
+           <number>7</number>
+          </property>
           <property name="minimum">
            <double>-10.000000000000000</double>
           </property>

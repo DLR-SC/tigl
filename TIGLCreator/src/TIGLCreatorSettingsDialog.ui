@@ -458,6 +458,9 @@
          </property>
          <item row="2" column="1">
           <widget class="TIGLCreatorDoubleSpinBox" name="grid_size_spinbox">
+           <property name="displayDecimals">
+            <number>3</number>
+           </property>
            <property name="minimum">
             <double>0.001000000000000</double>
            </property>

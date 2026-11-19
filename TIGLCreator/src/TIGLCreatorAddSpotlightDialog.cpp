@@ -58,6 +58,16 @@ void TIGLCreatorAddSpotlightDialog::setupUI(const QString& title)
 {
     setWindowTitle(title);
 
+    // set shown decimals for all spinboxes
+    int decimals = 3;
+    position_x->setDisplayDecimals(decimals);
+    position_y->setDisplayDecimals(decimals);
+    position_z->setDisplayDecimals(decimals);
+    dx->setDisplayDecimals(decimals);
+    dy->setDisplayDecimals(decimals);
+    dz->setDisplayDecimals(decimals);
+    concentration->setDisplayDecimals(decimals);
+
     // set ranges for all spinboxes
     double position_min = -1e4;
     double position_max = 1e4;

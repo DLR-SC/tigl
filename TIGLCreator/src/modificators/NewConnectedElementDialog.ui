@@ -66,6 +66,9 @@
    </item>
    <item>
     <widget class="TIGLCreatorDoubleSpinBox" name="eta_spinbox">
+     <property name="displayDecimals">
+      <number>4</number>
+     </property>
      <property name="minimum">
       <double>0.000100000000000</double>
      </property>

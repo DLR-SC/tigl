@@ -166,6 +166,7 @@ void TIGLCreatorSelectWingAndFlapStatusDialog::buildFlapRow_helper(const DeviceT
     gridLayout->setCellWidget(rowIdx, 1, slider);
 
     TIGLCreatorDoubleSpinBox* spinBox = new TIGLCreatorDoubleSpinBox();
+    spinBox->setDisplayDecimals(3);
     spinBox->setSingleStep(0.005);
     spinBox->setStyleSheet(transparentBG);
 
