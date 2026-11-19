@@ -6,7 +6,7 @@ Changes since last release
 
 - General changes
 
-  - none
+  - Updated README: installation instructions, fixed badges, removed outdated downloads section (#1477)
 
 - New API functions
 
