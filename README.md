@@ -42,7 +42,7 @@ With [pixi](https://pixi.sh) (installs all dependencies):
 
 Or with plain CMake (requires a C++17 compiler, TiXI, OpenCASCADE and, for TiGLCreator, Qt5):
 
-    cmake -S . -B build --DCMAKE_INSTALL_PREFIX=install
+    cmake -S . -B build -DCMAKE_INSTALL_PREFIX=build/install
     cmake --build build --target install
 
 See the [installation guide](https://dlr-sc.github.io/tigl/doc/latest/tigl_installation.html)
