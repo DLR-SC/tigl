@@ -1,0 +1,87 @@
+# Citation metadata for TiGL (https://citation-file-format.github.io/)
+#
+# - This file is the source of truth for the author list and version.
+#   Zenodo reads .zenodo.json instead of this file, so mirror every change
+#   to the authors in the "creators" of .zenodo.json (same order).
+#   CI checks this via .github/scripts/check_citation_sync.py.
+# - Bump "version" and "date-released" with every release.
+cff-version: 1.2.0
+message: "If you use TiGL in your research, please cite the article given in preferred-citation."
+title: "TiGL - The TiGL Geometry Library"
+type: software
+abstract: "The TiGL Geometry Library to process aircraft geometries in pre-design."
+license: Apache-2.0
+repository-code: "https://github.com/DLR-SC/tigl"
+keywords:
+  - CPACS
+  - aircraft design
+  - geometry
+  - OpenCASCADE
+version: 3.5.0
+date-released: 2026-09-01
+authors:
+  - family-names: Kleinert
+    given-names: Jan
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0000-0002-2709-214X"
+  - family-names: Goldberg
+    given-names: Sven
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0009-0008-4419-3162"
+  - family-names: Alder
+    given-names: Marko
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0000-0001-7439-2500"
+  - family-names: Kobold
+    given-names: Meike
+    affiliation: German Aerospace Center (DLR)
+  - family-names: Albers
+    given-names: Ole
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0009-0001-5102-151X"
+  - family-names: Siggel
+    given-names: Martin
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0000-0002-3952-4659"
+  - family-names: Stollenwerk
+    given-names: Tobias
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0000-0001-5445-8082"
+  - family-names: Gruber
+    given-names: Bernhard Manfred
+    affiliation: RISC Software GmbH
+    orcid: "https://orcid.org/0000-0001-7848-1690"
+  - family-names: Landertshamer
+    given-names: Roland
+    affiliation: RISC Software GmbH
+  - family-names: Maierl
+    given-names: Reinhold
+    affiliation: Airbus Defence and Space
+    orcid: "https://orcid.org/0009-0004-4563-9358"
+  - family-names: Deinert
+    given-names: Sebastian
+    affiliation: Airbus Defence and Space
+    orcid: "https://orcid.org/0009-0000-6312-5853"
+preferred-citation:
+  type: article
+  title: "TiGL: An Open Source Computational Geometry Library for Parametric Aircraft Design"
+  authors:
+    - family-names: Siggel
+      given-names: Martin
+      orcid: "https://orcid.org/0000-0002-3952-4659"
+    - family-names: Kleinert
+      given-names: Jan
+      orcid: "https://orcid.org/0000-0002-2709-214X"
+    - family-names: Stollenwerk
+      given-names: Tobias
+      orcid: "https://orcid.org/0000-0001-5445-8082"
+    - family-names: Maierl
+      given-names: Reinhold
+      orcid: "https://orcid.org/0009-0004-4563-9358"
+  journal: "Mathematics in Computer Science"
+  volume: 13
+  issue: 3
+  start: 367
+  end: 389
+  year: 2019
+  doi: "10.1007/s11786-019-00401-y"
