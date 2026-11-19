@@ -33,6 +33,7 @@
 #include "Debugging.h"
 #include "CTiglCurveConnector.h"
 #include "CTiglMakeLoft.h"
+#include "CTiglRoundedSegmentsHelper.h"
 #include "CTiglBSplineAlgorithms.h"
 #include "CTiglTopoAlgorithms.h"
 #include "CCPACSDuctAssembly.h"
@@ -252,8 +253,9 @@ void CCPACSFuselage::SetFaceTraits (PNamedShape loft) const
           nFacesAero-=1;
     }
 
-    // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = this->GetSegmentCount();
+    // a loft with rounded segments is not split at the sections,
+    // hence the whole fuselage is treated as one segment
+    int nSegments = GetRoundedSegments().get_value_or(false) ? 1 : this->GetSegmentCount();
 
     int facesPerSegment = nFacesAero/ nSegments;
 
@@ -302,6 +304,9 @@ void CCPACSFuselage::BuildCleanLoft(PNamedShape& cache) const
 
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
+
+    // switch to the rounded segments algorithm, if requested
+    ConfigureRoundedSegmentsLoft(lofter, m_segments, GetRoundedSegments().get_value_or(false));
 
     TopoDS_Shape loftShape =  lofter.Shape();
 

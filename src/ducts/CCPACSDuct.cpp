@@ -22,6 +22,7 @@
 #include "CCPACSDuct.h"
 #include "CCPACSFuselageSegment.h"
 #include "CTiglMakeLoft.h"
+#include "CTiglRoundedSegmentsHelper.h"
 #include "CNamedShape.h"
 #include "CTiglTopoAlgorithms.h"
 #include "tiglcommonfunctions.h"
@@ -72,6 +73,9 @@ PNamedShape CCPACSDuct::BuildLoft() const
     lofter.setMakeSolid(true);
     lofter.setMakeSmooth(smooth);
 
+    // switch to the rounded segments algorithm, if requested
+    ConfigureRoundedSegmentsLoft(lofter, m_segments, GetRoundedSegments().get_value_or(false));
+
     TopoDS_Shape loftShape =  lofter.Shape();
 
     std::string loftName = GetUID();
@@ -120,7 +124,9 @@ void CCPACSDuct::SetFaceTraits (PNamedShape loft) const
     }
 
     // if we have a smooth surface, the whole fuslage is treatet as one segment
-    int nSegments = static_cast<int>(m_segments.GetSegmentCount());
+    // a loft with rounded segments is not split at the sections,
+    // hence the whole duct is treated as one segment
+    int nSegments = GetRoundedSegments().get_value_or(false) ? 1 : static_cast<int>(m_segments.GetSegmentCount());
 
     int facesPerSegment = nFacesAero/ nSegments;
 

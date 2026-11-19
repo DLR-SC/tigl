@@ -61,6 +61,16 @@ public:
      */
     TIGL_EXPORT void setOuterRoundingDistance(std::vector<double> outerRoundingDistance);
 
+    /**
+     * @brief Switches the lofting algorithm to the rounded segments algorithm (see CTiglRoundedSegmentSurface).
+     *
+     * If enabled, the rounding distances must be set via setInnerRoundingDistance and
+     * setOuterRoundingDistance. Guide curves are ignored in this case.
+     * If disabled (default), the loft is created with or without guide curves,
+     * depending on whether guides were added.
+     */
+    TIGL_EXPORT void setRoundedSegments(bool enabled);
+
     /** 
      * This function may be called to add guide curves to
      * the lofting algo. The shape should be either a wire
@@ -126,6 +136,7 @@ private:
     std::vector<Standard_Real> uparams, vparams;
     std::vector<double> m_innerRoundingDistance;
     std::vector<double> m_outerRoundingDistance;
+    bool m_roundedSegments = false;
     bool _hasPerformed, _makeSolid;
     bool _makeSmooth = false;
     

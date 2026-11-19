@@ -102,6 +102,11 @@ void CTiglMakeLoft::setOuterRoundingDistance(std::vector<double> outerRoundingDi
     m_outerRoundingDistance = outerRoundingDistance;
 }
 
+void CTiglMakeLoft::setRoundedSegments(bool enabled)
+{
+    m_roundedSegments = enabled;
+}
+
 void CTiglMakeLoft::addGuides(const TopoDS_Shape &guides)
 {
     if (guides.ShapeType() == TopAbs_COMPOUND) {
@@ -138,15 +143,19 @@ void CTiglMakeLoft::Perform()
         debug.addShape(profiles[i], "profile_" + tigl::std_to_string(i));
     }
 
-    if (guides.size() > 0) {
+    if (m_roundedSegments) {
+        if (guides.size() > 0) {
+            LOG(WARNING) << "CTiglMakeLoft: Rounded segments are enabled, the guide curves are ignored.";
+        }
+        makeLoftWithRoundedSegments();
+    }
+    else if (guides.size() > 0) {
         for (size_t i = 0; i < guides.size(); ++i) {
             debug.addShape(guides[i], "guide_" + tigl::std_to_string(i));
         }
 
         // to the loft with guides
         makeLoftWithGuides();
-    } else if (m_innerRoundingDistance.size()>0&&m_outerRoundingDistance.size()>0){
-        makeLoftWithRoundedSegments();
     }
     else {
         makeLoftWithoutGuides();
@@ -166,12 +175,24 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
 
 void CTiglMakeLoft::makeLoftWithRoundedSegments(){
     //check if there are both rounding distances defined for each segment
-    if(!(m_innerRoundingDistance.size()==profiles.size()-1)){
-        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments (is "+std::to_string(m_innerRoundingDistance.size())+" ) and inner rounding distances: "+std::to_string(profiles.size()-1));
+    if(m_innerRoundingDistance.size() != profiles.size()-1){
+        throw tigl::CTiglError("CTiglMakeLoft: Number of inner rounding distances (" + std::to_string(m_innerRoundingDistance.size())
+                               + ") does not match the number of segments (" + std::to_string(profiles.size()-1) + ").");
     }
-    if(!(m_outerRoundingDistance.size()==profiles.size()-1)){
-        throw tigl::CTiglError("CTiglMakeLoft: Number mismatch of segments and outer rounding distances.");
+    if(m_outerRoundingDistance.size() != profiles.size()-1){
+        throw tigl::CTiglError("CTiglMakeLoft: Number of outer rounding distances (" + std::to_string(m_outerRoundingDistance.size())
+                               + ") does not match the number of segments (" + std::to_string(profiles.size()-1) + ").");
     }
+
+    // with a single segment, there is no inner section to round
+    if (profiles.size() < 3) {
+        makeLoftWithoutGuides();
+        return;
+    }
+
+    // the ends of the loft are not rounded
+    m_innerRoundingDistance.front() = 0.;
+    m_outerRoundingDistance.back() = 0.;
 
     // check number of edges are all same
     std::vector<unsigned int> edgeCountPerProfile;
