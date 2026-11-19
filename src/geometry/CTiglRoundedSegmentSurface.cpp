@@ -11,6 +11,66 @@
 
 
 namespace tigl{
+
+namespace {
+
+// below this value, a rounding distance is treated as zero (no dummy profiles are inserted)
+const double roundingDistanceTolerance = 1e-6;
+
+std::string SegmentInfo(size_t iSeg)
+{
+    return "segment " + std::to_string(iSeg + 1);
+}
+
+} // namespace
+
+void CTiglRoundedSegmentSurface::ValidateRoundingDistances(size_t nProfiles,
+                                                           const std::vector<double>& inner,
+                                                           const std::vector<double>& outer)
+{
+    if (nProfiles < 3) {
+        throw CTiglError("CTiglRoundedSegmentSurface: At least 3 profile curves (2 segments) are required, got "
+                         + std::to_string(nProfiles) + ".");
+    }
+    const size_t nSegments = nProfiles - 1;
+    if (inner.size() != nSegments || outer.size() != nSegments) {
+        throw CTiglError("CTiglRoundedSegmentSurface: Expected " + std::to_string(nSegments)
+                         + " inner and outer rounding distances (one per segment), got "
+                         + std::to_string(inner.size()) + " inner and " + std::to_string(outer.size()) + " outer.");
+    }
+
+    for (size_t iSeg = 0; iSeg < nSegments; ++iSeg) {
+        for (double d : {inner[iSeg], outer[iSeg]}) {
+            if (d < 0. || d > 1.) {
+                throw CTiglError("CTiglRoundedSegmentSurface: Rounding distances of " + SegmentInfo(iSeg)
+                                 + " must be within [0, 1] (relative to the segment), got " + std::to_string(d) + ".");
+            }
+        }
+        // if both distances sum up to more than one, the dummy profiles of the segment overlap
+        // and the surface folds back onto itself
+        if (inner[iSeg] + outer[iSeg] > 1. + roundingDistanceTolerance) {
+            throw CTiglError("CTiglRoundedSegmentSurface: The inner and outer rounding distance of " + SegmentInfo(iSeg)
+                             + " sum up to " + std::to_string(inner[iSeg] + outer[iSeg])
+                             + ", which is more than 1. This would result in a self-intersecting surface.");
+        }
+    }
+
+    // the ends of the surface are not rounded
+    if (inner.front() > roundingDistanceTolerance || outer.back() > roundingDistanceTolerance) {
+        throw CTiglError("CTiglRoundedSegmentSurface: The inner rounding distance of the first segment and the outer "
+                         "rounding distance of the last segment must be zero.");
+    }
+
+    // all inner sections must be rounded on both sides
+    for (size_t iSeg = 0; iSeg + 1 < nSegments; ++iSeg) {
+        if (outer[iSeg] <= roundingDistanceTolerance || inner[iSeg + 1] <= roundingDistanceTolerance) {
+            throw CTiglError("CTiglRoundedSegmentSurface: The outer rounding distance of " + SegmentInfo(iSeg)
+                             + " and the inner rounding distance of " + SegmentInfo(iSeg + 1)
+                             + " must be greater than zero.");
+        }
+    }
+}
+
 CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_Curve)> &profileCurves ,
                                                        const std::vector<double> &inner_rounding_distance,
                                                        const std::vector<double> &outer_rounding_distance):
@@ -19,6 +79,8 @@ CTiglRoundedSegmentSurface::CTiglRoundedSegmentSurface(const std::vector<Handle(
     m_segments({}),
     m_surface(nullptr)
     {
+
+    ValidateRoundingDistances(profileCurves.size(), inner_rounding_distance, outer_rounding_distance);
 
     m_profileCurves.reserve(profileCurves.size());
     for (Handle(Geom_Curve) curve : profileCurves) {

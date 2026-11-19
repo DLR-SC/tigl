@@ -22,12 +22,14 @@ public:
      * Surface skinning algorithm to create a loft for a given set of
      * profile curves with rounded sections.
      * @param m_profileCurves
-     * @param inner_rounding_distance Vector of numbers between  0.< 1. per section
-     * with a size of m_profileCurves.size()-2
-     * (outer section has no inner rounding distance)
-     * @param outer_rounding_distance Vector of numbers between  0.< 1. per section
-     * with a size of m_profileCurves.size()-2
-     * (inner section has no outer rounding distance)
+     * @param inner_rounding_distance One inner rounding distance per segment
+     * (size m_profileCurves.size()-1), relative to the segment, i.e. within [0, 1].
+     * The value of the first segment must be zero, all others greater than zero.
+     * @param outer_rounding_distance One outer rounding distance per segment
+     * (size m_profileCurves.size()-1), relative to the segment, i.e. within [0, 1].
+     * The value of the last segment must be zero, all others greater than zero.
+     * For each segment, inner + outer rounding distance must not exceed 1.
+     * @throws CTiglError if the rounding distances are invalid
      */
     TIGL_EXPORT CTiglRoundedSegmentSurface(const std::vector<Handle(Geom_Curve)> &m_profileCurves,
                                            const std::vector<double> &inner_rounding_distance,
@@ -36,6 +38,17 @@ public:
     TIGL_EXPORT  Handle(Geom_BSplineSurface) Surface();
 
 private:
+    /**
+     * @brief Checks the rounding distances and throws a CTiglError, if they are invalid:
+     *  - one inner and outer rounding distance per segment
+     *  - each distance within [0, 1], and inner + outer <= 1 for each segment
+     *    (otherwise the surface folds back onto itself)
+     *  - inner distance of the first and outer distance of the last segment are zero
+     *  - distances at all inner sections are greater than zero
+     */
+    static void ValidateRoundingDistances(size_t nProfiles,
+                                          const std::vector<double>& inner,
+                                          const std::vector<double>& outer);
 
     TIGL_EXPORT void Perform();
 

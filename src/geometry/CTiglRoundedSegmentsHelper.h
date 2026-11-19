@@ -35,10 +35,12 @@ namespace tigl
  * behavior applies. If it is true, the lofter is switched to the rounded segments algorithm.
  * In this case, the rounding distances at all inner sections are required, i.e. the
  * outerRoundingDistance of segment i and the innerRoundingDistance of segment i+1 must be
- * given and must be greater than zero. The innerRoundingDistance of the first segment and the
+ * given, must be greater than zero and must not exceed 1, as they are relative to the segment.
+ * For each segment, the sum of both distances must not exceed 1 either, otherwise the surface
+ * would fold back onto itself. The innerRoundingDistance of the first segment and the
  * outerRoundingDistance of the last segment lie at the ends of the loft and are not used.
  *
- * @throws CTiglError if a required rounding distance is missing or not positive.
+ * @throws CTiglError if a required rounding distance is missing or invalid.
  */
 template <class SegmentsT>
 void ConfigureRoundedSegmentsLoft(CTiglMakeLoft& lofter, const SegmentsT& segments, bool roundedSegments)
@@ -60,9 +62,10 @@ void ConfigureRoundedSegmentsLoft(CTiglMakeLoft& lofter, const SegmentsT& segmen
             throw CTiglError("Rounded segments are enabled, but the " + name + " of segment \"" + segmentUID +
                              "\" is missing. It is required at all inner sections.");
         }
-        if (*value <= 0.) {
+        if (*value <= 0. || *value > 1.) {
             throw CTiglError("Rounded segments are enabled, but the " + name + " of segment \"" + segmentUID +
-                             "\" is not positive. It must be greater than zero at all inner sections.");
+                             "\" is " + std::to_string(*value) + ". At all inner sections, it must be greater than "
+                             "zero and must not exceed 1 (it is relative to the segment).");
         }
         return *value;
     };
@@ -70,10 +73,17 @@ void ConfigureRoundedSegmentsLoft(CTiglMakeLoft& lofter, const SegmentsT& segmen
     for (int i = 1; i <= nSegments; ++i) {
         const auto& segment = segments.GetSegment(i);
         // the ends of the loft are not rounded
-        innerRoundingDistance.push_back(
-            i == 1 ? 0. : requireDistance(segment.GetInnerRoundingDistance(), segment.GetUID(), "innerRoundingDistance"));
-        outerRoundingDistance.push_back(
-            i == nSegments ? 0. : requireDistance(segment.GetOuterRoundingDistance(), segment.GetUID(), "outerRoundingDistance"));
+        double inner = i == 1 ? 0. : requireDistance(segment.GetInnerRoundingDistance(), segment.GetUID(), "innerRoundingDistance");
+        double outer = i == nSegments ? 0. : requireDistance(segment.GetOuterRoundingDistance(), segment.GetUID(), "outerRoundingDistance");
+
+        // otherwise the blending regions of the segment overlap and the surface folds back onto itself
+        if (inner + outer > 1.) {
+            throw CTiglError("The innerRoundingDistance and outerRoundingDistance of segment \"" + segment.GetUID() +
+                             "\" sum up to " + std::to_string(inner + outer) + ". The sum must not exceed 1, "
+                             "as the distances are relative to the segment.");
+        }
+        innerRoundingDistance.push_back(inner);
+        outerRoundingDistance.push_back(outer);
     }
 
     lofter.setInnerRoundingDistance(innerRoundingDistance);

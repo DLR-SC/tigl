@@ -121,23 +121,61 @@ TEST(TestCTiglRoundedSegmentSurface, make_minimal_Shape)
         tigl::dumpShape(edge ,"ProfleCurves","curve",i);
     }
 
-    std::vector<double> ird;
-    std::vector<double> ord;
-    ird.push_back(0.);
-    ord.push_back(0.);
-    for(int i=1; i< profileCurves.size()-1; i++){
-        ird.push_back(0.25);
-        ord.push_back(0.25);
-    }
-    ird.push_back(0.);
-    ord.push_back(0.);
+    // one value per segment, the ends of the surface are not rounded
+    std::vector<double> ird = {0., 0.25};
+    std::vector<double> ord = {0.25, 0.};
 
     tigl::CTiglRoundedSegmentSurface lofter(profileCurves, ird, ord);
-    auto surface = lofter.Surface();
-   // DEBUG DELETEME
-    Handle(Geom_Surface) handle_surface = surface;
-    TopoDS_Shape surf = BRepBuilderAPI_MakeFace(handle_surface, 1e-15);
-    tigl::dumpShape(surf, "makeLoftWing", "Surface",1);
+    Handle(Geom_BSplineSurface) surface = lofter.Surface();
+    ASSERT_FALSE(surface.IsNull());
+
+    // the surface interpolates the first and last profile
+    double u1, u2, v1, v2;
+    surface->Bounds(u1, u2, v1, v2);
+    for (double v : {0., 0.3, 0.7, 1.}) {
+        double vv = v1 + v * (v2 - v1);
+        EXPECT_LT(surface->Value(u1, vv).Distance(profileCurves.front()->Value(vv)), 1e-10);
+        EXPECT_LT(surface->Value(u2, vv).Distance(profileCurves.back()->Value(vv)), 1e-10);
+    }
+}
+
+TEST(TestCTiglRoundedSegmentSurface, invalidRoundingDistancesThrow)
+{
+    std::vector<Handle(Geom_Curve)> profileCurves;
+    for (int i = 0; i < 4; ++i) {
+        TColgp_Array1OfPnt poles(1, 4);
+        poles.SetValue(1, gp_Pnt(i, 0., 0.));
+        poles.SetValue(2, gp_Pnt(i, 1., 0.5));
+        poles.SetValue(3, gp_Pnt(i, 2., -0.5));
+        poles.SetValue(4, gp_Pnt(i, 3., 0.));
+        TColStd_Array1OfReal knots(1, 2);
+        knots.SetValue(1, 0.);
+        knots.SetValue(2, 1.);
+        TColStd_Array1OfInteger mults(1, 2);
+        mults.SetValue(1, 4);
+        mults.SetValue(2, 4);
+        profileCurves.push_back(new Geom_BSplineCurve(poles, knots, mults, 3));
+    }
+
+    auto make = [&](std::vector<double> inner, std::vector<double> outer) {
+        return tigl::CTiglRoundedSegmentSurface(profileCurves, inner, outer).Surface();
+    };
+
+    // valid, including inner + outer == 1 in the middle segment
+    EXPECT_NO_THROW(make({0., 0.5, 0.3}, {0.3, 0.5, 0.}));
+
+    // inner + outer > 1: the surface would fold back onto itself
+    EXPECT_THROW(make({0., 0.6, 0.3}, {0.3, 0.6, 0.}), tigl::CTiglError);
+    // distance out of [0, 1]
+    EXPECT_THROW(make({0., 0.2, 0.3}, {1.3, 0.2, 0.}), tigl::CTiglError);
+    EXPECT_THROW(make({0., -0.2, 0.3}, {0.3, 0.2, 0.}), tigl::CTiglError);
+    // wrong number of distances
+    EXPECT_THROW(make({0., 0.2, 0.3, 0.}, {0.3, 0.2, 0., 0.}), tigl::CTiglError);
+    // ends of the surface must not be rounded
+    EXPECT_THROW(make({0.1, 0.2, 0.3}, {0.3, 0.2, 0.}), tigl::CTiglError);
+    EXPECT_THROW(make({0., 0.2, 0.3}, {0.3, 0.2, 0.1}), tigl::CTiglError);
+    // inner sections must be rounded on both sides
+    EXPECT_THROW(make({0., 0., 0.3}, {0.3, 0.2, 0.}), tigl::CTiglError);
 }
 
 TEST(TestCTiglRoundedSegmentSurface, openCpacsTwoRoundedSegments){
@@ -374,5 +412,44 @@ TEST(TestCTiglRoundedSegmentSurface, roundedDuct)
     EXPECT_GT(Volume(loft->Shape()), 0.);
     for (unsigned int iFace = 0; iFace < loft->GetFaceCount(); ++iFace) {
         EXPECT_FALSE(loft->GetFaceTraits(iFace).Name().empty()) << "face " << iFace;
+    }
+}
+
+TEST(TestCTiglRoundedSegmentSurface, roundedFuselageDistanceOutOfRangeThrows)
+{
+    RoundedSegmentsConfig rounded(roundedFuselageFile, [](TixiDocumentHandle tixi) {
+        ASSERT_EQ(SUCCESS, tixiUpdateDoubleElement(tixi, (std::string(roundedFuselagePath) +
+                                                          "/segments/segment[1]/outerRoundingDistance").c_str(), 1.2, "%g"));
+    });
+    try {
+        rounded.Config().GetFuselage(1).GetLoft();
+        FAIL() << "Expected a CTiglError due to outerRoundingDistance > 1";
+    }
+    catch (const tigl::CTiglError& err) {
+        EXPECT_NE(std::string(err.what()).find("segmentD150_Fuselage_1Segment2ID"), std::string::npos) << err.what();
+    }
+}
+
+TEST(TestCTiglRoundedSegmentSurface, roundedWingDistanceSumExceedsOneThrows)
+{
+    // the middle segment of this wing has an inner and an outer rounding distance
+    const char* filename = "TestData/simpletest-roundedSegmentSurface2.cpacs.xml";
+    const std::string segmentPath = "/cpacs/vehicles/aircraft/model/wings/wing[1]/segments/segment[2]";
+
+    std::string segmentUID;
+    RoundedSegmentsConfig rounded(filename, [&](TixiDocumentHandle tixi) {
+        char* uid = nullptr;
+        ASSERT_EQ(SUCCESS, tixiGetTextAttribute(tixi, segmentPath.c_str(), "uID", &uid));
+        segmentUID = uid;
+        ASSERT_EQ(SUCCESS, tixiUpdateDoubleElement(tixi, (segmentPath + "/innerRoundingDistance").c_str(), 0.6, "%g"));
+        ASSERT_EQ(SUCCESS, tixiUpdateDoubleElement(tixi, (segmentPath + "/outerRoundingDistance").c_str(), 0.6, "%g"));
+    });
+    try {
+        rounded.Config().GetWing(1).GetLoft();
+        FAIL() << "Expected a CTiglError, as the rounding distances of a segment sum up to more than 1";
+    }
+    catch (const tigl::CTiglError& err) {
+        EXPECT_NE(std::string(err.what()).find(segmentUID), std::string::npos) << err.what();
+        EXPECT_NE(std::string(err.what()).find("must not exceed 1"), std::string::npos) << err.what();
     }
 }

@@ -118,10 +118,10 @@ namespace generated
         /// the outer geometry
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
-        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the inner end of this segment used to create a smooth transition to the adjacent segment. The distance is given relative to the segment, i.e. as a fraction (0 < d < 1) of the distance between the inner and outer profile of this segment. The inner and outer rounding distance of a segment should sum up to less than 1. Required at all inner sections of the wing if roundedSegments is true.
+        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the inner end of this segment used to create a smooth transition to the adjacent segment. The distance is given relative to the segment, i.e. as a fraction (0 < d < 1) of the distance between the inner and outer profile of this segment. The sum of the inner and outer rounding distance of a segment must not exceed 1. Required at all inner sections of the wing if roundedSegments is true.
         boost::optional<double>            m_innerRoundingDistance;
 
-        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the outer end of this segment used to create a smooth transition to the adjacent segment. The distance is given relative to the segment, i.e. as a fraction (0 < d < 1) of the distance between the inner and outer profile of this segment. The inner and outer rounding distance of a segment should sum up to less than 1. Required at all inner sections of the wing if roundedSegments is true.
+        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the outer end of this segment used to create a smooth transition to the adjacent segment. The distance is given relative to the segment, i.e. as a fraction (0 < d < 1) of the distance between the inner and outer profile of this segment. The sum of the inner and outer rounding distance of a segment must not exceed 1. Required at all inner sections of the wing if roundedSegments is true.
         boost::optional<double>            m_outerRoundingDistance;
 
     private:
