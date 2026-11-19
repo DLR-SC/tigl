@@ -6,7 +6,7 @@ Changes since last release
 
 - General changes
 
-  - none
+  - Updated the author list in `.zenodo.json` and added a `CITATION.cff` file, including a CI check that keeps both in sync
 
 - New API functions
 
