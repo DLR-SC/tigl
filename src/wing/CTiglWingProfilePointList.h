@@ -118,7 +118,7 @@ private:
     void operator=(const CTiglWingProfilePointList&);
 
     // Helper method for trimming upper an lower curve
-    void trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve) const;
+    void trimUpperLowerCurve(WireCache& cache, Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle(Geom_Curve) curve) const;
 
 private:
     // constant for opening profile

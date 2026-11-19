@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Controls fluid or pneumatic flow without prescribing a more specific valve function.
+        /// Controls fluid or pneumatic flow without prescribing a more specific valve function
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_valves;
 
     private:

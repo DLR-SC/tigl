@@ -43,7 +43,7 @@ TiglAxis GetWingDepthAxis(const tigl::CCPACSWing& wing);
 /**
  * Returns the major direction of the wing (correspond to the span direction)
  *
- * @Details: If a symmetry plan is set, the major direction is normal to the symmetry plan,
+ * @details If a symmetry plan is set, the major direction is normal to the symmetry plan,
  * otherwise, an heuristic is used to find out the best span axis candidate.
  *
  * Note: this is a heuristic that is determined by the wing shape

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Consumes electrical power to provide illumination or optical signaling when no more specific light class is required.
+        /// Consumes electrical power to provide illumination or optical signaling when no more specific light class is required
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_lights;
 
     private:

@@ -44,7 +44,7 @@ TEST_P(GenericSystems, uids)
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
-    int nSystems = config.GetGenericSystemCount();
+    int nSystems = static_cast<int>(config.GetGenericSystemCount());
     for (auto i=1; i < nSystems+1; ++i) {
         ASSERT_EQ(system_uids[i-1], config.GetGenericSystem(i).GetUID());
     }
@@ -66,7 +66,7 @@ TEST_P(GenericSystems, lofts)
 
 }
 
-INSTANTIATE_TEST_CASE_P(TiglACSystems, GenericSystems, ::testing::Values(
+INSTANTIATE_TEST_SUITE_P(TiglACSystems, GenericSystems, ::testing::Values(
                             std::make_pair("singleModel_withGenericSystems", std::vector<std::string>{"mySystemUID",
                                                                                                       "mySystemUID2",
                                                                                                       "mySystemUID3",

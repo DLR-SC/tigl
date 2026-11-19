@@ -140,6 +140,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                m_uID;
 
         /// Name
@@ -151,8 +152,10 @@ namespace generated
         /// UID of the corresponding element in the cpacs/vehicles/deckElemets node
         std::string                                m_deckElementUID;
 
+        /// Structural mounts
         boost::optional<CPACSDeckStructuralMounts> m_structuralMounts;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation>      m_transformation;
 
     private:

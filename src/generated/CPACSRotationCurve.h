@@ -111,24 +111,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
         /// UID of the section which serves as reference
         std::string m_referenceSectionUID;
 
-        /// Start zeta [-1,..,1]; relative curve coordante along the rotation curve from which it will be inserted in the nacelle.
+        /// Start zeta [-1,..,1]; relative curve coordante along the rotation curve from which it will be inserted in the nacelle
         double      m_startZeta;
 
-        /// End zeta [-1,..,1]; relative curve coordante along the rotation curve up to which it will be inserted in the nacelle.
+        /// End zeta [-1,..,1]; relative curve coordante along the rotation curve up to which it will be inserted in the nacelle
         double      m_endZeta;
 
-        /// Start zeta for blending [-1..1]; relative curve coordinate along the nacelle profile at which blending from the nacelle profile to the rotation curve will begin.
+        /// Start zeta for blending [-1..1]; relative curve coordinate along the nacelle profile at which blending from the nacelle profile to the rotation curve will begin
         double      m_startZetaBlending;
 
-        /// End zeta for blending; relative curve coordinate along the nacelle profile at which blending from the rotation curve to the nacelle profile will end.
+        /// End zeta for blending; relative curve coordinate along the nacelle profile at which blending from the rotation curve to the nacelle profile will end
         double      m_endZetaBlending;
 
-        /// UID of the rotation curve profile; the profile should be defined in x=[0..1] to be transformed by the section which is referenced by referenceSectionUID.
+        /// UID of the rotation curve profile; the profile should be defined in x=[0..1] to be transformed by the section which is referenced by referenceSectionUID
         std::string m_curveProfileUID;
 
     private:

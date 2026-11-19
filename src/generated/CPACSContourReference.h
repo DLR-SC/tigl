@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to the airfoil uID.
+        /// Reference to the airfoil UID
         std::string m_airfoilUID;
 
         /// Rotation around an axis, going from the
@@ -121,10 +121,10 @@ namespace generated
         double      m_rotX;
 
         /// Scaling of the airfoil in spanwise direction
-        /// (not used for 2D airfoils).
+        /// (not used for 2D airfoils)
         double      m_scalY;
 
-        /// Scaling in thickness direction of the airfoil.
+        /// Scaling in thickness direction of the airfoil
         double      m_scalZ;
 
     private:

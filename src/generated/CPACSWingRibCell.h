@@ -87,14 +87,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string              m_uID;
 
-        /// Defines the beginning of the ribCell. The
-        /// enumeration is within the ribSet.
+        /// Beginning of the ribCell. The enumeration is within the ribSet.
         std::string              m_fromRib;
 
-        /// Defines the ending of the ribCell. The
-        /// enumeration is within the ribSet.
+        /// Ending of the ribCell. The enumeration is within the ribSet.
         std::string              m_toRib;
 
         /// WING: The Rotation along the x describes a
@@ -116,8 +115,10 @@ namespace generated
         /// degrees are at the x-axis positive direction.
         CCPACSMaterialDefinition m_material;
 
+        /// Upper cap
         CPACSCap                 m_upperCap;
 
+        /// Lower cap
         CPACSCap                 m_lowerCap;
 
     private:

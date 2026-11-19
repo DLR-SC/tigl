@@ -78,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Vessel
         std::vector<std::unique_ptr<CCPACSVessel>> m_vessels;
 
     private:

@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Extracts mechanical power while reducing the pressure and temperature of a working medium.
+        /// Extracts mechanical power while reducing the pressure and temperature of a working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_expansionTurbines;
 
     private:

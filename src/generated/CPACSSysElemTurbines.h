@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Extracts mechanical shaft power from a flowing working medium.
+        /// Extracts mechanical shaft power from a flowing working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_turbines;
 
     private:

@@ -42,8 +42,7 @@ namespace generated
 
     /// @brief Systems
     /// 
-    /// Systems type, containing the aircraft's control system
-    /// data
+    /// Aircraft's control system data
     /// Please see the attached picture for further
     /// documentation
     /// @see controls

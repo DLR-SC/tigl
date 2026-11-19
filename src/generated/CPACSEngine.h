@@ -37,9 +37,9 @@ namespace generated
     // This class is used in:
     // CPACSEngines
 
-    /// @brief engineType
+    /// @brief Engine
     /// 
-    /// Engine type, containing engine data.
+    /// Engine data.
     /// 
     class CPACSEngine : public CTiglReqUIDObject
     {
@@ -84,17 +84,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                         m_uID;
 
-        /// Name of engine
+        /// Name
         std::string                         m_name;
 
-        /// Description of engine
+        /// Description
         boost::optional<std::string>        m_description;
 
         /// Scaling of engine take-off thrust
         boost::optional<double>             m_thrust00Scaling;
 
+        /// Nacelle
         boost::optional<CPACSEngineNacelle> m_nacelle;
 
     private:

@@ -39,7 +39,7 @@ namespace generated
     // CPACSFuselageSegment
     // CPACSWingSegment
 
-    /// @brief Guide Curves Type
+    /// @brief Guide curves
     /// 
     /// Guide Curve type. This type is used to describe guide
     /// curves that enable designers to create a geometry that deviates
@@ -109,6 +109,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Guide curve
         std::vector<std::unique_ptr<CCPACSGuideCurve>> m_guideCurves;
 
     private:

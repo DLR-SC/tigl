@@ -219,7 +219,7 @@ TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vect
  *
  * Check if the matrix is orthogonal and if its determinant is 1.
  *
- * @param R, the 3x3 matrix to check
+ * @param R The 3x3 matrix to check
  * @return true or false
  */
 TIGL_EXPORT bool IsRotationMatrix(const tiglMatrix& R);

@@ -122,7 +122,7 @@ namespace generated
         /// Indices of points at which the curve has a kink. Each index is in the range [1, npoints].
         boost::optional<CCPACSStringVector>         m_kinkIndices;
 
-        /// Map between point index and curve parameter.
+        /// Map between point index and curve parameter
         boost::optional<CCPACSCurveParamPointMap>   m_parameterMap;
 
         /// If this element is specified, the given point list is approximated instead of interpolated when creating a b-spline representation of the profile.

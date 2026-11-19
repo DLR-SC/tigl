@@ -49,7 +49,7 @@ namespace generated
 
     /// @brief Point: x,y,z
     /// 
-    /// Point type, containing an xyz data triplet.
+    /// Xyz data triplet.
     /// 
     class CPACSPoint : public CTiglOptUIDObject
     {
@@ -116,6 +116,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// X-Component

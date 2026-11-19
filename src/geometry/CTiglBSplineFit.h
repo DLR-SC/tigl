@@ -33,8 +33,6 @@ public:
      * @brief BSplineFit Class to fit a B-spline to data points
      * @param deg Degree of the resulting B-spline
      * @param ncp Number of control points of the B-spline (ncp > deg)
-     * @param eps Tolerance of the iterative method
-     * @param maxIter Maximum number of iterations
      */
     TIGL_EXPORT BSplineFit(int deg, int ncp);
 
@@ -58,7 +56,7 @@ public:
 
     /// Returns the resulting curve. Returns
     /// Null in case of an error
-    TIGL_EXPORT Handle_Geom_BSplineCurve Curve() const;
+    TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
     /// Computes the maximum error of the fit
     TIGL_EXPORT double GetMaxError();
@@ -86,7 +84,7 @@ private:
     error fitCurve();
 
     /// The resulting B-spline curve
-    Handle_Geom_BSplineCurve _curve;
+    Handle(Geom_BSplineCurve) _curve;
 
     /// degree of the B-spline
     int _degree;

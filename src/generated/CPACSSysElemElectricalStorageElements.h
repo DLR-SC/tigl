@@ -100,19 +100,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic storage elements.
+        /// Library of predefined generic storage elements
         boost::optional<CPACSSysElemGenericStorageElements> m_genericStorageElements;
 
-        /// Library of predefined batteries.
+        /// Library of predefined batteries
         boost::optional<CPACSSysElemBatteries>              m_batteries;
 
-        /// Library of predefined capacitors.
+        /// Library of predefined capacitors
         boost::optional<CPACSSysElemCapacitors>             m_capacitors;
 
-        /// Library of predefined inductors.
+        /// Library of predefined inductors
         boost::optional<CPACSSysElemInductors>              m_inductors;
 
-        /// Library of predefined supercapacitors.
+        /// Library of predefined supercapacitors
         boost::optional<CPACSSysElemSuperCapacitors>        m_superCapacitors;
 
     private:

@@ -38,12 +38,11 @@ namespace generated
     // CPACSSparCell
     // CPACSSparCrossSection
 
-    /// @brief webType
+    /// @brief Spar web
     /// 
-    /// SparWeb type, containing the cross section area of the
-    /// spar web and the material properties.
-    /// Pleas find below a picture where all spar cross
-    /// section parameters as well as the orientation refereneces for
+    /// Cross section area of the spar web and the material properties.
+    /// Please find below a picture where all spar cross
+    /// section parameters as well as the orientation references for
     /// the material definition can be found:
     /// @see spars2
     /// 
@@ -102,11 +101,11 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Material definition of the spar web.
+        /// Material definition of the spar web
         CCPACSMaterialDefinition m_material;
 
         /// relPos ranges from 0 to 1 It defines the
-        /// position of the web relative to the caps (see picture below)..
+        /// position of the web relative to the caps (see picture below)
         double                   m_relPos;
 
     private:

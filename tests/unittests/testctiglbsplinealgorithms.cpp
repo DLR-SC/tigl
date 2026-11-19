@@ -1566,10 +1566,10 @@ TEST_P(GordonSurface, testFromBRep)
 
 TEST_P(GordonSurface, testIntersectionRegressions)
 {
-    math_Matrix intersection_params_u(0, splines_u_vector.size() - 1,
-                                      0, splines_v_vector.size() - 1);
-    math_Matrix intersection_params_v(0, splines_u_vector.size() - 1,
-                                      0, splines_v_vector.size() - 1);
+    math_Matrix intersection_params_u(0, static_cast<Standard_Integer>(splines_u_vector.size()) - 1,
+                                      0, static_cast<Standard_Integer>(splines_v_vector.size()) - 1);
+    math_Matrix intersection_params_v(0, static_cast<Standard_Integer>(splines_u_vector.size()) - 1,
+                                      0, static_cast<Standard_Integer>(splines_v_vector.size()) - 1);
 
 
     std::vector<Handle(Geom_BSplineCurve)> profiles, guides;
@@ -1646,7 +1646,7 @@ TEST_P(GordonSurface, testIntersectionRegressions)
 }
 
 
-INSTANTIATE_TEST_CASE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
+INSTANTIATE_TEST_SUITE_P(TiglBSplineAlgorithms, GordonSurface, ::testing::Values(
                             "nacelle",
                             "full_nacelle",
                             "wing2",

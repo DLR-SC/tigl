@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts alternating-current electrical power to alternating-current electrical power with modified voltage, frequency, or phase.
+        /// Converts alternating-current electrical power to alternating-current electrical power with modified voltage, frequency, or phase
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_acacConverters;
 
     private:

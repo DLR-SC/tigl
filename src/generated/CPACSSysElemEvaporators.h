@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers heat to evaporate a liquid working medium.
+        /// Transfers heat to evaporate a liquid working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_evaporators;
 
     private:

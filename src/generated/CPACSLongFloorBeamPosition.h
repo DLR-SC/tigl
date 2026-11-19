@@ -39,10 +39,9 @@ namespace generated
     // This class is used in:
     // CPACSLongFloorBeam
 
-    /// @brief logFloorBeamPositionType
+    /// @brief Longitudinal floor beam position
     /// 
-    /// longFloorBeamPosition type, containing individual
-    /// position definition
+    /// Individual position definition
     /// 
     class CPACSLongFloorBeamPosition : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -93,6 +92,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                 m_uID;
 
         /// UID of structural element
@@ -102,9 +102,10 @@ namespace generated
         /// attached
         std::string                                 m_crossBeamUID;
 
-        /// y position of long. beam
+        /// Y position of long. beam
         double                                      m_positionY;
 
+        /// Alignment
         boost::optional<CPACSAlignmentStructMember> m_alignment;
 
         /// Continuity definition for profile extrusion:
@@ -112,9 +113,7 @@ namespace generated
         /// continuity)
         boost::optional<CPACSContinuity>            m_continuity;
 
-        /// Definition of interpolation between different
-        /// profiles: 0= no interpolation 1= interpolation of strcutural
-        /// profile
+        /// Interpolation between different profiles: 0= no interpolation 1= interpolation of structural profile
         boost::optional<CPACSInterpolation>         m_interpolation;
 
     private:

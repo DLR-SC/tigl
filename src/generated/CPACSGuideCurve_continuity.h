@@ -32,7 +32,7 @@ namespace generated
 
     enum CPACSGuideCurve_continuity
     {
-        C0,
+        CPACSGuideCurve_continuity_C0,
         C1_from_previous,
         C2_from_previous,
         C1_to_previous,
@@ -42,7 +42,7 @@ namespace generated
     inline std::string CPACSGuideCurve_continuityToString(const CPACSGuideCurve_continuity& value)
     {
         switch(value) {
-        case C0: return "C0";
+        case CPACSGuideCurve_continuity_C0: return "C0";
         case C1_from_previous: return "C1 from previous";
         case C2_from_previous: return "C2 from previous";
         case C1_to_previous: return "C1 to previous";
@@ -53,7 +53,7 @@ namespace generated
     inline CPACSGuideCurve_continuity stringToCPACSGuideCurve_continuity(const std::string& value)
     {
         auto toLower = [](std::string str) { for (char& c : str) { c = std::tolower(c); } return str; };
-        if (toLower(value) == "c0") { return C0; }
+        if (toLower(value) == "c0") { return CPACSGuideCurve_continuity_C0; }
         if (toLower(value) == "c1 from previous") { return C1_from_previous; }
         if (toLower(value) == "c2 from previous") { return C2_from_previous; }
         if (toLower(value) == "c1 to previous") { return C1_to_previous; }

@@ -157,6 +157,17 @@ namespace generated
             }
         }
 
+        // read element tori
+        if (tixi::TixiCheckElement(tixiHandle, xpath + "/tori")) {
+            m_tori = boost::in_place(this, m_uidMgr);
+            try {
+                m_tori->ReadCPACS(tixiHandle, xpath + "/tori");
+            } catch(const std::exception& e) {
+                LOG(ERROR) << "Failed to read tori at xpath " << xpath << ": " << e.what();
+                m_tori = boost::none;
+            }
+        }
+
         // read element multiSegmentShapes
         if (tixi::TixiCheckElement(tixiHandle, xpath + "/multiSegmentShapes")) {
             m_multiSegmentShapes = boost::in_place(this, m_uidMgr);
@@ -248,6 +259,17 @@ namespace generated
             }
         }
 
+        // write element tori
+        if (m_tori) {
+            tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/tori");
+            m_tori->WriteCPACS(tixiHandle, xpath + "/tori");
+        }
+        else {
+            if (tixi::TixiCheckElement(tixiHandle, xpath + "/tori")) {
+                tixi::TixiRemoveElement(tixiHandle, xpath + "/tori");
+            }
+        }
+
         // write element multiSegmentShapes
         if (m_multiSegmentShapes) {
             tixi::TixiCreateElementIfNotExists(tixiHandle, xpath + "/multiSegmentShapes");
@@ -333,6 +355,16 @@ namespace generated
         return m_ellipsoids;
     }
 
+    const boost::optional<CPACSTori>& CPACSElementGeometry::GetTori() const
+    {
+        return m_tori;
+    }
+
+    boost::optional<CPACSTori>& CPACSElementGeometry::GetTori()
+    {
+        return m_tori;
+    }
+
     const boost::optional<CPACSMultiSegmentShapes>& CPACSElementGeometry::GetMultiSegmentShapes() const
     {
         return m_multiSegmentShapes;
@@ -409,6 +441,18 @@ namespace generated
     void CPACSElementGeometry::RemoveEllipsoids()
     {
         m_ellipsoids = boost::none;
+    }
+
+    CPACSTori& CPACSElementGeometry::GetTori(CreateIfNotExistsTag)
+    {
+        if (!m_tori)
+            m_tori = boost::in_place(this, m_uidMgr);
+        return *m_tori;
+    }
+
+    void CPACSElementGeometry::RemoveTori()
+    {
+        m_tori = boost::none;
     }
 
     CPACSMultiSegmentShapes& CPACSElementGeometry::GetMultiSegmentShapes(CreateIfNotExistsTag)

@@ -114,7 +114,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Removes or attenuates unwanted constituents from a flow, signal, or energy path; the containing branch determines the domain.
+        /// Removes or attenuates unwanted constituents from a flow, signal, or energy path; the containing branch determines the domain
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_filters;
 
     private:

@@ -48,7 +48,7 @@ namespace generated
     /// outerShape relative to the componentSegment. The WingCutOut
     /// defines the area of the skin that is removed by the TED.
     /// Structure is similar to the wing structure. The mechanical links
-    /// between the TED and the parrent are defined in tracks. The
+    /// between the TED and the parent are defined in tracks. The
     /// deflection path is described in path. Additional actuators, that
     /// are not included into a track, can be defined in actuators.
     /// Leading and trailing edge are defined by the outer
@@ -122,29 +122,35 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                     m_uID;
 
-        /// Name of the trailing edge device.
+        /// Name
         std::string                                     m_name;
 
-        /// Description of the trailing edge device.
+        /// Description
         boost::optional<std::string>                    m_description;
 
         /// UID of the parent of the TED. The parent can
-        /// either be the uID of the componentSegment of the wing, or the
-        /// uID of another TED. In the second case this TED is placed within
+        /// either be the UID of the componentSegment of the wing, or the
+        /// UID of another TED. In the second case this TED is placed within
         /// the other TED (double slotted flap). In this way n-slotted TEDs
         /// can be created.
         std::string                                     m_parentUID;
 
+        /// Outer shape
         CCPACSControlSurfaceOuterShapeTrailingEdge      m_outerShape;
 
+        /// Cut out in the wing structure due to the trailing edge device
         boost::optional<CCPACSControlSurfaceWingCutOut> m_wingCutOut;
 
+        /// Structural layout
         boost::optional<CCPACSWingCSStructure>          m_structure;
 
+        /// Deflection path
         CPACSControlSurfacePath                         m_path;
 
+        /// Tracks guiding the trailing edge device
         boost::optional<CPACSControlSurfaceTracks>      m_tracks;
 
     private:

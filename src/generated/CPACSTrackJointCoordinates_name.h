@@ -38,7 +38,8 @@ namespace generated
         P4,
         P5,
         P6,
-        P7
+        P7,
+        P8
     };
 
     inline std::string CPACSTrackJointCoordinates_nameToString(const CPACSTrackJointCoordinates_name& value)
@@ -51,6 +52,7 @@ namespace generated
         case P5: return "P5";
         case P6: return "P6";
         case P7: return "P7";
+        case P8: return "P8";
         default: throw CTiglError("Invalid enum value \"" + std_to_string(static_cast<int>(value)) + "\" for enum type CPACSTrackJointCoordinates_name");
         }
     }
@@ -64,6 +66,7 @@ namespace generated
         if (toLower(value) == "p5") { return P5; }
         if (toLower(value) == "p6") { return P6; }
         if (toLower(value) == "p7") { return P7; }
+        if (toLower(value) == "p8") { return P8; }
         throw CTiglError("Invalid string value \"" + value + "\" for enum type CPACSTrackJointCoordinates_name");
     }
 } // namespace generated

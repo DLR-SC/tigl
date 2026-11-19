@@ -40,10 +40,10 @@ public:
     TIGL_EXPORT CCPACSFuselages(CCPACSRotorcraftModel* parent, CTiglUIDManager* uidMgr);
 
     // Read CPACS fuselage elements
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Write CPACS fuselage elements
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const override;
 
     // Create a new fuselage with the given parameters.
     // Remark, all children UIDs and transformations are set.

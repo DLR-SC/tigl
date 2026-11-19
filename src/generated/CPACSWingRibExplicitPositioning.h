@@ -107,28 +107,25 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Defines the start of the rib defined in eta-xsi coordinates of a reference plane
+        /// Start of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_startEtaXsiPoint_choice1;
 
-        /// Defines the start of the rib defined by a point on a reference curve
-        /// such as a spar, but not an explicit sparPosition
+        /// Start of the rib defined by a point on a reference curve such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_startCurvePoint_choice2;
 
-        /// Defines the location of the beginning of the rib using a specific sparPosition.
+        /// Location of the beginning of the rib using a specific sparPosition
         boost::optional<std::string>       m_startSparPositionUID_choice3;
 
-        /// Defines the end of the rib defined in eta-xsi coordinates of a reference plane
+        /// End of the rib defined in eta-xsi coordinates of a reference plane
         boost::optional<CCPACSEtaXsiPoint> m_endEtaXsiPoint_choice1;
 
-        /// Defines the end of the rib given by a point on a reference curve
-        /// such as a spar, but not an explicit sparPosition
+        /// End of the rib given by a point on a reference curve such as a spar, but not an explicit sparPosition
         boost::optional<CCPACSCurvePoint>  m_endCurvePoint_choice2;
 
-        /// Defines the location of the end of the rib using a specific sparPosition.
+        /// Location of the end of the rib using a specific sparPosition
         boost::optional<std::string>       m_endSparPositionUID_choice3;
 
-        /// Defines the forward beginning of the ribs. It can either be a
-        /// sparUID or "trailingEdge" or "leadingEdge".
+        /// Forward beginning of the ribs. It can either be a sparUID or "trailingEdge" or "leadingEdge".
         std::string                        m_ribStart;
 
         /// RibEnd defines the backward ending of the ribs. It can either be a

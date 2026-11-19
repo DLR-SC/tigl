@@ -36,9 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSDoors
 
-    /// @brief doorCutOutType
+    /// @brief Door cut-out
     /// 
-    /// CutOut type, containing cut-outs
+    /// Cut-outs
     /// 
     class CPACSDoorCutOut : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -80,13 +80,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of door cutout element
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of door cutout
-        /// element
+        /// Description
         boost::optional<std::string> m_description;
 
         /// Fillet radius of door cutout

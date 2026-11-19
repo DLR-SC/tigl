@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include <cassert>
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "CPACSCabinGeometry.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -27,7 +27,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSCabinGeometry::CPACSCabinGeometry(CCPACSDeck* parent)
+    CPACSCabinGeometry::CPACSCabinGeometry(CCPACSDecksDeck* parent)
         : m_contours(this)
         , m_x(this)
     {
@@ -39,12 +39,12 @@ namespace generated
     {
     }
 
-    const CCPACSDeck* CPACSCabinGeometry::GetParent() const
+    const CCPACSDecksDeck* CPACSCabinGeometry::GetParent() const
     {
         return m_parent;
     }
 
-    CCPACSDeck* CPACSCabinGeometry::GetParent()
+    CCPACSDecksDeck* CPACSCabinGeometry::GetParent()
     {
         return m_parent;
     }

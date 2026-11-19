@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageSection
 
-    /// @brief fuselageElementsType
+    /// @brief Fuselage section elements
     /// 
-    /// FuselageElements type, containing the elements of a
-    /// fuselage section
+    /// Elements of a fuselage section
     /// 
     class CPACSFuselageElements
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuselage element
         std::vector<std::unique_ptr<CCPACSFuselageSectionElement>> m_elements;
 
     private:

@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// External geometry
         std::vector<std::unique_ptr<CPACSExternalGeometry>> m_externals;
 
     private:

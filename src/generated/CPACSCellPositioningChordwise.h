@@ -80,16 +80,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to a spar as chordwise border.
+        /// Reference to a spar as chordwise border
         boost::optional<std::string> m_sparUID_choice1;
 
         /// Chordwise contour coordinate as chordwise border. 0 equals LE, 1 equals TE.
         boost::optional<double>      m_contourCoordinate_choice2;
 
-        /// Relative chordwise position of the inner end.
+        /// Relative chordwise position of the inner end
         boost::optional<double>      m_xsi1_choice3;
 
-        /// Relative chordwise position of the outer end.
+        /// Relative chordwise position of the outer end
         boost::optional<double>      m_xsi2_choice3;
 
     private:

@@ -39,7 +39,21 @@ namespace tigl
 {
 CTiglStringerFrameBorderedObject::CTiglStringerFrameBorderedObject(
     const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent, std::string& startFrameUID, std::string& endFrameUID,
-    std::string& startStringerUID, boost::variant<std::string&, boost::optional<std::string>&> endStringerUID)
+    std::string& startStringerUID, std::string& endStringerUID)
+    : m_uidMgr(uidMgr)
+    , m_parent(parent)
+    , m_startFrameUID(startFrameUID)
+    , m_endFrameUID(endFrameUID)
+    , m_startStringerUID(startStringerUID)
+    , m_endStringerUID(endStringerUID)
+    , m_borderCache(*this, &CTiglStringerFrameBorderedObject::UpdateBorders)
+    , m_geometry(*this, &CTiglStringerFrameBorderedObject::BuildGeometry)
+{
+}
+
+CTiglStringerFrameBorderedObject::CTiglStringerFrameBorderedObject(
+    const CTiglUIDManager& uidMgr, const CTiglRelativelyPositionedComponent* parent, std::string& startFrameUID, std::string& endFrameUID,
+    std::string& startStringerUID, boost::optional<std::string>& endStringerUID)
     : m_uidMgr(uidMgr)
     , m_parent(parent)
     , m_startFrameUID(startFrameUID)

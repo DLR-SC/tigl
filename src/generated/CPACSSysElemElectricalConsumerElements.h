@@ -100,19 +100,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic consumer elements.
+        /// Library of predefined generic consumer elements
         boost::optional<CPACSSysElemGenericConsumerElements> m_genericConsumerElements;
 
-        /// Library of predefined lights.
+        /// Library of predefined lights
         boost::optional<CPACSSysElemLights>                  m_lights;
 
-        /// Library of predefined exterior lights.
+        /// Library of predefined exterior lights
         boost::optional<CPACSSysElemExteriorLights>          m_exteriorLights;
 
-        /// Library of predefined interior lights.
+        /// Library of predefined interior lights
         boost::optional<CPACSSysElemInteriorLights>          m_interiorLights;
 
-        /// Library of predefined displays.
+        /// Library of predefined displays
         boost::optional<CPACSSysElemDisplays>                m_displays;
 
     private:

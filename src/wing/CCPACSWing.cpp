@@ -53,16 +53,19 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "BRepBuilderAPI_MakeSolid.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools.hxx"
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
-#include "CCutShape.h"
+#include "CBooleanOperTools.h"
 #include "CGroupShapes.h"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Shell.hxx>
 #include "CNamedShape.h"
 #include "CTiglLogging.h"
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -252,7 +255,7 @@ const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 // Get segment count
 int CCPACSWing::GetSegmentCount() const
 {
-    return m_segments.GetSegmentCount();
+    return static_cast<int>(m_segments.GetSegmentCount());
 }
 
 // Returns the segment for a given index
@@ -281,7 +284,7 @@ const CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid) const
 int CCPACSWing::GetComponentSegmentCount() const
 {
     if (m_componentSegments) {
-        return m_componentSegments->GetComponentSegmentCount();
+        return static_cast<int>(m_componentSegments->GetComponentSegmentCount());
     }
     else {
         return 0;
@@ -465,26 +468,56 @@ void CCPACSWing::BuildWingWithCutouts(PNamedShape& result) const
         return;
     }
 
-    TopoDS_Compound allFlapPrisms;
-    BRep_Builder compoundBuilderFlaps;
-    compoundBuilderFlaps.MakeCompound(allFlapPrisms);
-
-    PNamedShape fusedBoxes;
-    bool first = true;
+    ListPNamedShape cutoutShapes;
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
-        
+
         const CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
         if (!componentSegment.GetControlSurfaces().is_initialized()) {
             continue;
         }
-        
-        componentSegment.GetControlSurfaces()->GetFusedControlSurfaceCutOutShape(fusedBoxes);
-        
+
+        componentSegment.GetControlSurfaces()->GetControlSurfaceCutOutShapes(cutoutShapes);
     }
 
-    CCutShape cutter(*wingCleanShape, fusedBoxes);
-    cutter.Perform();
-    result = cutter.NamedShape();
+    // Cut the wing by all control-surface cutout shapes in a single n-ary
+    // Boolean operation (one shared PaveFiller covering the wing and all n
+    // cutout tools), mirroring CTiglFusePlane::Perform()'s multi-argument
+    // BRepAlgoAPI pattern, instead of fusing the n cutouts pairwise into one
+    // complex tool and then cutting once.
+    TopTools_ListOfShape objects, tools;
+    objects.Append((*wingCleanShape)->Shape());
+    for (const auto& cutoutShape : cutoutShapes) {
+        tools.Append(cutoutShape->Shape());
+    }
+
+    BRepAlgoAPI_Cut cutter;
+    cutter.SetArguments(objects);
+    cutter.SetTools(tools);
+    cutter.Build();
+    if (!cutter.IsDone()) {
+        throw CTiglError("Error cutting control surfaces from wing '" + GetUID() + "'");
+    }
+
+    PNamedShape cutCompound(new CNamedShape(cutter.Shape(), (*wingCleanShape)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *wingCleanShape, cutCompound);
+    for (const auto& cutoutShape : cutoutShapes) {
+        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, cutoutShape, cutCompound);
+    }
+
+    // BRepAlgoAPI_Cut returns a TopoDS_COMPOUND wrapping the resulting
+    // shell(s); rebuild a genuine TopoDS_SOLID from them, as expected by
+    // exporters and other API consumers of the shape (mirrors
+    // CTiglFusePlane::Perform()'s handling of BRepAlgoAPI_Fuse results).
+    BRepBuilderAPI_MakeSolid solidMaker;
+    TopTools_IndexedMapOfShape shellMap;
+    TopExp::MapShapes(cutCompound->Shape(), TopAbs_SHELL, shellMap);
+    for (int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
+        solidMaker.Add(TopoDS::Shell(shellMap(ishell)));
+    }
+
+    result = PNamedShape(new CNamedShape(solidMaker.Solid(), (*wingCleanShape)->Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(solidMaker, cutCompound, result);
+
     for (int iFace = 0; iFace < static_cast<int>(result->GetFaceCount()); ++iFace) {
         CFaceTraits ft = result->GetFaceTraits(iFace);
         ft.SetOrigin(*wingCleanShape);
@@ -1338,6 +1371,8 @@ void CCPACSWing::SetAreaKeepSpan(double newArea)
         break;
     case TIGL_X_AXIS:
         projection.AddProjectionOnYZPlane();
+        break;
+    case TIGL_NO_AXIS:
         break;
     }
 

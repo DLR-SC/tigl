@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Provides an interface between an onboard system and corresponding ground-support equipment.
+        /// Interface between an onboard system and corresponding ground-support equipment
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_groundConnectors;
 
     private:

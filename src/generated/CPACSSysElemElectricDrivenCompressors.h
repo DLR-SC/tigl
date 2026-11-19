@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses electrical input power to raise the pressure of a gaseous working medium.
+        /// Uses electrical input power to raise the pressure of a gaseous working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricDrivenCompressors;
 
     private:

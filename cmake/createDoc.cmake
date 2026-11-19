@@ -12,7 +12,10 @@ if(DOXYGEN_FOUND)
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
         DEPENDS ${PROJECT_SOURCE_DIR}/src/
         DEPENDS ${DOC_MD_SRC}
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/Doxyfile.in
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/header.html
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/footer.html
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/stylesheet.css
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog.md
         COMMAND ${DOXYGEN_EXECUTABLE}
         ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile

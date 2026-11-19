@@ -41,8 +41,6 @@ namespace tigl{
         
         /**
          * @brief Update of wire points
-         * 
-         * @return TIGL_EXPORT 
          */
         TIGL_EXPORT void Invalidate() const override;
         

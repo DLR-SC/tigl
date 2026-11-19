@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents a predefined system element that cannot yet be assigned to a more specific functional class.
+        /// Predefined system element that cannot yet be assigned to a more specific functional class
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericElements;
 
     private:

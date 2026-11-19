@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSparPosition
 
-    /// @brief wingRibPointType
+    /// @brief Point on a rib
     /// 
     /// The wingRibPointType is used to define reference points on ribs.
     /// It can be used for rib set definitions (wingRibsPositioningType) as
@@ -84,7 +84,7 @@ namespace generated
         boost::optional<int> m_ribNumber;
 
         /// Normalized xsi coordinate of the rib point which is measured along the rib
-        /// from the start point [0] towards the end point [1].
+        /// from the start point [0] towards the end point [1]
         double               m_xsi;
 
     private:

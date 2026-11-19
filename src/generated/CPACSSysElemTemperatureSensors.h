@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Measures temperature and provides the corresponding sensing output.
+        /// Measures temperature and provides the corresponding sensing output
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_temperatureSensors;
 
     private:

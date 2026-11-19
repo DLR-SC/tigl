@@ -111,10 +111,16 @@ namespace generated
     {
         if (m_parent) {
             if (IsParent<CPACSCap>()) {
-                return GetParent<CPACSCap>()->GetNextUIDParent();
+                if (GetParent<CPACSCap>()->GetUID())
+                    return GetParent<CPACSCap>();
+                else
+                    return GetParent<CPACSCap>()->GetNextUIDParent();
             }
             if (IsParent<CPACSLateralCap>()) {
-                return GetParent<CPACSLateralCap>()->GetNextUIDParent();
+                if (GetParent<CPACSLateralCap>()->GetUID())
+                    return GetParent<CPACSLateralCap>();
+                else
+                    return GetParent<CPACSLateralCap>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSheetBasedStructuralElement>()) {
                 return GetParent<CPACSSheetBasedStructuralElement>();
@@ -142,10 +148,16 @@ namespace generated
     {
         if (m_parent) {
             if (IsParent<CPACSCap>()) {
-                return GetParent<CPACSCap>()->GetNextUIDParent();
+                if (GetParent<CPACSCap>()->GetUID())
+                    return GetParent<CPACSCap>();
+                else
+                    return GetParent<CPACSCap>()->GetNextUIDParent();
             }
             if (IsParent<CPACSLateralCap>()) {
-                return GetParent<CPACSLateralCap>()->GetNextUIDParent();
+                if (GetParent<CPACSLateralCap>()->GetUID())
+                    return GetParent<CPACSLateralCap>();
+                else
+                    return GetParent<CPACSLateralCap>()->GetNextUIDParent();
             }
             if (IsParent<CPACSSheetBasedStructuralElement>()) {
                 return GetParent<CPACSSheetBasedStructuralElement>();

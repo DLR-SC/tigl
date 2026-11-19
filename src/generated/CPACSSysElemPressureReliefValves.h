@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Opens when pressure exceeds a defined threshold to protect the system from overpressure.
+        /// Opens when pressure exceeds a defined threshold to protect the system from overpressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pressureReliefValves;
 
     private:

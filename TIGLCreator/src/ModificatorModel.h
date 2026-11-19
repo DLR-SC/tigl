@@ -182,7 +182,7 @@ public:
     // appearing/disappearing without querying external managers.
 
 
-    bool setData(const QModelIndex& index, const QVariant& value, int role);
+    bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 
     bool isFailedUID(const std::string& uid) const;
     void markFailedUID(const std::string& uid);

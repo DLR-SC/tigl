@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers hydraulic power between circuits without intentionally mixing their working fluids.
+        /// Transfers hydraulic power between circuits without intentionally mixing their working fluids
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_powerTransferUnits;
 
     private:

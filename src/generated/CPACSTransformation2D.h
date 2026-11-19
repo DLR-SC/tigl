@@ -40,7 +40,6 @@ namespace generated
     /// @brief 2D transformation
     /// 
     /// 
-    /// 
     class CPACSTransformation2D : public CTiglOptUIDObject
     {
     public:
@@ -87,15 +86,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>   m_uID;
 
         /// Scaling of the structural profile
         boost::optional<CCPACSPointXY> m_scaling;
 
-        /// rotation around z-axis of profile definition
+        /// Rotation around z-axis of profile definition
         boost::optional<CPACSPointZ>   m_rotation;
 
-        /// translation of profile definition
+        /// Translation of profile definition
         boost::optional<CCPACSPointXY> m_translation;
 
     private:

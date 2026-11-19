@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSWallPositions
 
+    /// @brief Wall position
+    /// 
+    /// 
     class CPACSWallPosition : public CTiglOptUIDObject, public ITiglUIDRefObject
     {
     public:
@@ -87,16 +90,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// UID of a bulkhead determining the
         /// x-coordinate of the position with the given
-        /// y- and z-coordinates.
+        /// y- and z-coordinates
         boost::optional<std::string> m_bulkheadUID_choice1;
 
         /// UID of a wall segment determining the
         /// x-coordinate of the position with the given
-        /// y- and z-coordinates.
+        /// y- and z-coordinates
         boost::optional<std::string> m_wallSegmentUID_choice2;
 
         /// DEPRECATED: use sectionUID instead.
@@ -107,16 +111,16 @@ namespace generated
 
         /// UID of a section determining the
         /// x-coordinate of the position with
-        /// the given y- and z-coordinates.
+        /// the given y- and z-coordinates
         boost::optional<std::string> m_sectionUID_choice4;
 
-        /// Absolute x-coordinate of wall position in fuselage coordinate system.
+        /// Absolute x-coordinate of wall position in fuselage coordinate system
         boost::optional<double>      m_x_choice5;
 
-        /// Absolute y-coordinate of wall position in fuselage coordinate system.
+        /// Absolute y-coordinate of wall position in fuselage coordinate system
         double                       m_y;
 
-        /// Absolute z-coordinate of wall position in fuselage coordinate system.
+        /// Absolute z-coordinate of wall position in fuselage coordinate system
         double                       m_z;
 
     private:

@@ -35,7 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSystems
 
-    /// @brief genericSystemsType
+    /// @brief Generic systems
     /// 
     /// Node for geometrical layout of system components
     /// based on simple geometric shapes
@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Generic system
         std::vector<std::unique_ptr<CCPACSGenericSystem>> m_genericSystems;
 
     private:

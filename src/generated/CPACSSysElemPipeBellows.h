@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Provides a flexible pipe section that accommodates displacement, vibration, or thermal expansion.
+        /// Flexible pipe section that accommodates displacement, vibration, or thermal expansion
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pipeBellows;
 
     private:

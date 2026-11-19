@@ -293,10 +293,28 @@ void Console::output(QString s)
     setTextCursor(cursor);
     _restorePosition = false;
     
+    // stray output while waiting at the prompt: remove the prompt line,
+    // keeping any text that was already typed there
+    bool stray = !_isLocked && !_isDirty;
+    QString typedText;
+    if (stray) {
+        cursor.select(QTextCursor::LineUnderCursor);
+        typedText = cursor.selectedText().mid(_prompt.length());
+        cursor.removeSelectedText();
+        cursor.deletePreviousChar();
+    }
+
     s = s.replace("\n", "<br/>");
     s = s.replace("  ", "&nbsp;&nbsp;");
     appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
     _isDirty = true;
+
+    if (stray) {
+        insertPrompt();
+        cursor = textCursor();
+        cursor.insertText(typedText);
+        _lastPosition = cursor.position();
+    }
 }
 
 void Console::outputError(QString s)
@@ -332,6 +350,7 @@ void Console::clear()
 
 void Console::showHistory()
 {
+    _isDirty = true;
     int ihist = 0;
     foreach (QString str, _history) {
         str.remove(QChar(0x2028));

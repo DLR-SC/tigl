@@ -34,8 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSStringerFramePosition
 
-    /// @brief alignmentStringFrameType
-    /// 
+    /// @brief Stringer and frame alignment
     /// 
     /// 
     class CPACSAlignmentStringFrame : public CTiglReqUIDObject
@@ -75,6 +74,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string             m_uID;
 
         /// Rotation around local x axis (extrusion axis)

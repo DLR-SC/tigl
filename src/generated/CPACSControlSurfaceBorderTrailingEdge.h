@@ -130,10 +130,13 @@ namespace generated
         /// the parent.
         CCPACSXsiIsoLine                        m_xsiLE;
 
+        /// Hollow shape inside the leading edge
         boost::optional<CPACSLeadingEdgeHollow> m_innerShape;
 
+        /// Shape of the leading edge of the control surface
         boost::optional<CPACSLeadingEdgeShape>  m_leadingEdgeShape;
 
+        /// Reference to the airfoil contour
         boost::optional<CPACSContourReference>  m_airfoil;
 
     private:

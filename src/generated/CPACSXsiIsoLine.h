@@ -40,7 +40,7 @@ namespace generated
     // CPACSControlSurfaceBorderTrailingEdge
     // CPACSLandingGearSupportBeamPosition
 
-    /// @brief xsiIsoLineType
+    /// @brief Xsi iso line
     /// 
     /// Iso line described by point of same xsi coordinate.
     /// Can be either segment or component segment coordinates.
@@ -101,10 +101,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Relative spanwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative spanwise position. Xsi refers to the segment or componentSegment depending on the referenced UID.
         double      m_xsi;
 
-        /// This reference uID determines the reference coordinate system.
+        /// This reference UID determines the reference coordinate system.
         /// If it points to a segment, then the eta value is considered to be in segment
         /// eta coordinate; if it points to a componentSegment,
         /// then componentSegment eta coordinate is used.

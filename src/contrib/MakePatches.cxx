@@ -446,9 +446,16 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
         }
     }
 
+    // No boundary curve found within tolerance that connects to the start point of
+    // C1[0]: the curve grid isn't a properly closed quad for this tolerance/geometry.
+    // C1[3] is otherwise left null and dereferenced below.
+    if (C1[3].IsNull()) {
+        return NULL;
+    }
+
     // **********************************************************************
     // Find the boundary curve whichs starts or ends at the end point of the
-    // boundary curve with index theBaseCurve - 1. 
+    // boundary curve with index theBaseCurve - 1.
     // Set this curve to the second index boundary curve C1[1]
     // Nullify the corresponding input curve afterwards.
     // **********************************************************************
@@ -472,6 +479,12 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
             C[i-1].Nullify();
             break;
         }
+    }
+
+    // Same as above: C1[1] is dereferenced below (e.g. C1[i]->IsRational()) without
+    // a null check otherwise.
+    if (C1[1].IsNull()) {
+        return NULL;
     }
 
     // check if 3 initial boundary curves were set to NULL

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Dissipates mechanical energy and reduces motion, vibration, or oscillation.
+        /// Dissipates mechanical energy and reduces motion, vibration, or oscillation
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_dampers;
 
     private:

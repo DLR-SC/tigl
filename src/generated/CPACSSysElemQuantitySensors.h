@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Measures the amount, level, volume, or mass of a stored or flowing medium.
+        /// Measures the amount, level, volume, or mass of a stored or flowing medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_quantitySensors;
 
     private:

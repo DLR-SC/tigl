@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT CCPACSTransformation(CCPACSWingSection* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSExternalGeometry* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSElementGeometry* parent, CTiglUIDManager* uidMgr);
-    TIGL_EXPORT CCPACSTransformation(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
+    TIGL_EXPORT CCPACSTransformation(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr);
     TIGL_EXPORT CCPACSTransformation(CCPACSDeckComponentBase* parent, CTiglUIDManager* uidMgr);
     
     TIGL_EXPORT CCPACSTransformation(CTiglUIDManager* uidMgr);

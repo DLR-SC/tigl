@@ -38,7 +38,7 @@ namespace generated
     // CPACSGalleyElement
     // CPACSSeatElement
 
-    /// @brief integerBaseType
+    /// @brief Integer base type
     /// 
     /// Base type for integer nodes (including external data
     /// attributes)
@@ -99,9 +99,15 @@ namespace generated
         void* m_parent;
         const std::type_info* m_parentType;
 
+        /// Path of the node inside the external data file
         boost::optional<std::string> m_externalDataNodePath;
+
+        /// Name of the external data file
         boost::optional<std::string> m_externalFileName;
+
+        /// Directory of the external data file
         boost::optional<std::string> m_externalDataDirectory;
+
         int                          m_value;
 
     private:

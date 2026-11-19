@@ -41,9 +41,8 @@ namespace generated
     // CPACSFuselageStructure
     // CPACSVesselStructure
 
-    /// @brief framesAssemblyType
+    /// @brief Frames assembly
     /// 
-    /// FramesAssembly type, containing frames assembly
     /// 
     class CPACSFramesAssembly
     {
@@ -110,6 +109,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Frame
         std::vector<std::unique_ptr<CCPACSFrame>> m_frames;
 
     private:

@@ -46,7 +46,7 @@ namespace generated
     /// Mathematically spoken a element is a coordinate system
     /// that is translated, rotated and scaled relative to the section
     /// coordinate system. This transformation parameters are defined
-    /// withing the transformation section. The wirfoil, which is linked
+    /// within the transformation section. The wirfoil, which is linked
     /// by using the parameter airfoilUID is directly 'copied' in the
     /// element coordinate system. If e.g. the airfoil is defined from 0
     /// to 1 in x-direction and the total scaling of the elements x-axis
@@ -95,17 +95,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the wing element.
+        /// Name
         std::string                  m_name;
 
-        /// Description of the wing element.
+        /// Description
         boost::optional<std::string> m_description;
 
-        /// Reference to a wing airfoil.
+        /// Reference to a wing airfoil
         std::string                  m_airfoilUID;
 
+        /// Position and orientation
         CCPACSTransformation         m_transformation;
 
     private:

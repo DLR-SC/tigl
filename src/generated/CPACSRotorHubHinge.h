@@ -39,8 +39,7 @@ namespace generated
     /// @brief rotorHubHinge type, containing a rotor hub hinge
     /// (flap/leadLag/pitch).
     /// 
-    /// RotorHubHinge type, containing a rotor hub hinge
-    /// (flap/leadLag/pitch) of a rotorcraft model.
+    /// Rotor hub hinge (flap/leadLag/pitch) of a rotorcraft model.
     /// 
     class CPACSRotorHubHinge : public CTiglReqUIDObject
     {
@@ -94,14 +93,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the hinge.
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of the hinge.
+        /// Description
         boost::optional<std::string> m_description;
 
+        /// Position and orientation
         CCPACSTransformation         m_transformation;
 
         /// Hinge type. Possible values: "flap", "pitch"
@@ -126,7 +127,7 @@ namespace generated
         boost::optional<double>      m_dynamicStiffness;
 
         /// Damping of the hinge in (N/(m/s)) for linear
-        /// hinges and (N.m/(deg/s)) for angular hinges. Default value: +inf
+        /// hinges and (N.m/(deg/s)) for angular hinges. Default value: +inf.
         boost::optional<double>      m_damping;
 
     private:

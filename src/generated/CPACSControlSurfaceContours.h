@@ -44,7 +44,6 @@ namespace generated
     /// control surface.
     /// 
     /// 
-    /// 
     class CPACSControlSurfaceContours
     {
     public:
@@ -105,6 +104,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Airfoil contour between the inner and the outer border
         std::vector<std::unique_ptr<CPACSControlSurfaceAirfoil>> m_intermediateAirfoils;
 
     private:

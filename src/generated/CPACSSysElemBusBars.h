@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Distributes electrical power through a low-impedance common conductor.
+        /// Distributes electrical power through a low-impedance common conductor
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_busBars;
 
     private:

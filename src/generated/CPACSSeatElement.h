@@ -92,6 +92,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                           m_uID;
 
         /// Name
@@ -100,11 +101,13 @@ namespace generated
         /// Description
         boost::optional<std::string>          m_description;
 
+        /// Geometry
         CPACSElementGeometry                  m_geometry;
 
+        /// Mass properties
         boost::optional<CPACSElementMass>     m_mass;
 
-        /// Number of seats
+        /// Number
         boost::optional<CPACSPosExcl0IntBase> m_numberOfSeats;
 
     private:

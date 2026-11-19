@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    /// @brief guideCurveProfilesType
+    /// @brief Guide curve profiles
     /// 
     /// Guide Curve Profiles type. This type is used to
     /// describe guide curves that enable designers to create a geometry
@@ -82,6 +82,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Guide curve profile
         std::vector<std::unique_ptr<CCPACSGuideCurveProfile>> m_guideCurveProfiles;
 
     private:

@@ -40,7 +40,6 @@ namespace generated
     /// @brief Standard profile
     /// 
     /// 
-    /// 
     class CPACSStandardProfile
     {
     public:
@@ -75,7 +74,10 @@ namespace generated
     protected:
         CPACSProfileGeometry* m_parent;
 
+        /// Rectangular profile
         boost::optional<CPACSRectangleProfile>    m_rectangle_choice1;
+
+        /// Superelliptic profile
         boost::optional<CPACSSuperEllipseProfile> m_superEllipse_choice2;
 
     private:

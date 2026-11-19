@@ -44,7 +44,6 @@ namespace generated
     /// surface and parent).
     /// 
     /// 
-    /// 
     class CPACSControlSurfaceTracks
     {
     public:
@@ -109,6 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Track
         std::vector<std::unique_ptr<CPACSControlSurfaceTrackType>> m_tracks;
 
     private:

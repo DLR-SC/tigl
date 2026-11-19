@@ -69,6 +69,7 @@ namespace generated
     protected:
         CPACSHeader* m_parent;
 
+        /// Version information of a single dataset version
         std::vector<std::unique_ptr<CPACSVersionInfo>> m_versionInfos;
 
     private:

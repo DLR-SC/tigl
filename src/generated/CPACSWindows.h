@@ -36,9 +36,8 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief windowsType
+    /// @brief Windows
     /// 
-    /// Windows type, containing windows
     /// 
     class CPACSWindows : public CTiglReqUIDObject
     {
@@ -83,7 +82,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                               m_uID;
+
+        /// Window
         std::vector<std::unique_ptr<CPACSCutOut>> m_windows;
 
     private:

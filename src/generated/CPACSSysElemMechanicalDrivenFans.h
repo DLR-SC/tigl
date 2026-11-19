@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses mechanical shaft power to generate a gaseous flow or pressure rise.
+        /// Uses mechanical shaft power to generate a gaseous flow or pressure rise
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_mechanicalDrivenFans;
 
     private:

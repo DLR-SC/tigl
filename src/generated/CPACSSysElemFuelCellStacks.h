@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts chemical energy into direct-current electrical power by an electrochemical process.
+        /// Converts chemical energy into direct-current electrical power by an electrochemical process
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_fuelCellStacks;
 
     private:

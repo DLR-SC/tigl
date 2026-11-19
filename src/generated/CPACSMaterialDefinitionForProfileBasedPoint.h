@@ -35,11 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSProfileBasedStructuralElement
 
-    /// @brief materialDefinitionForProfileBasedPointType
+    /// @brief Material definition of a profile point
     /// 
-    /// MaterialDefinitionForProfileBased type, containing a
-    /// material definition (Reference to material and thickness) for
-    /// profile based objects, addition point reinforcements
+    /// Material definition (Reference to material and thickness) for profile based objects, addition point reinforcements
     /// 
     class CPACSMaterialDefinitionForProfileBasedPoint : public ITiglUIDRefObject
     {
@@ -81,22 +79,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// uID of the profile point to which the
-        /// additional stiffness shall be applied.
+        /// UID of the profile point to which the
+        /// additional stiffness shall be applied
         boost::optional<std::string> m_pointUID;
 
-        /// uID of a material definition.
+        /// UID of a material definition
         std::string                  m_materialUID;
 
-        /// cross sectional area of additional long.
-        /// stiffener at strctural element point
+        /// Cross sectional area of additional long.
+        /// stiffener at structural element point
         double                       m_crossSectionArea;
 
-        /// optional auxiliary parameter for special use
+        /// Optional auxiliary parameter for special use
         /// (no physical meaning)
         boost::optional<double>      m_optionalAux1;
 
-        /// optional auxiliary parameter for special use
+        /// Optional auxiliary parameter for special use
         /// (no physical meaning)
         boost::optional<double>      m_optionalAux2;
 

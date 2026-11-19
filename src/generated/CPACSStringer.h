@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSStringersAssembly
 
-    /// @brief arbitraryStringerType
+    /// @brief Stringer
     /// 
-    /// ArbitraryStringer type, containing stringer definition
-    /// (CPACS V1.5+)
+    /// Stringer definition (CPACS V1.5+)
     /// 
     class CPACSStringer : public CTiglReqUIDObject
     {
@@ -83,7 +82,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                                       m_uID;
+
+        /// Position
         std::vector<std::unique_ptr<CCPACSFuselageStringerFramePosition>> m_stringerPositions;
 
     private:

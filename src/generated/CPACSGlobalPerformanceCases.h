@@ -73,6 +73,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Point performance definitions
         boost::optional<CPACSPointPerformanceDefinitions> m_pointPerformanceDefinitions;
 
     private:

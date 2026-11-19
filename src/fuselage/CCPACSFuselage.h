@@ -245,6 +245,7 @@ public:
      * @param startElementUID
      * @param endElementUID
      * @param eta
+     * @param sectionName
      */
     TIGL_EXPORT void CreateNewConnectedElementBetween(std::string startElementUID, std::string endElementUID, double eta = 0.5, std::string sectionName = "New_section_between");
 

@@ -153,12 +153,12 @@ namespace generated
         }
 
         // read element innerRoundingDistance
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/innerRoundingDistance")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/innerRoundingDistance")) {
             m_innerRoundingDistance = tixi::TixiGetElement<double>(tixiHandle, xpath + "/innerRoundingDistance");
         }
 
         // read element outerRoundingDistance
-        if (tixi::TixiCheckElement(tixiHandle, xpath + "/outerRoundingDistance")) {
+        if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/outerRoundingDistance")) {
             m_outerRoundingDistance = tixi::TixiGetElement<double>(tixiHandle, xpath + "/outerRoundingDistance");
         }
 

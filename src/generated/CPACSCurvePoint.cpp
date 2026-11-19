@@ -18,6 +18,7 @@
 #include <cassert>
 #include "CCPACSWingRibExplicitPositioning.h"
 #include "CCPACSWingRibsPositioning.h"
+#include "CCPACSWingSparPosition.h"
 #include "CPACSCurvePoint.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
@@ -28,6 +29,14 @@ namespace tigl
 {
 namespace generated
 {
+    CPACSCurvePoint::CPACSCurvePoint(CCPACSWingSparPosition* parent)
+        : m_eta(0)
+    {
+        //assert(parent != NULL);
+        m_parent = parent;
+        m_parentType = &typeid(CCPACSWingSparPosition);
+    }
+
     CPACSCurvePoint::CPACSCurvePoint(CCPACSWingRibExplicitPositioning* parent)
         : m_eta(0)
     {
@@ -51,6 +60,9 @@ namespace generated
     const CTiglUIDObject* CPACSCurvePoint::GetNextUIDParent() const
     {
         if (m_parent) {
+            if (IsParent<CCPACSWingSparPosition>()) {
+                return GetParent<CCPACSWingSparPosition>();
+            }
             if (IsParent<CCPACSWingRibExplicitPositioning>()) {
                 return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
             }
@@ -64,6 +76,9 @@ namespace generated
     CTiglUIDObject* CPACSCurvePoint::GetNextUIDParent()
     {
         if (m_parent) {
+            if (IsParent<CCPACSWingSparPosition>()) {
+                return GetParent<CCPACSWingSparPosition>();
+            }
             if (IsParent<CCPACSWingRibExplicitPositioning>()) {
                 return GetParent<CCPACSWingRibExplicitPositioning>()->GetNextUIDParent();
             }

@@ -34,8 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSLongFloorBeamPosition
 
-    /// @brief alignmentStructMemberType
-    /// 
+    /// @brief Structural member alignment
     /// 
     /// 
     class CPACSAlignmentStructMember : public CTiglReqUIDObject
@@ -78,6 +77,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string             m_uID;
 
         /// Offset in direction of extrusion (absolute

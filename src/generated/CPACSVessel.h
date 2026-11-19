@@ -123,6 +123,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                             m_uID;
 
         /// Name
@@ -131,10 +132,13 @@ namespace generated
         /// Description
         boost::optional<std::string>            m_description;
 
+        /// Position and orientation
         CCPACSTransformation                    m_transformation;
 
+        /// Sections
         boost::optional<CCPACSFuselageSections> m_sections_choice1;
 
+        /// Segments
         boost::optional<CCPACSFuselageSegments> m_segments_choice1;
 
         /// Inner radius of the cylinder
@@ -143,8 +147,10 @@ namespace generated
         /// Inner length of the cylinder
         boost::optional<double>                 m_cylinderLength_choice2;
 
+        /// Shape of the vessel domes
         boost::optional<CPACSDomeType>          m_domeType_choice2;
 
+        /// Structural layout
         boost::optional<CCPACSVesselStructure>  m_structure;
 
         /// Volume

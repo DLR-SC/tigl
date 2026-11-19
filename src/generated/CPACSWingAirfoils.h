@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    /// @brief wingAirfoilsType
+    /// @brief Wing airfoils
     /// 
-    /// WingAirfoils type, containing wing airfoil geometries.
-    /// See profileGeometryType for further documentation
+    /// Wing airfoil geometries. See profileGeometryType for further documentation
     /// 
     class CPACSWingAirfoils
     {
@@ -81,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Wing airfoil
         std::vector<std::unique_ptr<CPACSProfileGeometry>> m_wingAirfoils;
 
     private:

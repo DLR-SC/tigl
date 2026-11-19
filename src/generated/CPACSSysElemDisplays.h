@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Consumes electrical power to present visual information.
+        /// Consumes electrical power to present visual information
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_displays;
 
     private:

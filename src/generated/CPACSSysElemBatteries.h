@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Stores electrochemical energy and supplies direct-current electrical power.
+        /// Stores electrochemical energy and supplies direct-current electrical power
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_batterys;
 
     private:

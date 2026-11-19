@@ -69,9 +69,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
-        /// Reference to the main actuator uID of the
+        /// Reference to the main actuator UID of the
         /// landing gear
         std::string m_actuatorUID;
 

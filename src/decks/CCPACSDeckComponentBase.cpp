@@ -20,7 +20,7 @@
 #include <GProp_GProps.hxx>
 
 #include "CCPACSDeckComponentBase.h"
-#include "CCPACSDeck.h"
+#include "CCPACSDecksDeck.h"
 #include "generated/CPACSVehicleElementBase.h"
 #include "generated/CPACSSeatElement.h"
 #include "generated/CPACSGalleyElement.h"

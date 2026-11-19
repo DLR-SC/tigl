@@ -158,7 +158,7 @@ class CHeaderFileParser(object):
                     continuing = False
                     
         # parse typedefs
-        typedef_pattern = re.compile('typedef\s+(?P<type>[\w\s*]+)\s+(?P<name>\w+)\s*?;')
+        typedef_pattern = re.compile(r'typedef\s+(?P<type>[\w\s*]+)\s+(?P<name>\w+)\s*?;')
         for line in self.lines:
             match = typedef_pattern.search(line)
             if match:
@@ -250,7 +250,7 @@ class Annotation(object):
                 tmpstr = tmp.group('indexlist')
                 indexlist = [int(val) for val in tmpstr.split(',')]
             
-            params[arg_index]  = {'isarray':  tmp.group('array') is 'A', 
+            params[arg_index]  = {'isarray':  tmp.group('array') == 'A',
                                   'arraysizes': indexlist,
                                   'autoalloc': tmp.group('alloc') is None,
                                   'index': arg_index}

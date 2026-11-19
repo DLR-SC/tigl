@@ -68,10 +68,10 @@ TIGL_EXPORT EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& re
 
 /**
  * @brief Interpolates the xsi coordinate given an eta coordinate of a target segment or target component segment and a straight line defined by two points
- * - the first point lying on one segment or component segment and the other one lying on another segment or component segment.
- * There is no need that any of the refered segments or component segments coincide, nor that a segment has to be contained in a component segment.
+ * - the first point lying on one (component) segment and the other one lying on another or the same (component) segment.
+ * There is no need that any of the refered (component) segments coincide, nor that a segment has to be contained in a component segment.
  *
- * All segments and component segments have to belong to one and the same wing.
+ * All (component) segments have to belong to one and the same wing.
  *
  * @param refUID1 Reference UID of the component referring to the first point
  * @param etaXsi1 Eta / xsi coordinates of the first point
@@ -86,12 +86,16 @@ TIGL_EXPORT EtaXsi transformEtaXsiToCSOrTed(EtaXsi etaXsi, const std::string& re
  *
  * @param [out] xsi
  * @param [out] errorDistance
+ *
+ * @param allowExtrapolation When turned off, the intersection point has to lie between the two reference points.
+ * Activate to also allow for extrapolation of the intersection point.
  */
 TIGL_EXPORT void InterpolateXsi(const std::string& refUID1, const EtaXsi& etaXsi1,
                                 const std::string& refUID2, const EtaXsi& etaXsi2,
                                 const std::string& targetUID, double eta,
                                 const CTiglUIDManager& uidMgr,
-                                double &xsi, double& errorDistance);
+                                double &xsi, double& errorDistance,
+                                bool allowExtrapolation = false);
 
 }
 

@@ -44,7 +44,7 @@ namespace generated
     // CPACSFuselageStructure
     // CPACSVesselSkinLayers
 
-    /// @brief skinType
+    /// @brief Skin
     /// 
     /// Containing data defining the skin
     /// 
@@ -111,6 +111,7 @@ namespace generated
         /// used for the fuselage skin not covered by individual panels
         boost::optional<std::string>       m_standardSheetElementUID;
 
+        /// Skin segments with individual material definitions
         boost::optional<CPACSSkinSegments> m_skinSegments;
 
     private:

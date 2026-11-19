@@ -135,34 +135,34 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic conversion elements.
+        /// Library of predefined generic conversion elements
         boost::optional<CPACSSysElemGenericConversionElements> m_genericConversionElements;
 
-        /// Library of predefined generators.
+        /// Library of predefined generators
         boost::optional<CPACSSysElemGenerators>                m_generators;
 
-        /// Library of predefined AC generators.
+        /// Library of predefined AC generators
         boost::optional<CPACSSysElemACGenerators>              m_acGenerators;
 
-        /// Library of predefined DC generators.
+        /// Library of predefined DC generators
         boost::optional<CPACSSysElemDCGenerators>              m_dcGenerators;
 
-        /// Library of predefined fuel-cell stacks.
+        /// Library of predefined fuel-cell stacks
         boost::optional<CPACSSysElemFuelCellStacks>            m_fuelCellStacks;
 
-        /// Library of predefined converters.
+        /// Library of predefined converters
         boost::optional<CPACSSysElemConverters>                m_converters;
 
-        /// Library of predefined AC-DC converters.
+        /// Library of predefined AC-DC converters
         boost::optional<CPACSSysElemACDCConverters>            m_acdcConverters;
 
-        /// Library of predefined DC-AC converters.
+        /// Library of predefined DC-AC converters
         boost::optional<CPACSSysElemDCACConverters>            m_dcacConverters;
 
-        /// Library of predefined DC-DC converters.
+        /// Library of predefined DC-DC converters
         boost::optional<CPACSSysElemDCDCConverters>            m_dcdcConverters;
 
-        /// Library of predefined AC-AC converters.
+        /// Library of predefined AC-AC converters
         boost::optional<CPACSSysElemACACConverters>            m_acacConverters;
 
     private:

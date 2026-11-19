@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers energy, force, or signals through a flexible connection; the containing branch determines the physical domain.
+        /// Transfers energy, force, or signals through a flexible connection; the containing branch determines the physical domain
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_cables;
 
     private:

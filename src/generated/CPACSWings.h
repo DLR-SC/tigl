@@ -41,8 +41,7 @@ namespace generated
 
     /// @brief Wings
     /// 
-    /// Wings type, containing all the lifting surfaces (wings,
-    /// HTPs, VTPs, canards...) of an aircraft model.
+    /// The lifting surfaces (wings, HTPs, VTPs, canards...) of an aircraft model.
     /// 
     class CPACSWings
     {
@@ -108,6 +107,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Wing
         std::vector<std::unique_ptr<CCPACSWing>> m_wings;
 
     private:

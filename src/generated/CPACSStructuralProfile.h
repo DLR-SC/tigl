@@ -39,12 +39,9 @@ namespace generated
 
     /// @brief 2-dimensional cross sections of structural profiles.
     /// 
-    /// StructureProfile type, containing data of a structure
-    /// profile cross sections. The cross section profile is defined by
-    /// several points (->pointList) in the x-y-space. Two points are
-    /// combined to one sheet (->sheetList) by using the pointUIDs.
+    /// Data of a structure profile cross sections. The cross section profile is defined by several points (->pointList) in the x-y-space. Two points are combined to one sheet (->sheetList) by using the pointUIDs.
     /// This profile is defined by several points in the
-    /// x-y-space. Allways two points are combined to one sheet. The
+    /// x-y-space. Always two points are combined to one sheet. The
     /// properties of each sheet are defined in the 'sheetProperties'
     /// section by referencing on the sheetUID and the material
     /// properties. The orthotropy direction of composite materials equals
@@ -93,18 +90,20 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the structure profile.
+        /// Name
         std::string                  m_name;
 
-        /// Description of the structure profile.
+        /// Description
         boost::optional<std::string> m_description;
 
         /// List of structural profile points, only x and
-        /// y.
+        /// y
         CCPACSPointListXY            m_pointList;
 
+        /// Sheets connecting the profile points
         CCPACSSheetList              m_sheetList;
 
     private:

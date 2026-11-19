@@ -114,8 +114,8 @@ CCPACSWing& CCPACSWings::CreateWing(const std::string& wingUID, int numberOfSect
 
     // Create segment
     for (size_t i = 1; i < wing.GetSections().GetSectionCount(); i++) {
-        CCPACSWingSectionElement& fromElement = wing.GetSection(i).GetSectionElement(1);
-        CCPACSWingSectionElement& toElement   = wing.GetSection(i + 1).GetSectionElement(1);
+        CCPACSWingSectionElement& fromElement = wing.GetSection(static_cast<int>(i)).GetSectionElement(1);
+        CCPACSWingSectionElement& toElement   = wing.GetSection(static_cast<int>(i + 1)).GetSectionElement(1);
         CCPACSWingSegment& segment            = wing.GetSegments().AddSegment();
         std::string segmentUID                    = uidManager.MakeUIDUnique(wingUID + "Seg" + std::to_string(i));
         segment.SetUID(segmentUID);

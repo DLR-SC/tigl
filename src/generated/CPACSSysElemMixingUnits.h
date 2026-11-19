@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Combines pneumatic streams to store or provide a mixed flow condition.
+        /// Combines pneumatic streams to store or provide a mixed flow condition
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_mixingUnits;
 
     private:

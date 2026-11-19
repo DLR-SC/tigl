@@ -107,22 +107,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic electrical elements.
+        /// Library of predefined generic electrical elements
         boost::optional<CPACSSysElemGenericElectricalElements>      m_genericElectricalElements;
 
-        /// Contains elements that retain energy or a working medium and make it available for later use.
+        /// Elements that retain energy or a working medium and make it available for later use
         boost::optional<CPACSSysElemElectricalStorageElements>      m_storageElements;
 
-        /// Contains elements that transform energy, power, pressure, flow, temperature, phase, or another system state.
+        /// Elements that transform energy, power, pressure, flow, temperature, phase, or another system state
         boost::optional<CPACSSysElemElectricalConversionElements>   m_conversionElements;
 
-        /// Contains elements that transport, route, split, join, or connect a system quantity.
+        /// Elements that transport, route, split, join, or connect a system quantity
         boost::optional<CPACSSysElemElectricalDistributionElements> m_distributionElements;
 
-        /// Contains elements that switch, regulate, isolate, protect, or sense a system quantity.
+        /// Elements that switch, regulate, isolate, protect, or sense a system quantity
         boost::optional<CPACSSysElemElectricalControlElements>      m_controlElements;
 
-        /// Contains terminal electrical loads that consume electrical power to provide a service without exporting another modeled power domain.
+        /// Terminal electrical loads that consume electrical power to provide a service without exporting another modeled power domain
         boost::optional<CPACSSysElemElectricalConsumerElements>     m_consumerElements;
 
     private:

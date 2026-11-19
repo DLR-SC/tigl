@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents an electrical load for which no more specific consumer class is available.
+        /// Electrical load for which no more specific consumer class is available
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericConsumerElements;
 
     private:

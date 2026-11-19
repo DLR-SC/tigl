@@ -43,7 +43,7 @@ namespace generated
     // CPACSCurveProfiles
     // CPACSNacelleProfiles
 
-    /// @brief profileGeometry2DType
+    /// @brief Two-dimensional profile geometry
     /// 
     /// A profile is defined by a profile name, an optional
     /// description and a 2-dimensional pointlist with both
@@ -66,7 +66,7 @@ namespace generated
     /// +y-profile -> -z_global
     /// Example 2: For a fuselage, the coordinates are
     /// also given in x and z with x as the normalized fuselage height.
-    /// Starting point of the profile sould be the lowest point
+    /// Starting point of the profile should be the lowest point
     /// (typically in the symmetry plane), then upwards on the positive x-side up to the highest
     /// point (again, typically in the symmetry plane). Depending on,
     /// whether the fuselage shall be specified with symmetry condition
@@ -155,18 +155,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Symmetry of the profile (none, inherit, x-axis or y-axis)
         boost::optional<CPACSProfileGeometry2DType_symmetry> m_symmetry;
 
+        /// UID
         std::string                                          m_uID;
 
-        /// Name of profile
+        /// Name
         std::string                                          m_name;
 
-        /// Description of profile
+        /// Description
         boost::optional<std::string>                         m_description;
 
+        /// Point list
         boost::optional<CCPACSPointListXYVector>             m_pointList_choice1;
 
+        /// CST parameterization
         boost::optional<CCPACSWingProfileCST>                m_cst2D_choice2;
 
     private:

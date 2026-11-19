@@ -52,7 +52,7 @@ namespace generated
     // CPACSLandingGearSupportBeamPosition
     // CPACSSparCell
 
-    /// @brief etaIsoLineType
+    /// @brief Eta iso line
     /// 
     /// Iso line described by point of the same eta coordinate.
     /// Can be either segment or component segment coordinates.
@@ -119,10 +119,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced UID.
         double      m_eta;
 
-        /// This reference uID determines the reference coordinate system.
+        /// This reference UID determines the reference coordinate system.
         /// If it points to a segment, then the eta value is considered to be in segment
         /// eta coordinate; if it points to a componentSegment,
         /// then componentSegment eta coordinate is used.

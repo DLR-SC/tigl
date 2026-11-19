@@ -174,11 +174,11 @@ namespace
         
         if (c1_curvature > max_curvature && c2_curvature > max_curvature) {
             // Refine both curves by splitting them in the parametric center
-            Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
-            Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
+            Handle(Geom_BSplineCurve) c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
+            Handle(Geom_BSplineCurve) c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
-            Handle_Geom_BSplineCurve c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
-            Handle_Geom_BSplineCurve c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
+            Handle(Geom_BSplineCurve) c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
+            Handle(Geom_BSplineCurve) c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
             
             auto result1 = getRangesOfIntersection(c11, c21, tolerance);
             auto result2 = getRangesOfIntersection(c11, c22, tolerance);
@@ -194,8 +194,8 @@ namespace
         }
         else if (c1_curvature <= max_curvature && max_curvature < c2_curvature) {
             // Refine only curve 2
-            Handle_Geom_BSplineCurve c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
-            Handle_Geom_BSplineCurve c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
+            Handle(Geom_BSplineCurve) c21 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2->FirstParameter(), curve2MidParm);
+            Handle(Geom_BSplineCurve) c22 = tigl::CTiglBSplineAlgorithms::trimCurve(curve2, curve2MidParm, curve2->LastParameter());
             
             auto result1 = getRangesOfIntersection(curve1, c21, tolerance);
             auto result2 = getRangesOfIntersection(curve1, c22, tolerance);
@@ -205,8 +205,8 @@ namespace
         }
         else if (c2_curvature <= max_curvature && max_curvature < c1_curvature) {
             // Refine only curve 1
-            Handle_Geom_BSplineCurve c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
-            Handle_Geom_BSplineCurve c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
+            Handle(Geom_BSplineCurve) c11 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1->FirstParameter(), curve1MidParm);
+            Handle(Geom_BSplineCurve) c12 = tigl::CTiglBSplineAlgorithms::trimCurve(curve1, curve1MidParm, curve1->LastParameter());
             
             auto result1 = getRangesOfIntersection(c11, curve2, tolerance);
             auto result2 = getRangesOfIntersection(c12, curve2, tolerance);

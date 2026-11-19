@@ -45,8 +45,7 @@ namespace generated
 
     /// @brief Positionings of the wing.
     /// 
-    /// Positionings type, containing all the positionings of
-    /// the wing sections.
+    /// The positionings of the wing sections.
     /// 
     class CPACSPositionings
     {
@@ -114,6 +113,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Positioning
         std::vector<std::unique_ptr<CCPACSPositioning>> m_positionings;
 
     private:

@@ -200,7 +200,7 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
 
         CTiglPoint normal = CTiglPoint::cross_prod(v2-v1, v3-v1);
         normal = normal*(1./normal.norm2());
-        triangulation->SetNormal(i, gp_Vec3f(normal.x, normal.y, normal.z));
+        triangulation->SetNormal(i, gp_Vec3f(static_cast<float>(normal.x), static_cast<float>(normal.y), static_cast<float>(normal.z)));
     }
 
     return triangulation;

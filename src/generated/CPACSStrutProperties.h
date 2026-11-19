@@ -114,13 +114,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// (Outer) radius of the strut
+        /// (Outer) radius
         boost::optional<double>      m_radius_choice1;
 
-        /// Material of the strut
+        /// Material
         boost::optional<std::string> m_materialUID_choice1;
 
-        /// Inner radius of the strut
+        /// Inner radius
         boost::optional<double>      m_innerRadius_choice1;
 
         /// Reference to structural element for a more

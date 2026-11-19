@@ -29,7 +29,7 @@ namespace tigl
 class CCPACSConfiguration;
 
 /**
- * @brief Representing a CPACS <deck> element.
+ * @brief Representing a CPACS `<deck>` element.
  *
  * Mass properties:
  * - The referenced element may define either an explicit mass or a density.
@@ -184,7 +184,7 @@ private:
     void BuildMass(MassCache& cache) const;
     Cache<MassCache, CCPACSDeckComponentBase> m_mass;
 
-    const CCPACSDeck* m_parentDeck;
+    const CCPACSDecksDeck* m_parentDeck;
 };
 
 } // namespace tigl

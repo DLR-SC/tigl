@@ -38,6 +38,9 @@ namespace generated
     // CPACSFuselageStructure
     // CPACSVesselStructure
 
+    /// @brief Walls
+    /// 
+    /// 
     class CPACSWalls
     {
     public:
@@ -93,11 +96,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Definition of wall positions to place
-        /// walls inside fuselage.
+        /// Wall positions to place walls inside fuselage
         CPACSWallPositions m_wallPositions;
 
-        /// List of wall segments.
+        /// List of wall segments
         CPACSWallSegments  m_wallSegments;
 
     private:

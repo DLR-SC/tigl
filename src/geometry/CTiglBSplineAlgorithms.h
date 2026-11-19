@@ -80,10 +80,11 @@ public:
     
     /**
      * @brief Computes a full blown bspline basis matrix of size (params.Length(), flatKnots.Length() + degree + 1)
-     * @param degree    Degree of the bspline
-     * @param flatKnots Flatted know vector
-     * @param params    Parameters of B-Spline evaluation
-     * @return          The B-spline matrix
+     * @param degree     Degree of the bspline
+     * @param flatKnots  Flatted know vector
+     * @param params     Parameters of B-Spline evaluation
+     * @param derivOrder Order of the derivative to compute the basis for
+     * @return           The B-spline matrix
      */
     TIGL_EXPORT static math_Matrix bsplineBasisMat(int degree, const TColStd_Array1OfReal& flatKnots, const TColStd_Array1OfReal& params, unsigned int derivOrder=0);
 
@@ -102,7 +103,8 @@ public:
     /**
      * @brief Matches the parameter range of all b-splines to the parameter range of the first b-spline
      *
-     * @param bsplines The splines to be matched (in/out)
+     * @param bsplines  The splines to be matched (in/out)
+     * @param tolerance Tolerance used for comparing parameter ranges
      */
     TIGL_EXPORT static void matchParameterRange(const std::vector<Handle(Geom_BSplineCurve) >& bsplines, double tolerance=1e-15);
 
@@ -119,6 +121,8 @@ public:
      *          The common knot vector contains all knots of all splines with the highest multiplicity of all splines.
      * @param splines_vector:
      *          vector of B-splines that could have a different knot vector
+     * @param tol:
+     *          tolerance used for comparing knots
      * @return the given vector of B-splines with a common knot vector, the B-spline geometry isn't changed
      */
     TIGL_EXPORT static std::vector<Handle(Geom_BSplineCurve)> createCommonKnotsVectorCurve(const std::vector<Handle(Geom_BSplineCurve)>& splines_vector, double tol);
@@ -164,6 +168,8 @@ public:
      *          Based on algorithm found in The NURBS book (2nd edition), p. 251, and the explanations
      *          Here, we use a piecewise linear reparameterization function (degree q=1) interpolating the wanted parameters
      *          As a result, the degree stays the same after reparameterization
+     * @param curve:
+     *          The B-spline curve to reparametrize
      * @param paramsOld:
      *          Array of the old parameters
      * @param paramsNew:
@@ -181,10 +187,14 @@ public:
      *          Reparametrizes a given B-spline by giving an array of its old parameters that should have the values of the given array of new parameters after this function call.
      *          The B-spline geometry remains approximately the same, and:
      *          After this reparametrization the spline is continuously differentiable considering its parametrization
+     * @param spline:
+     *          the B-spline to reparametrize
      * @param old_parameters:
      *          array of the old parameters that shall have the values of the new parameters
      * @param new_parameters:
      *          array of the new parameters the old parameters should become
+     * @param n_control_pnts:
+     *          number of control points of the resulting approximated B-spline
      * @return
      *          the continuously reparametrized given B-spline
      */

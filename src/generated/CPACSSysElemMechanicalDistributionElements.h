@@ -86,13 +86,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic distribution elements.
+        /// Library of predefined generic distribution elements
         boost::optional<CPACSSysElemGenericDistributionElements> m_genericDistributionElements;
 
-        /// Library of predefined drive shafts.
+        /// Library of predefined drive shafts
         boost::optional<CPACSSysElemDriveShafts>                 m_driveShafts;
 
-        /// Library of predefined cables.
+        /// Library of predefined cables
         boost::optional<CPACSSysElemCables>                      m_cables;
 
     private:

@@ -83,6 +83,7 @@ namespace generated
         /// Reference to the external geometry file including its format specification
         CPACSLinkToFile                       m_linkToFile;
 
+        /// Position and orientation
         boost::optional<CCPACSTransformation> m_transformation;
 
     private:

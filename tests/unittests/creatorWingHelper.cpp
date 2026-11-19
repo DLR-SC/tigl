@@ -208,3 +208,17 @@ TEST_F(creatorWingHelper, MultipleWings_GetTipAndRootUID)
     EXPECT_EQ(wingHelper.GetRootUID(), "");
     EXPECT_EQ(wingHelper.GetTipUID(), "");
 }
+
+// Regression test for #1432: SetTipUid must track the running maximum by absolute distance
+// from the root. Sec2 sweeps 10 units in the negative major-direction (largest |delta|), then
+// Sec3/Sec4 step 2 and 1 units back towards the root (still negative, but smaller |delta| than
+// Sec2). The previously buggy implementation stored the signed (non-absolute) delta as the new
+// maximum, so once it went negative any subsequent |delta| compared greater than it "for free" -
+// Sec2 got overwritten by Sec3 and then Sec4, ending up with the wrong (and non-extremal) tip.
+TEST_F(creatorWingHelper, Regression1432_GetTipUID_TracksAbsoluteMaximum)
+{
+    setVariables("TestData/multiple_wings.xml", "W18_TipRegr");
+    EXPECT_EQ(wingHelper.GetMajorDirection(), TIGL_Y_AXIS);
+    EXPECT_EQ(wingHelper.GetRootUID(), "W18_TipRegr_Sec1_El1");
+    EXPECT_EQ(wingHelper.GetTipUID(), "W18_TipRegr_Sec2_El1");
+}

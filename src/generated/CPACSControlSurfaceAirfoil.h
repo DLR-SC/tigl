@@ -94,10 +94,10 @@ namespace generated
 
         /// Relative spanwise coordinate (eta) of the
         /// control surface, where the leading edge of the airfoil is
-        /// placed.
+        /// placed
         CCPACSEtaIsoLine m_eta;
 
-        /// Reference to the airfoil uID.
+        /// Reference to the airfoil UID
         std::string      m_airfoilUID;
 
         /// Rotation around an axis, going from the
@@ -114,10 +114,10 @@ namespace generated
         double           m_rotZ;
 
         /// Scaling of the airfoil in spanwise direction
-        /// (not used for 2D airfoils).
+        /// (not used for 2D airfoils)
         double           m_scalY;
 
-        /// Scaling in thickness direction of the airfoil.
+        /// Scaling in thickness direction of the airfoil
         double           m_scalZ;
 
     private:

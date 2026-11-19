@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Leading edge device
         std::vector<std::unique_ptr<CCPACSLeadingEdgeDevice>> m_leadingEdgeDevices;
 
     private:

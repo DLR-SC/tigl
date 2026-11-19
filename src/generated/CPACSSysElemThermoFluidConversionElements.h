@@ -177,52 +177,52 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic conversion elements.
+        /// Library of predefined generic conversion elements
         boost::optional<CPACSSysElemGenericConversionElements>   m_genericConversionElements;
 
-        /// Library of predefined heat exchangers.
+        /// Library of predefined heat exchangers
         boost::optional<CPACSSysElemHeatExchangers>              m_heatExchangers;
 
-        /// Library of predefined evaporators.
+        /// Library of predefined evaporators
         boost::optional<CPACSSysElemEvaporators>                 m_evaporators;
 
-        /// Library of predefined condensers.
+        /// Library of predefined condensers
         boost::optional<CPACSSysElemCondensers>                  m_condensers;
 
-        /// Library of predefined humidifiers.
+        /// Library of predefined humidifiers
         boost::optional<CPACSSysElemHumidifiers>                 m_humidifiers;
 
-        /// Library of predefined electric heaters.
+        /// Library of predefined electric heaters
         boost::optional<CPACSSysElemElectricHeaters>             m_electricHeaters;
 
-        /// Library of predefined electric driven pumps.
+        /// Library of predefined electric driven pumps
         boost::optional<CPACSSysElemElectricDrivenPumps>         m_electricDrivenPumps;
 
-        /// Library of predefined mechanical driven pumps.
+        /// Library of predefined mechanical driven pumps
         boost::optional<CPACSSysElemMechanicalDrivenPumps>       m_mechanicalDrivenPumps;
 
-        /// Library of predefined jet pumps.
+        /// Library of predefined jet pumps
         boost::optional<CPACSSysElemJetPumps>                    m_jetPumps;
 
-        /// Library of predefined electric driven compressors.
+        /// Library of predefined electric driven compressors
         boost::optional<CPACSSysElemElectricDrivenCompressors>   m_electricDrivenCompressors;
 
-        /// Library of predefined mechanical driven compressors.
+        /// Library of predefined mechanical driven compressors
         boost::optional<CPACSSysElemMechanicalDrivenCompressors> m_mechanicalDrivenCompressors;
 
-        /// Library of predefined expansion turbines.
+        /// Library of predefined expansion turbines
         boost::optional<CPACSSysElemExpansionTurbines>           m_expansionTurbines;
 
-        /// Library of predefined water extractors.
+        /// Library of predefined water extractors
         boost::optional<CPACSSysElemWaterExtractors>             m_waterExtractors;
 
-        /// Library of predefined water injectors.
+        /// Library of predefined water injectors
         boost::optional<CPACSSysElemWaterInjectors>              m_waterInjectors;
 
-        /// Library of predefined ozone converters.
+        /// Library of predefined ozone converters
         boost::optional<CPACSSysElemOzoneConverters>             m_ozoneConverters;
 
-        /// Library of predefined phase separators.
+        /// Library of predefined phase separators
         boost::optional<CPACSSysElemPhaseSeparators>             m_phaseSeparators;
 
     private:

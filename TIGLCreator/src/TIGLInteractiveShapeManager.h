@@ -43,11 +43,21 @@ public:
     PNamedShape GetShapeFromIObject(Handle(AIS_Shape) obj);
     IObjectList GetIObjectsFromShapeName(const std::string& name) const;
 
+    // Returns the name/uid the interactive object was registered under, or an empty
+    // string if the object is unknown. Unlike GetShapeFromIObject, this also works
+    // for objects registered by uid only (no PNamedShape), e.g. engines and pylons.
+    std::string GetNameFromIObject(Handle(AIS_Shape) obj) const;
+
     std::vector<PNamedShape> GetAllShapes() const;
 
     // removes the shape and all interactive objects belonging to the shape
     void removeObject(const std::string& name);
     void clear();
+
+    // Forgets all registered shapes/objects (so a subsequent drawComponentByUID() treats every
+    // uid as new and recreates all of its AIS objects, e.g. a newly added mirrored shape), but -
+    // unlike clear() - keeps the persistent per-uid "show symmetry" preference intact.
+    void removeAllObjects();
 
     // removes only the interactive object from the shape manager
     void removeObject(Handle(AIS_Shape) obj);

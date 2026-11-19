@@ -743,6 +743,97 @@ TEST_F(WingComponentSegmentSimple, wingChordFace)
     EXPECT_NEAR(0., chordFace.GetPoint((etas[1] + etas[2])*0.5, 1.0).Distance(gp_Pnt(1.0, 1.5, 0.)), 1e-10);
 }
 
+TEST_F(WingComponentSegmentSimple, wingInterpolateXsiArgsCheck)
+{
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    double eta1 = 0.2; // component segment wise
+    double eta2 = 0.4; // component segment wise
+    double xsi1 = 0.5; // component segment wise
+    double xsi2 = 0.6; // component segment wise
+
+    // eta1 and eta2 relate to component segment (consisting of 2 equidistant segments)
+    // Both belong to first wing segment (double them to "translate" values) and refer to (local) eta 0.4 and 0.8, respectively
+    // Hence, wantedEta is outside of the range => No interpolation possible
+    double wantedEta = 1.;
+
+    double *intersectionXsi = new double;
+    TiglBoolean *hasWarning = new TiglBoolean;
+
+    // Intersection point needs to extrapolated -> This function is expected to fail
+    auto return_code = tiglWingInterpolateXsi(tiglHandle, 
+                           "WING_CS1", eta1, xsi1,
+                           "WING_CS1", eta2, xsi2,
+                           "Cpacs2Test_Wing_Seg_1_2", wantedEta,
+                           intersectionXsi, hasWarning);
+    ASSERT_EQ(return_code, TIGL_MATH_ERROR);
+
+    // Extrapolation should create correct result
+    return_code = tiglWingInterpolateExtrapolateXsi(tiglHandle, 
+                           "WING_CS1", eta1, xsi1,
+                           "WING_CS1", eta2, xsi2,
+                           "Cpacs2Test_Wing_Seg_1_2", wantedEta,
+                           intersectionXsi, hasWarning);
+    ASSERT_EQ(return_code, TIGL_SUCCESS);
+    ASSERT_NEAR(*intersectionXsi, 0.64621125123532097, 1e-5);
+
+    delete intersectionXsi;
+    delete hasWarning;
+}
+
+TEST_F(WingComponentSegmentSimple, wingInterpolateXsiNullPtrArgsCheck)
+{
+    const tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    const tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    const tigl::CCPACSWing& wing = config.GetWing(1);
+    const tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    double *intersectionXsi = new double(0.0);
+    TiglBoolean *hasWarning = new TiglBoolean;
+
+    // nullptr in argument firstUID
+    auto return_code =  tiglWingInterpolateXsi(tiglHandle,
+                                               nullptr, 0.1, 0.1,
+                                               "Dummy", 0.2, 0.2,
+                                               "Dummy", 0.3,
+                                               intersectionXsi, hasWarning);
+
+    ASSERT_EQ(return_code, TIGL_NULL_POINTER);
+
+    // nullptr in argument secondUID
+    return_code =  tiglWingInterpolateXsi(tiglHandle,
+                                          "Dummy", 0.1, 0.1,
+                                          nullptr, 0.2, 0.2,
+                                          "Dummy", 0.3,
+                                          intersectionXsi, hasWarning);
+
+    ASSERT_EQ(return_code, TIGL_NULL_POINTER);
+
+    // nullptr in argument intersectionUID
+    return_code =  tiglWingInterpolateXsi(tiglHandle,
+                                          "Dummy", 0.1, 0.1,
+                                          "Dummy", 0.2, 0.2,
+                                          nullptr, 0.3,
+                                          intersectionXsi, hasWarning);
+
+    ASSERT_EQ(return_code, TIGL_NULL_POINTER);
+
+    // nullptr in argument intersectionXsi
+    return_code =  tiglWingInterpolateXsi(tiglHandle,
+                                          "Dummy", 0.1, 0.1,
+                                          "Dummy", 0.2, 0.2,
+                                          "Dummy", 0.3,
+                                          nullptr, hasWarning);
+
+    ASSERT_EQ(return_code, TIGL_NULL_POINTER);
+
+    delete intersectionXsi;
+    delete hasWarning;
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1)
 {
     // now the tests

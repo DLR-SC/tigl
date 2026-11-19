@@ -49,7 +49,7 @@ CCPACSWingCSStructure::CCPACSWingCSStructure(CCPACSLeadingEdgeDevice* parent, CT
 int CCPACSWingCSStructure::GetSparSegmentCount() const
 {
     if (m_spars) {
-        return m_spars->GetSparSegments().GetSparSegmentCount();
+        return static_cast<int>(m_spars->GetSparSegments().GetSparSegmentCount());
     }
     return 0;
 }
@@ -105,7 +105,7 @@ const CCPACSWingSparPosition& CCPACSWingCSStructure::GetSparPosition(const std::
 int CCPACSWingCSStructure::GetRibsDefinitionCount() const
 {
     if (m_ribsDefinitions) {
-        return m_ribsDefinitions->GetRibsDefinitionCount();
+        return static_cast<int>(m_ribsDefinitions->GetRibsDefinitionCount());
     }
     return 0;
 }

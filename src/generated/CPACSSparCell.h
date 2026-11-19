@@ -107,12 +107,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string               m_uID;
 
-        /// Beginning (= inner border) of the spar cell.
+        /// Beginning (= inner border)
         CCPACSEtaIsoLine          m_fromEta;
 
-        /// Ending (= outer border) of the spar cell.
+        /// Ending (= outer border)
         CCPACSEtaIsoLine          m_toEta;
 
         /// Upper Cap

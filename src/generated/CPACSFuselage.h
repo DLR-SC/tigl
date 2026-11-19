@@ -29,6 +29,7 @@
 #include <tixi.h>
 #include "CPACSCompartments.h"
 #include "CPACSDecks.h"
+#include "CPACSLoftContinuity.h"
 #include "CreateIfNotExists.h"
 #include "CTiglUIDObject.h"
 #include "ITiglUIDRefObject.h"
@@ -44,10 +45,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselages
 
-    /// @brief fuselageType
+    /// @brief Fuselage
     /// 
-    /// Fuselage type, containing all data related to a
-    /// fuselage
+    /// Data related to a fuselage
     /// @see geomBlock
     /// 
     class CPACSFuselage : public CTiglReqUIDObject, public ITiglUIDRefObject
@@ -75,6 +75,9 @@ namespace generated
 
         TIGL_EXPORT virtual const boost::optional<TiglSymmetryAxis>& GetSymmetry() const;
         TIGL_EXPORT virtual void SetSymmetry(const boost::optional<TiglSymmetryAxis>& value);
+
+        TIGL_EXPORT virtual const boost::optional<CPACSLoftContinuity>& GetLoftContinuity() const;
+        TIGL_EXPORT virtual void SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value);
 
         TIGL_EXPORT virtual const boost::optional<bool>& GetRoundedSegments() const;
         TIGL_EXPORT virtual void SetRoundedSegments(const boost::optional<bool>& value);
@@ -126,37 +129,47 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                              m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis>        m_symmetry;
 
-        /// This attribute determines the lofting approach of this fuselage.
-        /// If set to true, a different lofting algorithm will be used allowing to specify rounding radii at each section which create a smooth transition between two segments.
-        /// This can be achieved e.g. by activating the approximation setting in the profile definitions.
+        /// Continuity used for lofting this component (default: C2 for fuselages and ducts, C0 for wings)
+        boost::optional<CPACSLoftContinuity>     m_loftContinuity;
+
+        /// Determines the lofting approach of this fuselage. If set to true, a lofting algorithm is used that blends adjacent segments smoothly using the innerRoundingDistance and outerRoundingDistance of each segment. Guide curves are ignored in this case. Default: false
         boost::optional<bool>                    m_roundedSegments;
 
-        /// Name of fuselage
+        /// Name
         std::string                              m_name;
 
-        /// Description of fuselage
+        /// Description
         boost::optional<std::string>             m_description;
 
         /// UID of part to which the fuselage is
         /// mounted (if any)
         boost::optional<std::string>             m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation                     m_transformation;
 
+        /// Sections
         CCPACSFuselageSections                   m_sections;
 
+        /// Positionings of the fuselage sections
         boost::optional<CCPACSPositionings>      m_positionings;
 
+        /// Segments
         CCPACSFuselageSegments                   m_segments;
 
+        /// Structural layout
         boost::optional<CCPACSFuselageStructure> m_structure;
 
+        /// Compartments
         boost::optional<CPACSCompartments>       m_compartments;
 
+        /// Decks
         boost::optional<CPACSDecks>              m_decks;
 
     private:

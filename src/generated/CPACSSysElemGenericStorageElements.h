@@ -117,7 +117,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Represents an element that stores energy or a working medium for later use.
+        /// Element that stores energy or a working medium for later use
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_genericStorageElements;
 
     private:

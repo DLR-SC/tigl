@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses hydraulic input power to generate liquid flow or pressure in another circuit.
+        /// Uses hydraulic input power to generate liquid flow or pressure in another circuit
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_hydraulicDrivenPumps;
 
     private:

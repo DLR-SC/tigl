@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts hydraulic input power into controlled mechanical motion or force.
+        /// Converts hydraulic input power into controlled mechanical motion or force
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_hydraulicActuators;
 
     private:

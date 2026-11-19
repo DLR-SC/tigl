@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers heat between two media without intentionally mixing them.
+        /// Transfers heat between two media without intentionally mixing them
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_heatExchangers;
 
     private:

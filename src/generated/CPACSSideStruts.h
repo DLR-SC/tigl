@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSLandingGearComponentAssembly
 
+    /// @brief Side struts
+    /// 
+    /// 
     class CPACSSideStruts
     {
     public:
@@ -76,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Side strut
         std::vector<std::unique_ptr<CPACSStrutAssembly>> m_sideStruts;
 
     private:

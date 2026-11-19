@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSSkinSegments
 
-    /// @brief fuselagePanelType
+    /// @brief Skin segment
     /// 
-    /// FuselagePanel type, panel of the fuselage between
-    /// stringers/ frames (new in V1.5)
+    /// Panel of the fuselage between stringers/ frames (new in V1.5)
     /// 
     class CPACSSkinSegment : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -84,6 +83,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
         /// UID of sheetBasedStructuralElement used for

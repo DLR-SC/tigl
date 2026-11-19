@@ -32,8 +32,7 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceWingCutOut
 
-    /// @brief cutOutControlPointsType
-    /// 
+    /// @brief Cut-out profile control points
     /// 
     /// 
     class CPACSCutOutControlPoints
@@ -62,7 +61,10 @@ namespace generated
     protected:
         CCPACSControlSurfaceWingCutOut* m_parent;
 
+        /// Control point at the inner border of the cut out
         CPACSCutOutControlPoint m_innerBorder;
+
+        /// Control point at the outer border of the cut out
         CPACSCutOutControlPoint m_outerBorder;
 
     private:

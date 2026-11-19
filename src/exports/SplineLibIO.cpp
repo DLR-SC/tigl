@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& filename) 
+void exportCurveToSplineLib(Handle(Geom_BSplineCurve) curve, const std::string& filename) 
 {
     TColStd_Array1OfReal knots(0, curve->NbKnots()-1) ;
     curve->Knots(knots);
@@ -78,7 +78,7 @@ void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& f
     out.close();
 }
 
-void exportSurfaceToSplineLib(Handle_Geom_BSplineSurface surf, const std::string& filename) 
+void exportSurfaceToSplineLib(Handle(Geom_BSplineSurface) surf, const std::string& filename) 
 {
     TColStd_Array1OfReal knots_u(0, surf->NbUKnots()-1) ;
     surf->UKnots(knots_u);

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts non-electrical input power into electrical output power without prescribing the electrical waveform.
+        /// Converts non-electrical input power into electrical output power without prescribing the electrical waveform
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_generators;
 
     private:

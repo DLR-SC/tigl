@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Raises the pressure of a gaseous working medium.
+        /// Raises the pressure of a gaseous working medium
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_compressors;
 
     private:

@@ -82,11 +82,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string          m_uID;
 
-        /// Length of the piston
+        /// Length
         double               m_length;
 
+        /// Properties of the piston strut
         CPACSStrutProperties m_strutProperties;
 
         /// Maximum spring deflection of the piston (difference between minimum and maximum deflection)

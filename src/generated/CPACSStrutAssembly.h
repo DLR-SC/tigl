@@ -140,6 +140,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                      m_uID;
 
         /// Strut properties
@@ -160,7 +161,7 @@ namespace generated
         /// Attachment to an aircraft wing or fuselage component
         boost::optional<CPACSLandingGearStrutAttachment> m_attachment;
 
-        /// Reference to an actuator uID
+        /// Reference to an actuator UID
         boost::optional<std::string>                     m_actuatorUID;
 
     private:

@@ -125,7 +125,7 @@ namespace generated
         CTiglUIDManager* m_uidMgr;
 
         /// Relative spanwise inner/outer position of the
-        /// leading edge of the control surface.
+        /// leading edge of the control surface
         CCPACSEtaIsoLine                        m_etaLE;
 
         /// Relative spanwise inner/outer position of the
@@ -137,14 +137,19 @@ namespace generated
         /// from the parent.
         boost::optional<CCPACSXsiIsoLine>       m_xsiTE_choice1;
 
+        /// Relative chordwise position of the upper trailing edge point of the control surface
         boost::optional<double>                 m_xsiTEUpper_choice2;
 
+        /// Relative chordwise position of the lower trailing edge point of the control surface
         boost::optional<double>                 m_xsiTELower_choice2;
 
+        /// Hollow shape inside the leading edge
         boost::optional<CPACSLeadingEdgeHollow> m_innerShape_choice1;
 
+        /// Shape of the leading edge of the control surface
         boost::optional<CPACSLeadingEdgeShape>  m_leadingEdgeShape_choice2;
 
+        /// Reference to the airfoil contour
         boost::optional<CPACSContourReference>  m_airfoil_choice3;
 
     private:

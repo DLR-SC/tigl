@@ -232,6 +232,18 @@
                                     <name>MSS without data</name>
                                     <systemElementUID>predMssWithoutSegments</systemElementUID>
                                 </component>
+                                <component uID="invalidTorus">
+                                    <name>Negative Torus</name>
+                                    <systemElementUID>invalidPredTorus</systemElementUID>
+                                </component>
+                                <component uID="spindleTorus">
+                                    <name>Self-intersecting torus</name>
+                                    <systemElementUID>predSpindleTorus</systemElementUID>
+                                </component>
+                                <component uID="zeroVolumeTorus">
+                                    <name>Torus with zero volume</name>
+                                    <systemElementUID>predZeroVolumeTorus</systemElementUID>
+                                </component>
                             </components>
                         </genericSystem>
                         <genericSystem uID="testSystem2">
@@ -359,7 +371,7 @@
                         <ellipsoids>
                             <ellipsoid>
                                 <radiusX>1.</radiusX>
-                                <diskAngle>0.</diskAngle>
+                                <revolutionAngle>0.</revolutionAngle>
                             </ellipsoid>
                         </ellipsoids>
                     </geometry>
@@ -424,6 +436,40 @@
                         <multiSegmentShapes>
                             <multiSegmentShape />
                         </multiSegmentShapes>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="invalidPredTorus">
+                    <name>Predefined torus with negative radius</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>-1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predSpindleTorus">
+                    <name>Predefined torus with minorRadius exceeding majorRadius</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>0.25</majorRadius>
+                                <minorRadius>1.</minorRadius>
+                            </torus>
+                        </tori>
+                    </geometry>
+                </genericElement>
+                <genericElement uID="predZeroVolumeTorus">
+                    <name>Predefined torus with zero volume</name>
+                    <geometry>
+                        <tori>
+                            <torus>
+                                <majorRadius>1.</majorRadius>
+                                <minorRadius>0.25</minorRadius>
+                                <revolutionAngle>0.</revolutionAngle>
+                            </torus>
+                        </tori>
                     </geometry>
                 </genericElement>
             </genericElements>

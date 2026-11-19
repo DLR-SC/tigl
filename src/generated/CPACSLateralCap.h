@@ -17,16 +17,18 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/utility/in_place_factory.hpp>
 #include <CCPACSMaterialDefinition.h>
 #include <string>
 #include <tixi.h>
 #include "CPACSLateralCap_placement.h"
+#include "CTiglUIDObject.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 class CTiglUIDManager;
-class CTiglUIDObject;
 
 namespace generated
 {
@@ -35,7 +37,10 @@ namespace generated
     // This class is used in:
     // CPACSStructuralWallElement
 
-    class CPACSLateralCap
+    /// @brief Lateral cap
+    /// 
+    /// 
+    class CPACSLateralCap : public CTiglOptUIDObject
     {
     public:
         TIGL_EXPORT CPACSLateralCap(CPACSStructuralWallElement* parent, CTiglUIDManager* uidMgr);
@@ -55,6 +60,9 @@ namespace generated
         TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
         TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
+        TIGL_EXPORT virtual const boost::optional<std::string>& GetUID() const;
+        TIGL_EXPORT virtual void SetUID(const boost::optional<std::string>& value);
+
         TIGL_EXPORT virtual const double& GetArea() const;
         TIGL_EXPORT virtual void SetArea(const double& value);
 
@@ -69,12 +77,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Area of the cap
-        double                    m_area;
+        /// UID
+        boost::optional<std::string> m_uID;
 
-        CCPACSMaterialDefinition  m_material;
+        /// Area
+        double                       m_area;
 
-        CPACSLateralCap_placement m_placement;
+        /// Material properties
+        CCPACSMaterialDefinition     m_material;
+
+        /// Placement
+        CPACSLateralCap_placement    m_placement;
 
     private:
         CPACSLateralCap(const CPACSLateralCap&) = delete;

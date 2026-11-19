@@ -49,7 +49,11 @@ PNamedShape CCPACSRotorcraftModel::BuildLoft() const
     return PNamedShape();
 }
 
-CCPACSConfiguration& CCPACSRotorcraftModel::GetConfiguration() const {
+CCPACSConfiguration& CCPACSRotorcraftModel::GetConfiguration() const
+{
+    if (!config) {
+        throw CTiglError("The rotorcraft model is not attached to a configuration.", TIGL_ERROR);
+    }
     return *config;
 }
 

@@ -96,6 +96,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>               m_uID;
 
         /// Name
@@ -104,8 +105,10 @@ namespace generated
         /// Description
         boost::optional<std::string>               m_description;
 
+        /// Control devices
         boost::optional<CPACSSystemControlDevices> m_controlDevices;
 
+        /// Connections between the system elements
         boost::optional<CPACSSystemConnections>    m_connections;
 
     private:

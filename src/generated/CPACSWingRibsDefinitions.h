@@ -37,8 +37,7 @@ namespace generated
 
     /// @brief Wing ribs
     /// 
-    /// RibDefinitions type, containing the definition of all
-    /// ribs of the wing.
+    /// Definition of all ribs of the wing.
     /// 
     class CPACSWingRibsDefinitions
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rib set
         std::vector<std::unique_ptr<CCPACSWingRibsDefinition>> m_ribsDefinitions;
 
     private:

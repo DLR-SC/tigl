@@ -102,6 +102,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                              m_uID;
 
         /// Name
@@ -119,7 +120,7 @@ namespace generated
         /// Optional rigid transformation defining the component position and orientation
         boost::optional<CCPACSTransformationSE3> m_transformation;
 
-        /// UIDs of the structural mounts as defined in the fuselages or wings (see structuralMountType for further details).
+        /// UIDs of the structural mounts as defined in the fuselages or wings (see structuralMountType for further details)
         boost::optional<CPACSUIDSequence>        m_structuralMountUIDs;
 
     private:

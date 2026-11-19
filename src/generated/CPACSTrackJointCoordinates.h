@@ -71,9 +71,16 @@ namespace generated
     protected:
         CPACSTrackJointPosition* m_parent;
 
+        /// Name
         CPACSTrackJointCoordinates_name m_name;
+
+        /// X coordinate
         double                          m_x;
+
+        /// Offset of the joint in y-direction
         boost::optional<double>         m_dy;
+
+        /// Z coordinate
         double                          m_z;
 
     private:

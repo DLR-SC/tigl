@@ -37,8 +37,7 @@ namespace generated
 
     /// @brief Elements of the wing.
     /// 
-    /// WingElements type, containing the elements of a wing
-    /// section.
+    /// Elements of a wing section.
     /// 
     class CPACSWingElements
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Wing element
         std::vector<std::unique_ptr<CCPACSWingSectionElement>> m_elements;
 
     private:

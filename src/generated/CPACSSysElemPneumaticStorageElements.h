@@ -79,10 +79,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic storage elements.
+        /// Library of predefined generic storage elements
         boost::optional<CPACSSysElemGenericStorageElements> m_genericStorageElements;
 
-        /// Library of predefined mixing units.
+        /// Library of predefined mixing units
         boost::optional<CPACSSysElemMixingUnits>            m_mixingUnits;
 
     private:

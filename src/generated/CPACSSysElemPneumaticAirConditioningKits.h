@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Conditions pneumatic air to provide a required pressure, temperature, and flow state.
+        /// Conditions pneumatic air to provide a required pressure, temperature, and flow state
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pneumaticAirConditioningKits;
 
     private:

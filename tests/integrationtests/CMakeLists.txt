@@ -6,6 +6,10 @@ set (test_BIN "TiGL-integrationtests")
 add_executable(${test_BIN} ${test_SRCS} )
 target_link_libraries(${test_BIN} PUBLIC gtest tigl3_static tigl3_cpp tiglCommonTestUtils)
 
+if(COMMAND tigl_enable_warnings_as_errors)
+    tigl_enable_warnings_as_errors(${test_BIN})
+endif()
+
 ADD_TEST(
   NAME integrationtests
   COMMAND ${test_BIN} --gtest_output=xml

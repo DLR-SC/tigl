@@ -111,7 +111,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Provides a shaped connection, transition, or termination within a distribution path.
+        /// Shaped connection, transition, or termination within a distribution path
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_fittings;
 
     private:

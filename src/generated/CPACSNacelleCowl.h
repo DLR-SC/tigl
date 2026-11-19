@@ -85,9 +85,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                               m_uID;
+
+        /// Sections
         CCPACSNacelleSections                     m_sections;
+
+        /// Guide curves
         boost::optional<CCPACSNacelleGuideCurves> m_guideCurves;
+
+        /// Curve the nacelle cowl is rotated about
         CCPACSRotationCurve                       m_rotationCurve;
 
     private:

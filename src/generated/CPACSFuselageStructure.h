@@ -30,6 +30,7 @@
 #include <string>
 #include <tixi.h>
 #include "CPACSCargoDoorsAssembly.h"
+#include "CPACSFuselageStructuralMounts.h"
 #include "CreateIfNotExists.h"
 #include "tigl_internal.h"
 
@@ -44,10 +45,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselage
 
-    /// @brief fuselageStructureType
+    /// @brief Fuselage structure
     /// 
-    /// FuselageStructure type, containing data of the fuselage's
-    /// structure
+    /// Data of the fuselage's structure
     /// 
     class CPACSFuselageStructure
     {
@@ -96,6 +96,9 @@ namespace generated
         TIGL_EXPORT virtual const boost::optional<CPACSCargoDoorsAssembly>& GetCargoDoors() const;
         TIGL_EXPORT virtual boost::optional<CPACSCargoDoorsAssembly>& GetCargoDoors();
 
+        TIGL_EXPORT virtual const boost::optional<CPACSFuselageStructuralMounts>& GetFuselageStructuralMounts() const;
+        TIGL_EXPORT virtual boost::optional<CPACSFuselageStructuralMounts>& GetFuselageStructuralMounts();
+
         TIGL_EXPORT virtual CCPACSSkin& GetSkin(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveSkin();
 
@@ -123,20 +126,43 @@ namespace generated
         TIGL_EXPORT virtual CPACSCargoDoorsAssembly& GetCargoDoors(CreateIfNotExistsTag);
         TIGL_EXPORT virtual void RemoveCargoDoors();
 
+        TIGL_EXPORT virtual CPACSFuselageStructuralMounts& GetFuselageStructuralMounts(CreateIfNotExistsTag);
+        TIGL_EXPORT virtual void RemoveFuselageStructuralMounts();
+
     protected:
         CCPACSFuselage* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Skin
         boost::optional<CCPACSSkin>                         m_skin;
+
+        /// Stringers
         boost::optional<CCPACSStringersAssembly>            m_stringers;
+
+        /// Frames
         boost::optional<CCPACSFramesAssembly>               m_frames;
+
+        /// Cross beams of the cargo deck
         boost::optional<CCPACSCargoCrossBeamsAssembly>      m_cargoCrossBeams;
+
+        /// Cross beam struts of the cargo deck
         boost::optional<CCPACSCargoCrossBeamStrutsAssembly> m_cargoCrossBeamStruts;
+
+        /// Longitudinal floor beams
         boost::optional<CCPACSLongFloorBeamsAssembly>       m_longFloorBeams;
+
+        /// Pressure bulkheads
         boost::optional<CCPACSPressureBulkheadAssembly>     m_pressureBulkheads;
+
+        /// Walls inside the fuselage
         boost::optional<CCPACSWalls>                        m_walls;
+
+        /// Cargo doors
         boost::optional<CPACSCargoDoorsAssembly>            m_cargoDoors;
+
+        /// Structural mounts
+        boost::optional<CPACSFuselageStructuralMounts>      m_fuselageStructuralMounts;
 
     private:
         CPACSFuselageStructure(const CPACSFuselageStructure&) = delete;

@@ -107,22 +107,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic control elements.
+        /// Library of predefined generic control elements
         boost::optional<CPACSSysElemGenericControlElements> m_genericControlElements;
 
-        /// Library of predefined valves.
+        /// Library of predefined valves
         boost::optional<CPACSSysElemValves>                 m_valves;
 
-        /// Library of predefined check valves.
+        /// Library of predefined check valves
         boost::optional<CPACSSysElemCheckValves>            m_checkValves;
 
-        /// Library of predefined shut-off valves.
+        /// Library of predefined shut-off valves
         boost::optional<CPACSSysElemShutOffValves>          m_shutOffValves;
 
-        /// Library of predefined isolation valves.
+        /// Library of predefined isolation valves
         boost::optional<CPACSSysElemIsolationValves>        m_isolationValves;
 
-        /// Library of predefined pressure relief valves.
+        /// Library of predefined pressure relief valves
         boost::optional<CPACSSysElemPressureReliefValves>   m_pressureReliefValves;
 
     private:

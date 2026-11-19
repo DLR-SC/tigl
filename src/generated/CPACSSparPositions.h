@@ -85,6 +85,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Spar position
         std::vector<std::unique_ptr<CCPACSWingSparPosition>> m_sparPositions;
 
     private:

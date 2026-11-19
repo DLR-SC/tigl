@@ -100,19 +100,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic elements.
+        /// Library of predefined generic elements
         boost::optional<CPACSSysElemGenericHydraulicElements>      m_genericHydraulicElements;
 
-        /// Contains elements that retain energy or a working medium and make it available for later use.
+        /// Elements that retain energy or a working medium and make it available for later use
         boost::optional<CPACSSysElemHydraulicStorageElements>      m_storageElements;
 
-        /// Contains elements that transform energy, power, pressure, flow, temperature, phase, or another system state.
+        /// Elements that transform energy, power, pressure, flow, temperature, phase, or another system state
         boost::optional<CPACSSysElemHydraulicConversionElements>   m_conversionElements;
 
-        /// Contains elements that transport, route, split, join, or connect a system quantity.
+        /// Elements that transport, route, split, join, or connect a system quantity
         boost::optional<CPACSSysElemHydraulicDistributionElements> m_distributionElements;
 
-        /// Contains elements that switch, regulate, isolate, protect, or sense a system quantity.
+        /// Elements that switch, regulate, isolate, protect, or sense a system quantity
         boost::optional<CPACSSysElemHydraulicControlElements>      m_controlElements;
 
     private:

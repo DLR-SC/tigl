@@ -35,8 +35,7 @@ namespace generated
     // This class is used in:
     // CPACSSheet3D
 
-    /// @brief sheetPointsType
-    /// 
+    /// @brief Sheet points
     /// 
     /// 
     class CPACSSheetPoints : public ITiglUIDRefObject
@@ -68,6 +67,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to a point
         std::vector<std::string> m_sheetPointUIDs;
 
     private:

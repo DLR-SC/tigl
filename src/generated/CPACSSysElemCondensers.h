@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers heat to condense a vapor into a liquid.
+        /// Transfers heat to condense a vapor into a liquid
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_condensers;
 
     private:

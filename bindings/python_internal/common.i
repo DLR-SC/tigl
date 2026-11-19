@@ -39,6 +39,7 @@
 #define TixiDocumentHandle int
 #define TiglCPACSConfigurationHandle int
 %template(DoubleVector) std::vector<double>;
+%template(StringVector) std::vector<std::string>;
 
 enum TiglReturnCode
 {

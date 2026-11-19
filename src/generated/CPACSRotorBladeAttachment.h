@@ -38,10 +38,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorBladeAttachments
 
-    /// @brief rotorBladeAttachmentType
+    /// @brief Rotor blade attachment
     /// 
-    /// RotorBladeAttachment type, defining the elements used
-    /// to attach one or more rotor blades to the rotor head.
+    /// Elements used to attach one or more rotor blades to the rotor head.
     /// 
     class CPACSRotorBladeAttachment : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -97,12 +96,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                         m_uID;
 
-        /// Name of the blade attachment.
+        /// Name
         boost::optional<std::string>        m_name;
 
-        /// Description of the blade attachment.
+        /// Description
         boost::optional<std::string>        m_description;
 
         /// The azimuthAngles element is used to specify
@@ -123,12 +123,11 @@ namespace generated
         /// i=0..numberOfBlades-1)
         boost::optional<int>                m_numberOfBlades_choice2;
 
-        /// Definition of all hinges used to attach the
-        /// rotor blade.
+        /// Hinges used to attach the rotor blade
         boost::optional<CCPACSRotorHinges>  m_hinges;
 
         /// UID of the rotorBlade which should be attached
-        /// to the rotor hub.
+        /// to the rotor hub
         std::string                         m_rotorBladeUID;
 
     private:

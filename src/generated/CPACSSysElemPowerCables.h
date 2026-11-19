@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers electrical power between components through insulated conductors.
+        /// Transfers electrical power between components through insulated conductors
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_powerCables;
 
     private:

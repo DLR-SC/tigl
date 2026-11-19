@@ -70,6 +70,7 @@ namespace generated
     protected:
         CPACSTrackStructure* m_parent;
 
+        /// Single
         std::vector<std::unique_ptr<CPACSTrackJointPosition>> m_jointPositions;
 
     private:

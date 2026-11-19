@@ -1321,5 +1321,5 @@ TEST_F(WingSegmentGuideCurves, tiglWingGetSegmentUpperSurfaceAreaTrimmed)
     // Test if the calculated area has the expected value. The first argument in the following test is computed by the function itself,
     // and is therefore obviously true. The benifit of this test case lies in the fact, that the value of the first argument has been roughly estimated visually from the test configuration's
     // CAD representation in TiGLCreator and is meeting the computed value.
-    ASSERT_NEAR(0.036530682797528628, upperArea, 1e-8);
+    ASSERT_NEAR(0.036535101981178063, upperArea, 1e-8); // adapted to OCCT 7.9.2 without G2-continues Coons Patches patch
 }

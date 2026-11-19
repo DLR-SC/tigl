@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Transfers mechanical torque and rotational power between components.
+        /// Transfers mechanical torque and rotational power between components
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_driveShafts;
 
     private:

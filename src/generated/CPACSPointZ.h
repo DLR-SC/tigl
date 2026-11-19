@@ -37,7 +37,7 @@ namespace generated
 
     /// @brief Point: z
     /// 
-    /// Point type, containing a z data.
+    /// Z data.
     /// 
     class CPACSPointZ : public CTiglOptUIDObject
     {
@@ -70,6 +70,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string> m_uID;
 
         /// Z-Component

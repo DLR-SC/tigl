@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Conditions pneumatic flow by coupled compression and expansion processes, typically for environmental control.
+        /// Conditions pneumatic flow by coupled compression and expansion processes, typically for environmental control
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_airCycleMachines;
 
     private:

@@ -43,9 +43,9 @@ namespace generated
     // CPACSFrame
     // CPACSStringer
 
-    /// @brief stringerFramePositionType
+    /// @brief Stringer and frame position
     /// 
-    /// Description of individual stringer / frame postions
+    /// Description of individual stringer / frame positions
     /// @see stringerFramePositioning
     /// 
     class CPACSStringerFramePosition : public CTiglReqUIDObject, public ITiglUIDRefObject
@@ -132,27 +132,29 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                m_uID;
 
         /// UID of profile based structural element
         std::string                                m_structuralElementUID;
 
-        /// x position in absolute value
+        /// X position in absolute value
         boost::optional<double>                    m_positionX_choice1;
 
         /// UID reference to a fuselageSectionElement
         boost::optional<std::string>               m_sectionElementUID_choice2;
 
-        /// y coordinate of reference system
+        /// Y coordinate of reference system
         double                                     m_referenceY;
 
-        /// z coordinate of reference system
+        /// Z coordinate of reference system
         double                                     m_referenceZ;
 
-        /// angle definition to calculate intersection
+        /// Angle definition to calculate intersection
         /// with loft
         double                                     m_referenceAngle;
 
+        /// Alignment
         boost::optional<CPACSAlignmentStringFrame> m_alignment;
 
         /// Continuity definition for profile extrusion:
@@ -160,9 +162,7 @@ namespace generated
         /// continuity)
         boost::optional<CPACSContinuity>           m_continuity;
 
-        /// Definition of interpolation between different
-        /// profiles: 0= no interpolation 1= interpolation of strcutural
-        /// profile
+        /// Interpolation between different profiles: 0= no interpolation 1= interpolation of structural profile
         boost::optional<CPACSInterpolation>        m_interpolation;
 
     private:

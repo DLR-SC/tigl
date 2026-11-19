@@ -25,7 +25,6 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
-#include "CTiglUIDObject.h"
 #include "TixiHelper.h"
 
 namespace tigl
@@ -84,6 +83,7 @@ namespace generated
 
     CPACSCap::~CPACSCap()
     {
+        if (m_uidMgr && m_uID) m_uidMgr->TryUnregisterObject(*m_uID);
     }
 
     const CTiglUIDObject* CPACSCap::GetNextUIDParent() const
@@ -154,6 +154,14 @@ namespace generated
 
     void CPACSCap::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
     {
+        // read attribute uID
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+            m_uID = tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "uID");
+            if (m_uID->empty()) {
+                LOG(WARNING) << "Optional attribute uID is present but empty at xpath " << xpath;
+            }
+        }
+
         // read element area
         if (tixi::TixiCheckElementHasTextContent(tixiHandle, xpath + "/area")) {
             m_area = tixi::TixiGetElement<double>(tixiHandle, xpath + "/area");
@@ -170,11 +178,22 @@ namespace generated
             LOG(ERROR) << "Required element material is missing at xpath " << xpath;
         }
 
+        if (m_uidMgr && m_uID) m_uidMgr->RegisterObject(*m_uID, *this);
     }
 
     void CPACSCap::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
     {
         const std::vector<std::string> childElemOrder = { "area", "material" };
+
+        // write attribute uID
+        if (m_uID) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "uID", *m_uID);
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "uID")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "uID");
+            }
+        }
 
         // write element area
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/area", childElemOrder);
@@ -184,6 +203,27 @@ namespace generated
         tixi::TixiCreateSequenceElementIfNotExists(tixiHandle, xpath + "/material", childElemOrder);
         m_material.WriteCPACS(tixiHandle, xpath + "/material");
 
+    }
+
+    const boost::optional<std::string>& CPACSCap::GetUID() const
+    {
+        return m_uID;
+    }
+
+    void CPACSCap::SetUID(const boost::optional<std::string>& value)
+    {
+        if (m_uidMgr && value != m_uID) {
+            if (!m_uID && value) {
+                m_uidMgr->RegisterObject(*value, *this);
+            }
+            else if (m_uID && !value) {
+                m_uidMgr->TryUnregisterObject(*m_uID);
+            }
+            else if (m_uID && value) {
+                m_uidMgr->UpdateObjectUID(*m_uID, *value);
+            }
+        }
+        m_uID = value;
     }
 
     const double& CPACSCap::GetArea() const

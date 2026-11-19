@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses electrical input power to generate liquid flow and hydraulic or thermo-fluid pressure.
+        /// Uses electrical input power to generate liquid flow and hydraulic or thermo-fluid pressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricDrivenPumps;
 
     private:

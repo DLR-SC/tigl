@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reduces ozone concentration in an airflow through a catalytic or equivalent conversion process.
+        /// Reduces ozone concentration in an airflow through a catalytic or equivalent conversion process
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_ozoneConverters;
 
     private:

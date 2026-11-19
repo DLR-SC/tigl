@@ -41,10 +41,9 @@ namespace generated
     // CPACSFuselageStructure
     // CPACSVesselStructure
 
-    /// @brief stringersAssemblyType
+    /// @brief Stringers assembly
     /// 
-    /// StringersAssembly type, containing an assembly of
-    /// stringers (new V1.5)
+    /// Assembly of stringers (new V1.5)
     /// 
     class CPACSStringersAssembly
     {
@@ -111,6 +110,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Stringer
         std::vector<std::unique_ptr<CCPACSFuselageStringer>> m_stringers;
 
     private:

@@ -47,7 +47,7 @@ if(OCE_FOUND)
   
   option(OCE_STATIC_LIBS "Should be checked, if static OCE libs are linked" OFF)
 else(OCE_FOUND)
-  message("OCE not found! Searching for OpenCASCADE.")
+  message(STATUS "OCE not found! Searching for OpenCASCADE.")
   find_package(OpenCASCADE CONFIG REQUIRED COMPONENTS FoundationClasses ModelingData ModelingAlgorithms Visualization ApplicationFramework DataExchange)
   option(OpenCASCADE_STATIC_LIBS "Should be checked, if static OpenCASCADE libs are linked" OFF)
 

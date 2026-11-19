@@ -69,8 +69,13 @@ namespace generated
     protected:
         CPACSProfileGeometry* m_parent;
 
+        /// Four-digit NACA code of the airfoil
         boost::optional<std::string> m_naca4DigitCode_choice1;
+
+        /// Five-digit NACA code of the airfoil
         boost::optional<std::string> m_naca5DigitCode_choice2;
+
+        /// Thickness of the trailing edge
         boost::optional<double>      m_trailingEdgeThickness;
 
     private:

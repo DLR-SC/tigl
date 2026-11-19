@@ -36,9 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSWindows
 
-    /// @brief cutOutType
+    /// @brief Cut-out
     /// 
-    /// CutOut type, containing cut-outs
+    /// Cut-outs
     /// 
     class CPACSCutOut : public CTiglReqUIDObject, public ITiglUIDRefObject
     {
@@ -86,12 +86,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
 
-        /// Name of the cut out element
+        /// Name
         boost::optional<std::string> m_name;
 
-        /// Description of the cut out element
+        /// Description
         boost::optional<std::string> m_description;
 
         /// Width of the cut element (absolute value)

@@ -43,7 +43,7 @@ namespace generated
     /// RibDefinitionType, containing the definition for ribs.
     /// Ribs are defined in sets of one or more ribs. The positions of
     /// the rib, as well as the orientation of the ribs are defined in
-    /// 'ribPositioing'. The cross section properties, as e.g.
+    /// 'ribPositioning'. The cross section properties, as e.g.
     /// materials, are defined in 'ribCrossSection'.
     /// 
     class CPACSWingRibsDefinition : public CTiglReqUIDObject
@@ -97,18 +97,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                       m_uID;
 
-        /// Name of the rib set
+        /// Name
         std::string                                       m_name;
 
-        /// Description of the rib set
+        /// Description
         boost::optional<std::string>                      m_description;
 
+        /// Positioning of the ribs as a set
         boost::optional<CCPACSWingRibsPositioning>        m_ribsPositioning_choice1;
 
+        /// Explicit positioning of a single rib
         boost::optional<CCPACSWingRibExplicitPositioning> m_ribExplicitPositioning_choice2;
 
+        /// Cross section
         CCPACSWingRibCrossSection                         m_ribCrossSection;
 
     private:

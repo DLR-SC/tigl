@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Measures pressure and provides the corresponding sensing output.
+        /// Measures pressure and provides the corresponding sensing output
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pressureSensors;
 
     private:

@@ -36,7 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief sheetBasedStrcuturalElementsType
+    /// @brief Sheet-based structural elements
     /// 
     /// sheetBasedStrcuturalElementsType, containing sheet
     /// based structural element definitions
@@ -81,6 +81,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Sheet-based structural element
         std::vector<std::unique_ptr<CPACSSheetBasedStructuralElement>> m_sheetBasedStructuralElements;
 
     private:

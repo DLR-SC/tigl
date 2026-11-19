@@ -71,6 +71,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string m_uID;
 
         /// Control parameter indicating that the brake is set

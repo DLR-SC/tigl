@@ -122,13 +122,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Sheet-based structural elements
         boost::optional<CPACSSheetBasedStructuralElements>   m_sheetBasedStructuralElements;
+
+        /// Profile-based structural elements
         boost::optional<CPACSProfileBasedStructuralElements> m_profileBasedStructuralElements;
+
+        /// Structural wall elements
         boost::optional<CPACSStructuralWallElements>         m_structuralWallElements;
+
+        /// Pressure bulkheads
         boost::optional<CPACSPressureBulkheads>              m_pressureBulkheads;
+
+        /// Windows
         boost::optional<CPACSWindows>                        m_windows;
+
+        /// Doors
         boost::optional<CPACSDoors>                          m_doors;
+
+        /// Door surround structures
         boost::optional<CPACSDoorSurroundStructuresAssembly> m_doorSurroundStructures;
+
+        /// Rivets
         boost::optional<CPACSRivets>                         m_rivets;
 
     private:

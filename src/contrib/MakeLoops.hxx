@@ -77,7 +77,7 @@ public:
 
     /**
      * Constructor with initialisation of data
-     * @param theNetwork
+     * @param theNetWork
      * grid consisting of guide and section (profile) edges.
      * Edges must have common (shared) vertices if they touch each other
      * @param GuidesEdges
@@ -92,7 +92,7 @@ public:
 
     /**
      * Method for initialisation of data
-     * @param theNetwork
+     * @param theNetWork
      * grid consisting of guide and section (profile) edges.\n
      * Edges must have common (shared) vertices if they touch each other
      * @param GuidesEdges

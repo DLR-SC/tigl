@@ -44,12 +44,7 @@ namespace generated
 
     /// @brief Point with global/local reference
     /// 
-    /// PointAbsRel type, containing an xyz data triplet. Each
-    /// of the components is optional. The refType attribute defines,
-    /// whether coordinates are absolute in the global ccordinate system
-    /// [absGlobal], absolute in the parent element's local coordinate
-    /// system [absLocal]. If the object does not have a
-    /// parent, only [absGlobal] is permitted.
+    /// Xyz data triplet. Each of the components is optional. The refType attribute defines, whether coordinates are absolute in the global coordinate system [absGlobal], absolute in the parent element's local coordinate system [absLocal]. If the object does not have a parent, only [absGlobal] is permitted.
     /// 
     class CPACSPointAbsRel : public CTiglOptUIDObject
     {
@@ -116,8 +111,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>           m_uID;
 
+        /// Coordinate system the absolute values refer to
         boost::optional<ECPACSTranslationType> m_refType;
 
         /// X-Component

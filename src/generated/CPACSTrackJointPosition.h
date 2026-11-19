@@ -67,6 +67,7 @@ namespace generated
         /// Value of the command parameter of a control distributor. If not given explicitly in the control distributor, linear interpolation between the neighboring points is required.
         CCPACSStringVector         m_controlParameters;
 
+        /// Coordinates
         CPACSTrackJointCoordinates m_jointCoordinates;
 
     private:

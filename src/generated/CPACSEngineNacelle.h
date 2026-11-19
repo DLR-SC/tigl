@@ -90,6 +90,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                              m_uID;
 
         /// Fan cowl
@@ -98,6 +99,7 @@ namespace generated
         /// Core cowl
         boost::optional<CCPACSNacelleCowl>       m_coreCowl;
 
+        /// Center cowl
         boost::optional<CCPACSNacelleCenterCowl> m_centerCowl;
 
     private:

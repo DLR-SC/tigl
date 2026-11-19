@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Accelerates a gaseous flow and converts pressure into directed kinetic energy.
+        /// Accelerates a gaseous flow and converts pressure into directed kinetic energy
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_nozzles;
 
     private:

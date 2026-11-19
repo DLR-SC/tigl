@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSLandingGearComponentAssembly
 
+    /// @brief Pintle struts
+    /// 
+    /// 
     class CPACSPintleStruts
     {
     public:

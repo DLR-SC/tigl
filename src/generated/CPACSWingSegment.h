@@ -97,30 +97,31 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                        m_uID;
 
-        /// Name of wing the wing segment.
+        /// Name
         std::string                        m_name;
 
-        /// Description of the wing segment.
+        /// Description
         boost::optional<std::string>       m_description;
 
         /// Reference to the element from which the
-        /// segment shall start.
+        /// segment shall start
         std::string                        m_fromElementUID;
 
         /// Reference to the element at which the segment
-        /// shall end.
+        /// shall end
         std::string                        m_toElementUID;
 
         /// Optional and additional guidecurves to shape
-        /// the outer geometry.
+        /// the outer geometry
         boost::optional<CCPACSGuideCurves> m_guideCurves;
 
-        /// This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the inner end of this segment to create a smooth segment transition. The distance is provided in absolute length units.
+        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the inner end of this segment used to create a smooth transition to the adjacent segment, given in absolute length units. Required at all inner sections of the wing if roundedSegments is true.
         boost::optional<double>            m_innerRoundingDistance;
 
-        /// This parameter only has an effect if the roundedSegments attribute in the fuselage/duct definition is set to true. It defines the blending distance at the outer end of this segment to create a smooth segment transition. The distance is provided in absolute length units.
+        /// Only has an effect if the roundedSegments attribute of the parent wing is set to true. Blending distance at the outer end of this segment used to create a smooth transition to the adjacent segment, given in absolute length units. Required at all inner sections of the wing if roundedSegments is true.
         boost::optional<double>            m_outerRoundingDistance;
 
     private:

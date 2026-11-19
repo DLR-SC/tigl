@@ -34,6 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSWallSegment
 
+    /// @brief Wall position UIDs
+    /// 
+    /// 
     class CPACSWallPositionUIDs : public ITiglUIDRefObject
     {
     public:
@@ -63,7 +66,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Reference to wall position uID.
+        /// Reference to wall position UID
         std::vector<std::string> m_wallPositionUIDs;
 
     private:

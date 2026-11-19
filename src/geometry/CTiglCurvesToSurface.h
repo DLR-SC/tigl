@@ -64,7 +64,7 @@ public:
     /**
      * @brief sets the maximum interpolation degree of the splines in skinning direction
      *
-     * @param maxDegree maximum degree of the splines in skinning direction
+     * @param degree maximum degree of the splines in skinning direction
      */
     TIGL_EXPORT void SetMaxDegree(int degree);
 

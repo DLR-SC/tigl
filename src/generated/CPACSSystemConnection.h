@@ -46,7 +46,12 @@ namespace generated
     /// Depending on the selected modeling fidelity, source and target may reference components (or their sub-components) via uID .
     /// Alternatively, they may refer to external entities (such as ambient or passengers ), ATA chapters, or other system architectures.
     /// Optional controlDevices can be used to describe connection-specific operating states.
-    /// The optional connectionType can be used to classify the connection, for example as electric, pneumatic, hydraulic, mechanical, or data.
+    /// The optional connectionType classifies
+    /// the primary nature of the connection, such as electric , pneumatic , hydraulic , mechanical , fluid , or data .
+    /// The fluid type denotes the transport
+    /// of a fluid medium as a consumable or resource, such as fuel, water, or
+    /// oxygen. In contrast, hydraulic and pneumatic denote the transmission or
+    /// conditioning of power via a pressurized liquid or gas, respectively.
     /// 
     class CPACSSystemConnection : public CTiglReqUIDObject
     {
@@ -97,6 +102,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                                           m_uID;
 
         /// Name
@@ -111,10 +117,10 @@ namespace generated
         /// Optional control devices defining connection-specific operating states
         boost::optional<CPACSSystemControlDevices>            m_controlDevices;
 
-        /// Definition of the source of the connection
+        /// Source of the connection
         CPACSSourceTarget                                     m_source;
 
-        /// Definition of the target of the connection
+        /// Target of the connection
         CPACSSourceTarget                                     m_target;
 
     private:

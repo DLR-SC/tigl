@@ -37,7 +37,7 @@ namespace generated
 
     /// @brief Cells of the wing.
     /// 
-    /// WingCells type, containing all the cells of the wing.
+    /// The cells of the wing.
     /// 
     class CPACSWingCells
     {
@@ -79,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cell
         std::vector<std::unique_ptr<CCPACSWingCell>> m_cells;
 
     private:

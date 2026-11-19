@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Opens, closes, or selects an electrical circuit path.
+        /// Opens, closes, or selects an electrical circuit path
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_switchs;
 
     private:

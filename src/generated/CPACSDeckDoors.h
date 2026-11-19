@@ -27,29 +27,28 @@ namespace tigl
 {
 class CTiglUIDManager;
 class CTiglUIDObject;
-class CCPACSDeck;
+class CCPACSDecksDeck;
 
 namespace generated
 {
     class CPACSDeckDoor;
 
     // This class is used in:
-    // CPACSDeck
+    // CPACSDecksDeck
 
     /// @brief Deck doors
-    /// 
     /// 
     /// 
     class CPACSDeckDoors
     {
     public:
-        TIGL_EXPORT CPACSDeckDoors(CCPACSDeck* parent, CTiglUIDManager* uidMgr);
+        TIGL_EXPORT CPACSDeckDoors(CCPACSDecksDeck* parent, CTiglUIDManager* uidMgr);
 
         TIGL_EXPORT virtual ~CPACSDeckDoors();
 
-        TIGL_EXPORT CCPACSDeck* GetParent();
+        TIGL_EXPORT CCPACSDecksDeck* GetParent();
 
-        TIGL_EXPORT const CCPACSDeck* GetParent() const;
+        TIGL_EXPORT const CCPACSDecksDeck* GetParent() const;
 
         TIGL_EXPORT virtual CTiglUIDObject* GetNextUIDParent();
         TIGL_EXPORT virtual const CTiglUIDObject* GetNextUIDParent() const;
@@ -76,10 +75,11 @@ namespace generated
         TIGL_EXPORT virtual void RemoveDeckDoor(CPACSDeckDoor& ref);
 
     protected:
-        CCPACSDeck* m_parent;
+        CCPACSDecksDeck* m_parent;
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Deck door
         std::vector<std::unique_ptr<CPACSDeckDoor>> m_deckDoors;
 
     private:

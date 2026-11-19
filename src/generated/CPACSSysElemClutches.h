@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Engages or disengages the transmission of mechanical torque between rotating components.
+        /// Engages or disengages the transmission of mechanical torque between rotating components
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_clutchs;
 
     private:

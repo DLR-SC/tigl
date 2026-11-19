@@ -101,7 +101,7 @@ class TestSystemsBindings(unittest.TestCase):
         components = system.get_components()
 
         self.assertIsNotNone(components)
-        self.assertEqual(components.get_component_count(), 24)
+        self.assertEqual(components.get_component_count(), 28)
         self.assertIsInstance(
             components.get_component(1),
             configuration.CCPACSComponent,

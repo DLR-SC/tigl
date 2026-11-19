@@ -37,8 +37,7 @@ namespace generated
     // This class is used in:
     // CPACSVessel
 
-    /// @brief Dome Type
-    /// 
+    /// @brief Dome type
     /// 
     /// 
     class CPACSDomeType
@@ -81,8 +80,13 @@ namespace generated
     protected:
         CCPACSVessel* m_parent;
 
+        /// Ellipsoidal dome
         boost::optional<CPACSEllipsoidDome>     m_ellipsoid_choice1;
+
+        /// Torispherical dome
         boost::optional<CPACSTorisphericalDome> m_torispherical_choice2;
+
+        /// Isotensoid dome
         boost::optional<CPACSIsotensoidDome>    m_isotensoid_choice3;
 
     private:

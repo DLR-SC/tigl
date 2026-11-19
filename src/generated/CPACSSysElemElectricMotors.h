@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Converts electrical input power into mechanical shaft power.
+        /// Converts electrical input power into mechanical shaft power
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_electricMotors;
 
     private:

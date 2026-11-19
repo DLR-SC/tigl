@@ -34,8 +34,7 @@ namespace generated
     // This class is used in:
     // CPACSCutOutProfiles
 
-    /// @brief outerCutOutProfileType
-    /// 
+    /// @brief Cut-out profile
     /// 
     /// 
     class CPACSOuterCutOutProfile : public ITiglUIDRefObject
@@ -69,7 +68,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to the profile
         std::string m_profileUID;
+
+        /// Rotation of the profile about the z-axis
         double      m_rotZ;
 
     private:

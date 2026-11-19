@@ -118,6 +118,11 @@ namespace generated
             m_symmetry = stringToTiglSymmetryAxis(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "symmetry"));
         }
 
+        // read attribute loftContinuity
+        if (tixi::TixiCheckAttribute(tixiHandle, xpath, "loftContinuity")) {
+            m_loftContinuity = stringToCPACSLoftContinuity(tixi::TixiGetAttribute<std::string>(tixiHandle, xpath, "loftContinuity"));
+        }
+
         // read attribute roundedSegments
         if (tixi::TixiCheckAttribute(tixiHandle, xpath, "roundedSegments")) {
             m_roundedSegments = tixi::TixiGetAttribute<bool>(tixiHandle, xpath, "roundedSegments");
@@ -212,6 +217,16 @@ namespace generated
         else {
             if (tixi::TixiCheckAttribute(tixiHandle, xpath, "symmetry")) {
                 tixi::TixiRemoveAttribute(tixiHandle, xpath, "symmetry");
+            }
+        }
+
+        // write attribute loftContinuity
+        if (m_loftContinuity) {
+            tixi::TixiSaveAttribute(tixiHandle, xpath, "loftContinuity", CPACSLoftContinuityToString(*m_loftContinuity));
+        }
+        else {
+            if (tixi::TixiCheckAttribute(tixiHandle, xpath, "loftContinuity")) {
+                tixi::TixiRemoveAttribute(tixiHandle, xpath, "loftContinuity");
             }
         }
 
@@ -313,6 +328,16 @@ namespace generated
     void CPACSWing::SetSymmetry(const boost::optional<TiglSymmetryAxis>& value)
     {
         m_symmetry = value;
+    }
+
+    const boost::optional<CPACSLoftContinuity>& CPACSWing::GetLoftContinuity() const
+    {
+        return m_loftContinuity;
+    }
+
+    void CPACSWing::SetLoftContinuity(const boost::optional<CPACSLoftContinuity>& value)
+    {
+        m_loftContinuity = value;
     }
 
     const boost::optional<bool>& CPACSWing::GetRoundedSegments() const

@@ -39,10 +39,9 @@ namespace generated
     // This class is used in:
     // CPACSControlSurfaceTrackType
 
-    /// @brief wingSparsType
+    /// @brief Track structure
     /// 
-    /// Spars type, a spar is defined by sparSegments that
-    /// stretch between multiple sparPositions
+    /// Spar is defined by sparSegments that stretch between multiple sparPositions
     /// 
     class CPACSTrackStructure
     {
@@ -123,15 +122,34 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Struts
         CPACSTrackStruts                              m_struts;
+
+        /// Joint positions
         CPACSTrackJointPositions                      m_jointPositions;
+
+        /// Attachment of the track to the control surface
         boost::optional<CPACSTrackSecondaryStructure> m_controlSurfaceAttachment;
+
+        /// Carriage
         boost::optional<CPACSTrackSecondaryStructure> m_carriage;
+
+        /// Side panels
         boost::optional<CPACSTrackSecondaryStructure> m_sidePanels;
+
+        /// Upper panel
         boost::optional<CPACSTrackSecondaryStructure> m_upperPanel;
+
+        /// Lower panel
         boost::optional<CPACSTrackSecondaryStructure> m_lowerPanel;
+
+        /// Roller track
         boost::optional<CPACSTrackSecondaryStructure> m_rollerTrack;
+
+        /// Ribs
         boost::optional<CPACSTrackSecondaryStructure> m_ribs;
+
+        /// Fairing
         boost::optional<CPACSTrackSecondaryStructure> m_fairing;
 
     private:

@@ -36,6 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
+    /// @brief Curve profiles
+    /// 
+    /// 
     class CPACSCurveProfiles
     {
     public:
@@ -76,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Curve profile
         std::vector<std::unique_ptr<CCPACSNacelleProfile>> m_curveProfiles;
 
     private:

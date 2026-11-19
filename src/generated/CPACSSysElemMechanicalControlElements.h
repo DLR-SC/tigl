@@ -79,10 +79,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic control elements.
+        /// Library of predefined generic control elements
         boost::optional<CPACSSysElemGenericControlElements> m_genericControlElements;
 
-        /// Library of predefined clutches.
+        /// Library of predefined clutches
         boost::optional<CPACSSysElemClutches>               m_clutches;
 
     private:

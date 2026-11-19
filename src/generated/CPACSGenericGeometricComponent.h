@@ -38,7 +38,7 @@ namespace generated
     // This class is used in:
     // CPACSGenericGeometryComponents
 
-    /// @brief genericGeometricComponentType
+    /// @brief Generic geometric component
     /// 
     /// In some cases additional geometric components need to
     /// be linked to a CPACS, but these components are not yet handled by
@@ -95,22 +95,26 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                       m_uID;
 
+        /// Symmetry plane the component is mirrored at
         boost::optional<TiglSymmetryAxis> m_symmetry;
 
-        /// Name of genericGeometricComponent
+        /// Name
         std::string                       m_name;
 
-        /// Description of genericGeometricComponent
+        /// Description
         boost::optional<std::string>      m_description;
 
         /// UID of part to which the component is mounted
         /// (if any)
         boost::optional<std::string>      m_parentUID;
 
+        /// Position and orientation
         CCPACSTransformation              m_transformation;
 
+        /// Reference to the geometry file
         CPACSLinkToFile                   m_linkToFile;
 
     private:

@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief doorSurroundStructuresAssemblyType
+    /// @brief Door surround structures assembly
     /// 
-    /// doorSurroundStructuresAssembly type, containing
-    /// dorrSurroundStructure definitions
+    /// DorrSurroundStructure definitions
     /// 
     class CPACSDoorSurroundStructuresAssembly
     {
@@ -81,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Door surround structure
         std::vector<std::unique_ptr<CPACSDoorSurroundStructurePosition>> m_doorSurroundStructures;
 
     private:

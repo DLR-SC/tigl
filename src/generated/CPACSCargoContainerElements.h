@@ -80,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cargo container element
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_cargoContainerElements;
 
     private:

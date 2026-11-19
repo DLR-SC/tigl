@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Removes gas from a volume to establish or maintain sub-ambient pressure.
+        /// Removes gas from a volume to establish or maintain sub-ambient pressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_vacuumPumps;
 
     private:

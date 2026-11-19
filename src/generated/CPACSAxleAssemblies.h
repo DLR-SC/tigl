@@ -77,6 +77,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Axle assembly
         std::vector<std::unique_ptr<CPACSAxleAssembly>> m_axleAssemblys;
 
     private:

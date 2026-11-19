@@ -80,16 +80,19 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string          m_uID;
 
-        /// Length of the bogie
+        /// Length
         double               m_length;
 
         /// Tilt angle of the bogie in airborne conditions
         double               m_tiltAngle;
 
+        /// Properties of the bogie strut
         CPACSStrutProperties m_strutProperties;
 
+        /// Axle assemblies
         CPACSAxleAssemblies  m_axleAssemblies;
 
     private:

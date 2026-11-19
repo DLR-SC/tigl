@@ -103,7 +103,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Material properties of the wing skin.
+        /// Material properties
         CCPACSMaterialDefinition m_material;
 
     private:

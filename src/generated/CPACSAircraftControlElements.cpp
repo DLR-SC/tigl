@@ -18,7 +18,7 @@
 #include <cassert>
 #include "CPACSAircraftControlElement.h"
 #include "CPACSAircraftControlElements.h"
-#include "CPACSVehicleConfiguration.h"
+#include "CPACSConfigurationDefinition.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CTiglUIDManager.h"
@@ -29,7 +29,7 @@ namespace tigl
 {
 namespace generated
 {
-    CPACSAircraftControlElements::CPACSAircraftControlElements(CPACSVehicleConfiguration* parent, CTiglUIDManager* uidMgr)
+    CPACSAircraftControlElements::CPACSAircraftControlElements(CPACSConfigurationDefinition* parent, CTiglUIDManager* uidMgr)
         : m_uidMgr(uidMgr)
     {
         //assert(parent != NULL);
@@ -40,12 +40,12 @@ namespace generated
     {
     }
 
-    const CPACSVehicleConfiguration* CPACSAircraftControlElements::GetParent() const
+    const CPACSConfigurationDefinition* CPACSAircraftControlElements::GetParent() const
     {
         return m_parent;
     }
 
-    CPACSVehicleConfiguration* CPACSAircraftControlElements::GetParent()
+    CPACSConfigurationDefinition* CPACSAircraftControlElements::GetParent()
     {
         return m_parent;
     }

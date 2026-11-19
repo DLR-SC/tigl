@@ -39,8 +39,7 @@ namespace generated
 
     /// @brief Definition cross sections of structural profiles.
     /// 
-    /// Structuralprofiles type, containing cross section
-    /// information of structural profiles.
+    /// Cross section information of structural profiles.
     /// 
     class CPACSStructuralProfiles
     {
@@ -97,7 +96,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Two-dimensional structural profile
         std::vector<std::unique_ptr<CPACSStructuralProfile>>   m_structuralProfile2Ds;
+
+        /// Three-dimensional structural profile
         std::vector<std::unique_ptr<CPACSStructuralProfile3D>> m_structuralProfile3Ds;
 
     private:

@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses pneumatic input power to generate liquid flow and pressure.
+        /// Uses pneumatic input power to generate liquid flow and pressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_pneumaticDrivenPumps;
 
     private:

@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSFuselageStructure
 
-    /// @brief pressureBulkheadAssemblyType
+    /// @brief Pressure bulkhead assembly
     /// 
-    /// PressureBulkheadAssembly type, containing pressure
-    /// bulkhead assemblys
+    /// Pressure bulkhead assemblies
     /// 
     class CPACSPressureBulkheadAssembly
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Pressure bulkhead position
         std::vector<std::unique_ptr<CCPACSPressureBulkheadAssemblyPosition>> m_pressureBulkheads;
 
     private:

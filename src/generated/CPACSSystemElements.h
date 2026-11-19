@@ -109,22 +109,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic elements.
+        /// Library of predefined generic elements
         boost::optional<CPACSSysElemGenericElements>     m_genericElements;
 
-        /// Electrical system elements.
+        /// Electrical system elements
         boost::optional<CPACSSysElemElectricalElements>  m_electricalElements;
 
-        /// Mechanical system elements.
+        /// Mechanical system elements
         boost::optional<CPACSSysElemMechanicalElements>  m_mechanicalElements;
 
-        /// Pneumatic system elements.
+        /// Pneumatic system elements
         boost::optional<CPACSSysElemPneumaticElements>   m_pneumaticElements;
 
-        /// Hydraulic system elements.
+        /// Hydraulic system elements
         boost::optional<CPACSSysElemHydraulicElements>   m_hydraulicElements;
 
-        /// Thermo-fluid system elements.
+        /// Thermo-fluid system elements
         boost::optional<CPACSSysElemThermoFluidElements> m_thermoFluidElements;
 
     private:

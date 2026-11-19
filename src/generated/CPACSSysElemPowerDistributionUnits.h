@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Receives and distributes electrical power to multiple downstream circuits.
+        /// Receives and distributes electrical power to multiple downstream circuits
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_powerDistributionUnits;
 
     private:

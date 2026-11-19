@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    /// @brief rotorAirfoilsType
+    /// @brief Rotor airfoils
     /// 
-    /// RotorAirfoils type, containing rotor airfoil
-    /// geometries. See profileGeometryType for further documentation
+    /// Rotor airfoil geometries. See profileGeometryType for further documentation
     /// 
     class CPACSRotorAirfoils
     {
@@ -81,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rotor airfoil
         std::vector<std::unique_ptr<CPACSProfileGeometry>> m_rotorAirfoils;
 
     private:

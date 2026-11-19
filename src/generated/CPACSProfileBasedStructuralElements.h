@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSStructuralElements
 
-    /// @brief structuralElementType
+    /// @brief Profile-based structural elements
     /// 
-    /// profileBasedStructuralElements type, containing a list
-    /// of profile based structural elements
+    /// List of profile based structural elements
     /// 
     class CPACSProfileBasedStructuralElements
     {
@@ -81,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Profile-based structural element
         std::vector<std::unique_ptr<CCPACSProfileBasedStructuralElement>> m_profileBasedStructuralElements;
 
     private:

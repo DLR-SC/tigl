@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Generates mechanical shaft power from a gas-turbine process for auxiliary aircraft services.
+        /// Generates mechanical shaft power from a gas-turbine process for auxiliary aircraft services
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_auxiliaryPowerGasTurbines;
 
     private:

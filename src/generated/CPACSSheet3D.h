@@ -36,8 +36,7 @@ namespace generated
     // This class is used in:
     // CPACSSheetList3D
 
-    /// @brief sheet3DType
-    /// 
+    /// @brief Three-dimensional sheet
     /// 
     /// 
     class CPACSSheet3D : public CTiglReqUIDObject
@@ -77,9 +76,16 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                  m_uID;
+
+        /// Name
         std::string                  m_name;
+
+        /// Description
         boost::optional<std::string> m_description;
+
+        /// Points spanning the sheet
         CPACSSheetPoints             m_sheetPoints;
 
     private:

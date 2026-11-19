@@ -104,11 +104,22 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         std::string                     m_uID;
+
+        /// Skin
         CPACSWingSkin                   m_skin;
+
+        /// Chordwise position of the leading edge border of the cell
         CCPACSWingCellPositionChordwise m_positioningLeadingEdge;
+
+        /// Chordwise position of the trailing edge border of the cell
         CCPACSWingCellPositionChordwise m_positioningTrailingEdge;
+
+        /// Spanwise position of the inner border of the cell
         CCPACSWingCellPositionSpanwise  m_positioningInnerBorder;
+
+        /// Spanwise position of the outer border of the cell
         CCPACSWingCellPositionSpanwise  m_positioningOuterBorder;
 
     private:

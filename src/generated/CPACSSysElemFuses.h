@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Interrupts an electrical circuit irreversibly when current exceeds its rated protection threshold.
+        /// Interrupts an electrical circuit irreversibly when current exceeds its rated protection threshold
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_fuses;
 
     private:

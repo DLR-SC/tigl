@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Introduces water into a working medium or flow path.
+        /// Introduces water into a working medium or flow path
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_waterInjectors;
 
     private:

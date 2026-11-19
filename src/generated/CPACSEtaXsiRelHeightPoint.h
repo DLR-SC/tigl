@@ -79,17 +79,17 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced UID.
         double                  m_eta;
 
-        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced UID.
         double                  m_xsi;
 
         /// Relative height position.
         /// relHeight is relative to the local airfoil thickness.
         boost::optional<double> m_relHeight;
 
-        /// This reference uID determines the reference coordinate system.
+        /// This reference UID determines the reference coordinate system.
         /// If it points to a segment, then the eta-xsi values are considered to be in segment
         /// eta-xsi coordinates; if it points to a componentSegment,
         /// then componentSegment eta-xsi coordinates are used.

@@ -75,6 +75,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Cylinder
         std::vector<std::unique_ptr<CPACSCylinder>> m_cylinders;
 
     private:

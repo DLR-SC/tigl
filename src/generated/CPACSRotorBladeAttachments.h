@@ -35,10 +35,9 @@ namespace generated
     // This class is used in:
     // CPACSRotorHub
 
-    /// @brief rotorBladeAttachmentsType
+    /// @brief Rotor blade attachments
     /// 
-    /// RotorBladeAttachments type, containing all hinges and
-    /// blade UIDs attached to the current rotor hub.
+    /// Hinges and blade UIDs attached to the current rotor hub.
     /// 
     class CPACSRotorBladeAttachments
     {
@@ -80,6 +79,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Rotor blade attachment
         std::vector<std::unique_ptr<CCPACSRotorBladeAttachment>> m_rotorBladeAttachments;
 
     private:

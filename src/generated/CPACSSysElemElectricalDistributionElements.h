@@ -121,28 +121,28 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic distribution elements.
+        /// Library of predefined generic distribution elements
         boost::optional<CPACSSysElemGenericDistributionElements> m_genericDistributionElements;
 
-        /// Library of predefined power-distribution units.
+        /// Library of predefined power-distribution units
         boost::optional<CPACSSysElemPowerDistributionUnits>      m_powerDistributionUnits;
 
-        /// Library of predefined cables.
+        /// Library of predefined cables
         boost::optional<CPACSSysElemCables>                      m_cables;
 
-        /// Library of predefined ground connectors.
+        /// Library of predefined ground connectors
         boost::optional<CPACSSysElemGroundConnectors>            m_groundConnectors;
 
-        /// Library of predefined power cables.
+        /// Library of predefined power cables
         boost::optional<CPACSSysElemPowerCables>                 m_powerCables;
 
-        /// Library of predefined signal cables.
+        /// Library of predefined signal cables
         boost::optional<CPACSSysElemSignalCables>                m_signalCables;
 
-        /// Library of predefined bus bars.
+        /// Library of predefined bus bars
         boost::optional<CPACSSysElemBusBars>                     m_busBars;
 
-        /// Library of predefined sockets.
+        /// Library of predefined sockets
         boost::optional<CPACSSysElemSockets>                     m_sockets;
 
     private:

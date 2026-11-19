@@ -73,11 +73,11 @@ namespace generated
         CCPACSGuideCurveProfile* m_parent;
 
         /// Vector of rX coordinates. Relative
-        /// circumferential coordinate on wing, fuselage or nacelle profile
+        /// circumferential coordinate on wing, fuselage or nacelle profile.
         CCPACSStringVector m_rX;
 
         /// Vector of rY coordinates. Relative span
-        /// coordinate along a segment
+        /// coordinate along a segment.
         CCPACSStringVector m_rY;
 
         /// Vector of rZ coordinates. Relative coordinate

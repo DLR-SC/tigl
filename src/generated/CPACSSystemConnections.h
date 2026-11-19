@@ -78,6 +78,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Connection
         std::vector<std::unique_ptr<CCPACSSystemConnection>> m_connections;
 
     private:

@@ -34,6 +34,9 @@ namespace generated
     // This class is used in:
     // CPACSStrutAssembly
 
+    /// @brief Relative strut position
+    /// 
+    /// 
     class CPACSRelativeStrutPosition : public ITiglUIDRefObject
     {
     public:
@@ -65,7 +68,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Reference to the strut the position refers to
         std::string m_strutUID;
+
+        /// Position along the strut, relative to its length
         double      m_relativePosition;
 
     private:

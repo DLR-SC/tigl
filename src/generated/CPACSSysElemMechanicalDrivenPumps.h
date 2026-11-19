@@ -108,7 +108,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Uses mechanical shaft power to generate liquid flow and pressure.
+        /// Uses mechanical shaft power to generate liquid flow and pressure
         std::vector<std::unique_ptr<CPACSVehicleElementBase>> m_mechanicalDrivenPumps;
 
     private:

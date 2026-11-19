@@ -103,13 +103,13 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative spanwise position. Eta refers to the segment or componentSegment depending on the referenced UID.
         double      m_eta;
 
-        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced uID.
+        /// Relative chordwise position. Xsi refers to the segment or componentSegment depending on the referenced UID.
         double      m_xsi;
 
-        /// This reference uID determines the reference coordinate system.
+        /// This reference UID determines the reference coordinate system.
         /// If it points to a segment, then the eta-xsi values are considered to be in segment
         /// eta-xsi coordinates; if it points to a componentSegment,
         /// then componentSegment eta-xsi coordinates are used.

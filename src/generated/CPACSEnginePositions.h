@@ -41,8 +41,7 @@ namespace generated
 
     /// @brief Engine references
     /// 
-    /// EnginePositions type, containing a reference to the
-    /// used engines and their positions at the configuration
+    /// Reference to the used engines and their positions at the configuration
     /// 
     class CPACSEnginePositions
     {
@@ -108,6 +107,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Engine position
         std::vector<std::unique_ptr<CCPACSEnginePosition>> m_engines;
 
     private:

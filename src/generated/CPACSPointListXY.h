@@ -38,7 +38,7 @@ namespace generated
 
     /// @brief List of points in x,y
     /// 
-    /// PointList type, containing an ordered list of points
+    /// Ordered list of points
     /// 
     class CPACSPointListXY
     {
@@ -80,7 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Data points in x-y-space.
+        /// Data points in x-y-space
         std::vector<std::unique_ptr<CCPACSPointXY>> m_points;
 
     private:

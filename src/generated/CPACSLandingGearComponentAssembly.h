@@ -121,19 +121,25 @@ namespace generated
         /// Main strut
         CPACSStrut                          m_mainStrut;
 
+        /// Piston
         CPACSPiston                         m_piston;
 
+        /// Axle
         boost::optional<CPACSAxle>          m_axle_choice1;
 
+        /// Bogie
         boost::optional<CPACSBogie>         m_bogie_choice2;
 
         /// Drag strut (Assumption: one end of the strut will connect to the main strut and the other end will be given as endPoint)
         boost::optional<CPACSStrutAssembly> m_dragStrut;
 
+        /// Pintle struts
         boost::optional<CPACSPintleStruts>  m_pintleStruts;
 
+        /// Side struts
         boost::optional<CPACSSideStruts>    m_sideStruts;
 
+        /// Main actuator
         boost::optional<CPACSMainActuator>  m_mainActuator;
 
     private:

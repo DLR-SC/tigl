@@ -38,6 +38,9 @@ namespace generated
     // This class is used in:
     // CPACSStructuralWallElements
 
+    /// @brief Structural wall element
+    /// 
+    /// 
     class CPACSStructuralWallElement : public CTiglOptUIDObject
     {
     public:
@@ -87,9 +90,10 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// UID
         boost::optional<std::string>     m_uID;
 
-        /// Reference to a sheet element definition specifying the physical properties of the wall's shell.
+        /// Reference to a sheet element definition specifying the physical properties of the wall's shell
         std::string                      m_sheetElementUID;
 
         /// Reinforcement at inner side of wall. This is either, depending on the extrusion direction flag, the edge of the wall that connects the positions ("positiveDirection") or the edge of the wall where the wall intersects with the fuselage skin in the opposite direction of the extrusion direction.

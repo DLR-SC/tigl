@@ -34,9 +34,8 @@ namespace generated
     // This class is used in:
     // CPACSElementMass
 
-    /// @brief Mass intertia
+    /// @brief Mass inertia
     /// 
-    /// massInertiaType
     /// 
     class CPACSMassInertia
     {
@@ -76,11 +75,22 @@ namespace generated
     protected:
         CPACSElementMass* m_parent;
 
+        /// Moment of inertia around the x-axis
         double                  m_Jxx;
+
+        /// Moment of inertia around the y-axis
         double                  m_Jyy;
+
+        /// Moment of inertia around the z-axis
         double                  m_Jzz;
+
+        /// Product of inertia with respect to the x- and y-axis
         boost::optional<double> m_Jxy;
+
+        /// Product of inertia with respect to the x- and z-axis
         boost::optional<double> m_Jxz;
+
+        /// Product of inertia with respect to the y- and z-axis
         boost::optional<double> m_Jyz;
 
     private:

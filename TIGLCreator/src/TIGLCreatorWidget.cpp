@@ -42,6 +42,7 @@
 #include "TIGLCreatorContext.h"
 #include "TIGLCreatorSettings.h"
 #include "TIGLCreatorMaterials.h"
+#include "TIGLCreatorLightSourceManager.h"
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
@@ -75,6 +76,11 @@
 
 #include "V3d_DirectionalLight.hxx"
 #include "V3d_AmbientLight.hxx"
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,9,0)
+#include "V3d_Trihedron.hxx"
+#include "Prs3d_ShadingAspect.hxx"
+#include "Graphic3d_AspectFillArea3d.hxx"
+#endif
 
 // 10% zoom per wheel or key event
 #define TIGLCREATOR_ZOOM_STEP 1.10
@@ -98,7 +104,8 @@ TIGLCreatorWidget::TIGLCreatorWidget(QWidget * parent)
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
     myButtonFlags     ( Qt::NoButton ),
-    viewerContext     (nullptr)
+    viewerContext     (nullptr),
+    myLightSourceManager(nullptr)
 {
     initialize();
 }
@@ -164,6 +171,11 @@ void TIGLCreatorWidget::setContext(TIGLCreatorContext* aContext)
     viewerContext = aContext;
 }
 
+void TIGLCreatorWidget::setLightSourceManager(TIGLCreatorLightSourceManager* manager)
+{
+    myLightSourceManager = manager;
+}
+
 
 void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
@@ -171,7 +183,7 @@ void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCon
         myViewer  = aContext->CurrentViewer();
         myView    = myViewer->CreateView();
 
-        Handle_Aspect_Window myWindow;
+        Handle(Aspect_Window) myWindow;
         
 #if OCC_VERSION_HEX >= 0x060800
         myWindow = new TIGLQAspectWindow(this);
@@ -193,7 +205,22 @@ void TIGLCreatorWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCon
         myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
         // Set up axes (Trihedron) in lower left corner.
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(7,9,0)
+        // Use the new-style trihedron so that its shading aspects can be made unlit.
+        // Unlit arrows keep their full axis colors even when the default lights are dimmed,
+        // so the legend stays bright against the dark scene.
+        Handle(V3d_Trihedron) aTrihedron = myView->Trihedron();
+        aTrihedron->SetScale( 0.1 );  // scale must be set before SetPosition (offset depends on it)
+        aTrihedron->SetLabelsColor( Quantity_NOC_WHITE );
+        aTrihedron->SetPosition( Aspect_TOTP_LEFT_LOWER );
+        for (V3d_TypeOfAxe anAxis : { V3d_X, V3d_Y, V3d_Z }) {
+            aTrihedron->ArrowAspect( anAxis )->Aspect()->SetShadingModel( Graphic3d_TOSM_UNLIT );
+        }
+        aTrihedron->OriginAspect()->Aspect()->SetShadingModel( Graphic3d_TOSM_UNLIT );
+        aTrihedron->Display( *myView );
+#else
         myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
+#endif
         //myView->SetAntialiasingOn();
 
         //myView->ColorScaleDisplay();
@@ -610,23 +637,10 @@ void TIGLCreatorWidget::setCameraUpVector(double x, double y, double z)
 
 void TIGLCreatorWidget::addSpotlight(double x, double y, double z, double dx, double dy, double dz, double concentration)
 {
-    if (concentration < 0.0 || concentration > 1.0) {
-        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Concentration must be inside the range [0,1]";
-        return;
-    }
-
-    if (dx*dx + dy*dy + dz*dz < 1e8) {
-        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): Direction must not be the zero vector";
-        return;
-    }
-
-    Handle(V3d_Light) theLight = new V3d_Light(Graphic3d_TypeOfLightSource::V3d_SPOT);
-    theLight->SetPosition(gp_Pnt(x,y,z));
-    theLight->SetDirection(gp_Dir(dx, dy, dz));
-    theLight->SetConcentration(concentration);
-
-    if (!myView.IsNull()) {
-        myView->SetLightOn(theLight);
+    if (myLightSourceManager) {
+        myLightSourceManager->addSpotlight(x, y, z, dx, dy, dz, concentration);
+    } else {
+        LOG(ERROR) << "TIGLCreatorWidget::addSpotlight(): No light source manager is set.";
     }
 }
 
@@ -652,6 +666,8 @@ void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b)
 {
     myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
+        // Dim the gradient to 1 percent to match the disabled default lights
+        const Standard_Real factor = (viewerContext && !viewerContext->isDefaultLightEnabled()) ? 0.01 : 1.0;
         Standard_Real R1 = r/255.;
         Standard_Real G1 = g/255.;
         Standard_Real B1 = b/255.;
@@ -662,11 +678,11 @@ void TIGLCreatorWidget::setBackgroundGradient(int r, int g, int b)
         Standard_Real fu = 2.;
         Standard_Real fd = 0.2;
 
-        Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
-        Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
+        Quantity_Color up  (R1*fu*factor > 1 ? 1. : R1*fu*factor, G1*fu*factor > 1 ? 1. : G1*fu*factor, B1*fu*factor > 1 ? 1. : B1*fu*factor, Quantity_TOC_RGB);
+        Quantity_Color down(R1*fd*factor > 1 ? 1. : R1*fd*factor, G1*fd*factor > 1 ? 1. : G1*fd*factor, B1*fd*factor > 1 ? 1. : B1*fd*factor, Quantity_TOC_RGB);
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
-    } 
+    }
     redraw();
 }
 
@@ -678,6 +694,12 @@ void TIGLCreatorWidget::setBackgroundColor(int r, int g, int b)
         myView->SetBackgroundColor(Quantity_TOC_RGB, r/255., g/255., b/255.);
         redraw();
     }
+}
+
+void TIGLCreatorWidget::updateSceneBackground()
+{
+    // Re-apply the current background gradient, honoring the default light dimming state
+    setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 }
 
 void TIGLCreatorWidget::setReset ()
@@ -857,25 +879,20 @@ void TIGLCreatorWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     setCurrentPoint(point);
-    if (viewerContext->hasSelectedShapes()) {
 
-        auto context = viewerContext->getContext();
-        context->InitSelected();
-        Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
+    // Treat small movements between press and release as a click: a real mouse often
+    // jitters by a few pixels, and a tiny selection rectangle would select nothing
+    // (rectangle selection only picks fully covered objects), silently clearing the
+    // selection instead of selecting the clicked object.
+    const bool isClick =
+        (myCurrentPoint - myStartPoint).manhattanLength() <= QApplication::startDragDistance();
 
-        if (!shape.IsNull())
-        {
-            auto cnamedShape = viewerContext->GetShapeManager().GetShapeFromIObject(shape);
+    // True only if this release actually performed a pick on the object under the cursor.
+    // Do not derive this from isClick alone further down: myStartPoint is continuously
+    // reset to the current position while zooming/panning (see onMouseMove), so at the end
+    // of such a navigation gesture isClick is true even though nothing was picked.
+    bool didPick = false;
 
-            if (cnamedShape) {
-                auto shapeName = cnamedShape->Name();
-                emit shapeSelected(QString::fromStdString(shapeName));
-            }
-            else {
-                emit nonEditableShapeSelected();
-            }
-        }
-    }
     if ( nFlags & CASCADESHORTCUTKEY ) {
         // Deactivates dynamic zooming
         setMode( CurAction3d_Nothing );
@@ -883,8 +900,9 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
     else {
         switch( myMode ) {
         case CurAction3d_Nothing:
-            if ( myCurrentPoint == myStartPoint ) {
+            if ( isClick ) {
                 inputEvent( nFlags & MULTISELECTIONKEY );
+                didPick = true;
             }
             else {
                 dragEvent( myStartPoint,
@@ -924,6 +942,44 @@ void TIGLCreatorWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
             break;
         }
     }
+
+    // Process selected shapes after selection is complete
+    if (viewerContext->hasSelectedShapes()) {
+        auto context = viewerContext->getContext();
+        context->InitSelected();
+        Handle(AIS_Shape) shape = Handle(AIS_Shape)::DownCast(context->SelectedInteractive());
+
+        if (!shape.IsNull()) {
+            // Resolve via the name the object was registered under: components such as
+            // engines and pylons are registered by uid without a PNamedShape, so a
+            // lookup through GetShapeFromIObject would fail for them.
+            std::string shapeName = viewerContext->GetShapeManager().GetNameFromIObject(shape);
+
+            if (!shapeName.empty()) {
+                if (didPick && !(nFlags & MULTISELECTIONKEY)) {
+                    // Plain single click: normalize the selection to the whole component
+                    // (original and mirrored part) and redraw. Emits shapeSelected on the
+                    // context, which syncs the CPACS tree.
+                    viewerContext->selectShape(QString::fromStdString(shapeName));
+                }
+                else {
+                    // multi-/rectangle selection or a pure navigation gesture (zoom, pan,
+                    // rotate): leave the existing selection untouched and only sync the tree
+                    emit shapeSelected(QString::fromStdString(shapeName));
+                }
+            }
+            else {
+                emit nonEditableShapeSelected();
+                // the native pick has changed the selection, make the highlight visible
+                viewerContext->updateViewer();
+            }
+        }
+    }
+    else {
+        // the click may just have cleared the selection; redraw to remove old highlights
+        viewerContext->updateViewer();
+    }
+
     emit selectionChanged();
 }
 
@@ -965,8 +1021,12 @@ void TIGLCreatorWidget::onMouseMove( Qt::MouseButtons buttons,
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MiddleButton ) {
         switch ( myMode ) {
         case CurAction3d_Nothing:
-            drawRubberBand ( myStartPoint, myCurrentPoint );
-            dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            // don't start the rubber band selection before exceeding the drag threshold,
+            // so that slightly jittering clicks don't clear the selection
+            if ((myCurrentPoint - myStartPoint).manhattanLength() > QApplication::startDragDistance()) {
+                drawRubberBand ( myStartPoint, myCurrentPoint );
+                dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+            }
             break;
 
         case CurAction3d_DynamicZooming:
@@ -1300,8 +1360,8 @@ bool TIGLCreatorWidget::makeScreenshot(const QString& filename, bool whiteBGEnab
     }
 
     if (whiteBGEnabled) {
-        // reset color
-        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+        // Restore the background gradient, including the dimming for disabled default lights
+        updateSceneBackground();
     }
 
     // copy to qimage which supports a variety of file formats

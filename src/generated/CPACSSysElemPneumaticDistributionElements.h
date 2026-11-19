@@ -142,37 +142,37 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
-        /// Library of predefined generic distribution elements.
+        /// Library of predefined generic distribution elements
         boost::optional<CPACSSysElemGenericDistributionElements> m_genericDistributionElements;
 
-        /// Library of predefined pipes.
+        /// Library of predefined pipes
         boost::optional<CPACSSysElemPipes>                       m_pipes;
 
-        /// Library of predefined splitters.
+        /// Library of predefined splitters
         boost::optional<CPACSSysElemSplitters>                   m_splitters;
 
-        /// Library of predefined joiners.
+        /// Library of predefined joiners
         boost::optional<CPACSSysElemJoiners>                     m_joiners;
 
-        /// Library of predefined filters.
+        /// Library of predefined filters
         boost::optional<CPACSSysElemFilters>                     m_filters;
 
-        /// Library of predefined piccolo tubes.
+        /// Library of predefined piccolo tubes
         boost::optional<CPACSSysElemPiccoloTubes>                m_piccoloTubes;
 
-        /// Library of predefined ground connectors.
+        /// Library of predefined ground connectors
         boost::optional<CPACSSysElemGroundConnectors>            m_groundConnectors;
 
-        /// Library of predefined pipe ball joints.
+        /// Library of predefined pipe ball joints
         boost::optional<CPACSSysElemPipeBallJoints>              m_pipeBallJoints;
 
-        /// Library of predefined pipe bellows.
+        /// Library of predefined pipe bellows
         boost::optional<CPACSSysElemPipeBellows>                 m_pipeBellows;
 
-        /// Library of predefined fittings.
+        /// Library of predefined fittings
         boost::optional<CPACSSysElemFittings>                    m_fittings;
 
-        /// Library of predefined couplings.
+        /// Library of predefined couplings
         boost::optional<CPACSSysElemCouplings>                   m_couplings;
 
     private:

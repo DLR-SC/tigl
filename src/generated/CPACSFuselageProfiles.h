@@ -36,10 +36,9 @@ namespace generated
     // This class is used in:
     // CPACSProfiles
 
-    /// @brief fuselageProfilesType
+    /// @brief Fuselage profiles
     /// 
-    /// FuselageProfiles type, containing fuselage profile
-    /// geometries. See profileGeometryType for further documentation
+    /// Fuselage profile geometries. See profileGeometryType for further documentation
     /// 
     class CPACSFuselageProfiles
     {
@@ -81,6 +80,7 @@ namespace generated
 
         CTiglUIDManager* m_uidMgr;
 
+        /// Fuselage profile
         std::vector<std::unique_ptr<CPACSProfileGeometry>> m_fuselageProfiles;
 
     private:
