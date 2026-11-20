@@ -149,6 +149,14 @@ endif(TIGL_BUILD_TESTS)
 
 include(createDoc)
 
+# license and third-party attribution notices
+install(FILES
+    ${PROJECT_SOURCE_DIR}/LICENSE.txt
+    ${PROJECT_SOURCE_DIR}/THIRD_PARTY_NOTICES.md
+    DESTINATION share/doc/tigl3
+    COMPONENT docu
+)
+
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jan Kleinert") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")

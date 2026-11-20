@@ -7,6 +7,12 @@ Changes since last release
 - General changes
 
   - Updated the author list in `.zenodo.json` and added a `CITATION.cff` file, including a CI check that keeps both in sync
+  - License cleanup: removed the LGPL-2.1 licensed `GEOMAlgo_Splitter` (replaced by OpenCASCADE's
+    `BOPAlgo_Splitter`) and the OCCT Public License 6.5 licensed `TIGLAISTriangulation` from TiGLCreator
+    (replaced by OpenCASCADE's `AIS_Triangulation`). Added a `THIRD_PARTY_NOTICES.md` file listing the
+    MIT-licensed third-party components (`CheckedMutex.h`, QDarkStyleSheet); it is installed together
+    with `LICENSE.txt` to `share/doc/tigl3`.
+  - Updated README: installation instructions, fixed badges, removed outdated downloads section (#1477)
 
 - New API functions
 
@@ -14,6 +20,7 @@ Changes since last release
 
 - TiGLCreator
 
+  - Use a new and derived double spinbox type to enter values ([#1469](https://github.com/DLR-SC/tigl/issues/1469))
   - Implement a manager to deal with user-defined spotlights and to dimm the default lighting. The spotlights can now be added, edited, copied, deleted and turned off/on again directly via the GUI. Also, light cones can be activated to make the spotlight visible. The CPACS Tree is extended by a tab called 'Others' ([#1439](https://github.com/DLR-SC/tigl/issues/1439))
 
 - Build System

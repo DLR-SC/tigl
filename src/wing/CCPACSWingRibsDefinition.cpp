@@ -33,7 +33,6 @@
 #include <BRepFill.hxx>
 #include <BRepTools.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
-#include <GEOMAlgo_Splitter.hxx>
 #include <gp_Pln.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <TopExp.hxx>
