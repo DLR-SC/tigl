@@ -32,7 +32,7 @@
 
 class QSlider;
 class QLabel;
-class QDoubleSpinBox;
+class TIGLCreatorDoubleSpinBox;
 
 namespace Ui
 {
@@ -67,7 +67,7 @@ private:
 
     struct DeviceWidgets {
         QSlider* slider;
-        QDoubleSpinBox* controlParamBox;
+        TIGLCreatorDoubleSpinBox* controlParamBox;
         QLabel* rotAngleLabel;
     };
 

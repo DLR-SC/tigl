@@ -62,8 +62,8 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="heightSpinBox">
-        <property name="decimals">
+       <widget class="TIGLCreatorDoubleSpinBox" name="heightSpinBox">
+        <property name="displayDecimals">
          <number>3</number>
         </property>
         <property name="maximum">
@@ -99,11 +99,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="widthSpinBox">
+      <widget class="TIGLCreatorDoubleSpinBox" name="widthSpinBox">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The width of the element.&lt;/p&gt;&lt;p&gt;Setting the width will scale the element in the vertical direction. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -138,11 +138,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="areaSpinBox">
+      <widget class="TIGLCreatorDoubleSpinBox" name="areaSpinBox">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Area of the element. &lt;/p&gt;&lt;p&gt;Setting the area will scale uniformly the element.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -181,11 +181,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="rotAroundNSpinBox">
+      <widget class="TIGLCreatorDoubleSpinBox" name="rotAroundNSpinBox">
        <property name="suffix">
         <string/>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -239,6 +239,11 @@
    <extends>QWidget</extends>
    <header>modificators/CTiglPointWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
