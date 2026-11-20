@@ -18,17 +18,28 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/DLR-SC/tigl)
           echo "status: $code"
       
-      - name: Debug GitHub Token
+      - name: Diagnose GitHub API
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          echo "Token length: ${#GH_TOKEN}"
-
-          echo "Test 1: Anonymous access"
-          curl -s -o /dev/null -w "HTTP %{http_code}\n" \
+          echo "=== Anonymous request ==="
+          curl -sS \
+            -D headers.txt \
+            -o response.json \
+            -w "HTTP %{http_code}\n" \
             https://api.github.com/repos/DLR-SC/tigl
 
-          echo "Test 2: Authenticated access"
-          curl -s -o /dev/null -w "HTTP %{http_code}\n" \
+          grep -iE '^(HTTP/|x-ratelimit-|retry-after:)' headers.txt
+          cat response.json
+
+          echo ""
+          echo "=== Authenticated request ==="
+          curl -sS \
+            -D headers.txt \
+            -o response.json \
+            -w "HTTP %{http_code}\n" \
             -H "Authorization: Bearer $GH_TOKEN" \
             https://api.github.com/user
+
+          grep -iE '^(HTTP/|x-ratelimit-|retry-after:)' headers.txt
+          cat response.json
