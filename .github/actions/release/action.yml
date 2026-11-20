@@ -6,6 +6,14 @@ inputs:
   GH_TOKEN:
     description: 'A Github PAT'
     required: true
+  dry_run:
+    description: 'If "true", run everything except creating the GitHub release and the PRs in other repos'
+    required: false
+    default: 'false'
+  version:
+    description: 'Version to release (e.g. 3.5.0). If empty, it is parsed from the git tag (github.ref).'
+    required: false
+    default: ''
 
 runs:
 
@@ -31,11 +39,16 @@ runs:
     - name: Parse version
       shell: bash -l {0}
       run: |
-        version=`echo $github_ref | cut -c 12-`
+        if [[ -n "$input_version" ]]; then
+          version="$input_version"
+        else
+          version=`echo $github_ref | cut -c 12-`
+        fi
         echo $version
         echo "version=$version" >> $GITHUB_ENV
       env:
          github_ref: ${{ github.ref }}
+         input_version: ${{ inputs.version }}
          
     - name: download Win64 package Build artifact
       uses: actions/download-artifact@v4
@@ -74,6 +87,7 @@ runs:
         exit $missing
 
     - name: Create Release
+      if: inputs.dry_run != 'true'
       id: create_release
       uses: softprops/action-gh-release@v2
       with:
@@ -115,7 +129,17 @@ runs:
         rm xx01
 
 
+    - name: Show tigl-website changes (dry run)
+      if: inputs.dry_run == 'true'
+      shell: bash -l {0}
+      run: |
+        cd tigl-website
+        git add -A
+        git status --short | head -50
+        git diff --cached -- content/pages/4_Documentation.md
+
     - name: Create Pull Request at DLR-SC/tigl-website
+      if: inputs.dry_run != 'true'
       uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-website
@@ -138,7 +162,19 @@ runs:
         sed -i s/"number: .*"/"number: 0"/g tigl-conda/tigl3/meta.yaml
         git diff
 
+    - name: Dry run summary
+      if: inputs.dry_run == 'true'
+      shell: bash -l {0}
+      run: |
+        {
+          echo "## Release dry run for TiGL ${{ env.version }}"
+          echo "Skipped: GitHub release creation, PRs at DLR-SC/tigl-website and DLR-SC/tigl-conda."
+          echo "### Release notes that would be used"
+          cat release_description.md
+        } >> $GITHUB_STEP_SUMMARY
+
     - name: Create Pull Request at DLR-SC/tigl-conda
+      if: inputs.dry_run != 'true'
       uses: peter-evans/create-pull-request@v5
       with:
         path: tigl-conda

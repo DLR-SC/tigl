@@ -1,0 +1,54 @@
+# Temporary workflow to test the release pipeline without creating a GitHub
+# release and without opening PRs at DLR-SC/tigl-website and DLR-SC/tigl-conda.
+# Delete this file before merging.
+name: Release dry run
+
+on:
+  push:
+    branches:
+      - 'fix_release_pipeline_dry_run'
+  workflow_dispatch:
+
+jobs:
+
+  # only the matrix entries that produce release artifacts, built like a release (nightly OFF)
+  build-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: "windows-2022"
+            config: "Release"
+            pixienv: "default"
+            documentation: "ON"
+            package: "ON"
+          - os: "macos-latest"
+            config: "Release"
+            pixienv: "default"
+            documentation: "OFF"
+            package: "ON"
+    uses: ./.github/workflows/build-test.yml
+    secrets: inherit
+    with:
+      os: ${{ matrix.os }}
+      config: ${{ matrix.config }}
+      nightly: "OFF"
+      pixienv: ${{ matrix.pixienv }}
+      documentation: ${{ matrix.documentation }}
+      package: ${{ matrix.package }}
+
+  draft-release-dry-run:
+    needs: build-test
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read version from CMakeLists.txt
+        id: version
+        run: |
+          version=$(grep -Po '^set\(TIGL_VERSION \K[0-9.]+' CMakeLists.txt)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - uses: ./.github/actions/release
+        with:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          dry_run: 'true'
+          version: ${{ steps.version.outputs.version }}
