@@ -17,7 +17,7 @@ keywords:
   - aircraft design
   - geometry
   - OpenCASCADE
-version: 3.5.0
+version: 3.5.1
 date-released: 2026-09-01
 authors:
   - family-names: Kleinert
@@ -39,6 +39,10 @@ authors:
     given-names: Ole
     affiliation: German Aerospace Center (DLR)
     orcid: "https://orcid.org/0009-0001-5102-151X"
+  - family-names: Siggel
+    given-names: Martin
+    affiliation: German Aerospace Center (DLR)
+    orcid: "https://orcid.org/0000-0002-3952-4659"
   - family-names: Stollenwerk
     given-names: Tobias
     affiliation: German Aerospace Center (DLR)
