@@ -651,56 +651,56 @@
                   <crossBeamUID>cargoCrossBeam1</crossBeamUID>
                   <positionYAtCrossBeam>-500</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>30</angleX>
+                  <angleX>120</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut2">
                   <frameUID>frame1</frameUID>
                   <crossBeamUID>cargoCrossBeam1</crossBeamUID>
                   <positionYAtCrossBeam>-400</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>60</angleX>
+                  <angleX>150</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut3">
                   <frameUID>frame1</frameUID>
                   <crossBeamUID>cargoCrossBeam1</crossBeamUID>
                   <positionYAtCrossBeam>400</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>120</angleX>
+                  <angleX>210</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut4">
                   <frameUID>half_frame</frameUID>
                   <crossBeamUID>cargoCrossBeam1</crossBeamUID>
                   <positionYAtCrossBeam>500</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>150</angleX>
+                  <angleX>240</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut5">
                   <frameUID>frame1</frameUID>
                   <crossBeamUID>cargoCrossBeam2</crossBeamUID>
                   <positionYAtCrossBeam>-200</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>80</angleX>
+                  <angleX>170</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut6">
                   <frameUID>frame1</frameUID>
                   <crossBeamUID>cargoCrossBeam2</crossBeamUID>
                   <positionYAtCrossBeam>200</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>100</angleX>
+                  <angleX>190</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut7">
                   <frameUID>frame2</frameUID>
                   <crossBeamUID>cargoCrossBeam3</crossBeamUID>
                   <positionYAtCrossBeam>-200</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>60</angleX>
+                  <angleX>150</angleX>
                 </cargoCrossBeamStrut>
                 <cargoCrossBeamStrut uID="cargoCrossBeamStrut8">
                   <frameUID>frame2</frameUID>
                   <crossBeamUID>cargoCrossBeam3</crossBeamUID>
                   <positionYAtCrossBeam>200</positionYAtCrossBeam>
                   <structuralElementUID>TODO</structuralElementUID>
-                  <angleX>120</angleX>
+                  <angleX>210</angleX>
                 </cargoCrossBeamStrut>
               </cargoCrossBeamStruts>
               <longFloorBeams>

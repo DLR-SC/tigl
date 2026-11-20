@@ -23,6 +23,8 @@
 #include "Debugging.h"
 
 #include <BRepBuilderAPI_Transform.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
 #include "CNamedShape.h"
 
 namespace tigl
@@ -124,5 +126,30 @@ gp_Pnt calc_hinge_point(
         return lower;
     };
 
+    CTiglTransformation GetBorderAirfoilTransformation(const CTiglControlSurfaceBorderCoordinateSystem& coords,
+                                                       double scalZ)
+    {
+        const double chord = coords.getLe().Distance(coords.getTe());
+
+        CTiglTransformation scale;
+        scale.AddScaling(chord, 1., chord * scalZ);
+
+        // bring the wire into the coordinate system of
+        // the airfoil by swapping z with y
+        gp_Trsf trafo;
+        trafo.SetTransformation(gp_Ax3(gp_Pnt(0, 0, 0), gp_Vec(0, -1, 0), gp_Vec(1, 0, 0)));
+        CTiglTransformation flipZY(trafo);
+
+        // put the airfoil to the correct place
+        CTiglTransformation position(coords.globalTransform());
+
+        // compute the total transform
+        CTiglTransformation total;
+        total.PreMultiply(scale);
+        total.PreMultiply(flipZY);
+        total.PreMultiply(position);
+
+        return total;
+    }
 }
 }
