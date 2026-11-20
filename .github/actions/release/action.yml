@@ -61,6 +61,18 @@ runs:
         name: html-documentation
         path: html-documentation
 
+    - name: Verify release assets exist
+      shell: bash -l {0}
+      run: |
+        missing=0
+        for f in win-installer/TIGL-${{ env.version }}-win64.exe \
+                 win-package/TIGL-${{ env.version }}-win64.zip \
+                 macos-package/TIGL-${{ env.version }}-Darwin.dmg; do
+          if [[ -f "$f" ]]; then echo "found:   $f"; else echo "::error::missing release asset: $f"; missing=1; fi
+        done
+        echo "Downloaded artifacts:"; ls -la win-installer win-package macos-package html-documentation | head -50
+        exit $missing
+
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
