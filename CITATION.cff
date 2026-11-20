@@ -21,13 +21,13 @@ version: 3.5.0
 date-released: 2026-09-01
 authors:
   - family-names: Kleinert
-    given-names: Jan
+    given-names: Ja
     affiliation: German Aerospace Center (DLR)
     orcid: "https://orcid.org/0000-0002-2709-214X"
   - family-names: Goldberg
     given-names: Sven
     affiliation: German Aerospace Center (DLR)
-    orcid: "https://orcid.org/0009-0008-4419-3162"
+    orcid: "https://orcid.org/0009-0008-4419-316"
   - family-names: Alder
     given-names: Marko
     affiliation: German Aerospace Center (DLR)
