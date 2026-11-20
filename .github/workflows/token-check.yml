@@ -17,3 +17,18 @@ jobs:
           echo "sha256: $fp"
           code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/DLR-SC/tigl)
           echo "status: $code"
+      
+      - name: Debug GitHub Token
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          echo "Token length: ${#GH_TOKEN}"
+
+          echo "Test 1: Anonymous access"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" \
+            https://api.github.com/repos/DLR-SC/tigl
+
+          echo "Test 2: Authenticated access"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/user
