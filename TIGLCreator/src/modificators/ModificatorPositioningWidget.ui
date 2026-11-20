@@ -37,7 +37,7 @@
      </item>
      <item>
       <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxLength">
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -70,7 +70,7 @@
      </item>
      <item>
       <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSweep">
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -106,7 +106,7 @@
      </item>
      <item>
       <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxDihedral">
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">

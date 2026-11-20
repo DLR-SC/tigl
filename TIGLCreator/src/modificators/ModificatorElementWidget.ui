@@ -63,7 +63,7 @@
       </item>
       <item>
        <widget class="TIGLCreatorDoubleSpinBox" name="heightSpinBox">
-        <property name="decimals">
+        <property name="displayDecimals">
          <number>3</number>
         </property>
         <property name="maximum">
@@ -103,7 +103,7 @@
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The width of the element.&lt;/p&gt;&lt;p&gt;Setting the width will scale the element in the vertical direction. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -142,7 +142,7 @@
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Area of the element. &lt;/p&gt;&lt;p&gt;Setting the area will scale uniformly the element.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -185,7 +185,7 @@
        <property name="suffix">
         <string/>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">

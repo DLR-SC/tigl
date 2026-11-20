@@ -80,7 +80,7 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -139,7 +139,7 @@
          <height>0</height>
         </size>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -190,7 +190,7 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -249,7 +249,7 @@
          <height>0</height>
         </size>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -313,7 +313,7 @@
        <property name="keyboardTracking">
         <bool>true</bool>
        </property>
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -368,7 +368,7 @@
      </item>
      <item>
       <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSpan">
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -423,7 +423,7 @@
      </item>
      <item>
       <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxAR">
-       <property name="decimals">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">

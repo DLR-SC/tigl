@@ -58,7 +58,7 @@
        </item>
        <item>
         <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxLength">
-         <property name="decimals">
+         <property name="displayDecimals">
           <number>3</number>
          </property>
          <property name="minimum">
@@ -103,7 +103,7 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="decimals">
+         <property name="displayDecimals">
           <number>3</number>
          </property>
          <property name="maximum">
@@ -151,7 +151,7 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="decimals">
+         <property name="displayDecimals">
           <number>3</number>
          </property>
          <property name="maximum">
