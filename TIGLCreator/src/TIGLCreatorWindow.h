@@ -42,6 +42,7 @@ class QMenu;
 class QFileSystemWatcher;
 class TIGLCreatorLogHistory;
 class TIGLCreatorLogRedirection;
+class TIGLCreatorLightSourceManager;
 
 class TIGLCreatorWindow : public QMainWindow, private Ui::TIGLCreatorWindow
 {
@@ -152,6 +153,7 @@ private:
 
     // The OpenCASCADE context;
     TIGLCreatorContext*      myScene;
+    TIGLCreatorLightSourceManager* lightSourceManager = nullptr;
 
     QString                 myLastFolder;
 

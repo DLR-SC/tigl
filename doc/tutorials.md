@@ -1,7 +1,7 @@
 Tutorials {#tuto}
 =========
 
-@section tuto_create_from_scratch Create an aircraft from scratch
+@section tuto_create_from_scratch Create an Aircraft from Scratch
 
 In this tutorial, we will present how to create an aircraft from scratch. 
 

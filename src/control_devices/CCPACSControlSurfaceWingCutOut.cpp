@@ -38,12 +38,12 @@ namespace tigl
 CTiglAbstractGeometricComponent const* CCPACSControlSurfaceWingCutOut::GetParentComponent() const
 {
     if (IsParent<CCPACSTrailingEdgeDevice>()) {
-        return (CCPACSTrailingEdgeDevice*)GetParent<CCPACSTrailingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSTrailingEdgeDevice>();
     }
     if (IsParent<CCPACSLeadingEdgeDevice>()) {
-        return (CCPACSLeadingEdgeDevice*)GetParent<CCPACSLeadingEdgeDevice>()->GetParent();
+        return GetParent<CCPACSLeadingEdgeDevice>();
     }
-    throw CTiglError("Unexpected error:");
+    throw CTiglError("Unexpected error in CCPACSControlSurfaceWingCutOut::GetParentComponent: The registered parent is not a CCPACSLeadingEdgeDevice or a CCPACSTrailingEdgeDevice. Other parent components are currently not supported.");
 }
 
 CCPACSControlSurfaceWingCutOut::CCPACSControlSurfaceWingCutOut(CCPACSTrailingEdgeDevice* parent,
@@ -261,7 +261,7 @@ CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceWingCutOut::GetCut
     }
 
     double lEta = transformEtaToCSOrTed(cutOutBorder->GetEtaLE_choice2().value(), *m_uidMgr);
-    double tXsi = outerShapeBorder->GetXsiTE_choice1()->GetXsi();
+    double tXsi = outerShapeBorder->getXsiTE();
     double tEta = transformEtaToCSOrTed(cutOutBorder->GetEtaTE_choice2().value(), *m_uidMgr);
     double lXsi = outerShapeBorder->getXsiLE(); // this is always 0.0
 
