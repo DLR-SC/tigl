@@ -27,7 +27,7 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <CTiglPolyDataTools.h>
-#include <TIGLAISTriangulation.h>
+#include <AIS_Triangulation.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IGESData_IGESModel.hxx>
@@ -75,7 +75,7 @@ bool TIGLCreatorInputOutput::importTriangulation( const QString& fileName,
     else {
         return false;
     }
-    Handle(TIGLAISTriangulation) shape = new TIGLAISTriangulation(triangulation);
+    Handle(AIS_Triangulation) shape = new AIS_Triangulation(triangulation);
     shape->SetMaterial(Graphic3d_NOM_METALIZED);
     // alpha , blue, green, red
     Standard_Integer color = (0 << 24)
@@ -87,7 +87,8 @@ bool TIGLCreatorInputOutput::importTriangulation( const QString& fileName,
         colors->SetValue(i, color);
     }
     shape->SetColors(colors);
-    shape->SetDisplayMode(AIS_Shaded);
+    // AIS_Triangulation only renders (shaded) in display mode 0
+    shape->SetDisplayMode(0);
     ic->Display(shape,Standard_False);
     ic->UpdateCurrentViewer();
 
