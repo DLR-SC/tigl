@@ -1,0 +1,33 @@
+name: Citation metadata
+
+on:
+  push:
+    paths:
+      - "CITATION.cff"
+      - ".zenodo.json"
+      - "CMakeLists.txt"
+      - ".github/scripts/check_citation_sync.py"
+      - ".github/workflows/citation.yml"
+  pull_request:
+    paths:
+      - "CITATION.cff"
+      - ".zenodo.json"
+      - "CMakeLists.txt"
+      - ".github/scripts/check_citation_sync.py"
+      - ".github/workflows/citation.yml"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate CITATION.cff
+        uses: citation-file-format/cffconvert-github-action@2.0.0
+        with:
+          args: "--validate"
+
+      - name: Check CITATION.cff and .zenodo.json are in sync
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 .github/scripts/check_citation_sync.py

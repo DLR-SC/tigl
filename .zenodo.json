@@ -1,32 +1,109 @@
 {
-    "description": "The TiGL Geometry Library to process aircraft geometries in pre-design.", 
-    "license": "apache", 
-    "title": "TiGL - The TiGL Geometry Library",  
-    "upload_type": "software",  
+    "title": "TiGL - The TiGL Geometry Library",
+    "description": "The TiGL Geometry Library to process aircraft geometries in pre-design.",
+    "upload_type": "software",
+    "license": "apache",
+    "access_right": "open",
     "creators": [
         {
-            "affiliation": "German Aerospace Center (DLR)", 
-            "name": "Martin Siggel",
-            "orcid": "0000-0002-3952-4659"
-        }, 
-        {
-            "affiliation": "German Aerospace Center (DLR)", 
-            "name": "Tobias Stollenwerk",
-            "orcid": "0000-0001-5445-8082"
-        },
-        {
-            "affiliation": "German Aerospace Center (DLR)", 
-            "name": "Jan Kleinert",
+            "name": "Kleinert, Jan",
+            "affiliation": "German Aerospace Center (DLR)",
             "orcid": "0000-0002-2709-214X"
         },
         {
-            "affiliation": "RISC Software GmbH", 
-            "name": "Bernhard Manfred Gruber"
+            "name": "Goldberg, Sven",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0009-0008-4419-3162"
         },
         {
-            "affiliation": "Airbus Space and Defense",
-            "name": "Reinhold Maierl"
+            "name": "Alder, Marko",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0000-0001-7439-2500"
+        },
+        {
+            "name": "Kobold, Meike",
+            "affiliation": "German Aerospace Center (DLR)"
+        },
+        {
+            "name": "Albers, Ole",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0009-0001-5102-151X"
+        },
+        {
+            "name": "Siggel, Martin",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0000-0002-3952-4659"
+        },
+        {
+            "name": "Stollenwerk, Tobias",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0000-0001-5445-8082"
+        },
+        {
+            "name": "Gruber, Bernhard Manfred",
+            "affiliation": "RISC Software GmbH",
+            "orcid": "0000-0001-7848-1690"
+        },
+        {
+            "name": "Landertshamer, Roland",
+            "affiliation": "RISC Software GmbH"
+        },
+        {
+            "name": "Maierl, Reinhold",
+            "affiliation": "Airbus Defence and Space",
+            "orcid": "0009-0004-4563-9358"
+        },
+        {
+            "name": "Deinert, Sebastian",
+            "affiliation": "Airbus Defence and Space",
+            "orcid": "0009-0000-6312-5853"
         }
-    ], 
-    "access_right": "open"
+    ],
+    "contributors": [
+        {
+            "name": "Gedler, Hannah",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Reiswich, Anton",
+            "affiliation": "German Aerospace Center (DLR)",
+            "orcid": "0009-0006-2118-3530",
+            "type": "Other"
+        },
+        {
+            "name": "Drougard, Malo",
+            "type": "Other"
+        },
+        {
+            "name": "Litz, Markus",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Geiger, Mark",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Jepsen, Jonas",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Pelz, Merlin",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Kunze, Philipp",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        },
+        {
+            "name": "Aly, Mahmoud",
+            "affiliation": "German Aerospace Center (DLR)",
+            "type": "Other"
+        }
+    ]
 }
