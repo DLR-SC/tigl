@@ -297,12 +297,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
         try {
             const auto cpacsVersion = Version(cpacsVersionStr);
-
+            // Compare against the plain release version. tiglGetVersion() may append
+            // "-r<git hash>" for nightly builds, which semver treats as a pre-release
+            // label, making e.g. TiGL 3.5.0-rabc < CPACS 3.5.0.
+            const auto tiglVersion = Version(TIGL_VERSION_STRING);
             if (cpacsVersion.vMajor() < TIGL_MAJOR_VERSION) {
                 LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!";
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (cpacsVersion > Version(tiglGetVersion())) {
+            else if (cpacsVersion > tiglVersion) {
                 LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
             }
         }
