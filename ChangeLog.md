@@ -34,6 +34,7 @@ Changes since last release
 
 - Fixes
 
+  - Fix mistakenly printed warning regarding too new CPACS dataset version when it is in fact the same as the TiGL version ([#1486](https://github.com/DLR-SC/tigl/issues/1486)).
   - Fix console bug under Linux: When opening TiGL, the console at first was spoiled with a warning and needed a fresh prompt for the user to enter commands [#1460](https://github.com/DLR-SC/tigl/issues/1460)
   - Fix an issue that the header of the docu did not show the TiGL logo anymore due to the switch to a newer doxygen version internally [#1444](https://github.com/DLR-SC/tigl/issues/1444)
   - Fix a crash when a control surface defines a `wingCutOut` ([#1454](https://github.com/DLR-SC/tigl/pull/1454))
