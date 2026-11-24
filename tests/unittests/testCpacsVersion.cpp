@@ -209,3 +209,25 @@ TEST(CPACSVersion, ambiguousVersionInfos)
     EXPECT_EQ(TIGL_WRONG_CPACS_VERSION, result.returnCode);
     EXPECT_TRUE(contains(result.log, "Multiple CPACS version entries found")) << result.log;
 }
+
+TEST(CPACSVersion, noHeaderVersion)
+{
+    // Invalid input: the header version is required by the CPACS schema, but TiGL does not validate against it.
+    // Without a header version, no versionInfo belongs to it: TiGL falls back to the deprecated node.
+    // Its version is too old on purpose, so the fallback is observable.
+    const auto result = openWithLog("TestData/testversion_no_header_version.xml");
+    EXPECT_EQ(TIGL_WRONG_CPACS_VERSION, result.returnCode);
+    EXPECT_TRUE(contains(result.log, "Too old CPACS dataset")) << result.log;
+    EXPECT_TRUE(contains(result.log, deprecationWarning)) << result.log;
+}
+
+TEST(CPACSVersion, versionInfoWithoutVersionAttribute)
+{
+    // Invalid input: the version attribute is required by the CPACS schema, but TiGL does not validate against it.
+    // Like the generated CPACS reader, the version check skips such a versionInfo (the reader logs an error)
+    // and continues with the next one. There is no fallback, so success proves that the second versionInfo was found.
+    const auto result = openWithLog("TestData/testversion_versioninfo_without_version_attribute.xml");
+    EXPECT_EQ(TIGL_SUCCESS, result.returnCode);
+    EXPECT_TRUE(contains(result.log, "Required attribute version is missing at xpath /cpacs/header/versionInfos/versionInfo[1]")) << result.log;
+    EXPECT_FALSE(contains(result.log, deprecationWarning)) << result.log;
+}
