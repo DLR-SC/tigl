@@ -2,7 +2,7 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
   <header>
     <name>Cpacs2Test</name>
-    <description>Test file to check versioning: the header version 1 has to match the versionInfo 1.0.0, as missing minor and patch versions are treated as 0. There is no deprecated cpacsVersion node to fall back to.</description>
+    <description>Invalid test file (violates the CPACS schema on purpose): the schema compares the header version with the versionInfo versions as text, so the header version 1 does not refer to the versionInfo 1.0.0. TiGL treats missing minor and patch versions as 0 and has to find it anyway. There is no deprecated cpacsVersion node to fall back to.</description>
     <version>1</version>
     <versionInfos>
       <versionInfo version="1.0.0">

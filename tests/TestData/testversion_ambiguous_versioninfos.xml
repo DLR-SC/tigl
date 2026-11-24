@@ -2,7 +2,7 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
   <header>
     <name>Cpacs2Test</name>
-    <description>Test file to check versioning: the versionInfos 1.0 and 1.0.0 both belong to the header version 1.0.0. This is ambiguous and must not be hidden by the fallback to the deprecated cpacsVersion node.</description>
+    <description>Test file to check versioning: the versionInfos 1.0 and 1.0.0 both belong to the header version 1.0.0. Although the file is schema-valid (the schema compares versions as text), TiGL rejects it on purpose, as 1.0 and 1.0.0 are the same version. This ambiguity must not be hidden by the fallback to the deprecated cpacsVersion node.</description>
     <version>1.0.0</version>
     <cpacsVersion>3.2.1</cpacsVersion>
     <versionInfos>

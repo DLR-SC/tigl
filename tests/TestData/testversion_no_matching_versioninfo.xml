@@ -2,7 +2,7 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
   <header>
     <name>Cpacs2Test</name>
-    <description>Test file to check versioning: no versionInfo matches the header version and there is no deprecated cpacsVersion node to fall back to.</description>
+    <description>Invalid test file (violates the CPACS schema on purpose): the header version does not refer to any versionInfo and there is no deprecated cpacsVersion node to fall back to.</description>
     <version>2.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
