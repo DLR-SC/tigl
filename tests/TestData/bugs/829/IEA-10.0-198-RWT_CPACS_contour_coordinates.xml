@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema_3_2.xsd">
   <header>
-    <version>1.0</version>
-    <timestamp>2021-09-22T11:26:52</timestamp>
     <name>IEA-10.0-198-RWT Wing Model</name>
     <description>IEA-10.0-198-RWT Wing Model</description>
-    <creator>lightworks CPACS interface</creator>
-    <cpacsVersion>3.2</cpacsVersion>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.2.0</cpacsVersion>
+        <description>IEA-10.0-198-RWT Wing Model</description>
+        <timestamp>2021-09-22T11:26:52</timestamp>
+        <creator>lightworks CPACS interface</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

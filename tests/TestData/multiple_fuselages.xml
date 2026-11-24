@@ -3,19 +3,21 @@
   <header>
     <name>Cpacs2Test</name>
     <description>Simple Wing for unit testing</description>
-    <aircraftTree>Martin Siggel</aircraftTree>
-    <timestamp>2012-10-09T15:12:47</timestamp>
-    <version>0.2</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
-        <aircraftTree>cpacs2to3</aircraftTree>
+    <version>0.2.0</version>
+    <versionInfos>
+      <versionInfo version="0.1.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Simple Wing for unit testing</description>
+        <timestamp>2012-10-09T15:12:47</timestamp>
+        <creator>Martin Siggel</creator>
+      </versionInfo>
+      <versionInfo version="0.2.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <timestamp>2018-01-15T09:22:57</timestamp>
-        <version>0.2</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-    </updates>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

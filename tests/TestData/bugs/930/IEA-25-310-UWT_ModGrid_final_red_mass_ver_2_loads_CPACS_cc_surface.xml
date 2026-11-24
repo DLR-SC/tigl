@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs>
   <header>
-    <version>1.0</version>
-    <timestamp>2022-10-17T10:25:10</timestamp>
     <name>CPACS wing</name>
     <description>lightworks CPACS interface generated wing</description>
-    <creator>lightworks CPACS interface</creator>
-    <cpacsVersion>3.2</cpacsVersion>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.2.0</cpacsVersion>
+        <description>lightworks CPACS interface generated wing</description>
+        <timestamp>2022-10-17T10:25:10</timestamp>
+        <creator>lightworks CPACS interface</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

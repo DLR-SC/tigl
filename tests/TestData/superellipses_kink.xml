@@ -2,11 +2,10 @@
 <cpacs xsi:noNamespaceSchemaLocation="https://www.cpacs.de/schema/v3_5_0/cpacs_schema.xsd"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <header>
         <name>Superellipses_test</name>
-        <version>1.0</version>
-        <cpacsVersion>3.5</cpacsVersion>
+        <version>1.0.0</version>
         <versionInfos>
-            <versionInfo version="1.0">
-                <cpacsVersion>3.5</cpacsVersion>
+            <versionInfo version="1.0.0">
+                <cpacsVersion>3.5.0</cpacsVersion>
                 <description>Superellipses test</description>
                 <timestamp>2025-05-16T12:46:13.412+02:00</timestamp>
                 <creator>Guybrush Threepwood</creator>

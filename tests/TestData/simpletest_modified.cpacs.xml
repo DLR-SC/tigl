@@ -5,16 +5,16 @@
     <version>0.2.0</version>
     <versionInfos>
       <versionInfo version="0.1.0">
-        <cpacsVersion>3.0</cpacsVersion>
-        <creator>Martin Siggel</creator>
+        <cpacsVersion>3.0.0</cpacsVersion>
         <description>Simple Wing for unit testing</description>
         <timestamp>2012-10-09T15:12:47</timestamp>
+        <creator>Martin Siggel</creator>
       </versionInfo>
       <versionInfo version="0.2.0">
-        <cpacsVersion>3.0</cpacsVersion>
-        <creator>cpacs2to3</creator>
+        <cpacsVersion>3.0.0</cpacsVersion>
         <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <timestamp>2018-01-15T09:22:57</timestamp>
+        <creator>cpacs2to3</creator>
       </versionInfo>
     </versionInfos>
   </header>

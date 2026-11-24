@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs>
   <header>
-    <version>1.0</version>
-    <timestamp>2024-10-08T09:52:01</timestamp>
     <name>CPACS wing</name>
     <description>DLR-SY CPACS interface generated wing</description>
-    <creator>DLR-SY CPACS interface</creator>
-    <cpacsVersion>3.5</cpacsVersion>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.5.0</cpacsVersion>
+        <description>DLR-SY CPACS interface generated wing</description>
+        <timestamp>2024-10-08T09:52:01</timestamp>
+        <creator>DLR-SY CPACS interface</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>
