@@ -269,8 +269,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         // Default behavior: CPACS versioning since v3.5
         ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/versionInfos/versionInfo[@version=../../version]/cpacsVersion", &cpacsVersionStr);
 
-        // CPACS versioning until v3.4
-        // Note: should return a deprication warning when TiGL is at v3.5
+        // Fallback: CPACS versioning until v3.4 (deprecated since CPACS 3.5, see warning below)
         if (tixiRet != SUCCESS) {
             tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
         }
