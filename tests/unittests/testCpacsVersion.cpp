@@ -192,3 +192,20 @@ TEST(CPACSVersion, invalidCPACSVersionFormat)
     EXPECT_EQ(TIGL_WRONG_CPACS_VERSION, result.returnCode);
     EXPECT_TRUE(contains(result.log, "Cannot read CPACS Version")) << result.log;
 }
+
+TEST(CPACSVersion, headerVersionWithoutMinor)
+{
+    // The header version "1" belongs to the versionInfo "1.0.0". There is no fallback, so success proves the match.
+    const auto result = openWithLog("TestData/testversion_header_version_without_minor.xml");
+    EXPECT_EQ(TIGL_SUCCESS, result.returnCode);
+    EXPECT_FALSE(contains(result.log, deprecationWarning)) << result.log;
+}
+
+TEST(CPACSVersion, ambiguousVersionInfos)
+{
+    // The versionInfos "1.0" and "1.0.0" both belong to the header version "1.0.0".
+    // This is an error, which must not be hidden by the fallback to the deprecated node.
+    const auto result = openWithLog("TestData/testversion_ambiguous_versioninfos.xml");
+    EXPECT_EQ(TIGL_WRONG_CPACS_VERSION, result.returnCode);
+    EXPECT_TRUE(contains(result.log, "Multiple CPACS version entries found")) << result.log;
+}

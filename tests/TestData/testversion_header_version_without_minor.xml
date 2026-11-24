@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Test file to check versioning: the header version 1 has to match the versionInfo 1.0.0, as missing minor and patch versions are treated as 0. There is no deprecated cpacsVersion node to fall back to.</description>
+    <version>1</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.3.0</cpacsVersion>
+        <description>Test for version 1.0.0</description>
+        <timestamp>2024-05-30T10:00:00</timestamp>
+        <creator>TiGL Test</creator>
+      </versionInfo>
+    </versionInfos>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel"/>
+    </aircraft>
+  </vehicles>
+</cpacs>
