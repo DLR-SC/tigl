@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Test file to check versioning: deprecated cpacsVersion node at /cpacs/header only, with a too old CPACS version. TiGL has to fall back to it and reject the file.</description>
+    <version>1.0.0</version>
+    <cpacsVersion>2.1.3</cpacsVersion>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel"/>
+    </aircraft>
+  </vehicles>
+</cpacs>
