@@ -6,6 +6,7 @@ Changes since last release
 
 - General changes
 
+  - Aligned all internal CPACS files to new way of storing updated CPACS files versionings ([#1484] (https://github.com/DLR-SC/tigl/issues/1484)).
   - Updated the author list in `.zenodo.json` and added a `CITATION.cff` file, including a CI check that keeps both in sync
   - License cleanup: removed the LGPL-2.1 licensed `GEOMAlgo_Splitter` (replaced by OpenCASCADE's
     `BOPAlgo_Splitter`) and the OCCT Public License 6.5 licensed `TIGLAISTriangulation` from TiGLCreator
