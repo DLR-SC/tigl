@@ -34,6 +34,9 @@
 #define TIGL_VERSION_STRING      "@TIGL_VERSION@"
 #define TIGL_REVISION            "@TIGL_REVISION@"
 
+/** CPACS version of the schema TiGL is built against (taken from cpacs_gen_input/cpacs_schema.xsd) */
+#define TIGL_CPACS_VERSION_STRING "@TIGL_CPACS_VERSION@"
+
 /** TIGL_VERSION_HEX returns a unique integer which is increasing with each release 
  *  This can be e.g. used in ifdefs
  */
