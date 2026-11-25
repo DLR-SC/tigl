@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Test file to check versioning: the cpacsVersion is not a valid version string.</description>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>three.two</cpacsVersion>
+        <description>Invalid CPACS version string</description>
+        <timestamp>2024-05-30T10:00:00</timestamp>
+        <creator>TiGL Test</creator>
+      </versionInfo>
+    </versionInfos>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel"/>
+    </aircraft>
+  </vehicles>
+</cpacs>

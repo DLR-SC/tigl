@@ -5,10 +5,10 @@
     <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
-        <cpacsVersion>3.0</cpacsVersion>
-        <creator>Sven Goldberg</creator>
+        <cpacsVersion>3.0.0</cpacsVersion>
         <description>Dummy aircraft for testing profile approximation</description>
         <timestamp>2025-12-16T11:00:00</timestamp>
+        <creator>Sven Goldberg</creator>
       </versionInfo>
     </versionInfos>
   </header>

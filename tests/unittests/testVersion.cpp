@@ -226,3 +226,31 @@ TEST(Version, InvalidFormat)
     EXPECT_THROW(Version("99999999999999999999999.999999999999999999.99999999999999999----RC-SNAPSHOT.12.09.1--------------------------------..12"), std::invalid_argument);
 }
 
+TEST(Version, isSameVersion)
+{
+    // missing minor and patch versions are treated as 0
+    EXPECT_TRUE(isSameVersion("1", "1.0"));
+    EXPECT_TRUE(isSameVersion("1", "1.0.0"));
+    EXPECT_TRUE(isSameVersion("1.0", "1.0.0"));
+    EXPECT_TRUE(isSameVersion("1.0.0", "1"));
+    EXPECT_TRUE(isSameVersion("1.2", "1.2.0"));
+    EXPECT_TRUE(isSameVersion("1-beta", "1.0.0-beta"));
+    EXPECT_TRUE(isSameVersion("1+build", "1.0.0+build"));
+
+    // different versions
+    EXPECT_FALSE(isSameVersion("1", "1.0.1"));
+    EXPECT_FALSE(isSameVersion("1", "1.1"));
+    EXPECT_FALSE(isSameVersion("1.2", "1.2.1"));
+    EXPECT_FALSE(isSameVersion("1.0.0", "1.0.0-beta"));
+    EXPECT_FALSE(isSameVersion("1.0.0-alpha", "1.0.0-beta"));
+
+    // in contrast to operator==, the build metadata distinguishes versions
+    EXPECT_FALSE(isSameVersion("1.0.0", "1.0.0+ver1"));
+    EXPECT_FALSE(isSameVersion("1.0.0+ver1", "1.0.0+ver2"));
+
+    // invalid versions are compared literally
+    EXPECT_TRUE(isSameVersion("ver1", "ver1"));
+    EXPECT_FALSE(isSameVersion("ver1", "ver2"));
+    EXPECT_FALSE(isSameVersion("ver1", "1.0.0"));
+    EXPECT_FALSE(isSameVersion("01", "1"));
+}

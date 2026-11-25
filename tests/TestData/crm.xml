@@ -2,27 +2,28 @@
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema.xsd">
   <header>
     <name>NASA CRM</name>
-    <version>1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <creator>Xiangyu GU</creator>
     <description>NASA CRM for AGILE CPACS hangar</description>
-    <timestamp>2016-02-23T14:21:33</timestamp>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
-        <creator>cpacs2to3</creator>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0-1+ver1">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Converted to cpacs 3.0 using cpacs2to3</description>
         <timestamp>2018-07-06T11:46:58</timestamp>
-        <version>ver1</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3</modification>
         <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="1.0.0+ver1">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Converted to cpacs 3.0 using cpacs2to3</description>
         <timestamp>2018-11-21T12:09:05</timestamp>
-        <version>ver1</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-    </updates>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>NASA CRM for AGILE CPACS hangar</description>
+        <timestamp>2016-02-23T14:21:33</timestamp>
+        <creator>Xiangyu GU</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles xsi:type="vehiclesType">
     <aircraft xsi:type="aircraftType">
