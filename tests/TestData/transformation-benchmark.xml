@@ -3,40 +3,39 @@
   <header>
     <name>TransformationTest</name>
     <description>Simple Wing to test the different CPACS transformation modes</description>
-    <creator>Martin Siggel</creator>
-    <timestamp>2018-01-11T14:23:25</timestamp>
     <version>0.4.0</version>
-    <cpacsVersion>3.2</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
-        <creator>cpacs2to3</creator>
+    <versionInfos>
+      <versionInfo version="0.0.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Simple Wing to test the different CPACS transformation modes</description>
+        <timestamp>2018-01-11T14:23:25</timestamp>
+        <creator>Martin Siggel</creator>
+      </versionInfo>
+      <versionInfo version="0.1.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <timestamp>2018-01-15T09:26:01</timestamp>
-        <version>0.1</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Added missing UIDs.</modification>
-        <creator>fix_errors.py</creator>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="0.2.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Added missing UIDs.</description>
         <timestamp>2019-04-29T20:48:32</timestamp>
-        <version>0.2.0</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
-        <creator>cpacs2to3</creator>
+        <creator>fix_errors.py</creator>
+      </versionInfo>
+      <versionInfo version="0.3.0">
+        <cpacsVersion>3.1.0</cpacsVersion>
+        <description>Converted to CPACS 3.1 using cpacs2to3</description>
         <timestamp>2020-04-26T02:01:40</timestamp>
-        <version>0.3.0</version>
-        <cpacsVersion>3.1</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to CPACS 3.2 using cpacs2to3</modification>
         <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="0.4.0">
+        <cpacsVersion>3.2.0</cpacsVersion>
+        <description>Converted to CPACS 3.2 using cpacs2to3</description>
         <timestamp>2021-04-23T18:02:03</timestamp>
-        <version>0.4.0</version>
-        <cpacsVersion>3.2</cpacsVersion>
-      </update>
-    </updates>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

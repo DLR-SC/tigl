@@ -23,6 +23,7 @@
 #include <cctype>
 #include <regex>
 #include <exception>
+#include <stdexcept>
 
 /**
  * @brief This class implements semver 2.0.0 with one modification:
@@ -212,5 +213,37 @@ private:
     }
 
 };
+
+/**
+ * @brief Returns true, if both strings denote the same version.
+ *
+ * In contrast to Version::operator==
+ *  - a missing minor version is allowed as well, i.e. "1", "1.0" and "1.0.0" are the same version,
+ *  - the build metadata is compared as well, since it distinguishes otherwise identical
+ *    versions, e.g. "1.0.0+ver1" and "1.0.0".
+ *
+ * Strings that are no valid versions are compared literally.
+ */
+inline bool isSameVersion(const std::string& a, const std::string& b)
+{
+    // "1" -> "1.0", "1-beta" -> "1.0-beta", "1+build" -> "1.0+build"
+    const auto addMissingMinor = [](const std::string& str) {
+        static const auto majorOnly = std::regex(R"(^(0|[1-9]\d*)([-+].*)?$)");
+        std::smatch match;
+        if (std::regex_match(str, match, majorOnly)) {
+            return match[1].str() + ".0" + match[2].str();
+        }
+        return str;
+    };
+
+    try {
+        const auto versionA = Version(addMissingMinor(a));
+        const auto versionB = Version(addMissingMinor(b));
+        return versionA == versionB && versionA.vBuild() == versionB.vBuild();
+    }
+    catch (const std::invalid_argument&) {
+        return a == b;
+    }
+}
 
 #endif // VERSION_H

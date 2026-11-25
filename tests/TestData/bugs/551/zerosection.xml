@@ -3,12 +3,21 @@
   <header>
     <name>ZeroSectionTest</name>
     <description>For unit testing</description>
-    <creator>Martin Siggel</creator>
-    <timestamp>2019-03-11T16:26:47</timestamp>
     <version>1.1.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-    <update><modification>Added missing UIDs.</modification><creator>fix_errors.py</creator><timestamp>2019-04-29T20:48:33</timestamp><version>1.1.0</version><cpacsVersion>3.0</cpacsVersion></update></updates>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>For unit testing</description>
+        <timestamp>2019-03-11T16:26:47</timestamp>
+        <creator>Martin Siggel</creator>
+      </versionInfo>
+      <versionInfo version="1.1.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Added missing UIDs.</description>
+        <timestamp>2019-04-29T20:48:33</timestamp>
+        <creator>fix_errors.py</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

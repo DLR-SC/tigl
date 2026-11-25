@@ -4,96 +4,87 @@
   <header>
     <name>D150 for CPACS 1.3</name>
     <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
-    <creator>Daniel Boehnke, DLR-LK</creator>
-    <timestamp>2010-07-07T12:00:00</timestamp>
     <version>1.9.0</version>
-    <cpacsVersion>3.2</cpacsVersion>
-    <updates>
-      <update>
-        <modification>Updated to 1.4. ControlsSurfaces and Landing Gear by Felix Dorbath</modification>
-        <creator>Daniel Boehnke, DLR-LY</creator>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>1.4.0</cpacsVersion>
+        <description>copied some stuff from other versions. Mission is just an example as the D150 might not make it to Newark with Mach 0.84</description>
+        <timestamp>2010-07-07T12:00:00</timestamp>
+        <creator>Daniel Boehnke, DLR-LK</creator>
+      </versionInfo>
+      <versionInfo version="1.1.0">
+        <cpacsVersion>1.4.0</cpacsVersion>
+        <description>Updated to 1.4. ControlsSurfaces and Landing Gear by Felix Dorbath</description>
         <timestamp>2010-11-22T12:00:00</timestamp>
-        <version>1.1</version>
-        <cpacsVersion>1.4</cpacsVersion>
-      </update>
-      <update>
-        <modification>Updated to 1.5</modification>
         <creator>Daniel Boehnke, DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.2.0">
+        <cpacsVersion>1.5.0</cpacsVersion>
+        <description>Updated to 1.5</description>
         <timestamp>2010-11-22T12:00:00</timestamp>
-        <version>1.2</version>
-        <cpacsVersion>1.5</cpacsVersion>
-      </update>
-      <update>
-        <modification>Updated to 1.6</modification>
+        <creator>Daniel Boehnke, DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.3.0-1">
+        <cpacsVersion>1.6.0</cpacsVersion>
+        <description>Updated to 1.6</description>
+        <timestamp>2011-07-01T12:00:00</timestamp>
         <creator>Daniel Boehnke, DLR-LY, structures by Felix Dorbath, DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.3.0">
+        <cpacsVersion>2.0.0</cpacsVersion>
+        <description>First shot for 2.0. Changed profile geometries and changed rotation of fuselage element rotation</description>
         <timestamp>2011-07-01T12:00:00</timestamp>
-        <version>1.3</version>
-        <cpacsVersion>1.6</cpacsVersion>
-      </update>
-      <update>
-        <modification>First shot for 2.0. Changed profile geometries and changed rotation of fuselage element rotation</modification>
         <creator>Daniel Boehnke, Till Pfeiffer,  DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.4.0">
+        <cpacsVersion>2.0.0</cpacsVersion>
+        <description>Moved Fuselage 10m aft</description>
         <timestamp>2011-07-01T12:00:00</timestamp>
-        <version>1.3</version>
-        <cpacsVersion>2.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Moved Fuselage 10m aft</modification>
         <creator>Daniel Boehnke, DLR-LY</creator>
-        <timestamp>2011-07-01T12:00:00</timestamp>
-        <version>1.4</version>
-        <cpacsVersion>2.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>ReleaseBird CPACS 2.0, relocate Fuselage</modification>
-        <creator>Daniel Boehnke, DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.5.0">
+        <cpacsVersion>2.0.0</cpacsVersion>
+        <description>ReleaseBird CPACS 2.0, relocate Fuselage</description>
         <timestamp>2012-03-15T12:00:00</timestamp>
-        <version>1.5</version>
-        <cpacsVersion>2.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Changes for cpacs2.0a fuselage structure</modification>
-        <creator>Sebastian Freund, DLR-FA</creator>
+        <creator>Daniel Boehnke, DLR-LY</creator>
+      </versionInfo>
+      <versionInfo version="1.6.0-1">
+        <cpacsVersion>2.0.0-a</cpacsVersion>
+        <description>Changes for cpacs2.0a fuselage structure</description>
         <timestamp>2012-09-25T12:00:00</timestamp>
-        <version>1.6</version>
-        <cpacsVersion>2.0a</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</modification>
-        <creator>cpacs2to3</creator>
+        <creator>Sebastian Freund, DLR-FA</creator>
+      </versionInfo>
+      <versionInfo version="1.6.0-2">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Converted to cpacs 3.0 using cpacs2to3 - does not include structure update</description>
         <timestamp>2018-01-15T09:20:12</timestamp>
-        <version>1.6</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Removed some fuselage profiles for guide curve modeling</modification>
-        <creator>Jan Kleinert, DLR-SC</creator>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="1.6.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Removed some fuselage profiles for guide curve modeling</description>
         <timestamp>2018-04-27T09:20:12</timestamp>
-        <version>1.6</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Fixed invalid uIDs. Fixed order of wing profiles.</modification>
-        <creator>fix_errors.py</creator>
+        <creator>Jan Kleinert, DLR-SC</creator>
+      </versionInfo>
+      <versionInfo version="1.7.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Fixed invalid uIDs. Fixed order of wing profiles.</description>
         <timestamp>2019-04-29T20:48:37</timestamp>
-        <version>1.7.0</version>
-        <cpacsVersion>3.0</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to CPACS 3.1 using cpacs2to3</modification>
-        <creator>cpacs2to3</creator>
+        <creator>fix_errors.py</creator>
+      </versionInfo>
+      <versionInfo version="1.8.0">
+        <cpacsVersion>3.1.0</cpacsVersion>
+        <description>Converted to CPACS 3.1 using cpacs2to3</description>
         <timestamp>2020-04-26T02:01:55</timestamp>
-        <version>1.8.0</version>
-        <cpacsVersion>3.1</cpacsVersion>
-      </update>
-      <update>
-        <modification>Converted to CPACS 3.2 using cpacs2to3</modification>
         <creator>cpacs2to3</creator>
+      </versionInfo>
+      <versionInfo version="1.9.0">
+        <cpacsVersion>3.2.0</cpacsVersion>
+        <description>Converted to CPACS 3.2 using cpacs2to3</description>
         <timestamp>2021-04-23T18:02:18</timestamp>
-        <version>1.9.0</version>
-        <cpacsVersion>3.2</cpacsVersion>
-      </update>
-    </updates>
+        <creator>cpacs2to3</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

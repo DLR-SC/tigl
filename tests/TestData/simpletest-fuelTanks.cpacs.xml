@@ -7,10 +7,10 @@
     <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
+        <cpacsVersion>3.5.0</cpacsVersion>
         <description>First test set with different tank and vessel types</description>
-        <creator>Marko Alder</creator>
         <timestamp>2023-12-28T12:00:00</timestamp>
-        <cpacsVersion>3.5</cpacsVersion>
+        <creator>Marko Alder</creator>
       </versionInfo>
     </versionInfos>
   </header>

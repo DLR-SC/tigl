@@ -3,14 +3,15 @@
   <header>
     <name>Cpacs2Test</name>
     <description>Simple Wing for positionings testing</description>
-    <creator>Malo Drougard</creator>
-    <timestamp>2018-10-09T15:12:47</timestamp>
-    <version>0.0</version>
-    <cpacsVersion>3.0</cpacsVersion>
-    <updates>
-      <update>
-      </update>
-    </updates>
+    <version>0.0.0</version>
+    <versionInfos>
+      <versionInfo version="0.0.0">
+        <cpacsVersion>3.0.0</cpacsVersion>
+        <description>Simple Wing for positionings testing</description>
+        <timestamp>2018-10-09T15:12:47</timestamp>
+        <creator>Malo Drougard</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

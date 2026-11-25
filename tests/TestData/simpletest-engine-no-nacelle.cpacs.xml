@@ -3,10 +3,15 @@
   <header>
     <name>CpacsTestEngineNoNacelle</name>
     <description>Test case for engine without nacelle</description>
-    <creator>TiGL Test</creator>
-    <timestamp>2021-03-15T00:00:00</timestamp>
     <version>1.0.0</version>
-    <cpacsVersion>3.2</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.2.0</cpacsVersion>
+        <description>Test case for engine without nacelle</description>
+        <timestamp>2021-03-15T00:00:00</timestamp>
+        <creator>TiGL Test</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <engines>

@@ -2,10 +2,15 @@
 <cpacs>
   <header>
     <name>Test case for bug 753</name>
-    <creator>Martin Siggel</creator>
-    <timestamp>2020-10-16T00:00:00</timestamp>
     <version>1.0.0</version>
-    <cpacsVersion>3.1</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.1.0</cpacsVersion>
+        <description>Test case for bug 753</description>
+        <timestamp>2020-10-16T00:00:00</timestamp>
+        <creator>Martin Siggel</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>
