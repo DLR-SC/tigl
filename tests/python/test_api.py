@@ -39,6 +39,9 @@ class TestSimpleCpacs(unittest.TestCase):
 
     def test_tiglGetVersion(self):
         print('TIGL-Version: ' + self.tigl.version)
+
+    def test_tiglGetCPACSVersion(self):
+        print('CPACS-Version: ' + self.tigl.getCPACSVersion())
         
     def test_objectCount(self):
         self.assertEqual(self.tigl.getWingCount(),1)

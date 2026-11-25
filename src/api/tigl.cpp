@@ -531,6 +531,11 @@ TIGL_COMMON_EXPORT const char* tiglGetVersion()
     return version.c_str();
 }
 
+TIGL_COMMON_EXPORT const char* tiglGetCPACSVersion()
+{
+    return TIGL_CPACS_VERSION_STRING;
+}
+
 /*** General geometry function ***/
 
 

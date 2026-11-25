@@ -18,7 +18,7 @@ Changes since last release
 
 - New API functions
 
-  - none
+  - `tiglGetCPACSVersion`: Returns the CPACS version TiGL is built against ([#1486](https://github.com/DLR-SC/tigl/issues/1486))
 
 - TiGLCreator
 
