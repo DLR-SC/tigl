@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema_3_3.xsd">
   <header>
-    <name> Rectangular Test Beam</name>
+    <name>Rectangular Test Beam</name>
     <description>Reference Beam for Optimisation with PreDoCS</description>
-    <creator>Hendrik Traub</creator>
-    <timestamp>2019-03-07T10:00:00</timestamp>
-    <version>1.0</version>
-    <cpacsVersion>3.3</cpacsVersion>
+    <version>1.0.0</version>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.3.0</cpacsVersion>
+        <description>Reference Beam for Optimisation with PreDoCS</description>
+        <timestamp>2019-03-07T10:00:00</timestamp>
+        <creator>Hendrik Traub</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

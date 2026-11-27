@@ -854,6 +854,7 @@ void TIGLCreatorWindow::about()
     QString text;
     QString tixiVersion(tixiGetVersion());
     QString tiglVersion(tiglGetVersion());
+    QString cpacsVersion(tiglGetCPACSVersion());
     QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
     text =  "The <b>TiGLCreator</b> is based on the TiGL library and allows you to view, edit and create CPACS geometries. ";
@@ -868,6 +869,7 @@ void TIGLCreatorWindow::about()
     }
 
     text += makeLink("TiXI", "https://github.com/dlr-sc/tixi") + ": v" + tixiVersion + "<br/>";
+    text += makeLink("CPACS", "https://github.com/dlr-sl/cpacs") + ": v" + cpacsVersion + "<br/>";
     text += makeLink("TiGL", "https://github.com/dlr-sc/tigl") + ": v" + tiglVersion + "<br/>";
     text += makeLink("OpenCASCADE", "https://www.opencascade.com/") + ": v" + occtVersion + "<br/><br/>";
 

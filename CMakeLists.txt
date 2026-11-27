@@ -129,6 +129,11 @@ add_subdirectory(thirdparty)
 add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
 
+# CPACS version TiGL is built against (used for the CPACS dataset version check)
+include(GetCPACSSchemaVersion)
+tigl_get_cpacs_schema_version("${PROJECT_SOURCE_DIR}/cpacs_gen_input/cpacs_schema.xsd" TIGL_CPACS_VERSION)
+message(STATUS "CPACS schema version: ${TIGL_CPACS_VERSION}")
+
 add_subdirectory(src)
 add_subdirectory(TIGLCreator)
 add_subdirectory(bindings)
@@ -148,6 +153,14 @@ if(TIGL_BUILD_TESTS)
 endif(TIGL_BUILD_TESTS)
 
 include(createDoc)
+
+# license and third-party attribution notices
+install(FILES
+    ${PROJECT_SOURCE_DIR}/LICENSE.txt
+    ${PROJECT_SOURCE_DIR}/THIRD_PARTY_NOTICES.md
+    DESTINATION share/doc/tigl3
+    COMPONENT docu
+)
 
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Jan Kleinert") #required for debian/ubuntu
@@ -202,9 +215,14 @@ set(CPACK_PACKAGE_NAME "TIGL")
 set(CPACK_PACKAGE_VERSION_MAJOR ${TIGL_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})
+if(WIN32)
+    set(CPACK_PACKAGE_FILE_NAME "TIGL-${TIGL_VERSION}-win64")
+elseif(APPLE)
+    set(CPACK_PACKAGE_FILE_NAME "TIGL-${TIGL_VERSION}-Darwin")
+endif()
 set(CPACK_COMPONENTS_ALL "creator;docu;interfaces;headers;cpp_bindings")
 include(CPack)
-set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})
 cpack_add_component(creator DISPLAY_NAME "TiGL + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 cpack_add_component(cpp_bindings DISPLAY_NAME "Internal C++ Bindings")

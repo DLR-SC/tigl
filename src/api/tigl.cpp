@@ -223,6 +223,50 @@ namespace
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
 
+namespace
+{
+    // Reads the cpacsVersion of the versionInfo that belongs to /cpacs/header/version (CPACS versioning since v3.5).
+    // The versions are compared semantically, i.e. "1", "1.0" and "1.0.0" are the same version.
+    // Returns
+    //  - ELEMENT_NOT_FOUND, if there is no header version, no versionInfos or no versionInfo belonging to the header version,
+    //  - ELEMENT_PATH_NOT_UNIQUE, if several versionInfos belong to the header version,
+    //  - otherwise the TIXI return code of reading the cpacsVersion of the matching versionInfo
+    //    (SUCCESS, ELEMENT_NOT_FOUND if it has none, ELEMENT_PATH_NOT_UNIQUE if it has several).
+    ReturnCode getCPACSVersionFromVersionInfos(TixiDocumentHandle tixiHandle, char** cpacsVersion)
+    {
+        char* headerVersion = nullptr;
+        if (tixiGetTextElement(tixiHandle, "/cpacs/header/version", &headerVersion) != SUCCESS) {
+            return ELEMENT_NOT_FOUND;
+        }
+
+        const std::string versionInfosPath = "/cpacs/header/versionInfos";
+        int versionInfoCount = 0;
+        if (tixiGetNamedChildrenCount(tixiHandle, versionInfosPath.c_str(), "versionInfo", &versionInfoCount) != SUCCESS) {
+            return ELEMENT_NOT_FOUND;
+        }
+
+        std::string matchingPath;
+        for (int i = 1; i <= versionInfoCount; ++i) {
+            const std::string path = versionInfosPath + "/versionInfo[" + std::to_string(i) + "]";
+            char* version = nullptr;
+            if (tixiGetTextAttribute(tixiHandle, path.c_str(), "version", &version) != SUCCESS) {
+                continue;
+            }
+            if (isSameVersion(headerVersion, version)) {
+                if (!matchingPath.empty()) {
+                    return ELEMENT_PATH_NOT_UNIQUE;
+                }
+                matchingPath = path;
+            }
+        }
+
+        if (matchingPath.empty()) {
+            return ELEMENT_NOT_FOUND;
+        }
+        return tixiGetTextElement(tixiHandle, (matchingPath + "/cpacsVersion").c_str(), cpacsVersion);
+    }
+} // namespace
+
 /*****************************************************************************/
 /* Public visible functions.                                                 */
 /*****************************************************************************/
@@ -267,11 +311,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         char* cpacsVersionStr = NULL;
 
         // Default behavior: CPACS versioning since v3.5
-        ReturnCode tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/versionInfos/versionInfo[@version=../../version]/cpacsVersion", &cpacsVersionStr);
+        ReturnCode tixiRet = getCPACSVersionFromVersionInfos(tixiHandle, &cpacsVersionStr);
 
-        // CPACS versioning until v3.4
-        // Note: should return a deprication warning when TiGL is at v3.5
-        if (tixiRet != SUCCESS) {
+        // Fallback: CPACS versioning until v3.4 (deprecated since CPACS 3.5, see warning below).
+        // Not used if several versionInfos belong to the header version, as this is an error.
+        if (tixiRet != SUCCESS && tixiRet != ELEMENT_PATH_NOT_UNIQUE) {
             tixiRet = tixiGetTextElement(tixiHandle, "/cpacs/header/cpacsVersion", &cpacsVersionStr);
         }
 
@@ -297,13 +341,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
         try {
             const auto cpacsVersion = Version(cpacsVersionStr);
-
-            if (cpacsVersion.vMajor() < TIGL_MAJOR_VERSION) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!";
+            // CPACS schema version that TiGL is built against (from cpacs_gen_input/cpacs_schema.xsd)
+            const auto supportedCpacsVersion = Version(TIGL_CPACS_VERSION_STRING);
+            if (cpacsVersion.vMajor() < supportedCpacsVersion.vMajor()) {
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << supportedCpacsVersion.vMajor() << "!";
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (cpacsVersion > Version(tiglGetVersion())) {
-                LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
+            else if (cpacsVersion > supportedCpacsVersion) {
+                LOG(WARNING) << "CPACS dataset version " << cpacsVersionStr << " may not be fully supported by TiGL."
+                             << "The latest fully supported CPACS version is " << TIGL_CPACS_VERSION_STRING << "!";
             }
         }
         catch (const std::invalid_argument& err) {
@@ -483,6 +529,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT const char* tiglGetVersion()
 {
     return version.c_str();
+}
+
+TIGL_COMMON_EXPORT const char* tiglGetCPACSVersion()
+{
+    return TIGL_CPACS_VERSION_STRING;
 }
 
 /*** General geometry function ***/

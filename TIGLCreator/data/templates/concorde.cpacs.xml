@@ -5,10 +5,10 @@
     <version>1.0.0</version>
     <versionInfos>
       <versionInfo version="1.0.0">
-        <cpacsVersion>3.0</cpacsVersion>
-        <creator>CFSE, Aidan Jungo</creator>
+        <cpacsVersion>3.0.0</cpacsVersion>
         <description>Concorde draw from a step file, build with SUMO and then converted to CPACS</description>
         <timestamp>2018-11-21T12:08:31</timestamp>
+        <creator>CFSE, Aidan Jungo</creator>
       </versionInfo>
     </versionInfos>
   </header>

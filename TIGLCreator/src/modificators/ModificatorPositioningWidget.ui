@@ -36,8 +36,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxLength">
-       <property name="decimals">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxLength">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="maximum">
@@ -69,8 +69,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxSweep">
-       <property name="decimals">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxSweep">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -105,8 +105,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinBoxDihedral">
-       <property name="decimals">
+      <widget class="TIGLCreatorDoubleSpinBox" name="spinBoxDihedral">
+       <property name="displayDecimals">
         <number>3</number>
        </property>
        <property name="minimum">
@@ -173,6 +173,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLCreatorDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>TIGLCreatorDoubleSpinBox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

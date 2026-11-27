@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../cpacs_gen_input/cpacs_schema.xsd">
+  <header>
+    <name>Cpacs2Test</name>
+    <description>Invalid test file (violates the CPACS schema on purpose): the required header version is missing. Hence, no versionInfo can belong to it, so TiGL has to fall back to the deprecated cpacsVersion node (too old on purpose, so the fallback is observable).</description>
+    <cpacsVersion>2.1.3</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.3.0</cpacsVersion>
+        <description>Test for version 1.0.0</description>
+        <timestamp>2024-05-30T10:00:00</timestamp>
+        <creator>TiGL Test</creator>
+      </versionInfo>
+    </versionInfos>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="LoggingTestModel"/>
+    </aircraft>
+  </vehicles>
+</cpacs>

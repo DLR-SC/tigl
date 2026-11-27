@@ -3,10 +3,15 @@
   <header>
     <name>Cpacs2Test</name>
     <description>Test file to check versioning</description>
-    <creator>Martin Siggel</creator>
-    <timestamp>2021-11-02T15:12:00</timestamp>
     <version>1.0.0</version>
-    <cpacsVersion>3.2.1</cpacsVersion>
+    <versionInfos>
+      <versionInfo version="1.0.0">
+        <cpacsVersion>3.2.1</cpacsVersion>
+        <description>Test file to check versioning</description>
+        <timestamp>2021-11-02T15:12:00</timestamp>
+        <creator>Martin Siggel</creator>
+      </versionInfo>
+    </versionInfos>
   </header>
   <vehicles>
     <aircraft>

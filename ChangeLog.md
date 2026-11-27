@@ -7,13 +7,23 @@ Changes since last release
 - General changes
 
   - Add new lofting algorithm to create wings, fuselages and ducts with rounded segments, enabled via the new `roundedSegments` attribute and the `innerRoundingDistance`/`outerRoundingDistance` segment elements ([#1284](https://github.com/DLR-SC/tigl/issues/1284))
+  - Aligned all internal CPACS files to new way of storing CPACS files versions ([#1484](https://github.com/DLR-SC/tigl/issues/1484)).
+  - Compare CPACS header's version and versionInfo's attribute version semantically, not by string comparison (1 equals 1.0 equals 1.0.0).
+  - Updated the author list in `.zenodo.json` and added a `CITATION.cff` file, including a CI check that keeps both in sync
+  - License cleanup: removed the LGPL-2.1 licensed `GEOMAlgo_Splitter` (replaced by OpenCASCADE's
+    `BOPAlgo_Splitter`) and the OCCT Public License 6.5 licensed `TIGLAISTriangulation` from TiGLCreator
+    (replaced by OpenCASCADE's `AIS_Triangulation`). Added a `THIRD_PARTY_NOTICES.md` file listing the
+    MIT-licensed third-party components (`CheckedMutex.h`, QDarkStyleSheet); it is installed together
+    with `LICENSE.txt` to `share/doc/tigl3`.
+  - Updated README: installation instructions, fixed badges, removed outdated downloads section (#1477)
 
 - New API functions
 
-  - none
+  - `tiglGetCPACSVersion`: Returns the CPACS version TiGL is built against ([#1486](https://github.com/DLR-SC/tigl/issues/1486))
 
 - TiGLCreator
 
+  - Use a new and derived double spinbox type to enter values ([#1469](https://github.com/DLR-SC/tigl/issues/1469))
   - Implement a manager to deal with user-defined spotlights and to dimm the default lighting. The spotlights can now be added, edited, copied, deleted and turned off/on again directly via the GUI. Also, light cones can be activated to make the spotlight visible. The CPACS Tree is extended by a tab called 'Others' ([#1439](https://github.com/DLR-SC/tigl/issues/1439))
 
 - Build System
@@ -27,6 +37,7 @@ Changes since last release
 
 - Fixes
 
+  - Fix mistakenly printed warning regarding too new CPACS dataset version. The CPACS version of a dataset is now compared with the CPACS schema version TiGL is built against instead of the TiGL version ([#1486](https://github.com/DLR-SC/tigl/issues/1486)).
   - Fix console bug under Linux: When opening TiGL, the console at first was spoiled with a warning and needed a fresh prompt for the user to enter commands [#1460](https://github.com/DLR-SC/tigl/issues/1460)
   - Fix an issue that the header of the docu did not show the TiGL logo anymore due to the switch to a newer doxygen version internally [#1444](https://github.com/DLR-SC/tigl/issues/1444)
   - Fix a crash when a control surface defines a `wingCutOut` ([#1454](https://github.com/DLR-SC/tigl/pull/1454))
