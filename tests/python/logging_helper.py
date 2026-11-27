@@ -23,7 +23,7 @@ from tixi3.tixi3wrapper import *
 import sys
 
 # this function produces (console_logging_level=3 (TILOG_INFO)):
-# WRN 01/17 09:19:00 tigl.cpp:108] CPACS dataset version 3.99.0 is currently not supported by TiGL. The latest supported CPACS version is 3.5.1!
+# WRN 01/17 09:19:00 tigl.cpp:108] CPACS dataset version 3.99.0 may not be fully supported by TiGL. The latest fully supported CPACS version is 3.5.1!
 # INF 01/17 09:19:00 CCPACSFarField.cpp:65] No far-field defined.
 # ERR 01/17 09:19:00 tigl.cpp:1445] Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi
 def test_logging(console_logging_level):

@@ -348,8 +348,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (cpacsVersion > supportedCpacsVersion) {
-                LOG(WARNING) << "CPACS dataset version " << cpacsVersionStr << " is currently not supported by TiGL. "
-                             << "The latest supported CPACS version is " << TIGL_CPACS_VERSION_STRING << "!";
+                LOG(WARNING) << "CPACS dataset version " << cpacsVersionStr << " may not be fully supported by TiGL."
+                             << "The latest fully supported CPACS version is " << TIGL_CPACS_VERSION_STRING << "!";
             }
         }
         catch (const std::invalid_argument& err) {
