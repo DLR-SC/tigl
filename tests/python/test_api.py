@@ -39,6 +39,9 @@ class TestSimpleCpacs(unittest.TestCase):
 
     def test_tiglGetVersion(self):
         print('TIGL-Version: ' + self.tigl.version)
+
+    def test_tiglGetCPACSVersion(self):
+        print('CPACS-Version: ' + self.tigl.getCPACSVersion())
         
     def test_objectCount(self):
         self.assertEqual(self.tigl.getWingCount(),1)
@@ -132,7 +135,7 @@ class TestTiglLogging(unittest.TestCase):
 
         self.assertEqual(len(err), 2)
         self.assertTrue(err[0].startswith('WRN'))
-        self.assertTrue(err[0].strip().endswith('CPACS dataset version is higher than TIGL library version!'))
+        self.assertIn('may not be fully supported by TiGL', err[0])
         self.assertTrue(err[1].startswith('ERR'))
         self.assertTrue(err[1].strip().endswith('No object is registered for uid "nonexistent"'))
 
@@ -142,7 +145,7 @@ class TestTiglLogging(unittest.TestCase):
         self.assertEqual(out[0], '')
         self.assertEqual(len(err), 2)
         self.assertTrue(err[0].startswith('WRN'))
-        self.assertTrue(err[0].strip().endswith('CPACS dataset version is higher than TIGL library version!'))
+        self.assertIn('may not be fully supported by TiGL', err[0])
         self.assertTrue(err[1].startswith('ERR'))
         self.assertTrue(err[1].strip().endswith('No object is registered for uid "nonexistent"'))
 
@@ -170,7 +173,7 @@ class TestTiglLogging(unittest.TestCase):
         self.assertTrue(len(lout), 6)
         self.assertTrue(lout[0].startswith('TiGL log file created at'))
         self.assertTrue(lout[1].startswith('WRN'))
-        self.assertTrue(lout[1].strip().endswith('CPACS dataset version is higher than TIGL library version!'))
+        self.assertIn('may not be fully supported by TiGL', lout[1])
         self.assertTrue(lout[2].startswith('INF'))
         self.assertTrue(lout[2].strip().endswith("Done meshing"))
         self.assertTrue(lout[3].startswith('INF'))

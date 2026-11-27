@@ -129,6 +129,11 @@ add_subdirectory(thirdparty)
 add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
 
+# CPACS version TiGL is built against (used for the CPACS dataset version check)
+include(GetCPACSSchemaVersion)
+tigl_get_cpacs_schema_version("${PROJECT_SOURCE_DIR}/cpacs_gen_input/cpacs_schema.xsd" TIGL_CPACS_VERSION)
+message(STATUS "CPACS schema version: ${TIGL_CPACS_VERSION}")
+
 add_subdirectory(src)
 add_subdirectory(TIGLCreator)
 add_subdirectory(bindings)

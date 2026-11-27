@@ -207,6 +207,14 @@ TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
     ASSERT_EQ(0, std::string(tiglGetVersion()).find(TIGL_VERSION_STRING));
 }
 
+/**
+* Tests tiglGetCPACSVersion.
+*/
+TEST_F(tiglCPACSConfigurationHandleValid, cpacs_version_valid)
+{
+    ASSERT_STREQ(TIGL_CPACS_VERSION_STRING, tiglGetCPACSVersion());
+}
+
 
 class SimpleConfigurationTests : public ::testing::Test
 {

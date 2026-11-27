@@ -341,13 +341,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
         try {
             const auto cpacsVersion = Version(cpacsVersionStr);
-
-            if (cpacsVersion.vMajor() < TIGL_MAJOR_VERSION) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!";
+            // CPACS schema version that TiGL is built against (from cpacs_gen_input/cpacs_schema.xsd)
+            const auto supportedCpacsVersion = Version(TIGL_CPACS_VERSION_STRING);
+            if (cpacsVersion.vMajor() < supportedCpacsVersion.vMajor()) {
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << supportedCpacsVersion.vMajor() << "!";
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (cpacsVersion > Version(tiglGetVersion())) {
-                LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
+            else if (cpacsVersion > supportedCpacsVersion) {
+                LOG(WARNING) << "CPACS dataset version " << cpacsVersionStr << " may not be fully supported by TiGL."
+                             << "The latest fully supported CPACS version is " << TIGL_CPACS_VERSION_STRING << "!";
             }
         }
         catch (const std::invalid_argument& err) {
@@ -527,6 +529,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT const char* tiglGetVersion()
 {
     return version.c_str();
+}
+
+TIGL_COMMON_EXPORT const char* tiglGetCPACSVersion()
+{
+    return TIGL_CPACS_VERSION_STRING;
 }
 
 /*** General geometry function ***/

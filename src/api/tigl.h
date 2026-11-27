@@ -492,6 +492,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 */
 TIGL_COMMON_EXPORT const char* tiglGetVersion();
 
+/**
+    @brief Returns the CPACS version this TIGL version is built against.
+
+    CPACS datasets with a higher version may not be fully supported by TIGL.
+
+    @return
+        - char* A string with the CPACS version number.
+*/
+TIGL_COMMON_EXPORT const char* tiglGetCPACSVersion();
+
 
 /** @} */
 /*****************************************************************************************************/
